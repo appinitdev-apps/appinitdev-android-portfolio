@@ -1,6 +1,6 @@
 <!-- AppInitDev · README oficial de presentación · datos del catálogo facilitado -->
 <div align="center">
-<a href="https://chatok.appinitdev.com/"><img src="assets/imagen_apps/icon.png" alt="Icono oficial de ChatOk: Chat privado y social" width="104" loading="lazy"></a>
+<a href="https://chatok.appinitdev.com/"><img src="assets/imagen_apps/icon.png" alt="Icono oficial de ChatOk: Chat privado y social" loading="lazy"></a>
 
 # ChatOk: Chat privado y social
 
