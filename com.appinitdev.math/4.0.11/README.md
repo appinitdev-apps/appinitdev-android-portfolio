@@ -39,7 +39,7 @@
 
 
 
-<a href="https://math.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de MathApp: Aprende Matemáticas" width="100%" loading="lazy"></a>
+<a href="https://math.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de MathApp: Aprende Matemáticas" loading="lazy"></a>
 
 ## En pocas palabras
 

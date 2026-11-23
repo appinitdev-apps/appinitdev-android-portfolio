@@ -34,7 +34,7 @@
 
 
 
-<a href="https://wallet.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de Vault Wallet: Control Gastos" width="100%" loading="lazy"></a>
+<a href="https://wallet.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de Vault Wallet: Control Gastos" loading="lazy"></a>
 
 ## En pocas palabras
 

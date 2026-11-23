@@ -41,7 +41,11 @@
 
 
 
+<<<<<<< HEAD
 <a href="https://chatok.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de ChatOk: Chat privado y social"  loading="lazy"></a>
+=======
+<a href="https://chatok.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de ChatOk: Chat privado y social" loading="lazy"></a>
+>>>>>>> 47e7847 (Primer portafolio Android AppInitDev images)
 
 ## En pocas palabras
 

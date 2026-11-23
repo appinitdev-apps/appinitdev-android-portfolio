@@ -32,7 +32,7 @@
 
 
 
-<a href="https://color-free.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de Color Palette Hub: Paletas" width="100%" loading="lazy"></a>
+<a href="https://color-free.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de Color Palette Hub: Paletas" loading="lazy"></a>
 
 ## En pocas palabras
 

@@ -45,7 +45,7 @@
 
 
 
-<a href="https://elementalhub.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de ElementalHub: Tabla periódica" width="100%" loading="lazy"></a>
+<a href="https://elementalhub.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de ElementalHub: Tabla periódica" loading="lazy"></a>
 
 ## En pocas palabras
 

@@ -32,7 +32,7 @@
 
 
 
-<a href="https://canvas-free.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de CanvasLab AI: Editor de Fotos" width="100%" loading="lazy"></a>
+<a href="https://canvas-free.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de CanvasLab AI: Editor de Fotos" loading="lazy"></a>
 
 ## En pocas palabras
 

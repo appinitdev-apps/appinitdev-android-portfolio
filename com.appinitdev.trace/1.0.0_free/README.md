@@ -38,7 +38,7 @@
 
 
 
-<a href="https://trace.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de TraceDraw: Calcar y Dibujar" width="100%" loading="lazy"></a>
+<a href="https://trace.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de TraceDraw: Calcar y Dibujar" loading="lazy"></a>
 
 ## En pocas palabras
 

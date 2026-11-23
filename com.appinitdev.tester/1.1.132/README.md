@@ -43,7 +43,7 @@
 
 
 
-<a href="https://testers.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de TesterApp: Pruebas Beta App" width="100%" loading="lazy"></a>
+<a href="https://testers.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de TesterApp: Pruebas Beta App" loading="lazy"></a>
 
 ## En pocas palabras
 

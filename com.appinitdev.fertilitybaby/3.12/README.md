@@ -31,7 +31,7 @@
 
 
 
-<a href="https://fertilitybaby.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de Fertility: Ciclo y Ovulación" width="100%" loading="lazy"></a>
+<a href="https://fertilitybaby.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de Fertility: Ciclo y Ovulación" loading="lazy"></a>
 
 ## En pocas palabras
 

@@ -45,7 +45,7 @@
 
 
 
-<a href="https://musicpro.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de Amplify: Reproductor Hi-Res" width="100%" loading="lazy"></a>
+<a href="https://musicpro.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de Amplify: Reproductor Hi-Res" loading="lazy"></a>
 
 ## En pocas palabras
 

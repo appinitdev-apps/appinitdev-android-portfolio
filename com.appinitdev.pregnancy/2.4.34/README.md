@@ -30,7 +30,7 @@
 
 
 
-<a href="https://pregnancy.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de My pregnancy: Calendario" width="100%" loading="lazy"></a>
+<a href="https://pregnancy.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de My pregnancy: Calendario" loading="lazy"></a>
 
 ## En pocas palabras
 

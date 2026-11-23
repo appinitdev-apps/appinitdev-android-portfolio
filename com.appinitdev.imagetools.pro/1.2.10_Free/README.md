@@ -32,7 +32,7 @@
 
 
 
-<a href="https://imagetools-pro.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de Photo Utility Hub: Editor IA" width="100%" loading="lazy"></a>
+<a href="https://imagetools-pro.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de Photo Utility Hub: Editor IA" loading="lazy"></a>
 
 ## En pocas palabras
 

@@ -45,7 +45,7 @@
 
 
 
-<a href="https://nexuslocal.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de Nexus Local: Gestor Web Wi-Fi" width="100%" loading="lazy"></a>
+<a href="https://nexuslocal.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de Nexus Local: Gestor Web Wi-Fi" loading="lazy"></a>
 
 ## En pocas palabras
 

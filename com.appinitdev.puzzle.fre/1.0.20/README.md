@@ -37,7 +37,7 @@
 
 
 
-<a href="https://puzzle-free.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de Photo Puzzle: Puzle deslizante" width="100%" loading="lazy"></a>
+<a href="https://puzzle-free.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de Photo Puzzle: Puzle deslizante" loading="lazy"></a>
 
 ## En pocas palabras
 
