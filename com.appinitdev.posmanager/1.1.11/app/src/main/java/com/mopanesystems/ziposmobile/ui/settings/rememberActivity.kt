@@ -1,4 +1,3 @@
-
 @Composable
 fun rememberActivity(): Activity? {
     val context = LocalContext.current

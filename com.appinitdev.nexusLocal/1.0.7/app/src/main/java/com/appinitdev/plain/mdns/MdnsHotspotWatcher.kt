@@ -1,27 +1,12 @@
-
- 
-
-
-
-
-
-
-
-
-
-
 internal class MdnsHotspotWatcher(
     private val context: Context,
     private val onStateChanged: () -> Unit,
 ) {
-    
     private val apStateChangedAction = "android.net.wifi.WIFI_AP_STATE_CHANGED"
     private val extraApState = "wifi_state"
     private val apStateEnabled = 13
     private val apStateDisabled = 11
-
     private var receiver: BroadcastReceiver? = null
-
     fun start() {
         if (receiver != null) return
         val r = object : BroadcastReceiver() {
@@ -42,7 +27,6 @@ internal class MdnsHotspotWatcher(
             LogCat.d("MdnsHotspotWatcher started")
         }.onFailure { LogCat.e("MdnsHotspotWatcher start failed: ${it.message}") }
     }
-
     fun stop() {
         val r = receiver ?: return
         receiver = null

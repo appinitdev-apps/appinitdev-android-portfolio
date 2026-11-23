@@ -1,22 +1,15 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductionAppsScreen(viewModel: AuthViewModel, navController: NavController) {
     val apps by viewModel.productionApps.collectAsState()
     val context = LocalContext.current
-
-
-    
     LaunchedEffect(Unit) {
         viewModel.loadProductionApps()
     }
-
-    
     val productionApps = remember(apps) {
         apps.filter { it.status == "produccion" }
             .sortedBy { it.nombre.lowercase() }
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -43,9 +36,7 @@ fun ProductionAppsScreen(viewModel: AuthViewModel, navController: NavController)
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.Gray
             )
-
             Spacer(modifier = Modifier.height(16.dp))
-
             if (productionApps.isEmpty()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(stringResource(R.string.no_hay_aplicaciones_en_producci_n_por_ahora), color = Color.Gray)
@@ -62,14 +53,11 @@ fun ProductionAppsScreen(viewModel: AuthViewModel, navController: NavController)
         }
     }
 }
-
 @Composable
 fun ProductionAppItem(app: AppModel, onClick: () -> Unit) {
     val formattedName = remember(app.nombre) {
         app.nombre.lowercase().replaceFirstChar { it.uppercase() }
     }
-
-    
     OutlinedCard(
         onClick = onClick, 
         modifier = Modifier
@@ -87,7 +75,6 @@ fun ProductionAppItem(app: AppModel, onClick: () -> Unit) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            
             Box(
                 modifier = Modifier
                     .size(56.dp) 
@@ -111,10 +98,7 @@ fun ProductionAppItem(app: AppModel, onClick: () -> Unit) {
                     )
                 }
             }
-
             Spacer(modifier = Modifier.width(16.dp))
-
-            
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = formattedName,
@@ -133,8 +117,6 @@ fun ProductionAppItem(app: AppModel, onClick: () -> Unit) {
                     overflow = TextOverflow.Ellipsis
                 )
             }
-
-            
             if (app.icono != null) {
                 Spacer(modifier = Modifier.width(8.dp))
                 FilledTonalButton(
@@ -157,15 +139,12 @@ fun ProductionAppItem(app: AppModel, onClick: () -> Unit) {
         }
     }
 }
-
-
 fun openPlayStore(context: Context, packageName: String) {
     try {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
     } catch (e: Exception) {
-        
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName"))
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)

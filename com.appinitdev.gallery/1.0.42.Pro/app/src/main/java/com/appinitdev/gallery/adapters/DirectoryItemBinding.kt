@@ -1,4 +1,3 @@
-
 interface DirectoryItemBinding {
     val root: ViewGroup
     val dirThumbnail: MySquareImageView
@@ -13,7 +12,6 @@ interface DirectoryItemBinding {
     val dirDragHandle: ImageView
     val dirDragHandleWrapper: ViewGroup?
 }
-
 class ListDirectoryItemBinding(val binding: DirectoryItemListBinding) : DirectoryItemBinding {
     override val root: ViewGroup = binding.root
     override val dirThumbnail: MySquareImageView = binding.dirThumbnail
@@ -28,9 +26,7 @@ class ListDirectoryItemBinding(val binding: DirectoryItemListBinding) : Director
     override val dirDragHandle: ImageView = binding.dirDragHandle
     override val dirDragHandleWrapper: ViewGroup? = null
 }
-
 fun DirectoryItemListBinding.toItemBinding() = ListDirectoryItemBinding(this)
-
 class GridDirectoryItemSquareBinding(val binding: DirectoryItemGridSquareBinding) : DirectoryItemBinding {
     override val root: ViewGroup = binding.root
     override val dirThumbnail: MySquareImageView = binding.dirThumbnail
@@ -45,9 +41,7 @@ class GridDirectoryItemSquareBinding(val binding: DirectoryItemGridSquareBinding
     override val dirDragHandle: ImageView = binding.dirDragHandle
     override val dirDragHandleWrapper: ViewGroup = binding.dirDragHandleWrapper
 }
-
 fun DirectoryItemGridSquareBinding.toItemBinding() = GridDirectoryItemSquareBinding(this)
-
 class GridDirectoryItemRoundedCornersBinding(val binding: DirectoryItemGridRoundedCornersBinding) : DirectoryItemBinding {
     override val root: ViewGroup = binding.root
     override val dirThumbnail: MySquareImageView = binding.dirThumbnail
@@ -62,5 +56,4 @@ class GridDirectoryItemRoundedCornersBinding(val binding: DirectoryItemGridRound
     override val dirDragHandle: ImageView = binding.dirDragHandle
     override val dirDragHandleWrapper: ViewGroup = binding.dirDragHandleWrapper
 }
-
 fun DirectoryItemGridRoundedCornersBinding.toItemBinding() = GridDirectoryItemRoundedCornersBinding(this)

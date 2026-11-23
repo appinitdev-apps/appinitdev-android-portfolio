@@ -1,4 +1,3 @@
-
 @Composable
 internal fun getMediaPageTitle(
     mediaType: DataType,
@@ -15,7 +14,6 @@ internal fun getMediaPageTitle(
         DataType.DOC -> Res.string.docs
         else -> Res.string.files
     }
-
     val mediaName = bucket?.name ?: stringResource(resourceId)
     return if (castVM.castMode.value) {
         stringResource(Res.string.cast_mode) + " - " + CastPlayer.currentDevice?.description?.device?.friendlyName

@@ -1,4 +1,3 @@
-
 object TagsLoader {
     fun load(
         ids: List<String>,
@@ -23,7 +22,6 @@ object TagsLoader {
             )
         }
     }
-
     fun load(
         id: String,
         type: DataType,

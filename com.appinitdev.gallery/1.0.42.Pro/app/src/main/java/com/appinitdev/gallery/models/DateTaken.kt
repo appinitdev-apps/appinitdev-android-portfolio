@@ -1,6 +1,3 @@
-
-
-
 @Entity(tableName = "date_takens", indices = [Index(value = ["full_path"], unique = true)])
 data class DateTaken(
     @PrimaryKey(autoGenerate = true) var id: Int?,

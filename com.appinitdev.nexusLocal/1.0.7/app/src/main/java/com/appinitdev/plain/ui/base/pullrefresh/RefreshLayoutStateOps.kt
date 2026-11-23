@@ -1,4 +1,3 @@
-
 fun RefreshLayoutState.setRefreshState(state: RefreshContentState) {
     when (state) {
         RefreshContentState.Failed -> {
@@ -23,7 +22,6 @@ fun RefreshLayoutState.setRefreshState(state: RefreshContentState) {
                 refreshContentOffsetState.animateTo(0f)
             }
         }
-
         RefreshContentState.Refreshing -> {
             if (refreshContentState.value == RefreshContentState.Refreshing)
                 return
@@ -38,7 +36,6 @@ fun RefreshLayoutState.setRefreshState(state: RefreshContentState) {
                 animateToThreshold()
             }
         }
-
         RefreshContentState.Dragging -> throw IllegalStateException("设置为[RefreshContentState.Dragging]无意义")
     }
 }

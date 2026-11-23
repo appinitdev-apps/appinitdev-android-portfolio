@@ -1,32 +1,22 @@
-
-
-
-
 suspend fun SignatureKeyPreference.ensureKeyPairAsync(
     preferences: Preferences,
 ) {
     val keyPairJson = get(preferences)
     if (keyPairJson.isEmpty()) {
         val tinkKeyPair = CryptoHelper.generateEd25519KeyPair()
-
         val rawPublicKey = CryptoHelper.extractRawEd25519PublicKey(tinkKeyPair.publicKey)
             ?: throw Exception("Failed to extract raw Ed25519 public key")
-
         val rawPrivateKey = extractRawEd25519PrivateKey(tinkKeyPair.privateKeyBytes)
             ?: throw Exception("Failed to extract raw Ed25519 private key")
-
         val privateKeyBase64 = CryptoHelper.encodeToBase64(rawPrivateKey)
         val publicKeyBase64 = CryptoHelper.encodeToBase64(rawPublicKey)
-
         val signatureKeyPair = DSignatureKeyPair(
             privateKey = privateKeyBase64,
             publicKey = publicKeyBase64
         )
-
         putAsync(JsonHelper.jsonEncode(signatureKeyPair))
     }
 }
-
 private fun extractRawEd25519PrivateKey(privateKeyBytes: ByteArray): ByteArray? {
     return try {
         val jsonString = String(privateKeyBytes, Charsets.UTF_8)
@@ -44,11 +34,9 @@ private fun extractRawEd25519PrivateKey(privateKeyBytes: ByteArray): ByteArray? 
         null
     }
 }
-
 suspend fun SignatureKeyPreference.getKeyPairAsync(): DSignatureKeyPair {
     return JsonHelper.jsonDecode<DSignatureKeyPair>(getAsync())
 }
-
 suspend fun SignatureKeyPreference.getPublicKeyBytesAsync(): ByteArray {
     val keyPair = getKeyPairAsync()
     return Base64.decode(keyPair.publicKey, Base64.NO_WRAP)

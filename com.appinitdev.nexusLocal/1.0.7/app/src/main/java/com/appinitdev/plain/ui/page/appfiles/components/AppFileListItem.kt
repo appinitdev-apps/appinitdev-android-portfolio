@@ -1,4 +1,3 @@
-
 @Composable
 fun AppFileListItem(
     file: VAppFile,
@@ -11,7 +10,6 @@ fun AppFileListItem(
     val extension = fileName.getFilenameExtension().ifEmpty {
         MimeTypeMap.getSingleton().getExtensionFromMimeType(file.appFile.mimeType).orEmpty()
     }
-
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -29,7 +27,6 @@ fun AppFileListItem(
         ) {
             val isImage = fileName.isImageFast() || file.appFile.mimeType.startsWith("image/")
             val isVideo = fileName.isVideoFast() || file.appFile.mimeType.startsWith("video/")
-
             if (isImage || isVideo) {
                 TransformImageView(
                     modifier = Modifier
@@ -49,9 +46,7 @@ fun AppFileListItem(
                     contentDescription = fileName,
                 )
             }
-
             Spacer(modifier = Modifier.width(12.dp))
-
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = fileName,

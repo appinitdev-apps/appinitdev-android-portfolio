@@ -1,4 +1,3 @@
-
 @Composable
 fun ChatInput(
     value: String,

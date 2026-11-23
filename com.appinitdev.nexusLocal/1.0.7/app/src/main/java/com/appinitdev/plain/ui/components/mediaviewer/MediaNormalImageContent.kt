@@ -1,4 +1,3 @@
-
 @Composable
 fun MediaNormalImageContent(
     imageModifier: Modifier,

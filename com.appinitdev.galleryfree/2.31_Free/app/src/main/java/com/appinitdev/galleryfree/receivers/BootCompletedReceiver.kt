@@ -1,4 +1,3 @@
-
 class BootCompletedReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         ensureBackgroundThread {

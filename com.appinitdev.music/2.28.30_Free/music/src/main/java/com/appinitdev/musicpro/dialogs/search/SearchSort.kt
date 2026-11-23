@@ -1,16 +1,11 @@
-
 class SearchSort : ScopedBottomSheetFragment() {
-
     private lateinit var binding: DialogSortSearchBinding
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DialogSortSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         when (SearchPreferences.getSongSort()) {
             CommonPreferencesConstants.BY_TITLE -> binding.title.isChecked = true
             CommonPreferencesConstants.BY_ARTIST -> binding.artist.isChecked = true
@@ -23,10 +18,8 @@ class SearchSort : ScopedBottomSheetFragment() {
             CommonPreferencesConstants.BY_TRACK_NUMBER -> binding.trackNumber.isChecked = true
             CommonPreferencesConstants.BY_COMPOSER -> binding.composer.isChecked = true
         }
-
         binding.normal.isChecked = SearchPreferences.getSortingStyle() == CommonPreferencesConstants.ASCENDING
         binding.reversed.isChecked = SearchPreferences.getSortingStyle() == CommonPreferencesConstants.DESCENDING
-
         binding.sortByChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             when (checkedIds.firstOrNull()) {
                 binding.title.id -> SearchPreferences.setSongSort(CommonPreferencesConstants.BY_TITLE)
@@ -41,7 +34,6 @@ class SearchSort : ScopedBottomSheetFragment() {
                 binding.composer.id -> SearchPreferences.setSongSort(CommonPreferencesConstants.BY_COMPOSER)
             }
         }
-
         binding.sortingStyleChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             when (checkedIds.firstOrNull()) {
                 binding.normal.id -> SearchPreferences.setSortingStyle(CommonPreferencesConstants.ASCENDING)
@@ -49,7 +41,6 @@ class SearchSort : ScopedBottomSheetFragment() {
             }
         }
     }
-
     companion object {
         fun newInstance(): SearchSort {
             val args = Bundle()
@@ -57,14 +48,11 @@ class SearchSort : ScopedBottomSheetFragment() {
             fragment.arguments = args
             return fragment
         }
-
         fun FragmentManager.showSearchSort(): SearchSort {
             val dialog = newInstance()
             dialog.show(this, TAG)
             return dialog
         }
-
         private const val TAG = "SearchSort"
     }
 }
-

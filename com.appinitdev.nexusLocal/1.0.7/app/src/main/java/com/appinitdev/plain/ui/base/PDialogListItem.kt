@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PDialogListItem(
@@ -57,7 +56,6 @@ fun PDialogListItem(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-
         if (value != null || action != null) {
             Box(Modifier.padding(start = 16.dp)) {
                 action?.invoke()
@@ -74,7 +72,6 @@ fun PDialogListItem(
                 }
             }
         }
-
         if (showMore) {
             Icon(
                 painter = painterResource(Res.drawable.chevron_right),

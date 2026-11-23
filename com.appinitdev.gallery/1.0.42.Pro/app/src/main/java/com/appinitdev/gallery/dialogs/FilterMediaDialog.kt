@@ -1,7 +1,5 @@
-
 class FilterMediaDialog(val activity: BaseSimpleActivity, val callback: (result: Int) -> Unit) {
     private val binding = DialogFilterMediaBinding.inflate(activity.layoutInflater)
-
     init {
         val filterMedia = activity.config.filterMedia
         binding.apply {
@@ -12,7 +10,6 @@ class FilterMediaDialog(val activity: BaseSimpleActivity, val callback: (result:
             filterMediaSvgs.isChecked = filterMedia and TYPE_SVGS != 0
             filterMediaPortraits.isChecked = filterMedia and TYPE_PORTRAITS != 0
         }
-
         activity.getAlertDialogBuilder()
             .setPositiveButton(org.appinitdev.commons.R.string.ok) { dialog, which -> dialogConfirmed() }
             .setNegativeButton(org.appinitdev.commons.R.string.cancel, null)
@@ -20,7 +17,6 @@ class FilterMediaDialog(val activity: BaseSimpleActivity, val callback: (result:
                 activity.setupDialogStuff(binding.root, this, R.string.filter_media)
             }
     }
-
     private fun dialogConfirmed() {
         var result = 0
         if (binding.filterMediaImages.isChecked)
@@ -35,11 +31,9 @@ class FilterMediaDialog(val activity: BaseSimpleActivity, val callback: (result:
             result += TYPE_SVGS
         if (binding.filterMediaPortraits.isChecked)
             result += TYPE_PORTRAITS
-
         if (result == 0) {
             result = getDefaultFileFilter()
         }
-
         if (activity.config.filterMedia != result) {
             activity.config.filterMedia = result
             callback(result)

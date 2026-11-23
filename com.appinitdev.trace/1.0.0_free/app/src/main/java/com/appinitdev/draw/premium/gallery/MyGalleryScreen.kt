@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyGalleryScreen(
@@ -8,11 +7,8 @@ fun MyGalleryScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val database = remember { GalleryDatabase.getDatabase(context) }
-
     val imagesList by database.galleryDao().getAllImages().collectAsState(initial = emptyList())
     val capturedWorksFull by database.galleryDao().getAllCapturedWorks().collectAsState(initial = emptyList())
-    
-    
     val capturedWorks = remember(capturedWorksFull) {
         capturedWorksFull.filter { !it.isTimeLapse || it.sessionId == null }
             .plus(
@@ -22,13 +18,10 @@ fun MyGalleryScreen(
                     .map { it.first() } 
             ).sortedByDescending { it.addedAt }
     }
-
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf(stringResource(R.string.plantillas), stringResource(R.string.mis_trabajos))
-
     var viewerImageUri by remember { mutableStateOf<Uri?>(null) }
     var selectedTimeLapseFrames by remember { mutableStateOf<List<CapturedWork>?>(null) }
-
     Scaffold(
         topBar = {
             Column(modifier = Modifier.background(Color.White)) {
@@ -177,13 +170,9 @@ fun MyGalleryScreen(
                 }
             }
         }
-
-        
         viewerImageUri?.let { uri ->
             ImageViewerModal(uri = uri, onDismiss = { viewerImageUri = null })
         }
-
-        
         selectedTimeLapseFrames?.let { frames ->
             TimeLapseViewerModal(
                 frames = frames,
@@ -195,7 +184,6 @@ fun MyGalleryScreen(
         }
     }
 }
-
 @Composable
 fun TimeLapseViewerModal(
     frames: List<CapturedWork>,
@@ -204,15 +192,12 @@ fun TimeLapseViewerModal(
 ) {
     var currentIndex by remember { mutableIntStateOf(0) }
     var isPlaying by remember { mutableStateOf(true) }
-
-    
     LaunchedEffect(isPlaying, frames.size, currentIndex) {
         if (isPlaying && frames.size > 1) {
             delay(400) 
             currentIndex = (currentIndex + 1) % frames.size
         }
     }
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -228,7 +213,6 @@ fun TimeLapseViewerModal(
         ) {
             if (frames.isNotEmpty()) {
                 val currentWork = frames[currentIndex.coerceIn(0, frames.lastIndex)]
-                
                 Image(
                     painter = rememberAsyncImagePainter(model = File(currentWork.workPath)),
                     contentDescription = null,
@@ -237,8 +221,6 @@ fun TimeLapseViewerModal(
                         .padding(bottom = 120.dp, top = 60.dp),
                     contentScale = ContentScale.Fit
                 )
-
-                
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -265,7 +247,6 @@ fun TimeLapseViewerModal(
                             )
                         }
                     }
-
                     IconButton(
                         onClick = onDismiss,
                         modifier = Modifier.background(Color.Black.copy(alpha = 0.5f), CircleShape)
@@ -273,8 +254,6 @@ fun TimeLapseViewerModal(
                         Icon(Icons.Default.Close, contentDescription = stringResource(R.string.cerrar), tint = Color.White)
                     }
                 }
-
-                
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -283,7 +262,6 @@ fun TimeLapseViewerModal(
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    
                     if (frames.size > 1) {
                         Slider(
                             value = currentIndex.toFloat(),
@@ -299,13 +277,11 @@ fun TimeLapseViewerModal(
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)
                         )
                     }
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        
                         IconButton(
                             onClick = {
                                 isPlaying = false
@@ -314,8 +290,6 @@ fun TimeLapseViewerModal(
                         ) {
                             Icon(Icons.Default.SkipPrevious, null, tint = Color.White, modifier = Modifier.size(28.dp))
                         }
-
-                        
                         FloatingActionButton(
                             onClick = { isPlaying = !isPlaying },
                             containerColor = Color(0xFFFF4081),
@@ -328,8 +302,6 @@ fun TimeLapseViewerModal(
                                 modifier = Modifier.size(28.dp)
                             )
                         }
-
-                        
                         IconButton(
                             onClick = {
                                 isPlaying = false
@@ -338,8 +310,6 @@ fun TimeLapseViewerModal(
                         ) {
                             Icon(Icons.Default.SkipNext, null, tint = Color.White, modifier = Modifier.size(28.dp))
                         }
-
-                        
                         IconButton(
                             onClick = { onShareFrame(currentWork) }
                         ) {
@@ -351,7 +321,6 @@ fun TimeLapseViewerModal(
         }
     }
 }
-
 @Composable
 fun ImageViewerModal(uri: Uri, onDismiss: () -> Unit) {
     Dialog(
@@ -377,7 +346,6 @@ fun ImageViewerModal(uri: Uri, onDismiss: () -> Unit) {
                     .padding(8.dp),
                 contentScale = ContentScale.Fit
             )
-            
             IconButton(
                 onClick = onDismiss,
                 modifier = Modifier
@@ -390,7 +358,6 @@ fun ImageViewerModal(uri: Uri, onDismiss: () -> Unit) {
         }
     }
 }
-
 @Composable
 fun EmptyGalleryView(message: String) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -413,7 +380,6 @@ fun EmptyGalleryView(message: String) {
         }
     }
 }
-
 @Composable
 fun GalleryItemCard(
     imageItem: GalleryImage,
@@ -439,7 +405,6 @@ fun GalleryItemCard(
                     modifier = Modifier.fillMaxSize().clickable { onPreview() },
                     contentScale = ContentScale.Crop
                 )
-                
                 Surface(
                     modifier = Modifier
                         .padding(12.dp)
@@ -455,7 +420,6 @@ fun GalleryItemCard(
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )
                 }
-
                 Surface(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
@@ -471,7 +435,6 @@ fun GalleryItemCard(
                     }
                 }
             }
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -486,7 +449,6 @@ fun GalleryItemCard(
         }
     }
 }
-
 @Composable
 fun CapturedWorkCard(
     work: CapturedWork,
@@ -514,8 +476,6 @@ fun CapturedWorkCard(
                         modifier = Modifier.fillMaxSize().clickable { onPreview() },
                         contentScale = ContentScale.Crop
                     )
-                    
-                    
                     if (sessionCount > 1) {
                         Surface(
                             modifier = Modifier.padding(10.dp).align(Alignment.TopStart),
@@ -539,7 +499,6 @@ fun CapturedWorkCard(
                         }
                     }
                 }
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -552,8 +511,6 @@ fun CapturedWorkCard(
                     ActionIconButton(icon = Icons.Default.Delete, color = Color(0xFFEF5350), onClick = onDelete)
                 }
             }
-
-            
             work.templatePath?.let { path ->
                 Surface(
                     modifier = Modifier
@@ -585,7 +542,6 @@ fun CapturedWorkCard(
         }
     }
 }
-
 @Composable
 fun ActionIconButton(icon: androidx.compose.ui.graphics.vector.ImageVector, color: Color, onClick: () -> Unit) {
     Box(

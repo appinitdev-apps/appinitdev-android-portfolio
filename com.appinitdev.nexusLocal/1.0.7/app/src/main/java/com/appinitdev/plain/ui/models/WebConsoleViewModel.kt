@@ -1,4 +1,3 @@
-
 class WebConsoleViewModel : ViewModel() {
     fun dig(context: Context) {
         viewModelScope.launch {
@@ -18,13 +17,11 @@ class WebConsoleViewModel : ViewModel() {
             }
         }
     }
-
     fun requestIgnoreBatteryOptimization() {
         if (!powerManager.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID)) {
             sendEvent(IgnoreBatteryOptimizationEvent())
         }
     }
-
     fun enableKeepAwake(context: Context, enable: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             KeepAwakePreference.putAsync(enable)

@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addBookmarkSchema() {
     query("bookmarks") {
         resolver { ->

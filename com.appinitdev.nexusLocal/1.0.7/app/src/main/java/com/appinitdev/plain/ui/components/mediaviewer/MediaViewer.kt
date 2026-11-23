@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MediaViewer(
@@ -13,10 +12,8 @@ fun MediaViewer(
 ) {
     val scope = rememberCoroutineScope()
     val (rawGesture, sizeChange) = rememberMediaViewerGesture(state, gesture, scope)
-
     Box(modifier = modifier) {
         val onMounted: () -> Unit = { scope.launch { state.mountedFlow.emit(true) } }
-
         when (model) {
             is PreviewItem -> {
                 if (model.isVideo() && !model.path.isUrl()) {

@@ -1,18 +1,14 @@
-
 @OptIn(UnstableApi::class)
 @Composable
 fun VideoDialog(onDismiss: () -> Unit) {
     val context = LocalContext.current
     val videoUrl = "https://appinitdev-android.web.app/video_tester/tester.mp4"
-
     var isLoading by remember { mutableStateOf(true) }
-
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
             setMediaItem(MediaItem.fromUri(videoUrl))
             prepare()
             playWhenReady = true
-
             addListener(object : Player.Listener {
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
                     if (isPlaying) isLoading = false
@@ -23,12 +19,9 @@ fun VideoDialog(onDismiss: () -> Unit) {
             })
         }
     }
-
     DisposableEffect(Unit) {
         onDispose { exoPlayer.release() }
     }
-
-    
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -52,7 +45,6 @@ fun VideoDialog(onDismiss: () -> Unit) {
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
-
                 Box(
                     modifier = Modifier
                         .weight(1f) 
@@ -66,20 +58,16 @@ fun VideoDialog(onDismiss: () -> Unit) {
                             PlayerView(ctx).apply {
                                 player = exoPlayer
                                 useController = true
-                                
                                 resizeMode = androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
                             }
                         },
                         modifier = Modifier.fillMaxSize()
                     )
-
                     if (isLoading) {
                         CircularProgressIndicator(color = Color.White)
                     }
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Button(
                     onClick = onDismiss,
                     modifier = Modifier.fillMaxWidth(),

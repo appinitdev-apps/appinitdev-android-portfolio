@@ -1,4 +1,3 @@
-
 @Composable
 fun NoDataView(
     modifier: Modifier = Modifier,
@@ -21,19 +20,15 @@ fun NoDataView(
                 .size(112.dp),
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary.copy(alpha = 0.85f))
         )
-
         VerticalSpace(20.dp)
-
         Text(
             text = message,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f),
             textAlign = TextAlign.Center
         )
-        
         if (showRefreshButton) {
             VerticalSpace(32.dp)
-
             FilledTonalButton(
                 onClick = onRefresh
             ) {

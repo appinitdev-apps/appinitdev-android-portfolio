@@ -1,11 +1,9 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryCrudScreen(onBack: (() -> Unit)? = null,viewModel: CategoryViewModel = hiltViewModel()) {
     val categories by viewModel.allCategories.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     var editingCategory by remember { mutableStateOf<Category?>(null) }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -20,11 +18,9 @@ fun CategoryCrudScreen(onBack: (() -> Unit)? = null,viewModel: CategoryViewModel
             )
         }
     ) { paddingValues ->
-
         Column(modifier = Modifier
             .padding(paddingValues)
             .padding(16.dp)) {
-
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.large,
@@ -50,7 +46,6 @@ fun CategoryCrudScreen(onBack: (() -> Unit)? = null,viewModel: CategoryViewModel
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-
                     Surface(
                         onClick = {
                             editingCategory = null
@@ -71,9 +66,7 @@ fun CategoryCrudScreen(onBack: (() -> Unit)? = null,viewModel: CategoryViewModel
                     }
                 }
             }
-
             Spacer(Modifier.height(16.dp))
-
             LazyColumn {
                 items(categories) { category ->
                     CategoryItem(
@@ -87,14 +80,12 @@ fun CategoryCrudScreen(onBack: (() -> Unit)? = null,viewModel: CategoryViewModel
                 }
             }
         }
-
         if (showDialog) {
             CategoryDialog(
                 category = editingCategory,
                 onDismiss = { showDialog = false },
                 onSave = { name, description ->
                     if (editingCategory == null) {
-                        
                         val newCategory = Category(
                             id = UUID.randomUUID().toString(),
                             name = name,
@@ -102,7 +93,6 @@ fun CategoryCrudScreen(onBack: (() -> Unit)? = null,viewModel: CategoryViewModel
                         )
                         viewModel.insertCategory(newCategory)
                     } else {
-                        
                         val updated = editingCategory!!.copy(
                             name = name,
                             description = description,
@@ -116,8 +106,6 @@ fun CategoryCrudScreen(onBack: (() -> Unit)? = null,viewModel: CategoryViewModel
         }
     }
 }
-
-
 @Composable
 fun CategoryItem(
     category: Category,
@@ -137,7 +125,6 @@ fun CategoryItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Surface(
                 modifier = Modifier.size(52.dp),
                 shape = MaterialTheme.shapes.large,
@@ -152,7 +139,6 @@ fun CategoryItem(
                     )
                 }
             }
-
             Spacer(modifier = Modifier.width(6.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(category.name, style = MaterialTheme.typography.titleMedium)
@@ -165,7 +151,6 @@ fun CategoryItem(
                     IconButton(onClick = onEdit) {
                         Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.editar_categor_a))
                     }
-
                     IconButton(onClick = onDelete) {
                         Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.eliminarf))
                     }
@@ -173,8 +158,6 @@ fun CategoryItem(
         }
     }
 }
-
-
 @Composable
 fun CategoryDialog(
     category: Category?,
@@ -183,7 +166,6 @@ fun CategoryDialog(
 ) {
     var name by remember { mutableStateOf(category?.name ?: "") }
     var description by remember { mutableStateOf(category?.description ?: "") }
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(if (category == null) stringResource(R.string.nueva_categor_a) else stringResource(

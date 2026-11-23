@@ -1,4 +1,3 @@
-
 class ExportFavoritesDialog(
     val activity: BaseSimpleActivity, val defaultFilename: String, val hidePath: Boolean,
     callback: (path: String, filename: String) -> Unit
@@ -10,10 +9,8 @@ class ExportFavoritesDialog(
         } else {
             activity.internalStoragePath
         }
-
         val binding = DialogExportFavoritesBinding.inflate(activity.layoutInflater).apply {
             exportFavoritesFilename.setText(defaultFilename.removeSuffix(".txt"))
-
             if (hidePath) {
                 exportFavoritesPathLabel.beGone()
                 exportFavoritesPath.beGone()
@@ -27,7 +24,6 @@ class ExportFavoritesDialog(
                 }
             }
         }
-
         activity.getAlertDialogBuilder()
             .setPositiveButton(org.appinitdev.commons.R.string.ok, null)
             .setNegativeButton(org.appinitdev.commons.R.string.cancel, null)
@@ -39,14 +35,12 @@ class ExportFavoritesDialog(
                             activity.toast(org.appinitdev.commons.R.string.filename_cannot_be_empty)
                             return@setOnClickListener
                         }
-
                         filename += ".txt"
                         val newPath = "${folder.trimEnd('/')}/$filename"
                         if (!newPath.getFilenameFromPath().isAValidFilename()) {
                             activity.toast(org.appinitdev.commons.R.string.filename_invalid_characters)
                             return@setOnClickListener
                         }
-
                         activity.config.lastExportedFavoritesFolder = folder
                         if (!hidePath && activity.getDoesFilePathExist(newPath)) {
                             val title = String.format(

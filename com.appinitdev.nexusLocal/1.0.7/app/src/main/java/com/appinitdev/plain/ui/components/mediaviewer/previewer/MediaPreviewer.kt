@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MediaPreviewer(
@@ -14,7 +13,6 @@ fun MediaPreviewer(
     LaunchedEffect(state.visible) {
         state.videoState.isPreviewerOpen = state.visible
     }
-
     AnimatedVisibility(modifier = Modifier.fillMaxSize(), visibleState = state.animateContainerVisibleState,
         enter = DEFAULT_PREVIEWER_ENTER_TRANSITION, exit = DEFAULT_PREVIEWER_EXIT_TRANSITION) {
         Box(modifier = Modifier.fillMaxSize().pointerInput(state.getKey) { state.verticalDrag(this) }) {
@@ -59,7 +57,6 @@ fun MediaPreviewer(
     }
     state.ticket.Next()
 }
-
 @Composable
 private fun SpeedBoostIndicator(state: MediaPreviewerState) {
     AnimatedVisibility(visible = state.videoState.isSpeedBoostActive,

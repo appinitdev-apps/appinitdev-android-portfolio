@@ -1,13 +1,10 @@
-
 fun Route.addUploads() {
-
     post("/upload") {
         val clientId = call.request.header("c-id") ?: ""
         if (clientId.isEmpty()) {
             call.respond(HttpStatusCode.BadRequest, "c-id header is missing")
             return@post
         }
-
         val token = HttpServerManager.tokenCache[clientId]
         if (token == null) {
             call.respond(HttpStatusCode.Unauthorized)
@@ -29,17 +26,11 @@ fun Route.addUploads() {
                                 if (requestStr.isEmpty()) {
                                     throw IllegalStateException("Unauthorized")
                                 }
-
                                 info = jsonDecode<UploadInfo>(requestStr)
                             }
-
                             "file" -> {
-                                
-                                
-                                
                                 fileName = File(part.originalFileName as String).name
                                 if (info.isAppFile) {
-                                    
                                     val tempFile = File(MainApp.instance.cacheDir, "chat_upload_${System.currentTimeMillis()}_${Thread.currentThread().id}")
                                     tempFile.parentFile?.mkdirs()
                                     FileOutputStream(tempFile).use { fos ->
@@ -69,9 +60,6 @@ fun Route.addUploads() {
                                     }
                                     LogCat.d("Upload: ${info.dir}, ${destFile.absolutePath}")
                                     destFile.parentFile?.mkdirs()
-
-                                    
-                                    
                                     val tempFile = File(destFile.parentFile, ".upload_tmp_${System.currentTimeMillis()}_${Thread.currentThread().id}")
                                     try {
                                         FileOutputStream(tempFile).use { fos ->
@@ -94,11 +82,9 @@ fun Route.addUploads() {
                                     MainApp.instance.scanFileByConnection(destFile, null)
                                 }
                             }
-
                             else -> {}
                         }
                     }
-
                     else -> {
                     }
                 }
@@ -112,24 +98,20 @@ fun Route.addUploads() {
             call.respond(HttpStatusCode.BadRequest, ex.message ?: "")
         }
     }
-
     post("/upload_chunk") {
         val clientId = call.request.header("c-id") ?: ""
         if (clientId.isEmpty()) {
             call.respond(HttpStatusCode.BadRequest, "c-id header is missing")
             return@post
         }
-
         val token = HttpServerManager.tokenCache[clientId]
         if (token == null) {
             call.respond(HttpStatusCode.Unauthorized)
             return@post
         }
-
         try {
             lateinit var chunkInfo: UploadChunkInfo
             var savedSize = 0L
-
             call.receiveMultipart(formFieldLimit = Long.MAX_VALUE).forEachPart { part ->
                 when (part) {
                     is PartData.FileItem -> {
@@ -143,23 +125,14 @@ fun Route.addUploads() {
                                 if (requestStr.isEmpty()) {
                                     throw IllegalStateException("Unauthorized")
                                 }
-
                                 chunkInfo = jsonDecode<UploadChunkInfo>(requestStr)
                             }
-
                             "file" -> {
                                 if (chunkInfo.fileId.isEmpty() || chunkInfo.index < 0) {
                                     throw IllegalArgumentException("fileId or index is missing or invalid")
                                 }
-
-                                
                                 val chunkDir = File(MainApp.instance.filesDir, "upload_tmp/${chunkInfo.fileId}")
                                 chunkDir.mkdirs()
-
-                                
-                                
-                                
-                                
                                 val chunkFile = File(chunkDir, "chunk_${chunkInfo.index}")
                                 val tempFile = File(chunkDir, ".tmp_chunk_${chunkInfo.index}_${System.nanoTime()}")
                                 try {
@@ -168,19 +141,12 @@ fun Route.addUploads() {
                                         fos.fd.sync()
                                         savedSize = fos.channel.position()
                                     }
-
-                                    
                                     if (chunkInfo.size > 0 && savedSize != chunkInfo.size) {
                                         tempFile.delete()
                                         throw IOException("Chunk ${chunkInfo.index} size mismatch: expected ${chunkInfo.size}, received $savedSize")
                                     }
-
-                                    
                                     if (chunkFile.exists()) chunkFile.delete()
                                     if (!tempFile.renameTo(chunkFile)) {
-                                        
-                                        
-                                        
                                         if (tempFile.exists()) {
                                             tempFile.copyTo(chunkFile, overwrite = true)
                                             tempFile.delete()
@@ -188,9 +154,6 @@ fun Route.addUploads() {
                                             throw IOException("Failed to save chunk ${chunkInfo.index}: rename failed and source file is missing")
                                         }
                                     }
-
-                                    
-                                    
                                     val finalSize = chunkFile.length()
                                     if (chunkInfo.size > 0 && finalSize != chunkInfo.size) {
                                         chunkFile.delete()
@@ -201,16 +164,13 @@ fun Route.addUploads() {
                                     throw e
                                 }
                             }
-
                             else -> {}
                         }
                     }
-
                     else -> {}
                 }
                 part.dispose()
             }
-
             if (savedSize > 0) {
                 call.respond(HttpStatusCode.Created, "${chunkInfo.index}:$savedSize")
             } else {

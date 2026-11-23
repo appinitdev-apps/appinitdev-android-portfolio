@@ -1,5 +1,3 @@
-
-
 class MediaSideScroll(context: Context, attrs: AttributeSet) : RelativeLayout(context, attrs) {
     private val SLIDE_INFO_FADE_DELAY = 1000L
     private var mTouchDownX = 0f
@@ -12,16 +10,13 @@ class MediaSideScroll(context: Context, attrs: AttributeSet) : RelativeLayout(co
     private var mIsBrightnessScroll = false
     private var mPassTouches = false
     private var dragThreshold = DRAG_THRESHOLD * context.resources.displayMetrics.density
-
     private var mSlideInfoText = ""
     private var mSlideInfoFadeHandler = Handler()
     private var mParentView: ViewGroup? = null
     private var activity: Activity? = null
     private var doubleTap: ((Float, Float) -> Unit)? = null
-
     private lateinit var slideInfoView: TextView
     private lateinit var singleTap: (Float, Float) -> Unit
-
     fun initialize(
         activity: Activity, slideInfoView: TextView, isBrightness: Boolean, parentView: ViewGroup?, singleTap: (x: Float, y: Float) -> Unit,
         doubleTap: ((x: Float, y: Float) -> Unit)? = null
@@ -37,13 +32,11 @@ class MediaSideScroll(context: Context, attrs: AttributeSet) : RelativeLayout(co
             mViewHeight = height
         }
     }
-
     private val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
             singleTap(e.rawX, e.rawY)
             return true
         }
-
         override fun onDoubleTap(e: MotionEvent): Boolean {
             if (doubleTap != null) {
                 doubleTap!!.invoke(e.rawX, e.rawY)
@@ -51,7 +44,6 @@ class MediaSideScroll(context: Context, attrs: AttributeSet) : RelativeLayout(co
             return true
         }
     })
-
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (mPassTouches) {
             if (ev.actionMasked == MotionEvent.ACTION_DOWN) {
@@ -61,12 +53,10 @@ class MediaSideScroll(context: Context, attrs: AttributeSet) : RelativeLayout(co
         }
         return super.dispatchTouchEvent(ev)
     }
-
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (mPassTouches && activity == null) {
             return false
         }
-
         gestureDetector.onTouchEvent(event)
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
@@ -82,20 +72,16 @@ class MediaSideScroll(context: Context, attrs: AttributeSet) : RelativeLayout(co
                     mTouchDownValue = getCurrentVolume()
                 }
             }
-
             MotionEvent.ACTION_MOVE -> {
                 val diffX = mTouchDownX - event.rawX
                 val diffY = mTouchDownY - event.rawY
-
                 if (Math.abs(diffY) > dragThreshold && Math.abs(diffY) > Math.abs(diffX)) {
                     var percent = ((diffY / mViewHeight) * 100).toInt() * 3
                     percent = Math.min(100, Math.max(-100, percent))
-
                     if ((percent == 100 && event.rawY > mLastTouchY) || (percent == -100 && event.rawY < mLastTouchY)) {
                         mTouchDownY = event.rawY
                         mTouchDownValue = if (mIsBrightnessScroll) mTempBrightness else getCurrentVolume()
                     }
-
                     percentChanged(percent)
                 } else if (Math.abs(diffX) > dragThreshold || Math.abs(diffY) > dragThreshold) {
                     if (!mPassTouches) {
@@ -109,7 +95,6 @@ class MediaSideScroll(context: Context, attrs: AttributeSet) : RelativeLayout(co
                 }
                 mLastTouchY = event.rawY
             }
-
             MotionEvent.ACTION_UP -> {
                 if (mIsBrightnessScroll) {
                     mTouchDownValue = mTempBrightness
@@ -118,9 +103,7 @@ class MediaSideScroll(context: Context, attrs: AttributeSet) : RelativeLayout(co
         }
         return true
     }
-
     private fun getCurrentVolume() = activity?.audioManager?.getStreamVolume(AudioManager.STREAM_MUSIC) ?: 0
-
     private fun getCurrentBrightness(): Int {
         return try {
             Settings.System.getInt(activity!!.contentResolver, Settings.System.SCREEN_BRIGHTNESS)
@@ -128,7 +111,6 @@ class MediaSideScroll(context: Context, attrs: AttributeSet) : RelativeLayout(co
             70
         }
     }
-
     private fun percentChanged(percent: Int) {
         if (mIsBrightnessScroll) {
             brightnessPercentChanged(percent)
@@ -136,42 +118,34 @@ class MediaSideScroll(context: Context, attrs: AttributeSet) : RelativeLayout(co
             volumePercentChanged(percent)
         }
     }
-
     private fun volumePercentChanged(percent: Int) {
         val stream = AudioManager.STREAM_MUSIC
         val maxVolume = max(activity!!.audioManager.getStreamMaxVolume(stream), 1)
         val addPoints = ((percent / 100f) * maxVolume).toInt()
         val newVolume = (mTouchDownValue + addPoints).coerceIn(0, maxVolume)
         activity!!.audioManager.setStreamVolume(stream, newVolume, 0)
-
         val absolutePercent = ((newVolume / maxVolume.toFloat()) * 100).toInt()
         showValue(absolutePercent)
-
         mSlideInfoFadeHandler.removeCallbacksAndMessages(null)
         mSlideInfoFadeHandler.postDelayed({
             slideInfoView.animate().alpha(0f)
         }, SLIDE_INFO_FADE_DELAY)
     }
-
     private fun brightnessPercentChanged(percent: Int) {
         val maxBrightness = 255f
         var newBrightness = (mTouchDownValue + 2.55 * percent).toFloat()
         newBrightness = Math.min(maxBrightness, Math.max(0f, newBrightness))
         mTempBrightness = newBrightness.toInt()
-
         val absolutePercent = ((newBrightness / maxBrightness) * 100).toInt()
         showValue(absolutePercent)
-
         val attributes = activity!!.window.attributes
         attributes.screenBrightness = absolutePercent / 100f
         activity!!.window.attributes = attributes
-
         mSlideInfoFadeHandler.removeCallbacksAndMessages(null)
         mSlideInfoFadeHandler.postDelayed({
             slideInfoView.animate().alpha(0f)
         }, SLIDE_INFO_FADE_DELAY)
     }
-
     private fun showValue(percent: Int) {
         slideInfoView.apply {
             text = "$mSlideInfoText:\n$percent%"

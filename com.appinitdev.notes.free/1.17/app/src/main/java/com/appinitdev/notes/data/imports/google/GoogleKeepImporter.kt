@@ -1,13 +1,10 @@
-
 class GoogleKeepImporter : ExternalImporter {
-
     @OptIn(ExperimentalSerializationApi::class)
     private val json = Json {
         ignoreUnknownKeys = true
         isLenient = true
         allowTrailingComma = true
     }
-
     override fun import(
         app: Application,
         source: Uri,
@@ -21,14 +18,12 @@ class GoogleKeepImporter : ExternalImporter {
             } catch (e: Exception) {
                 throw ImportException(R.string.invalid_google_keep, e)
             }
-
         if (!dataFolder.exists()) {
             throw ImportException(
                 R.string.invalid_google_keep,
                 RuntimeException("Extracting Takeout.zip failed"),
             )
         }
-
         val noteFiles =
             dataFolder
                 .listFilesRecursive { file ->
@@ -62,7 +57,6 @@ class GoogleKeepImporter : ExternalImporter {
                 .toList()
         return Pair(baseNotes, dataFolder)
     }
-
     fun String.parseToBaseNote(relativePath: String? = null): BaseNote {
         val googleKeepNote = json.decodeFromString<GoogleKeepNote>(this)
         val (body, spans) =
@@ -71,7 +65,6 @@ class GoogleKeepImporter : ExternalImporter {
                 paragraphsAsNewLine = true,
                 brTagsAsNewLine = true,
             )
-
         val images =
             googleKeepNote.attachments
                 .filter { it.mimetype.startsWith("image") }
@@ -112,7 +105,6 @@ class GoogleKeepImporter : ExternalImporter {
                     children = mutableListOf(),
                 )
             }
-
         return BaseNote(
             id = 0L, 
             type = if (googleKeepNote.listContent.isNotEmpty()) Type.LIST else Type.NOTE,
@@ -138,20 +130,15 @@ class GoogleKeepImporter : ExternalImporter {
             NoteViewMode.EDIT,
         )
     }
-
     private fun newFile(destinationDir: File, zipEntry: ZipEntry): File {
         val destFile = File(destinationDir, zipEntry.name)
-
         val destDirPath = destinationDir.canonicalPath
         val destFilePath = destFile.canonicalPath
-
         if (!destFilePath.startsWith(destDirPath + File.separator)) {
             throw IOException("Entry is outside of the target dir: " + zipEntry.name)
         }
-
         return destFile
     }
-
     private fun unzip(destinationPath: File, inputStream: InputStream): File {
         val buffer = ByteArray(1024)
         val zis = ZipInputStream(inputStream)
@@ -178,12 +165,10 @@ class GoogleKeepImporter : ExternalImporter {
             }
             zipEntry = zis.nextEntry
         }
-
         zis.closeEntry()
         zis.close()
         return destinationPath
     }
-
     companion object {
         private const val TAG = "GoogleKeepImporter"
     }

@@ -1,4 +1,3 @@
-
 @SuppressLint("UnsafeOptInUsageError")
 internal fun VideoPlayerMediaItem.toUri(
     context: Context,
@@ -6,7 +5,6 @@ internal fun VideoPlayerMediaItem.toUri(
     is VideoPlayerMediaItem.RawResourceMediaItem -> {
         RawResourceDataSource.buildRawResourceUri(resourceId)
     }
-
     is VideoPlayerMediaItem.AssetFileMediaItem -> {
         val dataSpec = DataSpec(Uri.parse("asset:///$assetPath"))
         val assetDataSource = AssetDataSource(context)
@@ -15,14 +13,11 @@ internal fun VideoPlayerMediaItem.toUri(
         } catch (e: AssetDataSource.AssetDataSourceException) {
             e.printStackTrace()
         }
-
         assetDataSource.uri ?: Uri.EMPTY
     }
-
     is VideoPlayerMediaItem.NetworkMediaItem -> {
         Uri.parse(url)
     }
-
     is VideoPlayerMediaItem.StorageMediaItem -> {
         val dataSpec = DataSpec(storageUri)
         val fileDataSource = FileDataSource()
@@ -31,7 +26,6 @@ internal fun VideoPlayerMediaItem.toUri(
         } catch (e: FileDataSourceException) {
             e.printStackTrace()
         }
-
         fileDataSource.uri ?: Uri.EMPTY
     }
 }

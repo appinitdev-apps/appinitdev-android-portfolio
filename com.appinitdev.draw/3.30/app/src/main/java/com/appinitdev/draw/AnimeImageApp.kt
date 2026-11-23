@@ -1,4 +1,3 @@
-
 @Composable
 fun AnimeImageApp(onImageSelected: (String) -> Unit) {
     val images = remember { mutableStateOf<List<Image>>(emptyList()) }
@@ -7,19 +6,7 @@ fun AnimeImageApp(onImageSelected: (String) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     val page = remember { mutableStateOf(1) }
     var showDialog by remember { mutableStateOf(false) }
-
-     
-
-
-
-
-
-
-
-
-
     fun loadImages(pageNumber: Int) {
-
         coroutineScope.launch {
             try {
             val response = RetrofitInstance.api.searchImages(
@@ -35,11 +22,9 @@ fun AnimeImageApp(onImageSelected: (String) -> Unit) {
             }
         }
     }
-
     LaunchedEffect(page.value) {
         loadImages(page.value)
     }
-
     Box(
         modifier = Modifier
             .background(Color(0x4B000000)) 
@@ -53,9 +38,6 @@ fun AnimeImageApp(onImageSelected: (String) -> Unit) {
             )
         }
     }
-
-    
-
     if (showDialog) {
         ShowGalleryDialog(
             images = images.value,
@@ -73,21 +55,13 @@ fun AnimeImageApp(onImageSelected: (String) -> Unit) {
                 }else {
                     page.value =16
                     loadImages(page.value)
-
                 }
             },
             onImageClick = { url ->
-                
                 Log.e("koll", url)
                 onImageSelected(url)
                 showDialog = false
             }
-
-
         )
     }
-
-
 }
-
-

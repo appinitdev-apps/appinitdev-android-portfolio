@@ -1,4 +1,3 @@
-
 @Composable
 fun Tips(
     text: String,
@@ -13,7 +12,6 @@ fun Tips(
         )
     }
 }
-
 @Composable
 fun PDialogTips(
     text: String,

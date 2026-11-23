@@ -1,23 +1,11 @@
-
- 
-
-
-
-
-
-
 class FavoritesSort : ScopedBottomSheetFragment() {
-
     private lateinit var binding: DialogSortSongsBinding
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DialogSortSongsBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         when (FavoritesPreferences.getSongSort()) {
             CommonPreferencesConstants.BY_TITLE -> binding.title.isChecked = true
             CommonPreferencesConstants.BY_ARTIST -> binding.artist.isChecked = true
@@ -30,10 +18,8 @@ class FavoritesSort : ScopedBottomSheetFragment() {
             CommonPreferencesConstants.BY_TRACK_NUMBER -> binding.trackNumber.isChecked = true
             CommonPreferencesConstants.BY_COMPOSER -> binding.composer.isChecked = true
         }
-
         binding.normal.isChecked = FavoritesPreferences.getSortingStyle() == CommonPreferencesConstants.ASCENDING
         binding.reversed.isChecked = FavoritesPreferences.getSortingStyle() == CommonPreferencesConstants.DESCENDING
-
         binding.sortByChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             when (checkedIds.firstOrNull()) {
                 binding.title.id -> FavoritesPreferences.setSongSort(CommonPreferencesConstants.BY_TITLE)
@@ -48,7 +34,6 @@ class FavoritesSort : ScopedBottomSheetFragment() {
                 binding.composer.id -> FavoritesPreferences.setSongSort(CommonPreferencesConstants.BY_COMPOSER)
             }
         }
-
         binding.sortingStyleChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             when (checkedIds.firstOrNull()) {
                 binding.normal.id -> FavoritesPreferences.setSortingStyle(CommonPreferencesConstants.ASCENDING)
@@ -56,20 +41,14 @@ class FavoritesSort : ScopedBottomSheetFragment() {
             }
         }
     }
-
     companion object {
         private const val TAG = "FavoritesSort"
-
         fun newInstance(): FavoritesSort {
             val args = Bundle()
             val fragment = FavoritesSort()
             fragment.arguments = args
             return fragment
         }
-
-         
-
-
         fun FragmentManager.showFavoritesSort(): FavoritesSort {
             val dialog = newInstance()
             dialog.show(this, TAG)
@@ -77,4 +56,3 @@ class FavoritesSort : ScopedBottomSheetFragment() {
         }
     }
 }
-

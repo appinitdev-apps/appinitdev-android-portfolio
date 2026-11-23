@@ -1,4 +1,3 @@
-
 @Keep
 data class ComunidadLink(
     val id: String = "",

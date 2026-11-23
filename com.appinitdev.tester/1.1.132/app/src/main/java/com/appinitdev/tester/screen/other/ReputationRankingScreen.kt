@@ -1,29 +1,20 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReputationRankingScreen(viewModel: AuthViewModel, onBack: () -> Unit) {
-    
     var showReputationInfo by remember { mutableStateOf(false) }
     var selectedUserForInfo by remember { mutableStateOf<UserProfile?>(null) }
     val usuarios by viewModel.allUsers.collectAsState()
-
     LaunchedEffect(Unit) {
         viewModel.loadRanking()
     }
-
     val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
-
     val sortedUsers = remember(usuarios) {
         usuarios.sortedByDescending { it.reputacion }
     }
-
     val miPosicion = remember(sortedUsers) {
         val index = sortedUsers.indexOfFirst { it.uid == currentUserUid }
         if (index != -1) "#"+(index + 1).toString() else " "
     }
-
-
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -36,8 +27,6 @@ fun ReputationRankingScreen(viewModel: AuthViewModel, onBack: () -> Unit) {
             )
         }
     ) { padding ->
-
-
         Column(modifier = Modifier
             .padding(padding)
             .padding(16.dp)) {
@@ -51,9 +40,7 @@ fun ReputationRankingScreen(viewModel: AuthViewModel, onBack: () -> Unit) {
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.Gray
             )
-
             Spacer(modifier = Modifier.height(16.dp))
-
             if (sortedUsers.isEmpty()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
@@ -76,7 +63,6 @@ fun ReputationRankingScreen(viewModel: AuthViewModel, onBack: () -> Unit) {
             }
         }
     }
-
     if (showReputationInfo && selectedUserForInfo != null) {
         ReputationExplanationDialog(
             profile = selectedUserForInfo,
@@ -87,8 +73,6 @@ fun ReputationRankingScreen(viewModel: AuthViewModel, onBack: () -> Unit) {
         )
     }
 }
-
-
 @Composable
 fun RankingUserItem(usuario: UserProfile, posicion: Int,onReputationClick: () -> Unit) {
     Card(
@@ -109,7 +93,6 @@ fun RankingUserItem(usuario: UserProfile, posicion: Int,onReputationClick: () ->
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            
             Box(
                 modifier = Modifier.size(32.dp),
                 contentAlignment = Alignment.Center
@@ -132,21 +115,15 @@ fun RankingUserItem(usuario: UserProfile, posicion: Int,onReputationClick: () ->
                     color = if (posicion <= 3) Color.Black else MaterialTheme.colorScheme.onSurface
                 )
             }
-
             Spacer(modifier = Modifier.width(12.dp))
-
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = usuario.devName.ifEmpty { "Tester" }.replaceFirstChar { it.uppercase() },
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
-
                 Spacer(modifier = Modifier.height(4.dp))
-
-                
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    
                     Icon(
                         imageVector = Icons.Default.TrendingUp,
                         contentDescription = null,
@@ -158,10 +135,7 @@ fun RankingUserItem(usuario: UserProfile, posicion: Int,onReputationClick: () ->
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium
                     )
-
                     Spacer(modifier = Modifier.width(8.dp))
-
-                    
                     Icon(
                         imageVector = Icons.Default.EmojiEvents,
                         contentDescription = null,
@@ -173,10 +147,7 @@ fun RankingUserItem(usuario: UserProfile, posicion: Int,onReputationClick: () ->
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium
                     )
-
                     Spacer(modifier = Modifier.width(8.dp))
-
-                    
                     Icon(
                         imageVector = Icons.Default.Star,
                         contentDescription = null,
@@ -191,8 +162,6 @@ fun RankingUserItem(usuario: UserProfile, posicion: Int,onReputationClick: () ->
                     )
                 }
             }
-
-            
             Surface(
                 color = MaterialTheme.colorScheme.primaryContainer,
                 shape = MaterialTheme.shapes.small,

@@ -1,4 +1,3 @@
-
 @Composable
 internal fun ReorderableCollectionItemScope.AudioCastPlaylistItemContent(
     item: IMedia, index: Int, isPlaying: Boolean, isLoading: Boolean, onRemove: () -> Unit,
@@ -6,12 +5,10 @@ internal fun ReorderableCollectionItemScope.AudioCastPlaylistItemContent(
     val context = LocalContext.current
     var title by remember { mutableStateOf("") }
     var artist by remember { mutableStateOf("") }
-
     LaunchedEffect(item.path) {
         val audio = withIO { DPlaylistAudio.fromPath(context, item.path) }
         title = audio.title; artist = audio.artist
     }
-
     Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
         Box(modifier = Modifier.size(36.dp).clip(CircleShape)
             .background(if (isPlaying) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.circleBackground)

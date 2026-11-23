@@ -1,16 +1,11 @@
-
 class Library : PreferenceFragment() {
-
     private lateinit var binding: FragmentPreferenceAppearanceBinding
     private lateinit var headerBinding: HeaderPreferencesGenericBinding
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentPreferenceAppearanceBinding.inflate(inflater, container, false)
         headerBinding = HeaderPreferencesGenericBinding.inflate(inflater, container, false)
-
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         headerBinding.title.text = getString(R.string.library)
@@ -20,7 +15,6 @@ class Library : PreferenceFragment() {
         binding.recyclerView.adapter = GenericPreferencesAdapter(createLibraryPanel())
         binding.header.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -29,7 +23,6 @@ class Library : PreferenceFragment() {
             LibraryPreferences.SKIP_HIDDEN_FILES,
             LibraryPreferences.SKIP_HIDDEN_FOLDERS -> {
                 postDelayed {
-                    
                     AudioDatabaseService.refreshScan(requireContext())
                 }
             }
@@ -38,10 +31,8 @@ class Library : PreferenceFragment() {
             }
         }
     }
-
     override val wantsMiniPlayerVisible: Boolean
         get() = false
-
     companion object {
         fun newInstance(): Library {
             val args = Bundle()
@@ -49,8 +40,6 @@ class Library : PreferenceFragment() {
             fragment.arguments = args
             return fragment
         }
-
         const val TAG = "Appearance"
     }
 }
-

@@ -1,11 +1,3 @@
-
- 
-
-
-
-
-
-
 class ReminderReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.d(TAG, "onReceive: ${intent?.action}")
@@ -24,7 +16,6 @@ class ReminderReceiver : BroadcastReceiver() {
             when {
                 canScheduleExactAlarms && intent.action == Intent.ACTION_BOOT_COMPLETED ->
                     rescheduleAlarms(context)
-
                 intent.action ==
                     AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED -> {
                     if (canScheduleExactAlarms) {
@@ -36,7 +27,6 @@ class ReminderReceiver : BroadcastReceiver() {
             }
         }
     }
-
     private fun notify(context: Context, noteId: Long, reminderId: Long) {
         Log.d(TAG, "notify: noteId: $noteId reminderId: $reminderId")
         CoroutineScope(Dispatchers.IO).launch {
@@ -77,7 +67,6 @@ class ReminderReceiver : BroadcastReceiver() {
             }
         }
     }
-
     private fun rescheduleAlarms(context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             val database =
@@ -98,7 +87,6 @@ class ReminderReceiver : BroadcastReceiver() {
             }
         }
     }
-
     private fun cancelAlarms(context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             val database =
@@ -114,12 +102,9 @@ class ReminderReceiver : BroadcastReceiver() {
             }
         }
     }
-
     companion object {
         private const val TAG = "ReminderReceiver"
-
         private const val NOTIFICATION_CHANNEL_ID = "Reminders"
-
         const val EXTRA_REMINDER_ID = "notes.intent.extra.REMINDER_ID"
         const val EXTRA_NOTE_ID = "notes.intent.extra.NOTE_ID"
     }

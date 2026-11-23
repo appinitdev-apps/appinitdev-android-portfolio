@@ -1,45 +1,34 @@
-
 class AdapterYear(initial: List<YearGroup>) : FastScrollAdapter<VerticalListViewHolder>() {
-
     private var callbacks: GeneralAdapterCallbacks? = null
-
     private val listUpdateCallback = object : ListUpdateCallback {
         override fun onInserted(position: Int, count: Int) {
             if (count > 100) notifyDataSetChanged()
             else notifyItemRangeInserted(position, count)
         }
-
         override fun onRemoved(position: Int, count: Int) {
             if (count > 100) notifyDataSetChanged()
             else notifyItemRangeRemoved(position, count)
         }
-
         override fun onMoved(fromPosition: Int, toPosition: Int) {
             notifyItemMoved(fromPosition, toPosition)
         }
-
         override fun onChanged(position: Int, count: Int, payload: Any?) {
             notifyItemRangeChanged(position, count, payload)
         }
     }
-
     private val diffCallback = object : DiffUtil.ItemCallback<YearGroup>() {
         override fun areItemsTheSame(oldItem: YearGroup, newItem: YearGroup) = oldItem.id == newItem.id
         override fun areContentsTheSame(oldItem: YearGroup, newItem: YearGroup) = oldItem == newItem
     }
-
     private val differ = AsyncListDiffer(
             listUpdateCallback,
             AsyncDifferConfig.Builder(diffCallback).build()
     )
-
     private val list: List<YearGroup> get() = differ.currentList
-
     init {
         setHasStableIds(true)
         differ.submitList(initial.toList())
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         return when (viewType) {
             CommonPreferencesConstants.GRID_TYPE_GRID -> {
@@ -53,7 +42,6 @@ class AdapterYear(initial: List<YearGroup>) : FastScrollAdapter<VerticalListView
             }
         }
     }
-
     override fun onBind(holder: VerticalListViewHolder, position: Int, isLightBind: Boolean) {
         val yearGroup = list[position]
         when (holder) {
@@ -62,7 +50,6 @@ class AdapterYear(initial: List<YearGroup>) : FastScrollAdapter<VerticalListView
             is LabelHolder -> holder.bind(yearGroup, isLightBind)
         }
     }
-
     override fun getItemId(position: Int): Long = list[position].id
     override fun getItemCount(): Int = list.size
     override fun getItemViewType(position: Int): Int {
@@ -73,7 +60,6 @@ class AdapterYear(initial: List<YearGroup>) : FastScrollAdapter<VerticalListView
             else -> CommonPreferencesConstants.GRID_TYPE_LIST
         }
     }
-
     inner class GridHolder(private val binding: AdapterStyleGridBinding) : VerticalListViewHolder(binding.root) {
         fun bind(yearGroup: YearGroup, isLightBind: Boolean) {
             binding.title.text = yearGroup.year
@@ -85,7 +71,6 @@ class AdapterYear(initial: List<YearGroup>) : FastScrollAdapter<VerticalListView
             binding.container.setOnClickListener { callbacks?.onYearGroupClicked(yearGroup, it) }
         }
     }
-
     inner class ListHolder(private val binding: AdapterYearListBinding) : VerticalListViewHolder(binding.root) {
         fun bind(yearGroup: YearGroup, isLightBind: Boolean) {
             binding.name.text = yearGroup.year
@@ -96,7 +81,6 @@ class AdapterYear(initial: List<YearGroup>) : FastScrollAdapter<VerticalListView
             binding.container.setOnClickListener { callbacks?.onYearGroupClicked(yearGroup, it) }
         }
     }
-
     inner class LabelHolder(private val binding: AdapterStyleLabelsBinding) : VerticalListViewHolder(binding.root) {
         fun bind(yearGroup: YearGroup, isLightBind: Boolean) {
             binding.title.text = yearGroup.year
@@ -107,13 +91,10 @@ class AdapterYear(initial: List<YearGroup>) : FastScrollAdapter<VerticalListView
             binding.container.setOnClickListener { callbacks?.onYearGroupClicked(yearGroup, it) }
         }
     }
-
     fun setCallbackListener(listener: GeneralAdapterCallbacks) {
         this.callbacks = listener
     }
-
     fun updateList(newYears: List<YearGroup>) {
         differ.submitList(newYears.toList())
     }
 }
-

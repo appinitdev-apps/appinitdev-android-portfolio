@@ -1,11 +1,8 @@
-
 class FavoritePageActivity : BaseActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val themePreference = ThemePreference(this)
         val themePrefValue = themePreference.getValue()
-
         if (themePrefValue == 100) {
             when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
                 Configuration.UI_MODE_NIGHT_NO -> { setTheme(R.style.AppTheme) }
@@ -15,7 +12,6 @@ class FavoritePageActivity : BaseActivity() {
         if (themePrefValue == 0) { setTheme(R.style.AppTheme) }
         if (themePrefValue == 1) { setTheme(R.style.AppThemeDark) }
         setContentView(R.layout.activity_favorite_settings_page)
-
         val molarPreference = FavoriteBarPreferences(this)
         var molarPrefValue = molarPreference.getValue()
         if (molarPrefValue == 1) {
@@ -24,7 +20,6 @@ class FavoritePageActivity : BaseActivity() {
         if (molarPrefValue == 0) {
             findViewById<CheckBox>(R.id.molar_mass_check).isChecked = false
         }
-
         val phasePreferences = FavoritePhase(this)
         var phasePrefValue = phasePreferences.getValue()
         if (phasePrefValue == 1) {
@@ -33,7 +28,6 @@ class FavoritePageActivity : BaseActivity() {
         if (phasePrefValue == 0) {
             findViewById<CheckBox>(R.id.phase_check).isChecked = false
         }
-
         val electronegativityPreferences = ElectronegativityPreference(this)
         var electronegativityPrefValue = electronegativityPreferences.getValue()
         if (electronegativityPrefValue == 1) {
@@ -42,8 +36,6 @@ class FavoritePageActivity : BaseActivity() {
         if (electronegativityPrefValue == 0) {
             findViewById<CheckBox>(R.id.electronegativity_check).isChecked = false
         }
-
-        
         val densityPreference = DensityPreference(this)
         var densityPrefValue = densityPreference.getValue()
         if (densityPrefValue == 1) {
@@ -52,8 +44,6 @@ class FavoritePageActivity : BaseActivity() {
         if (densityPrefValue == 0) {
             findViewById<CheckBox>(R.id.density_check).isChecked = false
         }
-
-        
         val degreePreference = DegreePreference(this)
         var degreePrefValue = degreePreference.getValue()
         if (degreePrefValue == 0) {
@@ -71,8 +61,6 @@ class FavoritePageActivity : BaseActivity() {
             findViewById<Button>(R.id.celsius_btn).setBackground(ContextCompat.getDrawable(this, R.drawable.chip_outline))
             findViewById<Button>(R.id.fahrenheit_btn).setBackground(ContextCompat.getDrawable(this, R.drawable.chip_active))
         }
-
-        
         val boilingPreference = BoilingPreference(this)
         var boilingPrefValue = boilingPreference.getValue()
         if (boilingPrefValue == 1) {
@@ -81,8 +69,6 @@ class FavoritePageActivity : BaseActivity() {
         if (boilingPrefValue == 0) {
             findViewById<CheckBox>(R.id.boiling_check).isChecked = false
         }
-
-        
         val meltingPreference = MeltingPreference(this)
         val meltingPrefValue = meltingPreference.getValue()
         if (meltingPrefValue == 1) {
@@ -91,32 +77,22 @@ class FavoritePageActivity : BaseActivity() {
         if (meltingPrefValue == 0) {
             findViewById<CheckBox>(R.id.melting_check).isChecked = false
         }
-
-        
         val AtomicEmpPreference = AtomicRadiusEmpPreference(this)
         val AtomicEmpPrefValue = AtomicEmpPreference.getValue()
         if (AtomicEmpPrefValue == 1) { findViewById<CheckBox>(R.id.atomic_radius_empirical_check).isChecked = true }
         if (AtomicEmpPrefValue == 0) { findViewById<CheckBox>(R.id.atomic_radius_empirical_check).isChecked = false }
-
-        
         val AtomicCalPreference = AtomicRadiusCalPreference(this)
         val AtomicCalPrefValue = AtomicCalPreference.getValue()
         if (AtomicCalPrefValue == 1) { findViewById<CheckBox>(R.id.atomic_radius_calculated_check).isChecked = true }
         if (AtomicCalPrefValue == 0) { findViewById<CheckBox>(R.id.atomic_radius_calculated_check).isChecked = false }
-
-        
         val CovalentPreference = AtomicCovalentPreference(this)
         val AtomicCovalentPrefValue = CovalentPreference.getValue()
         if (AtomicCovalentPrefValue == 1) { findViewById<CheckBox>(R.id.covalent_radius_check).isChecked = true }
         if (AtomicCovalentPrefValue == 0) { findViewById<CheckBox>(R.id.covalent_radius_check).isChecked = false }
-
-        
         val VanPreference = AtomicVanPreference(this)
         val VanprefValue = VanPreference.getValue()
         if (VanprefValue == 1) { findViewById<CheckBox>(R.id.van_der_waals_radius_check).isChecked = true }
         if (VanprefValue == 0) { findViewById<CheckBox>(R.id.van_der_waals_radius_check).isChecked = false }
-
-        
         val specificHeatPreference = SpecificHeatPreference(this)
         var specificHeatValue = specificHeatPreference.getValue()
         if (specificHeatValue == 1) {
@@ -125,8 +101,6 @@ class FavoritePageActivity : BaseActivity() {
         if (specificHeatValue == 0) {
             findViewById<CheckBox>(R.id.specific_heat_check).isChecked = false
         }
-
-        
         val fusionheatPreference = FusionHeatPreference(this)
         var fusionHeatValue = fusionheatPreference.getValue()
         if (fusionHeatValue == 1) {
@@ -135,8 +109,6 @@ class FavoritePageActivity : BaseActivity() {
         if (fusionHeatValue == 0) {
             findViewById<CheckBox>(R.id.fusion_heat_check).isChecked = false
         }
-
-        
         val vaporizationHeatPreference = VaporizationHeatPreference(this)
         var vaporizationHeatValue = vaporizationHeatPreference.getValue()
         if (vaporizationHeatValue == 1) {
@@ -145,8 +117,6 @@ class FavoritePageActivity : BaseActivity() {
         if (vaporizationHeatValue == 0) {
             findViewById<CheckBox>(R.id.vaporization_heat_check).isChecked = false
         }
-
-        
         val radioactivePreference = RadioactivePreference(this)
         var radioactiveHeatValue = radioactivePreference.getValue()
         if (radioactiveHeatValue == 1) {
@@ -155,8 +125,6 @@ class FavoritePageActivity : BaseActivity() {
         if (radioactiveHeatValue == 0) {
             findViewById<CheckBox>(R.id.radioactive_check).isChecked = false
         }
-
-        
         val resistivityPreference = ResistivityPreference(this)
         var resistivityValue = resistivityPreference.getValue()
         if (resistivityValue == 1) {
@@ -167,60 +135,19 @@ class FavoritePageActivity : BaseActivity() {
         }
         onCheckboxClicked()
         findViewById<ConstraintLayout>(R.id.viewf).systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-
-        
-         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 findViewById<ImageButton>(R.id.back_btn_fav).setOnClickListener {
             this.onBackPressed()
         }
     }
-
     override fun onApplySystemInsets(top: Int, bottom: Int, left: Int, right: Int) {
             val params = findViewById<FrameLayout>(R.id.common_title_back_fav).layoutParams as ViewGroup.LayoutParams
             params.height = top + resources.getDimensionPixelSize(R.dimen.title_bar)
             findViewById<FrameLayout>(R.id.common_title_back_fav).layoutParams = params
-
             val params2 = findViewById<TextView>(R.id.favorite_set_title_downstate).layoutParams as ViewGroup.MarginLayoutParams
             params2.topMargin = top
             findViewById<TextView>(R.id.favorite_set_title_downstate).layoutParams = params2
     }
-
     fun onCheckboxClicked() {
-        
         val molarPreference = FavoriteBarPreferences(this)
         var molarPrefValue = molarPreference.getValue()
         var checkBox:CheckBox = findViewById<CheckBox>(R.id.molar_mass_check)
@@ -232,11 +159,9 @@ findViewById<ImageButton>(R.id.back_btn_fav).setOnClickListener {
                 molarPreference.setValue(0)
             }
         }
-
         findViewById<Button>(R.id.kelvin_btn).setOnClickListener {
             val degreePreference = DegreePreference(this)
             var degreePrefValue = degreePreference.getValue()
-
             degreePreference.setValue(0)
             findViewById<Button>(R.id.kelvin_btn).setBackground(ContextCompat.getDrawable(this, R.drawable.chip_active))
             findViewById<Button>(R.id.celsius_btn).setBackground(ContextCompat.getDrawable(this, R.drawable.chip_outline))
@@ -245,7 +170,6 @@ findViewById<ImageButton>(R.id.back_btn_fav).setOnClickListener {
         findViewById<Button>(R.id.celsius_btn).setOnClickListener {
             val degreePreference = DegreePreference(this)
             var degreePrefValue = degreePreference.getValue()
-
             degreePreference.setValue(1)
             findViewById<Button>(R.id.kelvin_btn).setBackground(ContextCompat.getDrawable(this, R.drawable.chip_outline))
             findViewById<Button>(R.id.celsius_btn).setBackground(ContextCompat.getDrawable(this, R.drawable.chip_active))
@@ -254,14 +178,11 @@ findViewById<ImageButton>(R.id.back_btn_fav).setOnClickListener {
         findViewById<Button>(R.id.fahrenheit_btn).setOnClickListener {
             val degreePreference = DegreePreference(this)
             var degreePrefValue = degreePreference.getValue()
-
             degreePreference.setValue(2)
             findViewById<Button>(R.id.kelvin_btn).setBackground(ContextCompat.getDrawable(this, R.drawable.chip_outline))
             findViewById<Button>(R.id.celsius_btn).setBackground(ContextCompat.getDrawable(this, R.drawable.chip_outline))
             findViewById<Button>(R.id.fahrenheit_btn).setBackground(ContextCompat.getDrawable(this, R.drawable.chip_active))
         }
-
-        
         val phasePreference = FavoritePhase(this)
         var phasePrefValue = phasePreference.getValue()
         var phaseCheckBox:CheckBox = findViewById<CheckBox>(R.id.phase_check)
@@ -273,8 +194,6 @@ findViewById<ImageButton>(R.id.back_btn_fav).setOnClickListener {
                 phasePreference.setValue(0)
             }
         }
-
-        
         val electronegativityPreference = ElectronegativityPreference(this)
         var electronegativityPrefValue = electronegativityPreference.getValue()
         var electronegativityCheckBox:CheckBox = findViewById<CheckBox>(R.id.electronegativity_check)
@@ -286,8 +205,6 @@ findViewById<ImageButton>(R.id.back_btn_fav).setOnClickListener {
                 electronegativityPreference.setValue(0)
             }
         }
-
-        
         val densityPreference = DensityPreference(this)
         var densityPrefValue = densityPreference.getValue()
         var densityCheckBox:CheckBox = findViewById<CheckBox>(R.id.density_check)
@@ -298,10 +215,7 @@ findViewById<ImageButton>(R.id.back_btn_fav).setOnClickListener {
             else {
                 densityPreference.setValue(0)
             }
-
         }
-
-        
         val boilingPreference = BoilingPreference(this)
         var boilingPrefValue = boilingPreference.getValue()
         var boilingCheckBox:CheckBox = findViewById<CheckBox>(R.id.boiling_check)
@@ -312,50 +226,37 @@ findViewById<ImageButton>(R.id.back_btn_fav).setOnClickListener {
             else {
                 boilingPreference.setValue(0)
             }
-
         }
-
-        
         val meltingPreference = MeltingPreference(this)
         val meltingCheckBox:CheckBox = findViewById<CheckBox>(R.id.melting_check)
         meltingCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) { meltingPreference.setValue(1) }
             else { meltingPreference.setValue(0) }
         }
-
-        
         val atomicEmpiricalPreference = AtomicRadiusEmpPreference(this)
         val atomicEmpiricalBox:CheckBox = findViewById<CheckBox>(R.id.atomic_radius_empirical_check)
         atomicEmpiricalBox.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) { atomicEmpiricalPreference.setValue(1) }
             else { atomicEmpiricalPreference.setValue(0) }
         }
-
-        
         val atomicCalculatedPreference = AtomicRadiusCalPreference(this)
         val atomicCalculatedBox:CheckBox = findViewById<CheckBox>(R.id.atomic_radius_calculated_check)
         atomicCalculatedBox.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) { atomicCalculatedPreference.setValue(1) }
             else { atomicCalculatedPreference.setValue(0) }
         }
-
-        
         val covalentPreference = AtomicCovalentPreference(this)
         val covalentCheckBox:CheckBox = findViewById<CheckBox>(R.id.covalent_radius_check)
         covalentCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) { covalentPreference.setValue(1) }
             else { covalentPreference.setValue(0) }
         }
-
-        
         val vanPreference = AtomicVanPreference(this)
         val vanCheckBox:CheckBox = findViewById<CheckBox>(R.id.van_der_waals_radius_check)
         vanCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) { vanPreference.setValue(1) }
             else { vanPreference.setValue(0) }
         }
-
-        
         val specificHeatPreference = SpecificHeatPreference(this)
         var specificHeatValue = specificHeatPreference.getValue()
         var specificCheckBox:CheckBox = findViewById<CheckBox>(R.id.specific_heat_check)
@@ -367,8 +268,6 @@ findViewById<ImageButton>(R.id.back_btn_fav).setOnClickListener {
                 specificHeatPreference.setValue(0)
             }
         }
-
-        
         val fusionHeatPreference = FusionHeatPreference(this)
         var fusionHeatValue = fusionHeatPreference.getValue()
         var fusionCheckBox:CheckBox = findViewById<CheckBox>(R.id.fusion_heat_check)
@@ -380,8 +279,6 @@ findViewById<ImageButton>(R.id.back_btn_fav).setOnClickListener {
                 fusionHeatPreference.setValue(0)
             }
         }
-
-        
         val vaporizationHeatPreference = VaporizationHeatPreference(this)
         var vaporizationHeatValue = vaporizationHeatPreference.getValue()
         var vaporizationCheckBox:CheckBox = findViewById<CheckBox>(R.id.vaporization_heat_check)
@@ -393,8 +290,6 @@ findViewById<ImageButton>(R.id.back_btn_fav).setOnClickListener {
                 vaporizationHeatPreference.setValue(0)
             }
         }
-
-        
         val radioactivePreference = RadioactivePreference(this)
         var radioactiveValue = radioactivePreference.getValue()
         var radioactiveCheckBox:CheckBox = findViewById<CheckBox>(R.id.radioactive_check)
@@ -406,8 +301,6 @@ findViewById<ImageButton>(R.id.back_btn_fav).setOnClickListener {
                 radioactivePreference.setValue(0)
             }
         }
-
-        
         val resistivityPreference = ResistivityPreference(this)
         var resitivityValue = resistivityPreference.getValue()
         var resitivityCheckBox:CheckBox = findViewById<CheckBox>(R.id.resitivity_check)
@@ -420,9 +313,4 @@ findViewById<ImageButton>(R.id.back_btn_fav).setOnClickListener {
             }
         }
     }
-
 }
-
-
-
-

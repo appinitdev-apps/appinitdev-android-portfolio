@@ -1,48 +1,22 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class AdapterPlaylists(initial: List<PlaylistWithSongs>) : FastScrollAdapter<VerticalListViewHolder>() {
-
     private var onPlaylistClicked: ((Playlist) -> Unit)? = null
     private var onPlaylistLongClicked: ((PlaylistWithSongs, ImageView?) -> Unit)? = null
-
     private val listUpdateCallback = object : ListUpdateCallback {
         @SuppressLint("NotifyDataSetChanged")
         override fun onInserted(position: Int, count: Int) {
             if (count > 50) notifyDataSetChanged() else notifyItemRangeInserted(position, count)
         }
-
         @SuppressLint("NotifyDataSetChanged")
         override fun onRemoved(position: Int, count: Int) {
             if (count > 50) notifyDataSetChanged() else notifyItemRangeRemoved(position, count)
         }
-
         override fun onMoved(fromPosition: Int, toPosition: Int) = notifyItemMoved(fromPosition, toPosition)
-
         override fun onChanged(position: Int, count: Int, payload: Any?) =
             notifyItemRangeChanged(position, count, payload)
     }
-
     private val diffCallback = object : DiffUtil.ItemCallback<PlaylistWithSongs>() {
         override fun areItemsTheSame(oldItem: PlaylistWithSongs, newItem: PlaylistWithSongs): Boolean =
             oldItem.playlist.id == newItem.playlist.id
-
         override fun areContentsTheSame(oldItem: PlaylistWithSongs, newItem: PlaylistWithSongs): Boolean =
             oldItem.playlist.name == newItem.playlist.name &&
                     oldItem.playlist.description == newItem.playlist.description &&
@@ -50,27 +24,17 @@ class AdapterPlaylists(initial: List<PlaylistWithSongs>) : FastScrollAdapter<Ver
                     oldItem.playlist.isPinned == newItem.playlist.isPinned &&
                     oldItem.songs.size == newItem.songs.size
     }
-
     private val differ = AsyncListDiffer(
             listUpdateCallback,
             AsyncDifferConfig.Builder(diffCallback).build()
     )
-
     private val items: List<PlaylistWithSongs> get() = differ.currentList
-
-     
-
-
-
     var layoutMode: CommonPreferencesConstants.LayoutMode = PlaylistPreferences.getGridSize()
-
     init {
         setHasStableIds(true)
         differ.submitList(initial)
     }
-
     override fun getItemId(position: Int): Long = items[position].playlist.id
-
     override fun getItemViewType(position: Int): Int {
         return when {
             layoutMode.isLabel -> CommonPreferencesConstants.GRID_TYPE_LABEL
@@ -78,7 +42,6 @@ class AdapterPlaylists(initial: List<PlaylistWithSongs>) : FastScrollAdapter<Ver
             else -> CommonPreferencesConstants.GRID_TYPE_LIST
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         return when (viewType) {
             CommonPreferencesConstants.GRID_TYPE_GRID ->
@@ -89,7 +52,6 @@ class AdapterPlaylists(initial: List<PlaylistWithSongs>) : FastScrollAdapter<Ver
                 ListHolder(AdapterStyleListBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
-
     override fun onBind(holder: VerticalListViewHolder, position: Int, isLightBind: Boolean) {
         val item = items[position]
         when (holder) {
@@ -98,9 +60,7 @@ class AdapterPlaylists(initial: List<PlaylistWithSongs>) : FastScrollAdapter<Ver
             is LabelHolder -> holder.bind(item, isLightBind)
         }
     }
-
     override fun getItemCount(): Int = items.size
-
     override fun onViewRecycled(holder: VerticalListViewHolder) {
         holder.itemView.clearAnimation()
         super.onViewRecycled(holder)
@@ -110,35 +70,16 @@ class AdapterPlaylists(initial: List<PlaylistWithSongs>) : FastScrollAdapter<Ver
             is LabelHolder -> Unit
         }
     }
-
-     
-
-
-
-
     fun updatePlaylists(list: List<PlaylistWithSongs>) {
         differ.submitList(list)
     }
-
-     
     fun setOnPlaylistClicked(block: (Playlist) -> Unit) {
         onPlaylistClicked = block
     }
-
-     
     fun setOnPlaylistLongClicked(block: (PlaylistWithSongs, ImageView?) -> Unit) {
         onPlaylistLongClicked = block
     }
-
-     
     inner class ListHolder(val binding: AdapterStyleListBinding) : VerticalListViewHolder(binding.root) {
-
-         
-
-
-
-
-
         fun bind(item: PlaylistWithSongs, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(item.playlist.name)
             binding.title.addPlaylistTypeIcon(item.playlist)
@@ -155,16 +96,7 @@ class AdapterPlaylists(initial: List<PlaylistWithSongs>) : FastScrollAdapter<Ver
             }
         }
     }
-
-     
     inner class GridHolder(val binding: AdapterStyleGridBinding) : VerticalListViewHolder(binding.root) {
-
-         
-
-
-
-
-
         fun bind(item: PlaylistWithSongs, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(item.playlist.name)
             binding.title.addPlaylistTypeIcon(item.playlist)
@@ -181,16 +113,7 @@ class AdapterPlaylists(initial: List<PlaylistWithSongs>) : FastScrollAdapter<Ver
             }
         }
     }
-
-     
     inner class LabelHolder(val binding: AdapterStyleLabelsBinding) : VerticalListViewHolder(binding.root) {
-
-         
-
-
-
-
-
         fun bind(item: PlaylistWithSongs, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(item.playlist.name)
             binding.title.addPlaylistTypeIcon(item.playlist)

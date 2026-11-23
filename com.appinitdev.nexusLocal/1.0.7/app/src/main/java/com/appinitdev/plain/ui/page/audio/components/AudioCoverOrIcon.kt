@@ -1,8 +1,5 @@
-
-
 val audioCoverCache = ConcurrentHashMap<String, ImageBitmap>()
 val EMPTY_BITMAP = android.graphics.Bitmap.createBitmap(1, 1, android.graphics.Bitmap.Config.ARGB_8888).asImageBitmap()
-
 @Composable
 fun AudioCoverOrIcon(
     path: String?,
@@ -16,7 +13,6 @@ fun AudioCoverOrIcon(
         )
         return
     }
-
     var imageBitmap by remember(path) {
         mutableStateOf<ImageBitmap?>(
             audioCoverCache[path]?.takeIf { it != EMPTY_BITMAP }
@@ -25,7 +21,6 @@ fun AudioCoverOrIcon(
     var isLoading by remember(path) {
         mutableStateOf(!audioCoverCache.containsKey(path))
     }
-
     LaunchedEffect(path) {
         if (audioCoverCache.containsKey(path)) {
             val cached = audioCoverCache[path]
@@ -33,7 +28,6 @@ fun AudioCoverOrIcon(
             isLoading = false
             return@LaunchedEffect
         }
-
         isLoading = true
         val bitmap = withIO {
             try {
@@ -51,12 +45,10 @@ fun AudioCoverOrIcon(
                 null
             }
         }
-
         audioCoverCache[path] = bitmap ?: EMPTY_BITMAP
         imageBitmap = bitmap
         isLoading = false
     }
-
     if (imageBitmap != null) {
         Image(
             bitmap = imageBitmap!!,

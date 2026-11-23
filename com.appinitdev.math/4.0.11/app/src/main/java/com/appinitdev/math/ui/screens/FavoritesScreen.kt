@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
@@ -6,7 +5,6 @@ fun FavoritesScreen(
     onBack: () -> Unit
 ) {
     val favoriteTopics by viewModel.favoriteTopics.collectAsState()
-
     Scaffold(
         topBar = {
             TopAppBar(

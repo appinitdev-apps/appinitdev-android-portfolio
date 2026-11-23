@@ -1,4 +1,3 @@
-
 @Composable
 fun CameraControlsPanel(
     showCamera: Boolean,
@@ -10,12 +9,8 @@ fun CameraControlsPanel(
     onAlphaChange: (Float) -> Unit,
     currentColor: Color,
     onImageUriChange: (Uri) -> Unit,
-
     ) {
     var showAnimeDialog by remember { mutableStateOf(false) }
-
-
-
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface.copy(
@@ -35,7 +30,6 @@ fun CameraControlsPanel(
                 stringResource(R.string.c_mara_y_flash),
                 style = MaterialTheme.typography.labelMedium
             )
-            
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -54,7 +48,6 @@ fun CameraControlsPanel(
                     )
                 }
                 if (showCamera) {
-
                     IconButton(
                         onClick = onToggleFlash,
                         modifier = Modifier.size(72.dp)
@@ -67,10 +60,7 @@ fun CameraControlsPanel(
                         )
                     }
                 }
-
-                
                 GalleryPicker { uri -> onImageUriChange(uri) }
-
                 IconButton(onClick = {
                     showAnimeDialog = true
                 }, modifier = Modifier.size(72.dp)) {
@@ -89,9 +79,6 @@ fun CameraControlsPanel(
                 thickness = 2.dp,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
             )
-
-
-            
             imageUri?.let {
                 Text(
                     stringResource(R.string.opacidad_de_imagen),
@@ -107,9 +94,7 @@ fun CameraControlsPanel(
                         activeTrackColor = currentColor
                     )
                 )
-
             }
-
             if (showAnimeDialog) {
                 AnimeImageApp(
                     onImageSelected = { url ->
@@ -127,8 +112,6 @@ fun CameraControlsPanel(
         }
     }
 }
-
-
 @Composable
 fun GalleryPicker(onImageSelected: (Uri) -> Unit) {
     val launcher = rememberLauncherForActivityResult(

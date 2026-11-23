@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun WebSettingsPage(navController: NavHostController, webVM: WebConsoleViewModel = viewModel()) {
@@ -11,9 +10,7 @@ fun WebSettingsPage(navController: NavHostController, webVM: WebConsoleViewModel
         val shouldIgnoreOptimize = remember { mutableStateOf(!powerManager.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID)) }
         val systemAlertWindow = remember { mutableStateOf(Permission.SYSTEM_ALERT_WINDOW.can(context)) }
         val notificationListenerGranted = remember { mutableStateOf(Permission.NOTIFICATION_LISTENER.can(context)) }
-
         WebSettingsEffects(permissionList, shouldIgnoreOptimize, systemAlertWindow, notificationListenerGranted)
-
         PScaffold(topBar = {
             PTopAppBar(navController = navController, title = stringResource(Res.string.web_settings))
         }, content = { paddingValues ->
@@ -33,7 +30,6 @@ fun WebSettingsPage(navController: NavHostController, webVM: WebConsoleViewModel
                             modifier = Modifier.clickable { navController.navigate(Routing.HowToUse) },
                             icon = Res.drawable.info, title = stringResource(Res.string.how_to_use), showMore = true
                         )
-
                     }
                     VerticalSpace(dp = 16.dp)
                 }

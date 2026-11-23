@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
@@ -8,7 +7,6 @@ fun ProfileScreen(
     val comp by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.upload))
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
-
     val user = state.userData
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var editProfile by remember { mutableStateOf(false) }
@@ -18,24 +16,20 @@ fun ProfileScreen(
     var isLoading by remember { mutableStateOf(false) }
     var imgUri by remember { mutableStateOf<Uri?>(null) }
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
-    
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()){
         imgUri = it
     }
-
     val brush = Brush.linearGradient(
         listOf(
             Color(0xFF238CDD),
             Color(0xFF1952C4)
         )
     )
-
     fun compressImage(): ByteArray {
         val outputStream = ByteArrayOutputStream()
         bitmap?.compress(Bitmap.CompressFormat.JPEG, 70, outputStream)
         return outputStream.toByteArray()
     }
-
     fun uploadImage(){
         if (bitmap == null) {
             isLoading = false
@@ -53,7 +47,6 @@ fun ProfileScreen(
             isLoading = false
         }
     }
-
     BackHandler {
         if (editProfile || viewImage || imgUri != null) {
             editProfile = false
@@ -63,7 +56,6 @@ fun ProfileScreen(
             navController.popBackStack()
         }
     }
-
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             modifier = Modifier.fillMaxSize(),
@@ -71,10 +63,7 @@ fun ProfileScreen(
             contentDescription = null,
             contentScale = ContentScale.Crop,
         )
-        
-        
         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)))
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -82,7 +71,6 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(40.dp))
-            
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -103,9 +91,7 @@ fun ProfileScreen(
                     Icon(imageVector = Icons.Filled.Edit, contentDescription = null, tint = Color.White)
                 }
             }
-
             Spacer(modifier = Modifier.height(20.dp))
-
             Box(contentAlignment = Alignment.BottomEnd) {
                 Box(
                     modifier = Modifier
@@ -128,7 +114,6 @@ fun ProfileScreen(
                             .clip(CircleShape)
                             .clickable { if (!user?.ppurl.isNullOrEmpty()) viewImage = true }
                     )
-                    
                     if (isLoading) {
                         Box(
                             modifier = Modifier
@@ -140,7 +125,6 @@ fun ProfileScreen(
                         }
                     }
                 }
-                
                 IconButton(
                     onClick = { launcher.launch("image/*") },
                     modifier = Modifier
@@ -151,9 +135,7 @@ fun ProfileScreen(
                     Icon(imageVector = Icons.Filled.CameraAlt, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
                 }
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = user?.username.orEmpty(),
@@ -171,13 +153,11 @@ fun ProfileScreen(
                     )
                 }
             }
-
             Text(
                 text = user?.email.orEmpty(),
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.Gray
             )
-
             if (user?.pref?.isVerified != true) {
                 Spacer(modifier = Modifier.height(12.dp))
                 Surface(
@@ -196,10 +176,7 @@ fun ProfileScreen(
                     }
                 }
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
-            
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
                     onClick = { navController.navigate("store") },
@@ -213,7 +190,6 @@ fun ProfileScreen(
                         Text(text = stringResource(R.string.monedas_formato, user?.balance ?: 0), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                     }
                 }
-                
                 if (user?.isVip == true) {
                     Spacer(Modifier.width(12.dp))
                     Surface(
@@ -229,9 +205,7 @@ fun ProfileScreen(
                     }
                 }
             }
-
             Spacer(modifier = Modifier.height(24.dp))
-
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -250,9 +224,7 @@ fun ProfileScreen(
                 ) {
                     InfoRow(icon = Icons.Default.Cake, text = user?.age ?: stringResource(R.string.na))
                     InfoRow(icon = Icons.Default.Person, text = user?.gender ?: stringResource(R.string.na))
-                    
                     Spacer(modifier = Modifier.height(16.dp))
-                    
                     Text(
                         text = if (!user?.bio.isNullOrEmpty()) user?.bio!! else stringResource(R.string.sin_biografia2),
                         style = MaterialTheme.typography.bodyLarge,
@@ -263,9 +235,7 @@ fun ProfileScreen(
                             .background(Color.White.copy(alpha = 0.05f), RoundedCornerShape(16.dp))
                             .padding(16.dp)
                     )
-                    
                     Spacer(modifier = Modifier.height(16.dp))
-                    
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
@@ -310,36 +280,18 @@ fun ProfileScreen(
                     }
                 }
             }
-
             Spacer(modifier = Modifier.height(32.dp))
-
-            
-
-
-
-
-
-
-
-
-
-
-
             Spacer(modifier = Modifier.height(32.dp))
-            
             TextButton(
                 onClick = { showDeleteAccountDialog = true },
                 modifier = Modifier.padding(bottom = 16.dp)
             ) {
                 Text(text = stringResource(R.string.eliminar_mi_cuenta), color = Color(0xFFFF5252), style = MaterialTheme.typography.labelLarge)
             }
-
             AdBanner()
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
-
-    
     imgUri?.let { uri ->
         StoryPreview(
             uri = uri, 
@@ -367,11 +319,9 @@ fun ProfileScreen(
             }
         )
     }
-
     AnimatedVisibility(viewImage) {
         View(imageUrl = user?.ppurl.toString(), hideDialog = { viewImage = false })
     }
-
     AnimatedVisibility(visible = editProfile) {
         ProfileEditDialog(userData = user ?: UserData(), onDismiss = { editProfile = false }, onSave = { n, b, a, g, i, f, t, ol ->
             val updatedUser = user?.copy(
@@ -400,7 +350,6 @@ fun ProfileScreen(
             editProfile = false
         })
     }
-
     if (showDeleteAccountDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteAccountDialog = false },
@@ -429,7 +378,6 @@ fun ProfileScreen(
             textContentColor = Color.LightGray
         )
     }
-
     if (showVerificationDialog) {
         com.appinitdev.chatok.Dialogs.VerificationRequestDialog(
             state = state,

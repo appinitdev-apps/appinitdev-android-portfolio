@@ -1,4 +1,3 @@
-
 @OptIn(UnstableApi::class)
 @Parcelize
 @Serializable
@@ -8,7 +7,6 @@ data class DPlaylistAudio(
     val artist: String,
     val duration: Long,
 ) : Parcelable, java.io.Serializable {
-
     fun toMediaItem(): MediaItem {
         val mediaMetadata = MediaMetadata.Builder()
             .setTitle(title)
@@ -16,7 +14,6 @@ data class DPlaylistAudio(
             .setArtist(artist)
             .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
             .build()
-
         return MediaItem.Builder()
             .setUri(path.pathToUri())
             .setMediaId(path)
@@ -24,11 +21,9 @@ data class DPlaylistAudio(
             .setMediaMetadata(mediaMetadata)
             .build()
     }
-
     fun getSubtitle(): String {
         return listOf(artist, duration.formatDuration()).filter { it.isNotEmpty() }.joinToString(" · ")
     }
-
     companion object {
         fun fromPath(
             context: Context,
@@ -38,7 +33,6 @@ data class DPlaylistAudio(
             var title = path.getFilenameWithoutExtensionFromPath()
             var duration = 0L
             var artist = LocaleHelper.getString(Res.string.unknown)
-
             try {
                 retriever.setDataSource(context, path.pathToUri())
                 val keyTitle = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE) ?: ""
@@ -56,7 +50,6 @@ data class DPlaylistAudio(
             }
             return DPlaylistAudio(title, path, artist, duration / 1000)
         }
-
         private const val serialVersionUID = -11L
     }
 }

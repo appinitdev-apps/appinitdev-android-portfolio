@@ -1,11 +1,7 @@
-
 object BackupRestoreManager {
-
     fun exportBackupJson(context: Context): String {
         val dbHelper = BmiDatabaseHelper(context)
         val root = JSONObject()
-
-        
         val historyArray = JSONArray()
         val historyRecords = dbHelper.getAllHistoryRecords()
         for (rec in historyRecords) {
@@ -23,8 +19,6 @@ object BackupRestoreManager {
             historyArray.put(obj)
         }
         root.put("history", historyArray)
-
-        
         val membersArray = JSONArray()
         val members = dbHelper.getAllFamilyMembers()
         for (m in members) {
@@ -39,8 +33,6 @@ object BackupRestoreManager {
             membersArray.put(obj)
         }
         root.put("members", membersArray)
-
-        
         val growthArray = JSONArray()
         for (m in members) {
             val records = dbHelper.getGrowthRecordsForMember(m.id)
@@ -58,15 +50,12 @@ object BackupRestoreManager {
             }
         }
         root.put("growth_records", growthArray)
-
         return root.toString(2)
     }
-
     fun importBackupJson(context: Context, jsonString: String): Boolean {
         return try {
             val dbHelper = BmiDatabaseHelper(context)
             val root = JSONObject(jsonString)
-
             if (root.has("history")) {
                 val historyArray = root.getJSONArray("history")
                 for (i in 0 until historyArray.length()) {
@@ -86,7 +75,6 @@ object BackupRestoreManager {
                     )
                 }
             }
-
             if (root.has("members")) {
                 val membersArray = root.getJSONArray("members")
                 for (i in 0 until membersArray.length()) {
@@ -103,7 +91,6 @@ object BackupRestoreManager {
                     )
                 }
             }
-
             if (root.has("growth_records")) {
                 val growthArray = root.getJSONArray("growth_records")
                 for (i in 0 until growthArray.length()) {
@@ -121,7 +108,6 @@ object BackupRestoreManager {
                     )
                 }
             }
-
             true
         } catch (e: Exception) {
             e.printStackTrace()

@@ -1,4 +1,3 @@
-
 @SuppressLint("ResourceType")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -18,7 +17,6 @@ fun <T : IData> MediaFilesSelectModeBottomActions(
     var removeFromTags by remember {
         mutableStateOf(false)
     }
-
     if (showSelectTagsDialog) {
         val selectedIds = dragSelectState.selectedIds
         val selectedItems = getCollectableItems().filter { selectedIds.contains(it.id) }
@@ -27,7 +25,6 @@ fun <T : IData> MediaFilesSelectModeBottomActions(
             dragSelectState.exitSelectMode()
         }
     }
-
     PBottomAppBar {
         BottomActionButtons {
             IconTextSmallButtonLabel {

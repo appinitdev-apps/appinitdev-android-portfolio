@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ViewTextContentBottomSheet(
@@ -9,7 +8,6 @@ fun ViewTextContentBottomSheet(
     val onDismiss = {
         textFileVM.showMoreActions.value = false
     }
-
     PModalBottomSheet(
         onDismissRequest = {
             onDismiss()
@@ -47,12 +45,9 @@ fun ViewTextContentBottomSheet(
                     })
                 }
             }
-
             item {
                 BottomSpace()
             }
         }
     }
 }
-
-

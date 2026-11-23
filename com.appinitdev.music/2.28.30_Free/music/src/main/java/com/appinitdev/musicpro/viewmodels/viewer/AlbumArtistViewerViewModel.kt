@@ -1,42 +1,21 @@
-
- 
-
-
-
-
-
-
 @HiltViewModel(assistedFactory = AlbumArtistViewerViewModel.Factory::class)
 class AlbumArtistViewerViewModel @AssistedInject constructor(
         @Assisted private val albumArtist: Artist,
         private val audioRepository: AudioRepository,
         private val musicBrainzRepository: MusicBrainzRepository
 ) : ViewModel() {
-
     private val _data = MutableStateFlow<PageData?>(null)
     val data: StateFlow<PageData?> = _data.asStateFlow()
-
     private val _artistInfo = MutableStateFlow<MusicBrainzArtistInfo?>(null)
-
-     
-
-
-
-
     val artistInfo: StateFlow<MusicBrainzArtistInfo?> = _artistInfo.asStateFlow()
-
-     
     private var rawSongs: List<Audio> = emptyList()
-
     init {
         loadAlbumArtistData()
         loadArtistInfo()
     }
-
     private fun loadAlbumArtistData() {
         viewModelScope.launch {
             val startTime = System.currentTimeMillis()
-
             audioRepository.getAlbumArtistPageData(albumArtist)
                 .catch { exception ->
                     Log.e(TAG, "Error loading album artist data", exception)
@@ -50,17 +29,11 @@ class AlbumArtistViewerViewModel @AssistedInject constructor(
                     Log.d(TAG, "  - Albums: ${pageData.albums.size}")
                     Log.d(TAG, "  - Genres: ${pageData.genres.size}")
                     Log.d(TAG, "  - Load time: $loadTime ms")
-
                     rawSongs = pageData.songs
                     _data.value = pageData.copy(songs = rawSongs.sortedForArtistPage())
                 }
         }
     }
-
-     
-
-
-
     fun resort() {
         val current = _data.value ?: return
         viewModelScope.launch(Dispatchers.Default) {
@@ -68,12 +41,6 @@ class AlbumArtistViewerViewModel @AssistedInject constructor(
             Log.d(TAG, "resort: re-sorted ${rawSongs.size} songs for album artist page")
         }
     }
-
-     
-
-
-
-
     private fun loadArtistInfo() {
         if (!LibraryPreferences.isMusicBrainzEnabled()) {
             Log.d(TAG, "MusicBrainz is disabled, skipping fetch for: ${albumArtist.name}")
@@ -90,12 +57,10 @@ class AlbumArtistViewerViewModel @AssistedInject constructor(
             }
         }
     }
-
     @AssistedFactory
     interface Factory {
         fun create(albumArtist: Artist): AlbumArtistViewerViewModel
     }
-
     companion object {
         private const val TAG = "AlbumArtistViewerViewModel"
     }

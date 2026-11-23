@@ -1,12 +1,8 @@
-
 class GoodtimeWidgetProvider : AppWidgetProvider(), KoinComponent {
-
     private val timerManager: TimerManager by inject()
     private val timeProvider: TimeProvider by inject()
-
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-
         when (intent.action) {
             ACTION_TOGGLE_TIMER -> {
                 val data = timerManager.timerData.value
@@ -26,7 +22,6 @@ class GoodtimeWidgetProvider : AppWidgetProvider(), KoinComponent {
             }
         }
     }
-
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -36,7 +31,6 @@ class GoodtimeWidgetProvider : AppWidgetProvider(), KoinComponent {
             updateAppWidget(context, appWidgetManager, appWidgetId)
         }
     }
-
     private fun updateAllWidgets(context: Context) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val componentName = ComponentName(context, GoodtimeWidgetProvider::class.java)
@@ -45,15 +39,12 @@ class GoodtimeWidgetProvider : AppWidgetProvider(), KoinComponent {
             updateAppWidget(context, appWidgetManager, appWidgetId)
         }
     }
-
     private fun updateAppWidget(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int
     ) {
         val views = RemoteViews(context.packageName, R.layout.widget_goodtime)
-
-        
         val mainIntent = Intent(context, MainActivity::class.java)
         val mainPendingIntent = PendingIntent.getActivity(
             context,
@@ -62,8 +53,6 @@ class GoodtimeWidgetProvider : AppWidgetProvider(), KoinComponent {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         views.setOnClickPendingIntent(R.id.widget_root, mainPendingIntent)
-
-        
         val toggleIntent = Intent(context, GoodtimeWidgetProvider::class.java).apply {
             action = ACTION_TOGGLE_TIMER
         }
@@ -74,8 +63,6 @@ class GoodtimeWidgetProvider : AppWidgetProvider(), KoinComponent {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         views.setOnClickPendingIntent(R.id.widget_btn_toggle, togglePendingIntent)
-
-        
         val resetIntent = Intent(context, GoodtimeWidgetProvider::class.java).apply {
             action = ACTION_RESET_TIMER
         }
@@ -86,19 +73,16 @@ class GoodtimeWidgetProvider : AppWidgetProvider(), KoinComponent {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         views.setOnClickPendingIntent(R.id.widget_btn_reset, resetPendingIntent)
-
         try {
             val data = timerManager.timerData.value
             val labelName = data.getLabelName().ifBlank { "Focus" }
             views.setTextViewText(R.id.widget_title, labelName)
-
             val remainingMs = data.getBaseTime(timeProvider)
             val remainingSec = (remainingMs / 1000).coerceAtLeast(0)
             val mins = remainingSec / 60
             val secs = remainingSec % 60
             val timeText = String.format(Locale.getDefault(), "%02d:%02d", mins, secs)
             views.setTextViewText(R.id.widget_timer_text, timeText)
-
             when (data.state) {
                 TimerState.RUNNING -> {
                     views.setTextViewText(R.id.widget_status_text, "Running")
@@ -119,15 +103,12 @@ class GoodtimeWidgetProvider : AppWidgetProvider(), KoinComponent {
             views.setTextViewText(R.id.widget_status_text, "Ready")
             views.setTextViewText(R.id.widget_btn_toggle, "Start")
         }
-
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
-
     companion object {
         const val ACTION_TOGGLE_TIMER = "com.apps.adrcotfas.goodtime.main.ACTION_TOGGLE_TIMER"
         const val ACTION_RESET_TIMER = "com.apps.adrcotfas.goodtime.main.ACTION_RESET_TIMER"
         const val ACTION_UPDATE_WIDGET = "com.apps.adrcotfas.goodtime.main.ACTION_UPDATE_WIDGET"
-
         fun pushWidgetUpdate(context: Context) {
             val intent = Intent(context, GoodtimeWidgetProvider::class.java).apply {
                 action = ACTION_UPDATE_WIDGET

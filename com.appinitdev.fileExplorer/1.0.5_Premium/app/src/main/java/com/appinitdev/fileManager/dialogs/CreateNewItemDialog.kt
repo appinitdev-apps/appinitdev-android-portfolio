@@ -1,7 +1,5 @@
-
 class CreateNewItemDialog(val activity: SimpleActivity, val path: String, val callback: (success: Boolean) -> Unit) {
     private val binding = DialogCreateNewBinding.inflate(activity.layoutInflater)
-
     init {
         activity.getAlertDialogBuilder()
                 .setPositiveButton(C.string.ok, null)
@@ -19,7 +17,6 @@ class CreateNewItemDialog(val activity: SimpleActivity, val path: String, val ca
                                 activity.toast(C.string.name_taken)
                                 return@OnClickListener
                             }
-
                             if (binding.dialogRadioGroup.checkedRadioButtonId == R.id.dialog_radio_directory) {
                                 createDirectory(newPath, alertDialog) {
                                     callback(it)
@@ -36,14 +33,12 @@ class CreateNewItemDialog(val activity: SimpleActivity, val path: String, val ca
                 }
             }
     }
-
     private fun createDirectory(path: String, alertDialog: AlertDialog, callback: (Boolean) -> Unit) {
         when {
             activity.needsStupidWritePermissions(path) -> activity.handleSAFDialog(path) {
                 if (!it) {
                     return@handleSAFDialog
                 }
-
                 val documentFile = activity.getDocumentFile(path.getParentPath())
                 if (documentFile == null) {
                     val error = String.format(activity.getString(C.string.could_not_create_folder), path)
@@ -54,7 +49,6 @@ class CreateNewItemDialog(val activity: SimpleActivity, val path: String, val ca
                 documentFile.createDirectory(path.getFilenameFromPath())
                 success(alertDialog)
             }
-
             isRPlus() || path.startsWith(activity.internalStoragePath, true) -> {
                 if (activity.isRestrictedSAFOnlyRoot(path)) {
                     activity.handleAndroidSAFDialog(path) {
@@ -76,7 +70,6 @@ class CreateNewItemDialog(val activity: SimpleActivity, val path: String, val ca
                     }
                 }
             }
-
             else -> {
                 RootHelpers(activity).createFileFolder(path, false) {
                     if (it) {
@@ -88,7 +81,6 @@ class CreateNewItemDialog(val activity: SimpleActivity, val path: String, val ca
             }
         }
     }
-
     private fun createFile(path: String, alertDialog: AlertDialog, callback: (Boolean) -> Unit) {
         try {
             when {
@@ -107,13 +99,11 @@ class CreateNewItemDialog(val activity: SimpleActivity, val path: String, val ca
                         }
                     }
                 }
-
                 activity.needsStupidWritePermissions(path) -> {
                     activity.handleSAFDialog(path) {
                         if (!it) {
                             return@handleSAFDialog
                         }
-
                         val documentFile = activity.getDocumentFile(path.getParentPath())
                         if (documentFile == null) {
                             val error = String.format(activity.getString(C.string.could_not_create_file), path)
@@ -125,13 +115,11 @@ class CreateNewItemDialog(val activity: SimpleActivity, val path: String, val ca
                         success(alertDialog)
                     }
                 }
-
                 isRPlus() || path.startsWith(activity.internalStoragePath, true) -> {
                     if (File(path).createNewFile()) {
                         success(alertDialog)
                     }
                 }
-
                 else -> {
                     RootHelpers(activity).createFileFolder(path, true) {
                         if (it) {
@@ -147,7 +135,6 @@ class CreateNewItemDialog(val activity: SimpleActivity, val path: String, val ca
             callback(false)
         }
     }
-
     private fun success(alertDialog: AlertDialog) {
         alertDialog.dismiss()
         callback(true)

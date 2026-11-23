@@ -1,4 +1,3 @@
-
 data class UnitConversionFavorite(
     val category: String,
     val fromUnit: String,

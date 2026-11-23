@@ -1,4 +1,3 @@
-
 @Parcelize
 data class GameResultItem(
     val question: String,

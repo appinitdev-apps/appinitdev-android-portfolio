@@ -1,97 +1,70 @@
-
 class BillingManager(
     private val activity: Activity,
     private val scope: CoroutineScope,
     private val listener: Listener
 ) : BillingClientStateListener {
-
     interface Listener {
         fun onProductsUpdated()
         fun onPurchasesUpdated()
         fun onPurchaseCompleted(productId: String)
         fun onError(message: String)
     }
-
     companion object {
         const val PRO_VERSION_ID = "pro_version"
         const val PRO_PLUS_VERSION_ID = "pro_version_plus"
         const val PRO_PLUS_UPGRADE_ID = "pro_version_plus_upgrade"
     }
-
     private val productIds = listOf(PRO_VERSION_ID, PRO_PLUS_VERSION_ID, PRO_PLUS_UPGRADE_ID)
-
     private var billingClient: BillingClient? = null
     private val productDetailMap = mutableMapOf<String, ProductDetails>()
-
     @Volatile
     private var ownsProVersion = false
-
     @Volatile
     private var ownsProPlusVersion = false
-
     fun initialize() {
         val pendingPurchasesParams = PendingPurchasesParams.newBuilder()
             .enableOneTimeProducts()
             .build()
-
         billingClient = BillingClient.newBuilder(activity)
             .enablePendingPurchases(pendingPurchasesParams)
             .setListener(purchasesUpdatedListener)
             .build()
-
         billingClient?.startConnection(this)
     }
-
     fun endConnection() {
         billingClient?.endConnection()
     }
-
-    
     fun getProductDetail(productId: String): ProductDetails? = productDetailMap[productId]
     fun isOwnsProVersion(): Boolean = ownsProVersion
     fun isOwnsProPlusVersion(): Boolean = ownsProPlusVersion
     fun isReady(): Boolean = billingClient?.isReady == true
-
-    
     override fun onBillingServiceDisconnected() {
-        
         billingClient?.startConnection(this)
     }
-
     override fun onBillingSetupFinished(billingResult: BillingResult) {
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-            
             queryProducts()
             queryPurchases()
         } else {
-            
         }
     }
-
-    
     private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
             if (purchases?.isNotEmpty() == true) {
                 for (purchase in purchases) {
-                    
                     scope.launch {
                         handlePurchase(purchase)
                     }
                 }
             }
         } else {
-            
-            
         }
     }
-
-    
     private fun queryProducts() {
         scope.launch {
             queryProductsAsync(BillingClient.ProductType.INAPP, productIds)
         }
     }
-
     private suspend fun queryProductsAsync(productType: String, products: List<String>) {
         val productListForQuery = products.map { productId ->
             QueryProductDetailsParams.Product.newBuilder()
@@ -102,11 +75,9 @@ class BillingManager(
         val queryProductDetailsParams = QueryProductDetailsParams.newBuilder()
             .setProductList(productListForQuery)
             .build()
-
         val productDetailsResult = withContext(Dispatchers.IO) {
             billingClient?.queryProductDetails(queryProductDetailsParams)
         }
-
         if (productDetailsResult?.billingResult?.responseCode == BillingClient.BillingResponseCode.OK) {
             productDetailsResult.productDetailsList?.forEach { productDetails ->
                 productDetailMap[productDetails.productId] = productDetails
@@ -115,19 +86,15 @@ class BillingManager(
                 listener.onProductsUpdated()
             }
         } else {
-           
         }
     }
-
     fun queryPurchases() {
         queryPurchases(BillingClient.ProductType.INAPP)
     }
-
     private fun queryPurchases(type: String) {
         val queryPurchaseParams = QueryPurchasesParams.newBuilder()
             .setProductType(type)
             .build()
-
         billingClient?.queryPurchasesAsync(queryPurchaseParams) { billingResult, purchasesList ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 ownsProVersion = false
@@ -140,7 +107,6 @@ class BillingManager(
                             if (productId == PRO_VERSION_ID) ownsProVersion = true
                             if (productId == PRO_PLUS_VERSION_ID || productId == PRO_PLUS_UPGRADE_ID) ownsProPlusVersion = true
                         } catch (e: Exception) {
-                            
                         }
                     }
                 }
@@ -148,12 +114,9 @@ class BillingManager(
                     listener.onPurchasesUpdated()
                 }
             } else {
-               
             }
         }
     }
-
-    
     private suspend fun handlePurchase(purchase: Purchase) {
         val productId = try {
             val jsonObject = JSONObject(purchase.originalJson)
@@ -161,34 +124,28 @@ class BillingManager(
         } catch (e: Exception) {
             ""
         }
-
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED && !purchase.isAcknowledged) {
             val params = AcknowledgePurchaseParams.newBuilder()
                 .setPurchaseToken(purchase.purchaseToken)
                 .build()
-
             withContext(Dispatchers.IO) {
                 billingClient?.acknowledgePurchase(params) { result ->
                     if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-                        
                         Handler(Looper.getMainLooper()).post {
                             updateOwnershipFlags(productId)
                             listener.onPurchaseCompleted(productId)
                         }
                     } else {
-                      
                     }
                 }
             }
         } else {
-            
             Handler(Looper.getMainLooper()).post {
                 updateOwnershipFlags(productId)
                 listener.onPurchaseCompleted(productId)
             }
         }
     }
-
     private fun updateOwnershipFlags(productId: String) {
         when (productId) {
             PRO_VERSION_ID -> {
@@ -201,14 +158,10 @@ class BillingManager(
             }
         }
     }
-
-    
     fun launchPurchase(productDetails: ProductDetails) {
         if (billingClient?.isReady != true) {
-            
             return
         }
-
         val billingFlowParams = BillingFlowParams.newBuilder()
             .setProductDetailsParamsList(
                 listOf(
@@ -218,7 +171,6 @@ class BillingManager(
                 )
             )
             .build()
-
         billingClient?.launchBillingFlow(activity, billingFlowParams)
     }
 }

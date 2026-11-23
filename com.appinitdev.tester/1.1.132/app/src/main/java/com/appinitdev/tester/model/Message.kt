@@ -1,4 +1,3 @@
-
 @Keep
 data class Message(
     val id: String = "",

@@ -1,17 +1,12 @@
-
 @Composable
 fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel) {
     val profile by viewModel.userProfile.collectAsState()
-
     var devName by remember(profile) { mutableStateOf(profile?.devName ?: "") }
     var bio by remember(profile) { mutableStateOf(profile?.bio ?: "") }
     var contacto by remember(profile) { mutableStateOf(profile?.contacto ?: "") }
     var web by remember(profile) { mutableStateOf(profile?.web ?: "") }
-
-    
     val isEmailValid = contacto.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(contacto).matches()
     val isFormValid = devName.isNotBlank() && isEmailValid
-
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
@@ -28,8 +23,6 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel) {
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.primary
             )
-
-            
             OutlinedTextField(
                 value = devName,
                 onValueChange = { devName = it },
@@ -41,8 +34,6 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel) {
                 supportingText = { if (devName.isBlank()) Text(stringResource(R.string.nombre_requerido)) },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
             )
-
-            
             OutlinedTextField(
                 value = contacto,
                 onValueChange = { contacto = it },
@@ -64,8 +55,6 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel) {
                     imeAction = ImeAction.Next
                 )
             )
-
-            
             OutlinedTextField(
                 value = bio,
                 onValueChange = { bio = it },
@@ -76,8 +65,6 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel) {
                 minLines = 3,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
             )
-
-            
             OutlinedTextField(
                 value = web,
                 onValueChange = { web = it },
@@ -90,7 +77,6 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel) {
                     imeAction = ImeAction.Done
                 )
             )
-
             Box(
                 modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                 contentAlignment = Alignment.Center
@@ -100,7 +86,6 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel) {
                         val currentProfile = profile ?: com.appinitdev.tester.model.UserProfile(
                             uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
                         )
-
                         val updated = currentProfile.copy(
                             devName = devName.trim(),
                             bio = bio.trim(),
@@ -108,7 +93,6 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel) {
                             web = web.trim(),
                             perfilCompletado = true
                         )
-
                         viewModel.saveProfile(updated) {
                             navController.navigate("home") {
                                 popUpTo("edit_profile") { inclusive = true }

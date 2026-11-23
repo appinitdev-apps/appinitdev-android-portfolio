@@ -1,7 +1,4 @@
-
- 
 object DlnaXmlTemplates {
-
     fun deviceDescription(ip: String, port: Int, uuid: String): String = """<?xml version="1.0"?>
 <root xmlns="urn:schemas-upnp-org:device-1-0">
   <specVersion><major>1</major><minor>0</minor></specVersion>
@@ -31,7 +28,6 @@ object DlnaXmlTemplates {
     </serviceList>
   </device>
 </root>"""
-
     val scpdXml: String = """<?xml version="1.0"?>
 <scpd xmlns="urn:schemas-upnp-org:service-1-0">
   <specVersion><major>1</major><minor>0</minor></specVersion>

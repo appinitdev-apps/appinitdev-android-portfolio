@@ -1,17 +1,13 @@
-
 @HiltViewModel
 class ArtistsViewModel @Inject constructor(
         application: Application,
         private val audioRepository: AudioRepository
 ) : WrappedViewModel(application) {
-
     private val _artists = MutableStateFlow<MutableList<Artist>>(mutableListOf())
     val artists: StateFlow<MutableList<Artist>> = _artists.asStateFlow()
-
     init {
         loadData()
     }
-
     private fun loadData() {
         viewModelScope.launch {
             audioRepository.getAllArtistsWithAggregation()
@@ -29,12 +25,10 @@ class ArtistsViewModel @Inject constructor(
                         Log.e(TAG, "Error casting sorted artists to MutableList", e)
                         _artists.value = sortedArtists.toMutableList()
                     }
-
                     Log.d(TAG, "loadData: ${sortedArtists.size} artists loaded")
                 }
         }
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -46,7 +40,6 @@ class ArtistsViewModel @Inject constructor(
             }
         }
     }
-
     companion object {
         private const val TAG = "ArtistsViewModel"
     }

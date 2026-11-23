@@ -1,35 +1,25 @@
-
 @Composable
 fun RegisterScreen(navController: NavController, viewModel: AuthViewModel) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-
     val uiState by viewModel.uiState.collectAsState()
     var passwordVisible by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
     val EmptyClipboardManager = object : ClipboardManager {
         override fun setText(annotatedString: AnnotatedString) {
-            
         }
         override fun getText(): AnnotatedString? {
-            
             return null
         }
     }
-    
     LaunchedEffect(uiState) {
         if (uiState is AuthUiState.RegisterSuccess) {
-            
             navController.navigate("login") {
-                
                 popUpTo("register") { inclusive = true }
             }
-            
         }
     }
-
-    
     LaunchedEffect(uiState) {
         if (uiState is AuthUiState.Success) {
             navController.navigate("home") {
@@ -37,7 +27,6 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel) {
             }
         }
     }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -59,7 +48,6 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(32.dp))
-
             Surface(
                 modifier = Modifier.size(80.dp),
                 shape = RoundedCornerShape(20.dp),
@@ -75,18 +63,14 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel) {
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Text(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Black,
                 color = MaterialTheme.colorScheme.tertiary
             )
-
             Spacer(modifier = Modifier.height(32.dp))
-
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(28.dp),
@@ -107,9 +91,7 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel) {
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
                     )
-
                     Spacer(modifier = Modifier.height(24.dp))
-
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
@@ -119,9 +101,7 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel) {
                         singleLine = true,
                         leadingIcon = { Icon(androidx.compose.material.icons.Icons.Default.Email, null) }
                     )
-
                     Spacer(modifier = Modifier.height(12.dp))
-
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
@@ -140,9 +120,7 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel) {
                             }
                         }
                     )
-
                     Spacer(modifier = Modifier.height(12.dp))
-
                     OutlinedTextField(
                         value = confirmPassword,
                         onValueChange = { confirmPassword = it },
@@ -153,9 +131,7 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel) {
                         singleLine = true,
                         leadingIcon = { Icon(androidx.compose.material.icons.Icons.Default.LockClock, null) }
                     )
-
                     Spacer(modifier = Modifier.height(32.dp))
-
                     if (uiState is AuthUiState.Loading) {
                         CircularProgressIndicator(modifier = Modifier.padding(8.dp))
                     } else {
@@ -178,9 +154,7 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel) {
                             )
                         }
                     }
-
                     Spacer(modifier = Modifier.height(16.dp))
-
                     TextButton(onClick = { navController.popBackStack() }) {
                         Text(
                             text = stringResource(R.string.ya_tengo_cuenta_volver_al_login),
@@ -190,7 +164,6 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel) {
                     }
                 }
             }
-
             if (uiState is AuthUiState.Error) {
                 Surface(
                     color = MaterialTheme.colorScheme.errorContainer,
@@ -205,7 +178,6 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel) {
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(32.dp))
         }
     }

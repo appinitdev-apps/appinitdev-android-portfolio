@@ -1,30 +1,22 @@
-
 class Preference {
     @StringRes
     var title: Int
-
     var summary: Any = ""
-
     @DrawableRes
     var icon: Int = 0
     var type: PreferenceType?
-
     var valueProvider: Supplier<Any?>? = null
-
     var onPreferenceAction: ((View, (Any?) -> Unit) -> Unit)? = null
-
     constructor(@StringRes title: Int, summary: Any, @DrawableRes icon: Int, type: PreferenceType?) {
         this.title = title
         this.summary = summary
         this.icon = icon
         this.type = type
     }
-
     constructor(@StringRes title: Int, type: PreferenceType?) {
         this.title = title
         this.type = type
     }
-
     constructor(@StringRes title: Int,
                 summary: Any,
                 @DrawableRes icon: Int,
@@ -38,7 +30,6 @@ class Preference {
         this.valueProvider = valueProvider
         this.onPreferenceAction = onPreferenceAction
     }
-
     constructor(@StringRes title: Int,
                 @StringRes summary: Any,
                 @DrawableRes icon: Int,
@@ -50,18 +41,12 @@ class Preference {
         this.type = type
         this.onPreferenceAction = onPreferenceAction
     }
-
     val valueAsStringProvider: String?
         get() = valueProvider?.get() as String?
-
     val valueAsSeekbarStateProvider: SeekbarState?
         get() = valueProvider?.get() as SeekbarState?
-
     val valueAsBooleanProvider: Boolean?
         get() = valueProvider?.get() as Boolean?
-
     val valueAsButtonGroupStateProvider: ButtonGroupState?
         get() = valueProvider?.get() as ButtonGroupState?
 }
-
-

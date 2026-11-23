@@ -1,9 +1,7 @@
-
 class PdfDocumentAdapter(
     private val context: Context,
     private val file: File
 ) : PrintDocumentAdapter() {
-
     override fun onLayout(
         oldAttributes: PrintAttributes?,
         newAttributes: PrintAttributes?,
@@ -15,13 +13,11 @@ class PdfDocumentAdapter(
             layoutResultCallback?.onLayoutCancelled()
             return
         }
-
         val info = PrintDocumentInfo.Builder(file.name)
             .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
             .build()
         layoutResultCallback?.onLayoutFinished(info, true)
     }
-
     override fun onWrite(
         pages: Array<out android.print.PageRange>?,
         destination: ParcelFileDescriptor?,

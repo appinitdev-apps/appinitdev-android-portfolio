@@ -1,67 +1,44 @@
-
- 
-
-
-
-
 class Albums : BasePanelFragment() {
-
     private lateinit var binding: FragmentAlbumsBinding
     private lateinit var headerBinding: HeaderAlbumsBinding
-
     private var adapterAlbums: AdapterAlbums? = null
-
     private val albumsViewModel: AlbumsViewModel by viewModels({ requireActivity() })
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentAlbumsBinding.inflate(inflater, container, false)
         headerBinding = HeaderAlbumsBinding.inflate(inflater, container, false)
-
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.header.setContentView(headerBinding.root)
         binding.header.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
         binding.recyclerView.attachSlideFastScroller()
         binding.recyclerView.requireAttachedMiniPlayer()
-
         binding.recyclerView.setupGridLayoutManager(AlbumPreferences.getGridSize().spanCount)
-
         setupClickListeners()
-
         adapterAlbums?.let { binding.recyclerView.adapter = it }
-
         albumsViewModel.albums.collectListWhenStarted({ adapterAlbums != null }) { albums ->
             updateAlbumsList(albums)
         }
     }
-
     override fun onDestroyView() {
         adapterAlbums = null
         super.onDestroyView()
     }
-
     private fun setupClickListeners() {
         headerBinding.sortStyle.setOnClickListener {
             childFragmentManager.showAlbumsSort()
         }
-
         headerBinding.search.setOnClickListener {
             openSearch()
         }
-
         headerBinding.menu.setOnClickListener {
             openPreferencesPanel()
         }
-
         headerBinding.listStyle.setOnClickListener {
             childFragmentManager.showListStyleDialog(GenericListStyleDialog.Companion.PANEL.ALBUMS)
         }
     }
-
     private fun updateAlbumsList(albums: List<Album>) {
         if (adapterAlbums == null) {
             adapterAlbums = AdapterAlbums(albums)
@@ -70,7 +47,6 @@ class Albums : BasePanelFragment() {
                 override fun onAlbumClicked(albums: List<Album>, position: Int, view: View?) {
                     openFragment(AlbumPage.newInstance(albums[position]), AlbumPage.TAG)
                 }
-
                 override fun onAlbumLongClicked(albums: List<Album>, position: Int, imageView: ImageView?) {
                     val album = albums.getOrNull(position) ?: return
                     openAlbumMenu(album, imageView)
@@ -83,13 +59,11 @@ class Albums : BasePanelFragment() {
                 binding.recyclerView.adapter = adapterAlbums
             }
         }
-
         headerBinding.count.text = getString(R.string.x_albums, albums.size)
         binding.recyclerView.requireAttachedSectionScroller(
                 sections = provideScrollPositionDataBasedOnSortStyle(albums = albums),
                 header = binding.header,
                 view = headerBinding.scroll)
-
         headerBinding.sortStyle.setCurrentSortStyle()
         headerBinding.scroll.hideOnUnfavorableSort(
                 sorts = listOf(
@@ -101,7 +75,6 @@ class Albums : BasePanelFragment() {
                 preference = AlbumPreferences.getAlbumSort()
         )
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -110,7 +83,6 @@ class Albums : BasePanelFragment() {
             }
         }
     }
-
     private fun provideScrollPositionDataBasedOnSortStyle(albums: List<Album>): List<SectionedFastScroller.Position> {
         when (AlbumPreferences.getAlbumSort()) {
             CommonPreferencesConstants.BY_ALBUM_NAME -> {
@@ -146,10 +118,8 @@ class Albums : BasePanelFragment() {
                 return yearToIndex.map { (year, index) -> SectionedFastScroller.Position(year, index) }
             }
         }
-
         return emptyList()
     }
-
     companion object {
         fun newInstance(): Albums {
             val args = Bundle()
@@ -157,7 +127,6 @@ class Albums : BasePanelFragment() {
             fragment.arguments = args
             return fragment
         }
-
         const val TAG = "DefaultAlbums"
     }
 }

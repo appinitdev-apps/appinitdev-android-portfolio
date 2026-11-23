@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun MdEditorBottomAppBar(
@@ -7,7 +6,6 @@ fun MdEditorBottomAppBar(
     val scrollState = rememberScrollState()
     val scrollState2 = rememberScrollState()
     val context = LocalContext.current
-
     if (mdEditorVM.showSettings) {
         MdEditorSettingsDialog(mdEditorVM = mdEditorVM)
     }

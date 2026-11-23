@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun NotesPage(navController: NavHostController, notesVM: NotesViewModel, tagsVM: TagsViewModel) {
@@ -14,9 +13,7 @@ fun NotesPage(navController: NavHostController, notesVM: NotesViewModel, tagsVM:
         listOf(VTabData(LocaleHelper.getString(Res.string.all), "all", notesVM.total.intValue), VTabData(LocaleHelper.getString(Res.string.trash), "trash", notesVM.totalTrash.intValue), *tagsState.map { VTabData(it.name, it.id, it.count) }.toTypedArray())
     }
     val topRefreshLayoutState = rememberRefreshLayoutState { scope.launch { withIO { notesVM.loadAsync(tagsVM) } }; setRefreshState(RefreshContentState.Finished) }
-
     NotesPageEffects(notesVM, tagsVM, scrollBehavior, scrollStateMap, pagerState, scope, isFirstTime)
-
     val pageTitle = if (notesVM.selectMode.value) LocaleHelper.getStringF(Res.string.x_selected, "count", notesVM.selectedIds.size)
         else if (notesVM.tag.value != null) stringResource(Res.string.notes) + " - " + notesVM.tag.value!!.name
         else if (notesVM.trash.value) stringResource(Res.string.notes) + " - " + stringResource(Res.string.trash)
@@ -28,7 +25,6 @@ fun NotesPage(navController: NavHostController, notesVM: NotesViewModel, tagsVM:
         if (notesVM.selectMode.value) notesVM.exitSelectMode()
         else if (notesVM.showSearchBar.value) { if (!notesVM.searchActive.value || notesVM.queryText.value.isEmpty()) { notesVM.exitSearchMode(); onSearch("") } }
     }
-
     PScaffold(
         topBar = {
             if (notesVM.showSearchBar.value) { ListSearchBar(viewModel = notesVM, onSearch = onSearch); return@PScaffold }

@@ -1,4 +1,3 @@
-
 class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
     private val binding by viewBinding(ActivityMimetypesBinding::inflate)
     private var isSearchOpen = false
@@ -9,7 +8,6 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
     private var storedItems = ArrayList<ListItem>()
     private var currentViewType = VIEW_TYPE_LIST
     private var currentVolume = PRIMARY_VOLUME_NAME
-
     override fun onCreate(savedInstanceState: Bundle?) {
         isMaterialActivity = true
         super.onCreate(savedInstanceState)
@@ -20,7 +18,6 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
             updateMaterialActivityViews(mimetypesCoordinator, mimetypesList, useTransparentNavigation = true, useTopSearchMenu = false)
             setupMaterialScrollListener(mimetypesList, mimetypesToolbar)
         }
-
         currentMimeType = intent.getStringExtra(SHOW_MIMETYPE) ?: return
         currentVolume = intent.getStringExtra(VOLUME_NAME) ?: currentVolume
         binding.mimetypesToolbar.title = getString(
@@ -38,36 +35,28 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
                 }
             }
         )
-
         ensureBackgroundThread {
             reFetchItems()
         }
-
         binding.apply {
             mimetypesFastscroller.updateColors(getProperPrimaryColor())
             mimetypesPlaceholder.setTextColor(getProperTextColor())
             mimetypesPlaceholder2.setTextColor(getProperTextColor())
         }
     }
-
     override fun onResume() {
         super.onResume()
         setupToolbar(binding.mimetypesToolbar, NavigationIcon.Arrow, searchMenuItem = searchMenuItem)
     }
-
     private fun refreshMenuItems() {
         val currentViewType = config.getFolderViewType(currentMimeType)
-
         binding.mimetypesToolbar.menu.apply {
             findItem(R.id.toggle_filename).isVisible = currentViewType == VIEW_TYPE_GRID
-
             findItem(R.id.temporarily_show_hidden).isVisible = !config.shouldShowHidden()
             findItem(R.id.stop_showing_hidden).isVisible = config.temporarilyShowHidden
-
             findItem(R.id.column_count).isVisible = currentViewType == VIEW_TYPE_GRID
         }
     }
-
     private fun setupOptionsMenu() {
         setupSearch(binding.mimetypesToolbar.menu)
         binding.mimetypesToolbar.setOnMenuItemClickListener { menuItem ->
@@ -83,11 +72,9 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
             return@setOnMenuItemClickListener true
         }
     }
-
     override fun refreshFragment() {
         reFetchItems()
     }
-
     override fun deleteFiles(files: ArrayList<FileDirItem>) {
         deleteFiles(files, false) {
             if (!it) {
@@ -97,9 +84,7 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
             }
         }
     }
-
     override fun selectedPaths(paths: ArrayList<String>) {}
-
     fun searchQueryChanged(text: String) {
         val normalizedText = text.normalizeString()
         val searchNormalizedText = normalizedText.trim()
@@ -113,7 +98,6 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
                     mimetypesPlaceholder2.beGone()
                 }
             }
-
             searchNormalizedText.length == 1 -> {
                 binding.apply {
                     mimetypesFastscroller.beGone()
@@ -121,17 +105,14 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
                     mimetypesPlaceholder2.beVisible()
                 }
             }
-
             else -> {
                 ensureBackgroundThread {
                     if (lastSearchedText != searchNormalizedText) {
                         return@ensureBackgroundThread
                     }
-
                     val listItems = storedItems.filter {
                         it.name.normalizeString().contains(searchNormalizedText, true)
                     } as ArrayList<ListItem>
-
                     runOnUiThread {
                         getRecyclerAdapter()?.updateItems(listItems, text)
                         binding.apply {
@@ -144,22 +125,17 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
             }
         }
     }
-
     override fun setupDateTimeFormat() {}
-
     override fun setupFontSize() {}
-
     override fun toggleFilenameVisibility() {
         config.displayFilenames = !config.displayFilenames
         getRecyclerAdapter()?.updateDisplayFilenamesInGrid()
     }
-
     private fun changeColumnCount() {
         val items = ArrayList<RadioItem>()
         for (i in 1..MAX_COLUMN_COUNT) {
             items.add(RadioItem(i, resources.getQuantityString(C.plurals.column_counts, i, i)))
         }
-
         val currentColumnCount = config.fileColumnCnt
         RadioGroupDialog(this, items, config.fileColumnCnt) {
             val newColumnCount = it as Int
@@ -169,21 +145,18 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
             }
         }
     }
-
     fun increaseColumnCount() {
         if (currentViewType == VIEW_TYPE_GRID) {
             config.fileColumnCnt += 1
             columnCountChanged()
         }
     }
-
     fun reduceColumnCount() {
         if (currentViewType == VIEW_TYPE_GRID) {
             config.fileColumnCnt -= 1
             columnCountChanged()
         }
     }
-
     override fun columnCountChanged() {
         (binding.mimetypesList.layoutManager as MyGridLayoutManager).spanCount = config.fileColumnCnt
         refreshMenuItems()
@@ -191,9 +164,7 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
             notifyItemRangeChanged(0, listItems.size)
         }
     }
-
     override fun finishActMode() {}
-
     private fun setupSearch(menu: Menu) {
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         searchMenuItem = menu.findItem(R.id.search)
@@ -203,7 +174,6 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
             queryHint = getString(C.string.search)
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String) = false
-
                 override fun onQueryTextChange(newText: String): Boolean {
                     if (isSearchOpen) {
                         searchQueryChanged(newText)
@@ -212,14 +182,12 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
                 }
             })
         }
-
         MenuItemCompat.setOnActionExpandListener(searchMenuItem, object : MenuItemCompat.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
                 isSearchOpen = true
                 searchOpened()
                 return true
             }
-
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
                 isSearchOpen = false
                 searchClosed()
@@ -227,18 +195,15 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
             }
         })
     }
-
     fun searchOpened() {
         isSearchOpen = true
         lastSearchedText = ""
     }
-
     fun searchClosed() {
         isSearchOpen = false
         lastSearchedText = ""
         searchQueryChanged("")
     }
-
     private fun getProperFileDirItems(callback: (ArrayList<FileDirItem>) -> Unit) {
         val fileDirItems = ArrayList<FileDirItem>()
         val showHidden = config.shouldShowHidden()
@@ -250,7 +215,6 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
             MediaStore.Files.FileColumns.SIZE,
             MediaStore.Files.FileColumns.DATE_MODIFIED
         )
-
         try {
             queryCursor(uri, projection) { cursor ->
                 try {
@@ -259,15 +223,12 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
                     if (!showHidden && name.startsWith(".")) {
                         return@queryCursor
                     }
-
                     val size = cursor.getLongValue(MediaStore.Files.FileColumns.SIZE)
                     if (size == 0L) {
                         return@queryCursor
                     }
-
                     val path = cursor.getStringValue(MediaStore.Files.FileColumns.DATA)
                     val lastModified = cursor.getLongValue(MediaStore.Files.FileColumns.DATE_MODIFIED) * 1000
-
                     val mimetype = fullMimetype.substringBefore("/")
                     when (currentMimeType) {
                         IMAGES -> {
@@ -275,31 +236,26 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
                                 fileDirItems.add(FileDirItem(path, name, false, 0, size, lastModified))
                             }
                         }
-
                         VIDEOS -> {
                             if (mimetype == "video") {
                                 fileDirItems.add(FileDirItem(path, name, false, 0, size, lastModified))
                             }
                         }
-
                         AUDIO -> {
                             if (mimetype == "audio" || extraAudioMimeTypes.contains(fullMimetype)) {
                                 fileDirItems.add(FileDirItem(path, name, false, 0, size, lastModified))
                             }
                         }
-
                         DOCUMENTS -> {
                             if (mimetype == "text" || extraDocumentMimeTypes.contains(fullMimetype)) {
                                 fileDirItems.add(FileDirItem(path, name, false, 0, size, lastModified))
                             }
                         }
-
                         ARCHIVES -> {
                             if (archiveMimeTypes.contains(fullMimetype)) {
                                 fileDirItems.add(FileDirItem(path, name, false, 0, size, lastModified))
                             }
                         }
-
                         OTHERS -> {
                             if (mimetype != "image" && mimetype != "video" && mimetype != "audio" && mimetype != "text" &&
                                 !extraAudioMimeTypes.contains(fullMimetype) && !extraDocumentMimeTypes.contains(fullMimetype) &&
@@ -315,18 +271,14 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
         } catch (e: Exception) {
             showErrorToast(e)
         }
-
         callback(fileDirItems)
     }
-
     private fun addItems(items: ArrayList<ListItem>) {
         FileDirItem.sorting = config.getFolderSorting(currentMimeType)
         items.sort()
-
         if (isDestroyed || isFinishing) {
             return
         }
-
         storedItems = items
         ItemsAdapter(this as SimpleActivity, storedItems, this, binding.mimetypesList, false, null) {
             tryOpenPathIntent((it as ListItem).path, false)
@@ -334,22 +286,17 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
             setupZoomListener(zoomListener)
             binding.mimetypesList.adapter = this
         }
-
         if (areSystemAnimationsEnabled) {
             binding.mimetypesList.scheduleLayoutAnimation()
         }
-
         binding.mimetypesPlaceholder.beVisibleIf(items.isEmpty())
     }
-
     private fun getRecyclerAdapter() = binding.mimetypesList.adapter as? ItemsAdapter
-
     private fun showSortingDialog() {
         ChangeSortingDialog(this, currentMimeType) {
             recreateList()
         }
     }
-
     private fun changeViewType() {
         ChangeViewTypeDialog(this, currentMimeType, true) {
             recreateList()
@@ -357,11 +304,9 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
             refreshMenuItems()
         }
     }
-
     private fun reFetchItems() {
         getProperFileDirItems { fileDirItems ->
             val listItems = getListItemsFromFileDirItems(fileDirItems)
-
             runOnUiThread {
                 addItems(listItems)
                 if (currentViewType != config.getFolderViewType(currentMimeType)) {
@@ -370,14 +315,12 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
             }
         }
     }
-
     private fun recreateList() {
         val listItems = getRecyclerAdapter()?.listItems
         if (listItems != null) {
             addItems(listItems as ArrayList<ListItem>)
         }
     }
-
     private fun setupLayoutManager() {
         if (config.getFolderViewType(currentMimeType) == VIEW_TYPE_GRID) {
             currentViewType = VIEW_TYPE_GRID
@@ -386,16 +329,13 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
             currentViewType = VIEW_TYPE_LIST
             setupListLayoutManager()
         }
-
         binding.mimetypesList.adapter = null
         initZoomListener()
         addItems(storedItems)
     }
-
     private fun setupGridLayoutManager() {
         val layoutManager = binding.mimetypesList.layoutManager as MyGridLayoutManager
         layoutManager.spanCount = config.fileColumnCnt
-
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return if (getRecyclerAdapter()?.isASectionTitle(position) == true) {
@@ -406,13 +346,11 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
             }
         }
     }
-
     private fun setupListLayoutManager() {
         val layoutManager = binding.mimetypesList.layoutManager as MyGridLayoutManager
         layoutManager.spanCount = 1
         zoomListener = null
     }
-
     private fun initZoomListener() {
         if (config.getFolderViewType(currentMimeType) == VIEW_TYPE_GRID) {
             val layoutManager = binding.mimetypesList.layoutManager as MyGridLayoutManager
@@ -423,7 +361,6 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
                         getRecyclerAdapter()?.finishActMode()
                     }
                 }
-
                 override fun zoomOut() {
                     if (layoutManager.spanCount < MAX_COLUMN_COUNT) {
                         increaseColumnCount()
@@ -435,7 +372,6 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
             zoomListener = null
         }
     }
-
     private fun tryToggleTemporarilyShowHidden() {
         if (config.temporarilyShowHidden) {
             toggleTemporarilyShowHidden(false)
@@ -445,7 +381,6 @@ class MimeTypesActivity : SimpleActivity(), ItemOperationsListener {
             }
         }
     }
-
     private fun toggleTemporarilyShowHidden(show: Boolean) {
         config.temporarilyShowHidden = show
         ensureBackgroundThread {

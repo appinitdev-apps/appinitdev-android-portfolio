@@ -1,5 +1,3 @@
-
-
 object IsoTypeReader {
     fun readUInt32(bb: ByteBuffer): Long {
         var i = bb.int.toLong()
@@ -8,11 +6,9 @@ object IsoTypeReader {
         }
         return i
     }
-
     fun read4cc(bb: ByteBuffer): String? {
         val codeBytes = ByteArray(4)
         bb.get(codeBytes)
-
         return try {
             String(codeBytes, Charset.forName("ISO-8859-1"))
         } catch (e: UnsupportedEncodingException) {

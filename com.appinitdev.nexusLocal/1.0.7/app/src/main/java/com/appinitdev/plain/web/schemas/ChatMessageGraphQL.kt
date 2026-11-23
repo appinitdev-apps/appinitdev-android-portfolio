@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addChatMessageSchema() {
     query("chatItems") {
         resolver { id: String ->
@@ -12,7 +11,6 @@ fun SchemaBuilder.addChatMessageSchema() {
             items.map { it.toModel() }
         }
     }
-
     query("latestChatItems") {
         resolver { ->
             AppDatabase.instance.chatDao().getAllLatestChats().map { it.toModel() }

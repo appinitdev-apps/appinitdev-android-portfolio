@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FileExplorerScreen(
@@ -9,9 +8,7 @@ fun FileExplorerScreen(
 ) {
     var currentPath by remember { mutableStateOf(startPath) }
     var files by remember { mutableStateOf(listFilesAndDirs(context, currentPath)) }
-
     val selectedFiles = remember { mutableStateListOf<File>() }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -37,7 +34,6 @@ fun FileExplorerScreen(
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(files) { file ->
                     Row(
@@ -50,7 +46,6 @@ fun FileExplorerScreen(
                                         currentPath = File(currentPath, file.name).path
                                         files = listFilesAndDirs(context, currentPath)
                                     }
-
                                     file.extension.equals("pdf", ignoreCase = true) -> {
                                         onPdfClick?.invoke(file)
                                     }
@@ -64,7 +59,6 @@ fun FileExplorerScreen(
                             style = MaterialTheme.typography.titleMedium,
                             modifier = Modifier.weight(1f)
                         )
-
                         Checkbox(
                             checked = selectedFiles.contains(file),
                             onCheckedChange = { checked ->
@@ -75,9 +69,7 @@ fun FileExplorerScreen(
                     }
                 }
             }
-
             Spacer(Modifier.height(16.dp))
-
             Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -90,9 +82,7 @@ fun FileExplorerScreen(
                             }
                             Toast.makeText(context,
                                 context.getString(R.string.deleted), Toast.LENGTH_SHORT).show()
-
                             selectedFiles.clear()
-
                             files = listFilesAndDirs(context, currentPath)
                         },
                         modifier = Modifier.weight(1f)
@@ -101,7 +91,6 @@ fun FileExplorerScreen(
                         Spacer(Modifier.width(4.dp))
                         Text(stringResource(R.string.eliminarf))
                     }
-
                     TextButton(
                         onClick = {
                             val downloadDir =
@@ -115,7 +104,6 @@ fun FileExplorerScreen(
                                     file.copyTo(File(downloadDir, file.name), overwrite = true)
                                     Toast.makeText(context,
                                         context.getString(R.string.copied_file), Toast.LENGTH_SHORT).show()
-
                                 }
                             }
                             selectedFiles.clear()
@@ -127,7 +115,6 @@ fun FileExplorerScreen(
                         Text(stringResource(R.string.descargar))
                     }
                 }
-
                 if (currentPath != startPath) {
                     TextButton(
                         onClick = {
@@ -148,14 +135,12 @@ fun FileExplorerScreen(
         }
     }
 }
-
 fun listFilesAndDirs(context: Context, relativePath: String): List<File> {
     val baseDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
     val dir = File(baseDir, relativePath)
     if (!dir.exists() || !dir.isDirectory) return emptyList()
     return dir.listFiles()?.toList()?.sortedBy { it.name } ?: emptyList()
 }
-
 fun copyDirectory(source: File, destination: File) {
     if (!destination.exists()) {
         destination.mkdirs()
@@ -169,149 +154,3 @@ fun copyDirectory(source: File, destination: File) {
         }
     }
 }
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,4 +1,3 @@
-
 @Composable
 fun ChatPageEffects(
     id: String,
@@ -11,14 +10,12 @@ fun ChatPageEffects(
 ) {
     val context = LocalContext.current
     val sharedFlow = Channel.sharedFlow
-
     DisposableEffect(id) {
         ChatCacheManager.activeToId = id
         onDispose {
             ChatCacheManager.activeToId = ""
         }
     }
-
     LaunchedEffect(Unit) {
         onInputLoaded(ChatInputTextPreference.getAsync())
         scope.launch(Dispatchers.IO) {
@@ -27,7 +24,6 @@ fun ChatPageEffects(
         }
         peerVM.loadPeers()
     }
-
     LaunchedEffect(sharedFlow) {
         sharedFlow.collect { event ->
             when (event) {
@@ -39,7 +35,6 @@ fun ChatPageEffects(
                         scope.launch { scrollState.scrollToItem(0) }
                     }
                 }
-
                 is PickFileResultEvent -> {
                     if (event.tag != PickFileTag.SEND_MESSAGE) return@collect
                     handleFileSelection(event, context, chatVM, scrollState, focusManager)

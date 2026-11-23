@@ -1,4 +1,3 @@
-
 internal suspend fun sharePreviewImage(context: Context, m: PreviewItem) {
     if (m.mediaId.isNotEmpty()) {
         ShareHelper.shareUris(context, listOf(ImageMediaStoreHelper.getItemUri(m.mediaId)))
@@ -22,7 +21,6 @@ internal suspend fun sharePreviewImage(context: Context, m: PreviewItem) {
         ShareHelper.shareFile(context, File(m.path), m.getMimeType().ifEmpty { "image/*" })
     }
 }
-
 internal suspend fun savePreviewImage(context: Context, m: PreviewItem) {
     if (m.path.isUrl()) {
         DialogHelper.showLoading()

@@ -1,4 +1,3 @@
-
 data class WeatherDestination(
     val id: String,
     val cityEs: String,
@@ -16,12 +15,10 @@ data class WeatherDestination(
         val lang = Locale.getDefault().language
         return if (lang.equals("en", ignoreCase = true)) cityEn else cityEs
     }
-
     fun getStatus(): String {
         val lang = Locale.getDefault().language
         return if (lang.equals("en", ignoreCase = true)) statusEn else statusEs
     }
-
     fun getTip(): String {
         val lang = Locale.getDefault().language
         return if (lang.equals("en", ignoreCase = true)) tipEn else tipEs

@@ -1,7 +1,3 @@
-
- 
-
-
 internal suspend fun PreviewerVerticalDragState.viewerContainerShrinkDown() {
     stateCloseStart()
     viewerContainerState?.cancelOpenTransform()
@@ -14,10 +10,6 @@ internal suspend fun PreviewerVerticalDragState.viewerContainerShrinkDown() {
     stateCloseEnd()
     transformState?.setExitState()
 }
-
- 
-
-
 internal suspend fun PreviewerVerticalDragState.dragDownClose() {
     transformState?.notifyEnterChanged()
     viewerContainerState?.showLoading = false

@@ -1,4 +1,3 @@
-
 @Composable
 fun PSwitch(
     activated: Boolean,
@@ -6,17 +5,14 @@ fun PSwitch(
     onClick: ((Boolean) -> Unit)? = null,
 ) {
     val isDark = DarkTheme.isDarkTheme(LocalDarkTheme.current)
-
     val switchBlue = if (isDark) Color(0xFF0A84FF) else Color(0xFF007AFF)
     val iosLightTrackGray = Color(0xFFE9E9EA)
     val iosDarkTrackGray = Color(0xFF39393D)
     val iosTrackGray = if (isDark) iosDarkTrackGray else iosLightTrackGray
     val iosThumbWhite = Color.White
-
     val disabledThumbColor = iosThumbWhite
     val disabledCheckedTrack = switchBlue.copy(alpha = 0.4f)
     val disabledUncheckedTrack = iosTrackGray.copy(alpha = if (isDark) 0.3f else 0.5f)
-
     Switch(
         checked = activated,
         enabled = enabled,
@@ -25,8 +21,6 @@ fun PSwitch(
             checkedTrackColor = switchBlue,
             uncheckedThumbColor = iosThumbWhite,
             uncheckedTrackColor = iosTrackGray,
-
-            
             disabledCheckedThumbColor = disabledThumbColor,
             disabledCheckedTrackColor = disabledCheckedTrack,
             disabledUncheckedThumbColor = disabledThumbColor,

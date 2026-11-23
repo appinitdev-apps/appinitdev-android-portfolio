@@ -1,16 +1,11 @@
-
 class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
-
     private lateinit var database: NotallyDatabase
     private lateinit var labelDao: LabelDao
     private lateinit var commonDao: CommonDao
     private lateinit var baseNoteDao: BaseNoteDao
-
     private val labelCache = HashMap<String, Content>()
-
     var selectedExportFile: DocumentFile? = null
     lateinit var selectedExportMimeType: ExportMimeType
-
     lateinit var labels: LiveData<List<String>>
     lateinit var reminders: LiveData<List<NoteReminder>>
     private var allNotes: LiveData<List<BaseNote>>? = null
@@ -18,11 +13,8 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
     var baseNotes: Content? = null
     var deletedNotes: Content? = null
     var archivedNotes: Content? = null
-
     val folder = NotNullLiveData(Folder.NOTES)
-
     var currentLabel: String? = CURRENT_LABEL_EMPTY
-
     var keyword = String()
         set(value) {
             if (field != value || searchResults?.value?.isEmpty() == true) {
@@ -30,73 +22,56 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
                 searchResults!!.fetch(keyword, folder.value, currentLabel)
             }
         }
-
     var searchResults: SearchResult? = null
-
     private val pinned = Header(app.getString(R.string.pinned))
     private val others = Header(app.getString(R.string.others))
     private val archived = Header(app.getString(R.string.archived))
-
     val preferences = NotallyXPreferences.getInstance(app)
-
     val imageRoot = app.getExternalImagesDirectory()
-
     val importProgress = MutableLiveData<ImportProgress>()
     val exportProgress = MutableLiveData<Progress>()
     val deletionProgress = MutableLiveData<Progress>()
-
     val actionMode = ActionMode()
-
     internal var showRefreshBackupsFolderAfterThemeChange = false
     private var labelsHiddenObserver: Observer<Set<String>>? = null
-
     init {
         NotallyDatabase.getDatabase(app).observeForever(::init)
         folder.observeForever { newFolder ->
             searchResults!!.fetch(keyword, newFolder, currentLabel)
         }
     }
-
     private fun init(database: NotallyDatabase) {
         this.database = database
         baseNoteDao = database.getBaseNoteDao()
         labelDao = database.getLabelDao()
         commonDao = database.getCommonDao()
-
         labels = labelDao.getAll()
-        
         reminders = baseNoteDao.getAllRemindersAsync()
-
         allNotes?.removeObserver(allNotesObserver!!)
         allNotesObserver = Observer { list -> Cache.list = list }
         allNotes = baseNoteDao.getAllAsync()
         allNotes!!.observeForever(allNotesObserver!!)
-
         labelsHiddenObserver?.let { preferences.labelsHidden.removeObserver(it) }
         labelsHiddenObserver = Observer { labelsHidden ->
             baseNotes = null
             initBaseNotes(labelsHidden)
         }
         preferences.labelsHidden.observeForever(labelsHiddenObserver!!)
-
         if (deletedNotes == null) {
             deletedNotes = Content(baseNoteDao.getFrom(Folder.DELETED), ::transform)
         } else {
             deletedNotes!!.setObserver(baseNoteDao.getFrom(Folder.DELETED))
         }
-
         if (archivedNotes == null) {
             archivedNotes = Content(baseNoteDao.getFrom(Folder.ARCHIVED), ::transform)
         } else {
             archivedNotes!!.setObserver(baseNoteDao.getFrom(Folder.ARCHIVED))
         }
-
         if (searchResults == null) {
             searchResults = SearchResult(viewModelScope, baseNoteDao, ::transform)
         } else {
             searchResults!!.baseNoteDao = baseNoteDao
         }
-
         viewModelScope.launch {
             val previousNotes = app.getPreviousNotes()
             val previousLabels = app.getPreviousLabels()
@@ -110,7 +85,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             }
         }
     }
-
     private fun initBaseNotes(labelsHidden: Set<String>) {
         val overviewNotes =
             baseNoteDao.getFrom(Folder.NOTES).map { list ->
@@ -122,20 +96,16 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             baseNotes!!.setObserver(overviewNotes)
         }
     }
-
     fun getNotesByLabel(label: String): Content {
         if (labelCache[label] == null) {
             labelCache[label] = Content(baseNoteDao.getBaseNotesByLabel(label), ::transform)
         }
         return requireNotNull(labelCache[label])
     }
-
     fun getNotesWithoutLabel(): Content {
         return Content(baseNoteDao.getBaseNotesWithoutLabel(Folder.NOTES), ::transform)
     }
-
     private fun transform(list: List<BaseNote>) = transform(list, pinned, others, archived)
-
     fun disableBackups() {
         val value = preferences.backupsFolder.value
         if (value != EMPTY_PATH) {
@@ -147,7 +117,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             preferences.periodicBackups.value.copy(periodInDays = 0),
         )
     }
-
     fun setupBackupsFolder(uri: Uri) {
         val oldBackupsFolder = preferences.backupsFolder.value
         val newBackupsFolder = uri.toString()
@@ -162,7 +131,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
         }
         showRefreshBackupsFolderAfterThemeChange = false
     }
-
     fun enableDataInPublic(callback: (() -> Unit)? = null) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -172,13 +140,11 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
                 NotallyDatabase.getInternalDatabaseFiles(app).forEach {
                     it.copyTo(File(directory, it.name), overwrite = true)
                 }
-                
             }
             savePreference(preferences.dataInPublicFolder, true)
             callback?.invoke()
         }
     }
-
     fun disableDataInPublic(callback: (() -> Unit)? = null) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -187,7 +153,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
                 val directory = NotallyDatabase.getInternalDatabaseFile(app).parentFile
                 val oldFiles = NotallyDatabase.getExternalDatabaseFiles(app)
                 oldFiles.forEach { it.copyTo(File(directory, it.name), overwrite = true) }
-                
                 oldFiles.forEach {
                     if (it.exists()) {
                         it.delete()
@@ -198,45 +163,25 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             callback?.invoke()
         }
     }
-
     fun enableBiometricLock(cipher: Cipher) {
-        
         savePreference(preferences.iv, cipher.iv)
-        
         savePreference(preferences.biometricLock, BiometricLock.ENABLED)
-        
         val passphrase = preferences.databaseEncryptionKey.init(cipher)
         savePreference(preferences.fallbackDatabaseEncryptionKey, passphrase)
     }
-
     @RequiresApi(Build.VERSION_CODES.M)
     fun disableBiometricLock(cipher: Cipher? = null, callback: (() -> Unit)? = null) {
-        
         val passphrase =
             cipher?.doFinal(preferences.databaseEncryptionKey.value)
                 ?: preferences.fallbackDatabaseEncryptionKey.value
                 ?: ByteArray(0) 
-
-        
         database.close()
-
-        
         savePreference(preferences.biometricLock, BiometricLock.DISABLED)
-
-        
         callback?.invoke()
     }
-
-
     fun <T> savePreference(preference: BasePreference<T>, value: T) {
         viewModelScope.launch(Dispatchers.IO) { preference.save(value) }
     }
-
-     
-
-
-
-
     private fun clearPersistedUriPermissions(folderPath: String) {
         val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         app.contentResolver.persistedUriPermissions.forEach { permission ->
@@ -246,7 +191,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             }
         }
     }
-
     fun exportBackup(uri: Uri) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -259,25 +203,21 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             app.showToast(R.string.saved_to_device)
         }
     }
-
     fun importZipBackup(uri: Uri, password: String) {
         val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
             app.log(TAG, throwable = throwable)
             app.showToast("${app.getString(R.string.invalid_backup)}: ${throwable.message}")
         }
-
         val backupDir = app.getBackupDir()
         viewModelScope.launch(exceptionHandler) {
             app.importZip(uri, backupDir, password, importProgress)
         }
     }
-
     fun importXmlBackup(uri: Uri) {
         val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
             app.log(TAG, throwable = throwable)
             app.showToast("${app.getString(R.string.invalid_backup)}: ${throwable.message}")
         }
-
         viewModelScope.launch(exceptionHandler) {
             val importedNotes =
                 withContext(Dispatchers.IO) {
@@ -290,7 +230,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             app.showToast(message)
         }
     }
-
     fun importFromOtherApp(uri: Uri, importSource: ImportSource) {
         val database = NotallyDatabase.getDatabase(app, observePreferences = false).value
         val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -301,7 +240,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
                 app.showToast("${app.getString(R.string.invalid_backup)}: ${throwable.message}")
             }
         }
-
         viewModelScope.launch(exceptionHandler) {
             val importedNotes =
                 withContext(Dispatchers.IO) {
@@ -311,7 +249,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             app.showToast(message)
         }
     }
-
     fun exportSelectedFileToUri(uri: Uri) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -322,7 +259,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             app.showToast(R.string.saved_to_device)
         }
     }
-
     fun exportNotesToFolder(folderUri: Uri, notes: Collection<BaseNote>) {
         val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
             app.log(TAG, throwable = throwable)
@@ -348,7 +284,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
                             total = notes.size,
                         )
                     }
-
                     ExportMimeType.PDF -> {
                         exportPdfFile(
                             app,
@@ -366,57 +301,47 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             app.showToast(R.string.saved_to_device)
         }
     }
-
     fun exportSelectedNotesToFolder(folderUri: Uri) {
         exportNotesToFolder(folderUri, actionMode.selectedNotes.values)
     }
-
     fun pinBaseNotes(pinned: Boolean) {
         val id = actionMode.selectedIds.toLongArray()
         actionMode.close(true)
         viewModelScope.launch(Dispatchers.IO) { baseNoteDao.updatePinned(id, pinned) }
     }
-
     fun colorBaseNote(color: String) {
         val ids = actionMode.selectedIds.toLongArray()
         actionMode.close(true)
         viewModelScope.launch(Dispatchers.IO) { baseNoteDao.updateColor(ids, color) }
     }
-
     fun changeColor(oldColor: String, newColor: String) {
         viewModelScope.launch(Dispatchers.IO) { baseNoteDao.updateColor(oldColor, newColor) }
     }
-
     fun moveBaseNotes(folder: Folder): LongArray {
         val ids = actionMode.selectedIds.toLongArray()
         actionMode.close(false)
         moveBaseNotes(ids, folder)
         return ids
     }
-
     fun moveBaseNotes(ids: LongArray, folder: Folder) {
         viewModelScope.launch(
             Dispatchers.IO
         ) { 
             baseNoteDao.move(ids, folder)
             val notes = baseNoteDao.getByIds(ids).toNoteIdReminders()
-            
             when (folder) {
                 Folder.NOTES -> app.scheduleNoteReminders(notes)
                 else -> app.cancelNoteReminders(notes)
             }
         }
     }
-
     fun updateBaseNoteLabels(labels: List<String>, id: Long) {
         actionMode.close(true)
         viewModelScope.launch(Dispatchers.IO) { baseNoteDao.updateLabels(id, labels) }
     }
-
     fun deleteSelectedBaseNotes() {
         deleteBaseNotes(actionMode.selectedIds.toLongArray())
     }
-
     fun deleteAll() {
         viewModelScope.launch {
             val (ids, noteReminders) =
@@ -430,7 +355,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             app.showToast(R.string.cleared_data)
         }
     }
-
     private fun deleteBaseNotes(ids: LongArray) {
         val attachments = ArrayList<Attachment>()
         viewModelScope.launch {
@@ -449,7 +373,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             }
         }
     }
-
     fun deleteAllTrashedBaseNotes() {
         viewModelScope.launch {
             val ids: LongArray
@@ -473,9 +396,7 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             withContext(Dispatchers.IO) { app.deleteAttachments(attachments, ids) }
         }
     }
-
     suspend fun getAllLabels() = withContext(Dispatchers.IO) { labelDao.getArrayOfAll() }
-
     fun deleteLabel(value: String) {
         viewModelScope.launch(Dispatchers.IO) { commonDao.deleteLabel(value) }
         val labelsHiddenPreference = preferences.labelsHidden
@@ -488,10 +409,8 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             savePreference(preferences.startView, START_VIEW_DEFAULT)
         }
     }
-
     fun insertLabel(label: Label, onComplete: (success: Boolean) -> Unit) =
         executeAsyncWithCallback({ labelDao.insert(label) }, onComplete)
-
     fun updateLabel(oldValue: String, newValue: String, onComplete: (success: Boolean) -> Unit) {
         executeAsyncWithCallback({ commonDao.updateLabel(oldValue, newValue) }, onComplete)
         val labelsHiddenPreference = preferences.labelsHidden
@@ -502,7 +421,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             savePreference(labelsHiddenPreference, labelsHidden)
         }
     }
-
     fun resetPreferences(callback: (restartRequired: Boolean) -> Unit) {
         val backupsFolder = preferences.backupsFolder.value
         val publicFolder = preferences.dataInPublicFolder.value
@@ -520,7 +438,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             } else finishResetPreferencesAfterBiometric(publicFolder, backupsFolder, finishCallback)
         } else finishResetPreferencesAfterBiometric(publicFolder, backupsFolder, finishCallback)
     }
-
     private fun finishResetPreferencesAfterBiometric(
         publicFolder: Boolean,
         backupsFolder: String,
@@ -530,7 +447,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             refreshDataInPublicFolder(false) { finishResetPreferences(backupsFolder, callback) }
         } else finishResetPreferences(backupsFolder, callback)
     }
-
     private fun finishResetPreferences(backupsFolder: String, callback: () -> Unit) {
         preferences.reset()
         if (backupsFolder != EMPTY_PATH) {
@@ -539,7 +455,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
         callback()
         app.restartApplication(R.id.Settings)
     }
-
     fun importPreferences(
         context: Context,
         uri: Uri,
@@ -552,9 +467,7 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
         val themeBefore = preferences.theme.value
         val useDynamicColorsBefore = preferences.useDynamicColors.value
         val oldStartView = preferences.startView.value
-
         val success = preferences.import(context, uri)
-
         val dataInPublicFolder = preferences.dataInPublicFolder.getFreshValue()
         if (dataInPublicFolderBefore != dataInPublicFolder) {
             refreshDataInPublicFolder(dataInPublicFolder) {
@@ -586,7 +499,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
                 } else onFailure()
             }
     }
-
     private fun finishImportPreferences(
         oldBackupsFolder: String,
         themeBefore: Theme,
@@ -617,7 +529,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             app.restartApplication(R.id.Settings, EXTRA_SHOW_IMPORT_BACKUPS_FOLDER to true)
         }
     }
-
     fun refreshBackupsFolder(
         context: Context,
         backupFolder: String = preferences.backupsFolder.value,
@@ -638,7 +549,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             disableBackups()
         }
     }
-
     private fun refreshDataInPublicFolder(dataInPublicFolder: Boolean, callback: () -> Unit) {
         if (dataInPublicFolder) {
             enableDataInPublic(callback)
@@ -646,7 +556,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             disableDataInPublic(callback)
         }
     }
-
     private fun refreshStartView(startView: String, oldStartView: String) {
         if (startView in setOf(START_VIEW_DEFAULT, START_VIEW_UNLABELED)) {
             savePreference(preferences.startView, startView)
@@ -661,13 +570,10 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             }
         }
     }
-
     companion object {
         private const val TAG = "BaseNoteModel"
-
         const val CURRENT_LABEL_EMPTY = ""
         val CURRENT_LABEL_NONE: String? = null
-
         fun transform(
             list: List<BaseNote>,
             pinned: Header,
@@ -701,7 +607,6 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
         }
     }
 }
-
 enum class ExportMimeType(val mimeType: String, val fileExtension: String) {
     TXT("text/plain", "txt"),
     PDF("application/pdf", "pdf"),

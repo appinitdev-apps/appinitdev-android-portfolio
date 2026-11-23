@@ -1,9 +1,3 @@
-
- 
-
-
-
-
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {

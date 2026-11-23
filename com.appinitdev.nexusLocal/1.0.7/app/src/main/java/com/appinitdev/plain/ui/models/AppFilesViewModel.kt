@@ -1,14 +1,11 @@
-
 class AppFilesViewModel : ViewModel() {
     private val _itemsFlow = MutableStateFlow(mutableStateListOf<VAppFile>())
     val itemsFlow: StateFlow<List<VAppFile>> get() = _itemsFlow
-
     val showLoading = mutableStateOf(true)
     val offset = mutableIntStateOf(0)
     val limit = mutableIntStateOf(50)
     val noMore = mutableStateOf(false)
     val total = mutableIntStateOf(0)
-
     private suspend fun fetchPage(pageOffset: Int): List<VAppFile> {
         val appFileDao = AppDatabase.instance.appFileDao()
         val chatDao = AppDatabase.instance.chatDao()
@@ -21,7 +18,6 @@ class AppFilesViewModel : ViewModel() {
             )
         }
     }
-
     suspend fun moreAsync() {
         offset.intValue += limit.intValue
         val items = fetchPage(offset.intValue)
@@ -29,7 +25,6 @@ class AppFilesViewModel : ViewModel() {
         noMore.value = items.size < limit.intValue
         showLoading.value = false
     }
-
     suspend fun loadAsync() {
         offset.intValue = 0
         val appFileDao = AppDatabase.instance.appFileDao()

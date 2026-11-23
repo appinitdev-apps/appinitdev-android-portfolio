@@ -1,8 +1,5 @@
-
 open class SimpleActivity : BaseSimpleActivity() {
-
     private var dialog: AlertDialog? = null
-
     private val observer = object : ContentObserver(null) {
         override fun onChange(selfChange: Boolean, uri: Uri?) {
             super.onChange(selfChange, uri)
@@ -15,7 +12,6 @@ open class SimpleActivity : BaseSimpleActivity() {
             }
         }
     }
-
     override fun getAppIconIDs() = arrayListOf(
         R.mipmap.ic_launcher_red,
         R.mipmap.ic_launcher_pink,
@@ -37,25 +33,20 @@ open class SimpleActivity : BaseSimpleActivity() {
         R.mipmap.ic_launcher_blue_grey,
         R.mipmap.ic_launcher_grey_black
     )
-
     override fun getAppLauncherName() = getString(R.string.app_launcher_name)
-
     override fun getRepositoryName() = "Gallery"
-
     protected fun checkNotchSupport() {
         if (isPiePlus()) {
             val cutoutMode = when {
                 config.showNotch -> WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
                 else -> WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER
             }
-
             window.attributes.layoutInDisplayCutoutMode = cutoutMode
             if (config.showNotch) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             }
         }
     }
-
     protected fun registerFileUpdateListener() {
         try {
             contentResolver.registerContentObserver(Images.Media.EXTERNAL_CONTENT_URI, true, observer)
@@ -63,14 +54,12 @@ open class SimpleActivity : BaseSimpleActivity() {
         } catch (ignored: Exception) {
         }
     }
-
     protected fun unregisterFileUpdateListener() {
         try {
             contentResolver.unregisterContentObserver(observer)
         } catch (ignored: Exception) {
         }
     }
-
     protected fun showAddIncludedFolderDialog(callback: () -> Unit) {
         FilePickerDialog(this, config.lastFilepickerPath, false, config.shouldShowHidden, false, true) {
             config.lastFilepickerPath = it
@@ -81,7 +70,6 @@ open class SimpleActivity : BaseSimpleActivity() {
             }
         }
     }
-
     protected fun requestMediaPermissions(enableRationale: Boolean = false, onGranted: () -> Unit) {
         when {
             hasAllPermissions(getPermissionsToRequest()) -> onGranted()
@@ -92,7 +80,6 @@ open class SimpleActivity : BaseSimpleActivity() {
                     onPermissionDenied()
                 }
             }
-
             else -> {
                 handlePartialMediaPermissions(getPermissionsToRequest(), force = true) { granted ->
                     if (granted) {
@@ -105,7 +92,6 @@ open class SimpleActivity : BaseSimpleActivity() {
             }
         }
     }
-
     private fun showPermissionRationale() {
         dialog?.dismiss()
         StoragePermissionRequiredDialog(
@@ -116,7 +102,6 @@ open class SimpleActivity : BaseSimpleActivity() {
             this.dialog = dialog
         }
     }
-
     private fun onPermissionDenied() {
         toast(org.appinitdev.commons.R.string.no_storage_permissions)
         finish()

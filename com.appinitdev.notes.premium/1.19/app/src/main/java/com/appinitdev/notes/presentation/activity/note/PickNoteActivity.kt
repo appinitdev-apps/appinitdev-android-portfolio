@@ -1,21 +1,14 @@
-
 open class PickNoteActivity : LockedActivity<ActivityPickNoteBinding>(), ItemListener {
-
     protected lateinit var adapter: BaseNoteAdapter
-
     private val excludedNoteId by lazy { intent.getLongExtra(EXTRA_EXCLUDE_NOTE_ID, -1L) }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPickNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
         configureEdgeToEdgeInsets()
-
         val result = Intent()
         setResult(RESULT_CANCELED, result)
-
         val preferences = NotallyXPreferences.getInstance(application)
-
         adapter =
             with(preferences) {
                 BaseNoteAdapter(
@@ -34,7 +27,6 @@ open class PickNoteActivity : LockedActivity<ActivityPickNoteBinding>(), ItemLis
                     this@PickNoteActivity,
                 )
             }
-
         binding.MainListView.apply {
             adapter = this@PickNoteActivity.adapter
             setHasFixedSize(true)
@@ -43,13 +35,10 @@ open class PickNoteActivity : LockedActivity<ActivityPickNoteBinding>(), ItemLis
                     StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
                 } else LinearLayoutManager(this@PickNoteActivity)
         }
-
         val database = NotallyDatabase.getDatabase(application)
-
         val pinned = Header(getString(R.string.pinned))
         val others = Header(getString(R.string.others))
         val archived = Header(getString(R.string.archived))
-
         database.observe(this) {
             lifecycleScope.launch {
                 val notes =
@@ -64,26 +53,15 @@ open class PickNoteActivity : LockedActivity<ActivityPickNoteBinding>(), ItemLis
             }
         }
     }
-
     private fun configureEdgeToEdgeInsets() {
-        
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        
-        
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
-
-            
             binding.Toolbar.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
                 requestLayout()
             }
-
-            
-            
-            
             binding.MainListView.apply {
                 setPadding(
                     paddingLeft,
@@ -103,7 +81,6 @@ open class PickNoteActivity : LockedActivity<ActivityPickNoteBinding>(), ItemLis
             insets
         }
     }
-
     override fun onClick(position: Int) {
         if (position != -1) {
             val note = (adapter.getItem(position) as BaseNote)
@@ -115,12 +92,9 @@ open class PickNoteActivity : LockedActivity<ActivityPickNoteBinding>(), ItemLis
             finish()
         }
     }
-
     override fun onLongClick(position: Int) {}
-
     companion object {
         const val EXTRA_EXCLUDE_NOTE_ID = "notes.intent.extra.EXCLUDE_NOTE_ID"
-
         const val EXTRA_PICKED_NOTE_ID = "notes.intent.extra.PICKED_NOTE_ID"
         const val EXTRA_PICKED_NOTE_TITLE = "notes.intent.extra.PICKED_NOTE_TITLE"
         const val EXTRA_PICKED_NOTE_TYPE = "notes.intent.extra.PICKED_NOTE_TYPE"

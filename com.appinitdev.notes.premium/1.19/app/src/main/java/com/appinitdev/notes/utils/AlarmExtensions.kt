@@ -1,6 +1,4 @@
-
 private const val TAG = "ReminderExtensions"
-
 fun Context.scheduleReminder(noteId: Long, reminder: Reminder, forceRepetition: Boolean = false) {
     val now = Date()
     if (forceRepetition || reminder.dateTime.before(now)) {
@@ -20,19 +18,16 @@ fun Context.scheduleReminder(noteId: Long, reminder: Reminder, forceRepetition: 
         scheduleReminder(noteId, reminder.id, reminder.dateTime)
     }
 }
-
 fun Context.scheduleNoteReminders(noteReminders: List<NoteIdReminder>) {
     noteReminders.forEach { (noteId, reminders) ->
         reminders.forEach { reminder -> scheduleReminder(noteId, reminder) }
     }
 }
-
 fun Context.cancelNoteReminders(noteReminders: List<NoteIdReminder>) {
     noteReminders.forEach { (noteId, reminders) ->
         reminders.forEach { reminder -> cancelReminder(noteId, reminder.id) }
     }
 }
-
 @SuppressLint("ScheduleExactAlarm")
 private fun Context.scheduleReminder(noteId: Long, reminderId: Long, dateTime: Date) {
     val pendingIntent = createReminderAlarmIntent(noteId, reminderId)
@@ -49,7 +44,6 @@ private fun Context.scheduleReminder(noteId: Long, reminderId: Long, dateTime: D
         }
     }
 }
-
 fun Context.cancelReminder(noteId: Long, reminderId: Long) {
     Log.d(TAG, "cancelScheduledReminder: noteId: $noteId reminderId: $reminderId")
     val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -57,7 +51,6 @@ fun Context.cancelReminder(noteId: Long, reminderId: Long) {
     alarmManager.cancel(pendingIntent)
     pendingIntent.cancel()
 }
-
 private fun Context.createReminderAlarmIntent(noteId: Long, reminderId: Long): PendingIntent {
     val intent = Intent(this, ReminderReceiver::class.java)
     intent.putExtra(ReminderReceiver.EXTRA_REMINDER_ID, reminderId)
@@ -69,7 +62,6 @@ private fun Context.createReminderAlarmIntent(noteId: Long, reminderId: Long): P
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
     )
 }
-
 fun Context.canScheduleAlarms() =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         getSystemService<AlarmManager>()?.canScheduleExactAlarms() == true

@@ -1,4 +1,3 @@
-
 data class FeatureItem(
     val type: AppFeatureType,
     val titleRes: StringResource,
@@ -6,7 +5,6 @@ data class FeatureItem(
     val click: () -> Unit,
 ) {
     companion object {
-
         fun getList(navController: NavHostController): List<FeatureItem> {
             val list = mutableListOf(
                 FeatureItem(AppFeatureType.IMAGES, Res.string.images, Res.drawable.image) {
@@ -19,13 +17,11 @@ data class FeatureItem(
                     navController.navigate(Routing.Docs)
                 },
             )
-
             if (AppFeatureType.APPS.has()) {
                 list.add(FeatureItem(AppFeatureType.APPS, Res.string.apps, Res.drawable.layout_grid) {
                     navController.navigate(Routing.Apps)
                 })
             }
-
             list.addAll(
                 listOf(
                     FeatureItem(AppFeatureType.NOTES, Res.string.notes, Res.drawable.notebook_pen) {
@@ -54,9 +50,7 @@ data class FeatureItem(
                     },
                 )
             )
-
             return list
         }
-
     }
 }

@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommunityAppsSection(
@@ -13,18 +12,14 @@ fun CommunityAppsSection(
     val user = FirebaseAuth.getInstance().currentUser
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-
     var showFilterSheet by remember { mutableStateOf(false) }
     var sortBy by remember { mutableStateOf("priority") } 
     var filterByInstalled by remember { mutableStateOf("all") } 
     var quickFilter by remember { mutableStateOf("all") } 
-
     LaunchedEffect(Unit) {
         viewModel.loadCommunityApps(context)
     }
-
     val featuredApps = remember(apps) { apps.filter { it.isBoosted }.take(5) }
-
     val categorias = remember(categoriasBase, searchQuery, sortBy, filterByInstalled, quickFilter, context) {
         fun procesarLista(list: List<AppModel>): List<AppModel> {
             var res = if (searchQuery.isBlank()) list
@@ -32,20 +27,17 @@ fun CommunityAppsSection(
                 it.nombre.contains(searchQuery, ignoreCase = true) ||
                 it.categoria.contains(searchQuery, ignoreCase = true)
             }
-
             res = when (filterByInstalled) {
                 "installed" -> res.filter { Funciones.isAppInstalled(context, it.paquete) }
                 "not_installed" -> res.filter { !Funciones.isAppInstalled(context, it.paquete) }
                 else -> res
             }
-
             res = when (quickFilter) {
                 "google_group" -> res.filter { it.metodoTest == "google_group" || it.urlGoogleGroup.isNotBlank() }
                 "paid" -> res.filter { it.esDePago }
                 "near_20" -> res.filter { it.testers.size in 5..19 }
                 else -> res
             }
-
             return when (sortBy) {
                 "priority" -> res.sortedWith(
                     compareByDescending<AppModel> { it.isBoosted }
@@ -58,7 +50,6 @@ fun CommunityAppsSection(
                 else -> res
             }
         }
-
         com.appinitdev.tester.model.CategoriasApps(
             explorar = procesarLista(categoriasBase.explorar),
             aceptadas = procesarLista(categoriasBase.aceptadas),
@@ -66,7 +57,6 @@ fun CommunityAppsSection(
             rechazadas = procesarLista(categoriasBase.rechazadas)
         )
     }
-
     val tabs = remember(categorias) {
         val list = mutableListOf(
             Triple(1, R.string.mis_grupos_de_chat, categorias.aceptadas),
@@ -80,7 +70,6 @@ fun CommunityAppsSection(
         }
         list
     }
-
     val initialPageIndex = remember(categoriasBase.aceptadas) {
         val misGruposIdx = tabs.indexOfFirst { it.first == 1 }
         val explorarIdx = tabs.indexOfFirst { it.first == 0 }
@@ -88,12 +77,10 @@ fun CommunityAppsSection(
         else if (misGruposIdx >= 0) misGruposIdx
         else 0
     }
-
     val pagerState = rememberPagerState(
         initialPage = initialPageIndex,
         pageCount = { tabs.size }
     )
-
     var initialTargetSet by remember { mutableStateOf(false) }
     LaunchedEffect(isLoading, categoriasBase.aceptadas) {
         if (!isLoading && !initialTargetSet) {
@@ -106,15 +93,12 @@ fun CommunityAppsSection(
             }
         }
     }
-
     var isRefreshing by remember { mutableStateOf(false) }
-
     if (showFilterSheet) {
         ModalBottomSheet(onDismissRequest = { showFilterSheet = false }) {
             Column(modifier = Modifier.padding(24.dp).fillMaxWidth()) {
                 Text(stringResource(R.string.filtros), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(16.dp))
-                
                 Text(stringResource(R.string.ordenar_por), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     FilterChip(selected = sortBy == "priority", onClick = { sortBy = "priority" }, label = { Text(stringResource(R.string.recomendadas_prioridad)) })
@@ -122,7 +106,6 @@ fun CommunityAppsSection(
                     FilterChip(selected = sortBy == "reputation", onClick = { sortBy = "reputation" }, label = { Text(stringResource(R.string.mejor_reputacion)) })
                     FilterChip(selected = sortBy == "name", onClick = { sortBy = "name" }, label = { Text(stringResource(R.string.nombre)) })
                 }
-                
                 Spacer(Modifier.height(16.dp))
                 Text(stringResource(R.string.filtrar), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -130,7 +113,6 @@ fun CommunityAppsSection(
                     FilterChip(selected = filterByInstalled == "installed", onClick = { filterByInstalled = "installed" }, label = { Text(stringResource(R.string.solo_instaladas)) })
                     FilterChip(selected = filterByInstalled == "not_installed", onClick = { filterByInstalled = "not_installed" }, label = { Text(stringResource(R.string.solo_no_instaladas)) })
                 }
-                
                 Spacer(Modifier.height(32.dp))
                 Button(onClick = { showFilterSheet = false }, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.listo))
@@ -139,7 +121,6 @@ fun CommunityAppsSection(
             }
         }
     }
-
     PullToRefreshBox(
         isRefreshing = isRefreshing,
         onRefresh = {
@@ -153,7 +134,6 @@ fun CommunityAppsSection(
         modifier = Modifier.fillMaxSize()
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            
         if (featuredApps.isNotEmpty() && tabs.getOrNull(pagerState.currentPage)?.first == 0 && searchQuery.isEmpty()) {
             Text(
                 stringResource(R.string.apps_destacadas),
@@ -164,8 +144,6 @@ fun CommunityAppsSection(
             )
             FeaturedCarousel(featuredApps, navController)
         }
-
-        
         Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             OutlinedTextField(
                 value = searchQuery,
@@ -194,8 +172,6 @@ fun CommunityAppsSection(
                 }
             }
         }
-
-        
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -224,7 +200,6 @@ fun CommunityAppsSection(
                 label = { Text(stringResource(R.string.chip_de_pago), fontSize = 12.sp) }
             )
         }
-
         ScrollableTabRow(
             selectedTabIndex = pagerState.currentPage,
             edgePadding = 16.dp,
@@ -246,14 +221,12 @@ fun CommunityAppsSection(
                 )
             }
         }
-
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.weight(1f)
         ) { page ->
             val (_, _, listaAMostrar) = tabs[page]
             val tabListState = androidx.compose.foundation.lazy.rememberLazyListState()
-
             ListaDeAppsComponente(
                 apps = listaAMostrar,
                 isJoined = tabs[page].first == 1,
@@ -268,7 +241,6 @@ fun CommunityAppsSection(
     }
 }
 }
-
 @Composable
 fun ListaDeAppsComponente(
     apps: List<AppModel>,
@@ -311,7 +283,6 @@ fun ListaDeAppsComponente(
         }
     }
 }
-
 @Composable
 fun CommunityAppItem(
     app: AppModel,
@@ -327,7 +298,6 @@ fun CommunityAppItem(
         val sdf = java.text.SimpleDateFormat("dd MMM yyyy", java.util.Locale.getDefault())
         sdf.format(java.util.Date(app.fechaCreacion))
     }
-
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -395,7 +365,6 @@ fun CommunityAppItem(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-
                     Row(
                         modifier = Modifier.padding(top = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -420,9 +389,7 @@ fun CommunityAppItem(
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.width(8.dp))
-
                 Column(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(6.dp)
@@ -446,14 +413,12 @@ fun CommunityAppItem(
                     }
                 }
             }
-
             Spacer(modifier = Modifier.height(14.dp))
             HorizontalDivider(
                 thickness = 0.5.dp,
                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
             )
             Spacer(modifier = Modifier.height(12.dp))
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -486,7 +451,6 @@ fun CommunityAppItem(
                             )
                         }
                     }
-
                     if (isJoined) {
                         val dias = app.testers[currentUserId]?.dias ?: 0
                         Surface(
@@ -507,7 +471,6 @@ fun CommunityAppItem(
                         }
                     }
                 }
-
                 Surface(
                     color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.6f),
                     shape = RoundedCornerShape(8.dp),
@@ -536,7 +499,6 @@ fun CommunityAppItem(
         }
     }
 }
-
 @Composable
 fun FaltaInstalarBadge(modifier: Modifier = Modifier) {
     val infiniteTransition = rememberInfiniteTransition(label = "pulse")
@@ -549,7 +511,6 @@ fun FaltaInstalarBadge(modifier: Modifier = Modifier) {
         ),
         label = "scale"
     )
-
     Surface(
         modifier = modifier.graphicsLayer(scaleX = scale, scaleY = scale),
         color = MaterialTheme.colorScheme.errorContainer,
@@ -578,7 +539,6 @@ fun FaltaInstalarBadge(modifier: Modifier = Modifier) {
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeveloperProfileModal(developerId: String, viewModel: AuthViewModel, onDismiss: () -> Unit) {
@@ -604,7 +564,6 @@ fun DeveloperProfileModal(developerId: String, viewModel: AuthViewModel, onDismi
         }
     }
 }
-
 @Composable
 fun StatItem(label: String, value: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -612,11 +571,9 @@ fun StatItem(label: String, value: String) {
         Text(label, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
     }
 }
-
 @Composable
 fun FeaturedCarousel(apps: List<AppModel>, navController: NavController) {
     val pagerState = rememberPagerState(pageCount = { apps.size })
-    
     HorizontalPager(
         state = pagerState,
         contentPadding = PaddingValues(horizontal = 32.dp),

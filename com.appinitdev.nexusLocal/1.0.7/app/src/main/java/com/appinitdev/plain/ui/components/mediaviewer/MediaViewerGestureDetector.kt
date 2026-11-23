@@ -1,4 +1,3 @@
-
 suspend fun PointerInputScope.detectTransformGestures(
     panZoomLock: Boolean = false,
     gestureStart: () -> Unit = {},
@@ -16,12 +15,10 @@ suspend fun PointerInputScope.detectTransformGestures(
         var pastTouchSlop = false
         val touchSlop = viewConfiguration.touchSlop
         var lockedToPanZoom = false
-
         awaitFirstDown(requireUnconsumed = false)
         val t0 = System.currentTimeMillis()
         var releasedEvent: PointerEvent? = null
         var moveCount = 0
-
         gestureStart()
         do {
             val event = awaitPointerEvent()
@@ -32,7 +29,6 @@ suspend fun PointerInputScope.detectTransformGestures(
                 val zoomChange = event.calculateZoom()
                 val rotationChange = event.calculateRotation()
                 val panChange = event.calculatePan()
-
                 if (!pastTouchSlop) {
                     zoom *= zoomChange
                     rotation += rotationChange
@@ -55,11 +51,9 @@ suspend fun PointerInputScope.detectTransformGestures(
                 }
             }
         } while (!canceled && event.changes.fastAny { it.pressed })
-
         var t1 = System.currentTimeMillis()
         val dt = t1 - t0
         val dlt = t1 - lastReleaseTime
-
         if (moveCount == 0) releasedEvent?.let { e ->
             if (e.changes.isEmpty()) return@let
             val offset = e.changes.first().position

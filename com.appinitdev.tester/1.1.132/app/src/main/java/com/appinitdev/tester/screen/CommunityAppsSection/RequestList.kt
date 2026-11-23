@@ -1,4 +1,3 @@
-
 @Composable
 fun RequestList(app: AppModel, viewModel: AuthViewModel) {
     var testerParaVer by remember { mutableStateOf<TesterData?>(null) }
@@ -6,7 +5,6 @@ fun RequestList(app: AppModel, viewModel: AuthViewModel) {
     val solicitudes = remember(app.testers) {
         app.testers.values.filter { it.validado == "Solicitud" }
     }
-
     testerParaVer?.let {
         TesterProfileModal(
             testerData = it,
@@ -14,7 +12,6 @@ fun RequestList(app: AppModel, viewModel: AuthViewModel) {
             onDismiss = { testerParaVer = null }
         )
     }
-
     if (solicitudes.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
             Text(

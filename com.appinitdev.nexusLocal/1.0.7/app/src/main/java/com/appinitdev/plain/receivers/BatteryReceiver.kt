@@ -1,4 +1,3 @@
-
 object BatteryReceiver {
     fun get(context: Context): DBattery {
         val data = DBattery()
@@ -24,7 +23,6 @@ object BatteryReceiver {
         BatteryManager.BATTERY_HEALTH_COLD
         return data
     }
-
     private fun getBatteryCapacity(context: Context): Int {
         var batteryCapacity = 0.0
         val POWER_PROFILE_CLASS = "com.android.internal.os.PowerProfile"

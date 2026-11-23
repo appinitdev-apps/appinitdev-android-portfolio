@@ -1,75 +1,27 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
 @HiltViewModel
 class HomeViewModel @Inject constructor(
         application: Application,
         private val audioRepository: AudioRepository,
         private val songStatRepository: SongStatRepository
 ) : WrappedViewModel(application) {
-
     private val _favorites = MutableStateFlow<List<Audio>>(emptyList())
-
-     
     val favorites: StateFlow<List<Audio>> = _favorites.asStateFlow()
-
     private val _recentlyPlayed = MutableStateFlow<List<Audio>>(emptyList())
-
-     
     val recentlyPlayed: StateFlow<List<Audio>> = _recentlyPlayed.asStateFlow()
-
     private val _mostPlayed = MutableStateFlow<List<Audio>>(emptyList())
-
-     
     val mostPlayed: StateFlow<List<Audio>> = _mostPlayed.asStateFlow()
-
     private val _recentlyAdded = MutableStateFlow<List<Audio>>(emptyList())
-
-     
     val recentlyAdded: StateFlow<List<Audio>> = _recentlyAdded.asStateFlow()
-
     private val _recommended = MutableStateFlow<List<Audio>>(emptyList())
-
-     
-
-
-
     val recommended: StateFlow<List<Audio>> = _recommended.asStateFlow()
-
     private val _libraryStats = MutableStateFlow<Pair<Int, Long>?>(null)
-
-     
-
-
-
     val libraryStats: StateFlow<Pair<Int, Long>?> = _libraryStats.asStateFlow()
-
-     
     private var recommendedJob: Job? = null
-
-     
-
-
-
-
     private val _recommendedRefreshTrigger = MutableStateFlow(0)
-
     private var favoritesJob: Job? = null
     private var recentlyPlayedJob: Job? = null
     private var mostPlayedJob: Job? = null
     private var recentlyAddedJob: Job? = null
-
     init {
         startFavoritesFlow()
         startRecentlyPlayedFlow()
@@ -78,7 +30,6 @@ class HomeViewModel @Inject constructor(
         startRecommendedFlow()
         startLibraryStatsFlow()
     }
-
     private fun startFavoritesFlow() {
         favoritesJob?.cancel()
         favoritesJob = viewModelScope.launch {
@@ -91,7 +42,6 @@ class HomeViewModel @Inject constructor(
                 }
         }
     }
-
     private fun startRecentlyPlayedFlow() {
         recentlyPlayedJob?.cancel()
         recentlyPlayedJob = viewModelScope.launch {
@@ -104,7 +54,6 @@ class HomeViewModel @Inject constructor(
                 }
         }
     }
-
     private fun startMostPlayedFlow() {
         mostPlayedJob?.cancel()
         mostPlayedJob = viewModelScope.launch {
@@ -117,7 +66,6 @@ class HomeViewModel @Inject constructor(
                 }
         }
     }
-
     private fun startRecentlyAddedFlow() {
         recentlyAddedJob?.cancel()
         recentlyAddedJob = viewModelScope.launch {
@@ -130,15 +78,6 @@ class HomeViewModel @Inject constructor(
                 }
         }
     }
-
-     
-
-
-
-
-
-
-
     private fun startRecommendedFlow() {
         recommendedJob?.cancel()
         recommendedJob = viewModelScope.launch(Dispatchers.IO) {
@@ -159,19 +98,6 @@ class HomeViewModel @Inject constructor(
                 }
         }
     }
-
-     
-
-
-
-
-
-
-
-
-
-
-
     private fun computeRecommended(
             mostPlayedList: List<Audio>,
             recentlyPlayedList: List<Audio>,
@@ -182,9 +108,7 @@ class HomeViewModel @Inject constructor(
         val recentlyPlayed = recentlyPlayedList
             .filterNot { it.id in mostPlayedIds }
             .take(RECOMMENDED_RECENTLY_PLAYED_COUNT)
-
         val composed = (mostPlayed + recentlyPlayed).distinctBy { it.id }
-
         return if (composed.size >= RECOMMENDED_MAX_COUNT) {
             composed.shuffled().take(RECOMMENDED_MAX_COUNT)
         } else {
@@ -195,12 +119,6 @@ class HomeViewModel @Inject constructor(
             (composed + filler).shuffled()
         }
     }
-
-     
-
-
-
-
     private fun startLibraryStatsFlow() {
         viewModelScope.launch {
             audioRepository.getAllAudio()
@@ -213,7 +131,6 @@ class HomeViewModel @Inject constructor(
                 }
         }
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -227,22 +144,11 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-
     companion object {
         private const val TAG = "HomeViewModel"
         private const val TAKE_COUNT = 18
-
-         
-
-
-
-
         private const val RECOMMENDED_MAX_COUNT = 30
-
-         
         private const val RECOMMENDED_MOST_PLAYED_COUNT = 8
-
-         
         private const val RECOMMENDED_RECENTLY_PLAYED_COUNT = 6
     }
 }

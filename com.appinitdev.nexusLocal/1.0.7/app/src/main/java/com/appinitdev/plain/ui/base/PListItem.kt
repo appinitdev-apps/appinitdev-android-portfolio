@@ -1,5 +1,3 @@
-
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PListItem(
@@ -85,7 +83,6 @@ fun PListItem(
                     color = MaterialTheme.colorScheme.onSurface.copy(0.2f),
                 )
             }
-
             if (value != null || action != null) {
                 Box(Modifier.padding(start = 16.dp)) {
                     action?.invoke()
@@ -101,7 +98,6 @@ fun PListItem(
                     }
                 }
             }
-
             if (showMore) {
                 Icon(
                     painter = painterResource(Res.drawable.chevron_right),

@@ -1,4 +1,3 @@
-
 @Composable
 fun TopicCard(
     topic: MathTopic,
@@ -22,7 +21,6 @@ fun TopicCard(
                 .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            
             Box(
                 modifier = Modifier
                     .size(42.dp)
@@ -36,9 +34,7 @@ fun TopicCard(
                     modifier = Modifier.size(22.dp)
                 )
             }
-
             Spacer(modifier = Modifier.width(12.dp))
-
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -50,7 +46,6 @@ fun TopicCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-
                 if (topic.summarySnippet.isNotBlank()) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
@@ -61,9 +56,7 @@ fun TopicCard(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-
                 Spacer(modifier = Modifier.height(8.dp))
-
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -82,7 +75,6 @@ fun TopicCard(
                             )
                         }
                     }
-
                     Surface(
                         shape = RoundedCornerShape(8.dp),
                         color = MaterialTheme.colorScheme.tertiaryContainer
@@ -97,9 +89,7 @@ fun TopicCard(
                     }
                 }
             }
-
             Spacer(modifier = Modifier.width(6.dp))
-
             IconButton(onClick = onFavoriteClick) {
                 Text(
                     text = if (topic.isFavorite) "★" else "☆",

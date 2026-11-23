@@ -1,33 +1,13 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class NotificationArchManager(
     private val context: Context,
     private val activityClass: Class<*>,
 ) {
     private val notificationManager: NotificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
     init {
         createMainNotificationChannel()
         createReminderChannel()
     }
-
     fun buildInProgressNotification(data: DomainTimerData): Notification {
         val isCountDown = data.isCurrentSessionCountdown()
         val baseTime = if (isCountDown) data.endTime else data.startTime + data.timeSpentPaused
@@ -52,12 +32,10 @@ class NotificationArchManager(
                 } else {
                     context.getString(R.string.main_break_in_progress)
                 }
-
         val colorIndex =
             data.label.label.colorIndex
                 .toInt()
         val shouldColorize = !Build.MANUFACTURER.contains("Xiaomi") && colorIndex != DEFAULT_LABEL_COLOR_INDEX
-
         val icon = if (timerType.isFocus) R.drawable.ic_status_goodtime else R.drawable.ic_break
         val builder =
             NotificationCompat.Builder(context, MAIN_CHANNEL_ID).apply {
@@ -151,14 +129,12 @@ class NotificationArchManager(
         }
         return builder.build()
     }
-
     fun notifyFinished(
         data: DomainTimerData,
         withActions: Boolean,
     ) {
         val timerType = data.type
         val labelName = data.getLabelName()
-
         val mainStateText =
             if (timerType == TimerType.FOCUS) {
                 context.getString(R.string.main_focus_session_finished)
@@ -167,7 +143,6 @@ class NotificationArchManager(
             }
         val labelText = if (data.isDefaultLabel()) "" else "$labelName - "
         val stateText = "$labelText$mainStateText"
-
         val builder =
             NotificationCompat.Builder(context, MAIN_CHANNEL_ID).apply {
                 setSmallIcon(R.drawable.ic_status_goodtime)
@@ -209,11 +184,9 @@ class NotificationArchManager(
         builder.extend(extender)
         notificationManager.notify(FINISHED_NOTIFICATION_ID, builder.build())
     }
-
     fun clearFinishedNotification() {
         notificationManager.cancel(FINISHED_NOTIFICATION_ID)
     }
-
     fun notifyReminder() {
         val pendingIntent = createOpenActivityIntent(activityClass)
         val builder =
@@ -230,7 +203,6 @@ class NotificationArchManager(
                 .setContentText(context.getString(R.string.main_productivity_reminder_desc))
         notificationManager.notify(REMINDER_NOTIFICATION_ID, builder.build())
     }
-
     private fun createMainNotificationChannel() {
         val name = context.getString(R.string.main_notifications_channel_name)
         val importance = NotificationManager.IMPORTANCE_DEFAULT
@@ -244,7 +216,6 @@ class NotificationArchManager(
             }
         notificationManager.createNotificationChannel(channel)
     }
-
     private fun createReminderChannel() {
         val name = context.getString(R.string.main_reminder_channel_name)
         val importance = NotificationManager.IMPORTANCE_HIGH
@@ -254,7 +225,6 @@ class NotificationArchManager(
             }
         notificationManager.createNotificationChannel(channel)
     }
-
     private fun buildChronometer(
         base: Long,
         running: Boolean,
@@ -274,7 +244,6 @@ class NotificationArchManager(
         }
         return content
     }
-
     private fun createOpenActivityIntent(activityClass: Class<*>): PendingIntent {
         val intent = Intent(context, activityClass)
         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -285,7 +254,6 @@ class NotificationArchManager(
             PendingIntent.FLAG_IMMUTABLE,
         )
     }
-
     private fun createNotificationAction(
         icon: IconCompat? = null,
         title: String,
@@ -302,9 +270,7 @@ class NotificationArchManager(
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
                 ),
             ).build()
-
     fun isDndModeEnabled(): Boolean = notificationManager.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
-
     fun toggleDndMode(enabled: Boolean) {
         if (!isNotificationPolicyAccessGranted()) {
             return
@@ -315,9 +281,7 @@ class NotificationArchManager(
             notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
         }
     }
-
     fun isNotificationPolicyAccessGranted(): Boolean = notificationManager.isNotificationPolicyAccessGranted
-
     companion object {
         const val MAIN_CHANNEL_ID = "goodtime.notification"
         const val IN_PROGRESS_NOTIFICATION_ID = 42

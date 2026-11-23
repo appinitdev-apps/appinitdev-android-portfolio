@@ -1,66 +1,44 @@
-
- 
-
-
-
-
 class Artists : BasePanelFragment() {
-
     private lateinit var binding: FragmentArtistsBinding
     private lateinit var headerBinding: HeaderArtistsBinding
-
     private var adapterArtists: AdapterArtists? = null
-
     private val artistViewModel: ArtistsViewModel by viewModels({ requireActivity() })
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentArtistsBinding.inflate(inflater, container, false)
         headerBinding = HeaderArtistsBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.header.setContentView(headerBinding.root)
         binding.header.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
         binding.recyclerView.attachSlideFastScroller()
         binding.recyclerView.requireAttachedMiniPlayer()
-
         binding.recyclerView.setupGridLayoutManager(ArtistPreferences.getGridSize().spanCount)
-
         setupClickListeners()
-
         adapterArtists?.let { binding.recyclerView.adapter = it }
-
         artistViewModel.artists.collectListWhenStarted({ adapterArtists != null }) { artists ->
             updateArtistsList(artists.toMutableList())
         }
     }
-
     override fun onDestroyView() {
         adapterArtists = null
         super.onDestroyView()
     }
-
     private fun setupClickListeners() {
         headerBinding.sortStyle.setOnClickListener {
             childFragmentManager.showArtistsSort()
         }
-
         headerBinding.search.setOnClickListener {
             openSearch()
         }
-
         headerBinding.menu.setOnClickListener {
             openPreferencesPanel()
         }
-
         headerBinding.listStyle.setOnClickListener {
             childFragmentManager.showListStyleDialog(GenericListStyleDialog.Companion.PANEL.ARTISTS)
         }
     }
-
     private fun updateArtistsList(artists: MutableList<Artist>) {
         if (adapterArtists == null) {
             adapterArtists = AdapterArtists(artists)
@@ -69,7 +47,6 @@ class Artists : BasePanelFragment() {
                 override fun onArtistClicked(artists: List<Artist>, position: Int, view: View) {
                     openFragment(ArtistPage.newInstance(artists[position]), ArtistPage.TAG)
                 }
-
                 override fun onArtistLongClicked(artists: List<Artist>, position: Int, imageView: ImageView?) {
                     val artist = artists.getOrNull(position) ?: return
                     openArtistMenu(artist, imageView)
@@ -82,20 +59,17 @@ class Artists : BasePanelFragment() {
                 binding.recyclerView.adapter = adapterArtists
             }
         }
-
         headerBinding.count.text = getString(R.string.x_artists, artists.size)
         binding.recyclerView.requireAttachedSectionScroller(
                 sections = provideScrollPositionDataBasedOnSortStyle(artists = artists),
                 header = binding.header,
                 view = headerBinding.scroll)
-
         headerBinding.sortStyle.setCurrentSortStyle()
         headerBinding.scroll.hideOnUnfavorableSort(
                 sorts = listOf(CommonPreferencesConstants.BY_NAME),
                 preference = ArtistPreferences.getArtistSort()
         )
     }
-
     private fun provideScrollPositionDataBasedOnSortStyle(artists: List<Artist>): List<SectionedFastScroller.Position> {
         when (ArtistPreferences.getArtistSort()) {
             CommonPreferencesConstants.BY_NAME -> {
@@ -108,10 +82,8 @@ class Artists : BasePanelFragment() {
                 return firstAlphabetToIndex.map { (char, index) -> SectionedFastScroller.Position(char, index) }
             }
         }
-
         return emptyList()
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -120,7 +92,6 @@ class Artists : BasePanelFragment() {
             }
         }
     }
-
     companion object {
         fun newInstance(): Artists {
             val args = Bundle()
@@ -128,7 +99,6 @@ class Artists : BasePanelFragment() {
             fragment.arguments = args
             return fragment
         }
-
         const val TAG = "Artists"
     }
 }

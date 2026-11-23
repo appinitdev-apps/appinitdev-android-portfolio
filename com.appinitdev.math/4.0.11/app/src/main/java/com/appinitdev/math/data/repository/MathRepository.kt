@@ -1,40 +1,31 @@
-
 class MathRepository(private val context: Context) {
-
     private val prefs: SharedPreferences =
         context.getSharedPreferences("math_app_prefs", Context.MODE_PRIVATE)
-
     private var cachedTopics: List<MathTopic>? = null
     private var cachedCategories: List<MathCategory>? = null
     private var cachedLang: String? = null
-
     fun getSelectedLanguage(): String {
         return prefs.getString("selected_lang", "es") ?: "es"
     }
-
     fun setSelectedLanguage(langCode: String) {
         prefs.edit().putString("selected_lang", langCode).apply()
         clearCache()
     }
-
     fun clearCache() {
         cachedTopics = null
         cachedCategories = null
     }
-
     private fun getLanguageBasePath(): String {
         val lang = getSelectedLanguage()
         val availableLangs = listOf("es", "en", "de", "fr", "pt", "zh", "ja", "ko", "hi", "id", "ru", "nl", "sv", "no", "da", "pl", "th", "tr", "uk", "vi")
         val activeLang = if (availableLangs.contains(lang)) lang else "es"
         return "Data/$activeLang"
     }
-
     fun getCategories(): List<MathCategory> {
         val currentLang = getSelectedLanguage()
         if (cachedCategories != null && cachedLang == currentLang) {
             return cachedCategories!!
         }
-
         val basePath = getLanguageBasePath()
         val allTopics = getAllTopics()
         val categoryFolders = try {
@@ -44,7 +35,6 @@ class MathRepository(private val context: Context) {
         } catch (_: Exception) {
             emptyList()
         }
-
         val list = categoryFolders.map { folder ->
             val info = getCategoryInfo(folder)
             val topicCount = allTopics.count { it.categoryId == folder }
@@ -57,12 +47,10 @@ class MathRepository(private val context: Context) {
             )
         }.filter { it.topicCount > 0 }
             .sortedBy { it.title }
-
         cachedCategories = list
         cachedLang = currentLang
         return list
     }
-
     fun getAllTopics(): List<MathTopic> {
         val currentLang = getSelectedLanguage()
         if (cachedTopics != null && cachedLang == currentLang) {
@@ -71,26 +59,21 @@ class MathRepository(private val context: Context) {
                 topic.copy(isFavorite = favorites.contains(topic.id))
             }
         }
-
         val basePath = getLanguageBasePath()
         val topicList = mutableListOf<MathTopic>()
         val favorites = getFavoritesSet()
-
         try {
             val categories = context.assets.list(basePath) ?: emptyArray()
             for (category in categories) {
                 if (category == "category") continue
                 val categoryPath = "$basePath/$category"
                 val files = context.assets.list(categoryPath) ?: continue
-
                 for (file in files) {
                     if (file.endsWith(".md")) {
                         val filePath = "$categoryPath/$file"
                         val topicId = "$category/$file"
-
                         val title = getTopicTitleFromFile(filePath, file)
                         val analysis = analyzeMarkdownFile(filePath)
-
                         topicList.add(
                             MathTopic(
                                 id = topicId,
@@ -110,13 +93,11 @@ class MathRepository(private val context: Context) {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
         val sortedList = topicList.sortedBy { it.title }
         cachedTopics = sortedList
         cachedLang = currentLang
         return sortedList
     }
-
     private val genericTitleWords = setOf(
         "definición", "definicion", "definition", "definitionen", "definição", "definicao", "définition", "definizione",
         "ejemplo", "ejemplo 1", "ejemplo 2", "example", "example 1", "example 2", "beispiel", "beispiel 1", "exemple", "exemplo",
@@ -126,7 +107,6 @@ class MathRepository(private val context: Context) {
         "propiedades", "properties", "eigenschaften", "propriétés", "propriedades",
         "statement of the theorem", "there is always a way", "order of an infinitesimal"
     )
-
     private fun getTopicTitleFromFile(filePath: String, fileName: String): String {
         val formatted = formatTopicTitle(fileName)
         val formattedLower = formatted.lowercase().trim()
@@ -134,7 +114,6 @@ class MathRepository(private val context: Context) {
         if (!isFormattedGeneric && formatted.isNotBlank()) {
             return formatted
         }
-
         try {
             val inputStream = context.assets.open(filePath)
             val reader = BufferedReader(InputStreamReader(inputStream, "UTF-8"))
@@ -151,29 +130,22 @@ class MathRepository(private val context: Context) {
                 }
             }
         } catch (_: Exception) {
-            
         }
         return fileName.removeSuffix(".md").replace("-", " ").capitalizeWords()
     }
-
     fun advancedSearch(query: String, filterOnlyExamples: Boolean = false): List<SearchResultMatch> {
         if (query.isBlank()) return emptyList()
         val q = query.trim().lowercase()
         val allTopics = getAllTopics()
         val results = mutableListOf<SearchResultMatch>()
-
         for (topic in allTopics) {
             if (filterOnlyExamples && !topic.hasExamples) continue
-
             val titleMatch = topic.title.lowercase().contains(q)
             val categoryMatch = topic.categoryId.lowercase().contains(q)
-
             val markdown = getTopicMarkdownContent(topic.filePath)
             val lines = markdown.split("\n")
-
             var matchedSubtopic: String? = null
             var matchedLineSnippet: String? = null
-
             for (line in lines) {
                 if (line.trim().startsWith("##") && line.lowercase().contains(q)) {
                     matchedSubtopic = line.replace("#", "").trim()
@@ -182,7 +154,6 @@ class MathRepository(private val context: Context) {
                     matchedLineSnippet = line.replace("$", "").trim().take(120)
                 }
             }
-
             if (titleMatch || categoryMatch || matchedSubtopic != null || matchedLineSnippet != null) {
                 val matchType = when {
                     titleMatch -> "Título"
@@ -190,7 +161,6 @@ class MathRepository(private val context: Context) {
                     else -> "Contenido"
                 }
                 val snippet = matchedSubtopic ?: matchedLineSnippet ?: topic.summarySnippet
-
                 results.add(
                     SearchResultMatch(
                         topic = topic,
@@ -203,11 +173,9 @@ class MathRepository(private val context: Context) {
         }
         return results
     }
-
     fun getTopicsForCategory(categoryId: String): List<MathTopic> {
         return getAllTopics().filter { it.categoryId == categoryId }
     }
-
     fun getTopicMarkdownContent(filePath: String): String {
         return try {
             val inputStream = context.assets.open(filePath)
@@ -217,7 +185,6 @@ class MathRepository(private val context: Context) {
             "# Error\nNo se pudo cargar el contenido de $filePath"
         }
     }
-
     fun toggleFavorite(topicId: String): Boolean {
         val favorites = getFavoritesSet().toMutableSet()
         val isFav = if (favorites.contains(topicId)) {
@@ -230,12 +197,10 @@ class MathRepository(private val context: Context) {
         prefs.edit().putStringSet("favorites", favorites).apply()
         return isFav
     }
-
     fun getFavoriteTopics(): List<MathTopic> {
         val favorites = getFavoritesSet()
         return getAllTopics().filter { favorites.contains(it.id) }
     }
-
     fun addRecentTopic(topicId: String) {
         val current = getRecentTopicIds().toMutableList()
         current.remove(topicId)
@@ -243,25 +208,21 @@ class MathRepository(private val context: Context) {
         val trimmed = current.take(10)
         prefs.edit().putString("recent_topics", trimmed.joinToString(",")).apply()
     }
-
     private fun getRecentTopicIds(): List<String> {
         val str = prefs.getString("recent_topics", "") ?: ""
         if (str.isBlank()) return emptyList()
         return str.split(",").filter { it.isNotBlank() }
     }
-
     fun getRecentTopics(): List<MathTopic> {
         val ids = getRecentTopicIds()
         val all = getAllTopics()
         return ids.mapNotNull { id -> all.find { it.id == id } }
     }
-
     fun getPinnedTopicIds(): List<String> {
         val str = prefs.getString("pinned_topics", "") ?: ""
         if (str.isBlank()) return emptyList()
         return str.split(",").filter { it.isNotBlank() }
     }
-
     fun togglePinnedTopic(topicId: String): Boolean {
         val current = getPinnedTopicIds().toMutableList()
         val isPinned = if (current.contains(topicId)) {
@@ -275,39 +236,30 @@ class MathRepository(private val context: Context) {
         prefs.edit().putString("pinned_topics", trimmed.joinToString(",")).apply()
         return isPinned
     }
-
     fun getPinnedTopics(): List<MathTopic> {
         val ids = getPinnedTopicIds()
         val all = getAllTopics()
         return ids.mapNotNull { id -> all.find { it.id == id } }
     }
-
     fun isTopicPinned(topicId: String): Boolean {
         return getPinnedTopicIds().contains(topicId)
     }
-
     fun getNoteForTopic(topicId: String): String {
         return prefs.getString("note_$topicId", "") ?: ""
     }
-
     fun saveNoteForTopic(topicId: String, note: String) {
         prefs.edit().putString("note_$topicId", note).apply()
     }
-
     fun getThemeMode(): String {
         return prefs.getString("theme_mode", "SYSTEM") ?: "SYSTEM"
     }
-
     fun setThemeMode(mode: String) {
         prefs.edit().putString("theme_mode", mode).apply()
     }
-
     private fun getFavoritesSet(): Set<String> {
         return prefs.getStringSet("favorites", emptySet()) ?: emptySet()
     }
-
     private data class FileAnalysis(val snippet: String, val exampleCount: Int)
-
     private fun analyzeMarkdownFile(filePath: String): FileAnalysis {
         var snippet = ""
         var exampleCount = 0
@@ -315,18 +267,15 @@ class MathRepository(private val context: Context) {
             val inputStream = context.assets.open(filePath)
             val reader = BufferedReader(InputStreamReader(inputStream, "UTF-8"))
             val lines = reader.readLines()
-
             val exampleKeywords = listOf(
                 "example", "ejemplo", "beispiel", "exemple", "exemplo",
                 "пример", "приклад", "przykład", "eksempel", "örnek",
                 "ví dụ", "contoh", "उदाहरण", "示例", "例子", "例", "예제", "예",
                 "solución", "solution", "lösung", "solução", "решение", "розв'язок"
             )
-
             for (line in lines) {
                 val trimmed = line.trim()
                 val lower = trimmed.lowercase()
-
                 if (trimmed.startsWith("## ")) {
                     if (exampleKeywords.any { lower.contains(it) }) {
                         exampleCount++
@@ -336,13 +285,10 @@ class MathRepository(private val context: Context) {
                 }
             }
         } catch (_: Exception) {
-            
         }
         return FileAnalysis(snippet, exampleCount)
     }
-
     private data class CategoryMetadata(val title: String, val description: String, val domain: MathDomain)
-
     private fun getCategoryInfo(folder: String): CategoryMetadata {
         val lang = getSelectedLanguage()
         return when (folder) {
@@ -1528,13 +1474,11 @@ class MathRepository(private val context: Context) {
             )
         }
     }
-
     private fun formatTopicTitle(fileName: String): String {
         val nameWithoutExt = fileName.removeSuffix(".md")
         val lang = getSelectedLanguage()
         val map = TitleMaps.getTitleMap(lang)
         val mappedTitle = map[nameWithoutExt]
-
         if (mappedTitle != null) {
             val lower = mappedTitle.lowercase().trim()
             val isGeneric = genericTitleWords.any { lower == it || lower.startsWith("$it ") || lower.startsWith("$it:") }
@@ -1542,12 +1486,9 @@ class MathRepository(private val context: Context) {
                 return mappedTitle
             }
         }
-
         return nameWithoutExt.replace("-", " ").capitalizeWords()
     }
-
     private fun String.capitalizeWords(): String = split(" ").joinToString(" ") { word ->
         word.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     }
-
 }

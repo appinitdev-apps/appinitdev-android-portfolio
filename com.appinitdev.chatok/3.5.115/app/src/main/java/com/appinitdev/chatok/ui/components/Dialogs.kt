@@ -1,4 +1,3 @@
-
 @Composable
 fun BoostDialog(balance: Int, onDismiss: () -> Unit, onBoost: (Int) -> Unit) {
     val cost = 25
@@ -25,12 +24,10 @@ fun BoostDialog(balance: Int, onDismiss: () -> Unit, onBoost: (Int) -> Unit) {
         textContentColor = Color.LightGray
     )
 }
-
 @Composable
 fun TransferCoinsDialog(balance: Int, onDismiss: () -> Unit, onTransfer: (Int) -> Unit) {
     var amountText by remember { mutableStateOf("") }
     val amount = amountText.toIntOrNull() ?: 0
-    
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.transferir_monedas)) },

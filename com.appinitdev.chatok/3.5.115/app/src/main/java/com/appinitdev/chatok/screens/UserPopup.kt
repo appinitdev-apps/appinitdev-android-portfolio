@@ -1,4 +1,3 @@
-
 @Composable
 fun UserPopup(
     user: UserData,
@@ -10,7 +9,6 @@ fun UserPopup(
 ) {
     var showChatOption by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -40,7 +38,6 @@ fun UserPopup(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
-
                 Box(
                     modifier = Modifier
                         .size(120.dp)
@@ -55,7 +52,6 @@ fun UserPopup(
                 ) {
                     val imageUrl = if (user.ppurl?.isNotBlank() == true) user.ppurl
                     else "https://appinitdev-android.web.app/user.png"
-
                     AsyncImage(
                         model = imageUrl,
                         contentDescription = "Foto de perfil",
@@ -66,9 +62,7 @@ fun UserPopup(
                         error = painterResource(R.drawable.user)
                     )
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = user.username ?: stringResource(R.string.usuario),
@@ -87,7 +81,6 @@ fun UserPopup(
                         )
                     }
                 }
-
                 Text(
                     text = stringResource(R.string.id_formato, user.userId),
                     style = MaterialTheme.typography.labelSmall,
@@ -96,15 +89,10 @@ fun UserPopup(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
-
                 Spacer(modifier = Modifier.height(20.dp))
-
-                
                 InfoRow(icon = Icons.Default.Cake, text = user.age ?: stringResource(R.string.na))
                 InfoRow(icon = Icons.Default.Person, text = user.gender ?: stringResource(R.string.na))
-                
                 Spacer(modifier = Modifier.height(12.dp))
-                
                 user.bio?.let {
                     if(user.bio.length>3) {
                         Text(
@@ -122,9 +110,7 @@ fun UserPopup(
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.height(12.dp))
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
@@ -158,17 +144,13 @@ fun UserPopup(
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.height(12.dp))
-
                 Spacer(modifier = Modifier.height(24.dp))
-
                 if (showChatOption) {
                     val isSeller = user.pref.verificada
                     val isVerified = user.pref.isVerified
                     val needsUnlock = isSeller && isVerified && !(state.userData?.unlockedChats?.contains(user.userId) ?: false) && state.userData?.userId != user.userId
                     val unlockCost = 20 
-
                     if (needsUnlock) {
                         Text(
                             text = stringResource(R.string.perfil_verificado_desc),
@@ -236,7 +218,6 @@ fun UserPopup(
         }
     }
 }
-
 @Composable
 fun InfoRow(icon: ImageVector, text: String) {
     Row(

@@ -1,4 +1,3 @@
-
 private fun isFileShareable(file: File): Boolean {
     if (!file.exists() || !file.canRead()) return false
     val path = file.absolutePath
@@ -8,7 +7,6 @@ private fun isFileShareable(file: File): Boolean {
     }
     return true
 }
-
 @SuppressLint("MissingPermission")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -18,7 +16,6 @@ fun AppPage(navController: NavHostController, id: String) {
     var item by remember { mutableStateOf<DPackageDetail?>(null) }
     var isShareable by remember { mutableStateOf(true) }
     val lifecycleEvent = rememberLifecycleEvent()
-
     LaunchedEffect(lifecycleEvent) {
         if (lifecycleEvent == Lifecycle.Event.ON_RESUME && PackageHelper.isUninstalled(id)) navController.navigateUp()
     }
@@ -28,7 +25,6 @@ fun AppPage(navController: NavHostController, id: String) {
             item?.let { isShareable = isFileShareable(File(it.path)) }
         }
     }
-
     PScaffold(
         topBar = {
             PTopAppBar(navController = navController, title = item?.name ?: "", actions = {

@@ -1,4 +1,3 @@
-
 @Composable
 fun MarkdownText(
     text: String,
@@ -15,21 +14,14 @@ fun MarkdownText(
     val defaultColor = MaterialTheme.colorScheme.onSurface
     val linkTextColor = MaterialTheme.colorScheme.primary
     var mText by remember { mutableStateOf("") }
-
     AndroidView(
         modifier = modifier,
         factory = { factoryContext ->
             TextView(factoryContext).apply {
                 setLinkTextColor(linkTextColor.toArgb())
-
                 setTextIsSelectable(isTextSelectable)
-
-                
-                
                 setTextClassifier(TextClassifier.NO_OP)
-
                 movementMethod = LinkMovementMethod.getInstance()
-
                 if (truncateOnTextOverflow) enableTextOverflow()
             }
         },
@@ -42,7 +34,6 @@ fun MarkdownText(
                     applyLineHeight(style)
                     applyLineSpacing(style)
                     applyTextDecoration(style)
-
                     with(style) {
                         applyTextAlign(textAlign)
                         fontStyle?.let { applyFontStyle(it) }

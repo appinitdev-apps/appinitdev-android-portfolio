@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlashcardsScreen(
@@ -7,9 +6,7 @@ fun FlashcardsScreen(
 ) {
     var selectedCatFilter by remember { mutableStateOf("ALL") }
     var selectedLevelFilter by remember { mutableIntStateOf(0) } 
-
     val allCards = listOf(
-        
         Flashcard(
             "DERIVATIVES",
             1,
@@ -115,8 +112,6 @@ fun FlashcardsScreen(
             "f''(x) = 0  y cambio de signo de f''(x)",
             stringResource(R.string.fc_exp_15)
         ),
-
-        
         Flashcard(
             "INTEGRALS",
             1,
@@ -201,8 +196,6 @@ fun FlashcardsScreen(
             "∬_R f(r, θ) r dr dθ",
             stringResource(R.string.fc_exp_27)
         ),
-
-        
         Flashcard(
             "DIFF_EQ",
             1,
@@ -259,8 +252,6 @@ fun FlashcardsScreen(
             "W(y₁, y₂) = y₁y₂' - y₂y₁' ≠ 0",
             stringResource(R.string.fc_exp_35)
         ),
-
-        
         Flashcard(
             "EQUATIONS",
             1,
@@ -324,8 +315,6 @@ fun FlashcardsScreen(
             "Si z = a + bi es raíz de P(x),  a - bi también lo es",
             stringResource(R.string.fc_exp_44)
         ),
-
-        
         Flashcard(
             "FUNCTIONS",
             1,
@@ -389,8 +378,6 @@ fun FlashcardsScreen(
             "Desplazamiento horizontal h y vertical k",
             stringResource(R.string.fc_exp_53)
         ),
-
-        
         Flashcard(
             "LIMITS",
             1,
@@ -433,8 +420,6 @@ fun FlashcardsScreen(
             "∀ε>0 ∃δ>0 : 0 < |x - c| < δ ⇒ |f(x) - L| < ε",
             stringResource(R.string.fc_exp_59)
         ),
-
-        
         Flashcard(
             "POLYNOMIALS",
             1,
@@ -477,8 +462,6 @@ fun FlashcardsScreen(
             "P(x) = aₙxⁿ + ... + a₀  ⇒  n raíces en ℂ",
             stringResource(R.string.fc_exp_65)
         ),
-
-        
         Flashcard(
             "VECTORS_MATRICES",
             1,
@@ -528,8 +511,6 @@ fun FlashcardsScreen(
             "A · v = λ · v  (v ≠ 0)",
             stringResource(R.string.fc_exp_72)
         ),
-
-        
         Flashcard(
             "TRIGONOMETRY",
             1,
@@ -579,8 +560,6 @@ fun FlashcardsScreen(
             "sin(θ/2) = ± √((1 - cos θ) / 2)",
             stringResource(R.string.fc_exp_79)
         ),
-
-        
         Flashcard(
             "COMPLEX",
             1,
@@ -624,7 +603,6 @@ fun FlashcardsScreen(
             stringResource(R.string.fc_exp_85)
         )
     )
-
     val cats = listOf(
         "ALL" to stringResource(R.string.fc_cat_all),
         "DERIVATIVES" to stringResource(R.string.fc_cat_derivatives),
@@ -638,38 +616,29 @@ fun FlashcardsScreen(
         "TRIGONOMETRY" to stringResource(R.string.fc_cat_trigonometry),
         "COMPLEX" to stringResource(R.string.fc_cat_complex)
     )
-
     val levels = listOf(
         0 to stringResource(R.string.fc_lvl_all),
         1 to stringResource(R.string.fc_lvl_1),
         2 to stringResource(R.string.fc_lvl_2),
         3 to stringResource(R.string.fc_lvl_3)
     )
-
     val context = LocalContext.current
     val db = remember { MathUserDatabase(context) }
     val userCards = remember { mutableStateListOf<Flashcard>() }
-
     fun refreshUserCards() {
         userCards.clear()
         userCards.addAll(db.getUserFlashcards())
     }
-
     LaunchedEffect(Unit) { refreshUserCards() }
-
     var showCreateCardDialog by remember { mutableStateOf(false) }
-
     val isPremium by viewModel.isPremium.collectAsState()
     val activity = context as? Activity
-
     val combinedAllCards = remember(allCards, userCards.toList()) {
         userCards + allCards
     }
-
     val cardsPool = remember(combinedAllCards, isPremium) {
         if (isPremium) combinedAllCards else combinedAllCards.take((combinedAllCards.size + 1) / 2)
     }
-
     val filteredCards = remember(selectedCatFilter, selectedLevelFilter, cardsPool) {
         cardsPool.filter { card ->
             val matchCat = selectedCatFilter == "ALL" || card.category == selectedCatFilter
@@ -677,24 +646,19 @@ fun FlashcardsScreen(
             matchCat && matchLvl
         }
     }
-
     var currentIndex by remember(filteredCards) { mutableIntStateOf(0) }
     var isFlipped by remember { mutableStateOf(false) }
-
     val safeIndex = if (filteredCards.isEmpty()) 0 else currentIndex % filteredCards.size
     val currentCard = if (filteredCards.isNotEmpty()) filteredCards[safeIndex] else null
-
     val rotation by animateFloatAsState(
         targetValue = if (isFlipped) 180f else 0f,
         animationSpec = tween(durationMillis = 400),
         label = "FlipAnimation"
     )
-
     if (showCreateCardDialog) {
         var customQ by remember { mutableStateOf("") }
         var customFormula by remember { mutableStateOf("") }
         var customExp by remember { mutableStateOf("") }
-
         AlertDialog(
             onDismissRequest = { showCreateCardDialog = false },
             title = { Text("➕ " + stringResource(R.string.title_flashcards), fontWeight = FontWeight.Bold) },
@@ -747,7 +711,6 @@ fun FlashcardsScreen(
             }
         )
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -800,12 +763,10 @@ fun FlashcardsScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     items(cats) { (code, label) ->
                         FilterChip(
@@ -819,8 +780,6 @@ fun FlashcardsScreen(
                         )
                     }
                 }
-
-                
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     items(levels) { (lvl, label) ->
                         FilterChip(
@@ -834,7 +793,6 @@ fun FlashcardsScreen(
                         )
                     }
                 }
-
                 if (!isPremium) {
                     Card(
                         modifier = Modifier
@@ -879,7 +837,6 @@ fun FlashcardsScreen(
                     }
                 }
             }
-
             if (currentCard == null) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -920,8 +877,6 @@ fun FlashcardsScreen(
                         }
                     }
                 }
-
-                
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -944,7 +899,6 @@ fun FlashcardsScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         if (rotation <= 90f) {
-                            
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center
@@ -965,7 +919,6 @@ fun FlashcardsScreen(
                                 )
                             }
                         } else {
-                            
                             Column(
                                 modifier = Modifier.graphicsLayer { rotationY = 180f },
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -991,8 +944,6 @@ fun FlashcardsScreen(
                         }
                     }
                 }
-
-                
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -1003,7 +954,6 @@ fun FlashcardsScreen(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -1018,7 +968,6 @@ fun FlashcardsScreen(
                         ) {
                             Text(stringResource(R.string.btn_hard))
                         }
-
                         Button(
                             onClick = {
                                 isFlipped = false
@@ -1029,7 +978,6 @@ fun FlashcardsScreen(
                         ) {
                             Text(stringResource(R.string.btn_good))
                         }
-
                         Button(
                             onClick = {
                                 isFlipped = false

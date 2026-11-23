@@ -1,7 +1,4 @@
-
- 
 object DlnaHttpServer {
-
     suspend fun run(serverSocket: ServerSocket) = withContext(Dispatchers.IO) {
         try {
             LogCat.d("DLNA HTTP server started on port ${serverSocket.localPort}")
@@ -15,7 +12,6 @@ object DlnaHttpServer {
             serverSocket.close()
         }
     }
-
     private suspend fun handleClient(socket: Socket, senderIp: String) = withContext(Dispatchers.IO) {
         try {
             socket.soTimeout = 5_000
@@ -26,7 +22,6 @@ object DlnaHttpServer {
             if (parts.size < 2) return@withContext
             val method = parts[0]
             val path = parts[1]
-
             val headers = mutableMapOf<String, String>()
             var headerLine = bis.readHttpLine()
             while (!headerLine.isNullOrEmpty()) {
@@ -40,7 +35,6 @@ object DlnaHttpServer {
             val senderName = resolveSenderName(headers, senderIp)
             val contentLength = headers["content-length"]?.toIntOrNull() ?: 0
             val body = readBodyBytes(bis, contentLength)
-
             val response = route(method, path, headers, body, senderIp, senderName)
             writer.print(response)
             writer.flush()
@@ -50,7 +44,6 @@ object DlnaHttpServer {
             socket.close()
         }
     }
-
     private suspend fun route(method: String, path: String, headers: Map<String, String>, body: String, senderIp: String = "", senderName: String = ""): String {
         return when {
             path.endsWith("description.xml") -> {
@@ -69,7 +62,6 @@ object DlnaHttpServer {
             else -> httpNotFound()
         }
     }
-
     private suspend fun handleSoap(headers: Map<String, String>, body: String, senderIp: String = "", senderName: String = ""): String {
         val soapAction = headers["soapaction"] ?: return httpInternalError()
         val (action, params) = DlnaSoapHandler.parseSoapAction(soapAction, body)

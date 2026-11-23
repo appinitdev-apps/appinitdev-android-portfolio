@@ -1,30 +1,18 @@
-
 class SimpleHomeViewModel(application: Application) : WrappedViewModel(application) {
-
     private val homeData: MutableLiveData<MutableList<Any>> by lazy {
         MutableLiveData<MutableList<Any>>().apply {
             setHomeData()
         }
     }
-
     fun getHomeData(): LiveData<MutableList<Any>> {
         return homeData
     }
-
-     
-
-
-
     fun reloadHomeData() {
         setHomeData()
     }
-
     private fun setHomeData() {
         viewModelScope.launch(Dispatchers.IO) {
             val defaultPanels = mutableListOf<Any>()
-
-            
-            
             val libraryItems = mutableListOf<Any>()
             libraryItems.add(Panel(R.string.songs, R.drawable.ic_song))
             libraryItems.add(Panel(R.string.albums, R.drawable.ic_album))
@@ -39,12 +27,8 @@ class SimpleHomeViewModel(application: Application) : WrappedViewModel(applicati
                 libraryItems.add(Panel(R.string.year, R.drawable.ic_date_range))
             if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_PLAYLISTS))
                 libraryItems.add(Panel(R.string.playlists, R.drawable.ic_list))
-
-            
             defaultPanels.add(Group(R.string.library))
             defaultPanels.addAll(libraryItems)
-
-            
             val activityItems = mutableListOf<Any>()
             if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_PLAYING_QUEUE))
                 activityItems.add(Panel(R.string.playing_queue, R.drawable.ic_queue))
@@ -63,17 +47,13 @@ class SimpleHomeViewModel(application: Application) : WrappedViewModel(applicati
                         }
                 )
             }
-
             if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_BOOKMARKS)) {
                 activityItems.add(Panel(R.string.bookmarks, R.drawable.ic_bookmark_16dp))
             }
-
             if (activityItems.isNotEmpty()) {
                 defaultPanels.add(Group(R.string.activity))
                 defaultPanels.addAll(activityItems)
             }
-
-            
             val filesItems = mutableListOf<Any>()
             if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_FOLDERS))
                 filesItems.add(Panel(R.string.folders, R.drawable.ic_folder))
@@ -83,26 +63,20 @@ class SimpleHomeViewModel(application: Application) : WrappedViewModel(applicati
                 filesItems.add(Panel(R.string.always_skipped, R.drawable.ic_skip_16dp))
             if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_MOST_SKIPPED))
                 activityItems.add(Panel(R.string.most_skipped, R.drawable.ic_skip_16dp))
-
             if (filesItems.isNotEmpty()) {
                 defaultPanels.add(Group(R.string.files))
                 defaultPanels.addAll(filesItems)
             }
-
             homeData.postValue(defaultPanels.toMutableList())
         }
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when {
             key == UserInterfacePreferences.LIKE_ICON_INSTEAD_OF_HEART -> setHomeData()
-            
-            
             key in UserInterfacePreferences.ALL_PANEL_VISIBILITY_KEYS -> setHomeData()
         }
     }
-
     companion object {
         data class Panel(val titleResId: Int, val iconResId: Int)
         data class Group(val titleResId: Int)

@@ -1,4 +1,3 @@
-
 class ScreenMirrorWebRtcManager(
     private val context: Context,
     private val getQuality: () -> DScreenMirrorQuality,
@@ -18,7 +17,6 @@ class ScreenMirrorWebRtcManager(
     private var virtualDisplay: VirtualDisplay? = null
     private var displaySurface: Surface? = null
     private val peerSessions = mutableMapOf<String, WebRtcPeerSession>()
-
     internal val adaptiveMonitor = AdaptiveQualityMonitor(
         getQuality = getQuality,
         getFirstPeerSession = { peerSessions.values.firstOrNull() },
@@ -27,7 +25,6 @@ class ScreenMirrorWebRtcManager(
             peerSessions.values.forEach { it.updateVideoBitrate() }
         },
     )
-
     fun initCapture(projection: MediaProjection): Boolean {
         if (virtualDisplay != null) {
             LogCat.d("webrtc: capture already initialised, skipping")
@@ -43,23 +40,19 @@ class ScreenMirrorWebRtcManager(
         )
         peerConnectionFactory = factory
         audioDeviceModule = adm
-
         projection.registerCallback(object : MediaProjection.Callback() {
             override fun onStop() {
                 LogCat.d("webrtc: MediaProjection stopped by system")
                 releaseAll()
             }
         }, null)
-
         surfaceTextureHelper = SurfaceTextureHelper.create("ScreenCaptureThread", eglBase!!.eglBaseContext)
         videoSource = factory.createVideoSource(true)
         videoTrack = factory.createVideoTrack("screen_video", videoSource)
-
         val (width, height, dpi) = computeCaptureSize(context, getQuality(), adaptiveMonitor.adaptiveResolution)
         getIsPortrait()
         surfaceTextureHelper!!.setTextureSize(width, height)
         displaySurface = Surface(surfaceTextureHelper!!.surfaceTexture)
-
         val vdFlags = if (isUPlus()) 0 else DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR
         virtualDisplay = projection.createVirtualDisplay(
             "WebRTC_ScreenCapture", width, height, dpi, vdFlags, displaySurface, null, null,
@@ -72,7 +65,6 @@ class ScreenMirrorWebRtcManager(
             displaySurface?.release(); displaySurface = null
             return false
         }
-
         surfaceTextureHelper!!.startListening { frame ->
             val now = System.nanoTime()
             if (now - adaptiveMonitor.lastFrameTimeNs >= adaptiveMonitor.minFrameIntervalNs) {
@@ -82,13 +74,11 @@ class ScreenMirrorWebRtcManager(
         }
         videoSource!!.capturerObserver.onCapturerStarted(true)
         LogCat.d("webrtc: VirtualDisplay created ${width}x${height} dpi=$dpi")
-
         audioSource = factory.createAudioSource(MediaConstraints())
         audioTrack = factory.createAudioTrack("screen_audio", audioSource)
         audioTrack?.setEnabled(true)
         return true
     }
-
     fun handleSignaling(clientId: String, message: WebRtcSignalingMessage) {
         when (message.type) {
             "ready" -> {
@@ -111,7 +101,6 @@ class ScreenMirrorWebRtcManager(
             else -> LogCat.d("webrtc: ignore signaling type=${message.type}")
         }
     }
-
     fun onQualityChanged() {
         val quality = getQuality()
         if (quality.mode == ScreenMirrorMode.AUTO) {
@@ -123,13 +112,10 @@ class ScreenMirrorWebRtcManager(
         resizeVirtualDisplay()
         peerSessions.values.forEach { it.updateVideoBitrate() }
     }
-
     fun onOrientationChanged() = resizeVirtualDisplay()
-
     fun removeClient(clientId: String) {
         peerSessions.remove(clientId)?.release()
     }
-
     fun releaseAll() {
         adaptiveMonitor.stop()
         peerSessions.values.forEach { it.release() }; peerSessions.clear()
@@ -145,7 +131,6 @@ class ScreenMirrorWebRtcManager(
         peerConnectionFactory?.dispose(); peerConnectionFactory = null
         eglBase?.release(); eglBase = null
     }
-
     private fun resizeVirtualDisplay() {
         val projection = mediaProjection ?: return
         val (w, h, dpi) = computeCaptureSize(context, getQuality(), adaptiveMonitor.adaptiveResolution)

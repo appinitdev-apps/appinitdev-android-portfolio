@@ -1,8 +1,6 @@
-
 @AndroidEntryPoint
 class InventoryFragment : Fragment() {
     private val viewModel: InventoryViewModel by viewModels()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

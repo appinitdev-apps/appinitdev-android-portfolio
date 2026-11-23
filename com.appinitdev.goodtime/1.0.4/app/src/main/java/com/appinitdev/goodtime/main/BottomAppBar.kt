@@ -1,21 +1,3 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @Composable
 fun BottomAppBar(
     modifier: Modifier,
@@ -36,7 +18,6 @@ fun BottomAppBar(
     ) {
         val isDefaultLabel = labelData.name == Label.DEFAULT_LABEL_NAME
         val color = MaterialTheme.getLabelColor(labelData.colorIndex)
-
         Row(
             modifier =
                 Modifier
@@ -57,17 +38,14 @@ fun BottomAppBar(
                         imageVector = EvaIcons.Outline.Menu2,
                         contentDescription = stringResource(R.string.main_open_app_menu),
                         modifier = Modifier.size(32.dp)
-
                     )
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
-
             val onNavigateToSelectLabelDialog = {
                 haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 onLabelClick()
             }
-
             if (isDefaultLabel) {
                 IconButton(onClick = onNavigateToSelectLabelDialog) {
                     Icon(
@@ -87,8 +65,6 @@ fun BottomAppBar(
                     ) { onNavigateToSelectLabelDialog() }
                 }
             }
-
-
             IconButton(
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
@@ -101,50 +77,9 @@ fun BottomAppBar(
                         imageVector = EvaIcons.Outline.PieChart,
                         contentDescription = stringResource(R.string.stats_title),
                         modifier = Modifier.size(32.dp)
-
                     )
                 }
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
     }
 }

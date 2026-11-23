@@ -1,4 +1,3 @@
-
 data class Notificacion (
     val id: Long,
     val asunto: String,

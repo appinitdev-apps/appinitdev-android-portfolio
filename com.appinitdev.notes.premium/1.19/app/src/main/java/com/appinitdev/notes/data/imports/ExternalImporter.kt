@@ -1,12 +1,4 @@
-
 interface ExternalImporter {
-
-     
-
-
-
-
-
     fun import(
         app: Application,
         source: Uri,

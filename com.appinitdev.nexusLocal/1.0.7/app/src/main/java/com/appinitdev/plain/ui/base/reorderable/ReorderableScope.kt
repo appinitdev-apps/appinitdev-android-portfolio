@@ -1,4 +1,3 @@
-
 interface ReorderableScope {
     fun Modifier.draggableHandle(
         enabled: Boolean = true,
@@ -6,7 +5,6 @@ interface ReorderableScope {
         onDragStopped: suspend CoroutineScope.(velocity: Float) -> Unit = {},
         interactionSource: MutableInteractionSource? = null,
     ): Modifier
-
     fun Modifier.longPressDraggableHandle(
         enabled: Boolean = true,
         onDragStarted: (startedPosition: Offset) -> Unit = {},
@@ -14,13 +12,11 @@ interface ReorderableScope {
         interactionSource: MutableInteractionSource? = null,
     ): Modifier
 }
-
 internal class ReorderableScopeImpl(
     private val state: ReorderableListState,
     private val orientation: Orientation,
     private val index: Int,
 ) : ReorderableScope {
-
     override fun Modifier.draggableHandle(
         enabled: Boolean, onDragStarted: suspend CoroutineScope.(startedPosition: Offset) -> Unit,
         onDragStopped: suspend CoroutineScope.(velocity: Float) -> Unit, interactionSource: MutableInteractionSource?,
@@ -31,7 +27,6 @@ internal class ReorderableScopeImpl(
         onDragStarted = { state.startDrag(index); onDragStarted(it) },
         onDragStopped = { velocity -> launch { state.settle(index, velocity) }; onDragStopped(velocity) },
     )
-
     override fun Modifier.longPressDraggableHandle(
         enabled: Boolean, onDragStarted: (startedPosition: Offset) -> Unit,
         onDragStopped: (velocity: Float) -> Unit, interactionSource: MutableInteractionSource?,

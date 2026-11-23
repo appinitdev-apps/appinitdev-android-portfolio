@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addNotificationSchema() {
     query("notifications") {
         resolver { ->
@@ -17,7 +16,6 @@ fun SchemaBuilder.addNotificationSchema() {
         resolver { id: ID, actionIndex: Int, text: String ->
             val actions = AndroidTempData.notificationActions[id.value]
                 ?: throw GraphQLError("notification_not_found")
-            
             val replyActions = actions.filter { it.remoteInputs != null && it.remoteInputs.isNotEmpty() }
             val action = replyActions.getOrNull(actionIndex)
                 ?: throw GraphQLError("action_not_found")

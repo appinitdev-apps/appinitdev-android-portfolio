@@ -1,14 +1,10 @@
-
 @AndroidEntryPoint
 class AlbumPage : BasePageFragment() {
-
     private lateinit var binding: FragmentPageArtistBinding
-
     private val album: Album by lazy {
         requireArguments().parcelable(BundleConstants.ALBUM)
             ?: throw IllegalArgumentException("Album is required")
     }
-
     private val albumViewerViewModel: AlbumViewerViewModel by viewModels(
             ownerProducer = { this },
             extrasProducer = {
@@ -17,26 +13,17 @@ class AlbumPage : BasePageFragment() {
                 }
             }
     )
-
     override val pageRecyclerView: RecyclerView
         get() = binding.recyclerView
-
     override val pageType: PageAdapter.PageType by lazy { PageAdapter.PageType.AlbumPage(album) }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentPageArtistBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         collectPageData { albumViewerViewModel.data }
     }
-
-     
-
-
-
     override fun onPageAdapterCreated() {
         viewLifecycleOwner.lifecycleScope.launch {
             albumViewerViewModel.albumInfo.collect { info ->
@@ -44,15 +31,12 @@ class AlbumPage : BasePageFragment() {
             }
         }
     }
-
     override fun resortPageData() {
         albumViewerViewModel.resort()
     }
-
     override fun onMenuClicked(view: View) {
         viewLifecycleOwner.lifecycleScope.launch {
             val currentData = albumViewerViewModel.data.value ?: return@launch
-
             SharedScrollViewPopup(
                     container = requireContainerView(),
                     anchorView = view,
@@ -76,15 +60,10 @@ class AlbumPage : BasePageFragment() {
             ).show()
         }
     }
-
     companion object {
         const val TAG = "AlbumPage"
-
         fun newInstance(album: Album): AlbumPage {
             val args = Bundle()
-            
-            
-            
             args.putParcelable(BundleConstants.ALBUM, album.copy(songPaths = emptyList()))
             val fragment = AlbumPage()
             fragment.arguments = args
@@ -92,4 +71,3 @@ class AlbumPage : BasePageFragment() {
         }
     }
 }
-

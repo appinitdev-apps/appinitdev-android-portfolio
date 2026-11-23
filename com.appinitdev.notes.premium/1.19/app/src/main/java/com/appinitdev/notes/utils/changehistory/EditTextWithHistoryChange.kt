@@ -1,11 +1,9 @@
-
 class EditTextWithHistoryChange(
     private val editText: StylableEditTextWithHistory,
     before: EditTextState,
     after: EditTextState,
     private val updateModel: (newValue: Editable) -> Unit,
 ) : ValueChange<EditTextState>(before, after) {
-
     override fun update(value: EditTextState, isUndo: Boolean) {
         editText.applyWithoutTextWatcher {
             val text = value.text.withoutSpans<HighlightSpan>()
@@ -16,8 +14,6 @@ class EditTextWithHistoryChange(
         }
     }
 }
-
 data class EditTextState(val text: Editable, val cursorPos: Int)
-
 inline fun <reified T : Any> Editable.withoutSpans(): Editable =
     clone().apply { this.getSpans<T>().forEach { removeSpan(it) } }

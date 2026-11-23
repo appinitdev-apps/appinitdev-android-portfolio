@@ -1,21 +1,3 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @Composable
 fun ScreensaverMode(
     screensaverMode: Boolean,
@@ -26,7 +8,6 @@ fun ScreensaverMode(
     val coroutineScope = rememberCoroutineScope()
     var animationJob: Job? by remember { mutableStateOf(null) }
     val configuration = LocalConfiguration.current
-
     LaunchedEffect(screensaverMode && isActive) {
         if (screensaverMode && isActive) {
             animationJob =

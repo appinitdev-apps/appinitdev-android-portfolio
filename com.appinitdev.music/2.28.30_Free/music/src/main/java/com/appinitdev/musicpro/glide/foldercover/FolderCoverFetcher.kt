@@ -1,16 +1,7 @@
-
- 
-
-
-
-
-
-
 class FolderCoverFetcher internal constructor(
         private val context: Context,
         private val folder: Folder
 ) : DataFetcher<Bitmap> {
-
     override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in Bitmap>) {
         try {
             val bitmap = FolderCover.load(context, folder)
@@ -21,15 +12,10 @@ class FolderCoverFetcher internal constructor(
             callback.onLoadFailed(e)
         }
     }
-
     override fun cleanup() {}
-
     override fun cancel() {}
-
     override fun getDataClass(): Class<Bitmap> = Bitmap::class.java
-
     override fun getDataSource(): DataSource = DataSource.LOCAL
-
     companion object {
         private const val TAG = "FolderCoverFetcher"
     }

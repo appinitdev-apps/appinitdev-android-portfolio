@@ -1,19 +1,13 @@
-
 class CalculatorActivity : BaseActivity() {
-
     private lateinit var includedElementsAdapter: IncludedElementsAdapter
     private lateinit var favoriteCompoundsAdapter: FavoriteCompoundsAdapter
     private var isFormatting: Boolean = false
-
     private lateinit var sharedPreferences: SharedPreferences
     private val FAVORITES_KEY = "favorites"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val themePreference = ThemePreference(this)
         val themePrefValue = themePreference.getValue()
-
         when {
             themePrefValue == 100 -> {
                 when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
@@ -24,42 +18,14 @@ class CalculatorActivity : BaseActivity() {
             themePrefValue == 0 -> setTheme(R.style.AppTheme)
             themePrefValue == 1 -> setTheme(R.style.AppThemeDark)
         }
-
         setContentView(R.layout.activity_calculator)
         findViewById<FrameLayout>(R.id.view_cal).systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-
         findViewById<ImageButton>(R.id.back_btn_cal).setOnClickListener {
             this.onBackPressed()
         }
-
         updateStats()
-
-        
         sharedPreferences = getSharedPreferences("CalculatorPrefs", Context.MODE_PRIVATE)
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         inputController()
-
-        
         val mostUsedPreference = MostUsedToolPreference(this)
         val mostUsedPrefValue = mostUsedPreference.getValue()
         val targetLabel = "cal"
@@ -70,19 +36,13 @@ class CalculatorActivity : BaseActivity() {
             val newValue = value + 1
             mostUsedPreference.setValue(mostUsedPrefValue.replace("$targetLabel=$value", "$targetLabel=$newValue"))
         }
-
         val editText = findViewById<EditText>(R.id.edit_text_cal)
         editText.filters = arrayOf(InputFilter { source, _, _, _, _, _ ->
             val blockCharacterSet = "/-%¤#!@&£$€{}^¨~<>`´="
             if (blockCharacterSet.any { it in source }) "" else null
         })
-
         findViewById<ImageButton>(R.id.back_btn_cal).setOnClickListener { this.onBackPressed() }
-
-        
         findViewById<TextView>(R.id.hint_calc_text).visibility = View.VISIBLE
-
-        
         val proPref = ProVersion(this)
         val proPrefValue = proPref.getValue()
         if (proPrefValue == 1) {
@@ -97,30 +57,21 @@ class CalculatorActivity : BaseActivity() {
             findViewById<TextView>(R.id.pro_button_cal).visibility = View.GONE
             findViewById<ImageButton>(R.id.fav_star_btn).visibility = View.VISIBLE
         }
-
         findViewById<TextView>(R.id.pro_button_cal).setOnClickListener {
             val intent = Intent(this, ProActivity::class.java)
             startActivity(intent)
         }
-
-        
         includedElementsAdapter = IncludedElementsAdapter()
         findViewById<RecyclerView>(R.id.inc_weight_list).apply {
             layoutManager = LinearLayoutManager(this@CalculatorActivity)
             adapter = includedElementsAdapter
         }
-
-        
         favoriteCompoundsAdapter = FavoriteCompoundsAdapter({ compound -> removeFavorite(compound) }, { compound -> copyToClipboard(compound) })
         findViewById<RecyclerView>(R.id.fav_rec_list).apply {
             layoutManager = LinearLayoutManager(this@CalculatorActivity)
             adapter = favoriteCompoundsAdapter
         }
-
-        
         loadFavorites()
-
-        
         findViewById<ImageButton>(R.id.fav_star_btn).setOnClickListener {
             val compound = findViewById<EditText>(R.id.edit_text_cal).text.toString()
             val molarWeight = findViewById<TextView>(R.id.out_text).text.toString()
@@ -132,7 +83,6 @@ class CalculatorActivity : BaseActivity() {
             }
         }
     }
-
     private fun inputController() {
         findViewById<EditText>(R.id.edit_text_cal).addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -145,28 +95,23 @@ class CalculatorActivity : BaseActivity() {
             }
         })
     }
-
     private fun formatChemicalFormula(editable: Editable) {
         isFormatting = true
         val spannableString = SpannableString(editable.toString())
         val elementRegex = Regex("([A-Z][a-z]*)(\\d*)")
         val groupRegex = Regex("(\\)|\\])(\\d+)")
-
         elementRegex.findAll(editable).forEach { matchResult ->
             val start = matchResult.range.first
             val end = matchResult.range.last + 1
             val element = matchResult.groupValues[1]
             val number = matchResult.groupValues[2]
-
             if (number.isNotEmpty()) {
                 spannableString.setSpan(SubscriptSpan(), start + element.length, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
-
         groupRegex.findAll(editable).forEach { matchResult ->
             spannableString.setSpan(SubscriptSpan(), matchResult.range.first + 1, matchResult.range.last + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
-
         findViewById<EditText>(R.id.edit_text_cal).apply {
             removeTextChangedListener(textWatcher)
             setText(spannableString)
@@ -175,7 +120,6 @@ class CalculatorActivity : BaseActivity() {
         }
         isFormatting = false
     }
-
     private val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
@@ -186,18 +130,14 @@ class CalculatorActivity : BaseActivity() {
             }
         }
     }
-
     private fun collectJsonData(input: String?) {
         if (input.isNullOrEmpty()) return
-
         var result = 0.0
         val elementList = ArrayList<Element>()
         ElementModel.getList(elementList, this)
-
         val elementWeights = mutableMapOf<String, Double>()
         val elementNames = mutableMapOf<String, String>()
         val includedElements = mutableListOf<Quadruple<String, Double, Double, Double, String>>()
-
         for (element in elementList) {
             try {
                 val jsonObject = ElementDataLoader.loadElementData(this, element.elementKey)
@@ -205,7 +145,6 @@ class CalculatorActivity : BaseActivity() {
                     val weightVal = jsonObject.optString("element_atomicmass", "---").removeSuffix(" (u)")
                     val shortEl = jsonObject.optString("short", "---")
                     val fullName = jsonObject.optString("element", "---")
-
                     elementWeights[shortEl] = weightVal.toDoubleOrNull() ?: 0.0
                     elementNames[shortEl] = fullName
                 }
@@ -213,7 +152,6 @@ class CalculatorActivity : BaseActivity() {
                 ToastUtil.showToast(this, "Error")
             }
         }
-
         fun computeWeight(formula: String, multiplier: Double = 1.0): Double {
             val elementRegex = Regex("([A-Z][a-z]*)(\\d*)")
             var weight = 0.0
@@ -227,23 +165,18 @@ class CalculatorActivity : BaseActivity() {
             }
             return weight * multiplier
         }
-
         val mainRegex = Regex("(\\d+)?([A-Z][a-z]*\\d*|\\([A-Za-z0-9]*\\)\\d*|\\[[A-Za-z0-9]*\\]\\d*)")
         val parts = input.split(" ")
-
         for (part in parts) {
             val matches = mainRegex.findAll(part)
             var prefixMultiplier = 1.0
-
             matches.forEachIndexed { index, matchResult ->
                 if (index == 0) {
                     prefixMultiplier = matchResult.groupValues[1].toDoubleOrNull() ?: 1.0
                 }
                 val elementGroup = matchResult.groupValues[2]
-
                 val groupRegex = Regex("\\(([A-Za-z0-9]*)\\)(\\d*)|\\[([A-Za-z0-9]*)\\](\\d*)")
                 val groupMatch = groupRegex.matchEntire(elementGroup)
-
                 if (groupMatch != null) {
                     val groupFormula = groupMatch.groupValues[1].ifEmpty { groupMatch.groupValues[3] }
                     val groupMultiplier = groupMatch.groupValues[2].toDoubleOrNull() ?: groupMatch.groupValues[4].toDoubleOrNull() ?: 1.0
@@ -253,12 +186,10 @@ class CalculatorActivity : BaseActivity() {
                 }
             }
         }
-
         includedElements.forEachIndexed { index, (element, quantity, atomicWeight, _, fullName) ->
             val percentage = (quantity * atomicWeight) / result * 100
             includedElements[index] = Quadruple(element, quantity, atomicWeight, percentage, fullName)
         }
-
         val resultText = result.toString()
         val unitText = " (g/mol)"
         val outText = findViewById<TextView>(R.id.out_text)
@@ -271,23 +202,19 @@ class CalculatorActivity : BaseActivity() {
             findViewById<TextView>(R.id.hint_calc_text).visibility = View.GONE
             findViewById<RecyclerView>(R.id.inc_weight_list).visibility = View.VISIBLE
         }
-
         includedElementsAdapter.updateElements(includedElements)
     }
-
     private fun saveFavorite(compound: String, molarWeight: String) {
         val favorites = sharedPreferences.getStringSet(FAVORITES_KEY, mutableSetOf())?.toMutableSet() ?: mutableSetOf()
         favorites.add("$compound:$molarWeight")
         sharedPreferences.edit().putStringSet(FAVORITES_KEY, favorites).apply()
     }
-
     private fun removeFavorite(compound: String) {
         val favorites = sharedPreferences.getStringSet(FAVORITES_KEY, mutableSetOf())?.toMutableSet() ?: mutableSetOf()
         favorites.removeIf { it.startsWith(compound) }
         sharedPreferences.edit().putStringSet(FAVORITES_KEY, favorites).apply()
         loadFavorites()
     }
-
     private fun loadFavorites() {
         val favorites = sharedPreferences.getStringSet(FAVORITES_KEY, mutableSetOf())?.toMutableList() ?: mutableListOf()
         val favoriteCompounds = favorites.map {
@@ -296,24 +223,20 @@ class CalculatorActivity : BaseActivity() {
         }
         favoriteCompoundsAdapter.updateCompounds(favoriteCompounds)
     }
-
     private fun copyToClipboard(compound: String) {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Compound Formula", compound)
         clipboard.setPrimaryClip(clip)
         ToastUtil.showToast(this, "Copied to clipboard")
     }
-
     override fun onApplySystemInsets(top: Int, bottom: Int, left: Int, right: Int) {
         val params = findViewById<FrameLayout>(R.id.common_title_back_cal).layoutParams as ViewGroup.LayoutParams
         params.height = top + resources.getDimensionPixelSize(R.dimen.title_bar)
         findViewById<FrameLayout>(R.id.common_title_back_cal).layoutParams = params
-
         val params2 = findViewById<TextView>(R.id.calculator_title_downstate).layoutParams as ViewGroup.MarginLayoutParams
         params2.topMargin = top + resources.getDimensionPixelSize(R.dimen.title_bar) + resources.getDimensionPixelSize(R.dimen.header_down_margin)
         findViewById<TextView>(R.id.calculator_title_downstate).layoutParams = params2
     }
-
     private fun updateStats() {
         val statistics = java.util.ArrayList<Statistics>()
         StatisticsModel.getList(this, statistics)

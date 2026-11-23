@@ -1,20 +1,15 @@
-
 fun getGlossaryTermName(item: SymbolItem, lang: String): String {
     return item.name
 }
-
 fun getGlossaryTermDesc(item: SymbolItem, lang: String): String {
     return item.description
 }
-
 fun getFlashcardQuestion(card: Flashcard, lang: String): String {
     return card.question
 }
-
 fun getFlashcardExplanation(card: Flashcard, lang: String): String {
     return card.explanation
 }
-
 object Glossaryes {
     val names = mapOf(
         "dy/dx" to "Derivada (Notación de Leibniz)",
@@ -130,7 +125,6 @@ object Glossaryes {
         "ℂ" to "Números Complejos",
         "⇒" to "Implica",
     )
-
         val descs = mapOf(
         "dy/dx" to "Razón de cambio instantánea de y respecto a x.",
         "f'(x)" to "Pendiente de la recta tangente a la curva en x.",
@@ -245,10 +239,4 @@ object Glossaryes {
         "ℂ" to "Forma a + bi.",
         "⇒" to "Condicional lógico (Si... entonces).",
     )
-
 }
-
-
-
-
-

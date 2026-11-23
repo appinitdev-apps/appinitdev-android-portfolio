@@ -1,8 +1,6 @@
-
 fun <T> createObserverSkipFirst(observer: Observer<T>): Observer<T> {
     return object : Observer<T> {
         private var isFirstEvent = true
-
         override fun onChanged(value: T) {
             if (isFirstEvent) {
                 isFirstEvent = false
@@ -12,11 +10,9 @@ fun <T> createObserverSkipFirst(observer: Observer<T>): Observer<T> {
         }
     }
 }
-
 fun <T> LiveData<T>.observeSkipFirst(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
     this.observe(lifecycleOwner, createObserverSkipFirst(observer))
 }
-
 fun <T> LiveData<T>.observeForeverSkipFirst(observer: Observer<T>) {
     var isFirstEvent = true
     this.observeForever { value ->
@@ -27,7 +23,6 @@ fun <T> LiveData<T>.observeForeverSkipFirst(observer: Observer<T>) {
         }
     }
 }
-
 fun <T, C> NotNullLiveData<T>.mergeSkipFirst(
     liveData: NotNullLiveData<C>
 ): MediatorLiveData<Pair<T, C>> {
@@ -42,18 +37,15 @@ fun <T, C> NotNullLiveData<T>.mergeSkipFirst(
         )
     }
 }
-
 fun ClipboardManager.getLatestText(): CharSequence? {
     return primaryClip?.let { if (it.itemCount > 0) it.getItemAt(0)!!.text else null }
 }
-
 fun Context.copyToClipBoard(text: CharSequence) {
     ContextCompat.getSystemService(this, ClipboardManager::class.java)?.let {
         val clip = ClipData.newPlainText("label", text)
         it.setPrimaryClip(clip)
     }
 }
-
 fun Context.getContentFileName(uri: Uri): String? =
     runCatching {
             contentResolver.query(uri, null, null, null, null)?.use { cursor ->
@@ -64,13 +56,11 @@ fun Context.getContentFileName(uri: Uri): String? =
             }
         }
         .getOrNull()
-
 fun Context.getFileName(uri: Uri): String? =
     when (uri.scheme) {
         ContentResolver.SCHEME_CONTENT -> getContentFileName(uri)
         else -> uri.path?.let { File(it) }?.name
     }
-
 fun Context.canAuthenticateWithBiometrics(): Int {
     val biometricManager = androidx.biometric.BiometricManager.from(this)
     val authenticators =
@@ -82,14 +72,10 @@ fun Context.canAuthenticateWithBiometrics(): Int {
         }
     return biometricManager.canAuthenticate(authenticators)
 }
-
 fun Context.getUriForFile(file: File): Uri =
     FileProvider.getUriForFile(this, "${packageName}.provider", file)
-
 private val LOG_DATE_FORMATTER = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
-
 fun Context.getMimeType(uri: Uri) = contentResolver.getType(uri)
-
 fun ContextWrapper.log(
     tag: String,
     msg: String? = null,
@@ -100,7 +86,6 @@ fun ContextWrapper.log(
     folder.mkdir()
     logToFile(tag, DocumentFile.fromFile(folder), APP_LOG_FILE_NAME, msg, throwable, stackTrace)
 }
-
 fun ContextWrapper.getLastExceptionLog(): String? {
     val logFile = getLogFile()
     if (logFile.exists()) {
@@ -108,9 +93,7 @@ fun ContextWrapper.getLastExceptionLog(): String? {
     }
     return null
 }
-
 private const val MAX_LOGS_FILE_SIZE_KB: Long = 2048
-
 fun Context.logToFile(
     tag: String,
     folder: DocumentFile,
@@ -130,7 +113,6 @@ fun Context.logToFile(
     }
     throwable?.let { Log.e(tag, "Exception occurred", it) }
     stackTrace?.let { Log.e(tag, "Exception occurred: $it") }
-
     val logFile =
         folder.findFile(fileName).let {
             if (it == null || !it.exists()) {
@@ -140,7 +122,6 @@ fun Context.logToFile(
                 folder.createFile("text/plain", fileName.removeSuffix(".txt"))
             } else it
         }
-
     logFile?.let { file ->
         val contentResolver = contentResolver
         val (outputStream, logFileContents) =
@@ -152,13 +133,10 @@ fun Context.logToFile(
                     contentResolver.readFileContents(file.uri),
                 )
             }
-
         outputStream?.use { output ->
             val writer = PrintWriter(OutputStreamWriter(output, Charsets.UTF_8))
-
             val formatter = DateFormat.getDateTimeInstance()
             val time = formatter.format(System.currentTimeMillis())
-
             logFileContents?.let { writer.println(it) }
             if (throwable != null || stackTrace != null) {
                 writer.println("[Start]")
@@ -167,7 +145,6 @@ fun Context.logToFile(
             throwable?.printStackTrace(writer)
             stackTrace?.let { writer.println(it) }
             if (throwable != null || stackTrace != null) {
-
                 writer.println("Model : " + Build.MODEL)
                 writer.println("Device : " + Build.DEVICE)
                 writer.println("Brand : " + Build.BRAND)
@@ -176,18 +153,15 @@ fun Context.logToFile(
                 writer.println("Time : $time")
                 writer.println("[End]")
             }
-
             writer.close()
         } ?: Log.e(tag, "Error opening output stream for log file")
     } ?: Log.e(tag, "Error: log file could not be found or created")
 }
-
 fun Fragment.reportBug(stackTrace: String?) {
     requireContext().catchNoBrowserInstalled {
         startActivity(requireContext().createReportBugIntent(stackTrace))
     }
 }
-
 fun Fragment.getExtraBooleanFromBundleOrIntent(
     bundle: Bundle?,
     key: String,
@@ -198,11 +172,9 @@ fun Fragment.getExtraBooleanFromBundleOrIntent(
         activity?.intent?.getBooleanExtra(key, defaultValue) ?: defaultValue,
     )
 }
-
 fun Context.reportBug(stackTrace: String?) {
     catchNoBrowserInstalled { startActivity(createReportBugIntent(stackTrace)) }
 }
-
 fun Context.catchNoBrowserInstalled(callback: () -> Unit) {
     try {
         callback()
@@ -210,7 +182,6 @@ fun Context.catchNoBrowserInstalled(callback: () -> Unit) {
         showToast(R.string.install_a_browser)
     }
 }
-
 fun Context.createReportBugIntent(
     stackTrace: String?,
     title: String? = null,
@@ -234,7 +205,6 @@ fun Context.createReportBugIntent(
         )
         .wrapWithChooser(this)
 }
-
 fun ContextWrapper.shareNote(note: BaseNote) {
     val body =
         when (note.type) {
@@ -247,7 +217,6 @@ fun ContextWrapper.shareNote(note: BaseNote) {
             .map { getUriForFile(it) }
     shareNote(note.title, body, filesUris)
 }
-
 private fun Context.shareNote(title: String, body: CharSequence, imageUris: List<Uri>) {
     val text = body.truncate(150_000)
     val intent =
@@ -267,14 +236,11 @@ private fun Context.shareNote(title: String, body: CharSequence, imageUris: List
             .wrapWithChooser(this)
     startActivity(intent)
 }
-
 fun Intent.embedIntentExtras() {
     val string = toUri(Intent.URI_INTENT_SCHEME)
     data = Uri.parse(string)
 }
-
 fun Context.getOpenNotePendingIntent(note: BaseNote) = getOpenNotePendingIntent(note.id, note.type)
-
 fun Context.getOpenNoteIntent(
     noteId: Long,
     noteType: Type,
@@ -290,7 +256,6 @@ fun Context.getOpenNoteIntent(
         }
     }
 }
-
 fun Context.getOpenNotePendingIntent(noteId: Long, noteType: Type): PendingIntent {
     return PendingIntent.getActivity(
         this,
@@ -299,12 +264,10 @@ fun Context.getOpenNotePendingIntent(noteId: Long, noteType: Type): PendingInten
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
     )
 }
-
 fun Context.isSystemInDarkMode(): Boolean {
     val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
     return currentNightMode == Configuration.UI_MODE_NIGHT_YES
 }
-
 fun ContentResolver.determineMimeTypeAndExtension(uri: Uri, proposedMimeType: String?) =
     if (proposedMimeType != null && proposedMimeType.contains("/")) {
         Pair(proposedMimeType, ".${uri.lastPathSegment?.substringAfterLast(".")}")
@@ -316,14 +279,11 @@ fun ContentResolver.determineMimeTypeAndExtension(uri: Uri, proposedMimeType: St
                 ?: "",
         )
     }
-
 fun Intent.wrapWithChooser(context: Context, titleResId: Int? = null): Intent =
     Intent.createChooser(this, titleResId?.let { context.getText(it) })
-
 fun DocumentFile.isLargerThanKb(kilobytes: Long): Boolean {
     return (length() / 1024.0) > kilobytes
 }
-
 fun DocumentFile.listZipFiles(prefix: String): List<DocumentFile> {
     if (!this.isDirectory) return emptyList()
     val zipFiles =
@@ -334,10 +294,8 @@ fun DocumentFile.listZipFiles(prefix: String): List<DocumentFile> {
         }
     return zipFiles.sortedByDescending { it.lastModified() }
 }
-
 val DocumentFile.nameWithoutExtension: String?
     get() = name?.substringBeforeLast(".")
-
 @RequiresApi(Build.VERSION_CODES.O)
 fun NotificationManager.createChannelIfNotExists(
     channelId: String,
@@ -357,7 +315,6 @@ fun NotificationManager.createChannelIfNotExists(
         createNotificationChannel(channel)
     }
 }
-
 fun <T> LiveData<T>.observeOnce(observer: Observer<T>) {
     val wrapperObserver =
         object : Observer<T> {
@@ -368,17 +325,13 @@ fun <T> LiveData<T>.observeOnce(observer: Observer<T>) {
         }
     this.observeForever(wrapperObserver)
 }
-
 fun Uri.toReadablePath(): String {
     return path!!
         .replaceFirst("/tree/primary:", "Internal Storage/")
         .replaceFirst("/tree/.*:".toRegex(), "External Storage/")
 }
-
 val isBeforeVanillaIceCream
     get() = Build.VERSION.SDK_INT <= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
-
- 
 @Suppress("Deprecation")
 fun Activity.changeStatusAndNavigationBarColor(@ColorInt color: Int) {
     window.statusBarColor = color
@@ -389,7 +342,6 @@ fun Activity.changeStatusAndNavigationBarColor(@ColorInt color: Int) {
         window.insetsController?.show(android.view.WindowInsets.Type.statusBars())
     }
 }
-
 fun Activity.resetApplication() {
     val resetApplicationIntent = packageManager.getLaunchIntentForPackage(packageName)
     resetApplicationIntent?.setFlags(
@@ -398,11 +350,9 @@ fun Activity.resetApplication() {
     startActivity(resetApplicationIntent)
     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
 }
-
 fun Bundle?.getExtraBooleanOrDefault(key: String, defaultValue: Boolean): Boolean {
     return this?.getBoolean(key, defaultValue) ?: defaultValue
 }
-
 fun ContentResolver.readFileContents(uri: Uri) =
     openInputStream(uri)?.use { inputStream ->
         BufferedReader(InputStreamReader(inputStream)).use { reader -> reader.readText() }

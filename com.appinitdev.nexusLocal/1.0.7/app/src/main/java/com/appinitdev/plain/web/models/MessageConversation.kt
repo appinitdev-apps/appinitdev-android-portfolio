@@ -1,4 +1,3 @@
-
 data class MessageConversation(
     val id: ID,
     val address: String,
@@ -7,7 +6,6 @@ data class MessageConversation(
     val messageCount: Int,
     val read: Boolean,
 )
-
 fun DMessageConversation.toModel(): MessageConversation {
     return MessageConversation(
         id = ID(id),

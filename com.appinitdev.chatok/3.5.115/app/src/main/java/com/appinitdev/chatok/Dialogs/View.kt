@@ -1,4 +1,3 @@
-
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun View(imageUrl: String, hideDialog: () ->Unit) {
@@ -6,7 +5,6 @@ fun View(imageUrl: String, hideDialog: () ->Unit) {
         .fillMaxSize()
         .blur(15.dp)){
         Column {
-
         }
     }
     Dialog(onDismissRequest = hideDialog,
@@ -46,6 +44,5 @@ fun View(imageUrl: String, hideDialog: () ->Unit) {
                     .transformable(state)
             )
         }
-
     }
 }

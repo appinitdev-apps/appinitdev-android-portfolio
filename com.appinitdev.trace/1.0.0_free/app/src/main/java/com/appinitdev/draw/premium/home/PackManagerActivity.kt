@@ -1,8 +1,3 @@
-
-
-
-
-
 fun obtenerDrawableMiniatura(themeName: String): Int {
     return when (themeName) {
         "x_anatomy" -> R.drawable.x_anatomy
@@ -19,10 +14,6 @@ fun obtenerDrawableMiniatura(themeName: String): Int {
         else        -> R.drawable.x_art 
     }
 }
-
-
-
-
 class PackDownloader(private val context: Context) {
     private val storage by lazy {
         try {
@@ -32,42 +23,29 @@ class PackDownloader(private val context: Context) {
             FirebaseStorage.getInstance()
         }
     }
-
     suspend fun downloadPack(packName: String, onProgress: (Int) -> Unit): Result<File> =
         withContext(Dispatchers.IO) {
             val tempFolder = File(context.filesDir, "packs_dibujo/${packName}_temp")
             val finalFolder = File(context.filesDir, "packs_dibujo/$packName")
-            
             try {
-                
                 if (!tempFolder.exists()) { tempFolder.mkdirs() }
-
                 val storageRef = storage.reference.child(packName)
                 val listResult = storageRef.listAll().await()
                 val totalFiles = listResult.items.size
-
                 if (totalFiles == 0) {
                     tempFolder.deleteRecursively()
                     return@withContext Result.failure(Exception(context.getString(R.string.la_carpeta_remota_est_vac_a)))
                 }
-
-                
                 listResult.items.forEachIndexed { index, storageFile ->
                     val localFile = File(tempFolder, storageFile.name)
-                    
-                    
                     if (!localFile.exists() || localFile.length() == 0L) {
                         storageFile.getFile(localFile).await()
                     }
-
                     val progress = ((index + 1) * 100) / totalFiles
                     withContext(Dispatchers.Main) { onProgress(progress) }
                 }
-
-                
                 if (finalFolder.exists()) { finalFolder.deleteRecursively() }
                 val success = tempFolder.renameTo(finalFolder)
-                
                 if (success) {
                     Result.success(finalFolder)
                 } else {
@@ -79,26 +57,15 @@ class PackDownloader(private val context: Context) {
             }
         }
 }
-
-
-
-
-
 class PackViewModel(context: Context) : ViewModel() {
     private val downloader = PackDownloader(context)
-
-    
     private val _activeDownloads = MutableStateFlow<Map<String, Int>>(emptyMap())
     val activeDownloads: StateFlow<Map<String, Int>> = _activeDownloads
-
     private val _errorState = MutableStateFlow<String?>(null)
     val errorState: StateFlow<String?> = _errorState
-
     val showDownloadedModal = MutableStateFlow<String?>(null)
     val downloadedPacks = MutableStateFlow<List<String>>(emptyList())
-
     init { updateDownloadedPacksList(context) }
-
     fun updateDownloadedPacksList(context: Context) {
         val rootFolder = File(context.filesDir, "packs_dibujo")
         if (rootFolder.exists()) {
@@ -108,30 +75,22 @@ class PackViewModel(context: Context) : ViewModel() {
             downloadedPacks.value = list
         }
     }
-
     fun onPackClick(context: Context, packName: String) {
-        
         if (_activeDownloads.value.containsKey(packName)) return
-
         val localPackFolder = File(context.filesDir, "packs_dibujo/$packName")
         val filesCount = localPackFolder.listFiles()?.size ?: 0
-
         if (localPackFolder.exists() && filesCount > 0) {
             showDownloadedModal.value = localPackFolder.absolutePath
         } else {
             startPackDownload(context, packName)
         }
     }
-
     private fun startPackDownload(context: Context, packName: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            
             _activeDownloads.value += (packName to 0)
-            
             val resultado = downloader.downloadPack(packName) { progress ->
                 _activeDownloads.value += (packName to progress)
             }
-            
             resultado.onSuccess { folder ->
                 _activeDownloads.value -= packName 
                 updateDownloadedPacksList(context)
@@ -142,19 +101,13 @@ class PackViewModel(context: Context) : ViewModel() {
             }
         }
     }
-
     fun clearError() {
         _errorState.value = null
     }
-
     fun closeModal() {
         showDownloadedModal.value = null
     }
 }
-
-
-
-
 @Composable
 fun PackManagerScreen(
     viewModel: PackViewModel,
@@ -165,30 +118,22 @@ fun PackManagerScreen(
     val listaDeTemasBase = remember {
         listOf("x_anatomy", "x_anime", "x_art", "x_car", "x_cosplay", "x_eye", "x_flowers", "x_manga", "x_body", "x_food", "x_girl")
     }
-
     val activeDownloads by viewModel.activeDownloads.collectAsState()
     val errorState by viewModel.errorState.collectAsState()
     val modalFolderPath by viewModel.showDownloadedModal.collectAsState()
     val downloadedPacks by viewModel.downloadedPacks.collectAsState()
-
-    
     LaunchedEffect(errorState) {
         errorState?.let {
-            
             viewModel.clearError()
         }
     }
-
     val yaDescargados = listaDeTemasBase.filter { downloadedPacks.contains(it) }
     val noDescargados = listaDeTemasBase.filter { !downloadedPacks.contains(it) }
-
     Box(modifier = modifier.wrapContentHeight()) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
-            
             if (yaDescargados.isNotEmpty()) {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
@@ -214,8 +159,6 @@ fun PackManagerScreen(
                     )
                 }
             }
-
-            
             Text(
                 text = if (noDescargados.isEmpty()) stringResource(R.string.todo_el_cat_logo_est_listo) else stringResource(
                     R.string.cat_logo_disponible_para_descargar
@@ -224,8 +167,6 @@ fun PackManagerScreen(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
             )
-
-
             if (noDescargados.isEmpty() && yaDescargados.isNotEmpty()) {
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
@@ -249,18 +190,13 @@ fun PackManagerScreen(
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(16.dp))
         }
-
-        
         modalFolderPath?.let { path ->
             val carpeta = File(path)
             val imagenesLocales = carpeta.listFiles()?.toList() ?: emptyList()
-
             AlertDialog(
                 onDismissRequest = { viewModel.closeModal() },
-                
                 properties = DialogProperties(
                     usePlatformDefaultWidth = false
                 ),
@@ -292,13 +228,10 @@ fun PackManagerScreen(
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
                         )
-
-                        
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(2),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp),
-                            
                             modifier = Modifier.weight(1f, fill = false),
                             contentPadding = PaddingValues(vertical = 4.dp)
                         ) {
@@ -320,7 +253,6 @@ fun PackManagerScreen(
                     }
                 },
                 confirmButton = {
-                    
                     TextButton(
                         onClick = { viewModel.closeModal() },
                         colors = ButtonDefaults.textButtonColors(
@@ -334,7 +266,6 @@ fun PackManagerScreen(
                         )
                     }
                 },
-                
                 shape = RoundedCornerShape(28.dp), 
                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh, 
                 tonalElevation = 6.dp 
@@ -342,13 +273,10 @@ fun PackManagerScreen(
         }
     }
 }
-
-
 @Composable
 fun PackHorizontalCard(themeName: String, onClick: () -> Unit) {
     val nombreEstetico = themeName.replace("x_", "").replace("_", " ").uppercase()
     val drawableResId = remember(themeName) { obtenerDrawableMiniatura(themeName) }
-
     Card(
         modifier = Modifier
             .width(150.dp)
@@ -360,7 +288,6 @@ fun PackHorizontalCard(themeName: String, onClick: () -> Unit) {
         )
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            
             AsyncImage(
                 model = drawableResId,
                 contentDescription = null,
@@ -370,7 +297,6 @@ fun PackHorizontalCard(themeName: String, onClick: () -> Unit) {
                     .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
                 contentScale = ContentScale.Crop
             )
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -404,14 +330,11 @@ fun PackHorizontalCard(themeName: String, onClick: () -> Unit) {
         }
     }
 }
-
-
 @Composable
 fun PackItemRowM3(themeName: String, progress: Int?, onClick: () -> Unit) {
     val nombreEstetico = themeName.replace("x_", "").replace("_", " ").uppercase()
     val drawableResId = remember(themeName) { obtenerDrawableMiniatura(themeName) }
     val isDownloading = progress != null
-
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -429,7 +352,6 @@ fun PackItemRowM3(themeName: String, progress: Int?, onClick: () -> Unit) {
                     Text(if (isDownloading) stringResource(R.string.descargando) else stringResource(R.string.paquete_remoto_firebase_cloud))
                 },
                 leadingContent = {
-                    
                     AsyncImage(
                         model = drawableResId,
                         contentDescription = null,
@@ -449,8 +371,6 @@ fun PackItemRowM3(themeName: String, progress: Int?, onClick: () -> Unit) {
                     }
                 }
             )
-
-            
             AnimatedVisibility(visible = isDownloading) {
                 if (progress != null) {
                     Column(modifier = Modifier

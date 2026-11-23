@@ -1,2 +1,1 @@
-
 data class PackageInstallPending(val packageName: String, val updatedAt: Instant?, val isNew: Boolean)

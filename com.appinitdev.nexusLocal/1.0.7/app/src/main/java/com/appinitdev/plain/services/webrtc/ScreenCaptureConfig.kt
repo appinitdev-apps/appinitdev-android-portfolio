@@ -1,4 +1,3 @@
-
 internal fun getEffectiveResolution(quality: DScreenMirrorQuality, adaptiveResolution: Int): Int {
     return when (quality.mode) {
         ScreenMirrorMode.AUTO -> adaptiveResolution
@@ -6,7 +5,6 @@ internal fun getEffectiveResolution(quality: DScreenMirrorQuality, adaptiveResol
         ScreenMirrorMode.SMOOTH -> 720
     }
 }
-
 internal fun computeTargetBitrateKbps(resolution: Int): Int {
     return when {
         resolution >= 1080 -> 4000
@@ -14,7 +12,6 @@ internal fun computeTargetBitrateKbps(resolution: Int): Int {
         else -> 1000
     }
 }
-
 internal fun computeStartBitrateKbps(resolution: Int): Int {
     return when {
         resolution >= 1080 -> 3000
@@ -22,7 +19,6 @@ internal fun computeStartBitrateKbps(resolution: Int): Int {
         else -> 800
     }
 }
-
 internal fun computeCaptureSize(
     context: Context,
     quality: DScreenMirrorQuality,
@@ -36,15 +32,6 @@ internal fun computeCaptureSize(
     val targetHeight = makeEven(max(2, (realSize.y * scale).toInt()))
     return Triple(targetWidth, targetHeight, context.resources.displayMetrics.densityDpi)
 }
-
- 
-
-
-
-
-
-
-
 internal fun getRealScreenSize(context: Context): Point {
     val dm = context.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
     val display = dm.getDisplay(Display.DEFAULT_DISPLAY)
@@ -81,5 +68,4 @@ internal fun getRealScreenSize(context: Context): Point {
         }
     }
 }
-
 internal fun makeEven(value: Int): Int = if (value % 2 == 0) value else value - 1

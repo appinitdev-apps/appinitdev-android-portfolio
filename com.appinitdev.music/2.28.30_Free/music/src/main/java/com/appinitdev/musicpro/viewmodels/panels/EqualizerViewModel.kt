@@ -1,44 +1,9 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class EqualizerViewModel(application: Application) : WrappedViewModel(application) {
-
     private val _initialState = MutableStateFlow<EqualizerInitialState?>(null)
-
-     
-
-
-
-
     val initialState: StateFlow<EqualizerInitialState?> = _initialState.asStateFlow()
-
-     
     private val db: EqualizerDatabase by lazy {
         EqualizerDatabase.getInstance(getApplication())
     }
-
-     
-
-
-
-
     val allPresets: StateFlow<List<EqualizerPreset>> = db.equalizerPresetDao()
         .getAllPresetsFlow()
         .stateIn(
@@ -46,13 +11,6 @@ class EqualizerViewModel(application: Application) : WrappedViewModel(applicatio
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = emptyList()
         )
-
-     
-
-
-
-
-
     val currentPresetName: StateFlow<String> = combine(
             EqualizerManager.bandGainsFlow,
             EqualizerManager.preampFlow,
@@ -64,7 +22,6 @@ class EqualizerViewModel(application: Application) : WrappedViewModel(applicatio
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = CUSTOM_PRESET_NAME
     )
-
     init {
         viewModelScope.launch(Dispatchers.IO) {
             _initialState.value = EqualizerInitialState(
@@ -87,20 +44,6 @@ class EqualizerViewModel(application: Application) : WrappedViewModel(applicatio
             )
         }
     }
-
-     
-
-
-
-
-
-
-
-
-
-
-
-
     fun savePreset(
             name: String,
             gains: FloatArray,
@@ -125,15 +68,6 @@ class EqualizerViewModel(application: Application) : WrappedViewModel(applicatio
             withContext(Dispatchers.Main) { onSuccess() }
         }
     }
-
-     
-
-
-
-
-
-
-
     private fun findMatchingPreset(
             gains: FloatArray,
             preamp: Float,
@@ -147,29 +81,6 @@ class EqualizerViewModel(application: Application) : WrappedViewModel(applicatio
             gainsMatch && preampMatch
         }
     }
-
-     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     data class EqualizerInitialState(
             val isEqEnabled: Boolean,
             val bandGains: FloatArray,
@@ -208,7 +119,6 @@ class EqualizerViewModel(application: Application) : WrappedViewModel(applicatio
                     && replayGainDb == other.replayGainDb
                     && pitchSpeedLocked == other.pitchSpeedLocked
         }
-
         override fun hashCode(): Int {
             var result = isEqEnabled.hashCode()
             result = 31 * result + bandGains.contentHashCode()
@@ -229,19 +139,8 @@ class EqualizerViewModel(application: Application) : WrappedViewModel(applicatio
             return result
         }
     }
-
     companion object {
-         
-
-
-
         const val CUSTOM_PRESET_NAME = "Custom"
-
-         
-
-
-
-
         private const val GAIN_TOLERANCE = 0.005f
     }
 }

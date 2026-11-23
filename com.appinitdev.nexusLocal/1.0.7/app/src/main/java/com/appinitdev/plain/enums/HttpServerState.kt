@@ -1,4 +1,3 @@
-
 @Parcelize
 enum class HttpServerState: Parcelable {
     OFF,
@@ -6,7 +5,6 @@ enum class HttpServerState: Parcelable {
     STARTING,
     STOPPING,
     ERROR;
-
     fun isProcessing(): Boolean {
         return setOf(STARTING, STOPPING).contains(this)
     }

@@ -1,12 +1,9 @@
-
 object AudioPlayer {
     private val _isPlayingFlow = MutableStateFlow(false)
     val isPlayingFlow: StateFlow<Boolean> = _isPlayingFlow.asStateFlow()
-
     fun isPlaying(): Boolean {
         return player?.isPlaying == true
     }
-
     private val playerListener = object : Player.Listener {
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             LogCat.d("Player.isPlaying changed to: $isPlaying")
@@ -16,7 +13,6 @@ object AudioPlayer {
             }
         }
     }
-
     private var player: Player? = null
     var playerProgress: Long = 0 
         get() {
@@ -24,15 +20,12 @@ object AudioPlayer {
             if (currentPlayer == null) {
                 return TempData.audioPlayPosition
             }
-
             val currentPosition = currentPlayer.currentPosition
-            
             if (currentPosition == 0L && TempData.audioPlayPosition > 0L) {
                 return TempData.audioPlayPosition
             }
             return currentPosition
         }
-
     fun ensurePlayer(context: Context, callback: suspend () -> Unit = {}) {
         if (player != null) {
             CoroutinesHelper.coMain {
@@ -52,7 +45,6 @@ object AudioPlayer {
             }
         }, MoreExecutors.directExecutor())
     }
-
     fun play(
         context: Context,
         playlistAudio: DPlaylistAudio
@@ -65,7 +57,6 @@ object AudioPlayer {
             }
         }
     }
-
     fun justPlay(
         context: Context,
         playlistAudio: DPlaylistAudio
@@ -77,7 +68,6 @@ object AudioPlayer {
             }
         }
     }
-
     fun play() {
         CoroutinesHelper.coMain {
             val current = player?.currentMediaItem
@@ -86,7 +76,6 @@ object AudioPlayer {
                 player?.play()
                 return@coMain
             }
-
             val context = MainApp.Companion.instance
             val playlistAudio = ensureCurrentPlaylistAudio()
             try {
@@ -104,7 +93,6 @@ object AudioPlayer {
             }
         }
     }
-
     private suspend fun ensureCurrentPlaylistAudio(): DPlaylistAudio? {
         val context = MainApp.Companion.instance
         val path = CoroutinesHelper.withIO { AudioPlayingPreference.getValueAsync() }
@@ -115,7 +103,6 @@ object AudioPlayer {
         CoroutinesHelper.withIO { AudioPlaylistPreference.addAsync(listOf(playlistAudio)) }
         return playlistAudio
     }
-
     fun seekTo(progress: Long) {
         CoroutinesHelper.coMain {
             val seekPosition = progress * 1000
@@ -128,15 +115,12 @@ object AudioPlayer {
             play()
         }
     }
-
     fun skipToNext() {
         skipTo(isNext = true)
     }
-
     fun skipToPrevious() {
         skipTo(isNext = false)
     }
-
     private fun skipTo(isNext: Boolean) {
         val context = MainApp.Companion.instance
         CoroutinesHelper.coIO {
@@ -152,7 +136,6 @@ object AudioPlayer {
                     return@coIO
                 }
             }
-
             if (TempData.audioPlayMode.value == MediaPlayMode.SHUFFLE) {
                 audio = playerAudioList.random()
             } else {
@@ -174,7 +157,6 @@ object AudioPlayer {
                     audio = playerAudioList[if (isNext) 0 else (playerAudioList.size - 1)]
                 }
             }
-
             LogCat.d("skipTo: ${audio.path}")
             CoroutinesHelper.coMain {
                 ensurePlayer(context) {
@@ -184,14 +166,12 @@ object AudioPlayer {
             }
         }
     }
-
     fun pause() {
         CoroutinesHelper.coMain {
             TempData.audioPlayPosition = player?.currentPosition ?: 0
             player?.pause()
         }
     }
-
     fun clear() {
         CoroutinesHelper.coMain {
             if (player?.isPlaying == true) {
@@ -201,14 +181,12 @@ object AudioPlayer {
             TempData.audioPlayPosition = 0
         }
     }
-
     fun release() {
         player?.removeListener(playerListener)
         player = null
         _isPlayingFlow.value = false
         TempData.audioPlayPosition = 0
     }
-
     private fun doPlay(
         audio: DPlaylistAudio,
     ) {
@@ -217,7 +195,6 @@ object AudioPlayer {
         player?.seekTo(TempData.audioPlayPosition)
         player?.play()
     }
-
     fun setChangedNotify(action: AudioAction) {
         sendEvent(AudioActionEvent(action))
     }

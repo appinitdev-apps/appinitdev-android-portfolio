@@ -1,4 +1,3 @@
-
 @Composable
 fun PFeatureBanner(
     modifier: Modifier = Modifier,
@@ -30,7 +29,6 @@ fun PFeatureBanner(
         }
     }
 }
-
 @Composable
 private fun PFeatureBannerLabel(
     tag: String,
@@ -60,7 +58,6 @@ private fun PFeatureBannerLabel(
         }
     }
 }
-
 @Composable
 private fun PFeatureBannerTexts(
     title: String,
@@ -79,7 +76,6 @@ private fun PFeatureBannerTexts(
         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f),
     )
 }
-
 @Composable
 private fun PFeatureBannerButton(
     text: String,

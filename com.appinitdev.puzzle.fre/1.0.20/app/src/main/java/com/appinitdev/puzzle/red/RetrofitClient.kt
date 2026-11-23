@@ -1,8 +1,6 @@
-
 object PixabayConfig {
     const val API_KEY = ""
 }
-
 interface PixabayService {
     @GET("api/")
     suspend fun searchPhotos(
@@ -12,11 +10,9 @@ interface PixabayService {
         @Query("per_page") perPage: Int
     ): PixabayResponse
 }
-
 data class PixabayResponse(
     @SerializedName("hits") val hits: List<PixabayPhoto> = emptyList()
 )
-
 data class PixabayPhoto(
     @SerializedName("id") val id: Long = 0L,
     @SerializedName("previewURL") val previewURL: String = "",
@@ -24,7 +20,6 @@ data class PixabayPhoto(
     @SerializedName("largeImageURL") val largeImageURL: String = "",
     @SerializedName("tags") val tags: String = ""
 )
-
 object RetrofitClient {
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
@@ -36,7 +31,6 @@ object RetrofitClient {
             }
             .build()
     }
-
     val service: PixabayService by lazy {
         Retrofit.Builder()
             .baseUrl("https://pixabay.com/")

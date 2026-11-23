@@ -1,12 +1,4 @@
-
-
 object ChatFileSaveHelper {
-     
-
-
-
-
-
     fun importFromUri(
         context: Context,
         uri: Uri,
@@ -19,18 +11,9 @@ object ChatFileSaveHelper {
             val dFile = AppFileStore.importFile(context, tempFile, mimeType, deleteSrc = true)
             return AppFileStore.toFidUri(dFile.id, AppFileStore.extFromMime(dFile.mimeType))
         } finally {
-            
             if (tempFile.exists()) tempFile.delete()
         }
     }
-
-     
-
-
-
-
-
-
     fun importDownloadedFile(
         context: Context,
         srcFile: File,

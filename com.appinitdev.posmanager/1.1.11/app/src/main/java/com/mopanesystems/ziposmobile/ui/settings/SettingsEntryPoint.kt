@@ -1,4 +1,3 @@
-
 @EntryPoint
 @InstallIn(SingletonComponent::class)
 interface SettingsEntryPoint {

@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addAppLogsSchema() {
     query("appLogs") {
         resolver { offset: Int, limit: Int ->
@@ -7,14 +6,12 @@ fun SchemaBuilder.addAppLogsSchema() {
             AppLogHelper.getLogLines(logFile, offset, limit)
         }
     }
-
     query("appLogPath") {
         resolver { ->
             val context = MainApp.instance
             DiskLogFormatStrategy.getLogFolder(context) + "/latest.log"
         }
     }
-
     mutation("clearAppLogs") {
         resolver { ->
             val context = MainApp.instance

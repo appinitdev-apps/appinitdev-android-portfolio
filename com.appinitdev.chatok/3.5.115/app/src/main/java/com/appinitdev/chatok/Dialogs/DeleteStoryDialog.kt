@@ -1,4 +1,3 @@
-
 @Composable
 fun DeleteStoryDialog(hideDialog: () -> Unit, deleteStory: () -> Unit) {
     Dialog(
@@ -27,9 +26,7 @@ fun DeleteStoryDialog(hideDialog: () -> Unit, deleteStory: () -> Unit) {
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
-                
                 Spacer(modifier = Modifier.height(32.dp))
-                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -45,7 +42,6 @@ fun DeleteStoryDialog(hideDialog: () -> Unit, deleteStory: () -> Unit) {
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    
                     Button(
                         onClick = deleteStory,
                         modifier = Modifier.weight(1f),

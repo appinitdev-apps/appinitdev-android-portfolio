@@ -1,5 +1,3 @@
-
-
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun ModernCartItemRow(
@@ -21,7 +19,6 @@ fun ModernCartItemRow(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -36,14 +33,10 @@ fun ModernCartItemRow(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-
-            
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                
-
                 Surface(
                     shape = MaterialTheme.shapes.large,
                     color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f),
@@ -53,7 +46,6 @@ fun ModernCartItemRow(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(horizontal = 4.dp, vertical = 6.dp)
                     ) {
-                        
                         Surface(
                             enabled = item.quantity > 1,
                             onClick = { if (item.quantity > 1) onQuantityChange(item.quantity - 1) },
@@ -70,8 +62,6 @@ fun ModernCartItemRow(
                                 )
                             }
                         }
-
-                        
                         Text(
                             text = item.quantity.toString() ,
                             style = MaterialTheme.typography.titleLarge.copy(
@@ -81,8 +71,6 @@ fun ModernCartItemRow(
                             color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
-
-                        
                         Surface(
                             enabled = item.product.stockQuantity > item.quantity,
                             onClick = { if (item.product.stockQuantity > item.quantity)onQuantityChange(item.quantity + 1) },
@@ -101,15 +89,11 @@ fun ModernCartItemRow(
                         }
                     }
                 }
-
-                
                 Column(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    
                     if(!edit)
-
                     Surface(
                         shape = MaterialTheme.shapes.medium,
                         color = MaterialTheme.colorScheme.secondaryContainer
@@ -124,8 +108,6 @@ fun ModernCartItemRow(
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
                         )
                     }
-
-                    
                     if(edit)
                     Surface(
                         onClick = onRemove,
@@ -147,7 +129,6 @@ fun ModernCartItemRow(
         }
     }
 }
-
 @Composable
 fun POSScreenCompose(
     viewModel: POSViewModel,
@@ -157,7 +138,6 @@ fun POSScreenCompose(
     onClearCart: () -> Unit,
     currencyFormatter: NumberFormat,
 ) {
-
     var showCustomerSelectionDialog by remember { mutableStateOf(false) }
     val cartItems by viewModel.cartItems.collectAsStateWithLifecycle()
     val subtotal by viewModel.subtotal.collectAsStateWithLifecycle()
@@ -176,7 +156,6 @@ fun POSScreenCompose(
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
@@ -202,8 +181,6 @@ fun POSScreenCompose(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-
-                
                 Surface(
                     onClick = onScanBarcode,
                     shape = MaterialTheme.shapes.large,
@@ -221,8 +198,6 @@ fun POSScreenCompose(
                 }
             }
         }
-
-        
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
@@ -297,8 +272,6 @@ fun POSScreenCompose(
                 }
             }
         }
-
-        
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -312,7 +285,6 @@ fun POSScreenCompose(
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -325,7 +297,6 @@ fun POSScreenCompose(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     if (cartItems.isNotEmpty()) {
-
                         Surface(
                             onClick = {
                                 productEdit = !productEdit
@@ -338,13 +309,11 @@ fun POSScreenCompose(
                                 Icon(
                                     imageVector = if (!productEdit) Icons.Default.DeleteOutline else Icons.Default.Check,
                                     contentDescription = "Edit Product",
-                                  
                                     modifier = Modifier.size(20.dp)
                                 )
                             }
                         }
                         Spacer(modifier = Modifier.width(6.dp))
-
                         Surface(
                             shape = MaterialTheme.shapes.medium,
                             color = MaterialTheme.colorScheme.secondaryContainer
@@ -358,8 +327,6 @@ fun POSScreenCompose(
                         }
                     }
                 }
-
-                
                 if (cartItems.isEmpty()) {
                     Column(
                         modifier = Modifier
@@ -382,9 +349,7 @@ fun POSScreenCompose(
                                 )
                             }
                         }
-
                         Spacer(modifier = Modifier.height(12.dp))
-
                         Text(
                             text = stringResource(R.string.cart_is_empty),
                             style = MaterialTheme.typography.titleMedium,
@@ -417,7 +382,6 @@ fun POSScreenCompose(
                             )
                         }
                     }
-
                     OutlinedButton(
                         onClick = onClearCart,
                         modifier = Modifier
@@ -447,12 +411,9 @@ fun POSScreenCompose(
                             )
                         }
                     }
-
                 }
             }
         }
-
-        
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
@@ -463,7 +424,6 @@ fun POSScreenCompose(
                 modifier = Modifier.padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -480,7 +440,6 @@ fun POSScreenCompose(
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -494,12 +453,10 @@ fun POSScreenCompose(
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
-
                     HorizontalDivider(
                         modifier = Modifier.padding(vertical = 8.dp),
                         color = MaterialTheme.colorScheme.outline
                     )
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -518,22 +475,17 @@ fun POSScreenCompose(
                         )
                     }
                 }
-
-                
                 Column(
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Button(
                             onClick = {
-
                                 paymentMethod = PaymentMethod.CASH
                                 showPaymentDialog= true
-                                
                                   },
                             modifier = Modifier
                                 .weight(1f)
@@ -555,12 +507,10 @@ fun POSScreenCompose(
                                 )
                             }
                         }
-
                         Button(
                             onClick = {
                                 paymentMethod = PaymentMethod.CARD
                                 showPaymentDialog= true
-                               
                                       },
                             modifier = Modifier
                                 .weight(1f)
@@ -582,12 +532,10 @@ fun POSScreenCompose(
                                 )
                             }
                         }
-
                         Button(
                             onClick = {
                                 paymentMethod = PaymentMethod.MOBILE_PAYMENT
                                 showPaymentDialog= true
-                               
                                       },
                             modifier = Modifier
                                 .weight(1f)
@@ -610,10 +558,6 @@ fun POSScreenCompose(
                             }
                         }
                     }
-
-                    
-
-
                     if (isProcessing) {
                         LinearProgressIndicator(
                             modifier = Modifier.fillMaxWidth(),
@@ -623,7 +567,6 @@ fun POSScreenCompose(
                 }
             }
         }
-
         receiptPath?.let { path ->
             if (path.endsWith(".pdf")) {
                 ReceiptDialog(
@@ -632,7 +575,6 @@ fun POSScreenCompose(
                 )
             }
         }
-
         if (showPaymentDialog  ) {
             PaymentDialog(
                 customer = selectedCustomer,
@@ -645,18 +587,12 @@ fun POSScreenCompose(
                 }
             )
         }
-
-
-
-
         if (showCustomerSelectionDialog) {
             CustomerSelectionDialog(
                 showDialog = showCustomerSelectionDialog,
                 viewModel = viewModelCustomerViewModel,
                 onDismiss = {
                     showCustomerSelectionDialog = false
-
-
                 },
                 onSelect = { customer ->
                     viewModel.selectCustomer(customer)
@@ -666,8 +602,6 @@ fun POSScreenCompose(
         }
     }
 }
-
-
 @Composable
 fun CartItemRowCompose(
     item: CartItem,
@@ -699,7 +633,6 @@ fun CartItemRowCompose(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -707,17 +640,14 @@ fun CartItemRowCompose(
                 IconButton(onClick = { onQuantityChange(item.quantity - 1) }) {
                     Icon(Icons.Default.Remove, contentDescription = "Decrease")
                 }
-
                 Text(
                     text = item.quantity.toString(),
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Medium
                 )
-
                 IconButton(onClick = { onQuantityChange(item.quantity + 1) }) {
                     Icon(Icons.Default.Add, contentDescription = "Increase")
                 }
-
                 IconButton(onClick = onRemove) {
                     Icon(Icons.Default.Delete, contentDescription = "Remove")
                 }
@@ -725,5 +655,3 @@ fun CartItemRowCompose(
         }
     }
 }
-
-

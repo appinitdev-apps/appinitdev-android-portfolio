@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryDetailScreen(
@@ -7,9 +6,7 @@ fun CategoryDetailScreen(
 ) {
     val selectedCategory by viewModel.selectedCategory.collectAsState()
     val topics by viewModel.categoryTopics.collectAsState()
-
     val category = selectedCategory ?: return
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -38,7 +35,6 @@ fun CategoryDetailScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -65,7 +61,6 @@ fun CategoryDetailScreen(
                     }
                 }
             }
-
             item {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -75,8 +70,6 @@ fun CategoryDetailScreen(
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
-
-            
             items(topics) { topic ->
                 TopicCard(
                     topic = topic,

@@ -1,4 +1,3 @@
-
 @Composable
 fun AudioCastPlayerBar(
     castVM: CastViewModel,
@@ -7,7 +6,6 @@ fun AudioCastPlayerBar(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-
     var title by remember { mutableStateOf("") }
     var artist by remember { mutableStateOf("") }
     var showCastPlaylist by remember { mutableStateOf(false) }
@@ -16,7 +14,6 @@ fun AudioCastPlayerBar(
     val duration by CastPlayer.duration.collectAsState()
     val supportsCallback by CastPlayer.supportsCallback.collectAsState()
     val currentUri by CastPlayer.currentUri.collectAsState()
-
     LaunchedEffect(currentUri) {
         scope.launch {
             if (currentUri.isNotEmpty()) {
@@ -29,7 +26,6 @@ fun AudioCastPlayerBar(
             }
         }
     }
-
     AnimatedVisibility(
         visible = castVM.castMode.value && CastPlayer.currentDevice != null && !dragSelectState.selectMode,
         enter = slideInVertically { it },
@@ -54,7 +50,6 @@ fun AudioCastPlayerBar(
             )
         }
     }
-
     if (showCastPlaylist) {
         AudioCastPlaylistPage(castVM = castVM, onDismissRequest = { showCastPlaylist = false })
     }

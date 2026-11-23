@@ -1,10 +1,8 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PomodoroPage(navController: NavHostController, pomodoroVM: PomodoroViewModel) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-
     if (pomodoroVM.showSettings.value) {
         PomodoroSettingsDialog(settings = pomodoroVM.settings.value, onSettingsChange = { newSettings ->
             scope.launch {
@@ -15,7 +13,6 @@ fun PomodoroPage(navController: NavHostController, pomodoroVM: PomodoroViewModel
             }
         }, onDismiss = { pomodoroVM.showSettings.value = false })
     }
-
     PScaffold(topBar = {
         PTopAppBar(navController = navController, title = "", actions = {
             PIconButton(icon = Res.drawable.settings, contentDescription = stringResource(Res.string.settings), tint = MaterialTheme.colorScheme.onSurface) { pomodoroVM.showSettings.value = true }

@@ -1,27 +1,8 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class MainActivity : GoodtimeMainActivity() {
     private val notificationManager: NotificationArchManager by inject()
     private val timerViewModel: TimerViewModel by viewModel<TimerViewModel>()
     private var fullScreenJob: Job? = null
     private var timerStateJob: Job? = null
-
     override fun onResume() {
         super.onResume()
         timerViewModel.onBringToForeground()
@@ -30,29 +11,24 @@ class MainActivity : GoodtimeMainActivity() {
                 timerViewModel.listenForeground()
             }
     }
-
     override fun onPause() {
         timerViewModel.onSendToBackground()
         timerStateJob?.cancel()
         timerStateJob = null
         super.onPause()
     }
-
     @SuppressLint("UnrememberedGetBackStackEntry", "UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         log.d { "onCreate" }
-
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
         var themeSettings by mutableStateOf(
             ThemeSettings(
                 darkTheme = resources.configuration.isSystemInDarkTheme,
                 isDynamicTheme = false,
             ),
         )
-
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 combine(
@@ -82,14 +58,10 @@ class MainActivity : GoodtimeMainActivity() {
                     }
             }
         }
-
         splashScreen.setKeepOnScreenCondition { viewModel.uiState.value.loading }
-
         setContent {
             val coroutineScope = rememberCoroutineScope()
-
             val mainUiState by viewModel.uiState.collectAsStateWithLifecycle()
-
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             val isDarkTheme = themeSettings.darkTheme
             val showWhenLocked = uiState.showWhenLocked
@@ -97,11 +69,9 @@ class MainActivity : GoodtimeMainActivity() {
             val keepScreenOn = uiState.keepScreenOn
             val isFinished = uiState.isFinished
             var isMainScreen by rememberSaveable { mutableStateOf(true) }
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                 setShowWhenLocked(showWhenLocked)
             }
-
             val fullscreenMode = isMainScreen && uiState.fullscreenMode
             LaunchedEffect(fullscreenMode) {
                 fullscreenMode.let {
@@ -126,7 +96,6 @@ class MainActivity : GoodtimeMainActivity() {
                         }
                 }
             }
-
             toggleKeepScreenOn(isActive && keepScreenOn)
             val startDestination =
                 remember(mainUiState.showOnboarding) {
@@ -136,15 +105,12 @@ class MainActivity : GoodtimeMainActivity() {
                         MainDest
                     }
                 }
-
             ApplicationTheme(darkTheme = isDarkTheme, dynamicColor = themeSettings.isDynamicTheme) {
                 val navController = rememberNavController()
                 val snackbarHostState = remember { SnackbarHostState() }
-
                 navController.addOnDestinationChangedListener { _, destination, _ ->
                     isMainScreen = destination.route == MainDest.route
                 }
-
                 LaunchedEffect(isFinished) {
                     if (isFinished) {
                         navController.currentDestination?.route?.let {
@@ -159,21 +125,18 @@ class MainActivity : GoodtimeMainActivity() {
                         }
                     }
                 }
-
                 ObserveAsEvents(
                     flow = SnackbarController.events,
                     snackbarHostState,
                 ) { event ->
                     coroutineScope.launch {
                         snackbarHostState.currentSnackbarData?.dismiss()
-
                         val result =
                             snackbarHostState.showSnackbar(
                                 message = event.message,
                                 actionLabel = event.action?.name,
                                 duration = SnackbarDuration.Long,
                             )
-
                         if (result == SnackbarResult.ActionPerformed) {
                             event.action?.action?.invoke()
                         }
@@ -259,15 +222,12 @@ class MainActivity : GoodtimeMainActivity() {
                                 onNavigateBack = navController::popBackStack2,
                             )
                         }
-
                         composable<BackupDest> {
                             BackupScreen(
                                 onNavigateToPro = { navController.navigate(ProDest) },
                                 onNavigateBack = navController::popBackStack2,
                             )
                         }
-
-
                         composable<AcknowledgementsDest> {
                             AcknowledgementsScreen(navController::popBackStack2)
                         }
@@ -279,13 +239,11 @@ class MainActivity : GoodtimeMainActivity() {
             }
         }
     }
-
     override fun onDestroy() {
         log.d { "onDestroy" }
         notificationManager.clearFinishedNotification()
         super.onDestroy()
     }
-
     private fun toggleKeepScreenOn(enabled: Boolean) {
         if (enabled) {
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -293,11 +251,9 @@ class MainActivity : GoodtimeMainActivity() {
             window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
-
     private fun toggleFullscreen(enabled: Boolean) {
         val windowInsetsController =
             WindowCompat.getInsetsController(window, window.decorView)
-
         if (enabled) {
             windowInsetsController.apply {
                 hide(WindowInsetsCompat.Type.systemBars())
@@ -307,7 +263,6 @@ class MainActivity : GoodtimeMainActivity() {
             windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
         }
     }
-
     private suspend fun executeDelayed(
         delay: Long,
         block: () -> Unit,
@@ -318,17 +273,14 @@ class MainActivity : GoodtimeMainActivity() {
         }
     }
 }
-
 fun NavController.popBackStack2(): Boolean {
     if (this.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
         return this.popBackStack()
     }
     return false
 }
-
 private val lightScrim = android.graphics.Color.argb(0xe6, 0xFF, 0xFF, 0xFF)
 private val darkScrim = android.graphics.Color.argb(0x80, 0x1b, 0x1b, 0x1b)
-
 data class ThemeSettings(
     val darkTheme: Boolean,
     val isDynamicTheme: Boolean,

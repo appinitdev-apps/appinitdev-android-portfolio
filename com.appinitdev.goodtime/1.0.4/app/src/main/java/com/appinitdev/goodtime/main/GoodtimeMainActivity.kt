@@ -1,40 +1,18 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 open class GoodtimeMainActivity :
     ComponentActivity(),
     KoinComponent {
     internal val viewModel: MainViewModel by viewModel<MainViewModel>()
     val log: Logger by injectLogger("GoodtimeMainActivity")
-
     private var availableVersionCode: Int = 0
-
     private val appUpdateResultLauncher =
         registerForActivityResult(
             ActivityResultContracts.StartIntentSenderForResult(),
         ) { activityResult ->
             handleUpdateResult(activityResult.resultCode)
         }
-
     private val appUpdateManager: AppUpdateManager by lazy {
         AppUpdateManagerFactory.create(this)
     }
-
     fun triggerAppUpdate() {
         lifecycleScope.launch {
             appUpdateManager
@@ -54,7 +32,6 @@ open class GoodtimeMainActivity :
                 }
         }
     }
-
     private fun handleUpdateResult(resultCode: Int) {
         when (resultCode) {
             RESULT_OK -> {
@@ -71,11 +48,9 @@ open class GoodtimeMainActivity :
             else -> Unit
         }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
-
             appUpdateManager
                 .requestUpdateFlow()
                 .catch { emit(AppUpdateResult.NotAvailable) }
@@ -105,7 +80,6 @@ open class GoodtimeMainActivity :
             }
         }
     }
-
     private fun showFeedbackDialog() {
         val manager = ReviewManagerFactory.create(this.applicationContext)
         manager.requestReviewFlow()

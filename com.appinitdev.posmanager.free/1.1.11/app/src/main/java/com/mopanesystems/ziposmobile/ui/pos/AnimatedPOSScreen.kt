@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnimatedPOSScreenCompose(
@@ -15,8 +14,6 @@ fun AnimatedPOSScreenCompose(
     val itemCount by viewModel.itemCount.collectAsStateWithLifecycle()
     val selectedCustomer by viewModel.selectedCustomer.collectAsStateWithLifecycle()
     val isProcessing by viewModel.isProcessing.collectAsStateWithLifecycle()
-    
-    
     var showCart by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (showCart) 1f else 0.8f,
@@ -25,17 +22,14 @@ fun AnimatedPOSScreenCompose(
             stiffness = Spring.StiffnessLow
         )
     )
-    
     LaunchedEffect(cartItems.isNotEmpty()) {
         showCart = cartItems.isNotEmpty()
     }
-    
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        
         AnimatedVisibility(
             visible = true,
             enter = slideInVertically() + fadeIn(),
@@ -51,13 +45,10 @@ fun AnimatedPOSScreenCompose(
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold
                 )
-                
-                
                 val scanButtonScale by animateFloatAsState(
                     targetValue = if (isProcessing) 0.9f else 1f,
                     animationSpec = tween(200)
                 )
-                
                 IconButton(
                     onClick = onScanBarcode,
                     modifier = Modifier.scale(scanButtonScale)
@@ -70,10 +61,7 @@ fun AnimatedPOSScreenCompose(
                 }
             }
         }
-        
         Spacer(modifier = Modifier.height(16.dp))
-        
-        
         AnimatedVisibility(
             visible = selectedCustomer != null,
             enter = slideInHorizontally() + fadeIn(),
@@ -106,10 +94,7 @@ fun AnimatedPOSScreenCompose(
                 }
             }
         }
-        
         Spacer(modifier = Modifier.height(16.dp))
-        
-        
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -129,8 +114,6 @@ fun AnimatedPOSScreenCompose(
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
-                    
-                    
                     AnimatedVisibility(
                         visible = itemCount > 0,
                         enter = scaleIn() + fadeIn(),
@@ -149,9 +132,7 @@ fun AnimatedPOSScreenCompose(
                         }
                     }
                 }
-                
                 Spacer(modifier = Modifier.height(8.dp))
-                
                 if (cartItems.isEmpty()) {
                     Box(
                         modifier = Modifier.fillMaxWidth(),
@@ -188,7 +169,6 @@ fun AnimatedPOSScreenCompose(
                                 CartItemRowCompose(
                                     item = item,
                                     onQuantityChange = { newQuantity ->
-                                        
                                     },
                                     onRemove = {
                                         viewModel.removeProductFromCart(item.id)
@@ -200,10 +180,7 @@ fun AnimatedPOSScreenCompose(
                 }
             }
         }
-        
         Spacer(modifier = Modifier.height(16.dp))
-        
-        
         AnimatedVisibility(
             visible = cartItems.isNotEmpty(),
             enter = slideInVertically() + fadeIn(),
@@ -215,7 +192,6 @@ fun AnimatedPOSScreenCompose(
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    
                     AnimatedContent(
                         targetState = totalAmount,
                         transitionSpec = {
@@ -237,7 +213,6 @@ fun AnimatedPOSScreenCompose(
                                     style = MaterialTheme.typography.bodyLarge
                                 )
                             }
-                            
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
@@ -251,9 +226,7 @@ fun AnimatedPOSScreenCompose(
                                     style = MaterialTheme.typography.bodyLarge
                                 )
                             }
-                            
                             Divider(modifier = Modifier.padding(vertical = 8.dp))
-                            
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
@@ -272,10 +245,7 @@ fun AnimatedPOSScreenCompose(
                             }
                         }
                     }
-                    
                     Spacer(modifier = Modifier.height(16.dp))
-                    
-                    
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -285,13 +255,11 @@ fun AnimatedPOSScreenCompose(
                             PaymentMethod.CARD to "Card",
                             PaymentMethod.MOBILE_PAYMENT to "Mobile"
                         )
-                        
                         paymentMethods.forEach { (method, label) ->
                             val buttonScale by animateFloatAsState(
                                 targetValue = if (isProcessing) 0.95f else 1f,
                                 animationSpec = tween(100)
                             )
-                            
                             Button(
                                 onClick = { onProcessPayment(method) },
                                 modifier = Modifier
@@ -303,17 +271,13 @@ fun AnimatedPOSScreenCompose(
                             }
                         }
                     }
-                    
                     Spacer(modifier = Modifier.height(8.dp))
-                    
                     OutlinedButton(
                         onClick = onClearCart,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("Clear Cart")
                     }
-                    
-                    
                     AnimatedVisibility(
                         visible = isProcessing,
                         enter = fadeIn(),

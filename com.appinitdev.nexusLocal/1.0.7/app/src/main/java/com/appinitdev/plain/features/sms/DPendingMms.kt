@@ -1,14 +1,3 @@
-
- 
-
-
-
-
-
-
-
-
-
 data class DPendingMms(
     val id: String,                        
     val number: String,

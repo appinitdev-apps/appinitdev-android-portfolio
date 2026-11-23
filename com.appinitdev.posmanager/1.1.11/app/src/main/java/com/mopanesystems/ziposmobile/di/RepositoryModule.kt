@@ -1,26 +1,21 @@
-
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
-
     @Provides
     @Singleton
     fun provideProductRepository(
         productDao: ProductDao
     ): ProductRepository = ProductRepository(productDao)
-
     @Provides
     @Singleton
     fun provideCustomerRepository(
         customerDao: CustomerDao
     ): CustomerRepository = CustomerRepository(customerDao)
-
     @Provides
     @Singleton
     fun provideTransactionRepository(
         transactionDao: TransactionDao
     ): TransactionRepository = TransactionRepository(transactionDao)
-
     @Provides
     @Singleton
     fun provideStoreRepository(
@@ -28,7 +23,6 @@ object RepositoryModule {
         userDao: UserDao,
         userPermissionDao: UserPermissionDao
     ): StoreRepository = StoreRepository(storeDao, userDao, userPermissionDao)
-
     @Provides
     @Singleton
     fun provideInventoryRepository(
@@ -44,7 +38,6 @@ object RepositoryModule {
         purchaseOrderDao,
         purchaseOrderItemDao
     )
-
     @Provides
     @Singleton
     fun provideAnalyticsRepository(

@@ -1,4 +1,3 @@
-
 @Stable
 class Scroller internal constructor(
     private val scrollableState: ScrollableState,
@@ -6,21 +5,17 @@ class Scroller internal constructor(
     private val pixelPerSecondProvider: () -> Float,
 ) {
     companion object {
-        
         private const val MaxScrollDuration = 100L
         private const val ZeroScrollWaitDuration = 100L
     }
-
     internal enum class Direction {
         BACKWARD, FORWARD;
-
         val opposite: Direction
             get() = when (this) {
                 BACKWARD -> FORWARD
                 FORWARD -> BACKWARD
             }
     }
-
     private data class ScrollInfo(
         val direction: Direction,
         val speedMultiplier: Float,
@@ -31,13 +26,10 @@ class Scroller internal constructor(
             val Null = ScrollInfo(Direction.FORWARD, 0f, { 0f }, {})
         }
     }
-
     private var programmaticScrollJob: Job? = null
     val isScrolling: Boolean
         get() = programmaticScrollJob?.isActive == true
-
     private val scrollInfoChannel = Channel<ScrollInfo>(Channel.CONFLATED)
-
     internal fun start(
         direction: Direction,
         speedMultiplier: Float = 1f,
@@ -45,36 +37,26 @@ class Scroller internal constructor(
         onScroll: suspend () -> Unit = {},
     ): Boolean {
         if (!canScroll(direction)) return false
-
         if (programmaticScrollJob == null) {
             programmaticScrollJob = scope.launch {
                 scrollLoop()
             }
         }
-
         val scrollInfo =
             ScrollInfo(direction, speedMultiplier, maxScrollDistanceProvider, onScroll)
-
         scrollInfoChannel.trySend(scrollInfo)
         return true
     }
-
     private suspend fun scrollLoop() {
         var scrollInfo: ScrollInfo? = null
-
         while (true) {
             scrollInfo = scrollInfoChannel.tryReceive().getOrNull() ?: scrollInfo
             if (scrollInfo == null || scrollInfo == ScrollInfo.Null) break
-
             val (direction, speedMultiplier, maxScrollDistanceProvider, onScroll) = scrollInfo
-
             val pixelPerSecond = pixelPerSecondProvider() * speedMultiplier
             val pixelPerMs = pixelPerSecond / 1000f
-
             onScroll()
-
             if (!canScroll(direction)) break
-
             val maxScrollDistance = maxScrollDistanceProvider()
             if (maxScrollDistance <= 0f) {
                 delay(ZeroScrollWaitDuration)
@@ -91,26 +73,22 @@ class Scroller internal constructor(
                     Direction.FORWARD -> it
                 }
             }
-
             scrollableState.animateScrollBy(
                 diff, tween(durationMillis = duration.toInt(), easing = LinearEasing)
             )
         }
     }
-
     private fun canScroll(direction: Direction): Boolean {
         return when (direction) {
             Direction.BACKWARD -> scrollableState.canScrollBackward
             Direction.FORWARD -> scrollableState.canScrollForward
         }
     }
-
     internal suspend fun stop() {
         scrollInfoChannel.send(ScrollInfo.Null)
         programmaticScrollJob?.cancelAndJoin()
         programmaticScrollJob = null
     }
-
     internal fun tryStop() {
         scope.launch {
             stop()

@@ -1,11 +1,9 @@
-
 enum class ToastType {
     INFO,
     SUCCESS,
     WARNING,
     ERROR
 }
-
 @Composable
 fun PToast(
     message: String,
@@ -13,7 +11,6 @@ fun PToast(
     onDismiss: () -> Unit = {}
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-
     Box(
         modifier = Modifier
             .fillMaxSize()

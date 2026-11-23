@@ -1,4 +1,3 @@
-
 internal fun candidateInterfaces(): List<Pair<NetworkInterface, Inet4Address>> {
     return runCatching {
         NetworkInterface.getNetworkInterfaces()
@@ -17,13 +16,10 @@ internal fun candidateInterfaces(): List<Pair<NetworkInterface, Inet4Address>> {
             ?: emptyList()
     }.getOrElse { emptyList() }
 }
-
- 
 internal fun isMobileDataInterface(name: String): Boolean =
     name.startsWith("rmnet") || name.startsWith("ccmni") ||
         name.startsWith("v4-rmnet") || name.startsWith("v6-rmnet") ||
         name.startsWith("clat") || name.startsWith("v4-ccmni")
-
 internal fun findResponseIface(
     senderIp: Inet4Address,
     candidates: List<Pair<NetworkInterface, Inet4Address>>,
@@ -36,8 +32,6 @@ internal fun findResponseIface(
     }
     return candidates.first()
 }
-
- 
 internal fun ipToInt(ip: Inet4Address): Int {
     val b = ip.address
     return ((b[0].toInt() and 0xFF) shl 24) or ((b[1].toInt() and 0xFF) shl 16) or

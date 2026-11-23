@@ -1,15 +1,12 @@
-
 class ReflectionDarkenTransformation(
         private val darkenPercent: Float = 25f,      
         private val darkenOverlayAlpha: Int = 64,    
         private val reflectionAlpha: Int = 128       
 ) : BitmapTransformation() {
-
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {
         val idString = "reflection_darken_${darkenPercent}_${darkenOverlayAlpha}_refalpha_${reflectionAlpha}_fade"
         messageDigest.update(idString.toByteArray())
     }
-
     @SuppressLint("UseKtx")
     override fun transform(
             pool: BitmapPool,
@@ -20,11 +17,8 @@ class ReflectionDarkenTransformation(
         val width = toTransform.width
         val height = toTransform.height
         val reflectionHeight = height / 2
-
         val output = Bitmap.createBitmap(width, reflectionHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(output)
-
-        
         val matrix = Matrix().apply { preScale(1f, -1f) }
         val reflection = Bitmap.createBitmap(
                 toTransform,
@@ -35,20 +29,14 @@ class ReflectionDarkenTransformation(
                 matrix,
                 false
         )
-
-        
         val reflectionPaint = Paint()
         reflectionPaint.alpha = reflectionAlpha.coerceIn(0, 255)
         canvas.drawBitmap(reflection, 0f, 0f, reflectionPaint)
-
-        
         val darkenPaint = Paint()
         val darkness = (darkenPercent.coerceIn(0f, 100f) / 100f)
         val darkenAlpha = (darkenOverlayAlpha * darkness).toInt().coerceIn(0, 255)
         darkenPaint.color = Color.argb(darkenAlpha, 0, 0, 0)
         canvas.drawRect(0f, 0f, width.toFloat(), reflectionHeight.toFloat(), darkenPaint)
-
-        
         val fadePaint = Paint()
         fadePaint.shader = LinearGradient(
                 0f, 0f, 0f, reflectionHeight.toFloat(),
@@ -57,11 +45,9 @@ class ReflectionDarkenTransformation(
         )
         fadePaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_IN)
         canvas.drawRect(0f, 0f, width.toFloat(), reflectionHeight.toFloat(), fadePaint)
-
         reflection.recycle()
         return output
     }
-
     override fun equals(other: Any?): Boolean {
         if (other is ReflectionDarkenTransformation) {
             return darkenPercent == other.darkenPercent
@@ -70,7 +56,6 @@ class ReflectionDarkenTransformation(
         }
         return false
     }
-
     override fun hashCode(): Int {
         return Util.hashCode(
                 darkenPercent.toBits(),

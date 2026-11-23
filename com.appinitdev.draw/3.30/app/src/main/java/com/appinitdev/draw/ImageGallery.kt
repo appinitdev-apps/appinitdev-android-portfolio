@@ -1,4 +1,3 @@
-
 @Composable
 fun ImageGallery(images: List<Image>, onImageClick: (String) -> Unit) {
     LazyVerticalGrid(
@@ -15,16 +14,13 @@ fun ImageGallery(images: List<Image>, onImageClick: (String) -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp).clickable {
-                        
                         onImageClick(image.webformatURL)
                     },
-
                 contentScale = ContentScale.Crop
             )
         }
     }
 }
-
 @Composable
 fun ShowGalleryDialog(
     images: List<Image>,
@@ -42,20 +38,14 @@ fun ShowGalleryDialog(
                 .fillMaxHeight(0.9f) 
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                
                 ImageGallery(images, onImageClick)
-
-                
                 Spacer(modifier = Modifier.weight(1f))
-
-                
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    
                     Button(
                         onClick = onPrevPage,
                         modifier = Modifier
@@ -64,8 +54,6 @@ fun ShowGalleryDialog(
                     ) {
                         Text("<")
                     }
-
-                    
                     Button(
                         onClick = onNextPage,
                         modifier = Modifier

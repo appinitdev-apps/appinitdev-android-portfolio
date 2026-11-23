@@ -1,4 +1,3 @@
-
 fun Locale.getElegantDisplayName(): String {
     return when (language) {
         "zh" if country == "TW" -> "繁體中文"

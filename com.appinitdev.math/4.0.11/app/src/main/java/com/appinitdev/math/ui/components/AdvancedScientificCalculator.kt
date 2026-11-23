@@ -1,11 +1,9 @@
-
 @Composable
 fun AdvancedScientificCalculator(
     currentLang: String,
     modifier: Modifier = Modifier
 ) {
     var calcMode by remember { mutableIntStateOf(0) } 
-
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -13,7 +11,6 @@ fun AdvancedScientificCalculator(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             val modes = listOf(
                 0 to if (currentLang == "en") "🧮 Scientific & Expression" else "🧮 Científica y Expresiones",
@@ -29,7 +26,6 @@ fun AdvancedScientificCalculator(
                 )
             }
         }
-
         when (calcMode) {
             0 -> ScientificExpressionCalculator(currentLang)
             1 -> TriangleCalculator()
@@ -38,13 +34,11 @@ fun AdvancedScientificCalculator(
         }
     }
 }
-
 @Composable
 private fun ScientificExpressionCalculator(currentLang: String) {
     var exprText by remember { mutableStateOf("sin(30) + sqrt(16)") }
     var resultText by remember { mutableStateOf("") }
     var latexPreview by remember { mutableStateOf("$$\\sin(30^\\circ) + \\sqrt{16}$$") }
-
     fun evaluateExpr(input: String) {
         try {
             var clean = input.trim()
@@ -52,8 +46,6 @@ private fun ScientificExpressionCalculator(currentLang: String) {
                 .replace("÷", "/")
                 .replace("π", "3.141592653589793")
                 .replace("e", "2.718281828459045")
-
-            
             var latex = clean
                 .replace("*", " \\cdot ")
                 .replace("/", " / ")
@@ -62,17 +54,13 @@ private fun ScientificExpressionCalculator(currentLang: String) {
                 .replace("cos", "\\cos")
                 .replace("tan", "\\tan")
                 .replace("ln", "\\ln")
-
             latexPreview = "$$$latex$$"
-
-            
             val valResult = evaluateSimpleMath(clean)
             resultText = if (valResult.isNaN()) "Error" else String.format(Locale.US, "%.6f", valResult)
         } catch (e: Exception) {
             resultText = "Error"
         }
     }
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
@@ -88,8 +76,6 @@ private fun ScientificExpressionCalculator(currentLang: String) {
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
-
-            
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
@@ -110,8 +96,6 @@ private fun ScientificExpressionCalculator(currentLang: String) {
                     )
                 }
             }
-
-            
             OutlinedTextField(
                 value = exprText,
                 onValueChange = {
@@ -122,8 +106,6 @@ private fun ScientificExpressionCalculator(currentLang: String) {
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp)
             )
-
-            
             Surface(
                 shape = RoundedCornerShape(12.dp),
                 color = MaterialTheme.colorScheme.primaryContainer,
@@ -150,8 +132,6 @@ private fun ScientificExpressionCalculator(currentLang: String) {
                     )
                 }
             }
-
-            
             val buttons = listOf(
                 "sin(", "cos(", "tan(", "sqrt(",
                 "ln(", "log(", "π", "e",
@@ -161,7 +141,6 @@ private fun ScientificExpressionCalculator(currentLang: String) {
                 "1", "2", "3", "−",
                 "0", ".", "C", "+"
             )
-
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 buttons.chunked(4).forEach { row ->
                     Row(
@@ -202,18 +181,13 @@ private fun ScientificExpressionCalculator(currentLang: String) {
         }
     }
 }
-
 @Composable
 private fun CalculusNumericalCalculator(currentLang: String) {
     var xStr by remember { mutableStateOf("2.0") }
     val x = xStr.toDoubleOrNull() ?: 2.0
-
-    
     val h = 0.00001
     val f = { t: Double -> t * t * t - 4 * t + 1 }
     val df = (f(x + h) - f(x - h)) / (2 * h)
-
-    
     val numSteps = 100
     val aInt = 0.0
     val bInt = x
@@ -223,7 +197,6 @@ private fun CalculusNumericalCalculator(currentLang: String) {
         val xi = aInt + i * dx
         integralSum += (xi * xi) * dx
     }
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
@@ -239,7 +212,6 @@ private fun CalculusNumericalCalculator(currentLang: String) {
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
-
             OutlinedTextField(
                 value = xStr,
                 onValueChange = { xStr = it },
@@ -247,7 +219,6 @@ private fun CalculusNumericalCalculator(currentLang: String) {
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp)
             )
-
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 shape = RoundedCornerShape(12.dp),
@@ -259,9 +230,7 @@ private fun CalculusNumericalCalculator(currentLang: String) {
                         fontWeight = FontWeight.Bold
                     )
                     Text("   f'($x) = 3x² - 4 = ${String.format(Locale.US, "%.4f", df)}")
-
                     Spacer(modifier = Modifier.height(8.dp))
-
                     Text(
                         text = "• Integral Definida ∫_0^x (t²) dt:",
                         fontWeight = FontWeight.Bold
@@ -272,7 +241,6 @@ private fun CalculusNumericalCalculator(currentLang: String) {
         }
     }
 }
-
 private fun evaluateSimpleMath(expr: String): Double {
     return try {
         when {

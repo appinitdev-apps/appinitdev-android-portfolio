@@ -1,4 +1,3 @@
-
 enum class BluetoothActionResult {
     SUCCESS,
     FAIL,

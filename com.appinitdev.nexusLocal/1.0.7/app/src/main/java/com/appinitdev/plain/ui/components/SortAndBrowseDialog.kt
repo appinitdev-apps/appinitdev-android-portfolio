@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T : IData> SortAndBrowseDialog(
@@ -12,7 +11,6 @@ fun <T : IData> SortAndBrowseDialog(
     val scope = rememberCoroutineScope()
     val isDocs = mediaVM.dataType == DataType.DOC
     val docsVM = (mediaVM as? DocsViewModel)
-
     AlertDialog(
         modifier = Modifier.fillMaxWidth(),
         containerColor = MaterialTheme.colorScheme.surface,
@@ -20,7 +18,6 @@ fun <T : IData> SortAndBrowseDialog(
         title = null,
         text = {
             LazyColumn {
-                
                 if (isDocs && docsVM != null) {
                     item {
                         Text(
@@ -30,7 +27,6 @@ fun <T : IData> SortAndBrowseDialog(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
-                    
                     item {
                         PDialogRadioRow(
                             selected = docsVM.tabsShowTags.value,
@@ -47,7 +43,6 @@ fun <T : IData> SortAndBrowseDialog(
                             text = stringResource(Res.string.browse_by_tags)
                         )
                     }
-                    
                     item {
                         PDialogRadioRow(
                             selected = !docsVM.tabsShowTags.value,
@@ -64,13 +59,10 @@ fun <T : IData> SortAndBrowseDialog(
                             text = stringResource(Res.string.browse_by_file_type)
                         )
                     }
-                    
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
-
-                
                 item {
                     Text(
                         text = stringResource(Res.string.sort),
@@ -79,8 +71,6 @@ fun <T : IData> SortAndBrowseDialog(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }
-
-                
                 items(sortByEntries) { sortByOption ->
                     PDialogRadioRow(
                         selected = mediaVM.sortBy.value == sortByOption,

@@ -1,16 +1,11 @@
-
 class CrashReporterActivity : BaseActivity() {
-
     private lateinit var binding: ActivityCrashBinding
     private lateinit var errorViewModel: ErrorViewModel
-
     private var isPreview = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCrashBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         intent.getStringExtra(MODE_NORMAL)?.let { crash ->
             binding.warning.setText(R.string.the_app_has_crashed)
             binding.timestamp.text = CrashPreferences.getCrashLog().toDate()
@@ -21,7 +16,6 @@ class CrashReporterActivity : BaseActivity() {
             showTrace(crash)
             isPreview = false
         }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(MODE_PREVIEW, StackTrace::class.java)?.let { crash ->
                 isPreview = true
@@ -42,20 +36,16 @@ class CrashReporterActivity : BaseActivity() {
                 showTrace(crash.trace)
             }
         }
-
         binding.close.setOnClickListener {
             close()
         }
     }
-
     private fun showTrace(crash: String) {
         errorViewModel =
             ViewModelProvider(this, ErrorViewModelFactory(crash))[ErrorViewModel::class.java]
-
         errorViewModel.getSpanned().observe(this) {
             binding.error.text = it
         }
-
         binding.copy.setOnClickListener {
             val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
             val clip = android.content.ClipData.newPlainText("Crash Trace", crash)
@@ -63,7 +53,6 @@ class CrashReporterActivity : BaseActivity() {
             Toast.makeText(this, "Copied to clipboard", Toast.LENGTH_SHORT).show()
         }
     }
-
     private fun close() {
         if (isPreview.invert()) {
             if (CrashPreferences.getCrashLog() != CrashPreferences.crashTimestampEmptyDefault) {
@@ -74,7 +63,6 @@ class CrashReporterActivity : BaseActivity() {
         }
         finish()
     }
-
     companion object {
         const val MODE_PREVIEW = "crashLog_preview"
         const val MODE_NORMAL = "crashLog"

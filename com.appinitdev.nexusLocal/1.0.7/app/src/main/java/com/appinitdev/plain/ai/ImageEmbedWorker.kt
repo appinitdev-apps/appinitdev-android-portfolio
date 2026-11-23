@@ -1,15 +1,9 @@
-
- 
-
-
-
 class ImageEmbedWorker(modelFile: File, private val inputSize: Int = 256) : AutoCloseable {
     private val model: CompiledModel = DelegateHelper.createModel(modelFile)
     private val inputBuffers: List<TensorBuffer> = model.createInputBuffers()
     private val outputBuffers: List<TensorBuffer> = model.createOutputBuffers()
     private val pixelsBuf = IntArray(inputSize * inputSize)
     private val chwBuf = FloatArray(3 * inputSize * inputSize)
-
     fun embedBitmap(bitmap: Bitmap): FloatArray? {
         return try {
             bitmapToNCHW(bitmap, pixelsBuf, chwBuf)
@@ -24,11 +18,9 @@ class ImageEmbedWorker(modelFile: File, private val inputSize: Int = 256) : Auto
             bitmap.recycle()
         }
     }
-
     override fun close() {
         model.close()
     }
-
     private fun bitmapToNCHW(bitmap: Bitmap, pixels: IntArray, chw: FloatArray) {
         bitmap.getPixels(pixels, 0, inputSize, 0, 0, inputSize, inputSize)
         val planeSize = inputSize * inputSize
@@ -39,12 +31,10 @@ class ImageEmbedWorker(modelFile: File, private val inputSize: Int = 256) : Auto
             chw[2 * planeSize + i] = (p and 0xFF) / 255f
         }
     }
-
     companion object {
         fun loadBitmap(imagePath: String, inputSize: Int = 256): Bitmap? {
             return loadAndResize(imagePath, inputSize)
         }
-
         private fun loadAndResize(path: String, inputSize: Int): Bitmap? {
             val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
             BitmapFactory.decodeFile(path, opts)
@@ -64,7 +54,6 @@ class ImageEmbedWorker(modelFile: File, private val inputSize: Int = 256) : Auto
             if (scaled !== rotated) rotated.recycle()
             return centerCrop(scaled, inputSize)
         }
-
         private fun applyExifRotation(bitmap: Bitmap, path: String): Bitmap {
             val orient = try {
                 ExifInterface(path).getAttributeInt(
@@ -82,7 +71,6 @@ class ImageEmbedWorker(modelFile: File, private val inputSize: Int = 256) : Auto
             if (r !== bitmap) bitmap.recycle()
             return r
         }
-
         private fun centerCrop(bitmap: Bitmap, size: Int): Bitmap {
             val x = ((bitmap.width - size) / 2).coerceAtLeast(0)
             val y = ((bitmap.height - size) / 2).coerceAtLeast(0)

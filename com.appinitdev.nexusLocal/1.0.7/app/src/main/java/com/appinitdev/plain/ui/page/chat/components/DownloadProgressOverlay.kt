@@ -1,11 +1,9 @@
-
 @Composable
 private fun DualProgressIndicator(
     progress: Float,
     size: Dp
 ) {
     val modifier = Modifier.size(size)
-    
     CircularProgressIndicator(
         progress = { 1f },
         modifier = modifier,
@@ -13,7 +11,6 @@ private fun DualProgressIndicator(
         strokeWidth = 4.dp,
         trackColor = Color.Transparent
     )
-    
     CircularProgressIndicator(
         progress = { progress.coerceIn(0f, 1f) },
         modifier = modifier,
@@ -22,7 +19,6 @@ private fun DualProgressIndicator(
         trackColor = Color.Transparent
     )
 }
-
 @Composable
 private fun DownloadActionButton(
     status: DownloadStatus,
@@ -38,7 +34,6 @@ private fun DownloadActionButton(
             contentDescription = stringResource(Res.string.pause),
             modifier = Modifier.size(24.dp)
         )
-
         DownloadStatus.PAUSED -> PIconButton(
             icon = Res.drawable.download,
             click = onResume,
@@ -46,7 +41,6 @@ private fun DownloadActionButton(
             contentDescription = stringResource(Res.string.resume),
             modifier = Modifier.size(24.dp)
         )
-
         DownloadStatus.PENDING -> PIconButton(
             icon = Res.drawable.x,
             click = onCancel,
@@ -54,7 +48,6 @@ private fun DownloadActionButton(
             contentDescription = stringResource(Res.string.cancel),
             modifier = Modifier.size(24.dp)
         )
-
         DownloadStatus.FAILED -> PIconButton(
             icon = Res.drawable.circle_alert,
             click = onResume,
@@ -62,11 +55,9 @@ private fun DownloadActionButton(
             contentDescription = stringResource(Res.string.try_again),
             modifier = Modifier.size(24.dp)
         )
-
         else -> {}
     }
 }
-
 @Composable
 fun DownloadProgressOverlay(
     modifier: Modifier,
@@ -81,7 +72,6 @@ fun DownloadProgressOverlay(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
-        
         if (status in setOf(DownloadStatus.DOWNLOADING, DownloadStatus.PAUSED)) {
             DualProgressIndicator(
                 progress = downloadProgress,
@@ -95,8 +85,6 @@ fun DownloadProgressOverlay(
                 trackColor = Color.Transparent
             )
         }
-
-        
         DownloadActionButton(
             status = status,
             onPause = onPause,

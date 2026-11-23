@@ -1,4 +1,3 @@
-
 @Composable
 fun VerticalRefreshableLayout(
     topRefreshLayoutState: RefreshLayoutState,
@@ -35,4 +34,3 @@ fun VerticalRefreshableLayout(
         )
     }
 }
-

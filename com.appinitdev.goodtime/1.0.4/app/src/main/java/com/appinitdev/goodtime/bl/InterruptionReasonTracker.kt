@@ -1,4 +1,3 @@
-
 enum class InterruptionCategory {
     SOCIAL_MEDIA,
     WORK_CALL,
@@ -6,19 +5,15 @@ enum class InterruptionCategory {
     ENVIRONMENT_NOISE,
     OTHER
 }
-
 data class InterruptionLog(
     val timestamp: Long,
     val category: InterruptionCategory,
     val note: String,
     val sessionLabel: String
 )
-
 class InterruptionReasonTracker(context: Context) {
-
     private val prefs: SharedPreferences =
         context.getSharedPreferences("goodtime_interruptions", Context.MODE_PRIVATE)
-
     fun logInterruption(category: InterruptionCategory, note: String, sessionLabel: String) {
         val list = getLogs().toMutableList()
         list.add(
@@ -31,7 +26,6 @@ class InterruptionReasonTracker(context: Context) {
         )
         saveLogs(list)
     }
-
     fun getLogs(): List<InterruptionLog> {
         val raw = prefs.getString("logs_json", null) ?: return emptyList()
         val result = mutableListOf<InterruptionLog>()
@@ -52,7 +46,6 @@ class InterruptionReasonTracker(context: Context) {
         }
         return result
     }
-
     private fun saveLogs(logs: List<InterruptionLog>) {
         try {
             val array = JSONArray()

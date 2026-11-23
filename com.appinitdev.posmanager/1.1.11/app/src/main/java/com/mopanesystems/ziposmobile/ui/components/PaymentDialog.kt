@@ -1,11 +1,9 @@
-
 data class PaymentResultInfo(
     val isCreditSale: Boolean,
     val nota: String? = null,
     val paymentMethod: PaymentMethod,
     val remaining: BigDecimal = BigDecimal.ZERO
 )
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentDialog(
@@ -18,12 +16,10 @@ fun PaymentDialog(
     var input by remember { mutableStateOf("") }
     var error by remember { mutableStateOf<String?>(null) }
     var creditSale by remember { mutableStateOf(false) }
-
     val paid = input.toBigDecimalOrNull() ?: BigDecimal.ZERO
     val remaining = total.subtract(paid)
     val isButtonEnabled = (paid >= total) || (paid < total && creditSale && paid >= BigDecimal.ZERO)
     val context = LocalContext.current
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -48,7 +44,6 @@ fun PaymentDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -69,7 +64,6 @@ fun PaymentDialog(
                         modifier = Modifier.weight(1f),
                         textStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                     )
-
                     Button(
                         onClick = {
                             input = total.toPlainString()
@@ -84,8 +78,6 @@ fun PaymentDialog(
                         )
                     }
                 }
-
-                
                 when {
                     paid > total -> {
                         val change = paid.subtract(total)
@@ -128,7 +120,6 @@ fun PaymentDialog(
                             }
                         }
                     }
-
                     paid < total && paid >= BigDecimal.ZERO && input.isNotEmpty() -> {
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
@@ -155,7 +146,6 @@ fun PaymentDialog(
                                     ),
                                     color = MaterialTheme.colorScheme.secondary
                                 )
-
                                 if (customer != null) {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
@@ -176,7 +166,6 @@ fun PaymentDialog(
                             }
                         }
                     }
-
                     paid == total && input.isNotEmpty() -> {
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
@@ -208,7 +197,6 @@ fun PaymentDialog(
                         }
                     }
                 }
-
                 if (error != null) {
                     Surface(
                         modifier = Modifier.fillMaxWidth(),

@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FileInfoBottomSheet(filesVM: FilesViewModel) {
@@ -7,13 +6,11 @@ fun FileInfoBottomSheet(filesVM: FilesViewModel) {
     val file = filesVM.selectedFile.value ?: return
     var isFavorite by remember { mutableStateOf(false) }
     val onDismiss = { filesVM.selectedFile.value = null }
-
     LaunchedEffect(file.path) {
         if (file.isDir) {
             isFavorite = FavoriteFoldersPreference.isFavoriteAsync(file.path)
         }
     }
-
     if (filesVM.showRenameDialog.value) {
         FileRenameDialog(path = file.path, onDismiss = {
             filesVM.showRenameDialog.value = false
@@ -24,7 +21,6 @@ fun FileInfoBottomSheet(filesVM: FilesViewModel) {
             filesVM.loadAsync(context)
         })
     }
-
     PModalBottomSheet(onDismissRequest = { onDismiss() }) {
         LazyColumn {
             item { VerticalSpace(32.dp) }

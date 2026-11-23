@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FolderKanbanDialog(filesVM: FilesViewModel, onDismiss: () -> Unit = {}) {
@@ -11,13 +10,11 @@ fun FolderKanbanDialog(filesVM: FilesViewModel, onDismiss: () -> Unit = {}) {
     val sdcardText = stringResource(Res.string.sdcard)
     val usbStorageText = stringResource(Res.string.usb_storage)
     val fileTransferAssistantText = stringResource(Res.string.app_data)
-
     LaunchedEffect(Unit) {
         val items = buildFolderOptions(context, filesVM, recentsText, internalStorageText, sdcardText, usbStorageText, fileTransferAssistantText)
         options.clear()
         options.addAll(items)
     }
-
     PModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
         Column {
             PBottomSheetTopAppBar(title = stringResource(Res.string.folders))

@@ -1,4 +1,3 @@
-
 object AudioCoverUtils {
     fun ImageView.loadArtCover(
             item: Any,
@@ -10,12 +9,10 @@ object AudioCoverUtils {
             crop: Boolean = true
     ) {
         val transformations = mutableListOf<Transformation<Bitmap>>()
-
         if (crop) transformations.add(CenterCrop())
         if (roundedCorners) transformations.add(RoundedCorners(AppearancePreferences.getCornerRadius().toInt()))
         if (shadow) {
             transformations.add(Padding(BlurShadow.DEFAULT_SHADOW_SIZE.toInt()))
-
             transformations.add(
                     BlurShadow(this.context)
                         .setElevation(25F)
@@ -25,7 +22,6 @@ object AudioCoverUtils {
         if (blur) transformations.add(Blur(72))
         if (greyscale) transformations.add(Greyscale())
         if (darken) transformations.add(Darken(0.3F))
-
         val glideRequest = Glide.with(this)
             .asBitmap()
             .dontTransform() 
@@ -33,10 +29,8 @@ object AudioCoverUtils {
             .load(item)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .error(R.drawable.ic_felicity)
-
         glideRequest.into(this)
     }
-
     fun ImageView.loadArtCoverWithPayload(item: Any) {
         loadArtCover(
                 item = item,
@@ -47,7 +41,6 @@ object AudioCoverUtils {
                 crop = AlbumArtPreferences.isCropEnabled(),
                 roundedCorners = AlbumArtPreferences.isRoundedCornersEnabled())
     }
-
     fun ImageView.loadPlainArtCover(item: Any) {
         Glide.with(this)
             .asBitmap()
@@ -57,7 +50,6 @@ object AudioCoverUtils {
             .load(item)
             .into(this)
     }
-
     fun Context.getArtCoverForWidget(
             item: Any,
             height: Int,
@@ -70,12 +62,10 @@ object AudioCoverUtils {
             crop: Boolean = true
     ): Bitmap {
         val transformations = mutableListOf<Transformation<Bitmap>>()
-
         if (crop) transformations.add(CenterCrop())
         if (roundedCorners) transformations.add(RoundedCorners(AppearancePreferences.getCornerRadius().toInt()))
         if (shadow) {
             transformations.add(Padding(BlurShadow.DEFAULT_SHADOW_SIZE.toInt()))
-
             transformations.add(
                     BlurShadow(this)
                         .setElevation(25F)
@@ -85,7 +75,6 @@ object AudioCoverUtils {
         if (blur) transformations.add(Blur(16))
         if (greyscale) transformations.add(Greyscale())
         if (darken) transformations.add(Darken(0.6F))
-
         val glideRequest = Glide.with(this)
             .asBitmap()
             .dontTransform() 
@@ -93,17 +82,8 @@ object AudioCoverUtils {
             .load(item)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .error(R.drawable.ic_felicity)
-
         return glideRequest.submit(width, height).get()
     }
-
-     
-
-
-
-
-
-
     fun Context.loadArtIntoBitmap(item: Any, onBitmap: (Bitmap?) -> Unit) {
         Glide.with(this)
             .asBitmap()
@@ -115,11 +95,9 @@ object AudioCoverUtils {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     onBitmap(resource)
                 }
-
                 override fun onLoadCleared(placeholder: android.graphics.drawable.Drawable?) {
                     onBitmap(null)
                 }
-
                 override fun onLoadFailed(errorDrawable: android.graphics.drawable.Drawable?) {
                     onBitmap(null)
                 }

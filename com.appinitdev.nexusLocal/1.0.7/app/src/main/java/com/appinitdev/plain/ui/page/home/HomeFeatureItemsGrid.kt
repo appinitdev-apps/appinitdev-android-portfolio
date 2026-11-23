@@ -1,34 +1,27 @@
-
 @Composable
 fun HomeFeatureItemsGrid(navController: NavHostController) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-
     val featuresStr = remember {
         context.dataStore.dataFlow.map { HomeFeaturesPreference.get(it) }
     }.collectAsStateValue(initial = HomeFeaturesPreference.default)
-
     var enabledIds by remember(featuresStr) {
         mutableStateOf(HomeFeaturesPreference.parseList(featuresStr.ifEmpty { HomeFeaturesPreference.default }))
     }
-
     fun persist(newList: List<String>) {
         enabledIds = newList
         scope.launch(Dispatchers.IO) {
             HomeFeaturesPreference.putAsync(HomeFeaturesPreference.formatList(newList))
         }
     }
-
     val allFeatureItems = remember { FeatureItem.getList(navController) }
     val items = remember(enabledIds) {
         enabledIds
             .filter { it != AppFeatureType.CHAT.name }
             .mapNotNull { typeName -> allFeatureItems.find { it.type.name == typeName } }
     }
-
     val rowCount = (items.size + 2) / 2
     val gridHeight = if (rowCount > 0) (rowCount * 72 + (rowCount - 1) * 12).dp else 0.dp
-
     val gridState = rememberLazyGridState()
     val reorderableState = rememberReorderableLazyGridState(gridState) { from, to ->
         val fromKey = from.key as? String ?: return@rememberReorderableLazyGridState
@@ -39,7 +32,6 @@ fun HomeFeatureItemsGrid(navController: NavHostController) {
             persist(enabledIds.toMutableList().apply { add(toIdx, removeAt(fromIdx)) })
         }
     }
-
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         state = gridState,
@@ -67,7 +59,6 @@ fun HomeFeatureItemsGrid(navController: NavHostController) {
         }
     }
 }
-
 @Composable
 private fun HomeFeatureGridCell(
     iconRes: DrawableResource,

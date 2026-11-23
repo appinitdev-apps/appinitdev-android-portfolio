@@ -1,11 +1,4 @@
-
 object ChannelSystemMessageSender {
-
-     
-
-
-
-
     private suspend fun buildMemberPeers(channel: DChatChannel): List<ChannelSystemMessages.MemberPeerInfo> {
         return channel.getPeersAsync().map { peer ->
             ChannelSystemMessages.MemberPeerInfo(
@@ -18,16 +11,6 @@ object ChannelSystemMessageSender {
             )
         }
     }
-
-     
-
-
-
-
-
-
-
-
     suspend fun sendInvite(channel: DChatChannel, peer: DPeer): Boolean {
         val payload = jsonEncode(
             ChannelSystemMessages.ChannelInvite(
@@ -42,10 +25,6 @@ object ChannelSystemMessageSender {
         )
         return sendToPeer(peer, ChannelSystemMessages.TYPE_INVITE, payload)
     }
-
-     
-
-
     suspend fun sendInviteAccept(channelId: String, ownerPeer: DPeer): Boolean {
         val context = MainApp.instance
         val publicKey = SignatureHelper.getRawPublicKeyBase64Async()
@@ -60,15 +39,10 @@ object ChannelSystemMessageSender {
         )
         return sendToPeer(ownerPeer, ChannelSystemMessages.TYPE_INVITE_ACCEPT, payload)
     }
-
-     
     suspend fun sendInviteDecline(channelId: String, ownerPeer: DPeer): Boolean {
         val payload = jsonEncode(ChannelSystemMessages.ChannelInviteDecline(channelId))
         return sendToPeer(ownerPeer, ChannelSystemMessages.TYPE_INVITE_DECLINE, payload)
     }
-
-     
-
     suspend fun broadcastUpdate(channel: DChatChannel) {
         val payload = jsonEncode(
             ChannelSystemMessages.ChannelUpdate(
@@ -81,25 +55,18 @@ object ChannelSystemMessageSender {
         )
         sendToMultiplePeers(channel.memberIdsNotMe(TempData.clientId), ChannelSystemMessages.TYPE_UPDATE, payload, channel.id, channel.key)
     }
-
-     
     suspend fun sendKick(channelId: String, peer: DPeer, channelKey: String = ""): Boolean {
         val payload = jsonEncode(ChannelSystemMessages.ChannelKick(channelId))
         return sendToPeer(peer, ChannelSystemMessages.TYPE_KICK, payload, channelId, channelKey)
     }
-
-     
     suspend fun broadcastKick(channel: DChatChannel) {
         val payload = jsonEncode(ChannelSystemMessages.ChannelKick(channel.id))
         sendToMultiplePeers(channel.memberIdsNotMe(TempData.clientId), ChannelSystemMessages.TYPE_KICK, payload, channel.id, channel.key)
     }
-
-     
     suspend fun sendLeave(channelId: String, ownerPeer: DPeer, channelKey: String = ""): Boolean {
         val payload = jsonEncode(ChannelSystemMessages.ChannelLeave(channelId))
         return sendToPeer(ownerPeer, ChannelSystemMessages.TYPE_LEAVE, payload, channelId, channelKey)
     }
-
     private suspend fun sendToPeer(peer: DPeer, type: String, payload: String, channelId: String = "", channelKey: String = ""): Boolean {
         return try {
             val response = PeerGraphQLClient.sendChannelSystemMessage(
@@ -123,7 +90,6 @@ object ChannelSystemMessageSender {
             false
         }
     }
-
     private suspend fun sendToMultiplePeers(peerIds: List<String>, type: String, payload: String, channelId: String = "", channelKey: String = "") {
         val peerDao = AppDatabase.instance.peerDao()
         for (peerId in peerIds) {

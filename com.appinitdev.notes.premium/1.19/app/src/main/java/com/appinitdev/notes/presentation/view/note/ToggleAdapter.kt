@@ -1,23 +1,18 @@
-
 open class ToggleAdapter(
     protected val toggles: MutableList<Toggle>,
     @ColorInt private val color: Int?,
 ) : RecyclerView.Adapter<ToggleVH>() {
-
     override fun getItemCount() = toggles.size
-
     override fun onBindViewHolder(holder: ToggleVH, position: Int) {
         val toggle = toggles[position]
         holder.bind(toggle)
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToggleVH {
         val inflater = LayoutInflater.from(parent.context)
         val binding = RecyclerToggleBinding.inflate(inflater, parent, false)
         return ToggleVH(binding, color)
     }
 }
-
 data class Toggle(
     @StringRes val titleResId: Int,
     @DrawableRes val drawable: Int,

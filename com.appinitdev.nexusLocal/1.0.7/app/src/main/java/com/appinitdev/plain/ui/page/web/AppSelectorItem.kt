@@ -1,4 +1,3 @@
-
 @Composable
 internal fun AppSelectorItem(
     app: com.appinitdev.nexusLocal.data.DPackage,
@@ -8,7 +7,6 @@ internal fun AppSelectorItem(
     val appIcon = remember(app.id) {
         packageManager.getApplicationIcon(app.appInfo)
     }
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -23,9 +21,7 @@ internal fun AppSelectorItem(
                 .size(48.dp)
                 .clip(RoundedCornerShape(12.dp))
         )
-
         HorizontalSpace(dp = 16.dp)
-
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -43,9 +39,7 @@ internal fun AppSelectorItem(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-
         HorizontalSpace(dp = 12.dp)
-
         Checkbox(
             checked = isSelected,
             onCheckedChange = { onToggleSelection() }

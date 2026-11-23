@@ -1,23 +1,18 @@
-
 class EquationsAdapter(var list: ArrayList<Equation>, var clickListener: EquationsActivity, val context: Context) : RecyclerView.Adapter<EquationsAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.initialize(list[position], clickListener, context)
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.row_equations_item, parent, false)
         return ViewHolder(v)
     }
-
     override fun getItemCount(): Int {
         return list.size
     }
-
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val equTitle = itemView.findViewById(R.id.tv_equ) as TextView
         private val equCategory = itemView.findViewById(R.id.ic_equ) as TextView
         private val equImg = itemView.findViewById(R.id.ic_eq_view) as ImageView
-
         fun initialize(item: Equation, action: OnEquationClickListener, context: Context) {
             equTitle.text = item.equationTitle
             if (item.category == "Mechanics") { equCategory.text = "Me" }
@@ -54,17 +49,11 @@ class EquationsAdapter(var list: ArrayList<Equation>, var clickListener: Equatio
             0f, 0f, 0f, 1.0f, 0f
         )
     }
-
-
     fun filterList(filteredList: ArrayList<Equation>) {
         list = filteredList
         notifyDataSetChanged()
     }
-
     interface OnEquationClickListener {
         fun equationClickListener(item: Equation, position: Int)
     }
-
 }
-
-

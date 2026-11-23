@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 data class AudioPageState(
     val pagerState: PagerState,
@@ -22,7 +21,6 @@ data class AudioPageState(
                 tagsVM.dataType.value = audioVM.dataType
                 mediaFoldersVM.dataType.value = audioVM.dataType
             }
-
             val tagsState by tagsVM.itemsFlow.collectAsState()
             val pagerState = rememberPagerState(pageCount = { 
                 tagsState.size + if (AppFeatureType.MEDIA_TRASH.has()) 2 else 1 
@@ -33,10 +31,8 @@ data class AudioPageState(
             val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(canScroll = {
                 (audioVM.scrollStateMap[pagerState.currentPage]?.firstVisibleItemIndex ?: 0) > 0 && !dragSelectState.selectMode
             })
-            
             val tagsMapState by tagsVM.tagsMapFlow.collectAsState()
             val bucketsMap by mediaFoldersVM.bucketsMapFlow.collectAsState()
-
             return AudioPageState(
                 pagerState = pagerState,
                 itemsState = itemsState,

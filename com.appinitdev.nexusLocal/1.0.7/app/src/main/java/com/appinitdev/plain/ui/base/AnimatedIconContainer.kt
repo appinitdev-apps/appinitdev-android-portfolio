@@ -1,4 +1,3 @@
-
 @Composable
 internal fun AnimatedIconContainer(
     iconRes: DrawableResource
@@ -18,7 +17,6 @@ internal fun AnimatedIconContainer(
                 repeatMode = RepeatMode.Reverse
             )
         )
-
         Surface(
             modifier = Modifier
                 .size(110.dp)
@@ -28,7 +26,6 @@ internal fun AnimatedIconContainer(
         ) {
             Box(modifier = Modifier.fillMaxSize())
         }
-
         Surface(
             modifier = Modifier
                 .size(90.dp)

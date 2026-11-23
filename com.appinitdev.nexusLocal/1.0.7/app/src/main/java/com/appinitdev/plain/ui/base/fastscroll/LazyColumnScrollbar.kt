@@ -1,4 +1,3 @@
-
 @Composable
 fun LazyColumnScrollbar(
     state: LazyListState,
@@ -16,7 +15,6 @@ fun LazyColumnScrollbar(
             alwaysShowScrollBar = settings.alwaysShowScrollbar,
             selectionMode = settings.selectionMode
         )
-
         ElementScrollbar(
             stateController = controller,
             modifier = modifier,

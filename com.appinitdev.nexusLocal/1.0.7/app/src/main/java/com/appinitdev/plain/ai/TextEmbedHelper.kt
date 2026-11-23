@@ -1,10 +1,8 @@
-
 object TextEmbedHelper {
     private var model: CompiledModel? = null
     private var tokenizer: CLIPTokenizer? = null
     private var inputBuffers: List<TensorBuffer>? = null
     private var outputBuffers: List<TensorBuffer>? = null
-
     fun init(modelFile: File, tokenizerFile: File) {
         close()
         val m = DelegateHelper.createModel(modelFile)
@@ -13,7 +11,6 @@ object TextEmbedHelper {
         inputBuffers = m.createInputBuffers()
         outputBuffers = m.createOutputBuffers()
     }
-
     fun embed(text: String, maxLen: Int = 77): FloatArray? {
         val inBufs = inputBuffers ?: return null
         val outBufs = outputBuffers ?: return null
@@ -29,7 +26,6 @@ object TextEmbedHelper {
             null
         }
     }
-
     fun close() {
         model?.close(); model = null
         tokenizer = null

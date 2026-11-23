@@ -1,4 +1,3 @@
-
 class BaseNoteAdapter(
     private val selectedIds: Set<Long>,
     private val dateFormat: DateFormat,
@@ -7,20 +6,16 @@ class BaseNoteAdapter(
     private val imageRoot: File?,
     private val listener: ItemListener,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
     private var list = SortedList(Item::class.java, notesSort.createCallback())
-
     override fun getItemViewType(position: Int): Int {
         return when (list[position]) {
             is Header -> 0
             is BaseNote -> 1
         }
     }
-
     override fun getItemCount(): Int {
         return list.size()
     }
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = list[position]) {
             is Header -> (holder as HeaderVH).bind(item)
@@ -33,7 +28,6 @@ class BaseNoteAdapter(
                 )
         }
     }
-
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
         position: Int,
@@ -43,7 +37,6 @@ class BaseNoteAdapter(
             onBindViewHolder(holder, position)
         } else handleCheck(holder, position)
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
@@ -57,23 +50,18 @@ class BaseNoteAdapter(
             }
         }
     }
-
     fun setNotesSort(notesSort: NotesSort) {
         this.notesSort = notesSort
         replaceSortCallback(notesSort.createCallback())
     }
-
     fun getItem(position: Int): Item? {
         return list[position]
     }
-
     val currentList: List<Item>
         get() = list.toList()
-
     fun submitList(items: List<Item>) {
         list.replaceAll(items)
     }
-
     private fun NotesSort.createCallback() =
         when (sortedBy) {
             NotesSortBy.TITLE -> BaseNoteTitleSort(this@BaseNoteAdapter, sortDirection)
@@ -83,7 +71,6 @@ class BaseNoteAdapter(
                 BaseNoteCreationDateSort(this@BaseNoteAdapter, sortDirection)
             NotesSortBy.COLOR -> BaseNoteColorSort(this@BaseNoteAdapter, sortDirection)
         }
-
     private fun replaceSortCallback(sortCallback: SortedListAdapterCallback<Item>) {
         val mutableList = mutableListOf<Item>()
         for (i in 0 until list.size()) {
@@ -93,12 +80,10 @@ class BaseNoteAdapter(
         list = SortedList(Item::class.java, sortCallback)
         list.addAll(mutableList)
     }
-
     private fun handleCheck(holder: RecyclerView.ViewHolder, position: Int) {
         val baseNote = list[position] as BaseNote
         (holder as BaseNoteVH).updateCheck(selectedIds.contains(baseNote.id), baseNote.color)
     }
-
     private fun <T> SortedList<T>.toList(): List<T> {
         val mutableList = mutableListOf<T>()
         for (i in 0 until this.size()) {

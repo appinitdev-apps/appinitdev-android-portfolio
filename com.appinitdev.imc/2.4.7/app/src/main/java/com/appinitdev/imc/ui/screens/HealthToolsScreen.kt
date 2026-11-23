@@ -1,4 +1,3 @@
-
 data class HealthToolCategory(
     val idKey: String,
     val title: String,
@@ -7,7 +6,6 @@ data class HealthToolCategory(
     val color: Color,
     val forFemaleOnly: Boolean = false
 )
-
 private fun calculateAgeYearsAndMonths(birthTimestamp: Long): Pair<Int, Int> {
     val birth = java.util.Calendar.getInstance().apply { timeInMillis = birthTimestamp }
     val now = java.util.Calendar.getInstance()
@@ -23,7 +21,6 @@ private fun calculateAgeYearsAndMonths(birthTimestamp: Long): Pair<Int, Int> {
     val totalMonths = (years * 12) + months
     return Pair(years.coerceAtLeast(0), totalMonths.coerceAtLeast(0))
 }
-
 private fun getInitialValueForMember(
     context: android.content.Context,
     activeMember: FamilyMember?,
@@ -59,7 +56,6 @@ private fun getInitialValueForMember(
     }
     return fallbackValue
 }
-
 private fun isToolSuitableForProfile(
     toolKey: String,
     gender: Gender,
@@ -78,7 +74,6 @@ private fun isToolSuitableForProfile(
         else -> true
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HealthToolsScreen(
@@ -89,9 +84,7 @@ fun HealthToolsScreen(
     var allMembers by remember { mutableStateOf(familyManager.getMembers()) }
     var activeMember by remember(allMembers) { mutableStateOf(familyManager.getActiveMember()) }
     var showProfileSwitchDialog by remember { mutableStateOf(false) }
-
     var selectedToolKey by remember { mutableStateOf<String?>(null) } 
-
     val allTools = listOf(
         HealthToolCategory("WATER", "💧 Agua e Hidratación", "Meta Diaria OMS", Icons.Default.LocalDrink, Color(0xFF0288D1)),
         HealthToolCategory("BMR", "🔥 Metabolismo y TMB", "Mifflin-St Jeor Pro", Icons.Default.LocalFireDepartment, Color(0xFFFF5722)),
@@ -114,24 +107,19 @@ fun HealthToolsScreen(
         HealthToolCategory("NOTIF", "🔔 Alertas Pediátricas", "Recordatorios de Peso", Icons.Default.NotificationsActive, Color(0xFF3F51B5)),
         HealthToolCategory("BACKUP", "💾 Copia de Seguridad", "Respaldo JSON", Icons.Default.Backup, Color(0xFF607D8B))
     )
-
     val birthTimestamp = activeMember?.birthTimestamp ?: System.currentTimeMillis()
     val (ageYears, totalMonths) = remember(activeMember?.birthTimestamp) {
         calculateAgeYearsAndMonths(birthTimestamp)
     }
     val activeGender = activeMember?.gender ?: Gender.MALE
-
     var showAllToolsManually by remember { mutableStateOf(false) }
-
     val suitableTools = remember(activeGender, ageYears, totalMonths) {
         allTools.filter { tool ->
             isToolSuitableForProfile(tool.idKey, activeGender, ageYears, totalMonths)
         }
     }
-
     val availableTools = if (showAllToolsManually) allTools else suitableTools
     val selectedTool = allTools.find { it.idKey == selectedToolKey }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -171,7 +159,6 @@ fun HealthToolsScreen(
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -212,7 +199,6 @@ fun HealthToolsScreen(
                             )
                         }
                     }
-
                     Surface(
                         shape = RoundedCornerShape(12.dp),
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
@@ -228,9 +214,7 @@ fun HealthToolsScreen(
                     }
                 }
             }
-
             if (selectedToolKey == null) {
-                
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -251,7 +235,6 @@ fun HealthToolsScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-
                     Surface(
                         shape = RoundedCornerShape(12.dp),
                         color = if (showAllToolsManually) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.primaryContainer,
@@ -266,7 +249,6 @@ fun HealthToolsScreen(
                         )
                     }
                 }
-
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
@@ -294,7 +276,6 @@ fun HealthToolsScreen(
                                         Icon(imageVector = tool.icon, contentDescription = null, tint = tool.color, modifier = Modifier.size(24.dp))
                                     }
                                 }
-
                                 Column {
                                     Text(text = tool.title, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, maxLines = 1)
                                     Text(text = tool.subtitle, fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
@@ -304,7 +285,6 @@ fun HealthToolsScreen(
                     }
                 }
             } else {
-                
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -337,8 +317,6 @@ fun HealthToolsScreen(
             }
         }
     }
-
-    
     if (showProfileSwitchDialog) {
         AlertDialog(
             onDismissRequest = { showProfileSwitchDialog = false },
@@ -385,7 +363,6 @@ fun HealthToolsScreen(
                                         )
                                     }
                                 }
-
                                 if (isSelected) {
                                     Icon(imageVector = Icons.Default.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                                 }
@@ -406,8 +383,6 @@ fun HealthToolsScreen(
         )
     }
 }
-
-
 @Composable
 fun ToolExplanationCard(
     whatItMeasures: String,
@@ -440,17 +415,14 @@ fun ToolExplanationCard(
                     color = MaterialTheme.colorScheme.primary
                 )
             }
-
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(text = stringResource(id = R.string.que_mide_title), fontSize = 12.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                 Text(text = whatItMeasures, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(text = stringResource(id = R.string.para_que_sirve_title), fontSize = 12.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                 Text(text = whatIsItFor, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(text = stringResource(id = R.string.interpretacion_resultados_title), fontSize = 12.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                 Text(text = interpretation, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -458,7 +430,6 @@ fun ToolExplanationCard(
         }
     }
 }
-
 @Composable
 fun FormulaCard(
     formulaTitle: String,
@@ -497,7 +468,6 @@ fun FormulaCard(
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
-
                 Surface(
                     shape = RoundedCornerShape(8.dp),
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
@@ -511,14 +481,12 @@ fun FormulaCard(
                     )
                 }
             }
-
             Text(
                 text = formulaTitle,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
-
             Surface(
                 shape = RoundedCornerShape(10.dp),
                 color = MaterialTheme.colorScheme.surface,
@@ -533,7 +501,6 @@ fun FormulaCard(
                     modifier = Modifier.padding(12.dp)
                 )
             }
-
             if (variablesNotes.isNotBlank()) {
                 Text(
                     text = variablesNotes,
@@ -544,19 +511,15 @@ fun FormulaCard(
         }
     }
 }
-
-
 @Composable
 fun ProfileWaterTrackerTool(activeMember: FamilyMember?) {
     val context = LocalContext.current
     val dbHelper = remember { BmiDatabaseHelper(context) }
     val todayDateStr = remember { java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date()) }
-
     var waterData by remember { mutableStateOf(dbHelper.getWaterIntakeForDate(todayDateStr)) }
     val consumed = waterData.first
     val target = waterData.second
     val progress = (consumed.toFloat() / target.toFloat()).coerceIn(0f, 1f)
-
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -576,7 +539,6 @@ fun ProfileWaterTrackerTool(activeMember: FamilyMember?) {
                 }
             }
         }
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
@@ -585,20 +547,17 @@ fun ProfileWaterTrackerTool(activeMember: FamilyMember?) {
             Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(text = "REGISTRO DE HOY ($todayDateStr)", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0288D1))
                 Text(text = "$consumed ml / $target ml", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF0288D1))
-
                 LinearProgressIndicator(
                     progress = { progress },
                     modifier = Modifier.fillMaxWidth().height(10.dp).clip(RoundedCornerShape(5.dp)),
                     color = Color(0xFF0288D1),
                     strokeCap = StrokeCap.Round
                 )
-
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
                     Button(
                         onClick = {
                             val newTotal = dbHelper.addWaterIntake(todayDateStr, 250, target)
                             waterData = Pair(newTotal, target)
-
                             val memberId = activeMember?.id ?: 0L
                             dbHelper.insertProfileMeasurement(
                                 ProfileMeasurement(
@@ -612,12 +571,10 @@ fun ProfileWaterTrackerTool(activeMember: FamilyMember?) {
                         },
                         modifier = Modifier.weight(1f)
                     ) { Text(text = "+250 ml", fontWeight = FontWeight.Bold) }
-
                     Button(
                         onClick = {
                             val newTotal = dbHelper.addWaterIntake(todayDateStr, 500, target)
                             waterData = Pair(newTotal, target)
-
                             val memberId = activeMember?.id ?: 0L
                             dbHelper.insertProfileMeasurement(
                                 ProfileMeasurement(
@@ -632,7 +589,6 @@ fun ProfileWaterTrackerTool(activeMember: FamilyMember?) {
                         modifier = Modifier.weight(1f)
                     ) { Text(text = "+500 ml", fontWeight = FontWeight.Bold) }
                 }
-
                 OutlinedButton(
                     onClick = {
                         dbHelper.resetWaterIntake(todayDateStr)
@@ -642,13 +598,11 @@ fun ProfileWaterTrackerTool(activeMember: FamilyMember?) {
                 ) { Text(text = "Reiniciar Consumo de Hoy") }
             }
         }
-
         ToolExplanationCard(
             whatItMeasures = "Mide el volumen diario de líquidos ingeridos en mililitros (mL).",
             whatIsItFor = "Prevenir la deshidratación, apoyar la digestión, optimizar la función renal y el equilibrio térmico.",
             interpretation = "La OMS sugiere un consumo promedio de 35 mL de agua por cada kilo de peso corporal al día."
         )
-
         FormulaCard(
             formulaTitle = "Cálculo de Meta Diaria de Hidratación OMS",
             formulaExpression = "Meta Diaria (mL) = Peso Corporal (kg) × 35 mL/kg",
@@ -657,13 +611,10 @@ fun ProfileWaterTrackerTool(activeMember: FamilyMember?) {
         )
     }
 }
-
-
 @Composable
 fun AdvancedBmrTool(activeMember: FamilyMember?) {
     val context = LocalContext.current
     val gender = activeMember?.gender ?: Gender.MALE
-
     val initialWeight = remember(activeMember?.id) {
         getInitialValueForMember(context, activeMember, "BMR", "75") { it.weightKg.toString() }
     }
@@ -673,18 +624,14 @@ fun AdvancedBmrTool(activeMember: FamilyMember?) {
     val initialAge = remember(activeMember?.id) {
         if (activeMember != null) calculateAgeYearsAndMonths(activeMember.birthTimestamp).first.toString() else "30"
     }
-
     var weightInput by remember(activeMember?.id, initialWeight) { mutableStateOf(initialWeight) }
     var heightInput by remember(activeMember?.id, initialHeight) { mutableStateOf(initialHeight) }
     var ageInput by remember(activeMember?.id, initialAge) { mutableStateOf(initialAge) }
-
     val w = weightInput.toDoubleOrNull() ?: 75.0
     val h = heightInput.toDoubleOrNull() ?: 175.0
     val age = ageInput.toIntOrNull() ?: 30
-
     val mifflinBmr = if (gender == Gender.MALE) (10 * w) + (6.25 * h) - (5 * age) + 5 else (10 * w) + (6.25 * h) - (5 * age) - 161
     val harrisBmr = if (gender == Gender.MALE) 88.362 + (13.397 * w) + (4.799 * h) - (5.677 * age) else 447.593 + (9.247 * w) + (3.098 * h) - (4.330 * age)
-
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -704,33 +651,28 @@ fun AdvancedBmrTool(activeMember: FamilyMember?) {
                 }
             }
         }
-
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             OutlinedTextField(value = weightInput, onValueChange = { weightInput = it }, label = { Text(stringResource(id = R.string.label_peso_kg)) }, modifier = Modifier.weight(1f), singleLine = true)
             OutlinedTextField(value = heightInput, onValueChange = { heightInput = it }, label = { Text(stringResource(id = R.string.label_estatura_cm)) }, modifier = Modifier.weight(1f), singleLine = true)
             OutlinedTextField(value = ageInput, onValueChange = { ageInput = it }, label = { Text(stringResource(id = R.string.label_edad_anos)) }, modifier = Modifier.weight(1f), singleLine = true)
         }
-
         Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(text = stringResource(id = R.string.mifflin_estandar_moderno), fontWeight = FontWeight.Bold, fontSize = 14.sp)
                 Text(text = "${mifflinBmr.toInt()} kcal / día", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)
             }
         }
-
         Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(text = stringResource(id = R.string.harris_revisada), fontWeight = FontWeight.Bold, fontSize = 14.sp)
                 Text(text = "${harrisBmr.toInt()} kcal / día", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFFFF5722))
             }
         }
-
         ToolExplanationCard(
             whatItMeasures = "Mide la Tasa Metabólica Basal (TMB): la energía mínima consumida en reposo absoluto para mantener las funciones vitales (corazón, pulmones, cerebro).",
             whatIsItFor = "Establecer la base calórica diaria y diseñar planes de alimentación para perder grasa, mantener peso o ganar masa muscular.",
             interpretation = "Si consumes menos calorías que tu TMB + actividad física, perderás peso. Si consumes más, aumentarás de peso."
         )
-
         FormulaCard(
             formulaTitle = "Fórmulas de Mifflin-St Jeor y Harris-Benedict Revisada",
             formulaExpression = "Mifflin (H): 10W + 6.25H - 5A + 5\nMifflin (M): 10W + 6.25H - 5A - 161\n\nHarris (H): 88.362 + 13.397W + 4.799H - 5.677A\nHarris (M): 447.593 + 9.247W + 3.098H - 4.330A",
@@ -739,8 +681,6 @@ fun AdvancedBmrTool(activeMember: FamilyMember?) {
         )
     }
 }
-
-
 @Composable
 fun PhysicalActivityTool(activeMember: FamilyMember?) {
     val context = LocalContext.current
@@ -750,14 +690,11 @@ fun PhysicalActivityTool(activeMember: FamilyMember?) {
     var weightInput by remember(activeMember?.id, initialWeight) { mutableStateOf(initialWeight) }
     var durationMinutes by remember { mutableIntStateOf(45) }
     var activityMetIndex by remember { mutableIntStateOf(1) }
-
     val w = weightInput.toDoubleOrNull() ?: 70.0
     val mets = listOf(3.5, 8.0, 7.5, 6.0, 5.0)
     val activityNames = listOf("🚶 Caminar", "🏃 Correr", "🚴 Ciclismo", "🏊 Natación", "🏋️ Gimnasio")
-
     val selectedMet = mets[activityMetIndex]
     val caloriesBurned = (selectedMet * w * (durationMinutes / 60.0)).toInt()
-
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -777,9 +714,7 @@ fun PhysicalActivityTool(activeMember: FamilyMember?) {
                 }
             }
         }
-
         OutlinedTextField(value = weightInput, onValueChange = { weightInput = it }, label = { Text("Tu Peso Corporal (kg)") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
-
         Text(text = "Selecciona la Actividad", fontSize = 14.sp, fontWeight = FontWeight.Bold)
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             activityNames.forEachIndexed { idx, name ->
@@ -791,10 +726,8 @@ fun PhysicalActivityTool(activeMember: FamilyMember?) {
                 ) { Box(contentAlignment = Alignment.Center) { Text(text = name, fontSize = 10.sp, fontWeight = FontWeight.Bold) } }
             }
         }
-
         Text(text = "Duración: $durationMinutes minutos", fontSize = 14.sp, fontWeight = FontWeight.Bold)
         Slider(value = durationMinutes.toFloat(), onValueChange = { durationMinutes = it.toInt() }, valueRange = 10f..180f)
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
@@ -805,13 +738,11 @@ fun PhysicalActivityTool(activeMember: FamilyMember?) {
                 Text(text = "~$caloriesBurned kcal", fontSize = 32.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF10B981))
             }
         }
-
         ToolExplanationCard(
             whatItMeasures = "Mide las calorías quemadas durante un ejercicio o deporte según su intensidad y duración.",
             whatIsItFor = "Calcular el gasto energético adicional al realizar actividades como caminar, correr, nadar o ir al gimnasio.",
             interpretation = "Se calcula con los Equivalentes Metabólicos de Tarea (METs), donde 1 MET equivale al gasto calórico en reposo."
         )
-
         FormulaCard(
             formulaTitle = "Cálculo por Equivalentes Metabólicos (METs)",
             formulaExpression = "Calorías Quemadas = MET × Peso (kg) × (Duración Minutos / 60)",
@@ -820,23 +751,17 @@ fun PhysicalActivityTool(activeMember: FamilyMember?) {
         )
     }
 }
-
-
 @Composable
 fun ProfileWaistToHeightTool(activeMember: FamilyMember?) {
     val context = LocalContext.current
     val dbHelper = remember { BmiDatabaseHelper(context) }
-
     var waistInput by remember { mutableStateOf("82") }
     var heightInput by remember { mutableStateOf("170") }
-
     val waist = waistInput.toDoubleOrNull() ?: 82.0
     val height = heightInput.toDoubleOrNull() ?: 170.0
-
     val ice = remember(waist, height) {
         MedicalCalculators.calculateWaistToHeightRatio(waist, height)
     }
-
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -856,7 +781,6 @@ fun ProfileWaistToHeightTool(activeMember: FamilyMember?) {
                 }
             }
         }
-
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             OutlinedTextField(
                 value = waistInput,
@@ -875,7 +799,6 @@ fun ProfileWaistToHeightTool(activeMember: FamilyMember?) {
                 modifier = Modifier.weight(1f)
             )
         }
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
@@ -885,7 +808,6 @@ fun ProfileWaistToHeightTool(activeMember: FamilyMember?) {
                 Text(text = "EVALUACIÓN RIESGO CARDIOVASCULAR (ICE)", fontSize = 11.sp, fontWeight = FontWeight.Bold)
                 Text(text = String.format("%.2f", ice.ratio), fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = Color(ice.statusColorHex))
                 Text(text = ice.categoryText, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(ice.statusColorHex))
-
                 Button(
                     onClick = {
                         val memberId = activeMember?.id ?: 0L
@@ -909,13 +831,11 @@ fun ProfileWaistToHeightTool(activeMember: FamilyMember?) {
                 }
             }
         }
-
         ToolExplanationCard(
             whatItMeasures = "Mide la relación entre la circunferencia de la cintura y la estatura corporal.",
             whatIsItFor = "Detectar la acumulación de grasa visceral abdominal y evaluar el riesgo cardiometabólico.",
             interpretation = "Límite saludable universal: ICE < 0.50 (Tu cintura debe medir menos de la mitad de tu estatura)."
         )
-
         FormulaCard(
             formulaTitle = "Fórmula del Índice Cintura-Estatura (ICE / WHtR)",
             formulaExpression = "ICE = Perímetro Cintura (cm) / Estatura (cm)",
@@ -924,8 +844,6 @@ fun ProfileWaistToHeightTool(activeMember: FamilyMember?) {
         )
     }
 }
-
-
 @Composable
 fun MacronutrientsTool(activeMember: FamilyMember? = null) {
     val context = LocalContext.current
@@ -935,13 +853,10 @@ fun MacronutrientsTool(activeMember: FamilyMember? = null) {
     var bmrInput by remember(activeMember?.id, initialBmr) { mutableStateOf(initialBmr) }
     var activityIndex by remember { mutableIntStateOf(1) }
     var goalIndex by remember { mutableIntStateOf(0) }
-
     val bmr = bmrInput.toIntOrNull() ?: 1650
-
     val macros = remember(bmr, activityIndex, goalIndex) {
         MedicalCalculators.calculateMacronutrients(bmr, activityIndex, goalIndex)
     }
-
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -961,7 +876,6 @@ fun MacronutrientsTool(activeMember: FamilyMember? = null) {
                 }
             }
         }
-
         OutlinedTextField(
             value = bmrInput,
             onValueChange = { bmrInput = it },
@@ -970,7 +884,6 @@ fun MacronutrientsTool(activeMember: FamilyMember? = null) {
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
@@ -980,7 +893,6 @@ fun MacronutrientsTool(activeMember: FamilyMember? = null) {
             Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(text = "META CALÓRICA DIARIA (${macros.goalText})", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                 Text(text = "${macros.targetCalories} kcal / día", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
-
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     MacroBox(title = "Proteínas", value = "${macros.proteinGrams} g", color = Color(0xFF0288D1), modifier = Modifier.weight(1f))
                     Spacer(modifier = Modifier.width(8.dp))
@@ -990,13 +902,11 @@ fun MacronutrientsTool(activeMember: FamilyMember? = null) {
                 }
             }
         }
-
         ToolExplanationCard(
             whatItMeasures = "Mide la distribución diaria necesaria en gramos de Proteínas, Carbohidratos y Grasas.",
             whatIsItFor = "Estructurar la dieta para objetivos de déficit calórico (pérdida de grasa), mantenimiento o hipertrofia.",
             interpretation = "Proteínas (4 kcal/g) construyen tejido magro, Carbohidratos (4 kcal/g) brindan energía y Grasas (9 kcal/g) regulan hormonas."
         )
-
         FormulaCard(
             formulaTitle = "Distribución de Macronutrientes (30% Proteína, 45% Carbs, 25% Grasas)",
             formulaExpression = "Proteínas (g) = (kcal Target × 0.30) / 4\nCarbohidratos (g) = (kcal Target × 0.45) / 4\nGrasas (g) = (kcal Target × 0.25) / 9",
@@ -1005,7 +915,6 @@ fun MacronutrientsTool(activeMember: FamilyMember? = null) {
         )
     }
 }
-
 @Composable
 fun MacroBox(title: String, value: String, color: Color, modifier: Modifier = Modifier) {
     Surface(shape = RoundedCornerShape(12.dp), color = color.copy(alpha = 0.15f), modifier = modifier) {
@@ -1015,23 +924,17 @@ fun MacroBox(title: String, value: String, color: Color, modifier: Modifier = Mo
         }
     }
 }
-
-
 @Composable
 fun ProfileHeadCircumferenceTool(activeMember: FamilyMember?) {
     val context = LocalContext.current
     val dbHelper = remember { BmiDatabaseHelper(context) }
-
     val babyGender = activeMember?.gender ?: Gender.FEMALE
     var ageMonths by remember { mutableIntStateOf(6) }
     var headInput by remember { mutableStateOf("43.0") }
-
     val headCm = headInput.toDoubleOrNull() ?: 43.0
-
     val headResult = remember(babyGender, ageMonths, headCm) {
         MedicalCalculators.calculateHeadCircumference(babyGender, ageMonths, headCm)
     }
-
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -1051,7 +954,6 @@ fun ProfileHeadCircumferenceTool(activeMember: FamilyMember?) {
                 }
             }
         }
-
         OutlinedTextField(
             value = headInput,
             onValueChange = { headInput = it },
@@ -1060,10 +962,8 @@ fun ProfileHeadCircumferenceTool(activeMember: FamilyMember?) {
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
-
         Text(text = "Edad del Bebé: $ageMonths meses", fontSize = 14.sp, fontWeight = FontWeight.Bold)
         Slider(value = ageMonths.toFloat(), onValueChange = { ageMonths = it.toInt() }, valueRange = 0f..24f)
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
@@ -1073,7 +973,6 @@ fun ProfileHeadCircumferenceTool(activeMember: FamilyMember?) {
                 Text(text = "EVALUACIÓN PERÍMETRO CEFÁLICO OMS", fontSize = 11.sp, fontWeight = FontWeight.Bold)
                 Text(text = "${headResult.headCm} cm", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
                 Text(text = headResult.statusText, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-
                 Button(
                     onClick = {
                         val memberId = activeMember?.id ?: 0L
@@ -1097,13 +996,11 @@ fun ProfileHeadCircumferenceTool(activeMember: FamilyMember?) {
                 }
             }
         }
-
         ToolExplanationCard(
             whatItMeasures = "Mide el crecimiento del perímetro de la cabeza en niños de 0 a 24 meses.",
             whatIsItFor = "Monitorear el desarrollo neurológico y cerebral en los primeros dos años de vida.",
             interpretation = "Compara la medida con los patrones infantiles estándar de la OMS (Percentiles P3 a P97)."
         )
-
         FormulaCard(
             formulaTitle = "Z-Score y Tablas Percentilares de Perímetro Cefálico OMS",
             formulaExpression = "Z-Score OMS = (Perímetro Medido - Mediana OMS) / Desviación Estándar OMS",
@@ -1112,21 +1009,16 @@ fun ProfileHeadCircumferenceTool(activeMember: FamilyMember?) {
         )
     }
 }
-
-
 @Composable
 fun TannerHeightTool(activeMember: FamilyMember?) {
     val childGender = activeMember?.gender ?: Gender.MALE
     var fatherHeightInput by remember { mutableStateOf("175") }
     var motherHeightInput by remember { mutableStateOf("162") }
-
     val fatherH = fatherHeightInput.toDoubleOrNull() ?: 175.0
     val motherH = motherHeightInput.toDoubleOrNull() ?: 162.0
-
     val prediction = remember(childGender, fatherH, motherH) {
         MedicalCalculators.calculateTannerTargetHeight(childGender, fatherH, motherH)
     }
-
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -1146,12 +1038,10 @@ fun TannerHeightTool(activeMember: FamilyMember?) {
                 }
             }
         }
-
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             OutlinedTextField(value = fatherHeightInput, onValueChange = { fatherHeightInput = it }, label = { Text("Padre (cm)") }, modifier = Modifier.weight(1f), singleLine = true)
             OutlinedTextField(value = motherHeightInput, onValueChange = { motherHeightInput = it }, label = { Text("Madre (cm)") }, modifier = Modifier.weight(1f), singleLine = true)
         }
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
@@ -1162,13 +1052,11 @@ fun TannerHeightTool(activeMember: FamilyMember?) {
                 Text(text = prediction.formattedTarget, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
             }
         }
-
         ToolExplanationCard(
             whatItMeasures = "Mide la talla adulta objetivo genéticamente esperada en base a la estatura de ambos padres.",
             whatIsItFor = "Proyectar la estatura máxima esperada al alcanzar la madurez esquelética adulta.",
             interpretation = "Establece el rango genético esperado de estatura infantil con un margen de variabilidad de ± 5.0 cm."
         )
-
         FormulaCard(
             formulaTitle = "Fórmula de Talla Media Parental de Tanner",
             formulaExpression = "Niño (cm) = (Estatura Padre + Estatura Madre + 13 cm) / 2\nNiña (cm) = (Estatura Padre + Estatura Madre - 13 cm) / 2",
@@ -1177,23 +1065,18 @@ fun TannerHeightTool(activeMember: FamilyMember?) {
         )
     }
 }
-
-
 @Composable
 fun PregnancyGainTool(activeMember: FamilyMember?) {
     var preWeightInput by remember { mutableStateOf("58") }
     var heightInput by remember { mutableStateOf("163") }
     var currentWeightInput by remember { mutableStateOf("64") }
     var currentWeek by remember { mutableIntStateOf(24) }
-
     val preW = preWeightInput.toDoubleOrNull() ?: 58.0
     val h = heightInput.toDoubleOrNull() ?: 163.0
     val curW = currentWeightInput.toDoubleOrNull() ?: 64.0
-
     val preg = remember(preW, h, currentWeek, curW) {
         MedicalCalculators.calculatePregnancyWeightGain(preW, h, currentWeek, curW)
     }
-
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -1213,9 +1096,7 @@ fun PregnancyGainTool(activeMember: FamilyMember?) {
                 }
             }
         }
-
         OutlinedTextField(value = currentWeightInput, onValueChange = { currentWeightInput = it }, label = { Text("Peso Actual (kg)") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
@@ -1227,13 +1108,11 @@ fun PregnancyGainTool(activeMember: FamilyMember?) {
                 Text(text = preg.statusText, fontSize = 12.sp)
             }
         }
-
         ToolExplanationCard(
             whatItMeasures = "Mide la ganancia de peso materna acumulada durante las semanas de gestación.",
             whatIsItFor = "Evaluar si el aumento de peso se mantiene dentro del rango seguro recomendado para prevenir complicaciones.",
             interpretation = "El rango recomendado depende directamente del IMC previo al embarazo (IOM / OMS)."
         )
-
         FormulaCard(
             formulaTitle = "Pautas del Instituto de Medicina (IOM 2009 / OMS)",
             formulaExpression = "Ganancia Esperada (kg) = Ganancia Trimestre 1 + [ Tasa Semanal IOM × (Semana - 13) ]",
@@ -1242,14 +1121,11 @@ fun PregnancyGainTool(activeMember: FamilyMember?) {
         )
     }
 }
-
-
 @Composable
 fun PediatricRemindersTool(activeMember: FamilyMember?) {
     val context = LocalContext.current
     val notifManager = remember { PediatricNotificationManager(context) }
     var childNameInput by remember(activeMember?.name) { mutableStateOf(activeMember?.name ?: "Lucas") }
-
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -1269,7 +1145,6 @@ fun PediatricRemindersTool(activeMember: FamilyMember?) {
                 }
             }
         }
-
         OutlinedTextField(
             value = childNameInput,
             onValueChange = { childNameInput = it },
@@ -1277,7 +1152,6 @@ fun PediatricRemindersTool(activeMember: FamilyMember?) {
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
-
         Button(
             onClick = {
                 notifManager.schedulePediatricReminder(childNameInput, 30)
@@ -1290,12 +1164,9 @@ fun PediatricRemindersTool(activeMember: FamilyMember?) {
         }
     }
 }
-
-
 @Composable
 fun BackupRestoreTool() {
     val context = LocalContext.current
-
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -1315,7 +1186,6 @@ fun BackupRestoreTool() {
                 }
             }
         }
-
         Button(
             onClick = {
                 val jsonBackup = BackupRestoreManager.exportBackupJson(context)
@@ -1334,8 +1204,6 @@ fun BackupRestoreTool() {
         }
     }
 }
-
-
 @Composable
 fun IdealBodyWeightTool(member: FamilyMember?) {
     val context = LocalContext.current
@@ -1348,18 +1216,14 @@ fun IdealBodyWeightTool(member: FamilyMember?) {
     }
     var heightInput by remember(member?.id, initialHeight) { mutableStateOf(initialHeight) }
     var weightInput by remember(member?.id, initialWeight) { mutableStateOf(initialWeight) }
-
     val h = heightInput.toDoubleOrNull() ?: 170.0
     val w = weightInput.toDoubleOrNull() ?: 0.0
-
     val result = remember(gender, h, w) {
         MedicalCalculators.calculateIdealBodyWeight(gender, h, w)
     }
-
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(text = "⚖️ Calculadora de Peso Corporal Ideal (IBW)", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         Text(text = "Calcula el peso ideal estimado según estatura utilizando las 5 fórmulas médicas clínicas más reconocidas a nivel mundial.", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-
         Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
@@ -1370,7 +1234,6 @@ fun IdealBodyWeightTool(member: FamilyMember?) {
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
-
                 OutlinedTextField(
                     value = weightInput,
                     onValueChange = { weightInput = it },
@@ -1381,7 +1244,6 @@ fun IdealBodyWeightTool(member: FamilyMember?) {
                 )
             }
         }
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(18.dp),
@@ -1390,18 +1252,15 @@ fun IdealBodyWeightTool(member: FamilyMember?) {
             Column(modifier = Modifier.padding(18.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = "PESO IDEAL PROMEDIO ESTIMADO", fontSize = 11.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)
                 Text(text = "${String.format("%.1f", result.averageIbwKg)} kg", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
-
                 if (w > 0) {
                     val diffStr = if (result.weightDiffKg > 0) "+${String.format("%.1f", result.weightDiffKg)} kg sobre el ideal" else "${String.format("%.1f", result.weightDiffKg)} kg bajo el ideal"
                     Text(text = "Diferencia con peso actual: $diffStr", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                 }
             }
         }
-
         Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(text = "Desglose por Fórmulas Médicas:", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-
                 IbwFormulaRow("Devine (Uso Clínico)", result.devineKg)
                 IbwFormulaRow("Robinson (Nutrición)", result.robinsonKg)
                 IbwFormulaRow("Miller", result.millerKg)
@@ -1409,13 +1268,11 @@ fun IdealBodyWeightTool(member: FamilyMember?) {
                 IbwFormulaRow("Broca (Clásica)", result.brocaKg)
             }
         }
-
         ToolExplanationCard(
             whatItMeasures = "Mide el peso corporal ideal estimado en kilos en base a la estatura y la estructura corporal.",
             whatIsItFor = "Establecer metas de peso saludables y dosificación en farmacología clínica.",
             interpretation = "Compara las 5 fórmulas históricas y clínicas más utilizadas en el mundo."
         )
-
         FormulaCard(
             formulaTitle = "Fórmulas Médicas Clásicas de Peso Ideal (IBW)",
             formulaExpression = "Devine (H): 50 + 2.3 × (Estatura pulg - 60)\nDevine (M): 45.5 + 2.3 × (Estatura pulg - 60)\nBroca: (Estatura cm - 100) × Factor Sexo (0.90 / 0.85)",
@@ -1424,7 +1281,6 @@ fun IdealBodyWeightTool(member: FamilyMember?) {
         )
     }
 }
-
 @Composable
 private fun IbwFormulaRow(formulaName: String, valueKg: Double) {
     Row(
@@ -1436,8 +1292,6 @@ private fun IbwFormulaRow(formulaName: String, valueKg: Double) {
         Text(text = "${String.format("%.1f", valueKg)} kg", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
     }
 }
-
-
 @Composable
 fun WaistToHipTool(member: FamilyMember?) {
     val context = LocalContext.current
@@ -1450,18 +1304,14 @@ fun WaistToHipTool(member: FamilyMember?) {
     }
     var waistInput by remember(member?.id, initialWaist) { mutableStateOf(initialWaist) }
     var hipInput by remember(member?.id, initialHip) { mutableStateOf(initialHip) }
-
     val waist = waistInput.toDoubleOrNull() ?: 80.0
     val hip = hipInput.toDoubleOrNull() ?: 95.0
-
     val result = remember(gender, waist, hip) {
         MedicalCalculators.calculateWaistToHipRatio(gender, waist, hip)
     }
-
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(text = "⏳ Índice Cintura-Cadera (ÍCC / WHR)", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         Text(text = "Evalúa la distribución de grasa corporal y el riesgo cardiovascular de acuerdo con los estándares de la Organización Mundial de la Salud (OMS).", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-
         Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
@@ -1472,7 +1322,6 @@ fun WaistToHipTool(member: FamilyMember?) {
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
-
                 OutlinedTextField(
                     value = hipInput,
                     onValueChange = { hipInput = it },
@@ -1483,7 +1332,6 @@ fun WaistToHipTool(member: FamilyMember?) {
                 )
             }
         }
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(18.dp),
@@ -1496,13 +1344,11 @@ fun WaistToHipTool(member: FamilyMember?) {
                 Text(text = "Distribución corporal: ${result.bodyShape}", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-
         ToolExplanationCard(
             whatItMeasures = "Mide la relación circunferencia cintura/cadera para definir el patrón de distribución de grasa.",
             whatIsItFor = "Diferenciar el patrón androide (manzana, mayor riesgo cardiometabólico) del patrón ginoide (pera).",
             interpretation = "Criterios OMS: Riesgo Alto en Hombres >= 1.00, Mujeres >= 0.85."
         )
-
         FormulaCard(
             formulaTitle = "Fórmula del Índice Cintura-Cadera (ÍCC / WHR)",
             formulaExpression = "ÍCC = Perímetro Cintura (cm) / Perímetro Cadera (cm)",
@@ -1511,21 +1357,16 @@ fun WaistToHipTool(member: FamilyMember?) {
         )
     }
 }
-
-
 @Composable
 fun HeartRateZonesTool(member: FamilyMember?) {
     var ageInput by remember { mutableStateOf("30") }
     val age = ageInput.toIntOrNull() ?: 30
-
     val result = remember(age) {
         MedicalCalculators.calculateHeartRateZones(age)
     }
-
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(text = "❤️ Frecuencia Cardíaca Máxima & Zonas de Entrenamiento", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         Text(text = "Calcula la Frecuencia Cardíaca Máxima (FCM) mediante la fórmula clínica de Tanaka y desglosa las 5 zonas de intensidad de entrenamiento.", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-
         Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(modifier = Modifier.padding(16.dp)) {
                 OutlinedTextField(
@@ -1538,7 +1379,6 @@ fun HeartRateZonesTool(member: FamilyMember?) {
                 )
             }
         }
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(18.dp),
@@ -1553,16 +1393,13 @@ fun HeartRateZonesTool(member: FamilyMember?) {
                     Text(text = "FCM TANAKA", fontSize = 10.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)
                     Text(text = "${result.tanakaMaxHr} bpm", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
                 }
-
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(text = "FCM HASKELL", fontSize = 10.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)
                     Text(text = "${result.haskellMaxHr} bpm", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
                 }
             }
         }
-
         Text(text = "Zonas de Intensidad de Entrenamiento:", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-
         result.zones.forEach { zone ->
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -1579,13 +1416,11 @@ fun HeartRateZonesTool(member: FamilyMember?) {
                 }
             }
         }
-
         ToolExplanationCard(
             whatItMeasures = "Mide la Frecuencia Cardíaca Máxima (FCM) y las 5 zonas de intensidad de esfuerzo en latidos por minuto.",
             whatIsItFor = "Guiar el ejercicio seguro y eficiente según el objetivo (Quema de grasa, Acondicionamiento aeróbico o Esfuerzo máximo).",
             interpretation = "Zona 2 (60-70%) optimiza la oxidación de grasas. Zonas 3 y 4 (70-90%) aumentan la resistencia aeróbica."
         )
-
         FormulaCard(
             formulaTitle = "Fórmulas de Tanaka y Haskell-Fox para FCM",
             formulaExpression = "FCM Tanaka = 208 - (0.7 × Edad en años)\nFCM Haskell = 220 - Edad en años",
@@ -1594,25 +1429,19 @@ fun HeartRateZonesTool(member: FamilyMember?) {
         )
     }
 }
-
-
 @Composable
 fun BodyAdiposityTool(member: FamilyMember?) {
     val gender = member?.gender ?: Gender.MALE
     var heightInput by remember { mutableStateOf("170.0") }
     var hipInput by remember { mutableStateOf(if (gender == Gender.FEMALE) "95.0" else "92.0") }
-
     val h = heightInput.toDoubleOrNull() ?: 170.0
     val hip = hipInput.toDoubleOrNull() ?: 92.0
-
     val result = remember(gender, h, hip) {
         MedicalCalculators.calculateBodyAdiposityIndex(gender, h, hip)
     }
-
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(text = "📐 Índice de Adiposidad Corporal (IAC / BAI)", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         Text(text = "Estima el porcentaje de grasa corporal utilizando la relación entre el perímetro de cadera y la estatura, sin necesidad de usar báscula.", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-
         Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
@@ -1623,7 +1452,6 @@ fun BodyAdiposityTool(member: FamilyMember?) {
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
-
                 OutlinedTextField(
                     value = hipInput,
                     onValueChange = { hipInput = it },
@@ -1634,7 +1462,6 @@ fun BodyAdiposityTool(member: FamilyMember?) {
                 )
             }
         }
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(18.dp),
@@ -1646,13 +1473,11 @@ fun BodyAdiposityTool(member: FamilyMember?) {
                 Text(text = result.categoryText, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             }
         }
-
         ToolExplanationCard(
             whatItMeasures = "Mide el porcentaje estimado de grasa corporal en base al perímetro de la cadera y la estatura.",
             whatIsItFor = "Estimar la adiposidad corporal sin necesidad de báscula.",
             interpretation = "Útil en personas musculosas donde el IMC tradicional puede sobreestimar sobrepeso u obesidad."
         )
-
         FormulaCard(
             formulaTitle = "Fórmula del Índice de Adiposidad Corporal (IAC / BAI)",
             formulaExpression = "IAC / BAI (%) = [ Perímetro Cadera (cm) / (Estatura en m)^1.5 ] - 18",
@@ -1661,25 +1486,19 @@ fun BodyAdiposityTool(member: FamilyMember?) {
         )
     }
 }
-
-
 @Composable
 fun LeanBodyMassTool(member: FamilyMember?) {
     val gender = member?.gender ?: Gender.MALE
     var heightInput by remember { mutableStateOf("170.0") }
     var weightInput by remember { mutableStateOf("70.0") }
-
     val h = heightInput.toDoubleOrNull() ?: 170.0
     val w = weightInput.toDoubleOrNull() ?: 70.0
-
     val result = remember(gender, h, w) {
         MedicalCalculators.calculateLeanBodyMass(gender, h, w)
     }
-
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(text = "💪 Masa Magra y Masa Grasa en Kilos (LBM)", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         Text(text = "Calcula la masa magra (músculo, agua, órganos) y masa grasa en kilos comparando las fórmulas clínicas de Boer y James.", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-
         Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
@@ -1690,7 +1509,6 @@ fun LeanBodyMassTool(member: FamilyMember?) {
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
-
                 OutlinedTextField(
                     value = weightInput,
                     onValueChange = { weightInput = it },
@@ -1701,7 +1519,6 @@ fun LeanBodyMassTool(member: FamilyMember?) {
                 )
             }
         }
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(18.dp),
@@ -1710,7 +1527,6 @@ fun LeanBodyMassTool(member: FamilyMember?) {
             Column(modifier = Modifier.padding(18.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(text = "MASA MAGRA PROMEDIO (LBM)", fontSize = 11.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)
                 Text(text = "${String.format("%.1f", result.averageLbmKg)} kg", fontSize = 32.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
-
                 Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(text = "Masa Grasa", fontSize = 11.sp, color = MaterialTheme.colorScheme.primary)
@@ -1723,7 +1539,6 @@ fun LeanBodyMassTool(member: FamilyMember?) {
                 }
             }
         }
-
         Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(text = "Comparación de Fórmulas Médicas:", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
@@ -1737,13 +1552,11 @@ fun LeanBodyMassTool(member: FamilyMember?) {
                 }
             }
         }
-
         ToolExplanationCard(
             whatItMeasures = "Mide los kilos de masa magra (músculos, agua, órganos) y masa grasa corporal.",
             whatIsItFor = "Evaluar el tono muscular y la composición corporal en atletas y adultos.",
             interpretation = "Compara las fórmulas clínicas de Boer y James para ofrecer una estimación precisa."
         )
-
         FormulaCard(
             formulaTitle = "Fórmulas de Boer y James para Masa Magra",
             formulaExpression = "Boer (H): 0.407W + 0.267H - 19.2 | Boer (M): 0.252W + 0.473H - 48.3\nJames (H): 1.1W - 128(W/H)² | James (M): 1.07W - 148(W/H)²",
@@ -1752,27 +1565,21 @@ fun LeanBodyMassTool(member: FamilyMember?) {
         )
     }
 }
-
-
 @Composable
 fun TotalBodyWaterTool(member: FamilyMember?) {
     val gender = member?.gender ?: Gender.MALE
     var ageInput by remember { mutableStateOf("30") }
     var heightInput by remember { mutableStateOf("170.0") }
     var weightInput by remember { mutableStateOf("70.0") }
-
     val age = ageInput.toIntOrNull() ?: 30
     val h = heightInput.toDoubleOrNull() ?: 170.0
     val w = weightInput.toDoubleOrNull() ?: 70.0
-
     val result = remember(gender, age, h, w) {
         MedicalCalculators.calculateTotalBodyWater(gender, age, h, w)
     }
-
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(text = "💧 Agua Corporal Total (TBW - Watson & Hume)", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         Text(text = "Calcula los litros exactos de agua corporal y el porcentaje de hidratación del cuerpo utilizando las fórmulas clínicas de Watson y Hume.", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-
         Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -1793,7 +1600,6 @@ fun TotalBodyWaterTool(member: FamilyMember?) {
                         modifier = Modifier.weight(1f)
                     )
                 }
-
                 OutlinedTextField(
                     value = ageInput,
                     onValueChange = { ageInput = it },
@@ -1804,7 +1610,6 @@ fun TotalBodyWaterTool(member: FamilyMember?) {
                 )
             }
         }
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(18.dp),
@@ -1817,7 +1622,6 @@ fun TotalBodyWaterTool(member: FamilyMember?) {
                 Text(text = result.statusText, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-
         Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(text = "Desglose por Fórmulas Médicas:", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
@@ -1831,13 +1635,11 @@ fun TotalBodyWaterTool(member: FamilyMember?) {
                 }
             }
         }
-
         ToolExplanationCard(
             whatItMeasures = "Mide los litros de agua corporal total y el porcentaje de agua sobre el peso corporal.",
             whatIsItFor = "Evaluar el estado de hidratación celular y el volumen hídrico corporal.",
             interpretation = "El porcentaje normal de agua corporal suele estar entre 45% y 65% del peso total."
         )
-
         FormulaCard(
             formulaTitle = "Fórmulas Clínicas de Watson y Hume de Agua Corporal Total",
             formulaExpression = "Watson (H): 2.447 - 0.09156A + 0.1074H + 0.3362W\nWatson (M): -2.097 + 0.1069H + 0.2466W",
@@ -1846,24 +1648,18 @@ fun TotalBodyWaterTool(member: FamilyMember?) {
         )
     }
 }
-
-
 @Composable
 fun RohrerIndexTool(member: FamilyMember?) {
     var weightInput by remember { mutableStateOf("3.4") }
     var heightInput by remember { mutableStateOf(if ((weightInput.toDoubleOrNull() ?: 3.4) < 10) "50.0" else "85.0") }
-
     val w = weightInput.toDoubleOrNull() ?: 3.4
     val h = heightInput.toDoubleOrNull() ?: 50.0
-
     val result = remember(w, h) {
         MedicalCalculators.calculateRohrerPonderalIndex(w, h)
     }
-
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(text = "👶 Índice Ponderal de Rohrer (Neonatal y Pediátrico)", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         Text(text = "Mide la proporcionalidad corporal en recién nacidos y bebés para detectar desnutrición intrauterina o desarrollo asimétrico.", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-
         Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
@@ -1874,7 +1670,6 @@ fun RohrerIndexTool(member: FamilyMember?) {
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
-
                 OutlinedTextField(
                     value = heightInput,
                     onValueChange = { heightInput = it },
@@ -1885,7 +1680,6 @@ fun RohrerIndexTool(member: FamilyMember?) {
                 )
             }
         }
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(18.dp),
@@ -1899,24 +1693,18 @@ fun RohrerIndexTool(member: FamilyMember?) {
         }
     }
 }
-
-
 @Composable
 fun InfantRequirementTool(member: FamilyMember?) {
     var ageMonthsInput by remember { mutableStateOf("4") }
     var weightInput by remember { mutableStateOf("6.5") }
-
     val m = ageMonthsInput.toIntOrNull() ?: 4
     val w = weightInput.toDoubleOrNull() ?: 6.5
-
     val result = remember(m, w) {
         MedicalCalculators.calculateInfantRequirement(m, w)
     }
-
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(text = "🍼 Requerimientos Calóricos y Volumétricos del Lactante", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         Text(text = "Estima las calorías diarias y el volumen de leche/fórmula en mililitros para lactantes de 0 a 12 meses según recomendaciones de la OMS y la AAP.", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-
         Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
@@ -1927,7 +1715,6 @@ fun InfantRequirementTool(member: FamilyMember?) {
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
-
                 OutlinedTextField(
                     value = weightInput,
                     onValueChange = { weightInput = it },
@@ -1938,7 +1725,6 @@ fun InfantRequirementTool(member: FamilyMember?) {
                 )
             }
         }
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(18.dp),
@@ -1953,8 +1739,6 @@ fun InfantRequirementTool(member: FamilyMember?) {
         }
     }
 }
-
-
 @Composable
 fun BloodPressureTool(activeMember: FamilyMember? = null) {
     val context = LocalContext.current
@@ -1966,18 +1750,14 @@ fun BloodPressureTool(activeMember: FamilyMember? = null) {
     }
     var sysInput by remember(activeMember?.id, initialSys) { mutableStateOf(initialSys) }
     var diaInput by remember(activeMember?.id, initialDia) { mutableStateOf(initialDia) }
-
     val sys = sysInput.toIntOrNull() ?: 120
     val dia = diaInput.toIntOrNull() ?: 80
-
     val result = remember(sys, dia) {
         MedicalCalculators.calculateMeanArterialPressure(sys, dia)
     }
-
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(text = "🩸 Presión Arterial Media (PAM) & Presión de Pulso", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         Text(text = "Calcula la Presión Arterial Media (PAM) e identifica la clasificación de riesgo vascular según los criterios de la AHA y la OMS.", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-
         Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 OutlinedTextField(
@@ -1988,7 +1768,6 @@ fun BloodPressureTool(activeMember: FamilyMember? = null) {
                     singleLine = true,
                     modifier = Modifier.weight(1f)
                 )
-
                 OutlinedTextField(
                     value = diaInput,
                     onValueChange = { diaInput = it },
@@ -1999,7 +1778,6 @@ fun BloodPressureTool(activeMember: FamilyMember? = null) {
                 )
             }
         }
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(18.dp),
@@ -2014,8 +1792,6 @@ fun BloodPressureTool(activeMember: FamilyMember? = null) {
         }
     }
 }
-
-
 @Composable
 fun Vo2MaxTool(member: FamilyMember?) {
     val gender = member?.gender ?: Gender.MALE
@@ -2023,21 +1799,16 @@ fun Vo2MaxTool(member: FamilyMember?) {
     var heightInput by remember { mutableStateOf("170.0") }
     var weightInput by remember { mutableStateOf("70.0") }
     var activityIndex by remember { mutableIntStateOf(3) }
-
     val age = ageInput.toIntOrNull() ?: 30
     val h = heightInput.toDoubleOrNull() ?: 170.0
     val w = weightInput.toDoubleOrNull() ?: 70.0
-
     val activityLevels = listOf("0: Nula", "1-2: Ligera", "3-5: Moderada", "6-7: Intensa")
-
     val result = remember(gender, age, h, w, activityIndex) {
         MedicalCalculators.calculateVo2MaxNonExercise(gender, age, h, w, activityIndex * 2)
     }
-
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(text = "🫁 VO2 Máx Estimado (Consumo Máximo de Oxígeno)", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         Text(text = "Estima la capacidad aeróbica máxima y salud cardiorrespiratoria sin necesidad de pruebas de esfuerzo mediante el modelo de Jackson.", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-
         Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -2058,7 +1829,6 @@ fun Vo2MaxTool(member: FamilyMember?) {
                         modifier = Modifier.weight(1f)
                     )
                 }
-
                 OutlinedTextField(
                     value = ageInput,
                     onValueChange = { ageInput = it },
@@ -2067,7 +1837,6 @@ fun Vo2MaxTool(member: FamilyMember?) {
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
-
                 Text(text = "Nivel Habitual de Actividad Física:", fontSize = 13.sp, fontWeight = FontWeight.Bold)
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     activityLevels.forEachIndexed { idx, title ->
@@ -2081,7 +1850,6 @@ fun Vo2MaxTool(member: FamilyMember?) {
                 }
             }
         }
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(18.dp),
@@ -2093,13 +1861,11 @@ fun Vo2MaxTool(member: FamilyMember?) {
                 Text(text = result.categoryText, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             }
         }
-
         ToolExplanationCard(
             whatItMeasures = "Mide el consumo máximo de oxígeno en mL/kg/min (capacidad aeróbica máxima).",
             whatIsItFor = "Evaluar el estado de salud cardiorrespiratorio sin necesidad de pruebas de esfuerzo agitadas.",
             interpretation = "Valores > 42 mL/kg/min indican una capacidad aeróbica buena o excelente."
         )
-
         FormulaCard(
             formulaTitle = "Modelo de Regresión de Jackson (Non-Exercise VO2Max)",
             formulaExpression = "VO2Max = 56.363 + 1.921(Act) - 0.381(Edad) - 0.754(IMC) + 10.987(Sexo)",
@@ -2108,5 +1874,3 @@ fun Vo2MaxTool(member: FamilyMember?) {
         )
     }
 }
-
-

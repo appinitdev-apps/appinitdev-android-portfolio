@@ -1,5 +1,3 @@
-
-
 @Composable
 fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfully: (Uri) -> Unit) {
     val context = LocalContext.current
@@ -8,8 +6,6 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
     var selectedTexture by remember { mutableStateOf(FilterTools.textures[0]) }
     val allFiltersList = remember(context, selectedTexture) {
         val nativeFilters = FilterTools.getAllFilters(context, selectedTexture)
-
-        
         val noneFilters = FilterTools.categories.map { category ->
             EditorFilter(
                 name = "None",
@@ -17,19 +13,14 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                 filterInstance = GPUImageFilter() 
             )
         }
-
-        
         noneFilters + nativeFilters
     }
-
     var selectedCategory by remember { mutableStateOf(FilterTools.categories[0].name) }
     var activeEditorFilter by remember(allFiltersList) { mutableStateOf(allFiltersList[0]) }
     var gpuImageViewInstance by remember { mutableStateOf<GPUImageView?>(null) }
-
     val filteredFilters = remember(selectedCategory, allFiltersList) {
         allFiltersList.filter { it.category == selectedCategory }
     }
-
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
@@ -40,7 +31,6 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
             val customTexture = TextureItem(
                 name = "Personalizada",
                 uriString = uri.toString()
@@ -55,14 +45,11 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
             try {
                 val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
                 context.contentResolver.openInputStream(imageUri).use { BitmapFactory.decodeStream(it, null, options) }
-
-                
                 val targetSize = 120
                 var scale = 1
                 while (options.outWidth / scale / 2 >= targetSize && options.outHeight / scale / 2 >= targetSize) {
                     scale *= 2
                 }
-
                 val finalOptions = BitmapFactory.Options().apply { inSampleSize = scale }
                 context.contentResolver.openInputStream(imageUri).use { BitmapFactory.decodeStream(it, null, finalOptions) }
             } catch (e: Exception) {
@@ -70,13 +57,11 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
             }
         }
     }
-
     LaunchedEffect(imageUri) {
         withContext(Dispatchers.IO) {
             val cursor = context.contentResolver.query(imageUri, null, null, null, null)
             cursor?.use {
                 if (it.moveToFirst()) {
-                    
                     val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
                     if (nameIndex != -1) {
                         photoName = it.getString(nameIndex)
@@ -85,7 +70,6 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
             }
         }
     }
-
     LaunchedEffect(allFiltersList) {
         val matchingFilter = allFiltersList.find { it.name == activeEditorFilter.name }
         if (matchingFilter != null) {
@@ -93,14 +77,11 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
             gpuImageViewInstance?.requestRender()
         }
     }
-
-    
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black) 
     ) {
-        
         AndroidView(
             modifier = Modifier.fillMaxSize(),
             factory = { ctx ->
@@ -124,12 +105,10 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
             horizontalArrangement = Arrangement.SpaceBetween, 
             verticalAlignment = Alignment.CenterVertically
         ) {
-            
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.weight(1f, fill = false)
             ) {
-                
                 Box(
                     modifier = Modifier
                         .size(40.dp)
@@ -143,9 +122,7 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                         modifier = Modifier.size(24.dp)
                     )
                 }
-
                 Spacer(modifier = Modifier.width(8.dp))
-
                 Text(
                     text = photoName,
                     color = Color.White,
@@ -155,12 +132,8 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                     overflow = TextOverflow.Ellipsis
                 )
             }
-
-            
-            
             if (activeEditorFilter.name != "None") {
                 if (isSaving) {
-                    
                     Box(
                         modifier = Modifier.size(40.dp),
                         contentAlignment = Alignment.Center
@@ -172,7 +145,6 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                         )
                     }
                 } else {
-                    
                     Box(
                         modifier = Modifier
                             .size(40.dp)
@@ -182,32 +154,21 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                                     scope.launch {
                                         try {
                                             val savedUri = withContext(Dispatchers.IO) {
-                                                
                                                 val inputStream = context.contentResolver.openInputStream(imageUri)
                                                     ?: throw Exception("No se pudo abrir la imagen original")
-                                                
                                                 val originalBitmap = BitmapFactory.decodeStream(inputStream)
                                                 inputStream.close()
-
                                                 if (originalBitmap == null) throw Exception("Error al decodificar la imagen")
-
-                                                
                                                 val freshFilters = FilterTools.getAllFilters(context, selectedTexture)
                                                 val filterToApply = freshFilters.find { it.name == activeEditorFilter.name }?.filterInstance ?: GPUImageFilter()
-
                                                 FilterTools.adjustFilter(filterToApply, activeEditorFilter.parameters)
-
                                                 val gpuImage = GPUImage(context).apply {
                                                     setImage(originalBitmap)
                                                     setFilter(filterToApply)
                                                 }
-
                                                 val filteredBitmap = gpuImage.bitmapWithFilterApplied
                                                 originalBitmap.recycle()
-
                                                 if (filteredBitmap == null) throw Exception("La GPU no pudo procesar la imagen")
-
-                                                
                                                 val filename = "Filtro_${System.currentTimeMillis()}.jpg"
                                                 val contentValues = ContentValues().apply {
                                                     put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
@@ -217,17 +178,14 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                                                         put(MediaStore.Images.Media.IS_PENDING, 1)
                                                     }
                                                 }
-
                                                 val resolver = context.contentResolver
                                                 val outputUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
                                                     ?: throw Exception("No se pudo crear el archivo en la galería")
-
                                                 resolver.openOutputStream(outputUri)?.use { outputStream ->
                                                     if (!filteredBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)) {
                                                         throw Exception("Fallo al escribir la imagen")
                                                     }
                                                 }
-
                                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                                     contentValues.clear()
                                                     contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
@@ -237,11 +195,9 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                                                     mediaScanIntent.data = outputUri
                                                     context.sendBroadcast(mediaScanIntent)
                                                 }
-
                                                 filteredBitmap.recycle()
                                                 outputUri
                                             }
-
                                             onSavedSuccessfully(savedUri)
                                             Toast.makeText(context, "Imagen guardada", Toast.LENGTH_SHORT).show()
                                         } catch (e: Exception) {
@@ -268,12 +224,9 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                     }
                 }
             } else {
-                
-                
                 Spacer(modifier = Modifier.width(40.dp))
             }
         }
-        
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
@@ -287,8 +240,6 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                     .padding(bottom = 16.dp, top = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                
                 if (activeEditorFilter.parameters.isNotEmpty() && activeEditorFilter.category == selectedCategory) {
                     Column(
                         modifier = Modifier
@@ -331,14 +282,11 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                                             view.requestRender()
                                         }
                                     },
-
                                 )
                             }
                         }
                     }
                 }
-
-                
                 if (selectedCategory == "Fusión") {
                     Text(
                         text = "Textura de fusión:",
@@ -346,7 +294,6 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                         style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)
                     )
-
                     LazyRow(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -354,7 +301,6 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                         contentPadding = PaddingValues(horizontal = 16.dp),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        
                         item {
                             val isCustomActive = selectedTexture.uriString != null
                             Box(
@@ -390,7 +336,6 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                                         tint = Color.White
                                     )
                                 }
-
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -408,11 +353,8 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                                 }
                             }
                         }
-
-                        
                         items(FilterTools.textures) { item ->
                             val isTextureSelected = selectedTexture == item && selectedTexture.uriString == null
-
                             Box(
                                 modifier = Modifier
                                     .size(68.dp)
@@ -434,7 +376,6 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                                     modifier = Modifier.fillMaxSize(),
                                     contentScale = ContentScale.Crop
                                 )
-
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -454,13 +395,9 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                             }
                         }
                     }
-
                     Divider(color = Color(0xFF2B2B2B).copy(alpha = 0.5f), modifier = Modifier.padding(vertical = 6.dp))
                 }
-
                 Divider(color = Color(0xFF2B2B2B).copy(alpha = 0.5f), modifier = Modifier.padding(vertical = 6.dp))
-
-                
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(14.dp),
@@ -469,40 +406,15 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
                     items(filteredFilters) { item ->
                         val isSelected = item.name == activeEditorFilter.name ||
                                 (item.name == "None" && activeEditorFilter.category != selectedCategory)
-
                         FilterPreviewItem(
                             item = item,
                             baseThumbnail = baseThumbnail,
                             isSelected = isSelected,
                             onClick = { activeEditorFilter = item }
                         )
-                        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     }
                 }
-
                 Divider(color = Color(0xFF2B2B2B).copy(alpha = 0.5f), modifier = Modifier.padding(vertical = 6.dp))
-
-                
                 TabRow(
                     selectedTabIndex = FilterTools.categories.map { it.name }.indexOf(selectedCategory),
                     containerColor = Color.Transparent,
@@ -522,10 +434,6 @@ fun PhotoEditorScreen(imageUri: Uri, onBackClicked: () -> Unit, onSavedSuccessfu
         }
     }
 }
-
-
-
-
 @Composable
 fun FilterPreviewItem(
     item: EditorFilter,
@@ -533,11 +441,7 @@ fun FilterPreviewItem(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-
-
     val context = LocalContext.current
-
-    
     val filteredBitmapState = produceState<Bitmap?>(initialValue = null, item, baseThumbnail) {
         if (baseThumbnail != null) {
             value = withContext(Dispatchers.Default) {
@@ -545,7 +449,6 @@ fun FilterPreviewItem(
                     if (item.name == "None") {
                         baseThumbnail 
                     } else {
-                        
                         val gpuImage = GPUImage(context).apply {
                             setImage(baseThumbnail)
                             setFilter(item.filterInstance)
@@ -558,9 +461,7 @@ fun FilterPreviewItem(
             }
         }
     }
-
     val filteredBitmap = filteredBitmapState.value
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -576,7 +477,6 @@ fun FilterPreviewItem(
             contentAlignment = Alignment.Center
         ) {
             if (filteredBitmap != null) {
-                
                 Image(
                     bitmap = filteredBitmap.asImageBitmap(),
                     contentDescription = item.name,
@@ -584,7 +484,6 @@ fun FilterPreviewItem(
                     contentScale = ContentScale.Crop
                 )
             } else {
-                
                 Text(
                     text = item.name.take(2).uppercase(),
                     color = Color.LightGray,

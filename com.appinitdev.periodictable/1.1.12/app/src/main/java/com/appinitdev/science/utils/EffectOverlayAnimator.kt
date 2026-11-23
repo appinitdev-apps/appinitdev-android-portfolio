@@ -1,4 +1,3 @@
-
 fun fadeInEffectOverlay(effectOverlay: View, duration: Long = 300, onEnd: (() -> Unit)? = null) {
     effectOverlay.alpha = 0f
     effectOverlay.visibility = View.VISIBLE
@@ -8,7 +7,6 @@ fun fadeInEffectOverlay(effectOverlay: View, duration: Long = 300, onEnd: (() ->
         .withEndAction { onEnd?.invoke() }
         .start()
 }
-
 fun fadeOutEffectOverlay(effectOverlay: View, duration: Long = 300, onEnd: (() -> Unit)? = null) {
     effectOverlay.animate()
         .alpha(0f)

@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addSchemaTypes() {
     enum<MediaPlayMode>()
     enum<DataType>()

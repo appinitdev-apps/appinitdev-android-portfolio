@@ -1,4 +1,3 @@
-
 @Serializable
 data class DQrPairData(
     val id: String,
@@ -8,7 +7,6 @@ data class DQrPairData(
     val ips: List<String> = emptyList(), 
 ) {
     fun toQrContent(): String = QR_PREFIX + JsonHelper.jsonEncode(this)
-
     fun toDNearbyDevice(): DNearbyDevice {
         return DNearbyDevice(
             id = id,
@@ -21,10 +19,8 @@ data class DQrPairData(
             lastSeen = TimeHelper.now(),
         )
     }
-
     companion object {
         const val QR_PREFIX = "plainapp://pair/"
-
         fun fromQrContent(content: String): DQrPairData? {
             return try {
                 if (!content.startsWith(QR_PREFIX)) return null

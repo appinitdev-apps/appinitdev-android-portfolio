@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarHome(navController: NavHostController, peerVM: PeerViewModel) {
@@ -9,7 +8,6 @@ fun TopBarHome(navController: NavHostController, peerVM: PeerViewModel) {
         context.dataStore.dataFlow.map { NearbyDiscoverablePreference.get(it) }
     }.collectAsStateValue(initial = NearbyDiscoverablePreference.default)
     val deviceName by TempData.deviceName.collectAsState()
-
     if (showRenameDialog) {
         DeviceRenameDialog(
             name = deviceName,
@@ -17,7 +15,6 @@ fun TopBarHome(navController: NavHostController, peerVM: PeerViewModel) {
             onDone = { },
         )
     }
-
     if (showDiscoverableDialog) {
         AlertDialog(
             containerColor = MaterialTheme.colorScheme.surface,
@@ -37,7 +34,6 @@ fun TopBarHome(navController: NavHostController, peerVM: PeerViewModel) {
             },
         )
     }
-
     TopAppBar(
         title = {
             Row(

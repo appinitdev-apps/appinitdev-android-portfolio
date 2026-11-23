@@ -1,5 +1,3 @@
-
-
 @Composable
 internal fun rememberScrollbarLayoutState(
     thumbIsInAction: Boolean,
@@ -8,9 +6,7 @@ internal fun rememberScrollbarLayoutState(
 ): ScrollbarLayoutState {
     val settingsUpdated by rememberUpdatedState(settings)
     val thumbIsInActionUpdated by rememberUpdatedState(thumbIsInAction)
-
     val isInActionSelectable = remember { mutableStateOf(thumbIsInAction) }
-
     LaunchedEffect(thumbIsInAction) {
         if (thumbIsInAction) {
             isInActionSelectable.value = true
@@ -19,7 +15,6 @@ internal fun rememberScrollbarLayoutState(
             isInActionSelectable.value = false
         }
     }
-
     val activeDraggableModifier = remember {
         derivedStateOf {
             when (settingsUpdated.selectionActionable) {
@@ -28,20 +23,17 @@ internal fun rememberScrollbarLayoutState(
             }
         }
     }
-
     val thumbColor = animateColorAsState(
         targetValue = if (thumbIsSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
         animationSpec = tween(durationMillis = 50),
         label = "scrollbar thumb color value"
     )
-
     val currentDurationMillis = remember {
         derivedStateOf {
             val reductionRatio: Int = if (thumbIsInActionUpdated) 4 else 1
             settingsUpdated.durationAnimationMillis / reductionRatio
         }
     }
-
     val hideAlpha = animateFloatAsState(
         targetValue = if (thumbIsInActionUpdated) 1f else 0f,
         animationSpec = tween(
@@ -51,7 +43,6 @@ internal fun rememberScrollbarLayoutState(
         ),
         label = "scrollbar alpha value"
     )
-
     val hideDisplacement = animateDpAsState(
         targetValue = if (thumbIsInActionUpdated) 0.dp else settingsUpdated.hideDisplacement,
         animationSpec = tween(
@@ -61,7 +52,6 @@ internal fun rememberScrollbarLayoutState(
         ),
         label = "scrollbar displacement value"
     )
-
     return remember {
         ScrollbarLayoutState(
             activeDraggableModifier = activeDraggableModifier,
@@ -70,9 +60,7 @@ internal fun rememberScrollbarLayoutState(
             hideAlpha = hideAlpha
         )
     }
-
 }
-
 internal data class ScrollbarLayoutState(
     val activeDraggableModifier: State<Boolean>,
     val thumbColor: State<Color>,

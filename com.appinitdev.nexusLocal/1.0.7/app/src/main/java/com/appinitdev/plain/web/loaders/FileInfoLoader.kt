@@ -1,4 +1,3 @@
-
 object FileInfoLoader {
     fun loadImage(
         path: String,
@@ -15,7 +14,6 @@ object FileInfoLoader {
         }
         return ImageFileInfo(size.width, size.height, location)
     }
-
     fun loadVideo(
         context: Context,
         path: String,
@@ -30,7 +28,6 @@ object FileInfoLoader {
         retriever.release()
         return VideoFileInfo(width, height, duration, location)
     }
-
     fun loadAudio(
         context: Context,
         path: String,
@@ -43,7 +40,6 @@ object FileInfoLoader {
         retriever.release()
         return AudioFileInfo(duration, location)
     }
-
     private fun parseLocationString(location: String?): Location? {
         try {
             if (location != null) {

@@ -1,8 +1,6 @@
-
 @Composable
 fun SettingsMenu() {
     var expanded by remember { mutableStateOf(false) }
-
     Box {
         IconButton(onClick = { expanded = true }) {
             Icon(Icons.Default.Settings, contentDescription = "Settings")
@@ -15,14 +13,12 @@ fun SettingsMenu() {
                 text = { Text("Cuenta") },
                 onClick = {
                     expanded = false
-                    
                 }
             )
             DropdownMenuItem(
                 text = { Text("Cerrar sesión") },
                 onClick = {
                     expanded = false
-                    
                 }
             )
         }

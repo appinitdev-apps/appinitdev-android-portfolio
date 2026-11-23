@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ViewNoteBottomSheet(
@@ -12,7 +11,6 @@ fun ViewNoteBottomSheet(
         notesVM.selectedItem.value = null
     }
     val scope = rememberCoroutineScope()
-
     PModalBottomSheet(
         onDismissRequest = {
             onDismiss()
@@ -76,5 +74,3 @@ fun ViewNoteBottomSheet(
         }
     }
 }
-
-

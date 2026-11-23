@@ -1,6 +1,4 @@
-
 class WidgetProvider : AppWidgetProvider() {
-
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
         when (intent.action) {
@@ -17,7 +15,6 @@ class WidgetProvider : AppWidgetProvider() {
             ACTION_SELECT_NOTE -> openActivity(context, intent, ConfigureWidgetActivity::class.java)
         }
     }
-
     @OptIn(DelicateCoroutinesApi::class)
     private fun checkChanged(intent: Intent, context: Context) {
         val noteId = intent.getLongExtra(EXTRA_SELECTED_BASE_NOTE, 0)
@@ -56,7 +53,6 @@ class WidgetProvider : AppWidgetProvider() {
             }
         }
     }
-
     private suspend fun changeChildChecked(
         note: BaseNote,
         childPosition: Int,
@@ -69,7 +65,6 @@ class WidgetProvider : AppWidgetProvider() {
         val childrenPositions = note.items.findChildrenPositions(parentPosition)
         if (parent.checked != checked) {
             if (checked) {
-                
                 if (childrenPositions.none { !note.items[it].checked && it != childPosition }) {
                     baseNoteDao.updateChecked(noteId, listOf(childPosition, parentPosition), true)
                 } else {
@@ -77,7 +72,6 @@ class WidgetProvider : AppWidgetProvider() {
                 }
             } else {
                 if (parent.checked) {
-                    
                     baseNoteDao.updateChecked(noteId, listOf(childPosition, parentPosition), false)
                 } else {
                     baseNoteDao.updateChecked(noteId, childPosition, false)
@@ -87,14 +81,11 @@ class WidgetProvider : AppWidgetProvider() {
             baseNoteDao.updateChecked(noteId, childPosition, false)
         }
     }
-
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
         val app = context.applicationContext as Application
         val preferences = NotallyXPreferences.getInstance(app)
-
         appWidgetIds.forEach { id -> preferences.deleteWidget(id) }
     }
-
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -102,23 +93,18 @@ class WidgetProvider : AppWidgetProvider() {
     ) {
         val app = context.applicationContext as NotallyXApplication
         val preferences = NotallyXPreferences.getInstance(app)
-
         appWidgetIds.forEach { id ->
             val noteId = preferences.getWidgetData(id)
             val noteType = preferences.getWidgetNoteType(id) ?: return
             updateWidget(app, appWidgetManager, id, noteId, noteType, locked = app.locked.value)
         }
     }
-
     companion object {
-
         fun updateWidgets(context: Context, noteIds: LongArray? = null, locked: Boolean) {
             val app = context.applicationContext as Application
             val preferences = NotallyXPreferences.getInstance(app)
-
             val manager = AppWidgetManager.getInstance(context)
             val updatableWidgets = preferences.getUpdatableWidgets(noteIds)
-
             updatableWidgets.forEach { (id, noteId) ->
                 updateWidget(
                     app,
@@ -130,7 +116,6 @@ class WidgetProvider : AppWidgetProvider() {
                 )
             }
         }
-
         fun updateWidget(
             context: ContextWrapper,
             manager: AppWidgetManager,
@@ -139,13 +124,10 @@ class WidgetProvider : AppWidgetProvider() {
             noteType: Type?,
             locked: Boolean = false,
         ) {
-            
-            
             val intent = Intent(context, WidgetService::class.java)
             intent.putExtra(EXTRA_SELECTED_BASE_NOTE, noteId)
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
             intent.embedIntentExtras()
-
             MainScope().launch {
                 val database = NotallyDatabase.getDatabase(context).value
                 val color =
@@ -172,7 +154,6 @@ class WidgetProvider : AppWidgetProvider() {
                                 Intent(context, WidgetProvider::class.java).asPendingIntent(context),
                             )
                         }
-
                     manager.updateAppWidget(id, view)
                     manager.notifyAppWidgetViewDataChanged(id, R.id.ListView)
                     return@launch
@@ -195,7 +176,6 @@ class WidgetProvider : AppWidgetProvider() {
                                 R.id.ListView,
                                 Intent(context, WidgetProvider::class.java).asPendingIntent(context),
                             )
-
                             val preferences = NotallyXPreferences.getInstance(context)
                             val (backgroundColor, _) =
                                 context.extractWidgetColors(color, preferences)
@@ -232,11 +212,9 @@ class WidgetProvider : AppWidgetProvider() {
                 }
             }
         }
-
         fun getWidgetOpenNoteIntent(noteType: Type, noteId: Long): Intent {
             return Intent().setOpenNoteIntent(noteType, noteId)
         }
-
         fun getWidgetCheckedChangeIntent(listNoteId: Long, position: Int): Intent {
             return Intent().apply {
                 action = ACTION_CHECKED_CHANGED
@@ -245,7 +223,6 @@ class WidgetProvider : AppWidgetProvider() {
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
             }
         }
-
         private fun Intent.setOpenNoteIntent(noteType: Type, noteId: Long) = apply {
             action =
                 when (noteType) {
@@ -255,7 +232,6 @@ class WidgetProvider : AppWidgetProvider() {
             putExtra(EXTRA_SELECTED_BASE_NOTE, noteId)
             data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
         }
-
         private fun Intent.asPendingIntent(context: Context): PendingIntent =
             PendingIntent.getBroadcast(
                 context,
@@ -263,7 +239,6 @@ class WidgetProvider : AppWidgetProvider() {
                 this,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
             )
-
         fun Context.extractWidgetColors(
             color: String,
             preferences: NotallyXPreferences,
@@ -292,13 +267,11 @@ class WidgetProvider : AppWidgetProvider() {
                 } else extractColor(color)
             return Pair(backgroundColor, getContrastFontColor(backgroundColor))
         }
-
         private fun openActivity(context: Context, originalIntent: Intent, clazz: Class<*>) {
             val id = originalIntent.getLongExtra(EXTRA_SELECTED_BASE_NOTE, 0)
             val widgetId = originalIntent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0)
             context.startActivity(createIntent(context, clazz, id, widgetId, originalIntent))
         }
-
         private fun createIntent(
             context: Context,
             clazz: Class<*>,
@@ -313,27 +286,22 @@ class WidgetProvider : AppWidgetProvider() {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             return intent
         }
-
         fun sendBroadcast(context: Context, ids: LongArray) =
             Intent(context, WidgetProvider::class.java).apply {
                 action = ACTION_NOTES_MODIFIED
                 putExtra(EXTRA_MODIFIED_NOTES, ids)
                 context.sendBroadcast(this)
             }
-
         fun getWidgetSelectNoteIntent(id: Int) =
             Intent(ACTION_SELECT_NOTE).apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
             }
-
         private const val EXTRA_MODIFIED_NOTES = "com.appinitdev.notes.premium.EXTRA_MODIFIED_NOTES"
         private const val ACTION_NOTES_MODIFIED = "com.appinitdev.notes.premium.ACTION_NOTE_MODIFIED"
-
         const val ACTION_OPEN_NOTE = "com.appinitdev.notes.premium.ACTION_OPEN_NOTE"
         const val ACTION_OPEN_LIST = "com.appinitdev.notes.premium.ACTION_OPEN_LIST"
         const val ACTION_SELECT_NOTE = "com.appinitdev.notes.premium.ACTION_SELECT_NOTE"
-
         const val ACTION_CHECKED_CHANGED = "com.appinitdev.notes.premium.ACTION_CHECKED_CHANGED"
         const val EXTRA_POSITION = "notes.intent.extra.com.appinitdev.notes.premium.EXTRA_POSITION"
     }

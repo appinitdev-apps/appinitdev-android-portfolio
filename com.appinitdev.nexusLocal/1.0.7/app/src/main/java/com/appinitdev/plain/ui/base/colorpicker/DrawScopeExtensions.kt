@@ -1,7 +1,5 @@
-
 private const val SELECTOR_RADIUS: Float = 50f
 private const val BORDER_WIDTH: Float = 10f
-
 public fun DrawScope.drawColorIndicator(pos: PointF, color: Color) {
   drawCircle(color, SELECTOR_RADIUS, Offset(pos.x, pos.y))
   drawCircle(

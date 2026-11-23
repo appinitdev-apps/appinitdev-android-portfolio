@@ -1,4 +1,3 @@
-
 object MountsLoader {
     fun load(context: Context): List<StorageMount> {
         fun buildMount(
@@ -22,9 +21,7 @@ object MountsLoader {
                 diskID = "",
             )
         }
-
         val mounts = mutableListOf<StorageMount>()
-
         val internalPath = FileSystemHelper.getInternalStoragePath()
         val internalStats = FileSystemHelper.getInternalStorageStats()
         mounts.add(
@@ -36,7 +33,6 @@ object MountsLoader {
                 driveType = "INTERNAL_STORAGE",
             )
         )
-
         val sdPath = FileSystemHelper.getSDCardPath(context)
         if (sdPath.isNotEmpty()) {
             val sdStats = FileSystemHelper.getSDCardStorageStats(context)
@@ -50,7 +46,6 @@ object MountsLoader {
                 )
             )
         }
-
         val usbPaths = FileSystemHelper.getUsbDiskPaths()
         val usbStats = FileSystemHelper.getUSBStorageStats()
         usbPaths.forEachIndexed { index, path ->
@@ -65,7 +60,6 @@ object MountsLoader {
                 )
             )
         }
-
         val appPath = context.appDir()
         if (appPath.isNotEmpty()) {
             mounts.add(
@@ -78,7 +72,6 @@ object MountsLoader {
                 )
             )
         }
-
         return mounts
     }
 }

@@ -1,4 +1,3 @@
-
 internal suspend fun PreviewerTransformState.doOpen(
     index: Int = 0,
     itemState: TransformItemState? = null,
@@ -28,7 +27,6 @@ internal suspend fun PreviewerTransformState.doOpen(
         viewerContainerState?.awaitOpenTransform()
     }
 }
-
 internal suspend fun PreviewerTransformState.doClose() = suspendCoroutine<Unit> { c ->
     closeCallback = {
         c.resume(Unit)
@@ -48,7 +46,6 @@ internal suspend fun PreviewerTransformState.doClose() = suspendCoroutine<Unit> 
         transformState?.setExitState()
     }
 }
-
 internal suspend fun PreviewerTransformState.doOpenTransform(
     index: Int,
     itemState: TransformItemState,
@@ -72,7 +69,6 @@ internal suspend fun PreviewerTransformState.doOpenTransform(
     stateOpenEnd()
     viewerContainerState?.awaitOpenTransform()
 }
-
 internal suspend fun PreviewerTransformState.doCloseTransform() {
     stateCloseStart()
     val canNowTransformOut = canTransformOut

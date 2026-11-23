@@ -1,4 +1,3 @@
-
 @Composable
 fun ActionButtons(content: @Composable FlowRowScope.() -> Unit) {
     FlowRow(
@@ -8,19 +7,16 @@ fun ActionButtons(content: @Composable FlowRowScope.() -> Unit) {
         maxItemsInEachRow = 5, content = content
     )
 }
-
 @Composable
 fun ActionButtonDrawer(onClick: () -> Unit) {
     PIconButton(icon = Res.drawable.menu, contentDescription = stringResource(Res.string.more),
         tint = MaterialTheme.colorScheme.onSurface, click = onClick)
 }
-
 @Composable
 fun ActionButtonMore(onClick: () -> Unit) {
     PIconButton(icon = Res.drawable.ellipsis_vertical, contentDescription = stringResource(Res.string.more),
         tint = MaterialTheme.colorScheme.onSurface, click = onClick)
 }
-
 @Composable
 fun ActionButtonMoreWithMenu(content: @Composable ColumnScope.(dismiss: () -> Unit) -> Unit) {
     var isMenuOpen by remember { mutableStateOf(false) }
@@ -28,7 +24,6 @@ fun ActionButtonMoreWithMenu(content: @Composable ColumnScope.(dismiss: () -> Un
         tint = MaterialTheme.colorScheme.onSurface, click = { isMenuOpen = true })
     PDropdownMenu(expanded = isMenuOpen, onDismissRequest = { isMenuOpen = false }) { content { isMenuOpen = false } }
 }
-
 @Composable
 fun ActionButtonAddWithMenu(content: @Composable ColumnScope.(dismiss: () -> Unit) -> Unit) {
     var isMenuOpen by remember { mutableStateOf(false) }
@@ -36,25 +31,21 @@ fun ActionButtonAddWithMenu(content: @Composable ColumnScope.(dismiss: () -> Uni
         tint = MaterialTheme.colorScheme.onSurface, click = { isMenuOpen = true })
     PDropdownMenu(expanded = isMenuOpen, onDismissRequest = { isMenuOpen = false }) { content { isMenuOpen = false } }
 }
-
 @Composable
 fun ActionButtonAdd(onClick: () -> Unit) {
     PIconButton(icon = Res.drawable.plus, contentDescription = stringResource(Res.string.add),
         tint = MaterialTheme.colorScheme.onSurface, click = onClick)
 }
-
 @Composable
 fun ActionButtonScan(onClick: () -> Unit) {
     PIconButton(icon = Res.drawable.scan_qr_code, contentDescription = stringResource(Res.string.scan_qrcode),
         tint = MaterialTheme.colorScheme.onSurface, click = onClick)
 }
-
 @Composable
 fun ActionButtonSettings(onClick: () -> Unit) {
     PIconButton(icon = Res.drawable.settings, contentDescription = stringResource(Res.string.settings),
         tint = MaterialTheme.colorScheme.onSurface, click = onClick)
 }
-
 @Composable
 fun ActionButtonRefresh(onClick: () -> Unit, loading: Boolean = false) {
     val infiniteTransition = rememberInfiniteTransition(label = "refresh_rotation")
@@ -67,13 +58,11 @@ fun ActionButtonRefresh(onClick: () -> Unit, loading: Boolean = false) {
         tint = if (loading) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
         modifier = if (loading) Modifier.rotate(rotation) else Modifier, click = onClick)
 }
-
 @Composable
 fun ActionButtonSettings(showBadge: Boolean = false, onClick: () -> Unit) {
     PIconButton(icon = Res.drawable.settings, contentDescription = stringResource(Res.string.settings),
         tint = MaterialTheme.colorScheme.onSurface, showBadge = showBadge, click = onClick)
 }
-
 @Composable
 fun ActionButtonSelect(onClick: () -> Unit) {
     PIconButton(icon = Res.drawable.list_checks, contentDescription = stringResource(Res.string.select),

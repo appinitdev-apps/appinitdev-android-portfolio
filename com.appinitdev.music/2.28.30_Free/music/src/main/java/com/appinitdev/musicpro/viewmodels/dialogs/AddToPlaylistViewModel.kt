@@ -1,61 +1,20 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
 @HiltViewModel(assistedFactory = AddToPlaylistViewModel.Factory::class)
 class AddToPlaylistViewModel @AssistedInject constructor(
         @Assisted val audio: Audio,
         private val playlistRepository: PlaylistRepository
 ) : ViewModel() {
-
-     
-
-
-
-
-
-
     data class PlaylistDialogState(
             val playlists: List<Playlist>,
             val preCheckedIds: Set<Long>,
             val songCounts: Map<Long, Int>
     )
-
     private val _state = MutableStateFlow<PlaylistDialogState?>(null)
-
-     
-
-
-
     val state: StateFlow<PlaylistDialogState?> = _state.asStateFlow()
-
     private val _saveComplete = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
-
-     
-
-
-
     val saveComplete: SharedFlow<Unit> = _saveComplete.asSharedFlow()
-
     init {
         observePlaylists()
     }
-
-     
-
-
-
-
     private fun observePlaylists() {
         viewModelScope.launch {
             val audioHash = audio.hash
@@ -71,14 +30,6 @@ class AddToPlaylistViewModel @AssistedInject constructor(
                 }
         }
     }
-
-     
-
-
-
-
-
-
     fun saveMembership(checkedIds: Set<Long>) {
         val audioHash = audio.hash
         viewModelScope.launch(Dispatchers.IO) {
@@ -94,22 +45,12 @@ class AddToPlaylistViewModel @AssistedInject constructor(
             _saveComplete.emit(Unit)
         }
     }
-
-     
     @AssistedFactory
     interface Factory {
-         
-
-
-
-
-
         fun create(audio: Audio): AddToPlaylistViewModel
     }
-
     companion object {
         @Suppress("unused")
         private const val TAG = "AddToPlaylistViewModel"
     }
 }
-

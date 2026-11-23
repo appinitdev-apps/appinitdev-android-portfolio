@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ChatImages(
@@ -13,7 +12,6 @@ fun ChatImages(
 ) {
     val imageItems = (m.value as DMessageImages).items
     val downloadProgressMap by DownloadQueue.downloadProgress.collectAsState(mapOf())
-
     FlowRow(
         modifier = Modifier
             .fillMaxWidth()

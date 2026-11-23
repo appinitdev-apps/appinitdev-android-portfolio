@@ -1,36 +1,6 @@
-
- 
-
-
-
-
-
-
 object ChatMessageReceiver {
-
-     
-
-
-
-
-
-
     private val seenSignatures: MutableSet<String> =
         Collections.synchronizedSet(HashSet())
-
-     
-
-
-
-
-
-
-
-
-
-
-
-
     suspend fun receive(
         fromPeerId: String,
         content: DMessageContent,
@@ -44,10 +14,8 @@ object ChatMessageReceiver {
                 throw ReplayedMessageException(fromPeerId, timestamp)
             }
         }
-
         val fromPeer = AppDatabase.instance.peerDao().getById(fromPeerId)
             ?: throw Exception("invalid peer")
-
         val fromChannel: DChatChannel? = if (fromChannelId.isNotEmpty()) {
             val ch = AppDatabase.instance.chatChannelDao().getById(fromChannelId)
                 ?: throw IllegalStateException("Unknown channel")
@@ -56,7 +24,6 @@ object ChatMessageReceiver {
             }
             ch
         } else null
-
         val item = ChatDbHelper.insertChatItem(
             message = content,
             fromId = fromPeerId,
@@ -64,11 +31,9 @@ object ChatMessageReceiver {
             channelId = fromChannelId,
             isRemote = false,
         )
-
         if (item.content.type == DMessageType.TEXT.value) {
             sendEvent(FetchLinkPreviewsEvent(item))
         }
-
         if (item.content.type == DMessageType.FILES.value ||
             item.content.type == DMessageType.IMAGES.value
         ) {
@@ -85,7 +50,6 @@ object ChatMessageReceiver {
                 )
             }
         }
-
         sendEvent(
             HMessageCreatedEvent(
                 target = if (fromChannelId.isNotEmpty()) {
@@ -103,11 +67,9 @@ object ChatMessageReceiver {
                 JsonHelper.jsonEncode(listOf(model)),
             ),
         )
-
         emitNotificationIfNeeded(item, fromPeer, fromChannel)
         return item
     }
-
     @SuppressLint("MissingPermission")
     private fun emitNotificationIfNeeded(
         item: DChat,
@@ -138,12 +100,10 @@ object ChatMessageReceiver {
         )
     }
 }
-
 private data class NotificationPayload(
     val targetId: String,
     val targetName: String,
     val messageText: String,
 )
-
 class ReplayedMessageException(val fromPeerId: String, val timestamp: Long) :
     Exception("Replayed message from $fromPeerId at $timestamp")

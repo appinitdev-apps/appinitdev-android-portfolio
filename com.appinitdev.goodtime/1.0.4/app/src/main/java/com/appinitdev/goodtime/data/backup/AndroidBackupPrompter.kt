@@ -1,21 +1,3 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class ActivityResultLauncherManager(
     private val context: Context,
     private val coroutineScope: CoroutineScope,
@@ -26,7 +8,6 @@ class ActivityResultLauncherManager(
     private var exportedFilePath: okio.Path? = null
     private var importCallback: (suspend (Boolean) -> Unit)? = null
     private var exportCallback: (suspend (Boolean) -> Unit)? = null
-
     fun setup(
         importActivityResultLauncher: ManagedActivityResultLauncher<String, Uri?>,
         backupActivityResultLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
@@ -34,17 +15,14 @@ class ActivityResultLauncherManager(
         this.importActivityResultLauncher = importActivityResultLauncher
         this.backupActivityResultLauncher = backupActivityResultLauncher
     }
-
     fun launchImport(
         importedFilePath: String,
         callback: suspend (Boolean) -> Unit,
     ) {
         this.importedFilePath = importedFilePath
         this.importCallback = callback
-
         importActivityResultLauncher?.launch("application/*")
     }
-
     fun launchExport(
         intent: Intent,
         exportedFilePath: okio.Path,
@@ -54,7 +32,6 @@ class ActivityResultLauncherManager(
         this.exportedFilePath = exportedFilePath
         this.exportCallback = callback
     }
-
     fun importCallback(uri: Uri?) {
         uri?.let {
             coroutineScope.launch {
@@ -72,7 +49,6 @@ class ActivityResultLauncherManager(
             }
         }
     }
-
     fun exportCallback(uri: Uri?) {
         uri?.let {
             coroutineScope.launch {
@@ -89,7 +65,6 @@ class ActivityResultLauncherManager(
         }
     }
 }
-
 class AndroidBackupPrompter(
     private val activityResultLauncherManager: ActivityResultLauncherManager,
 ) : BackupPrompter {
@@ -113,7 +88,6 @@ class AndroidBackupPrompter(
             }
         activityResultLauncherManager.launchExport(intent, fileToSharePath, callback)
     }
-
     override suspend fun promptUserForRestore(
         importedFilePath: String,
         callback: suspend (Boolean) -> Unit,

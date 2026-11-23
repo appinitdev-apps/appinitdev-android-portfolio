@@ -1,13 +1,10 @@
-
 @Composable
 fun ImagePreviewActions(
     context: Context, castViewModel: CastViewModel,
     m: PreviewItem, state: MediaPreviewerState,
 ) {
     val scope = rememberCoroutineScope()
-
     CastDialog(castViewModel)
-
     Box(
         modifier = Modifier.fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 32.dp)
@@ -62,7 +59,6 @@ fun ImagePreviewActions(
         }
     }
 }
-
 @Composable
 fun ActionIconButton(icon: DrawableResource, contentDescription: String, click: () -> Unit) {
     Box(

@@ -1,22 +1,15 @@
-
 class MenuDialog(context: Context) : BottomSheetDialog(context) {
-
     private val linearLayout: LinearLayout
-
     init {
         val params = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-
         linearLayout = LinearLayout(context)
         linearLayout.layoutParams = params
         linearLayout.orientation = LinearLayout.VERTICAL
-
         val scrollView = NestedScrollView(context)
         scrollView.layoutParams = params
-
         scrollView.addView(linearLayout)
         setContentView(scrollView)
     }
-
     fun add(title: String, drawable: Int = 0, onClick: () -> Unit): MenuDialog {
         val item = MenuItemBinding.inflate(layoutInflater, linearLayout, true).root
         item.text = title
@@ -27,7 +20,6 @@ class MenuDialog(context: Context) : BottomSheetDialog(context) {
         }
         return this
     }
-
     fun add(title: Int, drawable: Int = 0, onClick: () -> Unit) =
         add(context.getString(title), drawable, onClick)
 }

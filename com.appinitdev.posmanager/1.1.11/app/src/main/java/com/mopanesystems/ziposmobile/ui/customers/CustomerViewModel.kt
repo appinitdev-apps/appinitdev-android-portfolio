@@ -1,34 +1,24 @@
-
 @HiltViewModel
 class CustomerViewModel @Inject constructor(
     private val customerRepository: CustomerRepository
 ) : ViewModel() {
-
     private val _customers = MutableStateFlow<List<Customer>>(emptyList())
     val customers: StateFlow<List<Customer>> = _customers.asStateFlow()
-
     private val _filteredCustomers = MutableStateFlow<List<Customer>>(emptyList())
     val filteredCustomers: StateFlow<List<Customer>> = _filteredCustomers.asStateFlow()
-
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
-
     private val _selectedCustomer = MutableStateFlow<Customer?>(null)
     val selectedCustomer: StateFlow<Customer?> = _selectedCustomer.asStateFlow()
-
     private val _customerTransactions = MutableStateFlow<List<CustomerTransaction>>(emptyList())
     val customerTransactions: StateFlow<List<CustomerTransaction>> = _customerTransactions.asStateFlow()
-
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
-
     init {
         loadCustomers()
     }
-
     fun loadCustomers() {
         viewModelScope.launch {
             _isLoading.value = true
@@ -45,20 +35,16 @@ class CustomerViewModel @Inject constructor(
             }
         }
     }
-
     fun searchCustomers(query: String) {
         _searchQuery.value = query
         applyFilters()
     }
-
     fun clearFilters() {
         _searchQuery.value = ""
         applyFilters()
     }
-
     private fun applyFilters() {
         val query = _searchQuery.value.lowercase()
-
         val filtered = _customers.value.filter { customer ->
             query.isEmpty() || 
                 customer.firstName.lowercase().contains(query) ||
@@ -66,17 +52,14 @@ class CustomerViewModel @Inject constructor(
                 customer.phone?.lowercase()?.contains(query) == true ||
                 customer.email?.lowercase()?.contains(query) == true
         }
-
         _filteredCustomers.value = filtered
     }
-
     fun selectCustomer(customer: Customer?) {
         _selectedCustomer.value = customer
         if (customer != null) {
             loadCustomerTransactions(customer.id)
         }
     }
-
     fun loadCustomerTransactions(customerId: String) {
         viewModelScope.launch {
             try {
@@ -88,7 +71,6 @@ class CustomerViewModel @Inject constructor(
             }
         }
     }
-
     fun addCustomer(customer: Customer) {
         viewModelScope.launch {
             try {
@@ -98,7 +80,6 @@ class CustomerViewModel @Inject constructor(
             }
         }
     }
-
     fun updateCustomer(customer: Customer) {
         viewModelScope.launch {
             try {
@@ -109,7 +90,6 @@ class CustomerViewModel @Inject constructor(
             }
         }
     }
-
     fun deleteCustomer(customer: Customer) {
         viewModelScope.launch {
             try {
@@ -119,7 +99,6 @@ class CustomerViewModel @Inject constructor(
             }
         }
     }
-
     fun updateCustomerBalance(customerId: String, amount: BigDecimal) {
         viewModelScope.launch {
             try {
@@ -127,8 +106,6 @@ class CustomerViewModel @Inject constructor(
                 if (customer != null) {
                     val newBalance = customer.balance + amount
                     customerRepository.updateBalance(customerId, newBalance)
-                    
-                    
                     val transaction = CustomerTransaction(
                         id = UUID.randomUUID().toString(),
                         customerId = customerId,
@@ -145,7 +122,6 @@ class CustomerViewModel @Inject constructor(
             }
         }
     }
-
     fun updateLoyaltyPoints(customerId: String, points: Int) {
         viewModelScope.launch {
             try {
@@ -155,7 +131,6 @@ class CustomerViewModel @Inject constructor(
             }
         }
     }
-
     fun updateRiskScore(customerId: String, riskScore: Int) {
         viewModelScope.launch {
             try {
@@ -165,7 +140,6 @@ class CustomerViewModel @Inject constructor(
             }
         }
     }
-
     fun getCustomerByPhone(phone: String) {
         viewModelScope.launch {
             try {
@@ -181,7 +155,6 @@ class CustomerViewModel @Inject constructor(
             }
         }
     }
-
     fun getCustomerByEmail(email: String) {
         viewModelScope.launch {
             try {
@@ -197,7 +170,6 @@ class CustomerViewModel @Inject constructor(
             }
         }
     }
-
     fun getCustomersWithLoyaltyPoints() {
         viewModelScope.launch {
             try {
@@ -209,7 +181,6 @@ class CustomerViewModel @Inject constructor(
             }
         }
     }
-
     fun getCustomersWithBalance() {
         viewModelScope.launch {
             try {
@@ -221,7 +192,6 @@ class CustomerViewModel @Inject constructor(
             }
         }
     }
-
     fun getHighRiskCustomers(threshold: Int = 2) {
         viewModelScope.launch {
             try {
@@ -233,12 +203,9 @@ class CustomerViewModel @Inject constructor(
             }
         }
     }
-
     fun clearErrorMessage() {
         _errorMessage.value = null
     }
-
-    
     fun createNewCustomer(
         firstName: String,
         lastName: String,

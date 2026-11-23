@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addPeerSchema() {
     query("peers") {
         resolver { ->

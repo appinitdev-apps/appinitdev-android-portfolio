@@ -1,11 +1,7 @@
-
 class DataInitializer(val context: Context, val db: SupportSQLiteDatabase) {
     private data class TagItem(val nameKey: StringResource, val type: DataType)
-
     private data class MessageItem(val content: String, val fromId: String, val toId: String)
-
     private val now = TimeHelper.now().toString()
-
     private val tags =
         arrayOf(
             TagItem(Res.string.light_music, DataType.AUDIO),
@@ -18,7 +14,6 @@ class DataInitializer(val context: Context, val db: SupportSQLiteDatabase) {
             TagItem(Res.string.personal, DataType.NOTE),
             TagItem(Res.string.work, DataType.NOTE),
         )
-
     fun insertTags() {
         tags.forEach { tag ->
             db.insert(
@@ -35,7 +30,6 @@ class DataInitializer(val context: Context, val db: SupportSQLiteDatabase) {
             )
         }
     }
-
     fun insertNotes() {
         setOf(Res.string.note_sample1).forEach {
             val sample = LocaleHelper.getString(it)
@@ -52,7 +46,6 @@ class DataInitializer(val context: Context, val db: SupportSQLiteDatabase) {
             )
         }
     }
-
     fun insertWelcome() {
         setOf<MessageItem>(
             MessageItem("""{"type":"text","value":{"text":"${LocaleHelper.getString(Res.string.welcome_text)}"}}""", "local", "me"),

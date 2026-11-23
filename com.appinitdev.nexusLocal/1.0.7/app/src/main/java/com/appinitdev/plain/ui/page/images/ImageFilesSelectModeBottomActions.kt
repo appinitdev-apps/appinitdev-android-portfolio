@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ImageFilesSelectModeBottomActions(

@@ -1,13 +1,10 @@
-
 data class BreakExercise(
     val title: String,
     val instruction: String,
     val durationSeconds: Int,
     val iconResName: String
 )
-
 object BreakExercises {
-
     val EXERCISES = listOf(
         BreakExercise(
             title = "20-20-20 Eye Rest",
@@ -34,7 +31,6 @@ object BreakExercises {
             iconResName = "ic_hand"
         )
     )
-
     fun getRandomExercise(): BreakExercise {
         return EXERCISES.random()
     }

@@ -1,4 +1,3 @@
-
 @Composable
 fun DeviceRenameDialog(name: String, onDismiss: () -> Unit, onDone: (String) -> Unit) {
     val scope = rememberCoroutineScope()

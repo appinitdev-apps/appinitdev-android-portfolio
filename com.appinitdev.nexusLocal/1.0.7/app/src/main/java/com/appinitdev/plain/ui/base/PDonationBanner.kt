@@ -1,4 +1,3 @@
-
 @Composable
 fun PDonationBanner(
     modifier: Modifier = Modifier,
@@ -7,17 +6,14 @@ fun PDonationBanner(
     val locale = LocaleHelper.currentLocale()
     val isZhCN = locale.language == "zh" && locale.country == "CN"
     var showWeChatDialog by remember { mutableStateOf(false) }
-
     if (showWeChatDialog) {
         WeChatDonateDialog { showWeChatDialog = false }
     }
-
     val effectiveOnClick: () -> Unit = if (isZhCN) {
         { showWeChatDialog = true }
     } else {
         onClick
     }
-
     PFeatureBanner(
         modifier = modifier,
         tag = stringResource(Res.string.donation),
@@ -29,7 +25,6 @@ fun PDonationBanner(
         buttonIcon = Res.drawable.rocket,
     )
 }
-
 @Composable
 private fun WeChatDonateDialog(onDismiss: () -> Unit) {
     AlertDialog(

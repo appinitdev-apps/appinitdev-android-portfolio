@@ -1,29 +1,15 @@
-
- 
-
-
-
-
-
-
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
         application: Application,
         private val audioRepository: AudioRepository
 ) : WrappedViewModel(application) {
-
     private val _favorites = MutableStateFlow<List<Audio>>(emptyList())
     val favorites: StateFlow<List<Audio>> = _favorites.asStateFlow()
-
-     
     private var rawFavoriteList: List<Audio> = emptyList()
-
     private var loadJob: Job? = null
-
     init {
         loadFavorites()
     }
-
     private fun loadFavorites() {
         loadJob?.cancel()
         loadJob = viewModelScope.launch {
@@ -40,18 +26,12 @@ class FavoritesViewModel @Inject constructor(
                 }
         }
     }
-
-     
-
-
-
     private fun resort() {
         viewModelScope.launch(Dispatchers.Default) {
             _favorites.value = rawFavoriteList.sortedFavorites()
             Log.d(TAG, "resort: ${_favorites.value.size} favorites re-sorted")
         }
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, s: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, s)
         when (s) {
@@ -59,7 +39,6 @@ class FavoritesViewModel @Inject constructor(
             FavoritesPreferences.SORTING_STYLE -> resort()
         }
     }
-
     companion object {
         private const val TAG = "FavoritesViewModel"
     }

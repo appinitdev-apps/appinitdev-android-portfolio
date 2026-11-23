@@ -1,4 +1,3 @@
-
 object HttpServerManager {
     private const val SSL_KEY_ALIAS = Constants.SSL_NAME
     val tokenCache = mutableMapOf<String, ByteArray>() 
@@ -12,16 +11,11 @@ object HttpServerManager {
     val httpPorts = setOf(8080, 8180, 8280, 8380, 8480, 8580, 8680, 8780, 8880, 8980)
     @Volatile
     var server: EmbeddedServer<*, *>? = null
-
     private const val LOGIN_RATE_LIMIT_WINDOW_MS = 60_000L
     private const val LOGIN_RATE_LIMIT_MAX_ATTEMPTS = 5
-
     private data class RateLimitWindow(var startMs: Long, var count: Int)
-
     private val loginAttemptsByKey = ConcurrentHashMap<String, RateLimitWindow>()
-
     private var clientTsJob: Job? = null
-
     fun tryAcquireLoginAttempt(key: String, nowMs: Long = System.currentTimeMillis()): Boolean {
         if (key.isBlank()) return true
         val window = loginAttemptsByKey.compute(key) { _, existing ->
@@ -32,16 +26,12 @@ object HttpServerManager {
                 existing
             }
         } ?: return true
-
-        
         if (loginAttemptsByKey.size > 5_000) {
             val threshold = nowMs - (LOGIN_RATE_LIMIT_WINDOW_MS * 2)
             loginAttemptsByKey.entries.removeIf { it.value.startMs < threshold }
         }
-
         return window.count <= LOGIN_RATE_LIMIT_MAX_ATTEMPTS
     }
-
     fun getClientIpForLogin(clientId: String, remoteAddress: String): String {
         val cached = clientIpCache[clientId]
         if (!cached.isNullOrEmpty()) return cached
@@ -50,28 +40,22 @@ object HttpServerManager {
         }
         return remoteAddress
     }
-
     val notificationId: Int by lazy {
         NotificationHelper.generateId()
     }
-
     suspend fun resetPasswordAsync(): String {
         val password = CryptoHelper.randomPassword(6)
         PasswordPreference.putAsync(password)
         return password
     }
-
     fun getNotificationContent(): String {
         val ip = TempData.mdnsHostname
         return "http://$ip:${TempData.httpPort.value}\nhttps://$ip:${TempData.httpsPort.value}"
     }
-
     fun handleWakeAppRequest(actionFromPc: String?) {
         val context: Context = MainApp.instance
         try {
             val intent = Intent(context, MainActivity::class.java).apply {
-                
-                
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 putExtra("EXTRA_PC_ACTION", actionFromPc ?: "OPEN_APP")
             }
@@ -81,7 +65,6 @@ object HttpServerManager {
             LogCat.e("Error al intentar despertar la app desde el servidor local: ${e.message}")
         }
     }
-
     suspend fun stopServiceAsync(context: Context) {
         sendEvent(HttpServerStateChangedEvent(HttpServerState.STOPPING))
         try {
@@ -96,7 +79,6 @@ object HttpServerManager {
         server = null
         sendEvent(HttpServerStateChangedEvent(HttpServerState.OFF))
     }
-
     fun stopPreviousServer() {
         try {
             server?.stop(0, 500)
@@ -107,11 +89,6 @@ object HttpServerManager {
             server = null
         }
     }
-
-     
-
-
-
     suspend fun waitForPortsAvailable(httpPort: Int, httpsPort: Int, maxWaitMs: Long = 3000): Boolean {
         val interval = 200L
         var elapsed = 0L
@@ -128,7 +105,6 @@ object HttpServerManager {
         LogCat.e("Ports still in use after ${maxWaitMs}ms - http:${PortHelper.isPortInUse(httpPort)}, https:${PortHelper.isPortInUse(httpsPort)}")
         return false
     }
-
     fun warmUp() {
         coIO {
             try {
@@ -139,7 +115,6 @@ object HttpServerManager {
             } catch (_: Exception) {}
         }
     }
-
     suspend fun checkServerAsync(): Boolean {
         return withTimeoutOrNull(9000) {
             val client = HttpClientManager.httpClient()
@@ -160,15 +135,12 @@ object HttpServerManager {
             healthy
         } ?: false
     }
-
     private suspend fun passwordToToken(): ByteArray {
         return hashToToken(CryptoHelper.sha512(PasswordPreference.getAsync().toByteArray()))
     }
-
     fun hashToToken(hash: String): ByteArray {
         return hash.substring(0, 32).toByteArray()
     }
-
     suspend fun loadTokenCache() {
         tokenCache.clear()
         SessionList.getItemsAsync().forEach {
@@ -177,12 +149,8 @@ object HttpServerManager {
             }
         }
     }
-
     fun generateSSLKeyStore(file: File, password: String) {
         val keyStore = JksHelper.genJksFile(SSL_KEY_ALIAS, password, Constants.SSL_NAME)
-        
-        
-        
         val tmp = File(file.parent, "${file.name}.tmp")
         try {
             FileOutputStream(tmp).use {
@@ -194,14 +162,12 @@ object HttpServerManager {
             throw ex
         }
     }
-
     private fun getSSLKeyStore(context: Context, password: String): KeyStore {
         val filesDir = context.filesDir ?: throw IllegalStateException("context.filesDir is null")
         val file = File(filesDir, Constants.KEY_STORE_FILE_NAME)
         if (!file.exists()) {
             generateSSLKeyStore(file, password)
         }
-
         return KeyStore.getInstance("BKS", BouncyCastleProvider()).apply {
             try {
                 file.inputStream().use {
@@ -210,13 +176,11 @@ object HttpServerManager {
             } catch (ex: Exception) {
                 LogCat.e("Failed to load keystore: ${ex.message}, regenerating...")
                 ex.printStackTrace()
-                
                 if (file.exists()) {
                     file.delete()
                 }
                 try {
                     generateSSLKeyStore(file, password)
-                    
                     file.inputStream().use {
                         load(it, password.toCharArray())
                     }
@@ -228,7 +192,6 @@ object HttpServerManager {
             }
         }
     }
-
     suspend fun createHttpServerAsync(context: Context): EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration> {
         val password = KeyStorePasswordPreference.getAsync()
         val passwordArray = password.toCharArray()
@@ -237,12 +200,10 @@ object HttpServerManager {
         val environment = applicationEnvironment {
             log = LoggerFactory.getLogger("ktor.application")
         }
-
         return embeddedServer(Netty, environment, configure = {
             runningLimit = 1000
             tcpKeepAlive = true
             enableHttp2 = false
-
             connector {
                 port = httpPort
             }
@@ -256,19 +217,13 @@ object HttpServerManager {
             }
         }, HttpModule.module)
     }
-
     fun getSSLSignature(context: Context, password: String): ByteArray {
         val keystore = getSSLKeyStore(context, password)
         val cert = keystore.getCertificate(SSL_KEY_ALIAS) as X509Certificate
         return cert.signature
     }
-
-
-
     fun clientTsInterval() {
         if (clientTsJob?.isActive == true) return
-
-        
         val activeIntervalMs = 5_000L
         val idleIntervalMs = 60_000L
         var lastSyncTs = 0L
@@ -293,7 +248,6 @@ object HttpServerManager {
             }
         }
     }
-
     suspend fun respondTokenAsync(
         event: ConfirmToAcceptLoginEvent,
         clientIp: String,

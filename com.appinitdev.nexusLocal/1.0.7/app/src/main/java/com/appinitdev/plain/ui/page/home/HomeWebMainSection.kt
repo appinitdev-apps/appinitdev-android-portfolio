@@ -1,4 +1,3 @@
-
 @Composable
 fun HomeWebMainSection(
     context: Context,
@@ -14,7 +13,6 @@ fun HomeWebMainSection(
     val collapsed = remember {
         context.dataStore.dataFlow.map { HomeSectionCollapsedPreference.get(it, AppFeatureType.WEB_PORTAL) }
     }.collectAsStateValue(initial = false)
-
     Column {
         Surface(
             modifier = Modifier
@@ -65,14 +63,12 @@ fun HomeWebMainSection(
                                 buttonSize = ButtonSize.LARGE,
                                 isLoading = isLoading,
                             )
-
                             WebState.ERROR -> PFilledButton(
                                 text = stringResource(Res.string.relaunch_app),
                                 onClick = onRestartFix,
                                 type = ButtonType.TERTIARY,
                                 buttonSize = ButtonSize.LARGE,
                             )
-
                             else -> PFilledButton(
                                 text = stringResource(Res.string.stop_service),
                                 onClick = {

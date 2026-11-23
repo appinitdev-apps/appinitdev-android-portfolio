@@ -1,4 +1,3 @@
-
 object LocaleUtil {
     fun wrap(context: Context, locale: Locale?): Context {
         val targetLocale = locale ?: getSystemLocale(context)

@@ -1,21 +1,3 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class SoundVibrationAndTorchPlayer(
     private val soundPlayer: SoundPlayer,
     private val vibrationPlayer: VibrationPlayer,
@@ -30,21 +12,17 @@ class SoundVibrationAndTorchPlayer(
                     torchManager.stop()
                 }
             }
-
             is Event.Finished -> {
                 soundPlayer.play(event.type)
                 vibrationPlayer.start()
                 torchManager.start()
             }
-
             Event.Reset -> {
                 soundPlayer.stop()
                 vibrationPlayer.stop()
                 torchManager.stop()
             }
-
             else -> {
-                
             }
         }
     }

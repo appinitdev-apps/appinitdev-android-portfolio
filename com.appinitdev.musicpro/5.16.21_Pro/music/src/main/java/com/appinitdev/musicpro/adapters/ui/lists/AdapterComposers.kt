@@ -1,52 +1,33 @@
-
- 
-
-
-
-
-
-
 class AdapterComposers(initial: List<Artist>) : FastScrollAdapter<VerticalListViewHolder>() {
-
     private var generalAdapterCallbacks: GeneralAdapterCallbacks? = null
-
     private val listUpdateCallback = object : ListUpdateCallback {
         override fun onInserted(position: Int, count: Int) {
             if (count > 100) notifyDataSetChanged() else notifyItemRangeInserted(position, count)
         }
-
         override fun onRemoved(position: Int, count: Int) {
             if (count > 100) notifyDataSetChanged() else notifyItemRangeRemoved(position, count)
         }
-
         override fun onMoved(fromPosition: Int, toPosition: Int) {
             notifyItemMoved(fromPosition, toPosition)
         }
-
         override fun onChanged(position: Int, count: Int, payload: Any?) {
             notifyItemRangeChanged(position, count, payload)
         }
     }
-
     private val diffCallback = object : DiffUtil.ItemCallback<Artist>() {
         override fun areItemsTheSame(oldItem: Artist, newItem: Artist) = oldItem.id == newItem.id
         override fun areContentsTheSame(oldItem: Artist, newItem: Artist) = oldItem == newItem
     }
-
     private val differ = AsyncListDiffer(
             listUpdateCallback,
             AsyncDifferConfig.Builder(diffCallback).build()
     )
-
     private val composers: List<Artist> get() = differ.currentList
-
     init {
         setHasStableIds(true)
         differ.submitList(initial.toList())
     }
-
     override fun getItemId(position: Int): Long = composers[position].id
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         return when (viewType) {
             CommonPreferencesConstants.GRID_TYPE_GRID -> {
@@ -60,7 +41,6 @@ class AdapterComposers(initial: List<Artist>) : FastScrollAdapter<VerticalListVi
             }
         }
     }
-
     override fun onBind(holder: VerticalListViewHolder, position: Int, isLightBind: Boolean) {
         val composer = composers[position]
         when (holder) {
@@ -69,9 +49,7 @@ class AdapterComposers(initial: List<Artist>) : FastScrollAdapter<VerticalListVi
             is LabelHolder -> holder.bind(composer, isLightBind)
         }
     }
-
     override fun getItemCount(): Int = composers.size
-
     override fun getItemViewType(position: Int): Int {
         val mode = ComposerPreferences.getGridSize()
         return when {
@@ -80,20 +58,16 @@ class AdapterComposers(initial: List<Artist>) : FastScrollAdapter<VerticalListVi
             else -> CommonPreferencesConstants.GRID_TYPE_LIST
         }
     }
-
     override fun onViewRecycled(holder: VerticalListViewHolder) {
         holder.itemView.clearAnimation()
         super.onViewRecycled(holder)
     }
-
     fun setGeneralAdapterCallbacks(callbacks: GeneralAdapterCallbacks) {
         this.generalAdapterCallbacks = callbacks
     }
-
     fun updateList(newComposers: List<Artist>) {
         differ.submitList(newComposers.toList())
     }
-
     inner class ListHolder(val binding: AdapterStyleListBinding) : VerticalListViewHolder(binding.root) {
         fun bind(composer: Artist, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(composer.name)
@@ -114,7 +88,6 @@ class AdapterComposers(initial: List<Artist>) : FastScrollAdapter<VerticalListVi
             }
         }
     }
-
     inner class GridHolder(val binding: AdapterStyleGridBinding) : VerticalListViewHolder(binding.root) {
         fun bind(composer: Artist, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(composer.name)
@@ -133,7 +106,6 @@ class AdapterComposers(initial: List<Artist>) : FastScrollAdapter<VerticalListVi
             }
         }
     }
-
     inner class LabelHolder(val binding: AdapterStyleLabelsBinding) : VerticalListViewHolder(binding.root) {
         fun bind(composer: Artist, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(composer.name)
@@ -154,4 +126,3 @@ class AdapterComposers(initial: List<Artist>) : FastScrollAdapter<VerticalListVi
         }
     }
 }
-

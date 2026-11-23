@@ -1,7 +1,4 @@
-
- 
 typealias ColorString = String
-
 @Entity(indices = [Index(value = ["id", "folder", "pinned", "timestamp", "labels"])])
 data class BaseNote(
     @PrimaryKey(autoGenerate = true) val id: Long,
@@ -22,18 +19,14 @@ data class BaseNote(
     val reminders: List<Reminder>,
     val viewMode: NoteViewMode,
 ) : Item {
-
     companion object {
         const val COLOR_DEFAULT = "DEFAULT"
         const val COLOR_NEW = "NEW"
     }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-
         other as BaseNote
-
         if (id != other.id) return false
         if (type != other.type) return false
         if (folder != other.folder) return false
@@ -50,10 +43,8 @@ data class BaseNote(
         if (audios != other.audios) return false
         if (reminders != other.reminders) return false
         if (viewMode != other.viewMode) return false
-
         return true
     }
-
     override fun hashCode(): Int {
         var result = id.hashCode()
         result = 31 * result + type.hashCode()
@@ -74,7 +65,6 @@ data class BaseNote(
         return result
     }
 }
-
 fun BaseNote.deepCopy(): BaseNote {
     return copy(
         labels = labels.toMutableList(),

@@ -1,22 +1,11 @@
-
- 
-
-
-
-
-
-
 object RelativeTimeFormatter {
-
     enum class Style { SHORT, LONG }
-
     private const val MIN   = 60_000L
     private const val HOUR  = 60 * MIN
     private const val DAY   = 24 * HOUR
     private const val WEEK  = 7 * DAY
     private const val MONTH = 30 * DAY
     private const val YEAR  = 365 * DAY
-
     fun format(
         timestamp: Long,
         now: Long = System.currentTimeMillis(),
@@ -33,9 +22,7 @@ object RelativeTimeFormatter {
             else            -> fmt((diff / YEAR).coerceAtLeast(1), style, Res.string.relative_time_years_short, Res.string.relative_time_years_long)
         }
     }
-
     private fun str(resource: StringResource) = LocaleHelper.getString(resource)
-
     private fun fmt(n: Long, style: Style, shortRes: StringResource, longRes: StringResource): String =
         LocaleHelper.getString(if (style == Style.SHORT) shortRes else longRes).format(n)
 }

@@ -1,49 +1,31 @@
-
 @HiltViewModel
 class LrcSearchViewModel @Inject constructor(
         application: Application,
         private val lrcRepository: LrcRepository
 ) : WrappedViewModel(application) {
-
     private val _searchResults = MutableLiveData<List<LrcLibResponse>>()
     val searchResults: LiveData<List<LrcLibResponse>> get() = _searchResults
-
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
-
     private val _error = MutableLiveData<String?>()
     val lrcError: LiveData<String?> get() = _error
-
     private val _selectedLrc = MutableLiveData<LrcData>()
     val selectedLrc: LiveData<LrcData> get() = _selectedLrc
-
     private val _lrcSaved = MutableLiveData<Boolean>()
     val lrcSaved: LiveData<Boolean> get() = _lrcSaved
-
     private var currentAudio: Audio? = null
-
-     
-
-
     fun setAudio(audio: Audio) {
         currentAudio = audio
     }
-
-     
-
-
     fun searchLyrics(trackName: String, artistName: String) {
         if (trackName.isBlank()) {
             _error.value = "Track name cannot be empty"
             return
         }
-
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
-
             val result = lrcRepository.searchLyrics(trackName.trim(), artistName.trim())
-
             result.onSuccess { results ->
                 if (results.isEmpty()) {
                     _error.value = "No lyrics found for this track"
@@ -55,44 +37,31 @@ class LrcSearchViewModel @Inject constructor(
                 _error.value = exception.message ?: "Failed to search lyrics"
                 _searchResults.value = emptyList()
             }
-
             _isLoading.value = false
         }
     }
-
-     
-
-
-
     fun selectAndDownloadLrc(lrcResponse: LrcLibResponse) {
         val audio = currentAudio
         if (audio == null) {
             _error.value = "No audio file set"
             return
         }
-
         val syncedLyrics = lrcResponse.syncedLyrics
         if (syncedLyrics.isNullOrBlank()) {
             _error.value = "This lyrics entry has no synced lyrics"
             return
         }
-
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
-
             try {
-                
                 val lrcData = withContext(Dispatchers.Default) {
                     LrcParser().parse(syncedLyrics)
                 }
-
-                
                 val saveResult = lrcRepository.saveLrcToFile(
                         syncedLyrics,
                         audio.uri
                 )
-
                 saveResult.onSuccess {
                     _selectedLrc.value = lrcData
                     _lrcSaved.value = true
@@ -108,22 +77,15 @@ class LrcSearchViewModel @Inject constructor(
             }
         }
     }
-
-     
-
-
     fun loadExistingLrc() {
         val audio = currentAudio
         if (audio == null) {
             _error.value = "No audio file set"
             return
         }
-
         viewModelScope.launch {
             _isLoading.value = true
-
             val result = lrcRepository.loadLrcFromFile(audio.uri)
-
             result.onSuccess { lrcContent ->
                 if (lrcContent != null) {
                     try {
@@ -135,38 +97,23 @@ class LrcSearchViewModel @Inject constructor(
                         _error.value = "Failed to parse existing lyrics: ${e.message}"
                     }
                 } else {
-                    
                     searchLyrics(audio.title ?: audio.name, audio.artist ?: "")
                 }
             }.onFailure { exception ->
                 _error.value = "Failed to load lyrics: ${exception.message}"
             }
-
             _isLoading.value = false
         }
     }
-
-     
-
-
     fun lrcExists(): Boolean {
         val audio = currentAudio ?: return false
         return lrcRepository.lrcFileExists(audio.uri)
     }
-
-     
-
-
     fun clearSearchResults() {
         _searchResults.value = emptyList()
         _error.value = null
     }
-
-     
-
-
     fun clearError() {
         _error.value = null
     }
 }
-

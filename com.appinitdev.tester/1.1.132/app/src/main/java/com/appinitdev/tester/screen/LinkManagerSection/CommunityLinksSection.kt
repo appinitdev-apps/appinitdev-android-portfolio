@@ -1,35 +1,24 @@
-
 @Composable
 fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController) {
     val links by viewModel.globalLinks.collectAsState()
     val currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid
     val context = androidx.compose.ui.platform.LocalContext.current
-
-    
     var showAddDialog by remember { mutableStateOf(false) }
-
     val activity = context as? android.app.Activity
-
     val numApps by viewModel.productionCount.collectAsState()
     val numTesters by viewModel.testersCount.collectAsState()
-
     LaunchedEffect(Unit) {
         viewModel.loadCommunityStats()
     }
-
     LaunchedEffect(Unit) {
         viewModel.startObservingGlobalLinks()
     }
     LaunchedEffect(Unit) {
         viewModel.iniciarBilling(context)
     }
-
-
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(16.dp)) {
-
-
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -52,9 +41,7 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                 ) {
                     Icon(Icons.Default.Star, contentDescription = null, tint = Color.White)
                 }
-
                 Spacer(modifier = Modifier.width(12.dp))
-
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "$numApps " + stringResource(R.string.apps_en_producci_n),
@@ -68,7 +55,6 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                         color = Color(0xFF1B5E20)
                     )
                 }
-
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = null,
@@ -76,7 +62,6 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                 )
             }
         }
-
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -97,7 +82,6 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                         .background(Color(0xFF3F51B5), CircleShape), 
                     contentAlignment = Alignment.Center
                 ) {
-                    
                     Icon(
                         imageVector = Icons.Default.EmojiEvents,
                         contentDescription = null,
@@ -105,9 +89,7 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                         modifier = Modifier.size(24.dp)
                     )
                 }
-
                 Spacer(modifier = Modifier.width(12.dp))
-
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = stringResource(R.string.ranking_de_testers) + "($numTesters)",
@@ -121,7 +103,6 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                         color = Color(0xFF303F9F) 
                     )
                 }
-
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward, 
                     contentDescription = null,
@@ -129,7 +110,6 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                 )
             }
         }
-
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -139,9 +119,7 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                         viewModel.lanzarFlujoPago(it, "puntos_30_pack")
                     }
                 },
-            
             colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF8E1)),
-            
             border = BorderStroke(1.dp, Color(0xFFFFC107))
         ) {
             Row(
@@ -152,23 +130,19 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                     modifier = Modifier
                         .size(44.dp)
                         .background(
-                            
                             Color(0xFFFFA000),
                             CircleShape
                         ),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        
                         imageVector = Icons.Default.WorkspacePremium,
                         contentDescription = null,
                         tint = Color.White,
                         modifier = Modifier.size(26.dp)
                     )
                 }
-
                 Spacer(Modifier.width(16.dp))
-
                 Column(Modifier.weight(1f)) {
                     Text(
                         text = stringResource(R.string.paquete_de_30_puntos_0_25_rep_extra),
@@ -183,8 +157,6 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                         lineHeight = 14.sp
                     )
                 }
-
-                
                 Surface(
                     color = Color(0xFFFFC107),
                     shape = RoundedCornerShape(12.dp)
@@ -200,7 +172,6 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
             }
         }
         Spacer(modifier = Modifier.height(12.dp))
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -219,8 +190,6 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-
-            
             FilledTonalIconButton(
                 onClick = { showAddDialog = true },
                 modifier = Modifier.size(44.dp),
@@ -236,9 +205,7 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                 )
             }
         }
-
         Spacer(modifier = Modifier.height(12.dp))
-
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(vertical = 4.dp),
@@ -304,9 +271,7 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                                 )
                             }
                         }
-
                         Spacer(modifier = Modifier.width(14.dp))
-
                         Column(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -332,9 +297,7 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                                 )
                             }
                         }
-
                         Spacer(modifier = Modifier.width(8.dp))
-
                         if (link.ownerId == currentUserId) {
                             FilledTonalIconButton(
                                 onClick = { viewModel.deleteGlobalLink(link.id) },
@@ -387,8 +350,6 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
             }
         }
     }
-
-    
     if (showAddDialog) {
         AddLinkDialog(
             onDismiss = { showAddDialog = false },
@@ -399,7 +360,6 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
         )
     }
 }
-
 @Composable
 fun AddLinkDialog(onDismiss: () -> Unit, onConfirm: (String, String, String) -> Unit) {
     var titulo by remember { mutableStateOf("") }

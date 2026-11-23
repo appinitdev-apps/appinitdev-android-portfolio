@@ -1,11 +1,9 @@
-
 @OptIn(ExperimentalFoundationApi::class)
 class MediaPreviewerState(
     scope: CoroutineScope = MainScope(),
     pagerState: PagerState,
 ) : PreviewerVerticalDragState(scope, pagerState = pagerState) {
     val videoState = VideoState()
-
     companion object {
         fun getSaver(pagerState: PagerState): Saver<MediaPreviewerState, *> {
             return mapSaver(
@@ -29,7 +27,6 @@ class MediaPreviewerState(
         }
     }
 }
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun rememberPreviewerState(

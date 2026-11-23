@@ -1,4 +1,3 @@
-
 @Composable
 fun PeerDeliveryStatusDialog(
     statusData: DMessageStatusData,
@@ -6,7 +5,6 @@ fun PeerDeliveryStatusDialog(
     onDismiss: () -> Unit,
 ) {
     val failed = statusData.failedResults.firstOrNull()
-
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surface,
         onDismissRequest = onDismiss,

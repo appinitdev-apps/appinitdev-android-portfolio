@@ -1,4 +1,3 @@
-
 internal fun performCutFiles(
     filesVM: FilesViewModel,
     files: List<DFile>,
@@ -11,7 +10,6 @@ internal fun performCutFiles(
     onShowPasteBar(true)
     onDone()
 }
-
 internal fun performCopyFiles(
     filesVM: FilesViewModel,
     files: List<DFile>,
@@ -24,7 +22,6 @@ internal fun performCopyFiles(
     onShowPasteBar(true)
     onDone()
 }
-
 internal fun performZipFiles(
     scope: CoroutineScope,
     context: Context,

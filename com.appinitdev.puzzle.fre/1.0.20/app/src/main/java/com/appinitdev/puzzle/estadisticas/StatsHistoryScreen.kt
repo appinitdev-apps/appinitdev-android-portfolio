@@ -1,5 +1,3 @@
-
-
 @Composable
 fun StatsHistoryScreen(
     stats: List<PuzzleStatEntity>,
@@ -7,13 +5,10 @@ fun StatsHistoryScreen(
 ) {
     var selectedTab by remember { mutableStateOf(0) } 
     val statsByLevel = stats.groupBy { it.n }.toSortedMap()
-
-    
     val totalGames = stats.size
     val bestTime = stats.minOfOrNull { it.time } ?: 0
     val avgTime = if (totalGames > 0) stats.map { it.time }.average().toInt() else 0
     val avgMoves = if (totalGames > 0) stats.map { it.moves }.average().toInt() else 0
-
     AlertDialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -28,7 +23,6 @@ fun StatsHistoryScreen(
         },
         text = {
             Column(modifier = Modifier.fillMaxSize()) {
-                
                 if (totalGames > 0) {
                     Card(
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)),
@@ -49,8 +43,6 @@ fun StatsHistoryScreen(
                             KpiItem(stringResource(R.string.prom_movs), "$avgMoves")
                         }
                     }
-
-                    
                     TabRow(
                         selectedTabIndex = selectedTab,
                         containerColor = Color.Transparent,
@@ -68,8 +60,6 @@ fun StatsHistoryScreen(
                         )
                     }
                 }
-
-                
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -79,7 +69,6 @@ fun StatsHistoryScreen(
                             Text(stringResource(R.string.no_hay_datos_disponibles_a_n))
                         }
                     }
-
                     statsByLevel.forEach { (n, levelStats) ->
                         item {
                             Text(
@@ -89,9 +78,7 @@ fun StatsHistoryScreen(
                                 fontWeight = FontWeight.Bold
                             )
                         }
-
                         if (selectedTab == 0) {
-                            
                             if (levelStats.size >= 2) {
                                 item {
                                     Card(
@@ -117,7 +104,6 @@ fun StatsHistoryScreen(
                                 }
                             }
                         } else {
-                            
                             item {
                                 Card(
                                     colors = CardDefaults.cardColors(
@@ -143,8 +129,6 @@ fun StatsHistoryScreen(
                                 }
                             }
                         }
-
-                        
                         items(levelStats.sortedByDescending { it.date }) { stat ->
                             HorizontalStatRow(stat)
                         }
@@ -154,7 +138,6 @@ fun StatsHistoryScreen(
         }
     )
 }
-
 @Composable
 fun KpiItem(label: String, value: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -162,22 +145,17 @@ fun KpiItem(label: String, value: String) {
         Text(text = label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
-
 @Composable
 fun HistogramChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier) {
     val colorBar = MaterialTheme.colorScheme.primary
     val colorText = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f).toArgb()
-
-    
     val bin1 = stats.count { it.time < 30 }
     val bin2 = stats.count { it.time in 30..59 }
     val bin3 = stats.count { it.time in 60..119 }
     val bin4 = stats.count { it.time >= 120 }
-
     val counts = listOf(bin1, bin2, bin3, bin4)
     val labels = listOf("<30s", "30-60s", "1-2m", ">2m")
     val maxCount = counts.maxOrNull()?.coerceAtLeast(1) ?: 1
-
     Canvas(modifier = modifier.padding(horizontal = 16.dp, vertical = 20.dp)) {
         val barWidth = size.width / (counts.size * 2f)
         val textPaint = android.graphics.Paint().apply {
@@ -186,13 +164,10 @@ fun HistogramChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier)
             textAlign = android.graphics.Paint.Align.CENTER
             typeface = android.graphics.Typeface.DEFAULT_BOLD
         }
-
         counts.forEachIndexed { index, count ->
             val left = index * (barWidth * 2f) + (barWidth / 2f)
             val barHeight = (count.toFloat() / maxCount.toFloat()) * (size.height * 0.7f)
             val top = size.height - barHeight
-
-            
             val cornerRadius = 8.dp.toPx()
             drawRoundRect(
                 color = colorBar,
@@ -200,8 +175,6 @@ fun HistogramChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier)
                 size = androidx.compose.ui.geometry.Size(barWidth, barHeight.coerceAtLeast(4.dp.toPx())),
                 cornerRadius = androidx.compose.ui.geometry.CornerRadius(cornerRadius, cornerRadius)
             )
-
-            
             if (count > 0) {
                 drawContext.canvas.nativeCanvas.drawText(
                     "$count",
@@ -210,8 +183,6 @@ fun HistogramChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier)
                     textPaint
                 )
             }
-
-            
             drawContext.canvas.nativeCanvas.drawText(
                 labels[index],
                 left + (barWidth / 2f),
@@ -221,54 +192,36 @@ fun HistogramChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier)
         }
     }
 }
-
 @Composable
 fun SimpleLineChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier) {
     val colorLine = MaterialTheme.colorScheme.primary
     val colorDot = MaterialTheme.colorScheme.secondary
     val colorText = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f).toArgb()
-
-
     Canvas(modifier = modifier.padding(horizontal = 30.dp, vertical = 30.dp)) {
         if (stats.isEmpty()) return@Canvas
-
-        
         val isSinglePoint = stats.size == 1
         val maxTime = stats.maxOf { it.time }.toFloat()
         val minTime = stats.minOf { it.time }.toFloat()
-
-        
         val range = (maxTime - minTime).coerceAtLeast(1f)
-
-        
         val spacing = if (isSinglePoint) 0f else size.width / (stats.size - 1)
-
         val textPaint = android.graphics.Paint().apply {
             color = colorText
             textSize = 28f
             textAlign = android.graphics.Paint.Align.CENTER
             typeface = android.graphics.Typeface.DEFAULT_BOLD
         }
-
-        
         val points = stats.mapIndexed { index, stat ->
             val x = if (isSinglePoint) size.width / 2 else index * spacing
-            
-            
             val y = if (isSinglePoint) size.height / 2
             else size.height - ((stat.time - minTime) / range * size.height)
             Offset(x, y)
         }
-
-        
         drawLine(
             color = Color.Gray.copy(alpha = 0.3f),
             start = Offset(0f, size.height),
             end = Offset(size.width, size.height),
             strokeWidth = 1.dp.toPx()
         )
-
-        
         if (!isSinglePoint) {
             val path = Path().apply {
                 points.forEachIndexed { i, pt ->
@@ -281,50 +234,38 @@ fun SimpleLineChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier
                 style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
             )
         }
-
-        
         points.forEachIndexed { index, pt ->
-            
             drawCircle(
                 color = colorDot.copy(alpha = 0.2f),
                 radius = 7.dp.toPx(),
                 center = pt
             )
-
-            
             drawCircle(
                 color = colorDot,
                 radius = 4.dp.toPx(),
                 center = pt
             )
-
-            
             drawContext.canvas.nativeCanvas.drawText(
                 "${stats[index].time}s",
                 pt.x,
                 pt.y - 25f,
                 textPaint
             )
-
-            
             if (isSinglePoint || index == 0 || index == stats.size - 1) {
                 val dateLabel = java.text.SimpleDateFormat("dd/MM", java.util.Locale.getDefault())
                     .format(java.util.Date(stats[index].date))
-
                 drawContext.canvas.nativeCanvas.drawText(
                     dateLabel,
                     pt.x,
                     size.height + 40f,
                     textPaint.apply {
                         textSize = 22f
-                        
                     }
                 )
             }
         }
     }
 }
-
 @Composable
 fun HorizontalStatRow(stat: PuzzleStatEntity) {
     Row(

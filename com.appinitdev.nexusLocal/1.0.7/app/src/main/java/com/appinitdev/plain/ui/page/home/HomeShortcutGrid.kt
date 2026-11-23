@@ -1,4 +1,3 @@
-
 @Composable
 fun HomeShortcutGrid(
     navController: NavHostController,
@@ -13,7 +12,6 @@ fun HomeShortcutGrid(
     val enabledIds = remember(featuresStr) {
         HomeFeaturesPreference.parseList(featuresStr.ifEmpty { HomeFeaturesPreference.default })
     }
-
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),

@@ -1,19 +1,14 @@
-
 class BottomAlphaGradient : BitmapTransformation() {
-
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {
         messageDigest.update(ID_BYTES)
     }
-
     override fun transform(pool: BitmapPool, toTransform: Bitmap, outWidth: Int, outHeight: Int): Bitmap {
         val width = toTransform.width
         val height = toTransform.height
         val gradientHeight = (height * 0.50f).toInt()
         val gradientTop = height - gradientHeight
-
         val result = pool.get(width, height, Bitmap.Config.ARGB_8888)
         val mutableBitmap = toTransform.copy(Bitmap.Config.ARGB_8888, true)
-
         for (y in gradientTop until height) {
             val gradientAlpha = ((height - y).toFloat() / gradientHeight).coerceIn(0f, 1f)
             for (x in 0 until width) {
@@ -24,20 +19,16 @@ class BottomAlphaGradient : BitmapTransformation() {
                 mutableBitmap[x, y] = (newAlpha shl 24) or rgb
             }
         }
-
         val canvas = Canvas(result)
         canvas.drawBitmap(mutableBitmap, 0f, 0f, null)
         return result
     }
-
     override fun equals(other: Any?): Boolean {
         return other is BottomAlphaGradient
     }
-
     override fun hashCode(): Int {
         return ID.hashCode()
     }
-
     companion object {
         private const val ID = "app.simple.felicity.glide.transformations.BottomAlphaGradient"
         private val ID_BYTES = ID.toByteArray(CHARSET)

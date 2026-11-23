@@ -1,12 +1,6 @@
-
 internal fun resolveSenderName(headers: Map<String, String>, senderIp: String): String {
     return headers["c-name"]?.takeIf { it.isNotBlank() } ?: senderIp
 }
-
- 
-
-
-
 internal fun BufferedInputStream.readHttpLine(): String? {
     val sb = StringBuilder()
     var prev = -1
@@ -21,11 +15,6 @@ internal fun BufferedInputStream.readHttpLine(): String? {
         prev = b
     }
 }
-
- 
-
-
-
 internal fun readBodyBytes(bis: BufferedInputStream, contentLength: Int): String {
     if (contentLength <= 0) return ""
     val buf = ByteArray(contentLength)
@@ -37,7 +26,6 @@ internal fun readBodyBytes(bis: BufferedInputStream, contentLength: Int): String
     }
     return String(buf, 0, offset, Charsets.UTF_8)
 }
-
 internal fun parseDlnaTimeToMs(time: String): Long {
     val parts = time.split(":")
     return if (parts.size >= 3) {
@@ -47,20 +35,16 @@ internal fun parseDlnaTimeToMs(time: String): Long {
         (h * 3600 + m * 60 + s) * 1000
     } else -1L
 }
-
 internal fun httpOk(body: String, contentType: String = "text/plain"): String {
     val bytes = body.toByteArray(Charsets.UTF_8)
     return "HTTP/1.1 200 OK\r\nContent-Type: $contentType\r\nContent-Length: ${bytes.size}\r\nConnection: close\r\n\r\n$body"
 }
-
 internal fun httpOkSubscribe(): String {
     return "HTTP/1.1 200 OK\r\nSID: uuid:dlna-plain-sub\r\nTIMEOUT: Second-3600\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
 }
-
 internal fun httpNotFound(): String {
     return "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
 }
-
 internal fun httpInternalError(): String {
     return "HTTP/1.1 500 Internal Server Error\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
 }

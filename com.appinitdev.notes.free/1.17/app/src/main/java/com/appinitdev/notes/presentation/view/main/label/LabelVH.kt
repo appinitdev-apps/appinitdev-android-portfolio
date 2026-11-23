@@ -1,7 +1,5 @@
-
 class LabelVH(private val binding: RecyclerLabelBinding, listener: LabelListener) :
     RecyclerView.ViewHolder(binding.root) {
-
     init {
         binding.apply {
             LabelText.setOnClickListener { listener.onClick(absoluteAdapterPosition) }
@@ -12,7 +10,6 @@ class LabelVH(private val binding: RecyclerLabelBinding, listener: LabelListener
             }
         }
     }
-
     fun bind(value: LabelData) {
         binding.LabelText.text = value.label
         binding.VisibilityButton.setImageResource(

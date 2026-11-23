@@ -1,9 +1,6 @@
-
 @Immutable
 class TabPosition internal constructor(val left: Dp, val width: Dp, val contentWidth: Dp) {
-
     val right: Dp get() = left + width
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is TabPosition) return false
@@ -12,31 +9,26 @@ class TabPosition internal constructor(val left: Dp, val width: Dp, val contentW
         if (contentWidth != other.contentWidth) return false
         return true
     }
-
     override fun hashCode(): Int {
         var result = left.hashCode()
         result = 31 * result + width.hashCode()
         result = 31 * result + contentWidth.hashCode()
         return result
     }
-
     override fun toString(): String {
         return "TabPosition(left=$left, right=$right, width=$width, contentWidth=$contentWidth)"
     }
 }
-
 internal enum class TabSlots {
     Tabs,
     Divider,
     Indicator,
 }
-
 internal class ScrollableTabData(
     private val scrollState: ScrollState,
     private val coroutineScope: CoroutineScope,
 ) {
     private var selectedTab: Int? = null
-
     fun onLaidOut(
         density: Density,
         edgeOffset: Int,
@@ -55,7 +47,6 @@ internal class ScrollableTabData(
             }
         }
     }
-
     private fun TabPosition.calculateTabOffset(
         density: Density,
         edgeOffset: Int,
@@ -71,7 +62,6 @@ internal class ScrollableTabData(
         return centeredTabOffset.coerceIn(0, availableSpace)
     }
 }
-
 internal val ScrollableTabRowScrollSpec: AnimationSpec<Float> = tween(
     durationMillis = 250,
     easing = FastOutSlowInEasing,

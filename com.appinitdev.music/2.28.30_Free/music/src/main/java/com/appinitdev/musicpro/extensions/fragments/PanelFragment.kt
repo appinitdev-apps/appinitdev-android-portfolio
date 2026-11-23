@@ -1,10 +1,7 @@
-
 open class PanelFragment : MediaFragment() {
-
     protected val isLandscape: Boolean by lazy {
         BarHeight.isLandscape(requireContext())
     }
-
     protected fun RecyclerView.requireAttachedSectionScroller(
             sections: List<SectionedFastScroller.Position>,
             header: AppHeader,
@@ -16,15 +13,12 @@ open class PanelFragment : MediaFragment() {
             layoutManager.scrollToPositionWithOffset(
                       position.index,
                       resources.getDimensionPixelSize(R.dimen.padding_8) + header.height + paddingTop)
-
             if (position.index > 10) {
                 header.hideHeader()
             } else {
                 header.showHeader()
             }
-
             header.resumeAutoBehavior()
-
             post {
                 val currentSectionIndex = sections.indexOf(position)
                 val nextIndex = if (currentSectionIndex + 1 < sections.size) {
@@ -32,7 +26,6 @@ open class PanelFragment : MediaFragment() {
                 } else {
                     sections.last().index
                 }
-
                 for (i in position.index until nextIndex) {
                     try {
                         val itemView = layoutManager.findViewByPosition(i)
@@ -45,29 +38,24 @@ open class PanelFragment : MediaFragment() {
                             view.startAnimation(blink)
                         }
                     } catch (_: IndexOutOfBoundsException) {
-                        
                     }
                 }
             }
         }
-
         sectionedFastScroller.setVisibilityListener(object : SectionedFastScroller.VisibilityListener {
             override fun onShowStart() {
                 super.onShowStart()
                 hideMiniPlayer()
             }
-
             override fun onHideStart() {
                 super.onHideStart()
                 showMiniPlayer()
             }
         })
-
         view.setOnClickListener {
             sectionedFastScroller.show(animated = true)
         }
     }
-
     fun AppCompatTextView.setGridTypeValue(gridType: Int) {
         when (gridType) {
             CommonPreferencesConstants.GRID_TYPE_LIST -> {
@@ -84,15 +72,12 @@ open class PanelFragment : MediaFragment() {
             }
         }
     }
-
     protected fun AppCompatTextView.setAppLabel() {
         this.text = MainPreferences.getAppLabel(requireContext())
     }
-
     protected fun openSearch() {
         openFragment(Search.newInstance(), Search.TAG)
     }
-
     protected fun View.hideOnUnfavorableSort(sorts: List<Int>, preference: Int) {
         if (sorts.contains(preference)) {
             visible(animate = true)
@@ -100,10 +85,6 @@ open class PanelFragment : MediaFragment() {
             gone(animate = true)
         }
     }
-
-     
-
-
     protected fun RecyclerView.attachSlideFastScroller() {
         SlideFastScroller.attach(this).apply {
             setFadeToIdleMode(enabled = BehaviourPreferences.getFastScrollBehavior() == BehaviourPreferences.FADE_FAST_SCROLLBAR)

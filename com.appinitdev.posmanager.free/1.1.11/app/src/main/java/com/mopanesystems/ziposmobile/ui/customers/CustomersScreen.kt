@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomersScreen(
@@ -6,7 +5,6 @@ fun CustomersScreen(
 ) {
     CustomersScreenCompose(viewModel = viewModel)
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomersScreenCompose(
@@ -16,21 +14,17 @@ fun CustomersScreenCompose(
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val errorMessage by viewModel.errorMessage.observeAsState()
     val selectedCustomer by viewModel.selectedCustomer.collectAsStateWithLifecycle()
-
     var searchQuery by remember { mutableStateOf("") }
     var searchType by remember { mutableStateOf("name") }
-
     var showCustomersDialogCreate by remember { mutableStateOf(false) }
     var showCustomersDialogUpdate by remember { mutableStateOf(false) }
     var showInfoCustomersDialog by remember { mutableStateOf(true) }
     var customersToEdit by remember { mutableStateOf<Customer?>(null) }
     var customerEdit by remember { mutableStateOf(false) }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(12.dp),
-        
     ) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
@@ -57,7 +51,6 @@ fun CustomersScreenCompose(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-
                 Surface(
                     onClick = {
                         customerEdit = !customerEdit
@@ -76,8 +69,6 @@ fun CustomersScreenCompose(
                     }
                 }
                 Spacer(modifier = Modifier.width(5.dp))
-
-
                 Surface(
                     onClick = {
                         showCustomersDialogCreate = true
@@ -98,10 +89,7 @@ fun CustomersScreenCompose(
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(8.dp))
-
-        
         OutlinedTextField(
             value = searchQuery,
             onValueChange = {
@@ -112,11 +100,7 @@ fun CustomersScreenCompose(
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
             modifier = Modifier.fillMaxWidth()
         )
-
-
         Spacer(modifier = Modifier.height(8.dp))
-
-        
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -126,45 +110,34 @@ fun CustomersScreenCompose(
                 modifier = Modifier.weight(1f)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-
                     Text(stringResource(R.string.loyalty))
                 }
             }
-
             Button(
                 onClick = { viewModel.getCustomersWithBalance() },
                 modifier = Modifier.weight(1f)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-
                     Text( stringResource(R.string.balancee))
                 }
             }
-
             Button(
                 onClick = { viewModel.getHighRiskCustomers() },
                 modifier = Modifier.weight(1f)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-
                     Text(stringResource(R.string.high_risk))
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(8.dp))
-
         OutlinedButton(
             onClick = { viewModel.clearFilters() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.clear_filters))
         }
-
         Spacer(modifier = Modifier.height(16.dp))
-
-
-        
         if (isLoading) {
             Box(
                 modifier = Modifier.fillMaxWidth(),
@@ -199,36 +172,28 @@ fun CustomersScreenCompose(
                         onSelect = {
                             showInfoCustomersDialog = true
                             customersToEdit = customer
-                            
                         }
                     )
                 }
             }
         }
-
-        
         errorMessage?.let { message ->
             LaunchedEffect(message) {
-                
             }
         }
     }
-
     if (showCustomersDialogCreate) {
         CustomerFormDialog(
             showDialog = showCustomersDialogCreate,
             onDismiss = { showCustomersDialogCreate = false },
             onSave = { customer ->
                 viewModel.addCustomer(customer)
-                
                 Log.d("customer", "customer creado: $customer")
                 showCustomersDialogCreate = false
             },
             initialCustomer = customersToEdit, 
-
         )
     }
-
     if (showInfoCustomersDialog && customersToEdit != null) {
         CustomerDialog(
             customer = customersToEdit!!,
@@ -238,23 +203,19 @@ fun CustomersScreenCompose(
             }
         )
     }
-
     if (showCustomersDialogUpdate && customersToEdit != null) {
         CustomerFormDialog(
             showDialog = showCustomersDialogUpdate,
             onDismiss = { showCustomersDialogUpdate = false },
             onSave = { customer ->
                 viewModel.updateCustomer(customer)
-                
                 Log.d("Products", "Producto actualizado: $customer")
                 showCustomersDialogUpdate = false
             },
             initialCustomer = customersToEdit, 
-
         )
     }
 }
-
 @Composable
 fun CustomerCardCompose(
     customer: com.mopanesystems.ziposmobile.data.model.Customer,
@@ -287,15 +248,12 @@ fun CustomerCardCompose(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
-
                 Row(
                     modifier = Modifier
                         .horizontalScroll(rememberScrollState())
                         .padding(top = 2.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-
-
                     if (!customer.email.isNullOrEmpty()) {
                         Text(
                             text = "✉️ ${customer.email}",
@@ -313,7 +271,6 @@ fun CustomerCardCompose(
                             Icon(Icons.Default.ContentCopy, contentDescription = "Copiar email")
                         }
                     }
-
                     if (!customer.phone.isNullOrEmpty()) {
                         Text(
                             text = "📞 ${customer.phone}",
@@ -330,12 +287,8 @@ fun CustomerCardCompose(
                         }) {
                             Icon(Icons.Default.ContentCopy, contentDescription = "Copiar teléfono")
                         }
-
                     }
-
                 }
-
-
                 Row(
                     modifier = Modifier
                         .horizontalScroll(rememberScrollState())
@@ -352,9 +305,7 @@ fun CustomerCardCompose(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-
                     customer.balance.let {
-
                         val colorContainer = when {
                             it.signum() < 0 -> MaterialTheme.colorScheme.error
                             it.signum() == 0 -> MaterialTheme.colorScheme.primary
@@ -368,9 +319,7 @@ fun CustomerCardCompose(
                             color = colorContainer
                         )
                     }
-
                     customer.riskScore.let {
-
                         val colorContainer = when {
                             it == 0 -> MaterialTheme.colorScheme.primary
                             else -> MaterialTheme.colorScheme.error
@@ -380,7 +329,6 @@ fun CustomerCardCompose(
                             it in 1..3 ->  "😐"
                             else -> "😡"
                         }
-
                         Text(
                             text = stringResource(R.string.riskscore) +" ${emoji} ${it}",
                             style = MaterialTheme.typography.bodyMedium.copy(
@@ -389,16 +337,8 @@ fun CustomerCardCompose(
                             color = colorContainer
                         )
                     }
-
-
                 }
-
-
-
             }
-
-            
-
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {

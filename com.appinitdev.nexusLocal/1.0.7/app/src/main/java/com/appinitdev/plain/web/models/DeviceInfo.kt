@@ -1,4 +1,3 @@
-
 class AndroidDeviceInfo {
     var sdkVersion: Int = 0
     var versionCodeName: String = ""
@@ -19,7 +18,6 @@ class AndroidDeviceInfo {
     var serial: String = ""
     var buildTime: Instant = TimeHelper.now()
 }
-
 class DesktopDeviceInfo {
     var hostname: String = ""
     var cpuModel: String = ""
@@ -27,13 +25,11 @@ class DesktopDeviceInfo {
     var desktopEnvironment: String = ""
     var windowManager: String = ""
 }
-
 class DisplayInfo {
     var width: Int = 0
     var height: Int = 0
     var density: String = ""
 }
-
 class DeviceInfo {
     var name: String = ""
     var platform: DevicePlatform = DevicePlatform.ANDROID
@@ -53,7 +49,6 @@ class DeviceInfo {
     var android: AndroidDeviceInfo? = null
     var desktop: DesktopDeviceInfo? = null
 }
-
 fun DDeviceInfo.toModel(): DeviceInfo {
     val m = DeviceInfo()
     m.name = this.name

@@ -1,4 +1,3 @@
-
 @SuppressLint("MissingPermission")
 object SimHelper {
     fun getAll(): List<DSim> {
@@ -14,7 +13,6 @@ object SimHelper {
             )
         }
     }
-
     fun hasMultiSims(): Boolean {
         if (!Permission.READ_PHONE_STATE.can(MainApp.instance)) return false
         return (subscriptionManager.activeSubscriptionInfoList?.size ?: 0) > 1

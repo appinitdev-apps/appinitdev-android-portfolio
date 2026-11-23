@@ -1,4 +1,3 @@
-
 internal fun MainActivity.handleIntent(intent: Intent) {
     if (intent.getBooleanExtra("start_web_service", false)) {
         coIO {
@@ -6,13 +5,11 @@ internal fun MainActivity.handleIntent(intent: Intent) {
             sendEvent(StartHttpServerEvent())
         }
     }
-
     if (intent.getBooleanExtra("navigate_to_web_settings", false)) {
         val nav = navControllerState.value
         val alreadyThere = nav?.currentBackStackEntry?.destination?.hasRoute(Routing.WebSettings::class) == true
         if (!alreadyThere) nav?.navigate(Routing.WebSettings)
     }
-
     if (intent.action == Intent.ACTION_VIEW) {
         val uri = intent.data ?: return
         val mimeType = contentResolver.getType(uri)
@@ -47,7 +44,6 @@ internal fun MainActivity.handleIntent(intent: Intent) {
         navControllerState.value?.navigate(Routing.PlayMedia(path))
     }
 }
-
 private fun MainActivity.showForwardTargetOptions(peerVM: PeerViewModel) {
     coMain {
         DialogHelper.showLoading()

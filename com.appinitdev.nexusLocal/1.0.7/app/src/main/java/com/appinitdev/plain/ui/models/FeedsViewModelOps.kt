@@ -1,4 +1,3 @@
-
 internal fun FeedsViewModel.add() {
     editUrlError.value = ""
     viewModelScope.launch(Dispatchers.IO) {
@@ -12,7 +11,6 @@ internal fun FeedsViewModel.add() {
         showAddDialog.value = false
     }
 }
-
 internal fun FeedsViewModel.fetchChannel() {
     editUrlError.value = ""
     if (!editUrl.value.isUrl()) {
@@ -34,7 +32,6 @@ internal fun FeedsViewModel.fetchChannel() {
         }
     }
 }
-
 internal fun FeedsViewModel.edit() {
     editUrlError.value = ""
     if (!editUrl.value.isUrl()) {
@@ -56,7 +53,6 @@ internal fun FeedsViewModel.edit() {
         showEditDialog.value = false
     }
 }
-
 internal fun FeedsViewModel.showAddDialog() {
     rssChannel.value = null
     editUrlError.value = ""
@@ -65,7 +61,6 @@ internal fun FeedsViewModel.showAddDialog() {
     editFetchContent.value = false
     showAddDialog.value = true
 }
-
 internal fun FeedsViewModel.showEditDialog(item: DFeed) {
     editUrlError.value = ""
     editId.value = item.id

@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun AudioPage(
@@ -20,21 +19,18 @@ fun AudioPage(
     val itemsState = audioState.itemsState
     val scrollState = audioState.scrollState
     val isAudioPlaying by AudioPlayer.isPlayingFlow.collectAsState()
-
     val tabs = remember(tagsState, audioVM.total.intValue, audioVM.totalTrash.intValue) {
         val baseTabs = mutableListOf(VTabData(LocaleHelper.getString(Res.string.all), "all", audioVM.total.intValue))
         if (AppFeatureType.MEDIA_TRASH.has()) baseTabs.add(VTabData(LocaleHelper.getString(Res.string.trash), "trash", audioVM.totalTrash.intValue))
         baseTabs.addAll(tagsState.map { VTabData(it.name, it.id, it.count) })
         baseTabs
     }
-
     val topRefreshLayoutState = rememberRefreshLayoutState {
         scope.launch {
             withIO { audioVM.loadAsync(context, tagsVM); audioPlaylistVM.loadAsync(context); mediaFoldersVM.loadAsync(context) }
             setRefreshState(RefreshContentState.Finished)
         }
     }
-
     BackHandler(enabled = dragSelectState.selectMode || castVM.castMode.value || audioVM.showSearchBar.value) {
         when {
             dragSelectState.selectMode -> dragSelectState.exitSelectMode()
@@ -46,20 +42,16 @@ fun AudioPage(
             }
         }
     }
-
     AudioPageEffects(audioState, audioVM, audioPlaylistVM, tagsVM, mediaFoldersVM)
-
     LaunchedEffect(pagerState.currentPage) {
         val tab = tabs.getOrNull(pagerState.currentPage) ?: return@LaunchedEffect
         when (tab.value) {
             "all" -> {
                 audioVM.trash.value = false; audioVM.tag.value = null
             }
-
             "trash" -> {
                 audioVM.trash.value = true; audioVM.tag.value = null
             }
-
             else -> {
                 audioVM.trash.value = false; audioVM.tag.value = tagsState.find { it.id == tab.value }
             }
@@ -67,18 +59,15 @@ fun AudioPage(
         scope.launch { scrollBehavior.reset(); audioVM.scrollStateMap[pagerState.currentPage]?.scrollToItem(0) ?: scrollState.scrollToItem(0) }
         scope.launch(Dispatchers.IO) { audioVM.loadAsync(context, tagsVM) }
     }
-
     val audioTagsMap = remember(tagsMapState, tagsState) {
         tagsMapState.mapValues { entry -> entry.value.mapNotNull { relation -> tagsState.find { it.id == relation.tagId } } }
     }
-
     ViewAudioBottomSheet(audioVM = audioVM, tagsVM = tagsVM, tagsMapState = tagsMapState, tagsState = tagsState, dragSelectState = dragSelectState, castVM = castVM)
     MediaFoldersBottomSheet(audioVM, mediaFoldersVM, tagsVM)
     if (audioVM.showTagsDialog.value) {
         TagsBottomSheet(tagsVM) { audioVM.showTagsDialog.value = false }
     }
     CastDialog(castVM)
-
     PScaffold(
         topBar = {
             MediaTopBar(

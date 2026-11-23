@@ -1,17 +1,13 @@
-
 @HiltViewModel
 class YearViewModel @Inject constructor(
         application: Application,
         private val audioRepository: AudioRepository
 ) : WrappedViewModel(application) {
-
     private val _years = MutableStateFlow<List<YearGroup>>(emptyList())
     val years: StateFlow<List<YearGroup>> = _years.asStateFlow()
-
     init {
         loadData()
     }
-
     private fun loadData() {
         viewModelScope.launch {
             audioRepository.getAllYearsWithAggregation()
@@ -28,7 +24,6 @@ class YearViewModel @Inject constructor(
                 }
         }
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -43,9 +38,7 @@ class YearViewModel @Inject constructor(
             }
         }
     }
-
     companion object {
         private const val TAG = "YearViewModel"
     }
 }
-

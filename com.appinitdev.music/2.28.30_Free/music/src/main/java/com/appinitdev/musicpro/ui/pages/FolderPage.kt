@@ -1,14 +1,10 @@
-
 @AndroidEntryPoint
 class FolderPage : BasePageFragment() {
-
     private lateinit var binding: FragmentPageFolderBinding
-
     private val folder: Folder by lazy {
         requireArguments().parcelable(BundleConstants.FOLDER)
             ?: throw IllegalArgumentException("Folder is required")
     }
-
     private val folderViewerViewModel by viewModels<FolderViewerViewModel>(
             extrasProducer = {
                 defaultViewModelCreationExtras.withCreationCallback<FolderViewerViewModel.Factory> {
@@ -16,30 +12,23 @@ class FolderPage : BasePageFragment() {
                 }
             }
     )
-
     override val pageRecyclerView: RecyclerView
         get() = binding.recyclerView
-
     override val pageType: PageAdapter.PageType by lazy { PageAdapter.PageType.FolderPage(folder) }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentPageFolderBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         collectPageData { folderViewerViewModel.data }
     }
-
     override fun resortPageData() {
         folderViewerViewModel.resort()
     }
-
     override fun onMenuClicked(view: View) {
         viewLifecycleOwner.lifecycleScope.launch {
             val currentData = folderViewerViewModel.data.value ?: return@launch
-
             SharedScrollViewPopup(
                     container = requireContainerView(),
                     anchorView = view,
@@ -63,15 +52,10 @@ class FolderPage : BasePageFragment() {
             ).show()
         }
     }
-
     companion object {
         const val TAG = "FolderPage"
-
         fun newInstance(folder: Folder): FolderPage {
             val args = Bundle()
-            
-            
-            
             args.putParcelable(BundleConstants.FOLDER, folder.copy(songPaths = emptyList()))
             val fragment = FolderPage()
             fragment.arguments = args
@@ -79,5 +63,3 @@ class FolderPage : BasePageFragment() {
         }
     }
 }
-
-

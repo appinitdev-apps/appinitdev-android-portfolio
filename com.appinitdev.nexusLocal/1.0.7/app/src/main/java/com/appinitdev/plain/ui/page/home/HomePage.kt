@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePage(
@@ -18,22 +17,18 @@ fun HomePage(
         channelVM.refresh()
         setRefreshState(RefreshContentState.Finished)
     }
-
     LaunchedEffect(Unit) {
         peerVM.loadPeers()
     }
-
     LaunchedEffect(Unit) {
         Channel.sharedFlow.collect { event ->
             if (updateVM.consumeUpdateDownloadEvent(event)) {
                 return@collect
             }
-
             when (event) {
                 is PermissionsResultEvent -> {
                     systemAlertWindow = Permission.SYSTEM_ALERT_WINDOW.can(context)
                 }
-
                 is WindowFocusChangedEvent -> {
                     mainVM.isVPNConnected = NetworkHelper.isVPNConnected(context)
                     mainVM.ip4s = NetworkHelper.getDeviceIP4s().filter { it.isNotEmpty() }
@@ -43,9 +38,7 @@ fun HomePage(
             }
         }
     }
-
     UpdateDialog(updateVM)
-
     PScaffold(
         topBar = { TopBarHome(navController, peerVM) },
     ) { paddingValues ->
@@ -65,23 +58,8 @@ fun HomePage(
                                 AlertType.WARNING,
                             )
                         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     }
                 }
-
                 item {
                     HomeWeb(context, navController, mainVM, webEnabled)
                     VerticalSpace(dp = 16.dp)

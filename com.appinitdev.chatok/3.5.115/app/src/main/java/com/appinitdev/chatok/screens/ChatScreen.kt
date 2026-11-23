@@ -1,4 +1,3 @@
-
 @Composable
 fun ChatScreen(
     navController: NavController,
@@ -10,79 +9,63 @@ fun ChatScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     var showUserDialog by remember { mutableStateOf(false) }
     var selectedUser by remember { mutableStateOf<UserData?>(null) }
-    
     val notLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) {}
-    
     LaunchedEffect(key1 = true) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             notLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
-
     val myStoryVm = viewModel.stories.filter { it.userId == state.userData?.userId }
     val myStory = if (myStoryVm.isEmpty()) listOf(Story()) else myStoryVm
     val stories = viewModel.stories.filter { it.userId != state.userData?.userId }
-    
     val isSearchingRandom by viewModel.isSearchingRandom.collectAsState()
     var showLoading by remember { mutableStateOf(false) }
-    
     val chats = viewModel.chats
     val solicitudesRecibidas = viewModel.solicitudesRecibidas
     val solicitudesEnviadas = viewModel.solicitudesEnviadas
     var searchText by rememberSaveable { mutableStateOf("") }
-    
     val filteredChats = if (searchText.isBlank()) chats else {
         chats.filter {
             val otherUser = if (it.user1?.userId == state.userData?.userId) it.user2 else it.user1
             otherUser?.username.orEmpty().contains(searchText, ignoreCase = true)
         }
     }
-
     val filteredSolicitudesRecibidas = if (searchText.isBlank()) solicitudesRecibidas else {
         solicitudesRecibidas.filter {
             val otherUser = if (it.user1?.userId == state.userData?.userId) it.user2 else it.user1
             otherUser?.username.orEmpty().contains(searchText, ignoreCase = true)
         }
     }
-
     val filteredSolicitudesEnviadas = if (searchText.isBlank()) solicitudesEnviadas else {
         solicitudesEnviadas.filter {
             val otherUser = if (it.user1?.userId == state.userData?.userId) it.user2 else it.user1
             otherUser?.username.orEmpty().contains(searchText, ignoreCase = true)
         }
     }
-
     var selectionMode by remember { mutableStateOf(false) }
     var isUploading by remember { mutableStateOf(false) }
     val selectedItem = remember { mutableStateListOf<String>() }
     var curStory by remember { mutableStateOf(Story()) }
     var showStory by remember { mutableStateOf(false) }
     var imgUri by remember { mutableStateOf<Uri?>(null) }
-    
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
         imgUri = it
     }
-
     val brush = Brush.linearGradient(listOf(Color(0xFF238CDD), Color(0xFF1952C4)))
     val storyBrush = Brush.sweepGradient(listOf(Color(0xFF78BEDA), Color(0xFF2458DB), Color(0xFFFF71FF), Color(0xFF8B2ECF), Color(0xFF3F3FD3), Color(0xFF78BEDA)))
-
     var showSearch by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
-    
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedScreen by remember { mutableStateOf("chats") }
-
     val comp by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.upload))
     val searchComp by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.animation1))
-
     LaunchedEffect(state.userData?.userId) {
         if (state.userData?.userId != null) {
             viewModel.observeNotifications()
         }
     }
-
     val shouldHandleBack = drawerState.isOpen || showDialog || showStory || showSearch || selectionMode || imgUri != null
     val context = LocalContext.current
     BackHandler(enabled = true) {
@@ -97,11 +80,9 @@ fun ChatScreen(
             selectionMode = false
             imgUri = null
         } else {
-            
             (context as? android.app.Activity)?.finish()
         }
     }
-
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -111,7 +92,6 @@ fun ChatScreen(
                 modifier = Modifier.fillMaxHeight().width(300.dp)
             ) {
                 Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
-                    
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -142,15 +122,11 @@ fun ChatScreen(
                             textAlign = TextAlign.Center
                         )
                     }
-                    
                     Spacer(Modifier.height(32.dp))
-                    
-                    
                     val chatsCount = viewModel.chats.size
                     val recibidasCount = viewModel.solicitudesRecibidas.size
                     val enviadasCount = viewModel.solicitudesEnviadas.size
                     val notificationsCount = viewModel.notifications.size
-
                     DrawerItem(
                         icon = Icons.Rounded.Chat, 
                         label = stringResource(R.string.chats), 
@@ -161,14 +137,12 @@ fun ChatScreen(
                         searchText = ""
                         scope.launch { drawerState.close() }
                     }
-                    
                     Text(
                         text = stringResource(R.string.solicitudes),
                         style = MaterialTheme.typography.labelMedium,
                         color = Color.Gray,
                         modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
                     )
-
                     DrawerItem(
                         icon = Icons.AutoMirrored.Rounded.CallReceived, 
                         label = stringResource(R.string.recibidas), 
@@ -179,7 +153,6 @@ fun ChatScreen(
                         searchText = ""
                         scope.launch { drawerState.close() }
                     }
-
                     DrawerItem(
                         icon = Icons.AutoMirrored.Rounded.CallMade,
                         label = stringResource(R.string.enviadas), 
@@ -190,9 +163,7 @@ fun ChatScreen(
                         searchText = ""
                         scope.launch { drawerState.close() }
                     }
-
                     Spacer(Modifier.height(16.dp))
-
                     DrawerItem(
                         icon = Icons.Rounded.Notifications, 
                         label = stringResource(R.string.notificaciones), 
@@ -244,13 +215,8 @@ fun ChatScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
-                
-                
                 Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
-
                 Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-                    
-                    
                     Header(
                         state = state,
                         viewModel = viewModel,
@@ -272,8 +238,6 @@ fun ChatScreen(
                         navController = navController,
                         onOpenDrawer = { scope.launch { drawerState.open() } }
                     )
-
-                    
                     when (selectedScreen) {
                         "chats" -> {
                             if (isLoading) {
@@ -334,14 +298,11 @@ fun ChatScreen(
                             )
                         }
                     }
-                    
                     if (state.userData?.isVip != true) {
                         AdBanner(modifier = Modifier.padding(vertical = 4.dp), isVip = false)
                     }
                 }
             }
-
-            
             if (showDialog) {
                 DeleteDialog(
                     hideDialog = {
@@ -357,7 +318,6 @@ fun ChatScreen(
                     }
                 )
             }
-
             if (showStory) {
                 StoryDialog(
                     state,
@@ -367,7 +327,6 @@ fun ChatScreen(
                     deleteStory = { viewModel.deleteStory(curStory, it) }
                 )
             }
-
             if (state.showDialog) {
                 CustomDialogBox(
                     state = state,
@@ -380,7 +339,6 @@ fun ChatScreen(
                     setEmail = { viewModel.setSrEmail(it) }
                 )
             }
-
             if (showLoading || isSearchingRandom) {
                 Dialog(
                     onDismissRequest = {},
@@ -417,7 +375,6 @@ fun ChatScreen(
                         }
                     }
                 }
-
                 LaunchedEffect(key1 = showLoading) {
                     if (showLoading) {
                         delay(2000)
@@ -429,7 +386,6 @@ fun ChatScreen(
                     }
                 }
             }
-
             if (showUserDialog && selectedUser != null) {
                 UserPopup(
                     user = selectedUser ?: UserData(),
@@ -449,7 +405,6 @@ fun ChatScreen(
                     viewModel = viewModel
                 )
             }
-
         imgUri?.let { uri ->
             StoryPreview(
                 uri = uri, 
@@ -469,7 +424,6 @@ fun ChatScreen(
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Header(
@@ -541,9 +495,7 @@ fun Header(
                         IconButton(onClick = onOpenDrawer) {
                             Icon(Icons.Rounded.Menu, contentDescription = "Menu", tint = Color.White)
                         }
-                        
                         Spacer(modifier = Modifier.width(8.dp))
-
                         Column(modifier = Modifier.weight(1f)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(text = stringResource(R.string.hola), style = MaterialTheme.typography.labelMedium, color = Color.Gray)
@@ -557,7 +509,6 @@ fun Header(
                             }
                             Text(text = state.userData?.username ?: stringResource(R.string.usuario), style = MaterialTheme.typography.titleLarge, color = Color.White, fontWeight = FontWeight.ExtraBold)
                         }
-                        
                         IconButton(onClick = { onSearchToggle(true) }, modifier = Modifier.background(Color.White.copy(alpha = 0.1f), CircleShape)) {
                             Icon(Icons.Default.Search, contentDescription = null, tint = Color.White)
                         }
@@ -601,7 +552,6 @@ fun Header(
         }
     }
 }
-
 @Composable
 fun DrawerItem(
     icon: ImageVector, 
@@ -648,7 +598,6 @@ fun DrawerItem(
         }
     }
 }
-
 @Composable
 fun ChatListContent(
     showSearch: Boolean,
@@ -669,7 +618,6 @@ fun ChatListContent(
     onChatClick: (ChatUserData, String) -> Unit
 ) {
     Column {
-        
         AnimatedVisibility(visible = !showSearch) {
             StoriesRow(
                 isUploading = isUploading,
@@ -683,10 +631,7 @@ fun ChatListContent(
                 storyBrush = storyBrush
             )
         }
-
         Spacer(modifier = Modifier.height(8.dp))
-        
-        
         Box(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             contentAlignment = Alignment.CenterEnd
@@ -697,10 +642,7 @@ fun ChatListContent(
                 icon = Icons.Rounded.Autorenew
             )
         }
-
         Spacer(modifier = Modifier.height(16.dp))
-
-        
         Card(
             modifier = Modifier.fillMaxSize(),
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
@@ -716,7 +658,6 @@ fun ChatListContent(
                         modifier = Modifier.padding(24.dp)
                     )
                 }
-                
                 if (filteredChats.isEmpty()) {
                     item {
                         Box(modifier = Modifier.fillMaxWidth().padding(48.dp), contentAlignment = Alignment.Center) {
@@ -724,7 +665,6 @@ fun ChatListContent(
                         }
                     }
                 }
-
                 items(filteredChats, key = { it.chatId }) { chat: ChatData ->
                     val chatUser: ChatUserData = if (chat.user1?.userId != state.userData?.userId) {
                         chat.user1 ?: ChatUserData(username = "Unknown")
@@ -746,7 +686,6 @@ fun ChatListContent(
         }
     }
 }
-
 @Composable
 fun SolicitudesContent(
     title: String,
@@ -770,7 +709,6 @@ fun SolicitudesContent(
                     modifier = Modifier.padding(24.dp)
                 )
             }
-            
             if (currentList.isEmpty()) {
                 item {
                     Box(modifier = Modifier.fillMaxWidth().padding(48.dp), contentAlignment = Alignment.Center) {
@@ -778,7 +716,6 @@ fun SolicitudesContent(
                     }
                 }
             }
-
             items(currentList, key = { it.chatId }) { chat: ChatData ->
                 val chatUser: ChatUserData = if (chat.user1?.userId != state.userData?.userId) {
                     chat.user1 ?: ChatUserData(username = "Unknown")
@@ -799,12 +736,10 @@ fun SolicitudesContent(
         }
     }
 }
-
 @Composable
 fun NotificationsContent(viewModel: ChatViewModel) {
     val notifications = viewModel.notifications
     val formatter = remember { SimpleDateFormat("hh:mm a", Locale.getDefault()) }
-
     Card(
         modifier = Modifier.fillMaxSize(),
         shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
@@ -828,7 +763,6 @@ fun NotificationsContent(viewModel: ChatViewModel) {
                     }
                 }
             }
-
             if (notifications.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(stringResource(R.string.no_notificaciones), color = Color.Gray)
@@ -843,7 +777,6 @@ fun NotificationsContent(viewModel: ChatViewModel) {
         }
     }
 }
-
 @Composable
 fun NotificationItem(notification: NotificationEntity, formatter: SimpleDateFormat) {
     Row(
@@ -865,7 +798,6 @@ fun NotificationItem(notification: NotificationEntity, formatter: SimpleDateForm
         Text(text = formatter.format(Date(notification.time)), style = MaterialTheme.typography.labelSmall, color = Color.DarkGray)
     }
 }
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChatItem(
@@ -879,7 +811,6 @@ fun ChatItem(
 ) {
     val formatter = remember { SimpleDateFormat("hh:mm a", Locale.getDefault()) }
     val isUnread = (if (chat.user1?.userId == state.userData?.userId) chat.user1?.unread ?: 0 else chat.user2?.unread ?: 0) > 0
-    
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -899,9 +830,7 @@ fun ChatItem(
                 Box(modifier = Modifier.size(14.dp).background(Color(0xFF4CAF50), CircleShape).border(2.dp, Color(0xFF1A1C1E), CircleShape))
             }
         }
-
         Spacer(modifier = Modifier.width(16.dp))
-
         Column(modifier = Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -929,9 +858,7 @@ fun ChatItem(
                     color = if (isUnread) Color(0xFF238CDD) else Color.Gray
                 )
             }
-
             Spacer(modifier = Modifier.height(4.dp))
-
             Row(verticalAlignment = Alignment.CenterVertically) {
                 if (userData.typing) {
                     Text(text = stringResource(R.string.escribiendo2), color = Color(0xFF238CDD), style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold)
@@ -944,7 +871,6 @@ fun ChatItem(
                             modifier = Modifier.size(14.dp).padding(end = 4.dp)
                         )
                     }
-                    
                     val lastText = when {
                         chat.last?.isDeleted == true -> stringResource(R.string.mensaje_borrado)
                         chat.last?.imgUrl?.isNotEmpty() == true -> "📷 ${stringResource(R.string.foto_preview)}"
@@ -953,7 +879,6 @@ fun ChatItem(
                         chat.last?.content?.isNotEmpty() == true -> chat.last.content
                         else -> "👋 ${stringResource(R.string.hola)}" 
                     }
-                    
                     Text(
                         text = lastText,
                         style = MaterialTheme.typography.bodySmall,
@@ -963,7 +888,6 @@ fun ChatItem(
                         modifier = Modifier.weight(1f)
                     )
                 }
-
                 if (isUnread) {
                     val count = if (chat.user1?.userId == state.userData?.userId) chat.user1?.unread ?: 0 else chat.user2?.unread ?: 0
                     Box(modifier = Modifier.size(20.dp).background(Color(0xFF238CDD), CircleShape), contentAlignment = Alignment.Center) {
@@ -974,7 +898,6 @@ fun ChatItem(
         }
     }
 }
-
 @Composable
 fun StoriesRow(
     isUploading: Boolean,
@@ -1023,7 +946,6 @@ fun StoriesRow(
                         } else {
                             Icon(Icons.Default.Add, contentDescription = null, tint = Color.White, modifier = Modifier.size(32.dp))
                         }
-                        
                         if (hasMyStory) {
                             Box(
                                 modifier = Modifier.align(Alignment.BottomEnd).size(22.dp).background(Color(0xFF238CDD), CircleShape).border(2.dp, Color.Black, CircleShape).clickable { onAddStory() },
@@ -1037,7 +959,6 @@ fun StoriesRow(
                 }
             }
         }
-        
         items(stories) { story ->
             val isViewed = story.images.all { it.viewedBy.any { viewer -> viewer.userId == state.userData?.userId } }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {

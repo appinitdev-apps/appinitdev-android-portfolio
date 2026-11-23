@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ViewFeedBottomSheet(
@@ -8,13 +7,10 @@ fun ViewFeedBottomSheet(
     LaunchedEffect(Unit) {
         feedsVM.editFetchContent.value = m.fetchContent
     }
-
     val context = LocalContext.current
     val onDismiss = {
         feedsVM.selectedItem.value = null
     }
-
-
     PModalBottomSheet(
         onDismissRequest = {
             onDismiss()
@@ -70,5 +66,3 @@ fun ViewFeedBottomSheet(
         BottomSpace()
     }
 }
-
-

@@ -1,17 +1,10 @@
-
 object ZipBrowserHelper {
     const val ZIP_SEPARATOR = "!zip!/"
-
     fun isZipPath(path: String): Boolean = path.contains(ZIP_SEPARATOR)
-
     fun getZipFilePath(path: String): String = path.substringBefore(ZIP_SEPARATOR)
-
     fun getInternalPath(path: String): String = path.substringAfter(ZIP_SEPARATOR, "")
-
     fun joinPath(zipFilePath: String, internalPath: String): String =
         "$zipFilePath$ZIP_SEPARATOR$internalPath"
-
-     
     fun getDisplayName(zipVirtualPath: String): String {
         val internalPath = getInternalPath(zipVirtualPath)
         val trimmed = internalPath.trimEnd('/')
@@ -21,22 +14,14 @@ object ZipBrowserHelper {
             trimmed.substringAfterLast("/")
         }
     }
-
-     
-
-
-
-
     fun listEntries(zipVirtualPath: String, sortBy: FileSortBy): List<DFile> {
         val zipFilePath = getZipFilePath(zipVirtualPath)
         val internalDir = getInternalPath(zipVirtualPath)
-        
         val prefix = when {
             internalDir.isEmpty() -> ""
             internalDir.endsWith("/") -> internalDir
             else -> "$internalDir/"
         }
-        
         val entries = linkedMapOf<String, DFile>()
         try {
             ZipInputStream(File(zipFilePath).inputStream().buffered()).use { zis ->
@@ -49,7 +34,6 @@ object ZipBrowserHelper {
                             val slashIndex = relative.indexOf('/')
                             when {
                                 slashIndex == -1 -> {
-                                    
                                     if (!entries.containsKey(relative)) {
                                         entries[relative] = DFile(
                                             name = relative,
@@ -64,7 +48,6 @@ object ZipBrowserHelper {
                                     }
                                 }
                                 slashIndex == relative.length - 1 -> {
-                                    
                                     val dirName = relative.dropLast(1)
                                     if (dirName.isNotEmpty() && !entries.containsKey(dirName)) {
                                         entries[dirName] = DFile(
@@ -80,7 +63,6 @@ object ZipBrowserHelper {
                                     }
                                 }
                                 else -> {
-                                    
                                     val dirName = relative.substring(0, slashIndex)
                                     if (!entries.containsKey(dirName)) {
                                         entries[dirName] = DFile(
@@ -107,13 +89,6 @@ object ZipBrowserHelper {
         }
         return entries.values.toList().sorted(sortBy)
     }
-
-     
-
-
-
-
-
     fun extractEntryToCache(context: android.content.Context, zipVirtualPath: String): File? {
         val zipFilePath = getZipFilePath(zipVirtualPath)
         val internalPath = getInternalPath(zipVirtualPath).trimEnd('/')

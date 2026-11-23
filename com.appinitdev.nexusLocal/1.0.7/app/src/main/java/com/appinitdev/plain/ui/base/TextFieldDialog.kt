@@ -1,4 +1,3 @@
-
 @Composable
 fun TextFieldDialog(
     modifier: Modifier = Modifier,
@@ -27,7 +26,6 @@ fun TextFieldDialog(
     var currentValue by remember { mutableStateOf(value) }
     var showValidationError by remember { mutableStateOf(false) }
     val displayErrorText = if (showValidationError) validationErrorText else errorText
-    
     AlertDialog(
         modifier = modifier.fillMaxWidth(),
         containerColor = MaterialTheme.colorScheme.surface,

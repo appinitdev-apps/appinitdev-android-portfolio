@@ -1,4 +1,3 @@
-
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun StoryPreview(

@@ -1,8 +1,6 @@
-
 object DialogHelper {
     private var showLoadingJob: Job? = null
     private var hideLoadingJob: Job? = null
-
     fun showMessage(
         message: String,
         duration: Int = Toast.LENGTH_SHORT,
@@ -10,7 +8,6 @@ object DialogHelper {
         val durationMs = if (duration == Toast.LENGTH_SHORT) 2000L else 3500L
         ToastManager.showInfoToast(message, durationMs)
     }
-
     fun showErrorMessage(
         message: String,
         duration: Int = Toast.LENGTH_SHORT,
@@ -18,23 +15,18 @@ object DialogHelper {
         val durationMs = if (duration == Toast.LENGTH_SHORT) 2000L else 3500L
         ToastManager.showErrorToast(message, durationMs)
     }
-
     fun showSuccess(resource: StringResource) {
         coIO { ToastManager.showSuccessToast(getComposeString(resource), 2000L) }
     }
-
     fun showMessage(resource: StringResource) {
         coIO { showMessage(getComposeString(resource)) }
     }
-
     fun showMessage(r: ApiResult) {
         ToastManager.showErrorToast(r.errorMessage())
     }
-
     fun showMessage(ex: Throwable) {
         ToastManager.showErrorToast(ex.toString())
     }
-
     fun showLoading(message: String = "") {
         hideLoadingJob?.cancel()
         showLoadingJob?.cancel()
@@ -43,7 +35,6 @@ object DialogHelper {
             sendEvent(LoadingDialogEvent(true, message))
         }
     }
-
     fun hideLoading() {
         hideLoadingJob?.cancel()
         showLoadingJob?.cancel()
@@ -52,7 +43,6 @@ object DialogHelper {
             sendEvent(LoadingDialogEvent(false))
         }
     }
-
     fun showConfirmDialog(
         title: String,
         message: String,
@@ -67,7 +57,6 @@ object DialogHelper {
             }
         }
     }
-
     fun showConfirmDialog(
         title: String,
         message: String,
@@ -77,7 +66,6 @@ object DialogHelper {
             sendEvent(ConfirmDialogEvent(title, message, Pair(getComposeString(Res.string.ok), callback), null))
         }
     }
-
     fun showErrorDialog(
         message: String,
         callback: () -> Unit = {},
@@ -86,14 +74,12 @@ object DialogHelper {
             sendEvent(ConfirmDialogEvent(getComposeString(Res.string.error), message, Pair(getComposeString(Res.string.ok), callback), null))
         }
     }
-
     fun confirmToAction(
         resource: StringResource,
         callback: () -> Unit,
     ) {
         coIO { confirmToAction(getComposeString(resource), callback) }
     }
-
     fun confirmToAction(
         message: String,
         callback: () -> Unit,
@@ -104,7 +90,6 @@ object DialogHelper {
                 dismissButton = Pair(getComposeString(Res.string.cancel)) {}))
         }
     }
-
     fun confirmToLeave(
         callback: () -> Unit,
     ) {
@@ -116,13 +101,11 @@ object DialogHelper {
                 dismissButton = Pair(getComposeString(Res.string.cancel)) {}))
         }
     }
-
     fun confirmToDelete(
         callback: () -> Unit,
     ) {
         coIO { confirmToAction(getComposeString(Res.string.confirm_to_delete), callback) }
     }
-
     fun showTextCopiedMessage(text: String) {
         if (!isTPlus()) {
             coIO {

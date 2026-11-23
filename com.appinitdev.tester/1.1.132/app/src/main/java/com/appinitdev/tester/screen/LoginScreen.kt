@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
@@ -12,24 +11,19 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
     val scrollState = rememberScrollState()
     var displayDialog by remember { mutableStateOf(false) }
     val uiState by viewModel.uiState.collectAsState()
-
     val isKeyboardOpen = WindowInsets.isImeVisible
-
     LaunchedEffect(isKeyboardOpen) {
         if (isKeyboardOpen) {
             scrollState.animateScrollTo(scrollState.maxValue)
         }
     }
-
     LaunchedEffect(Unit) {
         if (uiState !is AuthUiState.RegisterSuccess) {
             viewModel.clearState()
         }
     }
-
     val casiListo = stringResource(R.string.registro_casi_listo_por_favor_verifica_tu_correo_antes_de_iniciar_sesi_n_si_no_encuentras_el_correo_revisa_la_seccion_de_spam)
     var infoMessage by remember { mutableStateOf<String?>(null) }
-    
     LaunchedEffect(uiState) {
         if (uiState is AuthUiState.RegisterSuccess) {
             infoMessage = casiListo
@@ -51,13 +45,11 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
             else -> {}
         }
     }
-
     LaunchedEffect(showFeaturesInitial) {
         if (showFeaturesInitial == true) {
             displayDialog = true
         }
     }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -79,7 +71,6 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(48.dp))
-
             Surface(
                 modifier = Modifier.size(100.dp),
                 shape = RoundedCornerShape(24.dp),
@@ -96,16 +87,13 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Text(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Black,
                 color = MaterialTheme.colorScheme.primary
             )
-
             Text(
                 text = stringResource(R.string.pruebas_reales_usuarios_reales).uppercase(),
                 style = MaterialTheme.typography.labelMedium,
@@ -113,9 +101,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
                 color = MaterialTheme.colorScheme.secondary,
                 letterSpacing = 2.sp
             )
-
             Spacer(modifier = Modifier.height(48.dp))
-
             if (displayDialog) {
                 TesterFeaturesDialog(
                     onDismiss = {
@@ -126,7 +112,6 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
                     }
                 )
             }
-
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(28.dp),
@@ -142,9 +127,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold
                     )
-                    
                     Spacer(modifier = Modifier.height(24.dp))
-
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
@@ -154,9 +137,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
                         singleLine = true,
                         leadingIcon = { Icon(Icons.Default.Email, null) }
                     )
-
                     Spacer(modifier = Modifier.height(16.dp))
-
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
@@ -175,9 +156,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
                             }
                         }
                     )
-
                     Spacer(modifier = Modifier.height(32.dp))
-
                     if (uiState is AuthUiState.Loading) {
                         CircularProgressIndicator(modifier = Modifier.padding(8.dp))
                     } else {
@@ -195,9 +174,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
                             )
                         }
                     }
-                    
                     Spacer(modifier = Modifier.height(16.dp))
-
                     TextButton(onClick = { navController.navigate("forgot_password") }) {
                         Text(
                             text = stringResource(R.string.olvid_mi_contrase_a),
@@ -207,9 +184,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
                     }
                 }
             }
-
             Spacer(modifier = Modifier.height(24.dp))
-
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -225,7 +200,6 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
                     )
                 }
             }
-
             if (infoMessage != null) {
                 Surface(
                     color = Color(0xFFE8F5E9),
@@ -241,7 +215,6 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
                     )
                 }
             }
-
             if (uiState is AuthUiState.Error) {
                 Surface(
                     color = MaterialTheme.colorScheme.errorContainer,
@@ -256,7 +229,6 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(32.dp))
         }
     }

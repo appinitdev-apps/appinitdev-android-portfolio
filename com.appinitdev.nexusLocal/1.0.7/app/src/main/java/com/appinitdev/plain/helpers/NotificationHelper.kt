@@ -1,4 +1,3 @@
-
 object NotificationHelper {
     private fun createContentIntent(context: Context): PendingIntent {
         val intent = Intent(context, MainActivity::class.java).apply {
@@ -12,11 +11,9 @@ object NotificationHelper {
             PendingIntent.FLAG_IMMUTABLE,
         )
     }
-
     fun generateId(): Int {
         return (System.currentTimeMillis() % Int.MAX_VALUE).toInt()
     }
-
     fun ensureDefaultChannel() {
         val notificationManager = MainApp.instance.notificationManager
         if (notificationManager.getNotificationChannel(Constants.NOTIFICATION_CHANNEL_ID) == null) {
@@ -31,7 +28,6 @@ object NotificationHelper {
             )
         }
     }
-
     fun ensureChatChannel() {
         val notificationManager = MainApp.instance.notificationManager
         if (notificationManager.getNotificationChannel(Constants.CHAT_NOTIFICATION_CHANNEL_ID) == null) {
@@ -44,13 +40,10 @@ object NotificationHelper {
             )
         }
     }
-
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     fun sendChatMessageNotification(context: Context, targetId: String, targetName: String, messageText: String) {
         ensureChatChannel()
-
         val notificationId = ("chat_$targetId").hashCode()
-
         val replyIntent = Intent(context, PeerChatReplyReceiver::class.java).apply {
             `package` = context.packageName
             action = Constants.ACTION_PEER_CHAT_REPLY
@@ -62,11 +55,9 @@ object NotificationHelper {
             replyIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
         )
-
         val remoteInput = RemoteInput.Builder(PeerChatReplyReceiver.KEY_TEXT_REPLY)
             .setLabel(LocaleHelper.getString(Res.string.peer_chat_type_reply))
             .build()
-
         val replyAction = NotificationCompat.Action.Builder(
             R.drawable.notification,
             LocaleHelper.getString(Res.string.peer_chat_reply),
@@ -74,7 +65,6 @@ object NotificationHelper {
         )
             .addRemoteInput(remoteInput)
             .build()
-
         val notification = NotificationCompat.Builder(context, Constants.CHAT_NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.notification)
             .setContentTitle(targetName)
@@ -84,10 +74,8 @@ object NotificationHelper {
             .setContentIntent(createContentIntent(context))
             .addAction(replyAction)
             .build()
-
         NotificationManagerCompat.from(context).notify(notificationId, notification)
     }
-
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     fun sendWebLoginNotification(context: Context, browserName: String, browserVersion: String, osName: String, osVersion: String, clientIp: String) {
         if (!Permission.POST_NOTIFICATIONS.can(context)) return
@@ -104,7 +92,6 @@ object NotificationHelper {
             .build()
         NotificationManagerCompat.from(context).notify(generateId(), notification)
     }
-
     fun createServiceNotification(
         context: Context,
         action: String,
@@ -121,8 +108,6 @@ object NotificationHelper {
                 },
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
             )
-        
-        
         val repostPendingIntent =
             PendingIntent.getBroadcast(
                 context,
@@ -133,7 +118,6 @@ object NotificationHelper {
                 },
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
             )
-
         return NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID).apply {
             setSmallIcon(R.drawable.notification)
             setContentTitle(title)
@@ -146,7 +130,6 @@ object NotificationHelper {
             setOngoing(true)
             setDeleteIntent(repostPendingIntent)
             if (isSPlus()) {
-                
                 foregroundServiceBehavior = NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
             }
             setContentIntent(createContentIntent(context))

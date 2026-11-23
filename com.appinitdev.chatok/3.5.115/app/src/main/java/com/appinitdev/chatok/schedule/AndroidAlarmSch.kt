@@ -1,4 +1,3 @@
-
 class AndroidAlarmSch(
     private val context: Context
 ): AlarmSch {
@@ -8,7 +7,6 @@ class AndroidAlarmSch(
             putExtra("CHAT_ID", item.chatId)
             putExtra("CONTENT", item.content)
             putExtra("SENDER_ID", item.senderId)
-
         }
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
@@ -20,9 +18,7 @@ class AndroidAlarmSch(
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
             )
-
     }
-
     override fun cancel(item: AlarmItem) {
         alarmManager.cancel(PendingIntent.getBroadcast(
             context,

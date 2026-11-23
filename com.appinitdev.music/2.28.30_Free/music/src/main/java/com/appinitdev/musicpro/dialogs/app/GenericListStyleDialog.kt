@@ -1,20 +1,13 @@
-
 class GenericListStyleDialog : ScopedBottomSheetFragment() {
-
     private lateinit var binding: DialogListStyleBinding
     private lateinit var panel: PANEL
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DialogListStyleBinding.inflate(inflater, container, false)
-
         panel = PANEL.valueOf(requireArguments().getString(BundleConstants.PANEL, PANEL.SONGS.name)!!)
-
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         if (isLandscape) {
             binding.triple.visible()
             binding.fiveX.visible()
@@ -24,60 +17,48 @@ class GenericListStyleDialog : ScopedBottomSheetFragment() {
             binding.fiveX.gone()
             binding.sixX.gone()
         }
-
         highlightSelected(getLayoutModeForPanel())
-
         binding.relaxed.setOnClickListener {
             setLayoutModeForPanel(CommonPreferencesConstants.LayoutMode.LABEL_ONE)
             dismiss()
         }
-
         binding.compact.setOnClickListener {
             setLayoutModeForPanel(CommonPreferencesConstants.LayoutMode.LABEL_TWO)
             dismiss()
         }
-
         binding.single.setOnClickListener {
             setLayoutModeForPanel(CommonPreferencesConstants.LayoutMode.LIST_ONE)
             dismiss()
         }
-
         binding.listDouble.setOnClickListener {
             setLayoutModeForPanel(CommonPreferencesConstants.LayoutMode.LIST_TWO)
             dismiss()
         }
-
         binding.triple.setOnClickListener {
             setLayoutModeForPanel(CommonPreferencesConstants.LayoutMode.LIST_THREE)
             dismiss()
         }
-
         binding.twoX.setOnClickListener {
             setLayoutModeForPanel(CommonPreferencesConstants.LayoutMode.GRID_TWO)
             dismiss()
         }
-
         binding.threeX.setOnClickListener {
             setLayoutModeForPanel(CommonPreferencesConstants.LayoutMode.GRID_THREE)
             dismiss()
         }
-
         binding.fourX.setOnClickListener {
             setLayoutModeForPanel(CommonPreferencesConstants.LayoutMode.GRID_FOUR)
             dismiss()
         }
-
         binding.fiveX.setOnClickListener {
             setLayoutModeForPanel(CommonPreferencesConstants.LayoutMode.GRID_FIVE)
             dismiss()
         }
-
         binding.sixX.setOnClickListener {
             setLayoutModeForPanel(CommonPreferencesConstants.LayoutMode.GRID_SIX)
             dismiss()
         }
     }
-
     private fun highlightSelected(layoutMode: CommonPreferencesConstants.LayoutMode) {
         binding.relaxed.setUseAccentColor(layoutMode == CommonPreferencesConstants.LayoutMode.LABEL_ONE)
         binding.compact.setUseAccentColor(layoutMode == CommonPreferencesConstants.LayoutMode.LABEL_TWO)
@@ -90,7 +71,6 @@ class GenericListStyleDialog : ScopedBottomSheetFragment() {
         binding.fiveX.setUseAccentColor(layoutMode == CommonPreferencesConstants.LayoutMode.GRID_FIVE)
         binding.sixX.setUseAccentColor(layoutMode == CommonPreferencesConstants.LayoutMode.GRID_SIX)
     }
-
     private fun getLayoutModeForPanel(): CommonPreferencesConstants.LayoutMode {
         return when (panel) {
             PANEL.SONGS -> SongsPreferences.getGridSize()
@@ -111,7 +91,6 @@ class GenericListStyleDialog : ScopedBottomSheetFragment() {
             PANEL.COMPOSERS -> ComposerPreferences.getGridSize()
         }
     }
-
     private fun setLayoutModeForPanel(layoutMode: CommonPreferencesConstants.LayoutMode) {
         when (panel) {
             PANEL.SONGS -> SongsPreferences.setGridSize(layoutMode)
@@ -132,10 +111,8 @@ class GenericListStyleDialog : ScopedBottomSheetFragment() {
             PANEL.COMPOSERS -> ComposerPreferences.setGridSize(layoutMode)
         }
     }
-
     companion object {
         private const val TAG = "GenericListStyleDialog"
-
         fun newInstance(panel: PANEL): GenericListStyleDialog {
             val args = Bundle()
             args.putString(BundleConstants.PANEL, panel.name)
@@ -143,13 +120,11 @@ class GenericListStyleDialog : ScopedBottomSheetFragment() {
             fragment.arguments = args
             return fragment
         }
-
         fun FragmentManager.showListStyleDialog(panel: PANEL): GenericListStyleDialog {
             val dialog = newInstance(panel)
             dialog.show(this, TAG)
             return dialog
         }
-
         enum class PANEL(val title: String) {
             SONGS("songs"),
             ALBUMS("albums"),

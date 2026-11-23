@@ -1,6 +1,4 @@
-
 class DatePickerFragment(private val view: View) : DialogFragment(), DatePickerDialog.OnDateSetListener {
-
     override fun onCreateDialog(savedInstanceState: Bundle?): DatePickerDialog {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
@@ -8,7 +6,6 @@ class DatePickerFragment(private val view: View) : DialogFragment(), DatePickerD
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         return DatePickerDialog(requireActivity(), this, year, month, day)
     }
-
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         val selectedDate = Calendar.getInstance()
         selectedDate.set(Calendar.YEAR, year)

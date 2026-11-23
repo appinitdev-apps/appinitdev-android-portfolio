@@ -1,4 +1,3 @@
-
 enum class BluetoothActionType {
     CONNECTION_STATE,
     CHARACTERISTIC_READ,

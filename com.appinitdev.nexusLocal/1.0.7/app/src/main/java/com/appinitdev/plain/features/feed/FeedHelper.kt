@@ -1,32 +1,25 @@
-
 object FeedHelper {
     private val feedDao: FeedDao by lazy {
         AppDatabase.instance.feedDao()
     }
-
     fun getAll(): List<DFeed> {
         return feedDao.getAll()
     }
-
     fun getFeedCounts(): List<DFeedCount> {
         return feedDao.getFeedCounts()
     }
-
     fun getById(id: String): DFeed? {
         return feedDao.getById(id)
     }
-
     fun getByUrl(url: String): DFeed? {
         return feedDao.getByUrl(url)
     }
-
     fun addAsync(updateItem: DFeed.() -> Unit): String {
         val item = DFeed()
         updateItem(item)
         feedDao.insert(item)
         return item.id
     }
-
     fun updateAsync(
         id: String,
         updateItem: DFeed.() -> Unit,
@@ -37,7 +30,6 @@ object FeedHelper {
         feedDao.update(item)
         return id
     }
-
     fun deleteAsync(ids: Set<String>) {
         ids.forEach {
             FeedFetchWorker.errorMap.remove(it)
@@ -45,7 +37,6 @@ object FeedHelper {
         }
         feedDao.delete(ids)
     }
-
     fun importAsync(reader: Reader) {
         val feedList = mutableListOf<DFeed>()
         val opml = OpmlParser().parse(reader)
@@ -72,11 +63,9 @@ object FeedHelper {
                 }
             }
         }
-
         val urls = getAll().map { it.url }
         feedDao.insert(*feedList.distinctBy { it.url }.filter { !urls.contains(it.url) }.toTypedArray())
     }
-
     fun exportAsync(writer: Writer) {
         val feeds = getAll()
         val result =
@@ -105,7 +94,6 @@ object FeedHelper {
         writer.write(result)
         writer.close()
     }
-
     suspend fun fetchAsync(url: String): RssChannel {
         val r = HttpClientManager.httpClient().get(url)
         if (r.status != HttpStatusCode.OK) {

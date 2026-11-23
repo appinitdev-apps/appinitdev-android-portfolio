@@ -1,20 +1,16 @@
-
 abstract class BaseMediaContentHelper {
     protected abstract val uriExternal: Uri
     protected abstract fun buildBaseWhere(filterFields: List<FilterField>): ContentWhere
     protected abstract fun getProjection(): Array<String>
     protected abstract val mediaType: MediaType
-
     fun getItemUri(id: String): Uri {
         return Uri.withAppendedPath(uriExternal, id)
     }
-
     suspend fun countAsync(context: Context, query: String): Int {
         return buildWheres(query).sumOf { where ->
             context.contentResolver.count(uriExternal, where)
         }
     }
-
     private suspend fun buildWhere(query: String): ContentWhere {
         val fields = QueryHelper.parseAsync(query)
         val where = buildBaseWhere(fields)
@@ -24,7 +20,6 @@ abstract class BaseMediaContentHelper {
         }
         return where
     }
-
     private suspend fun buildWheres(query: String): List<ContentWhere> {
         val fields = QueryHelper.parseAsync(query)
         val wheres = mutableListOf<ContentWhere>()
@@ -44,10 +39,8 @@ abstract class BaseMediaContentHelper {
         } else {
             wheres.add(where)
         }
-
         return wheres.ifEmpty { listOf(ContentWhere()) }
     }
-
     suspend fun getPagingCursorAsync(
         context: Context,
         query: String,
@@ -64,7 +57,6 @@ abstract class BaseMediaContentHelper {
             sortBy,
         )
     }
-
     suspend fun getIdsAsync(
         context: Context,
         query: String,
@@ -75,7 +67,6 @@ abstract class BaseMediaContentHelper {
             cursor.getStringValue(BaseColumns._ID, cache)
         }?.toSet() ?: emptySet()
     }
-
     suspend fun getTrashedIdsAsync(
         context: Context,
         query: String,
@@ -86,7 +77,6 @@ abstract class BaseMediaContentHelper {
             cursor.getStringValue(BaseColumns._ID, cache)
         }?.toSet() ?: emptySet()
     }
-
     protected suspend fun getSearchCursorAsync(
         context: Context,
         query: String,
@@ -95,7 +85,6 @@ abstract class BaseMediaContentHelper {
             uriExternal, getProjection(), buildWhere(query)
         )
     }
-
     fun deleteRecordsAndFilesByIdsAsync(
         context: Context,
         ids: Set<String>,
@@ -112,7 +101,6 @@ abstract class BaseMediaContentHelper {
                 val path = cursor.getStringValue(MediaStore.MediaColumns.DATA, cache)
                 paths.add(path)
                 try {
-                    
                     val f = File(path)
                     if (f.deleteRecursively()) {
                         context.contentResolver.delete(
@@ -126,10 +114,8 @@ abstract class BaseMediaContentHelper {
                 }
             }
         }
-
         return paths
     }
-
     fun getPathsByIdsAsync(
         context: Context,
         ids: Set<String>,
@@ -144,17 +130,14 @@ abstract class BaseMediaContentHelper {
                 paths.add(path)
             }
         }
-
         return paths
     }
-
     @RequiresApi(Build.VERSION_CODES.R)
     fun trashByIdsAsync(
         context: Context,
         ids: Set<String>,
     ) {
         val contentValues = ContentValues().apply {
-
             put(MediaStore.MediaColumns.IS_TRASHED, 1)
         }
         ids.forEach { id ->
@@ -165,14 +148,12 @@ abstract class BaseMediaContentHelper {
             }
         }
     }
-
     @RequiresApi(Build.VERSION_CODES.R)
     fun restoreByIdsAsync(
         context: Context,
         ids: Set<String>,
     ) {
         val contentValues = ContentValues().apply {
-
             put(MediaStore.MediaColumns.IS_TRASHED, 0)
         }
         ids.forEach { id ->
@@ -183,11 +164,8 @@ abstract class BaseMediaContentHelper {
             }
         }
     }
-
     fun getBucketsAsync(context: Context): List<DMediaBucket> {
         val bucketMap = mutableMapOf<String, DMediaBucket>()
-
-        
         val projection =
             arrayOf(
                 MediaStore.MediaColumns.BUCKET_ID,
@@ -195,8 +173,6 @@ abstract class BaseMediaContentHelper {
                 MediaStore.MediaColumns.SIZE,
                 MediaStore.MediaColumns.DATA,
             )
-
-        
         context.contentResolver.query(
             uriExternal,
             projection,
@@ -223,7 +199,6 @@ abstract class BaseMediaContentHelper {
                 bucketMap[bucketId] = DMediaBucket(bucketId, bucketName, 1, size, mutableListOf(path))
             }
         }
-
         return bucketMap.values.sortedBy { it.name.toSortName() }
     }
 }

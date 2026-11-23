@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AudioPlaylistPage(audioPlaylistVM: AudioPlaylistViewModel, onDismissRequest: () -> Unit) {
@@ -11,7 +10,6 @@ fun AudioPlaylistPage(audioPlaylistVM: AudioPlaylistViewModel, onDismissRequest:
     val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
         scope.launch(Dispatchers.IO) { audioPlaylistVM.reorder(context, from.index, to.index) }
     }
-
     if (showClearConfirmDialog) {
         AlertDialog(
             containerColor = MaterialTheme.colorScheme.surface,
@@ -27,7 +25,6 @@ fun AudioPlaylistPage(audioPlaylistVM: AudioPlaylistViewModel, onDismissRequest:
             dismissButton = { TextButton(onClick = { showClearConfirmDialog = false }) { Text(stringResource(Res.string.cancel)) } },
         )
     }
-
     PModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column {
             PBottomSheetTopAppBar(

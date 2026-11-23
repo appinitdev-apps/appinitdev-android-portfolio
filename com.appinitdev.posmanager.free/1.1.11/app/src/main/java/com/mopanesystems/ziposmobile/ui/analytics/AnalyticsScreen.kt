@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnalyticsScreen() {
@@ -8,10 +7,8 @@ fun AnalyticsScreen() {
     var averageTransaction by remember { mutableStateOf(0.0) }
     var topProducts by remember { mutableStateOf(listOf<TopProduct>()) }
     var customerAnalytics by remember { mutableStateOf(listOf<com.mopanesystems.ziposmobile.data.model.CustomerAnalytics>()) }
-
     val periods = listOf("Today", "This Week", "This Month", "This Year")
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnalyticsScreenCompose(
@@ -26,13 +23,10 @@ fun AnalyticsScreenCompose(
     val totalRefunds by viewModel.totalRefunds.observeAsState(0)
     val isLoading by viewModel.isLoading.observeAsState(false)
     val errorMessage by viewModel.errorMessage.observeAsState()
-
-
     val todayStr = stringResource(R.string.today)
     val thisWeekStr = stringResource(R.string.this_week)
     val thisMonthStr = stringResource(R.string.this_month)
     val thisYearStr = stringResource(R.string.this_year)
-
     var selectedPeriod by remember { mutableStateOf("daily") }
     val periods = listOf(
         "daily" to todayStr,
@@ -46,8 +40,6 @@ fun AnalyticsScreenCompose(
             .fillMaxSize()
             .padding(12.dp)
     ) {
-        
-
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
@@ -75,10 +67,7 @@ fun AnalyticsScreenCompose(
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(16.dp))
-
-        
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -93,19 +82,7 @@ fun AnalyticsScreenCompose(
                 )
             }
         }
-
         Spacer(modifier = Modifier.height(8.dp))
-
-        
-
-         
-
-
-
-
-
-
-
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -121,9 +98,7 @@ fun AnalyticsScreenCompose(
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold
                         )
-
                         Spacer(modifier = Modifier.height(8.dp))
-
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement =Arrangement.spacedBy(8.dp)
@@ -145,7 +120,6 @@ fun AnalyticsScreenCompose(
                                     .fillMaxHeight()
                             )
                         }
-
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -176,16 +150,10 @@ fun AnalyticsScreenCompose(
                     "monthly" -> viewModel.createMonthlySalesChartData()
                     else  -> viewModel.createAnnualSalesChartData()
                 }
-
                 lineData?.let {
                     SalesTrendChart(lineData = it)
                 }
-
-
-
-
             }
-
             item {
                 Text(
                     text = stringResource(R.string.top_products),
@@ -193,43 +161,19 @@ fun AnalyticsScreenCompose(
                     modifier = Modifier.padding(16.dp)
                 )
             }
-
-
             items(topProducts) { product ->
                 num=num+1
                 TopProductCardCompose(product, "#${num}  ")
             }
             num=0
-
-             
-
-
-
-
-
-
-
-
-
-
         }
-        
-
         Spacer(modifier = Modifier.height(16.dp))
-
-        
-
-
-        
         errorMessage?.let { message ->
             LaunchedEffect(message) {
-                
             }
         }
-
     }
 }
-
 @Composable
 fun MetricCard(
     title: String,
@@ -239,7 +183,6 @@ fun MetricCard(
 ) {
     Card(
         modifier = modifier,
-
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -262,7 +205,6 @@ fun MetricCard(
         }
     }
 }
-
 @Composable
 fun TopProductCard(product: TopProduct) {
     Card(
@@ -288,7 +230,6 @@ fun TopProductCard(product: TopProduct) {
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
-
             Text(
                 text = "$${String.format("%.2f", product.revenue)}",
                 style = MaterialTheme.typography.titleMedium,
@@ -298,7 +239,6 @@ fun TopProductCard(product: TopProduct) {
         }
     }
 }
-
 @Composable
 fun CustomerAnalyticsCard(customer: com.mopanesystems.ziposmobile.data.model.CustomerAnalytics) {
     Card(
@@ -329,7 +269,6 @@ fun CustomerAnalyticsCard(customer: com.mopanesystems.ziposmobile.data.model.Cus
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-
             Text(
                 text = "$${String.format("%.2f", customer.totalSpent)}",
                 style = MaterialTheme.typography.titleMedium,
@@ -339,14 +278,12 @@ fun CustomerAnalyticsCard(customer: com.mopanesystems.ziposmobile.data.model.Cus
         }
     }
 }
-
 data class TopProduct(
     val id: String,
     val name: String,
     val quantitySold: Int,
     val revenue: Double,
 )
-
 @Composable
 fun TopProductCardCompose(
     product: com.mopanesystems.ziposmobile.data.model.ProductPerformance,
@@ -362,14 +299,12 @@ fun TopProductCardCompose(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Text(
                 text = number, 
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.secondary
             )
-
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -382,9 +317,7 @@ fun TopProductCardCompose(
                     text = stringResource(R.string.quantity) +" ${product.quantitySold}",
                     style = MaterialTheme.typography.bodyMedium
                 )
-
             }
-
             Text(
                 text = formatCurrency(product.revenue),
                 style = MaterialTheme.typography.titleMedium,
@@ -394,7 +327,6 @@ fun TopProductCardCompose(
         }
     }
 }
-
 @Composable
 fun CustomerAnalyticsCardCompose(customer: com.mopanesystems.ziposmobile.data.model.CustomerAnalytics) {
     Card(
@@ -425,7 +357,6 @@ fun CustomerAnalyticsCardCompose(customer: com.mopanesystems.ziposmobile.data.mo
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-
             Text(
                 text = formatCurrency(customer.totalSpent),
                 style = MaterialTheme.typography.titleMedium,
@@ -435,9 +366,7 @@ fun CustomerAnalyticsCardCompose(customer: com.mopanesystems.ziposmobile.data.mo
         }
     }
 }
-
 fun formatCurrency(amount: BigDecimal): String {
     val formatter = NumberFormat.getCurrencyInstance(Locale.US)
     return formatter.format(amount)
 }
-

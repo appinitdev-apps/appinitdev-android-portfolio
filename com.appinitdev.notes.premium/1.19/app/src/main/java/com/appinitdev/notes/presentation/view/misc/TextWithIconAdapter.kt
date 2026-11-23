@@ -1,13 +1,10 @@
-
 class TextWithIconAdapter<T>(
     context: Context,
     objects: MutableList<T>,
     private val getText: (T) -> String,
     private val getIconResId: (T) -> Int,
 ) : ArrayAdapter<T>(context, R.layout.simple_list_item_1, R.id.text1, objects) {
-
     private var initialPaddingStart: Int? = null
-
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         return (super.getView(position, convertView, parent) as TextView).apply {
             if (initialPaddingStart == null) {

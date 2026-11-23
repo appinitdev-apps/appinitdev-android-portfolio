@@ -1,4 +1,3 @@
-
 internal fun TagsViewModel.removeFromTags(ids: Set<String>, tagIds: Set<String>) {
     viewModelScope.launch(Dispatchers.IO) {
         for (tagId in tagIds) {
@@ -13,7 +12,6 @@ internal fun TagsViewModel.removeFromTags(ids: Set<String>, tagIds: Set<String>)
         loadAsync()
     }
 }
-
 internal fun TagsViewModel.addToTags(items: List<IData>, tagIds: Set<String>) {
     viewModelScope.launch(Dispatchers.IO) {
         for (tagId in tagIds) {
@@ -37,7 +35,6 @@ internal fun TagsViewModel.addToTags(items: List<IData>, tagIds: Set<String>) {
         loadAsync()
     }
 }
-
 internal suspend fun TagsViewModel.toggleTagAsync(data: IData, tagId: String) {
     val tagIds = tagsMapFlow.value[data.id]?.map { it.tagId } ?: emptyList()
     try {

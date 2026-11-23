@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DocsPageEffects(
@@ -10,7 +9,6 @@ internal fun DocsPageEffects(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val sharedFlow = Channel.sharedFlow
-
     LaunchedEffect(Unit) {
         docsVM.hasPermission.value = AppFeatureType.FILES.hasPermission(context)
         if (docsVM.hasPermission.value) {
@@ -23,7 +21,6 @@ internal fun DocsPageEffects(
             }
         }
     }
-
     LaunchedEffect(sharedFlow) {
         sharedFlow.collect { event ->
             if (event is PermissionsResultEvent) {
@@ -35,7 +32,6 @@ internal fun DocsPageEffects(
             }
         }
     }
-
     LaunchedEffect(docsState.dragSelectState.selectMode, !context.isGestureInteractionMode()) {
         if (docsState.dragSelectState.selectMode || !context.isGestureInteractionMode()) {
             docsState.scrollBehavior.reset()

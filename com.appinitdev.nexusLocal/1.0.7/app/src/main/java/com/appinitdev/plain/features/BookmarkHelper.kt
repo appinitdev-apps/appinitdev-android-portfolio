@@ -1,22 +1,15 @@
-
 object BookmarkHelper {
-
-    
-
     fun getAllGroups(): List<DBookmarkGroup> {
         return AppDatabase.instance.bookmarkGroupDao().getAll()
     }
-
     fun getGroupById(id: String): DBookmarkGroup? {
         return AppDatabase.instance.bookmarkGroupDao().getById(id)
     }
-
     fun createGroup(name: String): DBookmarkGroup {
         val group = DBookmarkGroup().apply { this.name = name }
         AppDatabase.instance.bookmarkGroupDao().insert(group)
         return group
     }
-
     fun updateGroup(id: String, block: DBookmarkGroup.() -> Unit): DBookmarkGroup? {
         val group = AppDatabase.instance.bookmarkGroupDao().getById(id) ?: return null
         group.apply(block)
@@ -24,10 +17,8 @@ object BookmarkHelper {
         AppDatabase.instance.bookmarkGroupDao().update(group)
         return group
     }
-
     fun deleteGroup(id: String) {
         AppDatabase.instance.bookmarkGroupDao().delete(setOf(id))
-        
         val bookmarks = AppDatabase.instance.bookmarkDao().getByGroupId(id)
         bookmarks.forEach { b ->
             b.groupId = ""
@@ -35,21 +26,12 @@ object BookmarkHelper {
             AppDatabase.instance.bookmarkDao().update(b)
         }
     }
-
-    
-
     fun getAll(): List<DBookmark> {
         return AppDatabase.instance.bookmarkDao().getAll()
     }
-
     fun getById(id: String): DBookmark? {
         return AppDatabase.instance.bookmarkDao().getById(id)
     }
-
-     
-
-
-
     fun addBookmarks(urls: List<String>, groupId: String = ""): List<DBookmark> {
         val created = mutableListOf<DBookmark>()
         urls.forEach { url ->
@@ -65,7 +47,6 @@ object BookmarkHelper {
         }
         return created
     }
-
     fun updateBookmark(id: String, block: DBookmark.() -> Unit): DBookmark? {
         val bookmark = AppDatabase.instance.bookmarkDao().getById(id) ?: return null
         bookmark.apply(block)
@@ -73,7 +54,6 @@ object BookmarkHelper {
         AppDatabase.instance.bookmarkDao().update(bookmark)
         return bookmark
     }
-
     fun deleteBookmarks(ids: Set<String>, context: Context) {
         ids.forEach { id ->
             val b = AppDatabase.instance.bookmarkDao().getById(id)
@@ -83,7 +63,6 @@ object BookmarkHelper {
         }
         AppDatabase.instance.bookmarkDao().delete(ids)
     }
-
     fun recordClick(id: String) {
         val bookmark = AppDatabase.instance.bookmarkDao().getById(id) ?: return
         bookmark.clickCount++
@@ -91,14 +70,6 @@ object BookmarkHelper {
         bookmark.updatedAt = TimeHelper.now()
         AppDatabase.instance.bookmarkDao().update(bookmark)
     }
-
-    
-
-     
-
-
-
-
     suspend fun fetchAndUpdateSingle(context: Context, bookmarkId: String): DBookmark? {
         val b = AppDatabase.instance.bookmarkDao().getById(bookmarkId) ?: return null
         return try {
@@ -119,11 +90,6 @@ object BookmarkHelper {
             null
         }
     }
-
-     
-
-
-
     suspend fun fetchMetadataAsync(context: Context, bookmarkIds: List<String>) {
         if (bookmarkIds.isEmpty()) return
         try {
@@ -143,8 +109,6 @@ object BookmarkHelper {
             LogCat.e("BookmarkHelper.fetchMetadataAsync: ${e.message}")
         }
     }
-
-     
     private suspend fun fetchPageMeta(context: Context, url: String): Pair<String?, String?> {
         return withIO {
             try {
@@ -161,7 +125,6 @@ object BookmarkHelper {
                 }
                 val html = response.bodyAsText()
                 client.close()
-
                 val title = extractTitle(html)
                 val faviconUrl = extractFaviconUrl(url, html)
                 val localPath = if (faviconUrl != null) downloadFavicon(context, faviconUrl, url) else null
@@ -172,15 +135,12 @@ object BookmarkHelper {
             }
         }
     }
-
     private fun extractTitle(html: String): String? {
-        
         val ogTitle = Regex("<meta[^>]+property=[\"']og:title[\"'][^>]+content=[\"']([^\"']+)[\"']", RegexOption.IGNORE_CASE).find(html)
         if (ogTitle != null) return ogTitle.groupValues[1].trim().take(200)
         val tag = Regex("<title[^>]*>([^<]+)</title>", RegexOption.IGNORE_CASE).find(html)
         return tag?.groupValues?.get(1)?.trim()?.take(200)
     }
-
     private fun extractFaviconUrl(pageUrl: String, html: String): String? {
         val patterns = listOf(
             "<link[^>]+rel=[\"'][^\"']*icon[^\"']*[\"'][^>]+href=[\"']([^\"']+)[\"']",
@@ -197,7 +157,6 @@ object BookmarkHelper {
             "${base.protocol}://${base.host}/favicon.ico"
         } catch (e: Exception) { null }
     }
-
     private fun resolveUrl(base: String, url: String): String {
         return try {
             when {
@@ -211,7 +170,6 @@ object BookmarkHelper {
             }
         } catch (e: Exception) { url }
     }
-
     private suspend fun downloadFavicon(context: Context, faviconUrl: String, pageUrl: String): String? {
         return try {
             withIO {
@@ -221,7 +179,6 @@ object BookmarkHelper {
                 val bytes = resp.readRawBytes()
                 client.close()
                 if (bytes.isEmpty()) return@withIO null
-
                 val ext = when {
                     faviconUrl.endsWith(".png", ignoreCase = true) -> "png"
                     faviconUrl.endsWith(".ico", ignoreCase = true) -> "ico"
@@ -241,7 +198,6 @@ object BookmarkHelper {
             null
         }
     }
-
     private fun deleteFaviconFile(context: Context, path: String) {
         try {
             if (path.startsWith("app://")) {
@@ -250,8 +206,6 @@ object BookmarkHelper {
                 File(dir.parent ?: return, rel).delete()
             }
         } catch (e: Exception) {
-            
         }
     }
-
 }

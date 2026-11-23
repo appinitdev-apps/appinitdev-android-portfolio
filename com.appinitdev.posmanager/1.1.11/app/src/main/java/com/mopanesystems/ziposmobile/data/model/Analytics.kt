@@ -1,4 +1,3 @@
-
 @Entity(tableName = "daily_sales")
 data class DailySales(
     @PrimaryKey
@@ -18,14 +17,11 @@ data class DailySales(
     val taxes: BigDecimal,
     val createdAt: LocalDateTime = LocalDateTime.now()
 ) : Identifiable, StoreScoped {
-
     val netSales: BigDecimal
         get() = totalSales - refunds - discounts
-
     val averageItemsPerTransaction: Double
         get() = if (totalTransactions > 0) totalItems.toDouble() / totalTransactions else 0.0
 }
-
 @Entity(tableName = "product_performance")
 data class ProductPerformance(
     @PrimaryKey
@@ -43,7 +39,6 @@ data class ProductPerformance(
     val rank: Int,
     val createdAt: LocalDateTime = LocalDateTime.now()
 ) : Identifiable, StoreScoped
-
 @Entity(tableName = "customer_analytics")
 data class CustomerAnalytics(
     @PrimaryKey
@@ -61,7 +56,6 @@ data class CustomerAnalytics(
     val loyaltyTier: String? = null,
     val createdAt: LocalDateTime = LocalDateTime.now()
 ) : Identifiable, StoreScoped
-
 @Entity(tableName = "refund_analytics")
 data class RefundAnalytics(
     @PrimaryKey
@@ -77,7 +71,6 @@ data class RefundAnalytics(
     val refundRate: Double, 
     val createdAt: LocalDateTime = LocalDateTime.now()
 ) : Identifiable, StoreScoped
-
 @Entity(tableName = "sync_logs")
 data class SyncLog(
     @PrimaryKey
@@ -92,14 +85,11 @@ data class SyncLog(
     override val storeId: String,
     val createdAt: LocalDateTime = LocalDateTime.now()
 ) : Identifiable, StoreScoped {
-
     val isSuccess: Boolean
         get() = status == SyncStatus.COMPLETED
-
     val isFailed: Boolean
         get() = status == SyncStatus.FAILED
 }
-
 enum class SyncType {
     PRODUCTS,
     CUSTOMERS,
@@ -108,7 +98,6 @@ enum class SyncType {
     ANALYTICS,
     FULL_SYNC
 }
-
 enum class SyncStatus {
     PENDING,
     IN_PROGRESS,

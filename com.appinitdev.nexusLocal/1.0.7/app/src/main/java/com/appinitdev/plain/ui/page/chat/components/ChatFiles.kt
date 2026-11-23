@@ -1,4 +1,3 @@
-
 @Composable
 fun ChatFiles(
     context: Context,
@@ -13,13 +12,11 @@ fun ChatFiles(
     val currentPlayingPath = audioPlaylistVM.selectedPath
     var showAudioPlayer by remember { mutableStateOf(false) }
     val downloadProgressMap by DownloadQueue.downloadProgress.collectAsState(mapOf())
-
     LaunchedEffect(currentPlayingPath.value) {
         if (showAudioPlayer) {
             showAudioPlayer = currentPlayingPath.value.isNotEmpty()
         }
     }
-
     Column(
         Modifier
             .padding(horizontal = 16.dp)
@@ -42,7 +39,6 @@ fun ChatFiles(
             )
         }
     }
-
     if (showAudioPlayer) {
         AudioPlayerPage(
             audioPlaylistVM,

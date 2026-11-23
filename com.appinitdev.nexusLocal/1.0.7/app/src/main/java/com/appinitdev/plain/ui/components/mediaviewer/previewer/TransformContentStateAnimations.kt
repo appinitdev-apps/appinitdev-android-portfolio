@@ -1,4 +1,3 @@
-
 suspend fun TransformContentState.notifyEnterChanged() {
     scope.launch {
         listOf(
@@ -11,7 +10,6 @@ suspend fun TransformContentState.notifyEnterChanged() {
         ).awaitAll()
     }
 }
-
 suspend fun TransformContentState.exitTransform(
     animationSpec: AnimationSpec<Float>? = null
 ) = suspendCoroutine<Unit> { c ->
@@ -30,7 +28,6 @@ suspend fun TransformContentState.exitTransform(
         c.resume(Unit)
     }
 }
-
 suspend fun TransformContentState.enterTransform(
     itemState: TransformItemState,
     animationSpec: AnimationSpec<Float>? = null
@@ -51,7 +48,6 @@ suspend fun TransformContentState.enterTransform(
         onActionTarget = null
     }
 }
-
 suspend fun TransformContentState.reset(animationSpec: AnimationSpec<Float>? = null) {
     val currentAnimationSpec = animationSpec ?: defaultAnimationSpec
     listOf(

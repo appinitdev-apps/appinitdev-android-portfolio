@@ -1,4 +1,3 @@
-
 @Composable
 fun MediaHugeImage(
     modifier: Modifier = Modifier, imageDecoder: ImageDecoder,
@@ -10,14 +9,12 @@ fun MediaHugeImage(
     val scope = rememberCoroutineScope()
     val state = remember { HugeImageState(imageDecoder, scope) }
     state.scale = scale; state.offsetX = offsetX; state.offsetY = offsetY
-
     LaunchedEffect(state.bSize, state.rSize) {
         onSizeChange(SizeChangeContent(defaultSize = state.uSize, containerSize = state.bSize, maxScale = state.maxScale))
     }
     LaunchedEffect(state.rSize) { state.updateSampleSize() }
     LaunchedEffect(state.zeroInSampleSize, state.inSampleSize, state.needRenderHeightTexture) { state.updateBackgroundBitmap() }
     DisposableEffect(Unit) { onDispose { state.bitmap?.recycle(); state.bitmap = null } }
-
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
             imageDecoder.startRenderQueueAsync { scope.launch { state.renderUpdateTimeStamp = System.currentTimeMillis() } }
@@ -33,7 +30,6 @@ fun MediaHugeImage(
             scope.launch { state.canvasAlpha.animateTo(1F, DEFAULT_CROSS_FADE_ANIMATE_SPEC); onMounted() }
         }
     }
-
     Canvas(
         modifier = modifier.alpha(state.canvasAlpha.value).fillMaxSize()
             .graphicsLayer { clip = boundClip }

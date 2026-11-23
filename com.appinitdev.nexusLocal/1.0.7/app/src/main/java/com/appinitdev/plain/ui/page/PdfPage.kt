@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PdfPage(
@@ -8,7 +7,6 @@ fun PdfPage(
 ) {
     val context = LocalContext.current
     val title = fileName.ifEmpty { uri.getFileName(context) }
-
     PScaffold(
         topBar = {
             PTopAppBar(

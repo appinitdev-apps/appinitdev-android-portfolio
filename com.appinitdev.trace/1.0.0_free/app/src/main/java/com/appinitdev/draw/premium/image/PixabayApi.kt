@@ -1,4 +1,3 @@
-
 interface PixabayApi {
     @GET("api/")
     suspend fun searchImages(
@@ -9,12 +8,10 @@ interface PixabayApi {
         @Query("page") page: Int
     ): ImageResponse
 }
-
 @Keep
 data class ImageResponse(
     @SerializedName("hits") val hits: List<Image>
 )
-
 @Keep
 data class Image(
     @SerializedName("id") val id: Int,
@@ -22,6 +19,3 @@ data class Image(
     @SerializedName("largeImageURL") val largeImageURL: String,
     @SerializedName("tags") val tags: String
 )
-
-
-

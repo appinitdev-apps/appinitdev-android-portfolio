@@ -1,4 +1,3 @@
-
 fun File.toBaseNote(folder: Folder): BaseNote {
     val inputStream = FileInputStream(this)
     val parser = XmlPullParserFactory.newInstance().newPullParser()
@@ -6,14 +5,11 @@ fun File.toBaseNote(folder: Folder): BaseNote {
     parser.next()
     return parser.parseBaseNote(parser.name, folder)
 }
-
 fun InputStream.readAsBackup(): Pair<List<BaseNote>, List<Label>> {
     val parser = XmlPullParserFactory.newInstance().newPullParser()
     parser.setInput(this, null)
-
     val baseNotes = ArrayList<BaseNote>()
     val labels = ArrayList<Label>()
-
     while (parser.next() != XmlPullParser.END_DOCUMENT) {
         if (parser.eventType == XmlPullParser.START_TAG) {
             when (parser.name) {
@@ -25,10 +21,8 @@ fun InputStream.readAsBackup(): Pair<List<BaseNote>, List<Label>> {
             }
         }
     }
-
     return Pair(baseNotes, labels)
 }
-
 private fun XmlPullParser.parseBaseNoteList(
     rootTag: String,
     list: ArrayList<BaseNote>,
@@ -45,19 +39,15 @@ private fun XmlPullParser.parseBaseNoteList(
         }
     }
 }
-
 private fun XmlPullParser.parseBaseNote(rootTag: String, folder: Folder): BaseNote {
     var color = BaseNote.COLOR_DEFAULT
-
     var body = String()
     var title = String()
     var timestamp = 0L
     var pinned = false
     val items = ArrayList<ListItem>()
-
     val labels = ArrayList<String>()
     val spans = ArrayList<SpanRepresentation>()
-
     while (next() != XmlPullParser.END_DOCUMENT) {
         if (eventType == XmlPullParser.START_TAG) {
             when (name) {
@@ -76,8 +66,6 @@ private fun XmlPullParser.parseBaseNote(rootTag: String, folder: Folder): BaseNo
             }
         }
     }
-
-    
     val type =
         if (rootTag == "note") {
             Type.NOTE
@@ -102,13 +90,11 @@ private fun XmlPullParser.parseBaseNote(rootTag: String, folder: Folder): BaseNo
         NoteViewMode.EDIT,
     )
 }
-
 private fun XmlPullParser.parseListItem(rootTag: String): ListItem {
     var body = String()
     var checked = false
     var isChild = false
     var order: Int? = null
-
     while (next() != XmlPullParser.END_DOCUMENT) {
         if (eventType == XmlPullParser.START_TAG) {
             when (name) {
@@ -123,10 +109,8 @@ private fun XmlPullParser.parseListItem(rootTag: String): ListItem {
             }
         }
     }
-
     return ListItem(body, checked, isChild, order, mutableListOf())
 }
-
 private fun XmlPullParser.parseSpan(): SpanRepresentation {
     val start = getAttributeValue(null, "start").toInt()
     val end = getAttributeValue(null, "end").toInt()

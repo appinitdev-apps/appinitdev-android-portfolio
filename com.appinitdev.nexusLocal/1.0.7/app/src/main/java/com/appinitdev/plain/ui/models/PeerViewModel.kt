@@ -1,15 +1,12 @@
-
 class PeerViewModel : ViewModel() {
     val pairedPeers = mutableStateListOf<DPeer>()
     val unpairedPeers = mutableStateListOf<DPeer>()
     internal val latestChatCacheInternal = mutableStateMapOf<String, DChat>()
     val onlineMap = mutableStateOf<Map<String, Boolean>>(emptyMap())
     private var eventJob: Job? = null
-
     init {
         startEventListening()
     }
-
     private fun startEventListening() {
         eventJob = viewModelScope.launch {
             Channel.sharedFlow.collect { event ->
@@ -21,11 +18,9 @@ class PeerViewModel : ViewModel() {
             }
         }
     }
-
     override fun onCleared() {
         super.onCleared(); eventJob?.cancel()
     }
-
     fun loadPeers() {
         viewModelScope.launch(Dispatchers.IO) {
             val allPeers = AppDatabase.instance.peerDao().getAll()
@@ -35,7 +30,6 @@ class PeerViewModel : ViewModel() {
             val latestChats = chatDao.getAllLatestChats()
             val peerIds = allPeers.map { it.id }.toSet()
             val channelIds = allChannels.map { it.id }.toSet()
-
             latestChats.forEach { chat ->
                 val chatId = when {
                     chat.channelId.isNotEmpty() && channelIds.contains(chat.channelId) -> chat.channelId
@@ -49,11 +43,9 @@ class PeerViewModel : ViewModel() {
                     if (existing == null || chat.createdAt > existing.createdAt) chatCache[chatId] = chat
                 }
             }
-
             val newPairedPeers = allPeers.filter { it.status == "paired" }
             val newUnpairedPeers = sortPeersForChatList(allPeers.filter { it.status == "unpaired" }, chatCache)
             ChatCacheManager.refreshPeerMap(allPeers)
-
             latestChatCacheInternal.clear()
             latestChatCacheInternal.putAll(chatCache)
             pairedPeers.clear()
@@ -63,16 +55,13 @@ class PeerViewModel : ViewModel() {
             syncPeerOnlineStatuses()
         }
     }
-
     fun getLatestChat(chatId: String): DChat? = latestChatCacheInternal[chatId]
-
     fun updateDiscoverable(discoverable: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             NearbyDiscoverablePreference.putAsync(discoverable)
             TempData.nearbyDiscoverable = discoverable
         }
     }
-
     fun removePeer(context: Context, peerId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -82,39 +71,32 @@ class PeerViewModel : ViewModel() {
             }
         }
     }
-
     fun updatePeerOnlineStatus(peerId: String, online: Boolean) {
         viewModelScope.launch(Dispatchers.Main) {
             if (onlineMap.value[peerId] == online) return@launch
-
             val currentMap = onlineMap.value.toMutableMap()
             currentMap[peerId] = online
             onlineMap.value = currentMap
             resortPairedPeers()
         }
     }
-
     fun syncPeerOnlineStatuses() {
         viewModelScope.launch(Dispatchers.Main) {
             onlineMap.value = pairedPeers.associate { it.id to PeerStatusManager.isOnline(it.id) }
             resortPairedPeers()
         }
     }
-
     fun isPeerOnline(peerId: String): Boolean {
         return onlineMap.value[peerId] == true
     }
-
     fun getPeerOnlineStatus(peerId: String): Boolean? {
         return onlineMap.value[peerId] ?: false
     }
-
     internal fun resortPairedPeers() {
         val sortedPeers = sortPeersForChatList(pairedPeers.toList(), latestChatCacheInternal)
         pairedPeers.clear()
         pairedPeers.addAll(sortedPeers)
     }
-
     private fun sortPeersForChatList(
         peers: List<DPeer>,
         chatCache: Map<String, DChat>,
@@ -126,7 +108,6 @@ class PeerViewModel : ViewModel() {
                 .thenBy { it.name.lowercase() },
         )
     }
-
     internal fun handleDeviceFound(event: NearbyDeviceFoundEvent) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -151,7 +132,6 @@ class PeerViewModel : ViewModel() {
             }
         }
     }
-
     private suspend fun retryPendingChannelInvites(peer: DPeer) {
         try {
             val channels = AppDatabase.instance.chatChannelDao().getOwnedChannels()

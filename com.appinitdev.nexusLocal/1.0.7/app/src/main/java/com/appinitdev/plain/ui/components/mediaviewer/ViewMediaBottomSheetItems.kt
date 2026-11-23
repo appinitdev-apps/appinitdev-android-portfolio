@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun ViewMediaActionButtons(
@@ -10,7 +9,6 @@ internal fun ViewMediaActionButtons(
     onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
-
     ActionButtons {
         if (qrScanResult.isNotEmpty()) {
             IconTextScanQrCodeButton { onShowQrScanResult() }
@@ -34,7 +32,6 @@ internal fun ViewMediaActionButtons(
         }
     }
 }
-
 @Composable
 internal fun ViewMediaPathCard(m: PreviewItem) {
     PCard {

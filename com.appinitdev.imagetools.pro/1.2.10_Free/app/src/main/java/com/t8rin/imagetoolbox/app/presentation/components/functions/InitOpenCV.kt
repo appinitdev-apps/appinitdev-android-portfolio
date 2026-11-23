@@ -1,18 +1,1 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 internal fun Application.initOpenCV() = OpenCV.init(this)

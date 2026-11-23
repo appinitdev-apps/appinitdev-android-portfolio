@@ -1,4 +1,3 @@
-
 object StringUtils {
     fun sanitizeString(input: String): String {
         val utf8Bytes = input.toByteArray(Charsets.UTF_8)

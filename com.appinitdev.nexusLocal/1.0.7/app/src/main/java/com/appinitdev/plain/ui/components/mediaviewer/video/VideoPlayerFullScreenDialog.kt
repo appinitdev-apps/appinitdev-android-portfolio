@@ -1,4 +1,3 @@
-
 @SuppressLint("UnsafeOptInUsageError")
 @Composable
 internal fun VideoPlayerFullScreenDialog(
@@ -12,11 +11,9 @@ internal fun VideoPlayerFullScreenDialog(
             setShowBuffering(PlayerView.SHOW_BUFFERING_ALWAYS)
         }
     }
-
     val view = LocalView.current
     val window = (view.context as Activity).window
     val insetsController = WindowCompat.getInsetsController(window, view)
-
     val onDismissRequest = {
         PlayerView.switchTargetView(player, fullScreenPlayerView, currentPlayerView)
         currentPlayerView.findViewById<ImageButton>(R.id.exo_fullscreen)
@@ -31,7 +28,6 @@ internal fun VideoPlayerFullScreenDialog(
         }
         videoState.isFullscreenMode = false
     }
-
     Dialog(
         onDismissRequest = onDismissRequest,
         properties = DialogProperties(
@@ -44,7 +40,6 @@ internal fun VideoPlayerFullScreenDialog(
         val view = LocalView.current
         LaunchedEffect(Unit) {
             PlayerView.switchTargetView(player, currentPlayerView, fullScreenPlayerView)
-
             val currentActivity = context.findActivity()
             currentActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             (view.parent as DialogWindowProvider).window.setFullScreen(true)
@@ -56,7 +51,6 @@ internal fun VideoPlayerFullScreenDialog(
             fullScreenPlayerView.findViewById<ImageButton>(androidx.media3.ui.R.id.exo_fullscreen)
                 .performClick()
         }
-
         Box(
             modifier = Modifier
                 .fillMaxSize()

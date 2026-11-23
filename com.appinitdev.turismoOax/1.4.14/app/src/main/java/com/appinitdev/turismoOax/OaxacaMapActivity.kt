@@ -1,17 +1,12 @@
-
 class OaxacaMapActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityOaxacaMapBinding
     private lateinit var dbHelper: DatabaseHelper
-
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityOaxacaMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         dbHelper = DatabaseHelper(this)
-
         binding.wvMap.settings.apply {
             javaScriptEnabled = true
             domStorageEnabled = true
@@ -20,13 +15,10 @@ class OaxacaMapActivity : AppCompatActivity() {
             mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
             userAgentString = "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Mobile Safari/537.36 TurismoOaxacaApp/1.0"
         }
-
         binding.wvMap.webViewClient = WebViewClient()
         binding.wvMap.webChromeClient = WebChromeClient()
         binding.wvMap.addJavascriptInterface(WebAppInterface(), "Android")
-
         val selectedTourId = intent.getStringExtra("tour_id") ?: "2"
-
         val htmlContent = """
             <!DOCTYPE html>
             <html lang="es">
@@ -123,9 +115,7 @@ class OaxacaMapActivity : AppCompatActivity() {
             </body>
             </html>
         """.trimIndent()
-
         binding.wvMap.loadDataWithBaseURL("https://unpkg.com/", htmlContent, "text/html", "UTF-8", null)
-
         binding.btnOpenExternalMap.setOnClickListener {
             val gmmIntentUri = Uri.parse("https://www.google.com/maps/search/?api=1&query=Oaxaca+Turismo+Monte+Alban+Hierve+el+Agua")
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
@@ -137,7 +127,6 @@ class OaxacaMapActivity : AppCompatActivity() {
             }
         }
     }
-
     inner class WebAppInterface {
         @JavascriptInterface
         fun openTourDetails(tourId: String) {

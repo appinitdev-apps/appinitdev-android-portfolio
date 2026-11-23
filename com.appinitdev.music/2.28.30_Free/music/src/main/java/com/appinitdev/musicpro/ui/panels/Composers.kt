@@ -1,68 +1,44 @@
-
- 
-
-
-
-
-
-
 class Composers : BasePanelFragment() {
-
     private lateinit var binding: FragmentComposersBinding
     private lateinit var headerBinding: HeaderComposersBinding
-
     private var adapterComposers: AdapterComposers? = null
-
     private val composersViewModel: ComposersViewModel by viewModels({ requireActivity() })
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentComposersBinding.inflate(inflater, container, false)
         headerBinding = HeaderComposersBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.header.setContentView(headerBinding.root)
         binding.header.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
         binding.recyclerView.attachSlideFastScroller()
         binding.recyclerView.requireAttachedMiniPlayer()
-
         binding.recyclerView.setupGridLayoutManager(ComposerPreferences.getGridSize().spanCount)
-
         setupClickListeners()
-
         adapterComposers?.let { binding.recyclerView.adapter = it }
-
         composersViewModel.composers.collectListWhenStarted({ adapterComposers != null }) { composers ->
             updateComposersList(composers.toMutableList())
         }
     }
-
     override fun onDestroyView() {
         adapterComposers = null
         super.onDestroyView()
     }
-
     private fun setupClickListeners() {
         headerBinding.sortStyle.setOnClickListener {
             childFragmentManager.showComposersSort()
         }
-
         headerBinding.search.setOnClickListener {
             openSearch()
         }
-
         headerBinding.menu.setOnClickListener {
             openPreferencesPanel()
         }
-
         headerBinding.listStyle.setOnClickListener {
             childFragmentManager.showListStyleDialog(GenericListStyleDialog.Companion.PANEL.COMPOSERS)
         }
     }
-
     private fun updateComposersList(composers: MutableList<Artist>) {
         if (adapterComposers == null) {
             adapterComposers = AdapterComposers(composers)
@@ -71,7 +47,6 @@ class Composers : BasePanelFragment() {
                 override fun onComposerClicked(composers: List<Artist>, position: Int, view: View) {
                     openFragment(ComposerPage.newInstance(composers[position]), ComposerPage.TAG)
                 }
-
                 override fun onComposerLongClicked(composers: List<Artist>, position: Int, imageView: android.widget.ImageView?) {
                     val composer = composers.getOrNull(position) ?: return
                     openArtistMenu(composer, imageView)
@@ -84,24 +59,17 @@ class Composers : BasePanelFragment() {
                 binding.recyclerView.adapter = adapterComposers
             }
         }
-
         headerBinding.count.text = getString(R.string.x_composers, composers.size)
         binding.recyclerView.requireAttachedSectionScroller(
                 sections = provideScrollPositions(composers),
                 header = binding.header,
                 view = headerBinding.scroll)
-
         headerBinding.sortStyle.setCurrentSortStyle()
         headerBinding.scroll.hideOnUnfavorableSort(
                 sorts = listOf(CommonPreferencesConstants.BY_NAME),
                 preference = ComposerPreferences.getComposerSort()
         )
     }
-
-     
-
-
-
     private fun provideScrollPositions(composers: List<Artist>): List<SectionedFastScroller.Position> {
         when (ComposerPreferences.getComposerSort()) {
             CommonPreferencesConstants.BY_NAME -> {
@@ -116,7 +84,6 @@ class Composers : BasePanelFragment() {
         }
         return emptyList()
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -125,7 +92,6 @@ class Composers : BasePanelFragment() {
             }
         }
     }
-
     companion object {
         fun newInstance(): Composers {
             val args = Bundle()
@@ -133,8 +99,6 @@ class Composers : BasePanelFragment() {
             fragment.arguments = args
             return fragment
         }
-
         const val TAG = "Composers"
     }
 }
-

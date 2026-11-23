@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun NoteListItem(
@@ -16,7 +15,6 @@ fun NoteListItem(
                 notesVM.select(m.id)
             })
         }
-
         Surface(
             modifier =
             PlainTheme

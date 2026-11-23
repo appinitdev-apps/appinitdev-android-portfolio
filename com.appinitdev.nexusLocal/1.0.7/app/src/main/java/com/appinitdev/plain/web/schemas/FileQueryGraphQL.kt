@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addFileQuerySchema() {
     query("mounts") {
         resolver { ->

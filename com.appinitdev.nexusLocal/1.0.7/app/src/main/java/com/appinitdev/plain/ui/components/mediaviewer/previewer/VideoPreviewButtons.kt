@@ -1,6 +1,4 @@
-
 data class PlaybackSpeed(val speed: Float, val label: String)
-
 @Composable
 fun VideoButtons1(context: Context, videoState: VideoState) {
     var showSpeedMenu by rememberSaveable { mutableStateOf(false) }
@@ -8,7 +6,6 @@ fun VideoButtons1(context: Context, videoState: VideoState) {
         listOf(PlaybackSpeed(0.25f, "0.25x"), PlaybackSpeed(0.5f, "0.5x"), PlaybackSpeed(1f, "1x"), PlaybackSpeed(2f, "2x"), PlaybackSpeed(3f, "3x"))
     }
     fun setSpeed(speed: Float) { videoState.changeSpeed(speed); showSpeedMenu = false }
-
     Box(contentAlignment = Alignment.TopEnd) {
         DropdownMenu(expanded = showSpeedMenu, onDismissRequest = { showSpeedMenu = false }) {
             playbackSpeeds.forEach { speed ->

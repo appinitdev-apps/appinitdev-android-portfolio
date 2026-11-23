@@ -1,4 +1,3 @@
-
 internal fun LazyListScope.nearbySearchingItem() {
     item {
         Box(
@@ -25,7 +24,6 @@ internal fun LazyListScope.nearbySearchingItem() {
         }
     }
 }
-
 internal fun LazyListScope.nearbyDeviceListItems(
     nearbyDevices: List<DNearbyDevice>,
     nearbyVM: NearbyViewModel,

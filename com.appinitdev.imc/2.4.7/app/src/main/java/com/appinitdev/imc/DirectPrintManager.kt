@@ -1,6 +1,4 @@
-
 object DirectPrintManager {
-
     fun printClinicalReport(
         context: Context,
         memberName: String,
@@ -11,8 +9,6 @@ object DirectPrintManager {
     ) {
         val printManager = context.getSystemService(Context.PRINT_SERVICE) as PrintManager
         val jobName = "Informe_IMC_${memberName.replace(" ", "_")}"
-
-        
         PdfReportGenerator.generateAndSharePdf(
             context = context,
             memberName = memberName,
@@ -21,10 +17,8 @@ object DirectPrintManager {
             latestBmiResult = latestBmiResult,
             growthRecords = growthRecords
         )
-
         val pdfFile = File(File(context.cacheDir, "pdf_reports"), "Informe_Clinico_${memberName.replace(" ", "_")}.pdf")
         if (!pdfFile.exists()) return
-
         val printAdapter = object : PrintDocumentAdapter() {
             override fun onLayout(
                 oldAttributes: PrintAttributes?,
@@ -37,15 +31,12 @@ object DirectPrintManager {
                     callback?.onLayoutCancelled()
                     return
                 }
-
                 val info = PrintDocumentInfo.Builder("Informe_Clinico_$memberName.pdf")
                     .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
                     .setPageCount(1)
                     .build()
-
                 callback?.onLayoutFinished(info, true)
             }
-
             override fun onWrite(
                 pages: Array<out PageRange>?,
                 destination: ParcelFileDescriptor?,
@@ -55,13 +46,11 @@ object DirectPrintManager {
                 try {
                     val input = FileInputStream(pdfFile)
                     val output = FileOutputStream(destination?.fileDescriptor)
-
                     val buf = ByteArray(1024)
                     var bytesRead: Int
                     while (input.read(buf).also { bytesRead = it } > 0) {
                         output.write(buf, 0, bytesRead)
                     }
-
                     callback?.onWriteFinished(arrayOf(PageRange.ALL_PAGES))
                     input.close()
                     output.close()
@@ -71,7 +60,6 @@ object DirectPrintManager {
                 }
             }
         }
-
         printManager.print(jobName, printAdapter, PrintAttributes.Builder().build())
     }
 }

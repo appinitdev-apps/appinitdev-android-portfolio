@@ -1,4 +1,3 @@
-
 object SourceHelper {
     fun getAll(): List<DContactSource> {
         val context = MainApp.instance
@@ -10,10 +9,8 @@ object SourceHelper {
         ).forEach {
             fillSourcesFromUri(context, it, sources)
         }
-
         return sources
     }
-
     private fun fillSourcesFromUri(
         context: Context,
         uri: Uri,

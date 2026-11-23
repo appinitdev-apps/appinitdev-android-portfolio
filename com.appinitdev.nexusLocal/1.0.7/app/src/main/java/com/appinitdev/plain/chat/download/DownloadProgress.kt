@@ -1,4 +1,3 @@
-
 data class DownloadProgress(
     val fileId: String,
     val fileName: String,

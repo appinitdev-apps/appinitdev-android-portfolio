@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun VideoGridItem(
@@ -70,13 +69,11 @@ fun VideoGridItem(
             previewerState = previewerState,
             widthPx = widthPx
         )
-
         if (selected) {
             SelectedOverlay()
         } else if (castVM.castMode.value) {
             CastModeOverlay()
         }
-
         if (inSelectionMode) {
             Box(modifier = Modifier.align(Alignment.TopStart)) {
                 SelectionCheckbox(selected = selected, id = m.id, dragSelectState = dragSelectState)

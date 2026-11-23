@@ -1,4 +1,3 @@
-
 @Composable
 fun AboutLogsAndCacheCard(
     navController: NavHostController,

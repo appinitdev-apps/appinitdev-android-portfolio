@@ -1,71 +1,48 @@
-
- 
-
-
-
-
 @AndroidEntryPoint
 class Folders : BasePanelFragment() {
-
     private val foldersViewModel: FoldersViewModel by viewModels({ requireActivity() })
-
     private lateinit var binding: FragmentFoldersBinding
     private lateinit var headerBinding: HeaderFoldersBinding
-
     private var adapterFolders: AdapterFolders? = null
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentFoldersBinding.inflate(inflater, container, false)
         headerBinding = HeaderFoldersBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         Log.d(TAG, "onViewCreated: adapterFolders=${adapterFolders != null}")
-
         binding.header.setContentView(headerBinding.root)
         binding.header.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
         binding.recyclerView.attachSlideFastScroller()
         binding.recyclerView.requireAttachedMiniPlayer()
-
         binding.recyclerView.setupGridLayoutManager(FoldersPreferences.getGridSize().spanCount)
-
         setupClickListeners()
-
         foldersViewModel.folders.collectListWhenStarted({ adapterFolders != null }) { folders ->
             updateFoldersList(folders)
         }
     }
-
     override fun onDestroyView() {
         Log.d(TAG, "onDestroyView: Clearing adapter reference")
         adapterFolders = null
         super.onDestroyView()
     }
-
     private fun setupClickListeners() {
         headerBinding.menu.setOnClickListener {
             openPreferencesPanel()
         }
-
         headerBinding.listStyle.setOnClickListener {
             childFragmentManager.showListStyleDialog(GenericListStyleDialog.Companion.PANEL.FOLDERS)
         }
-
         headerBinding.sortStyle.setOnClickListener {
             childFragmentManager.showFoldersSortDialog()
         }
-
         headerBinding.search.setOnClickListener {
             openSearch()
         }
     }
-
     private fun updateFoldersList(folders: List<Folder>) {
         Log.d(TAG, "updateFoldersList: folders.size=${folders.size}, adapterFolders=${adapterFolders != null}, recyclerView.adapter=${binding.recyclerView.adapter != null}")
-
         if (adapterFolders == null) {
             Log.d(TAG, "updateFoldersList: Creating new adapter with ${folders.size} folders")
             adapterFolders = AdapterFolders(folders.toMutableList())
@@ -81,19 +58,16 @@ class Folders : BasePanelFragment() {
         } else {
             Log.d(TAG, "updateFoldersList: Updating existing adapter with ${folders.size} folders")
             adapterFolders?.updateList(folders)
-
             if (binding.recyclerView.adapter == null) {
                 Log.d(TAG, "updateFoldersList: Re-attaching adapter to RecyclerView")
                 binding.recyclerView.adapter = adapterFolders
             }
         }
-
         headerBinding.count.text = getString(R.string.x_folders, folders.size)
         binding.recyclerView.requireAttachedSectionScroller(
                 sections = provideScrollPositionDataBasedOnSortStyle(folders),
                 header = binding.header,
                 view = headerBinding.scroll)
-
         headerBinding.sortStyle.setCurrentSortStyle()
         headerBinding.scroll.hideOnUnfavorableSort(
                 sorts = listOf(
@@ -103,7 +77,6 @@ class Folders : BasePanelFragment() {
                 preference = FoldersPreferences.getSortStyle()
         )
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -112,7 +85,6 @@ class Folders : BasePanelFragment() {
             }
         }
     }
-
     private fun provideScrollPositionDataBasedOnSortStyle(folders: List<Folder>): List<SectionedFastScroller.Position> {
         return when (FoldersPreferences.getSortStyle()) {
             CommonPreferencesConstants.BY_NAME -> {
@@ -136,10 +108,8 @@ class Folders : BasePanelFragment() {
             else -> emptyList()
         }
     }
-
     companion object {
         const val TAG = "FoldersFragment"
-
         fun newInstance(): Folders {
             val args = Bundle()
             val fragment = Folders()

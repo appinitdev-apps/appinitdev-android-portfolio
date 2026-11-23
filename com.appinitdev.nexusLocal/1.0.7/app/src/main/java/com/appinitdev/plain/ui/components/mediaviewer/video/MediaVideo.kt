@@ -1,4 +1,3 @@
-
 @kotlin.OptIn(ExperimentalFoundationApi::class)
 @OptIn(UnstableApi::class)
 @Composable
@@ -18,13 +17,11 @@ fun MediaVideo(
     var vSize by remember { mutableStateOf(IntSize(0, 0)) }
     val sizing = MediaVideoSizing(bSize, vSize)
     var videoSpecified by remember { mutableStateOf(false) }
-
     LaunchedEffect(key1 = vSize, key2 = bSize) {
         if (vSize != IntSize.Zero && bSize != IntSize.Zero) {
             onSizeChange(SizeChangeContent(defaultSize = sizing.displaySize, containerSize = bSize, maxScale = sizing.maxScale))
         }
     }
-
     LaunchedEffect(model.path) {
         if (model.intrinsicSize == IntSize.Zero) {
             when (val data = model.data) {
@@ -39,7 +36,6 @@ fun MediaVideo(
             vSize = model.intrinsicSize; videoSpecified = true
         }
     }
-
     val audioManager = remember(context) { context.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
     val focusManager = remember(audioManager) { VideoAudioFocusManager(audioManager) }
     val progressDao = remember { AppDatabase.instance.videoPlayProgressDao() }
@@ -65,14 +61,12 @@ fun MediaVideo(
             }
         })
     })
-
     LaunchedEffect(firstFrameRendered) {
         if (firstFrameRendered) {
             viewerAlpha.snapTo(1F)
             onMounted()
         }
     }
-
     LaunchedEffect(player, pagerState.settledPage, videoState.isPreviewerOpen) {
         if (!videoState.isPreviewerOpen || pagerState.settledPage != page) {
             if (model.mediaId.isNotEmpty() && player.currentPosition > 0) {
@@ -110,7 +104,6 @@ fun MediaVideo(
         focusManager.requestFocus(player)
         player.play()
     }
-
     DisposableEffect(Unit) {
         onDispose {
             val mediaId = model.mediaId
@@ -126,7 +119,6 @@ fun MediaVideo(
             mediaSession = null
         }
     }
-
     Box(
         modifier = modifier
             .fillMaxSize()

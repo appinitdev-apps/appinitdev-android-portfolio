@@ -1,4 +1,3 @@
-
 fun CharSequence.extractListItems(regex: Regex): List<ListItem> {
     return regex
         .findAll(this)
@@ -12,7 +11,6 @@ fun CharSequence.extractListItems(regex: Regex): List<ListItem> {
         }
         .toList()
 }
-
 fun CharSequence.findListSyntaxRegex(
     checkContains: Boolean = false,
     plainNewLineAllowed: Boolean = false,

@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DlnaReceiverPage(
@@ -6,12 +5,10 @@ fun DlnaReceiverPage(
     vm: DlnaReceiverViewModel = viewModel(),
 ) {
     val context = LocalContext.current
-
     DisposableEffect(Unit) {
         vm.startReceiver(context)
         onDispose { vm.stopReceiver(context) }
     }
-
     val mediaUri by DlnaRendererState.mediaUri.collectAsState()
     val mediaType by DlnaRendererState.mediaType.collectAsState()
     val playbackState by DlnaRendererState.playbackState.collectAsState()
@@ -19,7 +16,6 @@ fun DlnaReceiverPage(
     val startError by DlnaRendererState.startError.collectAsState()
     val isRetrying by vm.isRetrying.collectAsState()
     val hasMedia = mediaUri.isNotEmpty() && playbackState != DlnaPlaybackState.NO_MEDIA_PRESENT
-
     pendingCastRequest?.let { pending ->
         var rememberChoice by remember { mutableStateOf(false) }
         val displayName = pending.senderName.ifEmpty { pending.senderIp.ifEmpty { stringResource(Res.string.unknown) } }
@@ -56,7 +52,6 @@ fun DlnaReceiverPage(
             },
         )
     }
-
     if (hasMedia) {
         val exitAction = {
             DlnaRendererState.mediaUri.value = ""
@@ -70,7 +65,6 @@ fun DlnaReceiverPage(
         }
         return
     }
-
     PScaffold(
         topBar = {
             PTopAppBar(
@@ -113,5 +107,3 @@ fun DlnaReceiverPage(
         }
     }
 }
-
-

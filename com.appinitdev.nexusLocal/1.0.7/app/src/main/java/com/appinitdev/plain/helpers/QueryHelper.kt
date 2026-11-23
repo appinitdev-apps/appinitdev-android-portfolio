@@ -1,4 +1,3 @@
-
 object QueryHelper {
     suspend fun parseAsync(query: String): List<FilterField>  {
         if (query.isNotEmpty()) {
@@ -15,7 +14,6 @@ object QueryHelper {
             }
             return fields
         }
-
         return emptyList()
     }
 }

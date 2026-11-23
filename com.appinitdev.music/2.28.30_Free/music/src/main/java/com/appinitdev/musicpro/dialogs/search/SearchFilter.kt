@@ -1,16 +1,5 @@
-
- 
-
-
-
-
-
-
-
 class SearchFilter : ScopedBottomSheetFragment() {
-
     private lateinit var binding: DialogSearchFilterBinding
-
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -18,20 +7,17 @@ class SearchFilter : ScopedBottomSheetFragment() {
         binding = DialogSearchFilterBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initChipStates()
         attachChipListeners()
     }
-
     private fun initChipStates() {
         binding.songs.isChecked = SearchPreferences.isSongsEnabled()
         binding.albums.isChecked = SearchPreferences.isAlbumsEnabled()
         binding.artists.isChecked = SearchPreferences.isArtistsEnabled()
         binding.genres.isChecked = SearchPreferences.isGenresEnabled()
     }
-
     private fun attachChipListeners() {
         binding.songs.setOnCheckedChangeListener { _, isChecked ->
             SearchPreferences.setSongsEnabled(isChecked)
@@ -46,17 +32,11 @@ class SearchFilter : ScopedBottomSheetFragment() {
             SearchPreferences.setGenresEnabled(isChecked)
         }
     }
-
     companion object {
         private const val TAG = "SearchFilter"
-
         fun newInstance(): SearchFilter {
             return SearchFilter().apply { arguments = Bundle() }
         }
-
-         
-
-
         fun FragmentManager.showSearchFilter(): SearchFilter {
             val dialog = newInstance()
             dialog.show(this, TAG)
@@ -64,4 +44,3 @@ class SearchFilter : ScopedBottomSheetFragment() {
         }
     }
 }
-

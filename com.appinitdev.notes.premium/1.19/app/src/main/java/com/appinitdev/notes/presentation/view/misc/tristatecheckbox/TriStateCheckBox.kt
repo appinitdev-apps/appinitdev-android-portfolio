@@ -1,21 +1,14 @@
-
- 
-
-
 class TriStateCheckBox
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     AppCompatCheckBox(context, attrs, defStyleAttr) {
-
     enum class State {
         UNCHECKED,
         CHECKED,
         PARTIALLY_CHECKED,
     }
-
     var state: State = State.UNCHECKED
         private set
-
     fun setState(state: State, animate: Boolean = true) {
         if (this.state != state) {
             this.state = state
@@ -26,20 +19,17 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             }
         }
     }
-
     private val uncheckedDrawable: Drawable? =
         ContextCompat.getDrawable(context, R.drawable.checkbox_unchecked)
     private val checkedDrawable: Drawable? =
         ContextCompat.getDrawable(context, R.drawable.checkbox_checked)
     private val partiallyCheckedDrawable: Drawable? =
         ContextCompat.getDrawable(context, R.drawable.checkbox_partial)
-
     init {
         compoundDrawablePadding = 4.dp
         buttonDrawable = getCurrentDrawable()
         setOnClickListener { toggleState() }
     }
-
     fun toggleState() {
         setState(
             when (state) {
@@ -49,7 +39,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             }
         )
     }
-
     private fun animateButtonDrawable() {
         val targetDrawable = getCurrentDrawable()
         val currentDrawable =
@@ -59,7 +48,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 duration = 33
                 addListener(onEnd = { buttonDrawable = targetDrawable })
             }
-
         val fadeIn =
             ObjectAnimator.ofInt(currentDrawable, "alpha", 0, 255).apply {
                 duration = 166
@@ -72,7 +60,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             }
         AnimatorSet().apply { playSequentially(fadeOut, fadeIn) }.start()
     }
-
     private fun getCurrentDrawable() =
         when (state) {
             State.UNCHECKED -> uncheckedDrawable

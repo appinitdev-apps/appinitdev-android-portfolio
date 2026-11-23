@@ -1,17 +1,12 @@
-
 @Suppress("unused")
 abstract class PreferenceFragment : MediaFragment() {
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireHiddenMiniPlayer()
     }
-
     protected fun createAppearancePanel(): List<Preference> {
         val preferences = mutableListOf<Preference>()
-
         val colors = Preference(type = PreferenceType.SUB_HEADER, title = R.string.colors)
-
         val themes = Preference(
                 title = R.string.theme,
                 summary = R.string.theme_summary,
@@ -21,7 +16,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     openFragment(Themes.newInstance(), Themes.TAG)
                 }
         )
-
         val accentColor = Preference(
                 title = R.string.accent_color,
                 summary = R.string.accent_color_summary,
@@ -31,12 +25,10 @@ abstract class PreferenceFragment : MediaFragment() {
                     openFragment(AccentColors.newInstance(), AccentColors.TAG)
                 }
         )
-
         val font = Preference(
                 title = R.string.font,
                 type = PreferenceType.SUB_HEADER,
         )
-
         val typeface = Preference(
                 title = R.string.typeface,
                 summary = R.string.typeface_summary,
@@ -46,9 +38,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     openFragment(TypeFaces.newInstance(), TypeFaces.TAG)
                 }
         )
-
         val header = Preference(type = PreferenceType.SUB_HEADER, title = R.string.appearance)
-
         val cornerRadius = Preference(
                 title = R.string.corner_radius,
                 summary = R.string.corner_radius_summary,
@@ -71,7 +61,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     )
                 }
         )
-
         val spacing = Preference(
                 title = R.string.vertical_spacing,
                 summary = R.string.spacing_summary,
@@ -94,9 +83,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     )
                 }
         )
-
         val effects = Preference(type = PreferenceType.SUB_HEADER, title = R.string.effects)
-
         val shadowEffectToggle = Preference(
                 title = R.string.shadow_effect,
                 summary = R.string.shadow_effect_summary,
@@ -109,9 +96,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     AppearancePreferences.isShadowEffectOn()
                 }
         )
-
         val albumArt = Preference(type = PreferenceType.SUB_HEADER, title = R.string.album_art)
-
         val albumArtShadows = Preference(
                 title = R.string.shadows,
                 summary = R.string.album_art_shadows_summary,
@@ -124,7 +109,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     AlbumArtPreferences.isShadowEnabled()
                 }
         )
-
         val albumArtCorners = Preference(
                 title = R.string.rounded_corners,
                 summary = R.string.album_art_rounded_corners_summary,
@@ -137,7 +121,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     AlbumArtPreferences.isRoundedCornersEnabled()
                 }
         )
-
         val albumArtCrop = Preference(
                 title = R.string.crop,
                 summary = R.string.album_art_crop_summary,
@@ -150,7 +133,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     AlbumArtPreferences.isCropEnabled()
                 }
         )
-
         val albumArtGreyscale = Preference(
                 title = R.string.greyscale,
                 summary = R.string.album_art_greyscale_summary,
@@ -163,7 +145,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     AlbumArtPreferences.isGreyscaleEnabled()
                 }
         )
-
         preferences.add(colors)
         preferences.add(themes)
         preferences.add(accentColor)
@@ -179,15 +160,11 @@ abstract class PreferenceFragment : MediaFragment() {
         preferences.add(albumArtCorners)
         preferences.add(albumArtCrop)
         preferences.add(albumArtGreyscale)
-
         return preferences
     }
-
     protected fun createUserInterfacePanel(): List<Preference> {
         val preferences = mutableListOf<Preference>()
-
         val homeHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.home)
-
         val panelVisibility = Preference(
                 title = R.string.panel_visibility,
                 summary = R.string.panel_visibility_summary,
@@ -197,7 +174,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     openFragment(PanelVisibility.newInstance(), PanelVisibility.TAG)
                 }
         )
-
         val homeInterface = Preference(
                 title = R.string.change_home_interface,
                 summary = R.string.change_home_interface_summary,
@@ -243,14 +219,11 @@ abstract class PreferenceFragment : MediaFragment() {
                                 }
                             },
                             onDismiss = {
-
                             }
                     ).show()
                 }
         )
-
         val miniPlayerHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.miniplayer)
-
         val marginAroundMiniplayerToggle = Preference(
                 title = R.string.margin_around_miniplayer,
                 summary = R.string.margin_around_miniplayer_summary,
@@ -263,9 +236,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     UserInterfacePreferences.isMarginAroundMiniplayer()
                 }
         )
-
         val playerHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.player)
-
         val playerInterface = Preference(
                 title = R.string.change_player_interface,
                 summary = R.string.change_player_interface_summary,
@@ -302,9 +273,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     ).show()
                 }
         )
-
         val applicationHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.application)
-
         val likeButton = Preference(
                 title = R.string.like_icon,
                 summary = R.string.like_icon_summary,
@@ -317,7 +286,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     UserInterfacePreferences.isLikeIconInsteadOfThumb()
                 }
         )
-
         val immersiveMode = Preference(
                 title = R.string.immersive_mode,
                 summary = R.string.immersive_mode_summary,
@@ -330,7 +298,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     UserInterfacePreferences.isImmersiveMode()
                 }
         )
-
         preferences.add(homeHeader)
         preferences.add(panelVisibility)
         preferences.add(homeInterface)
@@ -341,15 +308,11 @@ abstract class PreferenceFragment : MediaFragment() {
         preferences.add(applicationHeader)
         preferences.add(immersiveMode)
         preferences.add(likeButton)
-
         return preferences
     }
-
     protected fun createConfigurationPreferences(): List<Preference> {
         val preferences = mutableListOf<Preference>()
-
         val applicationHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.application)
-
         val keepScreenOn = Preference(
                 title = R.string.keep_screen_on,
                 summary = R.string.keep_screen_on_summary,
@@ -362,7 +325,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     ConfigurationPreferences.isKeepScreenOn()
                 }
         )
-
         val language = Preference(
                 title = R.string.language,
                 summary = R.string.language_summary,
@@ -372,45 +334,14 @@ abstract class PreferenceFragment : MediaFragment() {
                     openFragment(Language.newInstance(), Language.TAG)
                 },
         )
-
         preferences.add(applicationHeader)
         preferences.add(keepScreenOn)
         preferences.add(language)
-
         return preferences
     }
-
     protected fun createBehaviorPanel(): List<Preference> {
         val preferences = mutableListOf<Preference>()
-
-        
         val listHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.list)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         val fastScrollBehavior = Preference(
                 title = R.string.fast_scroll_behavior,
                 summary = R.string.fast_scroll_behavior_summary,
@@ -442,9 +373,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     ).show()
                 }
         )
-
         val applicationHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.application)
-
         val predictiveBackToggle = Preference(
                 title = R.string.predictive_back,
                 summary = R.string.predictive_back_summary,
@@ -458,7 +387,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     BehaviourPreferences.setPredictiveBack(isChecked)
                 }
         )
-
         val hapticToggle = Preference(
                 title = R.string.haptic_feedback,
                 summary = R.string.haptic_feedback_summary,
@@ -472,35 +400,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     BehaviourPreferences.setHapticFeedback(isChecked)
                 }
         )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         val fragmentTransition = Preference(
                 title = R.string.transition,
                 summary = R.string.transition_summary,
@@ -535,9 +434,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     ).show()
                 }
         )
-
         val miniplayerHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.miniplayer)
-
         val miniPlayerVisibilityToggle = Preference(
                 title = R.string.keep_mini_player_visible,
                 summary = R.string.keep_mini_player_visible_summary,
@@ -551,9 +448,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     BehaviourPreferences.setMiniplayerAlwaysVisible(isChecked)
                 }
         )
-
         val playerHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.player)
-
         val textChangeEffect = Preference(
                 title = R.string.text_change_effect,
                 summary = R.string.text_change_effect_summary,
@@ -592,7 +487,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     ).show()
                 }
         )
-
         preferences.add(listHeader)
         preferences.add(fastScrollBehavior)
         preferences.add(applicationHeader)
@@ -605,15 +499,11 @@ abstract class PreferenceFragment : MediaFragment() {
         preferences.add(miniPlayerVisibilityToggle)
         preferences.add(playerHeader)
         preferences.add(textChangeEffect)
-
         return preferences
     }
-
     protected fun createEnginePanel(): List<Preference> {
         val preferences = mutableListOf<Preference>()
-
         val decoderHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.decoder)
-
         val currentDecoder = Preference(
                 title = R.string.audio_pipeline,
                 summary = R.string.audio_pipeline_summary,
@@ -647,12 +537,10 @@ abstract class PreferenceFragment : MediaFragment() {
                                 }
                             },
                             onDismiss = {
-
                             }
                     ).show()
                 }
         )
-
         val fallbackToSWToggle = Preference(
                 title = R.string.fallback_to_software_decoder,
                 summary = R.string.fallback_to_software_decoder_summary,
@@ -665,9 +553,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     AudioPreferences.isFallbackToSoftwareDecoderEnabled()
                 }
         )
-
         val playbackHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.playback)
-
         val hiresToggle = Preference(
                 title = R.string.high_resolution_output,
                 summary = R.string.high_resolution_output_summary,
@@ -680,12 +566,10 @@ abstract class PreferenceFragment : MediaFragment() {
                     AudioPreferences.isHiresOutputEnabled()
                 }
         )
-
         val hiresWarning = Preference(
                 title = R.string.hires_warning,
                 type = PreferenceType.WARN
         )
-
         val stereoDownmixing = Preference(
                 title = R.string.force_stereo_downmixing,
                 summary = R.string.force_stereo_downmixing_summary,
@@ -698,7 +582,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     AudioPreferences.isStereoDownmixForced()
                 }
         )
-
         val gaplessToggle = Preference(
                 title = R.string.gapless_playback,
                 summary = R.string.gapless_playback_summary,
@@ -711,7 +594,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     AudioPreferences.isGaplessPlaybackEnabled()
                 }
         )
-
         val skipSilenceToggle = Preference(
                 title = R.string.skip_silence,
                 summary = R.string.skip_silence_summary,
@@ -724,14 +606,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     AudioPreferences.isSkipSilenceEnabled()
                 }
         )
-
         val outputHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.output)
-
-         
-
-
-
-
         val aaudioToggle = Preference(
                 title = R.string.aaudio_enabled,
                 summary = R.string.aaudio_enabled_summary,
@@ -744,20 +619,11 @@ abstract class PreferenceFragment : MediaFragment() {
                     AudioPreferences.isAaudioEnabled()
                 }
         )
-
         val aaudioWarning = Preference(
                 title = R.string.aaudio_warning,
                 type = PreferenceType.WARN
         )
-
         val replayGainHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.replay_gain)
-
-         
-
-
-
-
-
         val autoReplayGainToggle = Preference(
                 title = R.string.auto_replay_gain,
                 summary = R.string.auto_replay_gain_summary,
@@ -770,13 +636,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     EqualizerPreferences.isAutoReplayGainEnabled()
                 }
         )
-
-         
-
-
-
-
-
         val replayGainMode = Preference(
                 title = R.string.replay_gain_mode,
                 summary = R.string.replay_gain_mode_summary,
@@ -812,7 +671,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     ).show()
                 }
         )
-
         preferences.add(decoderHeader)
         preferences.add(currentDecoder)
         preferences.add(fallbackToSWToggle)
@@ -828,13 +686,10 @@ abstract class PreferenceFragment : MediaFragment() {
         preferences.add(replayGainHeader)
         preferences.add(autoReplayGainToggle)
         preferences.add(replayGainMode)
-
         return preferences
     }
-
     protected fun createLibraryPanel(): List<Preference> {
         val preferences = mutableListOf<Preference>()
-
         val folders = Preference(
                 title = R.string.manage_music_folders,
                 summary = R.string.manage_music_folders_desc,
@@ -844,7 +699,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     openFragment(MusicFolders.newInstance(), MusicFolders.TAG)
                 }
         )
-
         val scanLibrary = Preference(
                 title = R.string.scan_library,
                 summary = R.string.scan_library_summary,
@@ -858,7 +712,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     }
                 }
         )
-
         val refreshLibrary = Preference(
                 title = R.string.refresh_library,
                 summary = R.string.refresh_library_summary,
@@ -872,7 +725,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     }
                 }
         )
-
         val scannerOnResumeToggle = Preference(
                 title = R.string.scan_on_resume,
                 summary = R.string.scan_on_resume_summary,
@@ -885,9 +737,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     LibraryPreferences.isScannerOnResumeEnabled()
                 }
         )
-
         val activityHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.activity)
-
         val pauseActivityToggle = Preference(
                 title = R.string.pause_activity,
                 summary = R.string.pause_activity_summary,
@@ -900,7 +750,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     LibraryPreferences.isActivityPaused()
                 }
         )
-
         val clearPlaybackStats = Preference(
                 title = R.string.clear_playback_stats,
                 summary = R.string.clear_playback_stats_summary,
@@ -911,7 +760,6 @@ abstract class PreferenceFragment : MediaFragment() {
                         if (it) {
                             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
                                 SongStatRepository(requireContext()).wipeStats()
-
                                 withContext(Dispatchers.Main) {
                                     showWarning(R.string.done)
                                 }
@@ -920,9 +768,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     }
                 }
         )
-
         val metadataHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.metadata)
-
         val albumArtistsInsteadOfArtists = Preference(
                 title = R.string.show_album_artists,
                 summary = R.string.show_album_artists_summary,
@@ -935,7 +781,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     LibraryPreferences.isAlbumArtistOverArtist()
                 }
         )
-
         val musicBrainz = Preference(
                 title = R.string.musicbrainz_enabled,
                 summary = R.string.musicbrainz_enabled_summary,
@@ -948,9 +793,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     LibraryPreferences.isMusicBrainzEnabled()
                 }
         )
-
         val albumArtHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.album_art)
-
         val mediaStoreArt = Preference(
                 title = R.string.prefer_media_store_art,
                 summary = R.string.prefer_media_store_art_summary,
@@ -963,9 +806,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     LibraryPreferences.isUseMediaStoreArtwork()
                 }
         )
-
         val scannerHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.scanner)
-
         val minimumAudioLength = Preference(
                 title = R.string.minimum_audio_length,
                 summary = R.string.minimum_audio_length_summary,
@@ -988,7 +829,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     )
                 }
         )
-
         val minimumAudioSize = Preference(
                 title = R.string.minimum_audio_size,
                 summary = R.string.minimum_audio_size_summary,
@@ -1011,9 +851,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     )
                 }
         )
-
         val filtersHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.filters)
-
         val skipHiddenFilesToggle = Preference(
                 title = R.string.skip_hidden_files,
                 summary = R.string.skip_hidden_files_summary,
@@ -1026,7 +864,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     LibraryPreferences.isSkipHiddenFiles()
                 }
         )
-
         val skipHiddenFoldersToggle = Preference(
                 title = R.string.skip_hidden_folders,
                 summary = R.string.skip_hidden_folders_summary,
@@ -1039,9 +876,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     LibraryPreferences.isSkipHiddenFolders()
                 }
         )
-
         val cacheHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.cache)
-
         val clearImageCache = Preference(
                 title = R.string.clear_image_cache,
                 summary = R.string.clear_image_cache_summary,
@@ -1052,7 +887,6 @@ abstract class PreferenceFragment : MediaFragment() {
                         if (it) {
                             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
                                 Glide.get(requireContext()).clearDiskCache() 
-
                                 withContext(Dispatchers.Main) {
                                     Glide.get(requireContext()).clearMemory() 
                                     showWarning(R.string.done) 
@@ -1062,7 +896,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     }
                 }
         )
-
         preferences.add(folders)
         preferences.add(scanLibrary)
         preferences.add(refreshLibrary)
@@ -1083,15 +916,11 @@ abstract class PreferenceFragment : MediaFragment() {
         preferences.add(skipHiddenFoldersToggle)
         preferences.add(cacheHeader)
         preferences.add(clearImageCache)
-
         return preferences
     }
-
     protected fun createAccessibilityPanel(): List<Preference> {
         val preferences = mutableListOf<Preference>()
-
         val userInterfaceHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.user_interface)
-
         val divider = Preference(
                 title = R.string.dividers,
                 summary = R.string.dividers_summary,
@@ -1104,7 +933,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     AccessibilityPreferences.isDividerEnabled()
                 }
         )
-
         val highlightClickedElement = Preference(
                 title = R.string.highlight_clicked_element,
                 summary = R.string.highlight_clicked_element_summary,
@@ -1117,7 +945,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     AccessibilityPreferences.isHighlightMode()
                 }
         )
-
         val outlineClickableElements = Preference(
                 title = R.string.outline_clickable_elements,
                 summary = R.string.outline_clickable_elements_summary,
@@ -1130,9 +957,7 @@ abstract class PreferenceFragment : MediaFragment() {
                     AccessibilityPreferences.isHighlightStroke()
                 }
         )
-
         val miniPlayerHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.miniplayer)
-
         val strokeAroundMiniplayer = Preference(
                 title = R.string.stroke_around_miniplayer,
                 summary = R.string.stroke_around_miniplayer_summary,
@@ -1145,7 +970,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     AccessibilityPreferences.isStrokeAroundMiniplayerOn()
                 }
         )
-
         val darkerMiniplayerShadow = Preference(
                 title = R.string.darker_miniplayer_shadow,
                 summary = R.string.darker_miniplayer_shadow_summary,
@@ -1158,7 +982,6 @@ abstract class PreferenceFragment : MediaFragment() {
                     AccessibilityPreferences.isDarkerMiniplayerShadow()
                 }
         )
-
         preferences.add(userInterfaceHeader)
         preferences.add(divider)
         preferences.add(highlightClickedElement)
@@ -1166,25 +989,20 @@ abstract class PreferenceFragment : MediaFragment() {
         preferences.add(miniPlayerHeader)
         preferences.add(strokeAroundMiniplayer)
         preferences.add(darkerMiniplayerShadow)
-
         return preferences
     }
-
     protected fun createAboutPanel(): List<Preference> {
         val preferences = mutableListOf<Preference>()
-
         val appHeader = Preference(
                 title = R.string.application,
                 type = PreferenceType.SUB_HEADER
         )
-
         val appVersion = Preference(
                 title = R.string.version,
                 summary = BuildConfig.VERSION_NAME,
                 icon = -1,
                 type = PreferenceType.INFO
         )
-
         preferences.add(appHeader)
         preferences.add(appVersion)
         return preferences

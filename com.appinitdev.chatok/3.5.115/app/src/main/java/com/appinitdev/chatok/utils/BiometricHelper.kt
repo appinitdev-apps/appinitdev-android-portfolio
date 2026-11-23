@@ -1,6 +1,4 @@
-
 object BiometricHelper {
-
     fun isBiometricAvailable(context: Context): Boolean {
         val biometricManager = BiometricManager.from(context)
         return when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
@@ -8,7 +6,6 @@ object BiometricHelper {
             else -> false
         }
     }
-
     fun showBiometricPrompt(
         activity: FragmentActivity,
         title: String,
@@ -23,23 +20,19 @@ object BiometricHelper {
                     super.onAuthenticationError(errorCode, errString)
                     onError(errString.toString())
                 }
-
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
                     onSuccess()
                 }
-
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
                 }
             })
-
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle(title)
             .setSubtitle(subtitle)
             .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
             .build()
-
         biometricPrompt.authenticate(promptInfo)
     }
 }

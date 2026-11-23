@@ -1,9 +1,6 @@
-
 @Composable
 fun LanguageSettingsButton() {
     val context = LocalContext.current
-
-    
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         OutlinedButton(
             onClick = {
@@ -13,12 +10,10 @@ fun LanguageSettingsButton() {
                     }
                     context.startActivity(intent)
                 } catch (e: Exception) {
-                    
                 }
             },
             modifier = Modifier.padding(horizontal = 2.dp).height(34.dp),
             shape = RoundedCornerShape(8.dp),
-
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
         ) {
             Icon(

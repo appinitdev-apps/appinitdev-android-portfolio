@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun rememberCoilImagePainter(path: String): Painter {
@@ -9,8 +8,6 @@ fun rememberCoilImagePainter(path: String): Painter {
         .build()
     return rememberAsyncImagePainter(imageRequest)
 }
-
-
 @Composable
 fun rememberDecoderImagePainter(
     inputStream: InputStream,

@@ -1,4 +1,3 @@
-
 @Composable
 fun CopyIconButton(
     text: String,

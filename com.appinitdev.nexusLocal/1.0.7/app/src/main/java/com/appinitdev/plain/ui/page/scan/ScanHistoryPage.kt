@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ScanHistoryPage(
@@ -12,11 +11,9 @@ fun ScanHistoryPage(
             scanHistoryVM.fetch(context)
             setRefreshState(RefreshContentState.Finished)
         }
-
     LaunchedEffect(Unit) {
         scanHistoryVM.fetch(context)
     }
-
     PScaffold(
         topBar = {
             PTopAppBar(navController = navController, title = stringResource(Res.string.scan_history))

@@ -1,4 +1,3 @@
-
 sealed class Screen {
     object Home : Screen()
     data class Calculator(
@@ -11,26 +10,20 @@ sealed class Screen {
     object FamilyProfiles : Screen()
     object HealthTools : Screen()
 }
-
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         AdManager.initialize(this)
-
         setContent {
             val context = LocalContext.current
             val themeManager = remember { ThemeManager(context) }
             var activeThemeMode by remember { mutableStateOf(themeManager.getThemeMode()) }
             var activeThemePreset by remember { mutableStateOf(themeManager.getThemePreset()) }
-
             val useDarkTheme = when (activeThemeMode) {
                 ThemeMode.LIGHT -> false
                 ThemeMode.DARK -> true
                 ThemeMode.SYSTEM -> isSystemInDarkTheme()
             }
-
             IMCTheme(
                 darkTheme = useDarkTheme,
                 preset = activeThemePreset
@@ -51,7 +44,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 @Composable
 fun MainAppNav(
     activeThemeMode: ThemeMode,
@@ -62,7 +54,6 @@ fun MainAppNav(
     val context = LocalContext.current
     val familyManager = remember { FamilyProfileManager(context) }
     var allMembers by remember { mutableStateOf(familyManager.getMembers()) }
-
     var currentScreen by remember { mutableStateOf<Screen>(Screen.Home) }
     var showInfoDialog by remember { mutableStateOf(false) }
     var showThemeDialog by remember { mutableStateOf(false) }
@@ -70,22 +61,16 @@ fun MainAppNav(
     var showAddProfileDialog by remember { mutableStateOf(false) }
     var memberToEditInMain by remember { mutableStateOf<FamilyMember?>(null) }
     var memberToDeleteInMain by remember { mutableStateOf<FamilyMember?>(null) }
-
     var activeMember by remember(allMembers) {
         mutableStateOf(familyManager.getActiveMember())
     }
-
-    
     var showOnboardingDialog by remember {
         mutableStateOf(allMembers.isEmpty())
     }
-
     val historyManager = rememberHistoryManager()
-
     BackHandler(enabled = currentScreen !is Screen.Home) {
         currentScreen = Screen.Home
     }
-
     when (val screen = currentScreen) {
         is Screen.Home -> {
             HomeScreen(
@@ -154,8 +139,6 @@ fun MainAppNav(
                 onSaveToHistory = { res ->
                     val categoryObj = Datos.categories.find { it.id == res.categoryId }
                     val categoryName = if (categoryObj != null) context.getString(categoryObj.descriptionResId) else ""
-
-                    
                     historyManager.saveRecord(
                         BmiRecord(
                             categoryId = res.categoryId,
@@ -167,8 +150,6 @@ fun MainAppNav(
                             gender = screen.gender
                         )
                     )
-
-                    
                     val member = activeMember
                     if (member != null) {
                         familyManager.saveGrowthRecord(
@@ -203,17 +184,13 @@ fun MainAppNav(
             )
         }
     }
-
-    
     if (showOnboardingDialog) {
         var nameInput by remember { mutableStateOf("Mi Perfil") }
         var genderInput by remember { mutableStateOf(Gender.MALE) }
         var birthYearInput by remember { mutableStateOf("1995") }
-
         val currentYear = remember { Calendar.getInstance().get(Calendar.YEAR) }
         val parsedYear = birthYearInput.trim().toIntOrNull()
         val isYearValid = parsedYear != null && parsedYear in 1900..currentYear
-
         AlertDialog(
             onDismissRequest = { },
             icon = {
@@ -247,7 +224,6 @@ fun MainAppNav(
                         fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-
                     OutlinedTextField(
                         value = nameInput,
                         onValueChange = { nameInput = it },
@@ -255,7 +231,6 @@ fun MainAppNav(
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -273,7 +248,6 @@ fun MainAppNav(
                                 Text(text = "${stringResource(id = R.string.femenino)} 🌸", fontWeight = FontWeight.Bold, fontSize = 13.sp)
                             }
                         }
-
                         Surface(
                             shape = RoundedCornerShape(10.dp),
                             color = if (genderInput == Gender.MALE) Color(0xFF2196F3) else MaterialTheme.colorScheme.surfaceVariant,
@@ -288,7 +262,6 @@ fun MainAppNav(
                             }
                         }
                     }
-
                     OutlinedTextField(
                         value = birthYearInput,
                         onValueChange = { birthYearInput = it },
@@ -336,8 +309,6 @@ fun MainAppNav(
             containerColor = MaterialTheme.colorScheme.surface
         )
     }
-
-    
     if (showProfileSwitchDialog) {
         AlertDialog(
             onDismissRequest = { showProfileSwitchDialog = false },
@@ -389,7 +360,6 @@ fun MainAppNav(
                                         Text(text = member.relationship, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                     }
                                 }
-
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     if (isSelected) {
                                         Icon(
@@ -431,7 +401,6 @@ fun MainAppNav(
                             }
                         }
                     }
-
                     OutlinedButton(
                         onClick = {
                             showProfileSwitchDialog = false
@@ -455,18 +424,14 @@ fun MainAppNav(
             containerColor = MaterialTheme.colorScheme.surface
         )
     }
-
-    
     if (showAddProfileDialog) {
         var nameInput by remember { mutableStateOf("") }
         var relationshipInput by remember { mutableStateOf("Hijo/a") }
         var genderInput by remember { mutableStateOf(Gender.MALE) }
         var birthYearInput by remember { mutableStateOf("2020") }
-
         val currentYear = remember { Calendar.getInstance().get(Calendar.YEAR) }
         val parsedYear = birthYearInput.trim().toIntOrNull()
         val isYearValid = parsedYear != null && parsedYear in 1900..currentYear
-
         AlertDialog(
             onDismissRequest = { showAddProfileDialog = false },
             title = {
@@ -481,7 +446,6 @@ fun MainAppNav(
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
-
                     OutlinedTextField(
                         value = relationshipInput,
                         onValueChange = { relationshipInput = it },
@@ -489,7 +453,6 @@ fun MainAppNav(
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -507,7 +470,6 @@ fun MainAppNav(
                                 Text(text = "${stringResource(id = R.string.femenino)} 🌸", fontWeight = FontWeight.Bold, fontSize = 13.sp)
                             }
                         }
-
                         Surface(
                             shape = RoundedCornerShape(10.dp),
                             color = if (genderInput == Gender.MALE) Color(0xFF2196F3) else MaterialTheme.colorScheme.surfaceVariant,
@@ -522,7 +484,6 @@ fun MainAppNav(
                             }
                         }
                     }
-
                     OutlinedTextField(
                         value = birthYearInput,
                         onValueChange = { birthYearInput = it },
@@ -576,21 +537,16 @@ fun MainAppNav(
             shape = RoundedCornerShape(24.dp)
         )
     }
-
-    
     if (memberToEditInMain != null) {
         val target = memberToEditInMain!!
         val birthCal = Calendar.getInstance().apply { timeInMillis = target.birthTimestamp }
-
         var nameInput by remember(target.id) { mutableStateOf(target.name) }
         var relationshipInput by remember(target.id) { mutableStateOf(target.relationship) }
         var genderInput by remember(target.id) { mutableStateOf(target.gender) }
         var birthYearInput by remember(target.id) { mutableStateOf(birthCal.get(Calendar.YEAR).toString()) }
-
         val currentYear = remember { Calendar.getInstance().get(Calendar.YEAR) }
         val parsedYear = birthYearInput.trim().toIntOrNull()
         val isYearValid = parsedYear != null && parsedYear in 1900..currentYear
-
         AlertDialog(
             onDismissRequest = { memberToEditInMain = null },
             title = {
@@ -609,7 +565,6 @@ fun MainAppNav(
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
-
                     OutlinedTextField(
                         value = relationshipInput,
                         onValueChange = { relationshipInput = it },
@@ -617,7 +572,6 @@ fun MainAppNav(
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -635,7 +589,6 @@ fun MainAppNav(
                                 Text(text = "${stringResource(id = R.string.femenino)} 🌸", fontWeight = FontWeight.Bold, fontSize = 13.sp)
                             }
                         }
-
                         Surface(
                             shape = RoundedCornerShape(10.dp),
                             color = if (genderInput == Gender.MALE) Color(0xFF2196F3) else MaterialTheme.colorScheme.surfaceVariant,
@@ -650,7 +603,6 @@ fun MainAppNav(
                             }
                         }
                     }
-
                     OutlinedTextField(
                         value = birthYearInput,
                         onValueChange = { birthYearInput = it },
@@ -703,8 +655,6 @@ fun MainAppNav(
             shape = RoundedCornerShape(24.dp)
         )
     }
-
-    
     if (memberToDeleteInMain != null) {
         val target = memberToDeleteInMain!!
         AlertDialog(
@@ -769,8 +719,6 @@ fun MainAppNav(
             shape = RoundedCornerShape(24.dp)
         )
     }
-
-    
     if (showThemeDialog) {
         AlertDialog(
             onDismissRequest = { showThemeDialog = false },
@@ -809,10 +757,8 @@ fun MainAppNav(
                         ThemeModeChip(title = "${stringResource(id = R.string.oscuro)} 🌙", isSelected = activeThemeMode == ThemeMode.DARK, onClick = { onThemeModeChange(ThemeMode.DARK) }, modifier = Modifier.weight(1f))
                         ThemeModeChip(title = "${stringResource(id = R.string.sistema)} 📱", isSelected = activeThemeMode == ThemeMode.SYSTEM, onClick = { onThemeModeChange(ThemeMode.SYSTEM) }, modifier = Modifier.weight(1f))
                     }
-
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(text = stringResource(id = R.string.paleta_colores), fontSize = 13.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-
                     ThemePreset.values().forEach { preset ->
                         ThemePresetItem(
                             preset = preset,
@@ -834,7 +780,6 @@ fun MainAppNav(
             containerColor = MaterialTheme.colorScheme.surface
         )
     }
-
     if (showInfoDialog) {
         AlertDialog(
             onDismissRequest = { showInfoDialog = false },
@@ -890,7 +835,6 @@ fun MainAppNav(
         )
     }
 }
-
 @Composable
 fun ThemeModeChip(title: String, isSelected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Surface(
@@ -904,7 +848,6 @@ fun ThemeModeChip(title: String, isSelected: Boolean, onClick: () -> Unit, modif
         }
     }
 }
-
 @Composable
 fun ThemePresetItem(
     preset: ThemePreset,
@@ -936,7 +879,6 @@ fun ThemePresetItem(
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
-
             if (isSelected) {
                 Text(
                     text = stringResource(id = R.string.activo_check),
@@ -948,7 +890,6 @@ fun ThemePresetItem(
         }
     }
 }
-
 @Composable
 fun rememberHistoryManager(): BmiHistoryManager {
     val context = LocalContext.current

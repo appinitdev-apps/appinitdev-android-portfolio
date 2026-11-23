@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalculatorScreen(
@@ -10,32 +9,25 @@ fun CalculatorScreen(
 ) {
     val context = LocalContext.current
     var unitSystem by remember { mutableStateOf(UnitSystem.METRIC) }
-
     val subOptions = remember(category.id) {
         BmiCalculatorEngine.getOptionsForCategory(context, category.id)
     }
-
     var selectedSubOptionIndex by remember(category.id, preselectedSubIndex) {
         mutableIntStateOf(preselectedSubIndex.coerceIn(0, (subOptions?.size ?: 1) - 1))
     }
     var isDropdownExpanded by remember { mutableStateOf(false) }
-
     val familyManager = remember { FamilyProfileManager(context) }
     val activeMember = remember { familyManager.getActiveMember() }
-
     val lastGrowthRecord = remember(activeMember?.id) {
         if (activeMember != null) {
             familyManager.getGrowthRecordsForMember(activeMember.id).lastOrNull()
         } else null
     }
-
     val lastHistoryRecord = remember {
         if (lastGrowthRecord == null) {
             BmiHistoryManager(context).getRecords().lastOrNull()
         } else null
     }
-
-    
     val defaultHeight = when (category.id) {
         1 -> 65.0
         2 -> 95.0
@@ -43,7 +35,6 @@ fun CalculatorScreen(
         4 -> 155.0
         else -> 170.0
     }
-
     val defaultWeight = when (category.id) {
         1 -> 7.5
         2 -> 14.0
@@ -51,21 +42,16 @@ fun CalculatorScreen(
         4 -> 48.0
         else -> 70.0
     }
-
     val initialHeight = lastGrowthRecord?.heightCm
         ?: lastHistoryRecord?.heightCm
         ?: defaultHeight
-
     val initialWeight = lastGrowthRecord?.weightKg
         ?: lastHistoryRecord?.weightKg
         ?: defaultWeight
-
     val initialGender = activeMember?.gender ?: preselectedGender
-
     var selectedGender by remember(category.id, activeMember?.id, preselectedGender) { mutableStateOf(initialGender) }
     var heightCm by remember(category.id, activeMember?.id) { mutableDoubleStateOf(initialHeight) }
     var weightKg by remember(category.id, activeMember?.id) { mutableDoubleStateOf(initialWeight) }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -87,7 +73,6 @@ fun CalculatorScreen(
                     }
                 },
                 actions = {
-                    
                     Surface(
                         shape = RoundedCornerShape(20.dp),
                         color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.2f),
@@ -128,7 +113,6 @@ fun CalculatorScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
@@ -166,8 +150,6 @@ fun CalculatorScreen(
                                 )
                             }
                         }
-
-                        
                         if (!subOptions.isNullOrEmpty()) {
                             Box(modifier = Modifier.fillMaxWidth()) {
                                 Surface(
@@ -197,7 +179,6 @@ fun CalculatorScreen(
                                         )
                                     }
                                 }
-
                                 DropdownMenu(
                                     expanded = isDropdownExpanded,
                                     onDismissRequest = { isDropdownExpanded = false }
@@ -214,15 +195,12 @@ fun CalculatorScreen(
                                 }
                             }
                         }
-
-                        
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             val isFemale = (selectedGender == Gender.FEMALE)
                             val isMale = (selectedGender == Gender.MALE)
-
                             Surface(
                                 shape = RoundedCornerShape(14.dp),
                                 color = if (isFemale) Color(0xFFE91E63) else MaterialTheme.colorScheme.surfaceVariant,
@@ -242,7 +220,6 @@ fun CalculatorScreen(
                                     )
                                 }
                             }
-
                             Surface(
                                 shape = RoundedCornerShape(14.dp),
                                 color = if (isMale) Color(0xFF2196F3) else MaterialTheme.colorScheme.surfaceVariant,
@@ -265,8 +242,6 @@ fun CalculatorScreen(
                         }
                     }
                 }
-
-                
                 InteractiveRulerPicker(
                     title = stringResource(id = R.string.estatura),
                     value = if (unitSystem == UnitSystem.METRIC) heightCm else BmiCalculatorEngine.cmToInches(heightCm),
@@ -278,8 +253,6 @@ fun CalculatorScreen(
                     },
                     accentColor = MaterialTheme.colorScheme.primary
                 )
-
-                
                 InteractiveRulerPicker(
                     title = stringResource(id = R.string.peso),
                     value = if (unitSystem == UnitSystem.METRIC) weightKg else BmiCalculatorEngine.kgToLbs(weightKg),
@@ -291,8 +264,6 @@ fun CalculatorScreen(
                     },
                     accentColor = Color(0xFF00CEC9)
                 )
-
-                
                 Button(
                     onClick = {
                         val result = BmiCalculatorEngine.calculate(

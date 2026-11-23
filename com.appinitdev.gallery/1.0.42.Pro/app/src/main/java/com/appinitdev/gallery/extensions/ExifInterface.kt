@@ -1,7 +1,3 @@
-
- 
-
-
 val AllNonDimensionExifAttributes = listOf(
     ExifInterface.TAG_IMAGE_DESCRIPTION,
     ExifInterface.TAG_MAKE,
@@ -124,7 +120,6 @@ val AllNonDimensionExifAttributes = listOf(
     ExifInterface.TAG_INTEROPERABILITY_INDEX,
     ExifInterface.TAG_XMP
 )
-
 fun ExifInterface.copyNonDimensionAttributesTo(destination: ExifInterface) {
     AllNonDimensionExifAttributes.forEach {
         val value = getAttribute(it)
@@ -132,7 +127,6 @@ fun ExifInterface.copyNonDimensionAttributesTo(destination: ExifInterface) {
             destination.setAttribute(it, value)
         }
     }
-
     try {
         destination.saveAttributes()
     } catch (_: Exception) {

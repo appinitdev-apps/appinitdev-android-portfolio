@@ -1,4 +1,3 @@
-
 @Stable
 open class ReorderableLazyCollectionState<out T> internal constructor(
     internal val state: LazyCollectionState<T>,
@@ -26,10 +25,8 @@ open class ReorderableLazyCollectionState<out T> internal constructor(
     internal val reorderableKeys = HashSet<Any?>()
     internal var previousDraggingItemKey by mutableStateOf<Any?>(null)
     internal var previousDraggingItemOffset = Animatable(Offset.Zero, Offset.VectorConverter)
-
     internal val draggingItemLayoutInfo: LazyCollectionItemInfo<T>?
         get() = draggingItemKey?.let { key -> state.layoutInfo.visibleItemsInfo.firstOrNull { it.key == key } }
-
     internal val draggingItemOffset: Offset
         get() = (draggingItemLayoutInfo?.let {
             val offset = if (it.index != oldDraggingItemIndex || oldDraggingItemIndex == null) {
@@ -38,7 +35,6 @@ open class ReorderableLazyCollectionState<out T> internal constructor(
             draggingItemDraggedDelta + (draggingItemInitialOffset.toOffset() - offset.toOffset())
                 .reverseAxisIfNecessary().reverseAxisWithLayoutDirectionIfLazyVerticalStaggeredGridRtlFix()
         }) ?: Offset.Zero
-
     internal fun Offset.reverseAxisIfNecessary(): Offset {
         val r1 = if (state.layoutInfo.reverseLayout) reverseAxis(orientation) else this
         return when (orientation) {
@@ -49,14 +45,12 @@ open class ReorderableLazyCollectionState<out T> internal constructor(
             }
         }
     }
-
     internal fun Offset.reverseAxisWithLayoutDirectionIfLazyVerticalStaggeredGridRtlFix() =
         when (layoutDirection) {
             LayoutDirection.Ltr -> this
             LayoutDirection.Rtl -> if (lazyVerticalStaggeredGridRtlFix && orientation == Orientation.Vertical)
                 reverseAxis(Orientation.Horizontal) else this
         }
-
     internal suspend fun onDragStart(key: Any, handleOffset: Offset) {
         state.layoutInfo.visibleItemsInfo.firstOrNull { it.key == key }?.also {
             val mainAxisOffset = it.offset.getAxis(orientation)
@@ -64,11 +58,8 @@ open class ReorderableLazyCollectionState<out T> internal constructor(
             draggingItemKey = key; draggingItemInitialOffset = it.offset; draggingItemHandleOffset = handleOffset
         }
     }
-
     internal fun isItemDragging(key: Any): State<Boolean> = derivedStateOf { key == draggingItemKey }
     internal val layoutInfoFlow = snapshotFlow { state.layoutInfo }
-
     companion object { const val MoveItemsLayoutInfoUpdateMaxWaitDuration = 1000L }
 }
-
 internal const val MoveItemsLayoutInfoUpdateMaxWaitDuration = 1000L

@@ -1,10 +1,7 @@
-
 object ReorderableLazyCollectionDefaults {
     val ScrollThreshold = 48.dp
 }
-
 internal const val ScrollAmountMultiplier = 0.05f
-
 internal data class AbsolutePixelPadding(
     val start: Float,
     val end: Float,
@@ -13,7 +10,6 @@ internal data class AbsolutePixelPadding(
 ) {
     companion object {
         val Zero = AbsolutePixelPadding(0f, 0f, 0f, 0f)
-
         @Composable
         fun fromPaddingValues(paddingValues: PaddingValues): AbsolutePixelPadding {
             val density = LocalDensity.current
@@ -27,7 +23,6 @@ internal data class AbsolutePixelPadding(
         }
     }
 }
-
 internal interface LazyCollectionItemInfo<out T> {
     val index: Int
     val key: Any
@@ -37,14 +32,12 @@ internal interface LazyCollectionItemInfo<out T> {
     val center: IntOffset
         get() = IntOffset(offset.x + size.width / 2, offset.y + size.height / 2)
 }
-
 internal data class CollectionScrollPadding(
     val start: Float,
     val end: Float,
 ) {
     companion object {
         val Zero = CollectionScrollPadding(0f, 0f)
-
         fun fromAbsolutePixelPadding(
             orientation: Orientation,
             padding: AbsolutePixelPadding,
@@ -62,7 +55,6 @@ internal data class CollectionScrollPadding(
         }
     }
 }
-
 internal data class ScrollAreaOffsets(
     val start: Float,
     val end: Float,

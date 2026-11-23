@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 data class VideosPageState(
     val pagerState: PagerState,
@@ -11,7 +10,6 @@ data class VideosPageState(
     val bucketsMap: Map<String, DMediaBucket>,
     val cellsPerRow: MutableState<Int>
 ) {
-
     companion object {
         @OptIn(ExperimentalMaterial3Api::class)
         @Composable
@@ -37,7 +35,6 @@ data class VideosPageState(
             val tagsMapState by tagsVM.tagsMapFlow.collectAsState()
             val bucketsMap by mediaFoldersVM.bucketsMapFlow.collectAsState()
             val cellsPerRow = remember { mutableIntStateOf(VideoGridCellsPerRowPreference.default) }
-
             return VideosPageState(
                 pagerState = pagerState,
                 itemsState = itemsState,

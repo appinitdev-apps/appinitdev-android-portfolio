@@ -1,4 +1,3 @@
-
 @Composable
 fun TagNameDialog(tagsVM: TagsViewModel, onChangedAsync: suspend () -> Unit = {}) {
     val tag = tagsVM.editItem.value
@@ -24,7 +23,6 @@ fun TagNameDialog(tagsVM: TagsViewModel, onChangedAsync: suspend () -> Unit = {}
                     }
                     onChangedAsync()
                 }
-
             },
         )
     }

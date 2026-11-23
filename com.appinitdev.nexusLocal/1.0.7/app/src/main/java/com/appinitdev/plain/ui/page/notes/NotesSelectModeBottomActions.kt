@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun NotesSelectModeBottomActions(
@@ -12,14 +11,12 @@ fun NotesSelectModeBottomActions(
     var removeFromTags by remember {
         mutableStateOf(false)
     }
-
     if (showSelectTagsDialog) {
         BatchSelectTagsDialog(tagsVM, tagsState, notesVM.getSelectedItems(), removeFromTags) {
             showSelectTagsDialog = false
             notesVM.exitSelectMode()
         }
     }
-
     PBottomAppBar {
         BottomActionButtons {
             if (notesVM.trash.value) {

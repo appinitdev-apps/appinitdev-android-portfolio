@@ -1,9 +1,7 @@
-
 data class MediaViewerGestureResult(
     val rawGesture: RawGesture,
     val onSizeChange: suspend (SizeChangeContent) -> Unit,
 )
-
 @Composable
 internal fun rememberMediaViewerGesture(
     state: MediaViewerState,
@@ -28,19 +26,16 @@ internal fun rememberMediaViewerGesture(
     var rotate by remember { mutableFloatStateOf(0F) }
     var zoom by remember { mutableFloatStateOf(1F) }
     var fingerDistanceOffset by remember { mutableStateOf(Offset.Zero) }
-
     fun asyncDesParams() {
         desX = state.offsetX.value; desY = state.offsetY.value
         desScale = state.scale.value; desRotation = state.rotation.value
     }
     LaunchedEffect(key1 = state.resetTimeStamp) { asyncDesParams() }
-
     val sizeChange: suspend (SizeChangeContent) -> Unit = { content ->
         maxScale = content.maxScale; state.defaultSize = content.defaultSize
         state.containerSize = content.containerSize; state.maxScale = content.maxScale
         if (state.fromSaver) { state.fromSaver = false; state.fixToBound() }
     }
-
     val rawGesture = remember {
         RawGesture(
             onTap = gesture.onTap, onDoubleTap = { gesture.onDoubleTap(it) }, onLongPress = gesture.onLongPress,

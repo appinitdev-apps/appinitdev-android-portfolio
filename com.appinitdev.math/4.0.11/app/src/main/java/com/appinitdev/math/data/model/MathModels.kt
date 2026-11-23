@@ -1,4 +1,3 @@
-
 enum class MathDomain(val displayName: String) {
     ALL("Todos"),
     ALGEBRA("Álgebra y Aritmética"),
@@ -7,7 +6,6 @@ enum class MathDomain(val displayName: String) {
     GEOMETRY("Geometría y Vectores"),
     LOGIC_STATS("Lógica y Probabilidad")
 }
-
 data class MathCategory(
     val id: String,                 
     val title: String,              
@@ -16,7 +14,6 @@ data class MathCategory(
     val iconName: String = "function",
     val topicCount: Int = 0
 )
-
 data class MathTopic(
     val id: String,                 
     val categoryId: String,         
@@ -28,14 +25,12 @@ data class MathTopic(
     val exampleCount: Int = 0,
     val isFavorite: Boolean = false
 )
-
 data class SearchResultMatch(
     val topic: MathTopic,
     val matchedSubtopic: String?,
     val matchSnippet: String,
     val matchType: String
 )
-
 data class Flashcard(
     val category: String, 
     val level: Int,       
@@ -45,7 +40,6 @@ data class Flashcard(
     val id: Long = 0L,
     val isFavorite: Boolean = false,
 )
-
 data class SymbolItem(
     val id: Long = 0L,
     val symbol: String,
@@ -55,7 +49,6 @@ data class SymbolItem(
     val example: String,
     val isFavorite: Boolean = false,
 )
-
 enum class DetailTab(val label: String, val icon: String) {
     ALL("Todo", "📄"),
     THEORY("Teoría", "📖"),
@@ -63,7 +56,6 @@ enum class DetailTab(val label: String, val icon: String) {
     FORMULAS("Fórmulas", "∑"),
     CALCULATOR("Calculadora", "🧮")
 }
-
 enum class Screen {
     HOME,
     CATEGORY_DETAIL,

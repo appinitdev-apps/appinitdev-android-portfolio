@@ -1,9 +1,5 @@
-
 object WebSocketHelper {
     suspend fun sendEventAsync(event: WebSocketEvent) {
-
-
-
         HttpServerManager.wsSessions.toList().forEach {
             if (event.data is WebSocketData.Text) {
                 val token = HttpServerManager.tokenCache[it.clientId]
@@ -15,7 +11,6 @@ object WebSocketHelper {
             }
         }
     }
-
     suspend fun sendSignalingToClientAsync(clientId: String, json: String) {
         HttpServerManager.wsSessions
             .toList()
@@ -33,13 +28,11 @@ object WebSocketHelper {
             }
     }
 }
-
 fun addIntPrefixToByteArray(value: Int, byteArray: ByteArray): ByteArray {
     val intBytes = ByteArray(4) 
     intBytes[0] = (value shr 24).toByte()
     intBytes[1] = (value shr 16).toByte()
     intBytes[2] = (value shr 8).toByte()
     intBytes[3] = value.toByte()
-
     return intBytes + byteArray
 }

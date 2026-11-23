@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatPage(
@@ -17,7 +16,6 @@ fun ChatPage(
     var inputValue by remember { mutableStateOf("") }
     var showForwardDialog by remember { mutableStateOf(false) }
     var messageToForward by remember { mutableStateOf<VChat?>(null) }
-
     val configuration = LocalConfiguration.current
     val density = LocalDensity.current
     val imageWidthDp = remember { (configuration.screenWidthDp.dp - 44.dp) / 3 }
@@ -31,14 +29,11 @@ fun ChatPage(
     val scrollState = rememberLazyListState()
     val focusManager = LocalFocusManager.current
     val previewerState = rememberPreviewerState()
-
     ChatPageEffects(id, chatVM, peerVM, scrollState, focusManager, scope, onInputLoaded = { inputValue = it })
-
     BackHandler(enabled = chatVM.selectMode.value || previewerState.visible) {
         if (previewerState.visible) scope.launch { previewerState.closeTransform() }
         else chatVM.exitSelectMode()
     }
-
     val pageTitle = if (chatVM.selectMode.value) {
         LocaleHelper.getStringF(Res.string.x_selected, "count", chatVM.selectedIds.size)
     } else {
@@ -48,9 +43,7 @@ fun ChatPage(
             if (channel != null) "${state.toName} (${channel.joinedMembers().size})" else state.toName
         } else state.toName
     }
-
     val channel = if (chatState.value.target.type == ChatTargetType.CHANNEL) channelsState.value.find { it.id == chatState.value.target.toId } else null
-
     PScaffold(
         modifier = Modifier.imePadding(),
         topBar = {
@@ -140,9 +133,7 @@ fun ChatPage(
             }
         }
     }
-
     MediaPreviewer(state = previewerState)
-
     if (showForwardDialog) {
         ForwardTargetDialog(
             peerVM = peerVM, onDismiss = { showForwardDialog = false; messageToForward = null },

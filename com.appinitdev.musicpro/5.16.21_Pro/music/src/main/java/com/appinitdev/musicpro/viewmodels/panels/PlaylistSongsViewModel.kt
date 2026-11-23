@@ -1,39 +1,15 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @HiltViewModel(assistedFactory = PlaylistSongsViewModel.Factory::class)
 class PlaylistSongsViewModel @AssistedInject constructor(
         @Assisted val initialPlaylist: Playlist,
         private val playlistRepository: PlaylistRepository
 ) : ViewModel() {
-
     private val _songs = MutableStateFlow<List<Audio>>(emptyList())
-
-     
     val songs: StateFlow<List<Audio>> = _songs.asStateFlow()
-
     private val _currentPlaylist = MutableStateFlow(initialPlaylist)
-
-     
     val currentPlaylist: StateFlow<Playlist> = _currentPlaylist.asStateFlow()
-
     init {
         loadData()
     }
-
     private fun loadData() {
         viewModelScope.launch {
             combine(
@@ -51,12 +27,6 @@ class PlaylistSongsViewModel @AssistedInject constructor(
                 }
         }
     }
-
-     
-
-
-
-
     private fun List<Audio>.sortedByPlaylist(playlist: Playlist): List<Audio> {
         if (playlist.sortOrder == -1) return this
         val asc = playlist.sortStyle == CommonPreferencesConstants.ASCENDING
@@ -74,15 +44,11 @@ class PlaylistSongsViewModel @AssistedInject constructor(
             else -> this
         }
     }
-
-     
     @AssistedFactory
     interface Factory {
         fun create(initialPlaylist: Playlist): PlaylistSongsViewModel
     }
-
     companion object {
         private const val TAG = "PlaylistSongsViewModel"
     }
 }
-

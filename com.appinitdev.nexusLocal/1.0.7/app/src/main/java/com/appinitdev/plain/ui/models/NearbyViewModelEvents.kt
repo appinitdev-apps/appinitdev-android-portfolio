@@ -1,4 +1,3 @@
-
 internal fun NearbyViewModel.startEventListening() {
     eventJob = viewModelScope.launch {
         Channel.sharedFlow.collect { event ->
@@ -11,12 +10,10 @@ internal fun NearbyViewModel.startEventListening() {
                         nearbyDevices.add(event.device)
                     }
                 }
-
                 is PairingSuccessEvent -> {
                     pairingInProgress.removeIf { it == event.deviceId }
                     loadPairedDevicesAsync()
                 }
-
                 is PairingFailedEvent -> {
                     pairingInProgress.removeIf { it == event.deviceId }
                 }
@@ -24,13 +21,11 @@ internal fun NearbyViewModel.startEventListening() {
         }
     }
 }
-
 internal fun NearbyViewModel.loadPairedDevicesAsync() {
     viewModelScope.launch(Dispatchers.IO) {
         loadAsync()
     }
 }
-
 internal fun NearbyViewModel.unpairDeviceAsync(deviceId: String) {
     viewModelScope.launch(Dispatchers.IO) {
         try {
@@ -42,7 +37,6 @@ internal fun NearbyViewModel.unpairDeviceAsync(deviceId: String) {
         }
     }
 }
-
 internal fun NearbyViewModel.startPairingDevice(deviceId: String) {
     viewModelScope.launch(Dispatchers.IO) {
         val device = nearbyDevices.find { it.id == deviceId } ?: return@launch

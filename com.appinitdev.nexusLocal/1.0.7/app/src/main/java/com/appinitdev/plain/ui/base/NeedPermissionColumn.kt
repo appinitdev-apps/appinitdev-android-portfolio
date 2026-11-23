@@ -1,4 +1,3 @@
-
 @Composable
 fun NeedPermissionColumn(
     icon: DrawableResource,
@@ -25,7 +24,6 @@ fun NeedPermissionColumn(
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 AnimatedIconContainer(icon)
-
                 Text(
                     text = permission.permission.getGrantAccessText(),
                     style = MaterialTheme.typography.titleLarge.copy(
@@ -36,7 +34,6 @@ fun NeedPermissionColumn(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 8.dp, start = 4.dp, end = 4.dp)
                 )
-
                 Button(
                     onClick = {
                         sendEvent(RequestPermissionsEvent(*permission.permissions.toTypedArray()))

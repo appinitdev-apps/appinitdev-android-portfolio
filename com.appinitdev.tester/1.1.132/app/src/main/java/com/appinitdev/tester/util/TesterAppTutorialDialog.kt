@@ -1,31 +1,24 @@
-
-
 data class TutorialPage(
     val icon: ImageVector,
     val titleRes: Int,       
     val descriptionRes: Int  
 )
-
 val tutorialPages = listOf(
-    
     TutorialPage(
         Icons.Default.VerifiedUser,
         R.string.regla_1_titulo,
         R.string.regla_1_desc
     ),
-    
     TutorialPage(
         Icons.Default.Group,
         R.string.regla_2_titulo,
         R.string.regla_2_desc
     ),
-    
     TutorialPage(
         Icons.Default.EmojiEvents,
         R.string.regla_3_titulo,
         R.string.regla_3_desc
     ),
-    
     TutorialPage(
         Icons.Default.TrendingUp,
         R.string.regla_4_titulo,
@@ -39,8 +32,6 @@ fun TesterAppTutorialDialog(
 ) {
     val pagerState = rememberPagerState(pageCount = { tutorialPages.size })
     val coroutineScope = rememberCoroutineScope()
-
-    
     Dialog(
         onDismissRequest = onSkip,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -56,7 +47,6 @@ fun TesterAppTutorialDialog(
                 modifier = Modifier.padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -72,10 +62,7 @@ fun TesterAppTutorialDialog(
                         Text(stringResource(R.string.saltar), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
-
                 Spacer(modifier = Modifier.height(24.dp))
-
-                
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier.fillMaxWidth()
@@ -85,7 +72,6 @@ fun TesterAppTutorialDialog(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        
                         Surface(
                             shape = CircleShape,
                             color = MaterialTheme.colorScheme.primaryContainer,
@@ -100,9 +86,7 @@ fun TesterAppTutorialDialog(
                                 )
                             }
                         }
-
                         Spacer(modifier = Modifier.height(24.dp))
-
                         Text(
                             text = stringResource(id = item.titleRes),
                             style = MaterialTheme.typography.headlineSmall,
@@ -110,9 +94,7 @@ fun TesterAppTutorialDialog(
                             textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.onSurface
                         )
-
                         Spacer(modifier = Modifier.height(12.dp))
-
                         Text(
                             text = stringResource(id = item.descriptionRes),
                             style = MaterialTheme.typography.bodyLarge,
@@ -120,19 +102,14 @@ fun TesterAppTutorialDialog(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             lineHeight = 24.sp
                         )
-
-                        
                         Spacer(modifier = Modifier.height(24.dp))
                     }
                 }
-
-                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -147,7 +124,6 @@ fun TesterAppTutorialDialog(
                                 targetValue = if (isSelected) 24.dp else 8.dp,
                                 label = "width_anim"
                             )
-
                             Box(
                                 modifier = Modifier
                                     .size(width = width, height = 8.dp)
@@ -156,8 +132,6 @@ fun TesterAppTutorialDialog(
                             )
                         }
                     }
-
-                    
                     Button(
                         onClick = {
                             if (pagerState.currentPage < tutorialPages.size - 1) {

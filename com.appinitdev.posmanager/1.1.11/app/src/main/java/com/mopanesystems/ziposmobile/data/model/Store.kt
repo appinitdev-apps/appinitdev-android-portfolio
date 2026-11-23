@@ -1,4 +1,3 @@
-
 @Entity(tableName = "stores")
 data class Store(
     @PrimaryKey
@@ -20,7 +19,6 @@ data class Store(
     override val createdAt: LocalDateTime = LocalDateTime.now(),
     override val updatedAt: LocalDateTime = LocalDateTime.now()
 ) : Identifiable, Auditable
-
 @Entity(tableName = "users")
 data class User(
     @PrimaryKey
@@ -36,20 +34,15 @@ data class User(
     override val createdAt: LocalDateTime = LocalDateTime.now(),
     override val updatedAt: LocalDateTime = LocalDateTime.now()
 ) : Identifiable, Auditable, StoreScoped {
-
     val fullName: String
         get() = "$firstName $lastName".trim()
-
     val isAdmin: Boolean
         get() = role == UserRole.ADMIN
-
     val isManagerOrAdmin: Boolean
         get() = role == UserRole.ADMIN || role == UserRole.MANAGER
-
     val canProcessSales: Boolean
         get() = role == UserRole.ADMIN || role == UserRole.MANAGER || role == UserRole.CASHIER
 }
-
 @Entity(tableName = "user_permissions")
 data class UserPermission(
     @PrimaryKey
@@ -59,7 +52,6 @@ data class UserPermission(
     val isGranted: Boolean = true,
     val createdAt: LocalDateTime = LocalDateTime.now()
 ) : Identifiable
-
 data class StoreSettings(
     val receiptHeader: String? = null,
     val receiptFooter: String? = null,
@@ -73,7 +65,6 @@ data class StoreSettings(
     val enableOfflineMode: Boolean = true,
     val syncInterval: Int = 300 
 )
-
 enum class UserRole {
     ADMIN,
     MANAGER,

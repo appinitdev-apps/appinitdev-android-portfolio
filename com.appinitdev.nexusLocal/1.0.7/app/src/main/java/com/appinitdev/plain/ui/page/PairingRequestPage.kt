@@ -1,4 +1,3 @@
-
 @Composable
 fun PairingRequestPage(
     event: PairingRequestReceivedEvent,

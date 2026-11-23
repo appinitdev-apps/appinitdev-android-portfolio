@@ -1,7 +1,5 @@
-
 object ContactMediaStoreHelper {
     private val uriExternal: Uri = ContactsContract.Data.CONTENT_URI
-
     private fun getProjection(): Array<String> {
         return arrayOf(
             ContactsContract.Data.CONTACT_ID,
@@ -20,7 +18,6 @@ object ContactMediaStoreHelper {
             ContactsContract.RawContacts.ACCOUNT_TYPE,
         )
     }
-
     private suspend fun buildWhereAsync(query: String): ContentWhere {
         val where = ContentWhere()
         where.add("${ContactsContract.Data.MIMETYPE} = ?", ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
@@ -30,25 +27,20 @@ object ContactMediaStoreHelper {
                     "text" -> {
                         where.add("${ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME} LIKE ?", "%${it.value}%")
                     }
-
                     "ids" -> {
                         where.addIn(ContactsContract.Data.RAW_CONTACT_ID, it.value.split(","))
                     }
-
                     "id" -> {
                         where.addEqual(ContactsContract.Data.RAW_CONTACT_ID, it.value)
                     }
                 }
             }
         }
-
         return where
     }
-
     suspend fun countAsync(context: Context, query: String): Int {
         return context.contentResolver.count(uriExternal, buildWhereAsync(query))
     }
-
     fun deleteByIdsAsync(
         context: Context,
         ids: Set<String>,
@@ -59,21 +51,18 @@ object ContactMediaStoreHelper {
             context.contentResolver.delete(uriExternal, selection, selectionArgs)
         }
     }
-
     suspend fun getByIdAsync(
         context: Context,
         id: String,
     ): DContact? {
         return searchAsync(context, "id=$id", 1, 0).firstOrNull()
     }
-
     suspend fun getIdsAsync(context: Context, query: String): Set<String> {
         val where = buildWhereAsync(query)
         return context.contentResolver.getSearchCursor(uriExternal, arrayOf(ContactsContract.Data.RAW_CONTACT_ID), where)?.map { cursor, cache ->
             cursor.getStringValue(ContactsContract.Data.RAW_CONTACT_ID, cache)
         }?.toSet() ?: emptySet()
     }
-
     fun updateAsync(
         id: String,
         contact: ContactInput,
@@ -91,68 +80,50 @@ object ContactMediaStoreHelper {
             withValue(ContactsContract.CommonDataKinds.StructuredName.SUFFIX, contact.suffix)
             operations.add(build())
         }
-
         ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE.let { type ->
             operations.add(ContentHelper.newDelete(id, type))
             operations.add(ContentHelper.newInsert(id, type, contact.nickname))
         }
-
         ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE.let { type ->
             operations.add(ContentHelper.newDelete(id, type))
             operations.addAll(contact.phoneNumbers.map { ContentHelper.newInsert(id, type, it) })
         }
-
         ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE.let { type ->
             operations.add(ContentHelper.newDelete(id, type))
             operations.addAll(contact.emails.map { ContentHelper.newInsert(id, type, it) })
         }
-
         ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE.let { type ->
             operations.add(ContentHelper.newDelete(id, type))
             operations.addAll(contact.addresses.map { ContentHelper.newInsert(id, type, it) })
         }
-
         ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE.let { type ->
             operations.add(ContentHelper.newDelete(id, type))
             operations.addAll(contact.ims.map { ContentHelper.newInsert(id, type, it) })
         }
-
         ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE.let { type ->
             operations.add(ContentHelper.newDelete(id, type))
             operations.addAll(contact.events.map { ContentHelper.newInsert(id, type, it) })
         }
-
         ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE.let { type ->
             operations.add(ContentHelper.newDelete(id, type))
             operations.add(ContentHelper.newInsert(id, type, contact.notes))
         }
-
         ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE.let { type ->
             operations.add(ContentHelper.newDelete(id, type))
             contact.organization?.let {
                 operations.add(ContentHelper.newOrgInsert(id, it))
             }
         }
-
         ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE.let { type ->
             operations.add(ContentHelper.newDelete(id, type))
             operations.addAll(contact.websites.map { ContentHelper.newInsert(id, type, it) })
         }
-
         ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE.let { type ->
             operations.add(ContentHelper.newDelete(id, type))
             operations.addAll(contact.groupIds.map { ContentHelper.newInsert(id, type, it.value) })
         }
-
-
-
-
-
-
-
         context.contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
     }
-
     fun createAsync(contact: ContactInput): String {
         val context = MainApp.instance
         val operations = ArrayList<ContentProviderOperation>()
@@ -162,7 +133,6 @@ object ContactMediaStoreHelper {
             withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, source!!.type)
             operations.add(build())
         }
-
         ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).apply {
             withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
             withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
@@ -173,58 +143,45 @@ object ContactMediaStoreHelper {
             withValue(ContactsContract.CommonDataKinds.StructuredName.SUFFIX, contact.suffix)
             operations.add(build())
         }
-
         val id = "0"
         ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE.let { type ->
             operations.add(ContentHelper.newInsert(id, type, contact.nickname))
         }
-
         ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE.let { type ->
             operations.addAll(contact.phoneNumbers.map { ContentHelper.newInsert(id, type, it) })
         }
-
         ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE.let { type ->
             operations.addAll(contact.emails.map { ContentHelper.newInsert(id, type, it) })
         }
-
         ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE.let { type ->
             operations.addAll(contact.addresses.map { ContentHelper.newInsert(id, type, it) })
         }
-
         ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE.let { type ->
             operations.addAll(contact.ims.map { ContentHelper.newInsert(id, type, it) })
         }
-
         ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE.let { type ->
             operations.addAll(contact.events.map { ContentHelper.newInsert(id, type, it) })
         }
-
         ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE.let { type ->
             operations.add(ContentHelper.newInsert(id, type, contact.notes))
         }
-
         ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE.let {
             contact.organization?.let {
                 operations.add(ContentHelper.newOrgInsert(id, it))
             }
         }
-
         ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE.let { type ->
             operations.addAll(contact.websites.map { ContentHelper.newInsert(id, type, it) })
         }
-
         ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE.let { type ->
             operations.addAll(contact.groupIds.map { ContentHelper.newInsert(id, type, it.value) })
         }
-
         val results = context.contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
         if (results.isEmpty()) {
             return ""
         }
-
         return ContentUris.parseId(results[0].uri!!).toString()
     }
-
     suspend fun searchAsync(
         context: Context,
         query: String,
@@ -249,7 +206,6 @@ object ContactMediaStoreHelper {
             val thumbnailUri = cursor.getStringValue(ContactsContract.CommonDataKinds.StructuredName.PHOTO_THUMBNAIL_URI, cache)
             val ringtone = cursor.getStringValue(ContactsContract.CommonDataKinds.StructuredName.CUSTOM_RINGTONE, cache)
             val updatedAt = cursor.getTimeValue(ContactsContract.Data.CONTACT_LAST_UPDATED_TIMESTAMP, cache)
-
             val nicknames = contentMap[rawId]?.nicknames ?: arrayListOf()
             val notes = contentMap[rawId]?.notes ?: arrayListOf()
             val groups = ArrayList<DGroup>()

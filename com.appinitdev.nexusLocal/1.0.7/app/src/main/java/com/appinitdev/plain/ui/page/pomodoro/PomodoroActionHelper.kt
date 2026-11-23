@@ -1,4 +1,3 @@
-
 internal fun sendPomodoroAction(action: String, vm: PomodoroViewModel) {
     sendEvent(
         WebSocketEvent(

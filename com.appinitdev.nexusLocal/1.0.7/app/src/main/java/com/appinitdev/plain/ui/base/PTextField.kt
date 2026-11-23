@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PTextField(
@@ -18,7 +17,6 @@ fun PTextField(
     val clipboardManager = LocalClipboardManager.current
     val focusRequester = remember { FocusRequester() }
     var showPassword by remember { mutableStateOf(false) }
-
     val windowInfo = LocalWindowInfo.current
     LaunchedEffect(windowInfo) {
         snapshotFlow { windowInfo.isWindowFocused }.collect { isWindowFocused ->
@@ -27,7 +25,6 @@ fun PTextField(
             }
         }
     }
-
     TextField(
         modifier =
             Modifier

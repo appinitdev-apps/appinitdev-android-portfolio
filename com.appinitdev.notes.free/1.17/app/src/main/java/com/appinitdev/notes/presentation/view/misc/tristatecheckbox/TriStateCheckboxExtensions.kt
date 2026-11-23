@@ -1,11 +1,9 @@
-
 fun MaterialAlertDialogBuilder.setMultiChoiceTriStateItems(
     context: Context,
     items: Array<String>,
     checkedStates: Array<TriStateCheckBox.State>,
     onMultiChoiceClickListener: (index: Int, state: TriStateCheckBox.State) -> Unit,
 ): MaterialAlertDialogBuilder {
-
     val adapter = TriStateListAdapter(context, items, checkedStates, onMultiChoiceClickListener)
     val recyclerView =
         RecyclerView(context).apply {
@@ -16,18 +14,15 @@ fun MaterialAlertDialogBuilder.setMultiChoiceTriStateItems(
     setView(recyclerView)
     return this
 }
-
 private class TriStateListAdapter(
     private val context: Context,
     private val items: Array<String>,
     private val checkedStates: Array<TriStateCheckBox.State>,
     private val onItemClick: (index: Int, state: TriStateCheckBox.State) -> Unit,
 ) : RecyclerView.Adapter<TriStateListAdapter.ViewHolder>() {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ChoiceItemTriStateBinding.inflate(LayoutInflater.from(context)))
     }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.bind(item, checkedStates[position])
@@ -41,12 +36,9 @@ private class TriStateListAdapter(
             CheckBox.setOnClickListener(onClickListener)
         }
     }
-
     override fun getItemCount(): Int = items.size
-
     inner class ViewHolder(val binding: ChoiceItemTriStateBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
         fun bind(item: String, state: TriStateCheckBox.State) {
             binding.CheckBox.setState(state, true)
             binding.Text.text = item

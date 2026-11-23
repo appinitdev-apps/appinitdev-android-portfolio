@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LanguagePage(navController: NavHostController) {
@@ -8,7 +7,6 @@ fun LanguagePage(navController: NavHostController) {
     val list = mutableListOf<Locale?>()
     list.add(null)
     list.addAll(Language.locales)
-
     PScaffold(
         topBar = {
             PTopAppBar(navController = navController, title = stringResource(Res.string.language))

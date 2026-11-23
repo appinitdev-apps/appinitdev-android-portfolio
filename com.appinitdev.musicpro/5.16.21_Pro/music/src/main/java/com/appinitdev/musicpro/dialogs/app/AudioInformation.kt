@@ -1,14 +1,10 @@
-
 @AndroidEntryPoint
 class AudioInformation : ScopedBottomSheetFragment() {
-
     private lateinit var binding: DialogAudioInfoBinding
-
     private val audio: Audio by lazy {
         requireArguments().parcelable(BundleConstants.AUDIO)
             ?: throw IllegalArgumentException("Audio is required")
     }
-
     private val viewModel by viewModels<AudioInformationViewModel>(
             extrasProducer = {
                 defaultViewModelCreationExtras.withCreationCallback<AudioInformationViewModel.Factory> {
@@ -16,11 +12,9 @@ class AudioInformation : ScopedBottomSheetFragment() {
                 }
             }
     )
-
     companion object {
         private const val TAG = "AudioInformation"
         private const val SPAN_COUNT = 2
-
         fun newInstance(audio: Audio): AudioInformation {
             val args = Bundle()
             args.putParcelable(BundleConstants.AUDIO, audio)
@@ -28,24 +22,19 @@ class AudioInformation : ScopedBottomSheetFragment() {
             fragment.arguments = args
             return fragment
         }
-
         fun FragmentManager.showAudioInfo(audio: Audio) {
             val dialog = newInstance(audio)
             dialog.show(this, TAG)
         }
     }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DialogAudioInfoBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val gridLayoutManager = GridLayoutManager(requireContext(), SPAN_COUNT)
         binding.recyclerView.layoutManager = gridLayoutManager
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.info.collect { data ->

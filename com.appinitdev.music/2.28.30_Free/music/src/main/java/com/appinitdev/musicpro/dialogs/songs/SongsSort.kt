@@ -1,16 +1,11 @@
-
 class SongsSort : ScopedBottomSheetFragment() {
-
     private lateinit var binding: DialogSortSongsBinding
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DialogSortSongsBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         when (SongsPreferences.getSongSort()) {
             CommonPreferencesConstants.BY_TITLE -> binding.title.isChecked = true
             CommonPreferencesConstants.BY_ARTIST -> binding.artist.isChecked = true
@@ -23,10 +18,8 @@ class SongsSort : ScopedBottomSheetFragment() {
             CommonPreferencesConstants.BY_TRACK_NUMBER -> binding.trackNumber.isChecked = true
             CommonPreferencesConstants.BY_COMPOSER -> binding.composer.isChecked = true
         }
-
         binding.normal.isChecked = SongsPreferences.getSortingStyle() == CommonPreferencesConstants.ASCENDING
         binding.reversed.isChecked = SongsPreferences.getSortingStyle() == CommonPreferencesConstants.DESCENDING
-
         binding.sortByChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             when (checkedIds.firstOrNull()) {
                 binding.title.id -> SongsPreferences.setSongSort(CommonPreferencesConstants.BY_TITLE)
@@ -41,7 +34,6 @@ class SongsSort : ScopedBottomSheetFragment() {
                 binding.composer.id -> SongsPreferences.setSongSort(CommonPreferencesConstants.BY_COMPOSER)
             }
         }
-
         binding.sortingStyleChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             when (checkedIds.firstOrNull()) {
                 binding.normal.id -> SongsPreferences.setSortingStyle(CommonPreferencesConstants.ASCENDING)
@@ -49,7 +41,6 @@ class SongsSort : ScopedBottomSheetFragment() {
             }
         }
     }
-
     companion object {
         fun newInstance(): SongsSort {
             val args = Bundle()
@@ -57,13 +48,11 @@ class SongsSort : ScopedBottomSheetFragment() {
             fragment.arguments = args
             return fragment
         }
-
         fun FragmentManager.showSongsSort(): SongsSort {
             val dialog = newInstance()
             dialog.show(this, TAG)
             return dialog
         }
-
         private const val TAG = "SongsSort"
     }
 }

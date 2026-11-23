@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PeerChatInfoPage(
@@ -9,7 +8,6 @@ fun PeerChatInfoPage(
     val context = LocalContext.current
     val chatState = chatVM.chatState.collectAsState()
     val peer = ChatCacheManager.peerMap[chatState.value.target.toId]
-
     PScaffold(
         topBar = {
             PTopAppBar(
@@ -40,9 +38,7 @@ fun PeerChatInfoPage(
                     }
                 }
             }
-
             item { VerticalSpace(dp = 24.dp) }
-
             item {
                 val clearMessagesText = stringResource(Res.string.clear_messages)
                 val clearMessagesConfirmText = stringResource(Res.string.clear_messages_confirm)
@@ -66,7 +62,6 @@ fun PeerChatInfoPage(
                     },
                 )
             }
-
             if (peer != null) {
                 item {
                     val deleteDeviceText = stringResource(Res.string.delete_device)
@@ -93,7 +88,6 @@ fun PeerChatInfoPage(
                     )
                 }
             }
-
             item { BottomSpace(paddingValues) }
         }
     }

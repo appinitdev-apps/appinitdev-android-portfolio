@@ -1,7 +1,5 @@
-
 class ManageExtendedDetailsDialog(val activity: BaseSimpleActivity, val callback: (result: Int) -> Unit) {
     private val binding = DialogManageExtendedDetailsBinding.inflate(activity.layoutInflater)
-
     init {
         val details = activity.config.extendedDetails
         binding.apply {
@@ -15,7 +13,6 @@ class ManageExtendedDetailsDialog(val activity: BaseSimpleActivity, val callback
             manageExtendedDetailsExif.isChecked = details and EXT_EXIF_PROPERTIES != 0
             manageExtendedDetailsGpsCoordinates.isChecked = details and EXT_GPS != 0
         }
-
         activity.getAlertDialogBuilder()
             .setPositiveButton(org.appinitdev.commons.R.string.ok) { dialog, which -> dialogConfirmed() }
             .setNegativeButton(org.appinitdev.commons.R.string.cancel, null)
@@ -23,7 +20,6 @@ class ManageExtendedDetailsDialog(val activity: BaseSimpleActivity, val callback
                 activity.setupDialogStuff(binding.root, this)
             }
     }
-
     private fun dialogConfirmed() {
         var result = 0
         binding.apply {
@@ -46,7 +42,6 @@ class ManageExtendedDetailsDialog(val activity: BaseSimpleActivity, val callback
             if (manageExtendedDetailsGpsCoordinates.isChecked)
                 result += EXT_GPS
         }
-
         activity.config.extendedDetails = result
         callback(result)
     }

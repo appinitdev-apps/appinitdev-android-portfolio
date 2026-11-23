@@ -1,4 +1,3 @@
-
 data class WebSettings(
     val passwordType: Int,
     val password: String,
@@ -9,7 +8,6 @@ data class WebSettings(
     val apiPermissions: Set<String>,
     val rotateUrlTokenOnRestart: Boolean,
 )
-
 val LocalPasswordType = compositionLocalOf { PasswordTypePreference.default }
 val LocalPassword = compositionLocalOf { PasswordPreference.default }
 val LocalAuthTwoFactor = compositionLocalOf { AuthTwoFactorPreference.default }
@@ -18,7 +16,6 @@ val LocalAuthDevToken = compositionLocalOf { AuthDevTokenPreference.default }
 val LocalAdbToken = compositionLocalOf { AdbTokenPreference.default }
 val LocalKeepAwake = compositionLocalOf { KeepAwakePreference.default }
 val LocalRotateUrlTokenOnRestart = compositionLocalOf { RotateUrlTokenOnRestartPreference.default }
-
 @Composable
 fun WebSettingsProvider(content: @Composable () -> Unit) {
     val context = LocalContext.current
@@ -50,7 +47,6 @@ fun WebSettingsProvider(content: @Composable () -> Unit) {
         }.collectAsStateValue(
             initial = defaultSettings,
         )
-
     CompositionLocalProvider(
         LocalPasswordType provides settings.passwordType,
         LocalPassword provides settings.password,

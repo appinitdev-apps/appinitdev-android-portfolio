@@ -1,4 +1,3 @@
-
 internal fun DrawScope.drawMonitor(monLeft: Float, monTop: Float, monW: Float, monH: Float) {
     drawRoundRect(
         color = Color(0xFFF2F4F7),
@@ -31,7 +30,6 @@ internal fun DrawScope.drawMonitor(monLeft: Float, monTop: Float, monW: Float, m
         cornerRadius = CornerRadius(3f),
     )
 }
-
 internal fun DrawScope.drawPhone(phoneLeft: Float, phoneTop: Float, phoneW: Float, phoneH: Float) {
     drawRoundRect(
         color = Color(0xFF1A73E8),
@@ -56,5 +54,4 @@ internal fun DrawScope.drawPhone(phoneLeft: Float, phoneTop: Float, phoneW: Floa
         cornerRadius = CornerRadius(camH / 2f),
     )
 }
-
 internal fun lerp(a: Float, b: Float, t: Float) = a + (b - a) * t.coerceIn(0f, 1f)

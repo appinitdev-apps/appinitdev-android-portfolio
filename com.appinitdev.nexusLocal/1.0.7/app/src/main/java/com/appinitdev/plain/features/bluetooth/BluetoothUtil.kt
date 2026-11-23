@@ -1,4 +1,3 @@
-
 object BluetoothUtil {
     private val allDevices = ArrayList<BTDevice>()
     var currentBTDevice: BTDevice? = null
@@ -8,10 +7,8 @@ object BluetoothUtil {
     var pendingOperation: IBTOperation? = null
         private set
     var isScanning = false
-
     private const val GATT_MIN_MTU_SIZE = 23
     private const val GATT_MAX_MTU_SIZE = 517
-
     fun isBluetoothReadyToUseWithPermissionRequest(): Boolean {
         if (isSPlus()) {
             if (!isScanConnectGranted(MainApp.instance)) {
@@ -23,21 +20,17 @@ object BluetoothUtil {
                 requestEnableBluetooth()
                 return false
             }
-
             if (!isLocationEnabled(MainApp.instance)) {
                 requestLocationPermission()
                 return false
             }
-
             if (shouldEnableGPS()) {
                 sendEvent(RequestBluetoothLocationGPSPermissionEvent())
                 return false
             }
         }
-
         return true
     }
-
     private fun shouldEnableGPS(): Boolean {
         val locationManager = MainApp.instance.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val hasGPS =
@@ -47,10 +40,8 @@ object BluetoothUtil {
                 @Suppress("DEPRECATION")
                 locationManager.getProvider(LocationManager.GPS_PROVIDER) != null
             }
-
         return hasGPS && !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
-
     suspend fun ensurePermissionAsync(): Boolean {
         val ready = isBluetoothReadyToUseWithPermissionRequest()
         if (!ready) {
@@ -63,11 +54,9 @@ object BluetoothUtil {
                 delay(500)
             }
         }
-
         sendEvent(BluetoothPermissionResultEvent())
         return true
     }
-
     fun isBluetoothReadyToUse(): Boolean {
         if (isSPlus()) {
             if (!isScanConnectGranted(MainApp.instance)) {
@@ -77,24 +66,19 @@ object BluetoothUtil {
             if (!isBluetoothEnabled()) {
                 return false
             }
-
             if (!isLocationEnabled(MainApp.instance)) {
                 return false
             }
-
             if (shouldEnableGPS()) {
                 return false
             }
         }
-
         return true
     }
-
     suspend fun getCurrentBTDeviceAsync(mac: String): BTDevice? {
         if (currentBTDevice != null) {
             return currentBTDevice
         }
-
         sendEvent(BluetoothFindOneEvent(mac))
         return withTimeoutOrNull(2000) {
             while (true) {
@@ -106,22 +90,18 @@ object BluetoothUtil {
             return@withTimeoutOrNull currentBTDevice
         }
     }
-
     suspend fun findOneAsync(mac: String): BTDevice? {
         if (!isBluetoothReadyToUse()) {
             return null
         }
-
         return scan().firstOrNull { device ->
             return@firstOrNull mac.equals(device.mac, true)
         }
     }
-
     @SuppressLint("MissingPermission")
     fun scan(): Flow<BTDevice> {
         return callbackFlow {
             LogCat.d("Scan bluetooth devices")
-
             scanCallback =
                 object : ScanCallback() {
                     override fun onScanResult(
@@ -134,18 +114,15 @@ object BluetoothUtil {
             val filters = arrayListOf(ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(BTDevice.SERVICE_UUID.toString())).build())
             getBluetoothAdapter().bluetoothLeScanner?.startScan(filters, ScanSettings.Builder().build(), scanCallback)
             isScanning = true
-
             awaitClose {
                 stopScan()
             }
         }
     }
-
     private fun getBluetoothAdapter(): BluetoothAdapter {
         val bluetoothManager = MainApp.instance.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         return bluetoothManager.adapter
     }
-
     @SuppressLint("MissingPermission")
     fun stopScan() {
         if (isScanning) {
@@ -153,13 +130,11 @@ object BluetoothUtil {
             isScanning = false
         }
     }
-
     fun stopScanAndRelease() {
         stopScan()
         operationQueue.clear()
         disconnectAll()
     }
-
     fun connect(device: BTDevice) {
         if (device.isConnected()) {
             LogCat.e("Already connected to ${device.mac}!")
@@ -167,7 +142,6 @@ object BluetoothUtil {
             enqueueOperation(BTOperationConnect(device))
         }
     }
-
     fun requestMtu(
         device: BTDevice,
         mtu: Int,
@@ -178,7 +152,6 @@ object BluetoothUtil {
             LogCat.e("Not connected to ${device.mac}, cannot request MTU update!")
         }
     }
-
     fun teardownConnection(device: BTDevice) {
         if (device.isConnected()) {
             enqueueOperation(BTOperationDisconnect(device))
@@ -186,7 +159,6 @@ object BluetoothUtil {
             LogCat.e("Not connected to ${device.mac}, cannot teardown connection!")
         }
     }
-
     @Synchronized
     fun signalEndOfOperation() {
         LogCat.d("End of $pendingOperation")
@@ -195,7 +167,6 @@ object BluetoothUtil {
             doNextOperation()
         }
     }
-
     @Synchronized
     fun enqueueOperation(operation: IBTOperation) {
         operationQueue.add(operation)
@@ -203,36 +174,29 @@ object BluetoothUtil {
             doNextOperation()
         }
     }
-
     @Synchronized
     private fun doNextOperation() {
         if (pendingOperation != null) {
             LogCat.e("doNextOperation() called when an operation is pending! Aborting.")
             return
         }
-
         val operation =
             operationQueue.poll() ?: run {
                 LogCat.d("Operation queue empty, returning")
                 return
             }
         pendingOperation = operation
-
-        
         if (operation is BTOperationConnect) {
             operation.run()
             return
         }
-
         if (!operation.device.isConnected()) {
             LogCat.e("Not connected to ${operation.device.device.address}! Aborting $operation operation.")
             signalEndOfOperation()
             return
         }
-
         operation.run()
     }
-
     @SuppressLint("MissingPermission")
     private fun addBTDevice(
         device: BluetoothDevice,
@@ -248,32 +212,25 @@ object BluetoothUtil {
         }
         return d
     }
-
     private fun isBluetoothEnabled(): Boolean {
         return getBluetoothAdapter().isEnabled
     }
-
     private fun isLocationEnabled(context: Context): Boolean {
         return context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     }
-
     @RequiresApi(Build.VERSION_CODES.S)
     private fun isScanConnectGranted(context: Context): Boolean {
         return context.hasPermission(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)
     }
-
     private fun requestLocationPermission() {
         sendEvent(RequestBluetoothLocationPermissionEvent())
     }
-
     private fun requestEnableBluetooth() {
         sendEvent(RequestEnableBluetoothEvent())
     }
-
     private fun requestScanConnectBluetooth() {
         sendEvent(RequestScanConnectBluetoothEvent())
     }
-
     private fun disconnectAll() {
         if (allDevices.isEmpty()) {
             return

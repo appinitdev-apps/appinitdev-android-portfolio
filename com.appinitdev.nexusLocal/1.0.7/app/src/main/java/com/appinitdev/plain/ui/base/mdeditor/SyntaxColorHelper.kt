@@ -1,4 +1,3 @@
-
 @Composable
 internal fun matchPatternHighlights(
     pattern: Pattern,
@@ -13,7 +12,6 @@ internal fun matchPatternHighlights(
     val numberColor: Color = colorResource(id = R.color.syntax_number)
     val variableColor: Color = colorResource(id = R.color.syntax_variable)
     var color: Color = MaterialTheme.colorScheme.onSurface
-
     when (pattern) {
         Patterns.HTML_TAGS, Patterns.GENERAL_KEYWORDS, Patterns.SQL_KEYWORDS,
         Patterns.PY_KEYWORDS, Patterns.LUA_KEYWORDS -> {
@@ -38,7 +36,6 @@ internal fun matchPatternHighlights(
             color = variableColor
         }
     }
-
     val m = pattern.matcher(textToHighlight)
     val highlights = mutableListOf<HighlightInfo>()
     while (m.find()) {

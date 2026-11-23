@@ -1,4 +1,3 @@
-
 enum class ScrollbarSelectionMode {
     Full,
     Thumb,

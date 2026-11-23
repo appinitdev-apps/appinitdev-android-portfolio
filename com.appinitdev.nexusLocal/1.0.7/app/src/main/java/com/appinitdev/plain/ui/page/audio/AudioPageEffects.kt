@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AudioPageEffects(
@@ -11,7 +10,6 @@ internal fun AudioPageEffects(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val sharedFlow = Channel.sharedFlow
-
     LaunchedEffect(Unit) {
         audioVM.hasPermission.value = AppFeatureType.FILES.hasPermission(context)
         if (audioVM.hasPermission.value) {
@@ -23,7 +21,6 @@ internal fun AudioPageEffects(
             }
         }
     }
-
     LaunchedEffect(sharedFlow) {
         sharedFlow.collect { event ->
             if (event is PermissionsResultEvent) {
@@ -35,7 +32,6 @@ internal fun AudioPageEffects(
             }
         }
     }
-
     LaunchedEffect(audioState.dragSelectState.selectMode, !context.isGestureInteractionMode()) {
         if (audioState.dragSelectState.selectMode || !context.isGestureInteractionMode()) {
             audioState.scrollBehavior.reset()

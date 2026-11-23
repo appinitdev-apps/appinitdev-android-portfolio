@@ -1,4 +1,3 @@
-
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = "settings",
     corruptionHandler = ReplaceFileCorruptionHandler(
@@ -8,11 +7,6 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
         }
     )
 )
-
-
-
 suspend fun <T> BasePreference<T>.getAsync(context: Context): T = getAsync()
-
 @Suppress("UNCHECKED_CAST")
 suspend fun <T> BasePreference<T>.putAsync(context: Context, value: T) = putAsync(value)
-

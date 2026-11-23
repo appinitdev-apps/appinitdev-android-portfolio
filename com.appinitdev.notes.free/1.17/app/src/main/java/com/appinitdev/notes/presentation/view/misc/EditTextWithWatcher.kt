@@ -1,27 +1,21 @@
-
 open class EditTextWithWatcher(context: Context, attrs: AttributeSet) :
     AppCompatEditText(context, attrs) {
     var textWatcher: TextWatcher? = null
     private var onSelectionChange: ((selStart: Int, selEnd: Int) -> Unit)? = null
     private var keyListenerInstance: KeyListener? = null
-
     override fun onSelectionChanged(selStart: Int, selEnd: Int) {
         super.onSelectionChanged(selStart, selEnd)
         onSelectionChange?.invoke(selStart, selEnd)
     }
-
     fun setOnSelectionChange(callback: (selStart: Int, selEnd: Int) -> Unit) {
         this.onSelectionChange = callback
     }
-
     override fun setText(text: CharSequence?, type: BufferType?) {
         applyWithoutTextWatcher { super.setText(text, type) }
     }
-
     fun setText(text: Editable) {
         super.setText(text, BufferType.EDITABLE)
     }
-
     fun setCanEdit(value: Boolean) {
         if (!value) {
             clearFocus()
@@ -32,7 +26,6 @@ open class EditTextWithWatcher(context: Context, attrs: AttributeSet) :
         isFocusable = value
         isFocusableInTouchMode = value
         setTextIsSelectable(true)
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
             setOnClickListener {
                 if (value) {
@@ -46,7 +39,6 @@ open class EditTextWithWatcher(context: Context, attrs: AttributeSet) :
             }
         }
     }
-
     @Deprecated(
         "You should not access text Editable directly, use other member functions to edit/read text properties.",
         replaceWith = ReplaceWith("changeText/applyWithoutTextWatcher/..."),
@@ -54,11 +46,9 @@ open class EditTextWithWatcher(context: Context, attrs: AttributeSet) :
     override fun getText(): Editable? {
         return getTextSafe()
     }
-
     fun getTextClone(): Editable {
         return getTextSafe().clone()
     }
-
     fun applyWithoutTextWatcher(
         callback: EditTextWithWatcher.() -> Unit
     ): Pair<Editable, Editable> {
@@ -69,13 +59,10 @@ open class EditTextWithWatcher(context: Context, attrs: AttributeSet) :
         editTextWatcher?.let { addTextChangedListener(it) }
         return Pair(textBefore, getTextClone())
     }
-
     fun changeText(callback: (text: Editable) -> Unit): Pair<Editable, Editable> {
         return applyWithoutTextWatcher { callback(getTextSafe()!!) }
     }
-
     private fun getTextSafe() = super.getText() ?: Editable.Factory.getInstance().newEditable("")
-
     fun focusAndSelect(
         start: Int = selectionStart,
         end: Int = selectionEnd,

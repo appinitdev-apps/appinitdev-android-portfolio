@@ -1,37 +1,13 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class TrialExpired : PanelFragment() {
-
     private lateinit var binding: FragmentTrialExpiredBinding
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentTrialExpiredBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireHiddenMiniPlayer()
-
         val gracePeriodExpired = TrialPreferences.isGracePeriodExpired()
-
         if (gracePeriodExpired) {
             binding.trialMessage.text = getString(R.string.grace_period_expired_message)
             binding.graceCounter.gone(animate = false)
@@ -50,27 +26,17 @@ class TrialExpired : PanelFragment() {
                 (requireActivity() as MainActivity).showHome()
             }
         }
-
         binding.purchaseNow.setOnClickListener {
             openFragment(Purchase.newInstance(), Purchase.TAG)
         }
     }
-
     companion object {
-         
-
-
-
-
         fun newInstance(): TrialExpired {
             val args = Bundle()
             val fragment = TrialExpired()
             fragment.arguments = args
             return fragment
         }
-
-         
         const val TAG = "TrialExpired"
     }
 }
-

@@ -1,9 +1,7 @@
-
 class QSTileService : TileService() {
     private var stateEventJob: Job? = null
     private var stateCheckJob: Job? = null
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-
     private fun setState(state: Int) {
         if (state == Tile.STATE_INACTIVE) {
             qsTile?.state = Tile.STATE_INACTIVE
@@ -14,16 +12,11 @@ class QSTileService : TileService() {
             qsTile?.label = LocaleHelper.getString(Res.string.app_name)
             qsTile?.icon = Icon.createWithResource(applicationContext, R.drawable.app_icon)
         }
-
         qsTile?.updateTile()
     }
-
     override fun onStartListening() {
         super.onStartListening()
-
         val serviceRef = WeakReference(this)
-
-        
         stateEventJob?.cancel()
         stateEventJob = receiveEventHandler<HttpServerStateChangedEvent> { event ->
             val tileState = when (event.state) {
@@ -37,12 +30,9 @@ class QSTileService : TileService() {
                 serviceRef.get()?.setState(tileState)
             }
         }
-
-        
         stateCheckJob?.cancel()
         stateCheckJob = serviceScope.launch(Dispatchers.IO) {
             try {
-                
                 if (TempData.webEnabled.value) {
                     val serverUp = HttpServerManager.checkServerAsync()
                     if (serverUp) {
@@ -50,7 +40,6 @@ class QSTileService : TileService() {
                             serviceRef.get()?.setState(Tile.STATE_ACTIVE)
                         }
                     } else {
-                        
                         LogCat.d("Web service enabled but not responding, setting inactive state")
                         withContext(Dispatchers.Main.immediate) {
                             serviceRef.get()?.setState(Tile.STATE_INACTIVE)
@@ -69,21 +58,14 @@ class QSTileService : TileService() {
             }
         }
     }
-
     override fun onStopListening() {
         super.onStopListening()
-
-        
         stateEventJob?.cancel()
         stateEventJob = null
-
-        
         stateCheckJob?.cancel()
         stateCheckJob = null
     }
-
     override fun onDestroy() {
-        
         stateEventJob?.cancel()
         stateEventJob = null
         stateCheckJob?.cancel()
@@ -91,16 +73,12 @@ class QSTileService : TileService() {
         serviceScope.cancel()
         super.onDestroy()
     }
-
     override fun onClick() {
         super.onClick()
         when (qsTile.state) {
             Tile.STATE_INACTIVE -> {
-                
                 qsTile?.state = Tile.STATE_UNAVAILABLE
                 qsTile?.updateTile()
-
-                
                 unlockAndRun {
                     val intent = Intent(MainApp.instance, Class.forName("com.ismartcoding.plain.ui.MainActivity"))
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -108,12 +86,9 @@ class QSTileService : TileService() {
                     startActivity(intent)
                 }
             }
-
             Tile.STATE_ACTIVE -> {
-                
                 qsTile?.state = Tile.STATE_UNAVAILABLE
                 qsTile?.updateTile()
-
                 serviceScope.launch(Dispatchers.IO) {
                     val appContext = applicationContext
                     WebPreference.putAsync(false)
@@ -125,6 +100,4 @@ class QSTileService : TileService() {
             }
         }
     }
-
-
 }

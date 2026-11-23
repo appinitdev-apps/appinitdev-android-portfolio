@@ -1,4 +1,3 @@
-
 @Composable
 fun ChannelInvitePage(
     event: ChannelInviteReceivedEvent,

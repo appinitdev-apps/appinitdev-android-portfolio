@@ -1,4 +1,3 @@
-
 data class PomodoroSettings(
     val workDuration: Int,
     val shortBreakDuration: Int,
@@ -9,7 +8,6 @@ data class PomodoroSettings(
     val soundPath: String,
     val originalSoundName: String
 )
-
 fun DPomodoroSettings.toModel(): PomodoroSettings {
     return PomodoroSettings(
         workDuration = workDuration,

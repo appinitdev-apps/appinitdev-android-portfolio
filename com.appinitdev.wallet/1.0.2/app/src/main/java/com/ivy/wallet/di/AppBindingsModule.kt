@@ -1,4 +1,3 @@
-
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class AppBindingsModule {

@@ -1,4 +1,3 @@
-
 data class DMessage(
     override var id: String,
     val body: String,
@@ -12,7 +11,6 @@ data class DMessage(
     val isMms: Boolean = false,
     val attachments: List<DMessageAttachment> = emptyList(),
 ) : IData
-
 data class DMessageAttachment(
     val path: String,
     val contentType: String,

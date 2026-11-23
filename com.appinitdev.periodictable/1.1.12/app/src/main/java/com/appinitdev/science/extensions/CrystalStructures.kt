@@ -1,11 +1,9 @@
-
 object CrystalStructures {
     data class Structure(
         val vertices: Array<FloatArray>, 
         val edges: Array<IntArray>,      
         val displayName: String
     )
-
     val data = mapOf(
         "Cubic" to Structure(
             vertices = arrayOf(

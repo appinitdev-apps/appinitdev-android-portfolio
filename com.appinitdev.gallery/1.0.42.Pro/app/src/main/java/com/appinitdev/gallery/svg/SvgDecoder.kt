@@ -1,8 +1,5 @@
-
 class SvgDecoder : ResourceDecoder<InputStream, SVG> {
-
     override fun handles(source: InputStream, options: Options) = true
-
     @Throws(IOException::class)
     override fun decode(source: InputStream, width: Int, height: Int, options: Options): Resource<SVG> {
         try {

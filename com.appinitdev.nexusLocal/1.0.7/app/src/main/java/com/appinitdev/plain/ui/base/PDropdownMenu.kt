@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PDropdownMenu(
@@ -14,7 +13,6 @@ fun PDropdownMenu(
         content = content,
     )
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PDropdownMenuItem(
@@ -37,7 +35,6 @@ fun PDropdownMenuItem(
         enabled = enabled,
     )
 }
-
 @Composable
 fun PDropdownMenuItemCreateFolder(onClick: () -> Unit) {
     PDropdownMenuItem(text = { Text(stringResource(Res.string.create_folder)) }, leadingIcon = {
@@ -47,7 +44,6 @@ fun PDropdownMenuItemCreateFolder(onClick: () -> Unit) {
         )
     }, onClick = onClick)
 }
-
 @Composable
 fun PDropdownMenuItemCreateFile(onClick: () -> Unit) {
     PDropdownMenuItem(text = { Text(stringResource(Res.string.create_file)) }, leadingIcon = {
@@ -57,7 +53,6 @@ fun PDropdownMenuItemCreateFile(onClick: () -> Unit) {
         )
     }, onClick = onClick)
 }
-
 @Composable
 fun PDropdownMenuItemCast(onClick: () -> Unit) {
     PDropdownMenuItem(text = { Text(stringResource(Res.string.cast_mode)) }, leadingIcon = {
@@ -67,7 +62,6 @@ fun PDropdownMenuItemCast(onClick: () -> Unit) {
         )
     }, onClick = onClick)
 }
-
 @Composable
 fun PDropdownMenuItemSort(onClick: () -> Unit) {
     PDropdownMenuItem(text = { Text(stringResource(Res.string.sort)) }, leadingIcon = {
@@ -77,7 +71,6 @@ fun PDropdownMenuItemSort(onClick: () -> Unit) {
         )
     }, onClick = onClick)
 }
-
 @Composable
 fun PDropdownMenuItemTags(onClick: () -> Unit) {
     PDropdownMenuItem(text = { Text(stringResource(Res.string.tags)) }, leadingIcon = {
@@ -87,7 +80,6 @@ fun PDropdownMenuItemTags(onClick: () -> Unit) {
         )
     }, onClick = onClick)
 }
-
 @Composable
 fun PDropdownMenuItemSettings(onClick: () -> Unit) {
     PDropdownMenuItem(text = { Text(stringResource(Res.string.settings)) }, leadingIcon = {

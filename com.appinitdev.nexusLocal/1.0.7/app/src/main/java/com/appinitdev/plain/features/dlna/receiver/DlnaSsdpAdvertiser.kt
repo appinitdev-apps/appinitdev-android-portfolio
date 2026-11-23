@@ -1,12 +1,8 @@
-
- 
 object DlnaSsdpAdvertiser {
-
     private const val SSDP_ADDR = "239.255.255.250"
     private const val SSDP_PORT = 1900
     private const val DEVICE_TYPE = "urn:schemas-upnp-org:device:MediaRenderer:1"
     private const val AVT_TYPE = "urn:schemas-upnp-org:service:AVTransport:1"
-
     suspend fun run(context: Context) = withContext(Dispatchers.IO) {
         val wifiMgr = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val lock = wifiMgr.createMulticastLock("DlnaRendererSsdp")
@@ -41,7 +37,6 @@ object DlnaSsdpAdvertiser {
             lock.release()
         }
     }
-
     private fun sendAlive(socket: MulticastSocket, group: InetAddress) {
         val uuid = "uuid:${DlnaRenderer.deviceUuid}"
         listOf(
@@ -50,7 +45,6 @@ object DlnaSsdpAdvertiser {
             notifyMsg("$uuid::$AVT_TYPE", AVT_TYPE, "ssdp:alive"),
         ).forEach { send(socket, it, group, SSDP_PORT) }
     }
-
     private fun sendByeBye(socket: MulticastSocket?, group: InetAddress) {
         socket ?: return
         val uuid = "uuid:${DlnaRenderer.deviceUuid}"
@@ -60,7 +54,6 @@ object DlnaSsdpAdvertiser {
             notifyMsg("$uuid::$AVT_TYPE", AVT_TYPE, "ssdp:byebye"),
         ).forEach { send(socket, it, group, SSDP_PORT) }
     }
-
     private fun respondMSearch(socket: MulticastSocket, addr: InetAddress, port: Int) {
         val uuid = "uuid:${DlnaRenderer.deviceUuid}"
         listOf(
@@ -69,7 +62,6 @@ object DlnaSsdpAdvertiser {
             searchResponse(AVT_TYPE, "$uuid::$AVT_TYPE"),
         ).forEach { send(socket, it, addr, port) }
     }
-
     private fun notifyMsg(usn: String, nt: String, nts: String): String {
         val ip = NetworkHelper.getDeviceIP4()
         val port = DlnaRendererState.port.value
@@ -77,7 +69,6 @@ object DlnaSsdpAdvertiser {
             "CACHE-CONTROL: max-age=1800\r\nLOCATION: http://$ip:$port/description.xml\r\n" +
             "NT: $nt\r\nNTS: $nts\r\nSERVER: Android/1.0 UPnP/1.1 PlainApp/1.0\r\nUSN: $usn\r\n\r\n"
     }
-
     private fun searchResponse(st: String, usn: String): String {
         val ip = NetworkHelper.getDeviceIP4()
         val port = DlnaRendererState.port.value
@@ -85,7 +76,6 @@ object DlnaSsdpAdvertiser {
             "LOCATION: http://$ip:$port/description.xml\r\n" +
             "SERVER: Android/1.0 UPnP/1.1 PlainApp/1.0\r\nST: $st\r\nUSN: $usn\r\n\r\n"
     }
-
     private fun send(socket: MulticastSocket, message: String, addr: InetAddress, port: Int) {
         try {
             val bytes = message.toByteArray()

@@ -1,8 +1,3 @@
-
- 
-
-
-
 class WebRtcPeerSession(
     val clientId: String,
     private val peerConnectionFactory: PeerConnectionFactory,
@@ -17,7 +12,6 @@ class WebRtcPeerSession(
     private var videoSender: RtpSender? = null
     private val remoteDescriptionSet = AtomicBoolean(false)
     private val pendingIceCandidates = mutableListOf<IceCandidate>()
-
     fun createPeerConnectionAndOffer() {
         releasePeerConnection()
         val rtcConfig = PeerConnection.RTCConfiguration(emptyList()).apply {
@@ -30,7 +24,6 @@ class WebRtcPeerSession(
         updateVideoBitrate()
         createOffer()
     }
-
     fun handleAnswer(sdp: String) {
         val pc = peerConnection ?: return
         if (pc.signalingState() != PeerConnection.SignalingState.HAVE_LOCAL_OFFER) {
@@ -46,14 +39,12 @@ class WebRtcPeerSession(
             }
         }, SessionDescription(SessionDescription.Type.ANSWER, sdp))
     }
-
     fun handleIceCandidate(message: WebRtcSignalingMessage) {
         val pc = peerConnection ?: return
         val candidate = IceCandidate(message.sdpMid, message.sdpMLineIndex ?: 0, message.candidate)
         if (remoteDescriptionSet.get()) pc.addIceCandidate(candidate)
         else pendingIceCandidates.add(candidate)
     }
-
     fun updateVideoBitrate() {
         val sender = videoSender ?: return
         val params = sender.parameters
@@ -71,7 +62,6 @@ class WebRtcPeerSession(
         params.degradationPreference = RtpParameters.DegradationPreference.MAINTAIN_RESOLUTION
         sender.parameters = params
     }
-
     fun getStats(callback: (availableBitrateKbps: Long, packetLossPercent: Double, rttMs: Double) -> Unit) {
         val pc = peerConnection ?: return
         pc.getStats { report ->
@@ -101,16 +91,13 @@ class WebRtcPeerSession(
             callback(availableBitrate, lossPercent, rtt)
         }
     }
-
     fun release() = releasePeerConnection()
-
     private fun releasePeerConnection() {
         remoteDescriptionSet.set(false)
         pendingIceCandidates.clear()
         peerConnection?.close(); peerConnection = null
         videoSender = null
     }
-
     private fun createObserver() = object : PeerConnection.Observer {
         override fun onIceCandidate(candidate: IceCandidate) {
             LogCat.d("webrtc: [$clientId] ICE candidate: ${candidate.sdp}")
@@ -133,7 +120,6 @@ class WebRtcPeerSession(
         override fun onRenegotiationNeeded() = Unit
         override fun onTrack(t: org.webrtc.RtpTransceiver) = Unit
     }
-
     private fun createOffer() {
         val pc = peerConnection ?: return
         pc.createOffer(object : SimpleSdpObserver() {
@@ -146,13 +132,11 @@ class WebRtcPeerSession(
             }
         }, MediaConstraints())
     }
-
     private fun drainPendingIceCandidates() {
         val pc = peerConnection ?: return
         pendingIceCandidates.forEach { pc.addIceCandidate(it) }
         pendingIceCandidates.clear()
     }
-
     private fun sendToClient(message: WebRtcSignalingMessage) {
         val json = JsonHelper.jsonEncode(message)
         coIO {

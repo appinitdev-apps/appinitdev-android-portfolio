@@ -1,8 +1,5 @@
-
 object ConstantsModel {
     fun getList(constants: ArrayList<Constants>) {
-
-        
         constants.add(Constants("Pi (π)", "3.14159265358979323846", "-","π", "mathematics"))
         constants.add(Constants("Tau (τ)", "6.28318530717958647692", "-","τ", "mathematics"))
         constants.add(Constants("Euler's number", "2.71828182845904523536", "-", "e", "mathematics"))
@@ -11,9 +8,6 @@ object ConstantsModel {
         constants.add(Constants("Catalan constant", "0.57721566490153286060", "-","C", "mathematics"))
         constants.add(Constants("Square root of 2", "1.41421356237309504880", "-","√2", "mathematics"))
         constants.add(Constants("Square root of 10", "3.16227766016837950288", "-","√10", "mathematics"))
-
-
-        
         constants.add(Constants("Speed of light", "299792458.0", "ms^-1","c", "physics"))
         constants.add(Constants("Planck's constant", "6.626070040e-34", "m^2*kg*s^-1","h", "physics"))
         constants.add(Constants("Gravitational constant", "6.67408e-11", "m^3*kg^-1*s^-2","G", "physics"))
@@ -32,8 +26,6 @@ object ConstantsModel {
         constants.add(Constants("Vacuum permittivity", "8.854187817e-12", "F*m^-1","ε₀", "physics"))
         constants.add(Constants("Vacuum permeability", "1.2566370614e-06", "H*m^-1","μ₀", "physics"))
         constants.add(Constants("Gas constant", "8.31446261815324", "J*K^-1*mol^-1","R", "physics"))
-
-        
         constants.add(Constants("Airport, Passenger", "10-20", "L/(unit*d)","Wastewater flow rate (USA)", "water"))
         constants.add(Constants("Apartment, Bedroom", "380-570", "L/(unit*d)","Wastewater flow rate (USA)", "water"))
         constants.add(Constants("Automobile service station, Vehicle", "30-60", "L/(unit*d)","Wastewater flow rate (USA)", "water"))
@@ -67,9 +59,5 @@ object ConstantsModel {
         constants.add(Constants("Bar racks, Coarse screens, Fine screens", "6-75", "mm","Nomenclature of racks and screens", "water"))
         constants.add(Constants("Very fine screens", "0.25-1.5", "mm","Nomenclature of racks and screens", "water"))
         constants.add(Constants("Micro-screens", "0.001-0.3", "mm","Nomenclature of racks and screens", "water"))
-
-
-
-
     }
 }

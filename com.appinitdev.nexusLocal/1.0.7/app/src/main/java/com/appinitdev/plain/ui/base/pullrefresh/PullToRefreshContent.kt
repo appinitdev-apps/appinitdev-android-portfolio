@@ -1,4 +1,3 @@
-
 @Composable
 fun RefreshLayoutState.PullToRefreshContent(
     createText: @Composable (RefreshContentState) -> String = {

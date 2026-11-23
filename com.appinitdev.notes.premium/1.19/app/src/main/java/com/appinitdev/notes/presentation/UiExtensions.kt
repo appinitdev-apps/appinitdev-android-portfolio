@@ -1,9 +1,3 @@
-
- 
-
-
-
-
 fun String.applySpans(representations: List<SpanRepresentation>): Editable {
     val editable = Editable.Factory.getInstance().newEditable(this)
     representations.forEach { (start, end, bold, link, linkData, italic, monospace, strikethrough)
@@ -31,20 +25,12 @@ fun String.applySpans(representations: List<SpanRepresentation>): Editable {
     }
     return editable
 }
-
 fun createBoldSpan() =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         StyleSpan(Typeface.BOLD, 700)
     } else {
         StyleSpan(Typeface.BOLD)
     }
-
- 
-
-
-
-
-
 fun Editable.removeSelectionFromSpans(
     selectionStart: Int,
     selectionEnd: Int,
@@ -54,27 +40,19 @@ fun Editable.removeSelectionFromSpans(
     for (span in spans) {
         val spanStart = getSpanStart(span)
         val spanEnd = getSpanEnd(span)
-
         when {
-            
             selectionStart <= spanStart && selectionEnd >= spanEnd -> {
                 removeSpan(span)
             }
-            
             selectionStart > spanStart && selectionEnd < spanEnd -> {
-                
                 removeSpan(span)
-                
-                
                 setSpan(span, spanStart, selectionStart, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 setSpan(span, selectionEnd, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
-            
             selectionStart <= spanStart && selectionEnd < spanEnd -> {
                 removeSpan(span)
                 setSpan(span, selectionEnd, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
-            
             else -> {
                 removeSpan(span)
                 setSpan(span, spanStart, selectionStart, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -82,23 +60,19 @@ fun Editable.removeSelectionFromSpans(
         }
     }
 }
-
 private fun Spannable.setSpan(span: Any, start: Int, end: Int) {
     if (end <= length) {
         setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     } else setSpan(span, start, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 }
-
 fun EditText.setOnNextAction(onNext: () -> Unit) {
     setRawInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
-
     setOnKeyListener { v, keyCode, event ->
         if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
             onNext()
             return@setOnKeyListener true
         } else return@setOnKeyListener false
     }
-
     setOnEditorActionListener { v, actionId, event ->
         if (actionId == EditorInfo.IME_ACTION_NEXT) {
             onNext()
@@ -106,7 +80,6 @@ fun EditText.setOnNextAction(onNext: () -> Unit) {
         } else return@setOnEditorActionListener false
     }
 }
-
 fun Menu.add(
     title: Int,
     drawable: Int,
@@ -124,7 +97,6 @@ fun Menu.add(
     menuItem.setShowAsAction(showAsAction)
     return menuItem
 }
-
 fun ViewGroup.addIconButton(
     title: Int,
     drawable: Int,
@@ -145,7 +117,6 @@ fun ViewGroup.addIconButton(
             setBackgroundResource(outValue.resourceId)
             setOnLongClickListener(onLongClick)
             setOnClickListener(onClick)
-
             scaleType = ImageView.ScaleType.FIT_CENTER
             adjustViewBounds = true
             layoutParams =
@@ -159,7 +130,6 @@ fun ViewGroup.addIconButton(
     addView(view)
     return view
 }
-
 fun TextView.displayFormattedTimestamp(
     timestamp: Long?,
     dateFormat: DateFormat,
@@ -171,22 +141,10 @@ fun TextView.displayFormattedTimestamp(
             "${prefixResId?.let { getString(it) } ?: ""} ${formatTimestamp(timestamp, dateFormat)}"
     } else visibility = View.GONE
 }
-
 val Int.dp: Int
     get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
-
 val Float.dp: Int
     get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
-
- 
-
-
-
-
-
-
-
-
 fun EditText.createListTextWatcherWithHistory(
     listManager: ListManager,
     positionGetter: () -> Int,
@@ -195,15 +153,12 @@ fun EditText.createListTextWatcherWithHistory(
     object : TextWatcher {
         private var ignoreOriginalChange: Boolean = false
         private lateinit var textBefore: Editable
-
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             textBefore = text.clone()
         }
-
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             ignoreOriginalChange = onTextChanged?.invoke(s!!, start, count) ?: false
         }
-
         override fun afterTextChanged(s: Editable?) {
             val textAfter = s!!.clone()
             if (textAfter.hasNotChanged(textBefore)) {
@@ -217,7 +172,6 @@ fun EditText.createListTextWatcherWithHistory(
             }
         }
     }
-
 fun StylableEditTextWithHistory.createTextWatcherWithHistory(
     changeHistory: ChangeHistory,
     onTextChanged: ((text: CharSequence, start: Int, count: Int) -> Unit)? = null,
@@ -225,15 +179,12 @@ fun StylableEditTextWithHistory.createTextWatcherWithHistory(
 ) =
     object : TextWatcher {
         private lateinit var stateBefore: EditTextState
-
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             stateBefore = EditTextState(getTextClone(), selectionStart)
         }
-
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             onTextChanged?.invoke(s!!, start, count)
         }
-
         override fun afterTextChanged(s: Editable?) {
             val textAfter = requireNotNull(s).clone()
             if (textAfter.hasNotChanged(stateBefore.text)) {
@@ -250,21 +201,16 @@ fun StylableEditTextWithHistory.createTextWatcherWithHistory(
             )
         }
     }
-
 fun Editable.hasNotChanged(before: Editable): Boolean {
     return toString() == before.toString() && getSpans<SuggestionSpan>().isNotEmpty()
 }
-
 fun Editable.clone(): Editable = Editable.Factory.getInstance().newEditable(this)
-
 fun View.getString(id: Int, vararg formatArgs: String): String {
     return context.resources.getString(id, *formatArgs)
 }
-
 fun View.getQuantityString(id: Int, quantity: Int, vararg formatArgs: Any): String {
     return context.getQuantityString(id, quantity, *formatArgs)
 }
-
 fun Folder.movedToResId(): Int {
     return when (this) {
         Folder.DELETED -> R.plurals.deleted_selected_notes
@@ -272,25 +218,20 @@ fun Folder.movedToResId(): Int {
         Folder.NOTES -> R.plurals.restored_selected_notes
     }
 }
-
 fun RadioGroup.checkedTag(): Any {
     return this.findViewById<RadioButton?>(this.checkedRadioButtonId).tag
 }
-
 fun Context.showKeyboard(view: View) {
     ContextCompat.getSystemService(this, InputMethodManager::class.java)
         ?.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
 }
-
 fun Context.hideKeyboard(view: View) {
     ContextCompat.getSystemService(this, InputMethodManager::class.java)
         ?.hideSoftInputFromWindow(view.windowToken, 0)
 }
-
 fun MutableLiveData<out Progress>.setupProgressDialog(activity: Activity, titleId: Int) {
     setupProgressDialog(activity, activity.layoutInflater, activity as LifecycleOwner, titleId)
 }
-
 fun MutableLiveData<out Progress>.setupProgressDialog(fragment: Fragment, titleId: Int) {
     setupProgressDialog(
         fragment.requireContext(),
@@ -299,7 +240,6 @@ fun MutableLiveData<out Progress>.setupProgressDialog(fragment: Fragment, titleI
         titleId,
     )
 }
-
 fun MutableLiveData<ImportProgress>.setupImportProgressDialog(fragment: Fragment, titleId: Int) {
     setupProgressDialog(
         fragment.requireContext(),
@@ -319,21 +259,18 @@ fun MutableLiveData<ImportProgress>.setupImportProgressDialog(fragment: Fragment
             "${context.getString(R.string.count, progress.current, progress.total)} $stageStr"
     }
 }
-
 fun <T, C> NotNullLiveData<T>.merge(liveData: NotNullLiveData<C>): MediatorLiveData<Pair<T, C>> {
     return MediatorLiveData<Pair<T, C>>().apply {
         addSource(this@merge) { value1 -> value = Pair(value1, liveData.value) }
         addSource(liveData) { value2 -> value = Pair(this@merge.value, value2) }
     }
 }
-
 fun <T, C> NotNullLiveData<T>.merge(liveData: LiveData<C>): MediatorLiveData<Pair<T, C?>> {
     return MediatorLiveData<Pair<T, C?>>().apply {
         addSource(this@merge) { value1 -> value = Pair(value1, liveData.value) }
         addSource(liveData) { value2 -> value = Pair(this@merge.value, value2) }
     }
 }
-
 private fun <T : Progress> MutableLiveData<T>.setupProgressDialog(
     context: Context,
     layoutInflater: LayoutInflater,
@@ -349,7 +286,6 @@ private fun <T : Progress> MutableLiveData<T>.setupProgressDialog(
             .setView(dialogBinding.root)
             .setCancelable(false)
             .create()
-
     observe(viewLifecycleOwner) { progress ->
         if (progress.inProgress) {
             if (progress.indeterminate) {
@@ -374,7 +310,6 @@ private fun <T : Progress> MutableLiveData<T>.setupProgressDialog(
         } else dialog.dismiss()
     }
 }
-
 fun Activity.checkNotificationPermission(
     requestCode: Int,
     alsoCheckAlarmPermission: Boolean = false,
@@ -400,7 +335,6 @@ fun Activity.checkNotificationPermission(
         checkAlarmPermission(alarmPermissionResultLauncher, onSuccess)
     else onSuccess()
 }
-
 fun Activity.checkAlarmPermission(
     resultLauncher: ActivityResultLauncher<Intent>?,
     onSuccess: () -> Unit,
@@ -425,7 +359,6 @@ fun Activity.checkAlarmPermission(
         }
     } else onSuccess()
 }
-
 fun Activity.setEnabledSecureFlag(enabled: Boolean) {
     if (enabled) {
         window.setFlags(
@@ -436,7 +369,6 @@ fun Activity.setEnabledSecureFlag(enabled: Boolean) {
         window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
     }
 }
-
 fun Fragment.displayEditLabelDialog(
     oldValue: String,
     model: BaseNoteModel,
@@ -444,7 +376,6 @@ fun Fragment.displayEditLabelDialog(
 ) {
     requireContext().displayEditLabelDialog(oldValue, model, layoutInflater, onUpdateLabel)
 }
-
 fun Activity.displayEditLabelDialog(
     oldValue: String,
     model: BaseNoteModel,
@@ -452,7 +383,6 @@ fun Activity.displayEditLabelDialog(
 ) {
     displayEditLabelDialog(oldValue, model, layoutInflater, onUpdateLabel)
 }
-
 fun Context.displayEditLabelDialog(
     oldValue: String,
     model: BaseNoteModel,
@@ -483,7 +413,6 @@ fun Context.displayEditLabelDialog(
             positiveButton.isEnabled = oldValue.isNotEmpty()
         }
 }
-
 private fun formatTimestamp(timestamp: Long, dateFormat: DateFormat): String {
     val date = Date(timestamp)
     return when (dateFormat) {
@@ -491,7 +420,6 @@ private fun formatTimestamp(timestamp: Long, dateFormat: DateFormat): String {
         else -> java.text.DateFormat.getDateInstance(java.text.DateFormat.FULL).format(date)
     }
 }
-
 fun MaterialAlertDialogBuilder.showAndFocus(
     viewToFocus: View? = null,
     selectAll: Boolean = false,
@@ -526,11 +454,9 @@ fun MaterialAlertDialogBuilder.showAndFocus(
         }
     }
 }
-
 fun Context.getQuantityString(id: Int, quantity: Int, vararg formatArgs: Any): String {
     return resources.getQuantityString(id, quantity, quantity, *formatArgs)
 }
-
 @ColorInt
 fun @receiver:ColorInt Int.withAlpha(alpha: Float): Int {
     return android.graphics.Color.argb(
@@ -540,7 +466,6 @@ fun @receiver:ColorInt Int.withAlpha(alpha: Float): Int {
         android.graphics.Color.blue(this),
     )
 }
-
 fun Context.getColorFromAttr(@AttrRes attr: Int): Int {
     val typedValue = TypedValue()
     val resolved = theme.resolveAttribute(attr, typedValue, true)
@@ -548,14 +473,11 @@ fun Context.getColorFromAttr(@AttrRes attr: Int): Int {
         throw IllegalArgumentException("Attribute not found in current theme")
     }
     return if (typedValue.resourceId != 0) {
-        
         ContextCompat.getColor(this, typedValue.resourceId)
     } else {
-        
         typedValue.data
     }
 }
-
 fun View.setControlsContrastColorForAllViews(
     @ColorInt backgroundColor: Int,
     overwriteBackground: Boolean = true,
@@ -563,9 +485,7 @@ fun View.setControlsContrastColorForAllViews(
     val controlsColor = context.getContrastFontColor(backgroundColor)
     setControlsColorForAllViews(controlsColor, backgroundColor, overwriteBackground)
 }
-
 var counter = 0
-
 fun View.setControlsColorForAllViews(
     @ColorInt controlsColor: Int,
     @ColorInt backgroundColor: Int,
@@ -634,7 +554,6 @@ fun View.setControlsColorForAllViews(
         }
     }
 }
-
 fun TextView.setSelectionHandleColor(@ColorInt color: Int) {
     try {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -647,36 +566,20 @@ fun TextView.setSelectionHandleColor(@ColorInt color: Int) {
         }
     } catch (_: Exception) {}
 }
-
- 
-
-
-
 private fun TextView.setSelectHandleColor(@ColorInt color: Int) {
-    
     val editor = getEditor()
-
     handles.forEach {
-        
         val resourceField = TextView::class.java.getDeclaredField(it.resourceFieldName)
         resourceField.isAccessible = true
-
-        
         val drawableId = resourceField.getInt(this)
         val drawable = ContextCompat.getDrawable(context, drawableId)
-
-        
         drawable?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
-
-        
         val selectHandleField = editor.javaClass.getDeclaredField(it.selectHandleFieldName)
         selectHandleField.isAccessible = true
         selectHandleField.set(editor, drawable)
     }
 }
-
 private class HandleDescriptor(val resourceFieldName: String, val selectHandleFieldName: String)
-
 private val handles =
     arrayOf(
         HandleDescriptor(
@@ -692,13 +595,11 @@ private val handles =
             selectHandleFieldName = "mSelectHandleRight",
         ),
     )
-
 private fun TextView.getEditor(): Any {
     val editorField = TextView::class.java.getDeclaredField("mEditor")
     editorField.isAccessible = true
     return editorField.get(this)
 }
-
 fun TextView.setCompoundDrawableTint(@ColorInt color: Int) {
     compoundDrawablesRelative.forEach { drawable ->
         drawable?.let { DrawableCompat.setTint(DrawableCompat.wrap(it), color) }
@@ -708,7 +609,6 @@ fun TextView.setCompoundDrawableTint(@ColorInt color: Int) {
     }
     (background as? MaterialShapeDrawable)?.setStrokeTint(color)
 }
-
 fun Drawable.withTint(@ColorInt color: Int): Drawable {
     val oldDrawable = DrawableCompat.unwrap<Drawable>(this)
     val newDrawable = oldDrawable.constantState?.newDrawable()?.mutate() ?: oldDrawable.mutate()
@@ -716,18 +616,14 @@ fun Drawable.withTint(@ColorInt color: Int): Drawable {
     DrawableCompat.setTint(wrappedDrawable, color)
     return wrappedDrawable
 }
-
 @ColorInt
 fun Context.getContrastFontColor(@ColorInt backgroundColor: Int): Int {
     return if (backgroundColor.isLightColor()) ContextCompat.getColor(this, R.color.TextDark)
     else ContextCompat.getColor(this, R.color.TextLight)
 }
-
 fun @receiver:ColorInt Int.isLightColor() = ColorUtils.calculateLuminance(this) > 0.5
-
 fun MaterialAlertDialogBuilder.setCancelButton(listener: DialogInterface.OnClickListener? = null) =
     setNegativeButton(R.string.cancel, listener)
-
 fun Fragment.showDialog(
     messageResId: Int,
     positiveButtonTextResId: Int,
@@ -735,7 +631,6 @@ fun Fragment.showDialog(
 ) =
     requireContext()
         .showDialog(messageResId, positiveButtonTextResId, onPositiveButtonClickListener)
-
 fun Context.showDialog(
     messageResId: Int,
     positiveButtonTextResId: Int,
@@ -747,19 +642,15 @@ fun Context.showDialog(
         .setCancelButton()
         .show()
 }
-
 fun Fragment.showToast(messageResId: Int) = requireContext().showToast(messageResId)
-
 fun Context.showToast(messageResId: Int) =
     ContextCompat.getMainExecutor(this).execute {
         Toast.makeText(this, messageResId, Toast.LENGTH_LONG).show()
     }
-
 fun Context.showToast(message: CharSequence) =
     ContextCompat.getMainExecutor(this).execute {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
-
 fun Context.restartApplication(
     fragmentIdToOpen: Int? = null,
     extra: Pair<String, Boolean>? = null,
@@ -775,7 +666,6 @@ fun Context.restartApplication(
     startActivity(mainIntent)
     Runtime.getRuntime().exit(0)
 }
-
 @ColorInt
 fun Context.extractColor(color: String): Int {
     return when (color) {
@@ -783,7 +673,6 @@ fun Context.extractColor(color: String): Int {
         else -> android.graphics.Color.parseColor(color)
     }
 }
-
 fun ViewGroup.addFastScroll(context: Context) {
     FastScrollerBuilder(this)
         .useMd2Style()
@@ -791,13 +680,11 @@ fun ViewGroup.addFastScroll(context: Context) {
         .setPadding(0, 0, 2.dp, 0)
         .build()
 }
-
 fun Window.setLightStatusAndNavBar(value: Boolean, view: View = decorView) {
     val windowInsetsControllerCompat = WindowInsetsControllerCompat(this, view)
     windowInsetsControllerCompat.isAppearanceLightStatusBars = value
     windowInsetsControllerCompat.isAppearanceLightNavigationBars = value
 }
-
 fun ChipGroup.bindLabels(
     labels: List<String>,
     textSize: TextSize,
@@ -833,28 +720,24 @@ fun ChipGroup.bindLabels(
         }
     }
 }
-
 private fun getOutlinedDrawable(context: Context): MaterialShapeDrawable {
     val model =
         ShapeAppearanceModel.builder()
             .setAllCorners(RoundedCornerTreatment())
             .setAllCornerSizes(RelativeCornerSize(0.5f))
             .build()
-
     return MaterialShapeDrawable(model).apply {
         fillColor = ColorStateList.valueOf(0)
         strokeWidth = context.resources.displayMetrics.density
         strokeColor = ContextCompat.getColorStateList(context, R.color.chip_stroke)
     }
 }
-
 fun RecyclerView.initListView(context: Context) {
     setHasFixedSize(true)
     layoutManager = LinearLayoutManager(context)
     addItemDecoration(DividerItemDecoration(context, RecyclerView.VERTICAL))
     setPadding(0, 0, 0, 0)
 }
-
 val RecyclerView.focusedViewHolder
     get() =
         focusedChild?.let { view ->
@@ -865,23 +748,19 @@ val RecyclerView.focusedViewHolder
                 findViewHolderForAdapterPosition(position)
             }
         }
-
 fun RecyclerView.showKeyboardOnFocusedItem() {
     (focusedViewHolder as? ListItemVH)?.let {
         it.binding.root.context?.showKeyboard(it.binding.EditText)
     }
 }
-
 fun RecyclerView.hideKeyboardOnFocusedItem() {
     (focusedViewHolder as? ListItemVH)?.let {
         it.binding.root.context?.hideKeyboard(it.binding.EditText)
     }
 }
-
 fun MaterialAutoCompleteTextView.select(value: CharSequence) {
     setText(value, false)
 }
-
 fun Context.createTextView(textResId: Int, padding: Int = 16.dp): TextView {
     return AppCompatTextView(this).apply {
         setText(textResId)

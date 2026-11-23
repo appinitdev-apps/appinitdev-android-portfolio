@@ -1,12 +1,9 @@
-
 fun SchemaBuilder.addFileUploadSchema() {
     val uploadTmpDir = File(MainApp.instance.filesDir, "upload_tmp")
-
     query("uploadedChunks") {
         resolver { fileId: String ->
             val chunkDir = File(uploadTmpDir, fileId)
             if (!chunkDir.exists()) return@resolver emptyList<String>()
-
             chunkDir.listFiles()
                 ?.filter { it.name.startsWith("chunk_") } 
                 ?.mapNotNull { file ->
@@ -32,8 +29,6 @@ fun SchemaBuilder.addFileUploadSchema() {
             if (!chunkDir.exists()) {
                 throw GraphQLError("No chunks found for $fileId")
             }
-
-            
             var expectedMergedSize = 0L
             for (i in 0 until totalChunks) {
                 val chunkFile = File(chunkDir, "chunk_$i")
@@ -42,7 +37,6 @@ fun SchemaBuilder.addFileUploadSchema() {
                 }
                 expectedMergedSize += chunkFile.length()
             }
-
             val outputFile = if (replace) {
                 File(path)
             } else {
@@ -54,16 +48,12 @@ fun SchemaBuilder.addFileUploadSchema() {
                 }
             }
             outputFile.parentFile?.mkdirs()
-
-            
-            
             val tempMergeFile = File(outputFile.parentFile, ".merge_tmp_${fileId}_${System.currentTimeMillis()}")
             try {
                 FileOutputStream(tempMergeFile).use { fos ->
                     val outputChannel = fos.channel
                     for (i in 0 until totalChunks) {
                         val chunkFile = File(chunkDir, "chunk_$i")
-
                         chunkFile.inputStream().channel.use { inputChannel ->
                             var position = 0L
                             val size = inputChannel.size()
@@ -71,7 +61,6 @@ fun SchemaBuilder.addFileUploadSchema() {
                                 val transferred = inputChannel.transferTo(position, size - position, outputChannel)
                                 if (transferred < 0) throw IOException("transferTo failed at position $position")
                                 if (transferred == 0L) {
-                                    
                                     Thread.sleep(1)
                                     continue
                                 }
@@ -79,25 +68,17 @@ fun SchemaBuilder.addFileUploadSchema() {
                             }
                         }
                     }
-                    
                     fos.fd.sync()
                 }
-
                 val mergedSize = tempMergeFile.length()
-
-                
                 if (mergedSize != expectedMergedSize) {
                     tempMergeFile.delete()
                     throw GraphQLError("Merge integrity failed: expected $expectedMergedSize, got $mergedSize")
                 }
-
-                
                 if (outputFile.exists() && replace) {
                     outputFile.delete()
                 }
                 if (!tempMergeFile.renameTo(outputFile)) {
-                    
-                    
                     if (tempMergeFile.exists()) {
                         tempMergeFile.copyTo(outputFile, overwrite = true)
                         tempMergeFile.delete()
@@ -109,18 +90,14 @@ fun SchemaBuilder.addFileUploadSchema() {
                 tempMergeFile.delete()
                 throw e
             }
-
             val mergedSize = outputFile.length()
-
             chunkDir.deleteRecursively()
             if (isAppFile) {
-                
                 val dFile = AppFileStore.importFile(MainApp.instance, outputFile, "", deleteSrc = true)
                 val fidSuffix = java.io.File(dFile.realPath).name  
                 "${fidSuffix}:$mergedSize"
             } else {
                 MainApp.instance.scanFileByConnection(outputFile, null)
-                
                 "${outputFile.name}:$mergedSize"
             }
         }

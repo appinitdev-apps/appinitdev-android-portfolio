@@ -1,4 +1,3 @@
-
 data class AppState(
     val isSignedIn: Boolean = false,
     val signInError: String? = null,

@@ -1,4 +1,3 @@
-
 @Composable
 internal fun SelectedOverlay() {
     Box(
@@ -8,7 +7,6 @@ internal fun SelectedOverlay() {
             .aspectRatio(1f)
     )
 }
-
 @Composable
 internal fun CastModeOverlay() {
     Box(
@@ -27,7 +25,6 @@ internal fun CastModeOverlay() {
         )
     }
 }
-
 @Composable
 internal fun SelectionCheckbox(
     selected: Boolean,
@@ -42,7 +39,6 @@ internal fun SelectionCheckbox(
         },
     )
 }
-
 @Composable
 internal fun SizeLabel(text: String) {
     Box(

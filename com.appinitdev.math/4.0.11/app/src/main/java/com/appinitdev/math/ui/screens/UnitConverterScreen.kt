@@ -1,4 +1,3 @@
-
 data class UnitCategory(
     val id: String,
     val nameEs: String,
@@ -6,7 +5,6 @@ data class UnitCategory(
     val icon: String,
     val units: List<UnitDefinition>
 )
-
 data class UnitDefinition(
     val code: String,
     val nameEs: String,
@@ -14,7 +12,6 @@ data class UnitDefinition(
     val toBase: (Double) -> Double,
     val fromBase: (Double) -> Double
 )
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UnitConverterScreen(
@@ -22,7 +19,6 @@ fun UnitConverterScreen(
     onBack: () -> Unit
 ) {
     val currentLang by viewModel.currentLanguage.collectAsState()
-
     val categories = remember {
         listOf(
             UnitCategory(
@@ -143,19 +139,15 @@ fun UnitConverterScreen(
             )
         )
     }
-
     var selectedCat by remember { mutableStateOf(categories.first()) }
     var fromUnit by remember(selectedCat) { mutableStateOf(selectedCat.units.first()) }
     var toUnit by remember(selectedCat) { mutableStateOf(if (selectedCat.units.size > 1) selectedCat.units[1] else selectedCat.units.first()) }
     var inputValueStr by remember { mutableStateOf("1") }
-
     val inputValue = inputValueStr.toDoubleOrNull() ?: 0.0
     val baseValue = fromUnit.toBase(inputValue)
     val convertedValue = toUnit.fromBase(baseValue)
-
     var fromExpanded by remember { mutableStateOf(false) }
     var toExpanded by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -197,7 +189,6 @@ fun UnitConverterScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -210,8 +201,6 @@ fun UnitConverterScreen(
                     )
                 }
             }
-
-            
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
@@ -226,7 +215,6 @@ fun UnitConverterScreen(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
-
                     OutlinedTextField(
                         value = inputValueStr,
                         onValueChange = { inputValueStr = it },
@@ -234,7 +222,6 @@ fun UnitConverterScreen(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth()
                     )
-
                     ExposedDropdownMenuBox(
                         expanded = fromExpanded,
                         onExpandedChange = { fromExpanded = it }
@@ -265,8 +252,6 @@ fun UnitConverterScreen(
                     }
                 }
             }
-
-            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
@@ -283,8 +268,6 @@ fun UnitConverterScreen(
                     )
                 }
             }
-
-            
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
@@ -299,7 +282,6 @@ fun UnitConverterScreen(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
-
                     val formattedResult = String.format(Locale.US, "%.6g", convertedValue)
                     Text(
                         text = formattedResult,
@@ -307,7 +289,6 @@ fun UnitConverterScreen(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
-
                     ExposedDropdownMenuBox(
                         expanded = toExpanded,
                         onExpandedChange = { toExpanded = it }

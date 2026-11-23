@@ -1,4 +1,3 @@
-
 @Serializable
 data class Notification(
     val id: ID,
@@ -13,7 +12,6 @@ data class Notification(
     val actions: List<String>,
     val replyActions: List<String>
 )
-
 fun DNotification.toModel(): Notification {
     return Notification(ID(id), onlyOnce, isClearable, appId, appName, time, silent, title, body, actions, replyActions)
 }

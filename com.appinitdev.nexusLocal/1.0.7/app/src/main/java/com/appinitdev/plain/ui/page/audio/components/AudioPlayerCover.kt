@@ -1,4 +1,3 @@
-
 @Composable
 fun AudioPlayerCover(
     path: String,
@@ -10,10 +9,8 @@ fun AudioPlayerCover(
             tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
             modifier = Modifier.size(120.dp)
         )
-
         return
     }
-
     var imageBitmap by remember(path) {
         mutableStateOf<ImageBitmap?>(
             audioCoverCache[path]?.takeIf { it != EMPTY_BITMAP }
@@ -22,7 +19,6 @@ fun AudioPlayerCover(
     var isLoading by remember(path) {
         mutableStateOf(!audioCoverCache.containsKey(path))
     }
-
     LaunchedEffect(path) {
         if (audioCoverCache.containsKey(path)) {
             val cached = audioCoverCache[path]
@@ -30,7 +26,6 @@ fun AudioPlayerCover(
             isLoading = false
             return@LaunchedEffect
         }
-
         isLoading = true
         val bitmap = withIO {
             try {
@@ -48,12 +43,10 @@ fun AudioPlayerCover(
                 null
             }
         }
-
         audioCoverCache[path] = bitmap ?: EMPTY_BITMAP
         imageBitmap = bitmap
         isLoading = false
     }
-
     if (imageBitmap != null) {
         Surface(
             modifier = Modifier

@@ -1,4 +1,3 @@
-
 @Composable
 fun ChatName(
     m: VChat,
@@ -18,17 +17,13 @@ fun ChatName(
                 "me" -> stringResource(Res.string.me)
                 else -> ChatCacheManager.peerMap[m.fromId]?.name ?: stringResource(Res.string.unknown)
             },
-
             style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(end = 4.dp),
         )
-
         Text(
             text = m.createdAt.formatTime(),
             style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Normal, color = MaterialTheme.colorScheme.secondaryTextColor),
         )
-
-        
         if (!isLocal) {
             when {
                 m.status == "pending" -> {
@@ -39,15 +34,12 @@ fun ChatName(
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
-
-                
                 m.fromId == "me" && m.statusData != null && m.statusData.total > 0 -> {
                     val statusData = m.statusData
                     val isAllFailed = statusData.allFailed
                     val isPeerFailureBadge = isPeerChat && isAllFailed
                     val badgeColor = if (isAllFailed) MaterialTheme.colorScheme.error
                                      else MaterialTheme.colorScheme.tertiary
-
                     HorizontalSpace(6.dp)
                     Surface(
                         color = badgeColor.copy(alpha = 0.12f),
@@ -79,8 +71,6 @@ fun ChatName(
                         }
                     }
                 }
-
-                
                 m.fromId == "me" && m.status == "failed" -> {
                     if (onRetry != null) {
                         HorizontalSpace(4.dp)

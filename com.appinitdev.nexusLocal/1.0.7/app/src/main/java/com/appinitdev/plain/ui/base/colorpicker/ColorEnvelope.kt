@@ -1,11 +1,3 @@
-
- 
-
-
-
-
-
-
 @Immutable
 public data class ColorEnvelope(
   val color: Color,

@@ -1,6 +1,4 @@
-
 class ImageVH(private val binding: RecyclerImageBinding) : RecyclerView.ViewHolder(binding.root) {
-
     init {
         binding.SSIV.apply {
             setDoubleTapZoomDpi(320)
@@ -9,7 +7,6 @@ class ImageVH(private val binding: RecyclerImageBinding) : RecyclerView.ViewHold
             orientation = SubsamplingScaleImageView.ORIENTATION_USE_EXIF
             setOnImageEventListener(
                 object : DefaultOnImageEventListener() {
-
                     override fun onImageLoadError(e: Exception?) {
                         binding.Message.visibility = View.VISIBLE
                     }
@@ -17,7 +14,6 @@ class ImageVH(private val binding: RecyclerImageBinding) : RecyclerView.ViewHold
             )
         }
     }
-
     fun bind(file: File?) {
         binding.SSIV.recycle()
         if (file != null) {

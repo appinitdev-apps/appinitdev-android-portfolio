@@ -1,4 +1,3 @@
-
 class DlnaDevice(
     val hostAddress: String,
     val header: String,
@@ -7,32 +6,25 @@ class DlnaDevice(
     val server = parseHeader(header, "SERVER: ")
     val uSN = parseHeader(header, "USN: ")
     val sT = parseHeader(header, "ST: ")
-
     private var descriptionXML: String = ""
     var description: DescriptionModel? = null
-
     fun isAVTransport(): Boolean =
         description?.device?.serviceList?.any { it.serviceType == DlnaSoap.AVT_SERVICE_TYPE } == true
-
     fun update(xml: String) {
         descriptionXML = xml
         description = XmlHelper.decodeXml(xml)
     }
-
     fun getAVTransportService(): DeviceService? =
         description?.device?.serviceList?.find { it.serviceId == "urn:upnp-org:serviceId:AVTransport" }
-
     fun getBaseUrl(): String {
         val url = URL(location)
         return "${url.protocol}://${url.host}:${url.port}"
     }
-
     override fun toString(): String {
         var str = ""
         description?.device?.let { d -> str = jsonEncode(d) }
         return str
     }
-
     private fun parseHeader(mSearchAnswer: String, whatSearch: String): String {
         var result = ""
         var searchLinePos = mSearchAnswer.indexOf(whatSearch)
@@ -43,7 +35,6 @@ class DlnaDevice(
         }
         return result
     }
-
     @Serializable
     class Device {
         val deviceType: String = ""
@@ -58,9 +49,7 @@ class DlnaDevice(
         val UDN: String = ""
         val serviceList: List<DeviceService> = listOf()
     }
-
     data class DescriptionModel(val device: Device, val URLBase: String)
-
     @Serializable
     data class DeviceService(
         val serviceType: String,

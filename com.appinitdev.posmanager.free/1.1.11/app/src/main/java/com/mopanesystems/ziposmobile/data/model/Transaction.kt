@@ -1,4 +1,3 @@
-
 @Entity(tableName = "transactions")
 data class Transaction(
     @PrimaryKey
@@ -27,26 +26,19 @@ data class Transaction(
     override val updatedAt: LocalDateTime = LocalDateTime.now(),
     val completedAt: LocalDateTime? = null
 ) : Identifiable, Auditable, Syncable {
-
     val isCompleted: Boolean
         get() = status == TransactionStatus.COMPLETED
-
     val isPending: Boolean
         get() = status == TransactionStatus.PENDING
-
     val isCancelled: Boolean
         get() = status == TransactionStatus.CANCELLED
-
     val isRefunded: Boolean
         get() = status == TransactionStatus.REFUNDED || status == TransactionStatus.PARTIALLY_REFUNDED
-
     val canBeRefunded: Boolean
         get() = isCompleted && !isRefund
-
     val hasDiscount: Boolean
         get() = discountAmount > BigDecimal.ZERO
 }
-
 @Entity(tableName = "transaction_items")
 data class TransactionItem(
     @PrimaryKey
@@ -60,14 +52,11 @@ data class TransactionItem(
     val taxAmount: BigDecimal = BigDecimal.ZERO,
     val notes: String? = null
 ) : Identifiable {
-
     val itemTotalWithTax: BigDecimal
         get() = totalPrice + taxAmount
-
     val unitPriceWithTax: BigDecimal
         get() = if (quantity > 0) itemTotalWithTax.divide(BigDecimal(quantity), 2, RoundingMode.HALF_UP) else unitPrice
 }
-
 @Entity(tableName = "payments")
 data class Payment(
     @PrimaryKey
@@ -80,14 +69,11 @@ data class Payment(
     val processedAt: LocalDateTime? = null,
     val createdAt: LocalDateTime = LocalDateTime.now()
 ) : Identifiable {
-
     val isCompleted: Boolean
         get() = status == PaymentStatus.COMPLETED
-
     val isFailed: Boolean
         get() = status == PaymentStatus.FAILED
 }
-
 enum class TransactionType {
     SALE,
     REFUND,
@@ -100,7 +86,6 @@ enum class TransactionType {
     PAYMENT,
     ADJUSTMENT
 }
-
 enum class TransactionStatus {
     PENDING,
     IN_PROGRESS,
@@ -109,7 +94,6 @@ enum class TransactionStatus {
     REFUNDED,
     PARTIALLY_REFUNDED
 }
-
 enum class PaymentMethod {
     CASH,
     CARD,
@@ -120,7 +104,6 @@ enum class PaymentMethod {
     OTHER,
     CREDIT_SALE
 }
-
 enum class PaymentStatus {
     PENDING,
     PROCESSING,

@@ -1,11 +1,9 @@
-
 data class LinkifyParseResult(
     val text: String,
     val start: Int,
     val end: Int,
     val tag: String = "",
 )
-
 @Composable
 fun String.linkify(
     linkStyle: SpanStyle = SpanStyle(
@@ -17,10 +15,8 @@ fun String.linkify(
         val emailPattern = Pattern.compile("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}")
         val phonePattern = Pattern.compile("\\d{10,13}")
         val urlPattern = Pattern.compile("(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]")
-
         val patterns = listOf(emailPattern, phonePattern, urlPattern)
         val tags = listOf("EMAIL", "PHONE", "URL")
-
         val parse = fun(input: String): LinkifyParseResult? {
             var r: LinkifyParseResult? = null
             for (i in patterns.indices) {
@@ -33,20 +29,16 @@ fun String.linkify(
                     }
                 }
             }
-
             return r
         }
-
         var raw = this@linkify
         var m = parse(raw)
         while (m != null) {
             val start = m.start
             val end = m.end
-
             if (start > 0) {
                 append(raw.subSequence(0, start))
             }
-
             withStyle(linkStyle) {
                 addStringAnnotation(
                     tag = m!!.tag,
@@ -56,10 +48,8 @@ fun String.linkify(
                 )
                 append(m!!.text)
             }
-
             raw = raw.substring(end)
             m = parse(raw)
         }
-
         append(raw)
     }

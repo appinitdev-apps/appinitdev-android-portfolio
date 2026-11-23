@@ -1,4 +1,3 @@
-
 @OptIn(SavedStateHandleSaveableApi::class)
 class NoteViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
     var editMode by savedStateHandle.saveable { mutableStateOf(false) }

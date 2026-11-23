@@ -1,21 +1,16 @@
-
 class PackingChecklistActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityPackingChecklistBinding
     private val PREFS_NAME = "packing_checklist_prefs"
-
     data class ChecklistCategory(
         val nameEs: String,
         val nameEn: String,
         val items: List<ChecklistItem>
     )
-
     data class ChecklistItem(
         val key: String,
         val textEs: String,
         val textEn: String
     )
-
     private val categories = listOf(
         ChecklistCategory(
             "📄 Documentos e Identificación",
@@ -64,34 +59,26 @@ class PackingChecklistActivity : AppCompatActivity() {
             )
         )
     )
-
     private val allCheckBoxes = mutableListOf<Pair<String, CheckBox>>()
     private var customItemsContainer: LinearLayout? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPackingChecklistBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         renderChecklist()
-
         binding.btnResetChecklist.setOnClickListener {
             resetChecklist()
         }
-
         binding.btnAddItem.setOnClickListener {
             addCustomItemDialog()
         }
     }
-
     private fun renderChecklist() {
         binding.llChecklistContainer.removeAllViews()
         allCheckBoxes.clear()
-
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val isEn = Locale.getDefault().language.equals("en", ignoreCase = true)
         val primaryColor = ContextCompat.getColor(this, R.color.blue_500)
-
         for (cat in categories) {
             val cardView = MaterialCardView(this).apply {
                 radius = 16f * resources.displayMetrics.density
@@ -106,7 +93,6 @@ class PackingChecklistActivity : AppCompatActivity() {
                 }
                 layoutParams = params
             }
-
             val cardContent = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
                 setPadding(
@@ -116,7 +102,6 @@ class PackingChecklistActivity : AppCompatActivity() {
                     (14 * resources.displayMetrics.density).toInt()
                 )
             }
-
             val categoryTitle = TextView(this).apply {
                 text = if (isEn) cat.nameEn else cat.nameEs
                 textSize = 16f
@@ -125,7 +110,6 @@ class PackingChecklistActivity : AppCompatActivity() {
                 setPadding(0, 0, 0, (8 * resources.displayMetrics.density).toInt())
             }
             cardContent.addView(categoryTitle)
-
             for (item in cat.items) {
                 val checkBox = CheckBox(this).apply {
                     text = if (isEn) item.textEn else item.textEs
@@ -146,12 +130,9 @@ class PackingChecklistActivity : AppCompatActivity() {
                 allCheckBoxes.add(Pair(item.key, checkBox))
                 cardContent.addView(checkBox)
             }
-
             cardView.addView(cardContent)
             binding.llChecklistContainer.addView(cardView)
         }
-
-        
         val customCardView = MaterialCardView(this).apply {
             radius = 16f * resources.displayMetrics.density
             cardElevation = 2f * resources.displayMetrics.density
@@ -165,7 +146,6 @@ class PackingChecklistActivity : AppCompatActivity() {
             }
             layoutParams = params
         }
-
         val customCardContent = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(
@@ -175,7 +155,6 @@ class PackingChecklistActivity : AppCompatActivity() {
                 (14 * resources.displayMetrics.density).toInt()
             )
         }
-
         val customTitle = TextView(this).apply {
             text = if (isEn) "📌 Custom Items" else "📌 Artículos Personalizados"
             textSize = 16f
@@ -187,21 +166,16 @@ class PackingChecklistActivity : AppCompatActivity() {
         customItemsContainer = customCardContent
         customCardView.addView(customCardContent)
         binding.llChecklistContainer.addView(customCardView)
-
         updateProgress()
     }
-
     private fun updateProgress() {
         val total = allCheckBoxes.size
         if (total == 0) return
-
         val checkedCount = allCheckBoxes.count { it.second.isChecked }
         val percent = (checkedCount * 100) / total
-
         binding.progressBarChecklist.progress = percent
         binding.tvProgress.text = "Progreso: $percent% preparado ($checkedCount de $total artículos)"
     }
-
     private fun resetChecklist() {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit().clear().apply()
@@ -211,15 +185,12 @@ class PackingChecklistActivity : AppCompatActivity() {
         updateProgress()
         Toast.makeText(this, "Lista de empaque reiniciada", Toast.LENGTH_SHORT).show()
     }
-
     private fun addCustomItemDialog() {
         val input = EditText(this).apply {
             hint = "Ej: Medicamento personal, Impermeable..."
             setPadding(32, 24, 32, 24)
         }
-
         val primaryColor = ContextCompat.getColor(this, R.color.blue_500)
-
         MaterialAlertDialogBuilder(this)
             .setTitle("➕ Agregar Artículo")
             .setView(input)
@@ -229,7 +200,6 @@ class PackingChecklistActivity : AppCompatActivity() {
                     val key = "" + System.currentTimeMillis()
                     val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                     prefs.edit().putBoolean(key, true).apply()
-
                     val checkBox = CheckBox(this).apply {
                         text = newItemText
                         isChecked = true

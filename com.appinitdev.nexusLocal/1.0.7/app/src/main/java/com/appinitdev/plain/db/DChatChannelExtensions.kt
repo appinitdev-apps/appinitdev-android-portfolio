@@ -1,4 +1,3 @@
-
 suspend fun DChatChannel.getPeersAsync(): List<DPeer> {
     val ids = memberIds()
     val dbPeers = AppDatabase.instance.peerDao().getByIds(ids).associateBy { it.id }
@@ -17,19 +16,8 @@ suspend fun DChatChannel.getPeersAsync(): List<DPeer> {
         }
     }
 }
-
- 
 fun DChatChannel.isOwnedByMe(): Boolean = owner == "me"
-
- 
 fun DChatChannel.isJoined(): Boolean = status == DChatChannel.STATUS_JOINED
-
- 
-
-
-
 fun DChatChannel.canDeleteFromThisDevice(): Boolean =
     isOwnedByMe() || status == DChatChannel.STATUS_LEFT || status == DChatChannel.STATUS_KICKED
-
- 
 fun DChatChannel.canLeave(): Boolean = !isOwnedByMe() && isJoined()

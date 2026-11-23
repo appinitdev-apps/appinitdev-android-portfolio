@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, listState: LazyListState) {
@@ -10,51 +9,27 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
     val isVerifyingOcr by viewModel.isVerifyingOcr.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     var isRefreshing by remember { mutableStateOf(false) }
-
-    
     var showUploadDialog by remember { mutableStateOf(false) }
     var selectedAppForReview by remember { mutableStateOf<AppModel?>(null) }
     var showVideoTutorial by remember { mutableStateOf(false) }
     val activity = context as? android.app.Activity
-    
-
     val uiState by viewModel.uiState.collectAsState()
-
-    
-
     val mensajeExito = stringResource(R.string.paquete_de_30_puntos_0_25_rep_extra)
-
     LaunchedEffect(uiState) {
         if (uiState is AuthUiState.PurchaseSuccess) {
             showNiceToast(context, mensajeExito, NiceToastType.SUCCESS)
             viewModel.clearState()
         }
     }
-
-
-
-
-
     LaunchedEffect(Unit) {
         viewModel.loadFeaturedApps()
     }
     LaunchedEffect(Unit) {
         viewModel.iniciarBilling(context)
     }
-
-
-    
-
-
-
-
     val productionApps = remember(apps) {
         val filtered = apps.filter { it.status == "produccion" }
-
-        
         val nuevasParaMi = filtered.filter { it.resenasProduccion[currentUserId] == null }.shuffled()
-
-        
         val gestionadasPorMi = filtered.filter { it.resenasProduccion[currentUserId] != null }
             .sortedWith(compareBy<AppModel> { app ->
                 val miResena = app.resenasProduccion[currentUserId]
@@ -65,12 +40,8 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
                     else -> 4
                 }
             })
-
-        
         val listaFinal = nuevasParaMi + gestionadasPorMi
         listaFinal
-        
-       
     }
     val successMessage = stringResource(R.string.rese_a_enviada_a_revisi_n)
     if (showUploadDialog) {
@@ -121,13 +92,11 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp, vertical = 8.dp), 
             colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF8E1)),
-            
             border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFFD54F))
         ) {
             Row(
@@ -164,9 +133,7 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
                         viewModel.lanzarFlujoPago(it, "puntos_30_pack")
                     }
                 },
-            
             colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF8E1)),
-            
             border = BorderStroke(1.dp, Color(0xFFFFC107))
         ) {
             Row(
@@ -177,23 +144,19 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
                     modifier = Modifier
                         .size(44.dp)
                         .background(
-                            
                             Color(0xFFFFA000),
                             CircleShape
                         ),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        
                         imageVector = Icons.Default.WorkspacePremium,
                         contentDescription = null,
                         tint = Color.White,
                         modifier = Modifier.size(26.dp)
                     )
                 }
-
                 Spacer(Modifier.width(16.dp))
-
                 Column(Modifier.weight(1f)) {
                     Text(
                         text = stringResource(R.string.paquete_de_30_puntos_0_25_rep_extra),
@@ -208,8 +171,6 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
                         lineHeight = 14.sp
                     )
                 }
-
-                
                 Surface(
                     color = Color(0xFFFFC107),
                     shape = RoundedCornerShape(12.dp)
@@ -229,7 +190,6 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
             Spacer(Modifier.width(8.dp))
             Text(stringResource(R.string.ver_video_tutorial_de_ejemplo))
         }
-
         if (apps.isEmpty()) {
             LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
                 items(5) { com.appinitdev.tester.util.ShimmerAppItem() }
@@ -249,7 +209,6 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
             ) {
                 items(productionApps, key = { it.id }) { app ->
                     val miResena = app.resenasProduccion[currentUserId]
-
                     ProductionAppRewardCard(
                         app = app,
                         estadoResena = miResena?.estado,
@@ -268,7 +227,6 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
     }
 }
 }
-
 @Composable
 fun ProductionAppRewardCard(
     app: AppModel,
@@ -280,7 +238,6 @@ fun ProductionAppRewardCard(
     var isInstalled by remember(app.paquete) {
         mutableStateOf(Funciones.isAppInstalled(context, app.paquete))
     }
-
     OutlinedCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
@@ -297,7 +254,6 @@ fun ProductionAppRewardCard(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                
                 Surface(
                     modifier = Modifier.size(56.dp),
                     shape = RoundedCornerShape(16.dp),
@@ -316,9 +272,7 @@ fun ProductionAppRewardCard(
                         error = { LetterLogo(app.nombre, modifier = Modifier.fillMaxSize()) }
                     )
                 }
-
                 Spacer(modifier = Modifier.width(14.dp))
-
                 Column(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(2.dp)
@@ -338,8 +292,6 @@ fun ProductionAppRewardCard(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-
-                    
                     Row(
                         modifier = Modifier.padding(top = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -406,15 +358,12 @@ fun ProductionAppRewardCard(
                     }
                 }
             }
-
             Spacer(modifier = Modifier.height(14.dp))
             HorizontalDivider(
                 thickness = 0.5.dp,
                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
             )
             Spacer(modifier = Modifier.height(12.dp))
-
-            
             when (estadoResena) {
                 "aprobada" -> {
                     Surface(
@@ -480,9 +429,7 @@ fun ProductionAppRewardCard(
                             modifier = Modifier.padding(bottom = 10.dp)
                         )
                     }
-
                     if (isInstalled) {
-                        
                         Button(
                             onClick = onUploadReview,
                             modifier = Modifier.fillMaxWidth(),
@@ -504,7 +451,6 @@ fun ProductionAppRewardCard(
                             )
                         }
                     } else {
-                        
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -526,7 +472,6 @@ fun ProductionAppRewardCard(
                                     fontWeight = FontWeight.Bold
                                 )
                             }
-
                             FilledTonalButton(
                                 onClick = {
                                     val instalada = Funciones.isAppInstalled(context, app.paquete)
@@ -567,7 +512,6 @@ fun ProductionAppRewardCard(
         }
     }
 }
-
 @Composable
 fun UploadReviewDialog(
     app: AppModel,
@@ -580,12 +524,10 @@ fun UploadReviewDialog(
     var isExpanded by remember { mutableStateOf(false) }
     val verifyingOcrState by viewModel.isVerifyingOcr.collectAsState()
     val context = LocalContext.current
-    
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
             imageUri = uri
         }
-
     AlertDialog(
         onDismissRequest = onDismiss,
         properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
@@ -603,7 +545,6 @@ fun UploadReviewDialog(
                     )
                 }
                 Spacer(Modifier.height(16.dp))
-
                 if (imageUri != null) {
                     Box(modifier = Modifier.size(150.dp).clip(RoundedCornerShape(16.dp)).background(MaterialTheme.colorScheme.surfaceVariant)) {
                         AsyncImage(
@@ -642,7 +583,6 @@ fun UploadReviewDialog(
                                 )
                             }
                         }
-                        
                         AnimatedVisibility(visible = isExpanded) {
                             Image(
                                 painter = painterResource(id = R.drawable.resena),
@@ -654,9 +594,7 @@ fun UploadReviewDialog(
                             )
                         }
                     }
-
                     Spacer(Modifier.height(16.dp))
-
                     OutlinedButton(
                         onClick = { launcher.launch("image/*") },
                         modifier = Modifier.fillMaxWidth(),
@@ -691,9 +629,6 @@ fun UploadReviewDialog(
         }
     )
 }
-
-
-
 fun openPlayStore(context: Context, packageName: String) {
     try {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))

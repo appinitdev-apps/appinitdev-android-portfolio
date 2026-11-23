@@ -1,4 +1,3 @@
-
 @Composable
 fun CreateChannelDialog(
     onDismiss: () -> Unit,
@@ -14,7 +13,6 @@ fun CreateChannelDialog(
         validator = { it.trim().isNotBlank() },
     )
 }
-
 @Composable
 fun RenameChannelDialog(
     currentName: String,

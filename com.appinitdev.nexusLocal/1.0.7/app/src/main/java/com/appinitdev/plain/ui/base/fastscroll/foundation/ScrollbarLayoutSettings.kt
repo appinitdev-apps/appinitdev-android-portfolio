@@ -1,4 +1,3 @@
-
 @Stable
 internal data class ScrollbarLayoutSettings(
     val scrollbarPadding: Dp,

@@ -1,4 +1,3 @@
-
 @Composable
 fun DlnaReceiverWaitingScreen() {
     val deviceName = TempData.deviceName.value
@@ -45,7 +44,6 @@ fun DlnaReceiverWaitingScreen() {
         Tips(text = stringResource(Res.string.dlna_receiver_protocol_note))
     }
 }
-
 @Composable
 private fun DlnaRippleAnimation() {
     val transition = rememberInfiniteTransition(label = "dlna_ripple")
@@ -74,4 +72,3 @@ private fun DlnaRippleAnimation() {
         Icon(painter = painterResource(Res.drawable.cast), contentDescription = null, modifier = Modifier.size(28.dp), tint = MaterialTheme.colorScheme.onPrimary)
     }
 }
-

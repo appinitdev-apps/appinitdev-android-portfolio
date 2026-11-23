@@ -1,4 +1,3 @@
-
 class FeedFetchWorker(
     val context: Context,
     params: WorkerParameters,
@@ -9,7 +8,6 @@ class FeedFetchWorker(
             if (autoRefresh && FeedAutoRefreshOnlyWifiPreference.getAsync() && context.isWifiConnected()) {
                 return@supervisorScope
             }
-
             val feedId = inputData.getString("feed_id") ?: ""
             if (feedId.isNotEmpty()) {
                 val feed = FeedHelper.getById(feedId) ?: return@supervisorScope
@@ -26,11 +24,9 @@ class FeedFetchWorker(
                 if (feeds.isEmpty()) {
                     return@supervisorScope
                 }
-
                 if (statusMap["all"] == FeedWorkerStatus.PENDING) {
                     return@supervisorScope
                 }
-
                 setStatusMap("all", FeedWorkerStatus.PENDING)
                 feeds.chunked(16)
                     .forEach {
@@ -44,10 +40,8 @@ class FeedFetchWorker(
                 sendEvent(WebSocketEvent(EventType.FEEDS_FETCHED, json.toString()))
             }
         }
-
         return Result.success()
     }
-
     private suspend fun syncFeedAsync(feed: DFeed) {
         setStatusMap(feed.id, FeedWorkerStatus.PENDING)
         try {
@@ -71,14 +65,11 @@ class FeedFetchWorker(
             setStatusMap(feed.id, FeedWorkerStatus.ERROR)
         }
     }
-
     companion object {
         private const val ONE_TIME_WORK_NAME = "feeds.one.sync"
         private const val REPEAT_WORK_NAME = "feeds.repeat.sync"
-
         val statusMap = mutableMapOf<String, FeedWorkerStatus>()
         val errorMap = mutableMapOf<String, String>()
-
         private fun setStatusMap(
             feedId: String,
             status: FeedWorkerStatus,
@@ -86,7 +77,6 @@ class FeedFetchWorker(
             statusMap[feedId] = status
             sendEvent(FeedStatusEvent(feedId, status))
         }
-
         fun oneTimeRequest(feedId: String) {
             val data = Data.Builder()
             data.putString("feed_id", feedId)
@@ -95,13 +85,11 @@ class FeedFetchWorker(
                     .setInputData(data.build()).addTag(ONE_TIME_WORK_NAME)
             WorkManager.getInstance(MainApp.instance).enqueue(request.build())
         }
-
         fun cancelRepeatWorker() {
             WorkManager.getInstance(MainApp.instance).cancelAllWorkByTag(REPEAT_WORK_NAME)
             statusMap.clear()
             errorMap.clear()
         }
-
         suspend fun startRepeatWorkerAsync(context: Context) {
             val data = Data.Builder()
             data.putBoolean("auto_refresh", true)
@@ -112,7 +100,6 @@ class FeedFetchWorker(
                 ).setInputData(data.build()).setConstraints(
                     Constraints.Builder().build(),
                 ).addTag(REPEAT_WORK_NAME)
-
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 REPEAT_WORK_NAME,
                 ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,

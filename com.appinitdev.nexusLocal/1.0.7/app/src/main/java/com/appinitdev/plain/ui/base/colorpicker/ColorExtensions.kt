@@ -1,4 +1,3 @@
-
 internal val Color.hexCode: String
   inline get() {
     val a: Int = (alpha * 255).toInt()

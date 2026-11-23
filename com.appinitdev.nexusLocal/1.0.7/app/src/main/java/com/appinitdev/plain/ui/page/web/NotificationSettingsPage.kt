@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun NotificationSettingsPage(
@@ -8,11 +7,9 @@ fun NotificationSettingsPage(
     val context = androidx.compose.ui.platform.LocalContext.current
     val scope = rememberCoroutineScope()
     val selectedAppsState by vm.selectedAppsFlow.collectAsState()
-
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) { vm.loadDataAsync(context) }
     }
-
     PScaffold(
         topBar = {
             PTopAppBar(
@@ -46,13 +43,11 @@ fun NotificationSettingsPage(
                 )
                 VerticalSpace(dp = 16.dp)
             }
-
             item {
                 Subtitle(text = stringResource(
                     if (vm.filterData.value.mode == "allowlist") Res.string.allowed_apps else Res.string.blocked_apps
                 ))
             }
-
             if (!vm.isLoading.value) {
                 items(selectedAppsState, key = { it.id }) { app ->
                     NotificationAppListItem(app = app, onRemove = {
@@ -71,11 +66,9 @@ fun NotificationSettingsPage(
                     VerticalSpace(dp = 16.dp)
                 }
             }
-
             item { BottomSpace(paddingValues) }
         }
     }
-
     if (vm.showAppSelector.value) {
         AppSelectorBottomSheet(
             vm = vm,

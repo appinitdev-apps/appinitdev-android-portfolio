@@ -1,4 +1,3 @@
-
 data class WaveOptions(
     val amplitude: Float = 6f,
     val frequency: Float = 0.12f,
@@ -6,13 +5,11 @@ data class WaveOptions(
     val thumbRadius: Float = 5f,
     val animationDuration: Int = 2000
 )
-
 data class WaveSliderColors(
     val activeColor: Color,
     val inactiveColor: Color,
     val thumbColor: Color
 )
-
 @Composable
 fun WaveSlider(
     value: Float,
@@ -30,7 +27,6 @@ fun WaveSlider(
     isPlaying: Boolean = true
 ) {
     var isDragging by remember { mutableStateOf(false) }
-
     val infiniteTransition = rememberInfiniteTransition(label = "waveAnimation")
     val animationOffset = infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -40,7 +36,6 @@ fun WaveSlider(
         ),
         label = "waveOffset"
     )
-
     Box(modifier = modifier) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val phaseShift = if (isPlaying) {
@@ -50,7 +45,6 @@ fun WaveSlider(
             }
             drawWaveContent(value, valueRange, colors, waveOptions, isPlaying, phaseShift)
         }
-
         Slider(
             value = value,
             onValueChange = {

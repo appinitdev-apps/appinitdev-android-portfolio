@@ -1,38 +1,26 @@
-
 class MyFirebaseMessagingService : FirebaseMessagingService() {
-
-    
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
         handleIncomingMessage(remoteMessage)
     }
-
-    
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-
-        
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
-
         FirebaseFirestore.getInstance()
             .collection("users")
             .document(uid)
             .update("fcmToken", token)
     }
-
-
     private fun handleIncomingMessage(remoteMessage: RemoteMessage) {
         val title = remoteMessage.notification?.title ?: remoteMessage.data["title"]
         val body = remoteMessage.notification?.body ?: remoteMessage.data["body"]
         val data = remoteMessage.data
-
         if (!title.isNullOrBlank() && !body.isNullOrBlank()) {
             val appId = data["userId"] ?: data["appId"]
             val notificationIntent = Intent(this, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 putExtra("appId", appId)
             }
-
             val pendingIntent = PendingIntent.getActivity(
                 this,
                 0,
@@ -40,14 +28,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             val CHANNEL_ID = "tester_alerts_v2"
-
             val iconUrl = remoteMessage.notification?.imageUrl?.toString()
                 ?: data["iconUrl"]
                 ?: data["image"]
-
             val appIconBitmap = android.graphics.BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
             val largeIconBitmap = getBitmapFromUrl(iconUrl) ?: appIconBitmap
-
             val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(largeIconBitmap)
@@ -58,14 +43,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
-
             val notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             createNotificationChannel(notificationManager)
             notificationManager.notify(Random.nextInt().hashCode(), notificationBuilder.build())
         }
     }
-
     private fun getBitmapFromUrl(urlString: String?): android.graphics.Bitmap? {
         if (urlString.isNullOrBlank()) return null
         return try {
@@ -81,16 +64,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             null
         }
     }
-
     private fun createNotificationChannel(notificationManager: NotificationManager) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val CHANNEL_ID = "tester_alerts_v2"
             val channelName = "Alertas de Test"
             val channelDescription = "Default Channel for notifications"
-
-            
-
-            
             val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             val audioAttributes = AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION)
@@ -104,15 +82,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 description = channelDescription
                 enableVibration(true)
                 setSound(soundUri, audioAttributes)
-
                 setVibrationPattern(longArrayOf(0, 100, 50, 100, 50, 1000))
                 vibrationPattern = longArrayOf(0, 100, 50, 100, 50, 100)
                 enableLights(true)
-
             }
             notificationManager.createNotificationChannel(channel)
         }
     }
-
-
 }

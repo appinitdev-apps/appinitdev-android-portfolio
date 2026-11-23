@@ -1,4 +1,3 @@
-
 @Composable
 fun POutlinedButton(
     text: String,
@@ -19,7 +18,6 @@ fun POutlinedButton(
     }
     val borderColor = resolvedColor.copy(alpha = 0.5f)
     val padding = if (buttonSize == ButtonSize.SMALL) PaddingValues(horizontal = 12.dp) else ButtonDefaults.ContentPadding
-
     OutlinedButton(
         onClick = onClick,
         modifier = modifier

@@ -1,9 +1,7 @@
-
 class ReminderVH(
     private val binding: RecyclerReminderBinding,
     private val listener: ReminderListener,
 ) : RecyclerView.ViewHolder(binding.root) {
-
     fun bind(value: Reminder) {
         binding.apply {
             DateTime.text = value.dateTime.toText()

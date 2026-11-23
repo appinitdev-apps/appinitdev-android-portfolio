@@ -1,4 +1,3 @@
-
 @Composable
 fun FileRenameDialog(path: String, onDismiss: () -> Unit, onDoneAsync: suspend (String) -> Unit) {
     val scope = rememberCoroutineScope()

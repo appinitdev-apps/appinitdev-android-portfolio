@@ -1,4 +1,3 @@
-
 data class DDoc(
     override var id: String,
     override var title: String,

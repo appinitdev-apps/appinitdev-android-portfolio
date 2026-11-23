@@ -1,4 +1,3 @@
-
 @Composable
 internal fun FileListItemPlayer(
     isSelected: Boolean, isPlaying: Boolean, progress: Float, duration: Float,

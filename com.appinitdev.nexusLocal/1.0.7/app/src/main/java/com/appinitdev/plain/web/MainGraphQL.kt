@@ -1,4 +1,3 @@
-
 class MainGraphQL(val schema: Schema) {
     class Configuration : SchemaConfigurationDSL() {
         fun init() {
@@ -34,13 +33,10 @@ class MainGraphQL(val schema: Schema) {
                 addSchemaTypes()
             }
         }
-
         internal var schemaBlock: (SchemaBuilder.() -> Unit)? = null
     }
-
     companion object Feature : BaseApplicationPlugin<Application, Configuration, MainGraphQL> {
         override val key = AttributeKey<MainGraphQL>("MainGraphQL")
-
         private suspend fun executeGraphqlQL(
             schema: Schema,
             query: String,
@@ -53,7 +49,6 @@ class MainGraphQL(val schema: Schema) {
                 context { +call },
             )
         }
-
         override fun install(
             pipeline: Application,
             configure: Configuration.() -> Unit,
@@ -64,7 +59,6 @@ class MainGraphQL(val schema: Schema) {
                     configuration = config
                     config.schemaBlock?.invoke(this)
                 }
-
             pipeline.routing {
                 route("/graphql") {
                     post {
@@ -79,14 +73,12 @@ class MainGraphQL(val schema: Schema) {
                                 call.respond(HttpStatusCode.Unauthorized)
                                 return@post
                             }
-
                             val decryptedBytes = CryptoHelper.chaCha20Decrypt(token, call.receive())
                             val decryptedStr = decryptedBytes?.decodeToString() ?: ""
                             if (decryptedStr.isEmpty()) {
                                 call.respond(HttpStatusCode.Unauthorized)
                                 return@post
                             }
-
                             val parsed = ReplayGuard.parse(decryptedStr)
                             if (parsed == null) {
                                 call.respond(HttpStatusCode.BadRequest)
@@ -97,7 +89,6 @@ class MainGraphQL(val schema: Schema) {
                                 call.respond(HttpStatusCode.BadRequest)
                                 return@post
                             }
-
                             HttpServerManager.clientRequestTs[clientId] = System.currentTimeMillis()
                             sendEvent(WebRequestReceivedEvent())
                             val r = executeGraphqlQL(schema, parsed.body, call)
@@ -125,7 +116,6 @@ class MainGraphQL(val schema: Schema) {
                                 )
                                 return@post
                             }
-
                             val requestStr = call.receiveText()
                             LogCat.d("[Request] $requestStr")
                             HttpServerManager.clientRequestTs[clientId] = System.currentTimeMillis() 
@@ -136,7 +126,6 @@ class MainGraphQL(val schema: Schema) {
                     }
                 }
             }
-
             pipeline.intercept(ApplicationCallPipeline.Monitoring) {
                 try {
                     coroutineScope {

@@ -1,4 +1,3 @@
-
 @Composable
 fun UnblockDialog(hideDialog: () -> Unit, unblock: () -> Unit) {
     Dialog(
@@ -27,18 +26,14 @@ fun UnblockDialog(hideDialog: () -> Unit, unblock: () -> Unit) {
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
-                
                 Spacer(modifier = Modifier.height(16.dp))
-                
                 Text(
                     text = stringResource(R.string.quiere_desbloquear),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray,
                     textAlign = TextAlign.Center
                 )
-                
                 Spacer(modifier = Modifier.height(32.dp))
-                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -54,7 +49,6 @@ fun UnblockDialog(hideDialog: () -> Unit, unblock: () -> Unit) {
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    
                     Button(
                         onClick = unblock,
                         modifier = Modifier.weight(1f),

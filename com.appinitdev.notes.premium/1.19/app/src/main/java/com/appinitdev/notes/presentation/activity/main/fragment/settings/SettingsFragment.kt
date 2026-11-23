@@ -1,8 +1,5 @@
-
 class SettingsFragment : Fragment() {
-
     private val model: BaseNoteModel by activityViewModels()
-
     private lateinit var importBackupActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var importOtherActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var exportBackupActivityResultLauncher: ActivityResultLauncher<Intent>
@@ -11,9 +8,7 @@ class SettingsFragment : Fragment() {
     private lateinit var disableLockActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var exportSettingsActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var importSettingsActivityResultLauncher: ActivityResultLauncher<Intent>
-
     private lateinit var selectedImportSource: ImportSource
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,7 +26,6 @@ class SettingsFragment : Fragment() {
         setupAbout(binding)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupActivityResultLaunchers()
@@ -50,14 +44,12 @@ class SettingsFragment : Fragment() {
             }
         }
     }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         if (model.showRefreshBackupsFolderAfterThemeChange) {
             outState.putBoolean(EXTRA_SHOW_IMPORT_BACKUPS_FOLDER, true)
         }
     }
-
     private fun setupActivityResultLaunchers() {
         importBackupActivityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -142,13 +134,11 @@ class SettingsFragment : Fragment() {
                 }
             }
     }
-
     private fun importBackup(uri: Uri) {
         when (requireContext().contentResolver.getType(uri)) {
             "text/xml" -> {
                 model.importXmlBackup(uri)
             }
-
             MIME_TYPE_ZIP -> {
                 val layout = DialogTextInputBinding.inflate(layoutInflater, null, false)
                 val password = model.preferences.backupPassword.value
@@ -176,14 +166,12 @@ class SettingsFragment : Fragment() {
             }
         }
     }
-
     private fun NotallyXPreferences.setupAppearance(binding: FragmentSettingsBinding) {
         notesView.observe(viewLifecycleOwner) { value ->
             binding.View.setup(notesView, value, requireContext()) { newValue ->
                 model.savePreference(notesView, newValue)
             }
         }
-
         theme.merge(useDynamicColors).observe(viewLifecycleOwner) {
             (themeValue, useDynamicColorsValue) ->
             binding.Theme.setup(
@@ -207,7 +195,6 @@ class SettingsFragment : Fragment() {
                 Runtime.getRuntime().exit(0)
             }
         }
-
         dateFormat.merge(applyDateFormatInNoteView).observe(viewLifecycleOwner) {
             (dateFormatValue, applyDateFormatInEditNoteValue) ->
             binding.DateFormat.setup(
@@ -221,13 +208,11 @@ class SettingsFragment : Fragment() {
                 model.savePreference(applyDateFormatInNoteView, newApplyDateFormatInEditNote)
             }
         }
-
         textSize.observe(viewLifecycleOwner) { value ->
             binding.TextSize.setup(textSize, value, requireContext()) { newValue ->
                 model.savePreference(textSize, newValue)
             }
         }
-
         notesSorting.observe(viewLifecycleOwner) { notesSort ->
             binding.NotesSortOrder.setup(
                 notesSorting,
@@ -237,18 +222,15 @@ class SettingsFragment : Fragment() {
                 model,
             )
         }
-
         listItemSorting.observe(viewLifecycleOwner) { value ->
             binding.CheckedListItemSorting.setup(listItemSorting, value, requireContext()) {
                 newValue ->
                 model.savePreference(listItemSorting, newValue)
             }
         }
-
         binding.MaxLabels.setup(maxLabels, requireContext()) { newValue ->
             model.savePreference(maxLabels, newValue)
         }
-
         startView.merge(model.labels).observe(viewLifecycleOwner) { (startViewValue, labelsValue) ->
             binding.StartView.setupStartView(
                 startView,
@@ -261,7 +243,6 @@ class SettingsFragment : Fragment() {
             }
         }
     }
-
     private fun NotallyXPreferences.setupContentDensity(binding: FragmentSettingsBinding) {
         binding.apply {
             MaxTitle.setup(maxTitle, requireContext()) { newValue ->
@@ -270,7 +251,6 @@ class SettingsFragment : Fragment() {
             MaxItems.setup(maxItems, requireContext()) { newValue ->
                 model.savePreference(maxItems, newValue)
             }
-
             MaxLines.setup(maxLines, requireContext()) { newValue ->
                 model.savePreference(maxLines, newValue)
             }
@@ -301,7 +281,6 @@ class SettingsFragment : Fragment() {
             }
         }
     }
-
     private fun NotallyXPreferences.setupBackup(binding: FragmentSettingsBinding) {
         binding.apply {
             ImportBackup.setOnClickListener {
@@ -334,7 +313,6 @@ class SettingsFragment : Fragment() {
             R.string.importing_backup,
         )
     }
-
     private fun NotallyXPreferences.setupAutoBackups(binding: FragmentSettingsBinding) {
         backupsFolder.observe(viewLifecycleOwner) { value ->
             binding.BackupsFolder.setupBackupsFolder(
@@ -369,7 +347,6 @@ class SettingsFragment : Fragment() {
             )
         }
     }
-
     private fun importFromOtherApp() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.choose_other_app)
@@ -455,7 +432,6 @@ class SettingsFragment : Fragment() {
             .setCancelButton()
             .show()
     }
-
     private fun setupPeriodicBackup(
         binding: FragmentSettingsBinding,
         value: PeriodicBackup,
@@ -517,7 +493,6 @@ class SettingsFragment : Fragment() {
             model.savePreference(preference, preference.value.copy(maxBackups = newValue))
         }
     }
-
     private fun NotallyXPreferences.setupSecurity(binding: FragmentSettingsBinding) {
         biometricLock.observe(viewLifecycleOwner) { value ->
             binding.BiometricLock.setup(
@@ -530,7 +505,6 @@ class SettingsFragment : Fragment() {
                 ::showBiometricsNotSetupDialog,
             )
         }
-
         backupPassword.observe(viewLifecycleOwner) { value ->
             binding.BackupPassword.setupBackupPassword(
                 backupPassword,
@@ -541,7 +515,6 @@ class SettingsFragment : Fragment() {
                 model.savePreference(backupPassword, newValue)
             }
         }
-
         secureFlag.observe(viewLifecycleOwner) { value ->
             binding.SecureFlag.setup(secureFlag, value, requireContext(), layoutInflater) { newValue
                 ->
@@ -550,7 +523,6 @@ class SettingsFragment : Fragment() {
             }
         }
     }
-
     private fun NotallyXPreferences.setupSettings(binding: FragmentSettingsBinding) {
         binding.apply {
             ImportSettings.setOnClickListener {
@@ -603,7 +575,6 @@ class SettingsFragment : Fragment() {
                 newValue ->
                 model.savePreference(autoSaveAfterIdleTime, newValue)
             }
-
             ClearData.setOnClickListener {
                 MaterialAlertDialogBuilder(requireContext())
                     .setMessage(R.string.clear_data_message)
@@ -614,7 +585,6 @@ class SettingsFragment : Fragment() {
         }
         model.deletionProgress.setupProgressDialog(this@SettingsFragment, R.string.deleting_files)
     }
-
     private fun setupAbout(binding: FragmentSettingsBinding) {
         binding.apply {
             SendFeedback.setOnClickListener {
@@ -633,7 +603,6 @@ class SettingsFragment : Fragment() {
                                 val logs = app.getLastExceptionLog()
                                 reportBug(logs)
                             }
-
                             1 ->
                                 requireContext().catchNoBrowserInstalled {
                                     startActivity(
@@ -724,7 +693,6 @@ class SettingsFragment : Fragment() {
                     .show()
             }
             Donate.setOnClickListener { openLink("") }
-
             try {
                 val pInfo =
                     requireContext().packageManager.getPackageInfo(requireContext().packageName, 0)
@@ -733,14 +701,12 @@ class SettingsFragment : Fragment() {
             } catch (_: PackageManager.NameNotFoundException) {}
         }
     }
-
     private fun displayChooseBackupFolderDialog() {
         showDialog(R.string.auto_backups_folder_hint, R.string.choose_folder) { _, _ ->
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).wrapWithChooser(requireContext())
             chooseBackupFolderActivityResultLauncher.launch(intent)
         }
     }
-
     private fun showEnableBiometricLock() {
         showBiometricOrPinPrompt(
             false,
@@ -759,7 +725,6 @@ class SettingsFragment : Fragment() {
             showBiometricsNotSetupDialog()
         }
     }
-
     private fun showDisableBiometricLock() {
         showBiometricOrPinPrompt(
             true,
@@ -775,7 +740,6 @@ class SettingsFragment : Fragment() {
             },
         ) {}
     }
-
     private fun showBiometricsNotSetupDialog() {
         showDialog(R.string.biometrics_not_setup, R.string.tap_to_set_up) { _, _ ->
             val intent =
@@ -789,13 +753,11 @@ class SettingsFragment : Fragment() {
             setupLockActivityResultLauncher.launch(intent)
         }
     }
-
     private fun openLink(link: String) {
         val uri = Uri.parse(link)
         val intent = Intent(Intent.ACTION_VIEW, uri).wrapWithChooser(requireContext())
         startActivity(intent)
     }
-
     private fun askForUriPermissions(uri: Uri) {
         chooseBackupFolderActivityResultLauncher.launch(
             Intent(ACTION_OPEN_DOCUMENT_TREE).apply {
@@ -805,7 +767,6 @@ class SettingsFragment : Fragment() {
             }
         )
     }
-
     companion object {
         const val EXTRA_SHOW_IMPORT_BACKUPS_FOLDER =
             "notes.intent.extra.SHOW_IMPORT_BACKUPS_FOLDER"

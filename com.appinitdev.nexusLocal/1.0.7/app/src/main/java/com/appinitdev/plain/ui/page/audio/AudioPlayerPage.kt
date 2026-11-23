@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AudioPlayerPage(audioPlaylistVM: AudioPlaylistViewModel, onDismissRequest: () -> Unit) {
@@ -16,7 +15,6 @@ fun AudioPlayerPage(audioPlaylistVM: AudioPlaylistViewModel, onDismissRequest: (
     var isDragging by remember { mutableStateOf(false) }
     var isTimerActive by remember { mutableStateOf(false) }
     val currentPlayingPath = audioPlaylistVM.selectedPath
-
     LaunchedEffect(currentPlayingPath.value) {
         scope.launch {
             val path = currentPlayingPath.value
@@ -29,15 +27,12 @@ fun AudioPlayerPage(audioPlaylistVM: AudioPlaylistViewModel, onDismissRequest: (
             isTimerActive = TempData.audioSleepTimerFutureTime > SystemClock.elapsedRealtime()
         }
     }
-
     LaunchedEffect(isPlaying, isDragging) {
         if (isPlaying && !isDragging) { while (true) { progress = AudioPlayer.playerProgress / 1000f; delay(1000) } }
     }
-
     LaunchedEffect(Unit) {
         while (true) { isTimerActive = TempData.audioSleepTimerFutureTime > SystemClock.elapsedRealtime(); delay(1000) }
     }
-
     PModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Column(modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp)) {
             Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp, vertical = 32.dp).height(280.dp), contentAlignment = Alignment.Center) {
@@ -63,7 +58,6 @@ fun AudioPlayerPage(audioPlaylistVM: AudioPlaylistViewModel, onDismissRequest: (
             )
         }
     }
-
     if (showSleepTimer) {
         SleepTimerPage(onDismissRequest = { showSleepTimer = false; isTimerActive = TempData.audioSleepTimerFutureTime > SystemClock.elapsedRealtime() })
     }

@@ -1,4 +1,3 @@
-
 fun Activity.showColorSelectDialog(
     colors: List<String>,
     currentColor: String?,
@@ -32,7 +31,6 @@ fun Activity.showColorSelectDialog(
                         )
                     } else callback(selectedColor, null)
                 }
-
                 override fun onLongClick(position: Int) {
                     val oldColor = actualColors[position]
                     if (oldColor == BaseNote.COLOR_DEFAULT || oldColor == BaseNote.COLOR_NEW) {
@@ -58,7 +56,6 @@ fun Activity.showColorSelectDialog(
         dialog.show()
     }
 }
-
 private fun Activity.showEditColorDialog(
     colors: List<String>,
     oldColor: String?,
@@ -94,7 +91,6 @@ private fun Activity.showEditColorDialog(
                 }
             }
             Restore.setOnClickListener { ColorPicker.selectByHsvColor(selectedColor) }
-
             ExistingColors.apply {
                 val existingColors = Color.allColorStrings()
                 val colorAdapter =
@@ -107,7 +103,6 @@ private fun Activity.showEditColorDialog(
                                     this@showEditColorDialog.extractColor(existingColors[position])
                                 )
                             }
-
                             override fun onLongClick(position: Int) {}
                         },
                     )
@@ -169,7 +164,6 @@ private fun Activity.showEditColorDialog(
         )
     }
 }
-
 private fun Activity.showDeleteColorDialog(
     colors: List<String>,
     oldColor: String,
@@ -201,7 +195,6 @@ private fun Activity.showDeleteColorDialog(
                     val selectedColor = selectableColors[position]
                     deleteCallback(oldColor, selectedColor)
                 }
-
                 override fun onLongClick(position: Int) {}
             },
         )
@@ -219,9 +212,7 @@ private fun Activity.showDeleteColorDialog(
         dialog.show()
     }
 }
-
 private fun ColorEnvelope.toColorString(): ColorString {
     return "#${hexCode.argbToRgbString()}"
 }
-
 private fun ColorString.argbToRgbString(): ColorString = substring(2)

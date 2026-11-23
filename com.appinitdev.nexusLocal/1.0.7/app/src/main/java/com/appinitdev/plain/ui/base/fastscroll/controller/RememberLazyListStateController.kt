@@ -1,4 +1,3 @@
-
 @Composable
 internal fun rememberLazyListStateController(
     state: LazyListState,
@@ -13,13 +12,11 @@ internal fun rememberLazyListStateController(
     val reverseLayout = remember { derivedStateOf { state.layoutInfo.reverseLayout } }
     val isSelected = remember { mutableStateOf(false) }
     val dragOffset = remember { mutableFloatStateOf(0f) }
-
     val realFirstVisibleItem = remember {
         derivedStateOf {
             state.layoutInfo.visibleItemsInfo.firstOrNull { it.index == state.firstVisibleItemIndex }
         }
     }
-
     val isStickyHeaderInAction = remember {
         derivedStateOf {
             val realIndex = realFirstVisibleItem.value?.index ?: return@derivedStateOf false
@@ -27,13 +24,10 @@ internal fun rememberLazyListStateController(
             realIndex != firstVisibleIndex
         }
     }
-
     fun LazyListItemInfo.fractionHiddenTop(firstItemOffset: Int) =
         if (size == 0) 0f else firstItemOffset / size.toFloat()
-
     fun LazyListItemInfo.fractionVisibleBottom(viewportEndOffset: Int) =
         if (size == 0) 0f else (viewportEndOffset - offset).toFloat() / size.toFloat()
-
     val thumbSizeNormalizedReal = remember {
         derivedStateOf {
             state.layoutInfo.let {
@@ -47,11 +41,9 @@ internal fun rememberLazyListStateController(
             }
         }
     }
-
     val thumbSizeNormalized = remember {
         derivedStateOf { thumbSizeNormalizedReal.value.coerceAtLeast(thumbMinLengthUpdated.value) }
     }
-
     fun offsetCorrection(top: Float): Float {
         val topRealMax = (1f - thumbSizeNormalizedReal.value).coerceIn(0f, 1f)
         if (thumbSizeNormalizedReal.value >= thumbMinLengthUpdated.value) {
@@ -60,7 +52,6 @@ internal fun rememberLazyListStateController(
         val topMax = 1f - thumbMinLengthUpdated.value
         return when { reverseLayout.value -> (topRealMax - top) * topMax / topRealMax; else -> top * topMax / topRealMax }
     }
-
     val thumbOffsetNormalized = remember {
         derivedStateOf {
             state.layoutInfo.let {
@@ -71,11 +62,9 @@ internal fun rememberLazyListStateController(
             }
         }
     }
-
     val thumbIsInAction = remember {
         derivedStateOf { state.isScrollInProgress || isSelected.value || alwaysShowScrollBarUpdated.value }
     }
-
     return remember {
         LazyListStateController(
             thumbSizeNormalized = thumbSizeNormalized, thumbSizeNormalizedReal = thumbSizeNormalizedReal,

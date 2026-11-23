@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WebDevPage(
@@ -9,7 +8,6 @@ fun WebDevPage(
         val scope = rememberCoroutineScope()
         val adbToken = LocalAdbToken.current
         val packageId = BuildConfig.APPLICATION_ID
-
         PScaffold(
             topBar = {
                 PTopAppBar(

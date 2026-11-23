@@ -1,8 +1,6 @@
-
 object ImageMediaStoreHelper : BaseMediaContentHelper() {
     override val uriExternal: Uri = if (isQPlus()) MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL) else MediaStore.Images.Media.EXTERNAL_CONTENT_URI
     override val mediaType: MediaType = MediaType.IMAGE
-
     override fun getProjection(): Array<String> {
         val projection = mutableListOf(
             MediaStore.Images.Media._ID,
@@ -22,7 +20,6 @@ object ImageMediaStoreHelper : BaseMediaContentHelper() {
         }
         return projection.toTypedArray()
     }
-
     override fun buildBaseWhere(filterFields: List<FilterField>): ContentWhere {
         val where = ContentWhere()
         filterFields.forEach {
@@ -43,7 +40,6 @@ object ImageMediaStoreHelper : BaseMediaContentHelper() {
         }
         return where
     }
-
     suspend fun searchAsync(
         context: Context,
         query: String,
@@ -68,7 +64,6 @@ object ImageMediaStoreHelper : BaseMediaContentHelper() {
             DImage(id, title, path, size, width, height, rotation, bucketId, createdAt, updatedAt, takenAt, isFavorite)
         } ?: emptyList()
     }
-
     suspend fun getTagRelationStubsAsync(
         context: Context,
         query: String,

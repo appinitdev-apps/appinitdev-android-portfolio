@@ -1,17 +1,10 @@
-
- 
-
-
 object HttpServerStartHelper {
-
     suspend fun startServer(service: HttpServerService, onStateChanged: (HttpServerState) -> Unit) {
         LogCat.d("startHttpServer")
         onStateChanged(HttpServerState.STARTING)
         sendEvent(HttpServerStateChangedEvent(HttpServerState.STARTING))
-
         HttpServerManager.portsInUse.clear()
         HttpServerManager.httpServerError = ""
-
         HttpServerManager.stopPreviousServer()
         if (PortHelper.isPortInUse(TempData.httpPort.value) || PortHelper.isPortInUse(TempData.httpsPort.value)) {
             LogCat.d("Ports still in use after stopping previous server, waiting...")
@@ -20,7 +13,6 @@ object HttpServerStartHelper {
         } else {
             attemptServerStart(2)
         }
-
         if (HttpServerManager.server != null) {
             PeerStatusManager.start()
         }
@@ -31,7 +23,6 @@ object HttpServerStartHelper {
             handleFailure(service, onStateChanged)
         }
     }
-
     private suspend fun attemptServerStart(maxRetries: Int) {
         for (attempt in 1..maxRetries) {
             var newServer: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? = null
@@ -41,8 +32,6 @@ object HttpServerStartHelper {
                 HttpServerManager.server = newServer
                 break
             } catch (ex: Exception) {
-                
-                
                 try { newServer?.stop(0, 0) } catch (_: Exception) {}
                 LogCat.e(ex, "Server start attempt $attempt/$maxRetries failed: ${ex.message}")
                 if (ex is java.net.BindException || ex.cause is java.net.BindException) {
@@ -58,7 +47,6 @@ object HttpServerStartHelper {
             }
         }
     }
-
     private suspend fun handleSuccess(
         service: HttpServerService, onStateChanged: (HttpServerState) -> Unit,
     ) {
@@ -69,19 +57,12 @@ object HttpServerStartHelper {
         sendEvent(HttpServerStateChangedEvent(HttpServerState.ON))
         PNotificationListenerService.toggle(service, Permission.NOTIFICATION_LISTENER.isEnabledAsync(service))
     }
-
     private fun handleFailure(
         service: HttpServerService, onStateChanged: (HttpServerState) -> Unit,
     ) {
         val serverWasRunning = HttpServerManager.server != null
-
-        
-        
-        
         HttpServerManager.stopPreviousServer()
-
         if (!serverWasRunning) {
-            
             if (PortHelper.isPortInUse(TempData.httpPort.value)) HttpServerManager.portsInUse.add(TempData.httpPort.value)
             if (PortHelper.isPortInUse(TempData.httpsPort.value)) HttpServerManager.portsInUse.add(TempData.httpsPort.value)
         }

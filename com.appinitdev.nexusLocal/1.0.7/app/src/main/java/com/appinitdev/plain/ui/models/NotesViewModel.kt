@@ -1,4 +1,3 @@
-
 @OptIn(androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi::class)
 class NotesViewModel(private val savedStateHandle: SavedStateHandle) : ISearchableViewModel<DNote>, ISelectableViewModel<DNote>, ViewModel() {
     private val _itemsFlow = MutableStateFlow(mutableStateListOf<DNote>())
@@ -14,14 +13,11 @@ class NotesViewModel(private val savedStateHandle: SavedStateHandle) : ISearchab
     val dataType = DataType.NOTE
     var selectedItem = mutableStateOf<DNote?>(null)
     val showTagsDialog = mutableStateOf(false)
-
     override val showSearchBar = mutableStateOf(false)
     override val searchActive = mutableStateOf(false)
     override val queryText = mutableStateOf("")
-
     override var selectMode = mutableStateOf(false)
     override val selectedIds = mutableStateListOf<String>()
-
     suspend fun moreAsync(tagsVM: TagsViewModel) {
         offset.value += limit.intValue
         val items = NoteHelper.search(getQuery(), limit.intValue, offset.intValue)
@@ -34,7 +30,6 @@ class NotesViewModel(private val savedStateHandle: SavedStateHandle) : ISearchab
         showLoading.value = false
         noMore.value = items.size < limit.intValue
     }
-
     suspend fun loadAsync(tagsVM: TagsViewModel) {
         offset.intValue = 0
         val query = getQuery()
@@ -45,7 +40,6 @@ class NotesViewModel(private val savedStateHandle: SavedStateHandle) : ISearchab
         noMore.value = _itemsFlow.value.size < limit.intValue
         showLoading.value = false
     }
-
     fun trash(tagsVM: TagsViewModel, ids: Set<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             TagHelper.deleteTagRelationByKeys(
@@ -56,7 +50,6 @@ class NotesViewModel(private val savedStateHandle: SavedStateHandle) : ISearchab
             loadAsync(tagsVM)
         }
     }
-
     fun updateItem(item: DNote) {
         _itemsFlow.update {
             val mutableList = it.toMutableStateList()
@@ -70,7 +63,6 @@ class NotesViewModel(private val savedStateHandle: SavedStateHandle) : ISearchab
             mutableList
         }
     }
-
     fun restore(tagsVM: TagsViewModel, ids: Set<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             TagHelper.deleteTagRelationByKeys(
@@ -81,7 +73,6 @@ class NotesViewModel(private val savedStateHandle: SavedStateHandle) : ISearchab
             loadAsync(tagsVM)
         }
     }
-
     fun delete(tagsVM: TagsViewModel, ids: Set<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             TagHelper.deleteTagRelationByKeys(
@@ -92,15 +83,12 @@ class NotesViewModel(private val savedStateHandle: SavedStateHandle) : ISearchab
             loadAsync(tagsVM)
         }
     }
-
     private fun getTotalQuery(): String {
         return "${queryText.value} trash:false"
     }
-
     private fun getTrashQuery(): String {
         return "${queryText.value} trash:true"
     }
-
     private fun getQuery(): String {
         var query = "${queryText.value} trash:${trash.value}"
         if (tag.value != null) {
@@ -108,8 +96,6 @@ class NotesViewModel(private val savedStateHandle: SavedStateHandle) : ISearchab
             val ids = TagHelper.getKeysByTagId(tagId)
             query += " ids:${ids.joinToString(",")}"
         }
-
         return query
     }
-
 }

@@ -1,21 +1,3 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LabelsScreen(
@@ -30,16 +12,13 @@ fun LabelsScreen(
     val labels = uiState.unarchivedLabels
     val activeLabelName = uiState.activeLabelName
     val defaultLabelName = stringResource(id = R.string.labels_default_label_name)
-
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
     var labelToDelete by remember { mutableStateOf("") }
-
     val listState = rememberLazyListState()
     val dragDropState =
         rememberDragDropState(listState) { fromIndex, toIndex ->
             viewModel.rearrangeLabel(fromIndex, toIndex)
         }
-
     val activeLabelIndex = labels.indexOfFirst { it.name == activeLabelName }
     if (labels.isNotEmpty()) {
         LaunchedEffect(Unit) {
@@ -50,9 +29,7 @@ fun LabelsScreen(
             }
         }
     }
-
     val showFab = listState.isScrollingUp()
-
     Scaffold(
         topBar = {
             TopBar(
@@ -142,7 +119,6 @@ fun LabelsScreen(
                     )
                 }
             }
-
             LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxSize(),
@@ -193,7 +169,6 @@ fun LabelsScreen(
         }
     }
 }
-
 @Composable
 private fun LazyListState.isScrollingUp(): Boolean {
     var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }

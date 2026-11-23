@@ -1,6 +1,4 @@
-
 object DlnaTransportController {
-
     suspend fun setAVTransportURIAsync(device: DlnaDevice, url: String, title: String = "", albumArtUri: String = ""): String {
         LogCat.e(url)
         val meta = if (title.isNotEmpty()) buildDidlLiteMetadata(url, title, albumArtUri) else ""
@@ -9,7 +7,6 @@ object DlnaTransportController {
             "<InstanceID>0</InstanceID><CurrentURI>$url</CurrentURI><CurrentURIMetaData>$meta</CurrentURIMetaData>",
         )
     }
-
     private fun buildDidlLiteMetadata(mediaUrl: String, title: String, albumArtUri: String): String {
         val ext = mediaUrl.substringAfterLast('.').substringBefore('?').lowercase()
         val upnpClass = when {
@@ -22,16 +19,12 @@ object DlnaTransportController {
         val didl = """<DIDL-Lite xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"><item id="0" parentID="-1" restricted="0"><dc:title>$escapedTitle</dc:title><upnp:class>$upnpClass</upnp:class>$albumArtTag</item></DIDL-Lite>"""
         return didl.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
     }
-
     suspend fun stopAVTransportAsync(device: DlnaDevice): String =
         executeAVTransportCommand(device, "Stop")
-
     suspend fun playAVTransportAsync(device: DlnaDevice): String =
         executeAVTransportCommand(device, "Play", "<InstanceID>0</InstanceID><Speed>1</Speed>")
-
     suspend fun pauseAVTransportAsync(device: DlnaDevice): String =
         executeAVTransportCommand(device, "Pause")
-
     suspend fun getTransportInfoAsync(device: DlnaDevice): DlnaTransportInfoResponse {
         val st = device.getAVTransportService()?.serviceType ?: return DlnaTransportInfoResponse()
         val xml = executeSOAPRequest(
@@ -41,7 +34,6 @@ object DlnaTransportController {
         )
         return if (xml.isNotEmpty()) XmlHelper.parseData(xml) else DlnaTransportInfoResponse()
     }
-
     suspend fun getPositionInfoAsync(device: DlnaDevice): DlnaPositionInfoResponse {
         val st = device.getAVTransportService()?.serviceType ?: return DlnaPositionInfoResponse()
         val xml = executeSOAPRequest(
@@ -50,16 +42,12 @@ object DlnaTransportController {
         )
         return if (xml.isNotEmpty()) XmlHelper.parseData(xml) else DlnaPositionInfoResponse()
     }
-
     suspend fun subscribeEvent(device: DlnaDevice, url: String): String =
         DlnaEventSubscriber.subscribeEvent(device, url)
-
     suspend fun renewEvent(device: DlnaDevice, sid: String): String =
         DlnaEventSubscriber.renewEvent(device, sid)
-
     suspend fun unsubscribeEvent(device: DlnaDevice, sid: String): String =
         DlnaEventSubscriber.unsubscribeEvent(device, sid)
-
     private suspend fun executeSOAPRequest(
         device: DlnaDevice,
         action: String,
@@ -89,7 +77,6 @@ object DlnaTransportController {
             ""
         }
     }
-
     private suspend fun executeAVTransportCommand(
         device: DlnaDevice,
         action: String,

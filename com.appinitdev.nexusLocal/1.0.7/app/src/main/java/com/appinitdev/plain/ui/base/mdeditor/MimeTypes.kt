@@ -1,4 +1,3 @@
-
 object MimeTypes {
     val MIME_TEXT =
         arrayOf(

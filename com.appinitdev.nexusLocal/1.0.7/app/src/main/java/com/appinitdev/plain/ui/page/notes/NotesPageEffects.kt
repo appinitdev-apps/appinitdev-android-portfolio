@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun NotesPageEffects(
@@ -11,11 +10,9 @@ internal fun NotesPageEffects(
         tagsVM.dataType.value = notesVM.dataType
         scope.launch(Dispatchers.IO) { notesVM.loadAsync(tagsVM) }
     }
-
     LaunchedEffect(notesVM.selectMode.value) {
         if (notesVM.selectMode.value) scrollBehavior.reset()
     }
-
     LaunchedEffect(pagerState.currentPage) {
         if (isFirstTime.value) { isFirstTime.value = false; return@LaunchedEffect }
         val tagsState = tagsVM.itemsFlow.value

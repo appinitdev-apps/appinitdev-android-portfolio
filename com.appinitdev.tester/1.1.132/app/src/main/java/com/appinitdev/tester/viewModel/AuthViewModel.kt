@@ -1,123 +1,81 @@
-
-
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
-
     private fun getString(@StringRes resId: Int, vararg formatArgs: Any): String {
         return getApplication<Application>().getString(resId, *formatArgs)
     }
-
     private val repo: AuthRepository = AuthRepository()
-    
     fun isUserLoggedIn(): Boolean {
         return FirebaseAuth.getInstance().currentUser != null
     }
-
     private val _userProfile = MutableStateFlow<UserProfile?>(null)
     val userProfile = _userProfile.asStateFlow()
     private val _fixedAppsIcons = MutableStateFlow<Map<String, String>>(emptyMap())
     val fixedAppsIcons: StateFlow<Map<String, String>> = _fixedAppsIcons.asStateFlow()
-    
     private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
     val uiState = _uiState.asStateFlow()
     private val _userApps = MutableStateFlow<List<AppModel>>(emptyList())
     val userApps = _userApps.asStateFlow()
-
     private val _chatMessages = MutableStateFlow<List<Message>>(emptyList())
     val chatMessages = _chatMessages.asStateFlow()
-
     private val _communityApps = MutableStateFlow<List<AppModel>>(emptyList())
     val communityApps = _communityApps.asStateFlow()
-
-
     private val _currentApp = MutableStateFlow<AppModel?>(null)
     val currentApp = _currentApp.asStateFlow()
-
     private val _globalLinks = MutableStateFlow<List<ComunidadLink>>(emptyList())
     val globalLinks = _globalLinks.asStateFlow()
-
-
     private val _productionApps = MutableStateFlow<List<AppModel>>(emptyList())
     val productionApps = _productionApps.asStateFlow()
-
     private val _allUsers = MutableStateFlow<List<UserProfile>>(emptyList())
     val allUsers = _allUsers.asStateFlow()
-
     private val _isUploading = MutableStateFlow(false)
     val isUploading: StateFlow<Boolean> = _isUploading
-
     private val _isUploadingMessages = MutableStateFlow(false)
     val isUploadingMessages: StateFlow<Boolean> = _isUploadingMessages
-
     private val _isUploadingCommunityApps = MutableStateFlow(false)
     val isUploadingCommunityApps: StateFlow<Boolean> = _isUploadingCommunityApps
-
     private val _notifications = MutableStateFlow<List<UserNotification>>(emptyList())
     val notifications = _notifications.asStateFlow()
-
     private val _feedbackReports14Days = MutableStateFlow<List<com.appinitdev.tester.model.FeedbackReport14Days>>(emptyList())
     val feedbackReports14Days = _feedbackReports14Days.asStateFlow()
-
     private val _bugReports = MutableStateFlow<List<BugReport>>(emptyList())
     val bugReports = _bugReports.asStateFlow()
-
     private val _pointsHistory = MutableStateFlow<List<PointsTransaction>>(emptyList())
     val pointsHistory = _pointsHistory.asStateFlow()
-
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
-
-    
     private lateinit var billingClient: BillingClient
     private val _puntosCompra = MutableStateFlow(0)
-
-
     private val _draftApp = MutableStateFlow(AppDraft())
     val draftApp = _draftApp.asStateFlow()
-
     fun updateDraft(update: AppDraft.() -> AppDraft) {
         _draftApp.value = _draftApp.value.update()
     }
-
     fun clearDraft() {
         _draftApp.value = AppDraft()
     }
-
     private val _featuredApps = MutableStateFlow<List<AppModel>>(emptyList())
     val featuredApps = _featuredApps.asStateFlow()
-
-
-
     private val _productionCount = MutableStateFlow(0)
     val productionCount: StateFlow<Int> = _productionCount
-
     private val _testersCount = MutableStateFlow(0)
     val testersCount: StateFlow<Int> = _testersCount
-
     private val _categoriasApps = MutableStateFlow(com.appinitdev.tester.model.CategoriasApps())
     val categoriasApps = _categoriasApps.asStateFlow()
-
     private val _appsNoInstaladas = MutableStateFlow<List<AppModel>>(emptyList())
     val appsNoInstaladas = _appsNoInstaladas.asStateFlow()
-
     private val _app20DaysPrompt = MutableStateFlow<AppModel?>(null)
     val app20DaysPrompt: StateFlow<AppModel?> = _app20DaysPrompt.asStateFlow()
-
     private val _app28DaysAlert = MutableStateFlow<AppModel?>(null)
     val app28DaysAlert: StateFlow<AppModel?> = _app28DaysAlert.asStateFlow()
-
     private val _dismissed20DaysAppIds = mutableSetOf<String>()
-
     fun dismiss20DaysPrompt(appId: String) {
         _dismissed20DaysAppIds.add(appId)
         if (_app20DaysPrompt.value?.id == appId) {
             _app20DaysPrompt.value = null
         }
     }
-
     fun dismiss28DaysAlert() {
         _app28DaysAlert.value = null
     }
-
     fun markAppAsProductionManual(appId: String) {
         _dismissed20DaysAppIds.add(appId)
         if (_app20DaysPrompt.value?.id == appId) {
@@ -129,7 +87,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-
     fun hideAppManual(appId: String) {
         _dismissed20DaysAppIds.add(appId)
         if (_app20DaysPrompt.value?.id == appId) {
@@ -141,7 +98,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-
     fun keepAppActive20Days(appId: String) {
         _dismissed20DaysAppIds.add(appId)
         if (_app20DaysPrompt.value?.id == appId) {
@@ -153,45 +109,26 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-
     private var observeCategoriasJob: Job? = null
     fun startObservingCategorias(context: android.content.Context) {
         loadCommunityApps(context)
     }
-
     private fun verificarAppsInstaladas(context: android.content.Context, apps: List<AppModel>) {
         val noInstaladas = apps.filter { !com.appinitdev.tester.Funciones.isAppInstalled(context, it.paquete) }
         _appsNoInstaladas.value = noInstaladas
     }
-
-    
-
     fun login(email: String, pass: String) = viewModelScope.launch {
         _uiState.value = AuthUiState.Loading
         val result = repo.login(email, pass)
-
         if (result.isSuccess) {
-
                 val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-
-                
                 val profile = repo.getUserProfile(uid)
-
-                
                 _userProfile.value = profile
-
                 if (profile == null || !profile.perfilCompletado) {
-                    
                     _uiState.value = AuthUiState.NeedsProfile
                 } else {
-                    
                     _uiState.value = AuthUiState.Success
                 }
-
-
-
-
-
             try {
                 registrarTokenFCM()
             } catch (_: Exception) {
@@ -200,27 +137,21 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             _uiState.value = AuthUiState.Error(result.exceptionOrNull()?.message)
         }
     }
-
     fun register(email: String, pass: String) = viewModelScope.launch {
         _uiState.value = AuthUiState.Loading
         val result = repo.register(email, pass)
-        
         _uiState.value =
             if (result.isSuccess) AuthUiState.RegisterSuccess else AuthUiState.Error(result.exceptionOrNull()?.message)
     }
-
     fun clearState() {
         _uiState.value = AuthUiState.Idle
     }
-
     fun resetPassword(email: String) = viewModelScope.launch {
         _uiState.value = AuthUiState.Loading
         val result = repo.resetPassword(email)
         _uiState.value =
             if (result.isSuccess) AuthUiState.Success else AuthUiState.Error(result.exceptionOrNull()?.message)
     }
-
-
     fun fetchUserProfile() = viewModelScope.launch {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return@launch
         try {
@@ -230,13 +161,10 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 recalcularYActualizarReputacion(profile)
             }
             checkAndAwardAchievements()
-            
-            
         } catch (e: Exception) {
             Log.e("AuthViewModel", "Error al cargar perfil: ${e.message}")
         }
     }
-
     private suspend fun recalcularYActualizarReputacion(perfil: UserProfile) {
         val maxAppsPosibles = DevAppsConfig.developerApps.size.toDouble()
         val scoreNivel = (perfil.nivel / maxAppsPosibles).coerceAtMost(1.0) * 5.0 * 0.30
@@ -245,30 +173,22 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         val numVotos = perfil.calificaciones.size
         val confianza = (numVotos.toDouble() / (numVotos + 5)).coerceIn(0.0, 1.0)
         val scoreEstrellas = ((perfil.promedioEstrellas * confianza) + (3.0 * (1.0 - confianza))) * 0.45
-
         val nuevaReputacion = (scoreNivel + scorePuntos + scoreEstrellas + perfil.puntosExtra).coerceIn(1.0, 5.0)
-
         repo.updateAllUserAppsReputation(perfil.uid, nuevaReputacion, perfil.fcmToken)
         _userApps.update { apps -> apps.map { it.copy(reputacion = nuevaReputacion) } }
     }
-
     fun checkAndAwardAchievements() {
         val profile = _userProfile.value ?: return
         val currentAchievements = profile.achievements.toMutableList()
         var changed = false
-
-        
         if (profile.perfilCompletado && !currentAchievements.contains("tester_pioneer")) {
             currentAchievements.add("tester_pioneer")
             changed = true
         }
-
-        
         if (profile.streaks >= 3 && !currentAchievements.contains("streak_fire")) {
             currentAchievements.add("streak_fire")
             changed = true
         }
-
         if (changed) {
             viewModelScope.launch {
                 repo.updateUserProfile(profile.uid, mapOf("achievements" to currentAchievements))
@@ -276,8 +196,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-
-    
     fun saveProfile(profile: UserProfile, onSuccess: () -> Unit) {
         viewModelScope.launch {
             _uiState.value = AuthUiState.Loading
@@ -291,10 +209,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-
     private val _isVerifyingOcr = MutableStateFlow(false)
     val isVerifyingOcr = _isVerifyingOcr.asStateFlow()
-
     fun verificarResenaConOcr(context: Context, uri: Uri, appName: String, onResult: (Boolean, String?) -> Unit) {
         viewModelScope.launch {
             _isVerifyingOcr.value = true
@@ -307,10 +223,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-
-
-
-
     private var productionAppsJob: Job? = null
     fun loadProductionApps() {
         if (productionAppsJob?.isActive == true) return
@@ -320,42 +232,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private var userAppsJob: Job? = null
     fun loadAndVerifyApps() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
@@ -365,7 +241,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 repo.getUserAppsRealtime(uid).collect { apps ->
                     _userApps.value = apps
                     val now = System.currentTimeMillis()
-
                     apps.forEach { app ->
                         if (app.status == "test") {
                             launch {
@@ -390,15 +265,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                                 }
                             }
                         }
-                         
-
-
-
-
-
-
-
-
                     }
                 }
             } catch (e: Exception) {
@@ -406,16 +272,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-
-
     fun isDebuggable(context: Context): Boolean {
         return (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
     }
-
-
     var errorMessage by mutableStateOf<String?>(null)
         private set
-
     fun registerNewApp(
         nombre: String, 
         paquete: String, 
@@ -437,9 +298,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val profile = _userProfile.value
         val appId = java.util.UUID.randomUUID().toString()
-
         _uiState.value = AuthUiState.Loading
-
         fun guardarEnFirestore(iconoUrl: String?) {
             val newApp = AppModel(
                 id = appId,
@@ -466,7 +325,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 fechaCreacion = System.currentTimeMillis(),
                 fechaActualizacion = System.currentTimeMillis()
             )
-
             viewModelScope.launch {
                 repo.createApp(newApp).onSuccess {
                     loadAndVerifyApps()
@@ -477,7 +335,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
         }
-
         if (iconoUri != null) {
             val storageRef = com.google.firebase.storage.FirebaseStorage.getInstance().reference
                 .child("app_icons/$appId.jpg")
@@ -496,7 +353,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             guardarEnFirestore(null)
         }
     }
-
     private fun notifyDevelopersWithAppsInTest(newApp: AppModel, creatorName: String) {
         viewModelScope.launch {
             try {
@@ -505,18 +361,14 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     .whereEqualTo("status", "test")
                     .get()
                     .await()
-
                 val activeApps = snapshot.toObjects(AppModel::class.java)
                 val ownerIds = activeApps
                     .map { it.idPropietario }
                     .filter { it.isNotBlank() && it != newApp.idPropietario }
                     .distinct()
-
                 Log.d("notifyDevs", "Notificando a ${ownerIds.size} desarrolladores con apps activas en test sobre ${newApp.nombre}")
-
                 val title = getString(R.string.notificacion_nueva_app_titulo)
                 val body = getString(R.string.notificacion_nueva_app_msg_formato, creatorName, newApp.nombre)
-
                 ownerIds.forEach { ownerId ->
                     sendInAppAndPushNotification(
                         targetUserId = ownerId,
@@ -531,7 +383,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-
     fun updateAppFullInfo(
         appId: String,
         nombre: String,
@@ -553,7 +404,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         iconoActual: String? = null
     ) {
         _uiState.value = AuthUiState.Loading
-
         fun actualizarEnFirestore(iconoUrl: String?) {
             viewModelScope.launch {
                 val updateMap = mutableMapOf<String, Any?>(
@@ -577,14 +427,12 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 if (iconoUrl != null) {
                     updateMap["icono"] = iconoUrl
                 }
-
                 repo.updateApp(appId, updateMap.filterValues { it != null }.mapValues { it.value!! }).onSuccess {
                     _uiState.value = AuthUiState.AppActionSuccess
                     loadAndVerifyApps()
                 }
             }
         }
-
         if (iconoUri != null) {
             val storageRef = com.google.firebase.storage.FirebaseStorage.getInstance().reference
                 .child("app_icons/$appId.jpg")
@@ -603,149 +451,22 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             actualizarEnFirestore(iconoActual)
         }
     }
-
-     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-     
-
-
-
-
     fun debugCheckTestAppsMovedToProductionToday(context: Context) {
         if (!com.appinitdev.tester.BuildConfig.DEBUG) return
-
         val prefs = context.getSharedPreferences("debug_prefs", Context.MODE_PRIVATE)
         val lastCheck = prefs.getLong("last_debug_test_to_prod_check", 0L)
         val calLast = Calendar.getInstance().apply { timeInMillis = lastCheck }
         val calNow = Calendar.getInstance()
-
         val isToday = lastCheck != 0L &&
                 calLast.get(Calendar.YEAR) == calNow.get(Calendar.YEAR) &&
                 calLast.get(Calendar.DAY_OF_YEAR) == calNow.get(Calendar.DAY_OF_YEAR)
-
         if (isToday) return
-
         prefs.edit().putLong("last_debug_test_to_prod_check", System.currentTimeMillis()).apply()
-
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 Log.d("DebugProdCheck", "Iniciando verificación debug (1 vez al día) de apps en 'test' para pasar a 'producción'...")
                 val apps = repo.getAllApps()
                 var movidasCount = 0
-
                 apps.filter { it.status == "test" && it.paquete.isNotBlank() }.forEach { app ->
                     val isNowInProd = repo.checkIfAppInProduction(app.paquete)
                     if (isNowInProd) {
@@ -761,7 +482,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-
     fun resetApp(appId: String) {
         viewModelScope.launch {
             val now = System.currentTimeMillis()
@@ -778,7 +498,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-
     fun deleteApp(appId: String) {
         viewModelScope.launch {
             repo.deleteApp(appId).onSuccess {
@@ -787,43 +506,28 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-
-
-    
     var isCheckingPackage by mutableStateOf(false)
         private set
-
     var packageExists by mutableStateOf(false)
         private set
-
     fun verifyPackageRealtime(paquete: String) {
-        
         if (paquete.length < 5 || !paquete.contains(".")) {
             packageExists = false
             return
         }
-
         viewModelScope.launch {
             isCheckingPackage = true
-            
             packageExists = repo.checkIfPackageExists(paquete)
             isCheckingPackage = false
         }
     }
-
-    
     fun clearPackageCheck() {
         packageExists = false
         isCheckingPackage = false
     }
-
     fun toggleAppStatus(app: AppModel) {
-        
         if (app.status == "produccion") return
-
-        
         val newStatus = if (app.status == "test") "oculta" else "test"
-
         viewModelScope.launch {
             val result = repo.updateAppStatus(app.id, newStatus)
             if (result.isSuccess) {
@@ -831,7 +535,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-
     fun updateAppStatus(appId: String, newStatus: String) {
         viewModelScope.launch {
             repo.updateAppStatus(appId, newStatus).onSuccess {
@@ -842,39 +545,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     fun prepareForEdit(paqueteOriginal: String) {
         packageExists = false
         isCheckingPackage = false
-        
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 suspend fun getUserFcmToken(userId: String): String? {
     if (userId.isBlank()) return null
     return try {
@@ -895,14 +566,11 @@ suspend fun getUserFcmToken(userId: String): String? {
         null
     }
 }
-
 fun requestJoinApp(app: AppModel, context: Context) {
     val user = FirebaseAuth.getInstance().currentUser ?: return
     val profile = _userProfile.value ?: return
-
     val isGoogleGroup = app.metodoTest == "google_group" || app.urlGoogleGroup.isNotBlank()
     val initialStatus = if (isGoogleGroup) "Aceptado" else "Solicitud"
-
     val newTester = TesterData(
         idUser = user.uid,
         correoUser = profile.contacto.ifBlank { user.email ?: "" },
@@ -910,14 +578,10 @@ fun requestJoinApp(app: AppModel, context: Context) {
         validado = initialStatus,
         fcmToken = profile.fcmToken
     )
-
-    
     actualizarAppLocalmente(app.id, newTester)
-
     viewModelScope.launch {
         try {
             val targetToken = getUserFcmToken(app.idPropietario)
-
             if (!targetToken.isNullOrBlank()) {
                 val titulo = context.getString(R.string.nuevo_tester)
                 val cuerpo = if (isGoogleGroup) {
@@ -932,24 +596,18 @@ fun requestJoinApp(app: AppModel, context: Context) {
         } catch (e: Exception) {
             Log.e("requestJoinApp", "Error enviando notificación: ${e.message}")
         }
-
-        
         repo.applyAsTester(app.id, newTester).onFailure {
             loadCommunityApps()
         }
     }
 }
-
 fun leaveAppAsTester(app: AppModel, context: Context) {
     val user = FirebaseAuth.getInstance().currentUser ?: return
     val userId = user.uid
-
     removerTesterLocalmente(app.id, userId)
-
     viewModelScope.launch {
         try {
             val targetToken = getUserFcmToken(app.idPropietario)
-
             if (!targetToken.isNullOrBlank()) {
                 val profile = _userProfile.value
                 val devName = profile?.devName ?: "Un tester"
@@ -962,13 +620,11 @@ fun leaveAppAsTester(app: AppModel, context: Context) {
         } catch (e: Exception) {
             Log.e("leaveAppAsTester", "Error enviando notificación: ${e.message}")
         }
-
         repo.leaveAppAsTester(app.id, userId).onFailure {
             loadCommunityApps()
         }
     }
 }
-
 private fun removerTesterLocalmente(appId: String, testerId: String) {
     _communityApps.update { listaActual ->
         listaActual.map { app ->
@@ -987,7 +643,6 @@ private fun removerTesterLocalmente(appId: String, testerId: String) {
             }
         }
     }
-
     _userApps.update { listaActual ->
         listaActual.map { app ->
             if (app.id == appId) {
@@ -1005,11 +660,9 @@ private fun removerTesterLocalmente(appId: String, testerId: String) {
             }
         }
     }
-
     val uid = FirebaseAuth.getInstance().currentUser?.uid
     _categoriasApps.value = com.appinitdev.tester.Funciones.clasificarApps(_communityApps.value, uid)
 }
-
 fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: Context) {
     val status = if (accept) "Aceptado" else "Rechazado"
     val mensajeNotificacion = if (accept) {
@@ -1017,17 +670,13 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
     } else {
         "${app.nombre} " + context.getString(R.string.ha_rechazado_tu_solicitud)
     }
-
-    
     val currentTester = app.testers[testerId]
     if (currentTester != null) {
         actualizarAppLocalmente(app.id, currentTester.copy(validado = status))
     }
-
     viewModelScope.launch {
         try {
             val targetToken = getUserFcmToken(testerId)
-
             if (!targetToken.isNullOrBlank()) {
                 sendNotification(
                     app.nombre,
@@ -1043,31 +692,23 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         } catch (e: Exception) {
             Log.e("responseToTester", "Error enviando notificación a tester: ${e.message}")
         }
-
         repo.updateTesterStatus(app.id, testerId, status).onSuccess {
             loadAndVerifyApps()
             loadCommunityApps()
         }
     }
 }
-
     private var chatJob: Job? = null
-
     fun listenToMessages(appId: String) {
         stopListeningToMessages()
-
         chatJob = viewModelScope.launch {
             _isUploadingMessages.value = true
-
-            
             val timeoutJob = launch {
                 delay(8000)
                 _isUploadingMessages.value = false
             }
-
             try {
                 _chatMessages.value = emptyList()
-
                 repo.getMessages(appId).collect { mensajes ->
                     timeoutJob.cancel()
                     _chatMessages.value = mensajes
@@ -1078,37 +719,12 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
     fun stopListeningToMessages() {
         chatJob?.cancel()
         chatJob = null
         _chatMessages.value = emptyList()
         _isUploadingMessages.value = false
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     fun sendMessage(app: AppModel, text: String) {
         val user = FirebaseAuth.getInstance().currentUser ?: return
         val profile = _userProfile.value
@@ -1123,7 +739,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         )
         viewModelScope.launch {
             repo.sendMessage(app.id, msg)
-
             if (user.uid != app.idPropietario) {
                 try {
                     val targetToken = getUserFcmToken(app.idPropietario)
@@ -1145,8 +760,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
-
     private var communityAppsJob: Job? = null
     fun loadCommunityApps(context: android.content.Context? = null) {
         if (communityAppsJob?.isActive == true) return
@@ -1156,19 +769,15 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
             try {
                 val uid = FirebaseAuth.getInstance().currentUser?.uid
-                
                 val timeoutJob = launch {
                     delay(3000)
                     _isUploadingCommunityApps.value = false
                 }
-
                 repo.getAllTestAppsRealtime().collect { (apps, isFromCache) ->
                     _communityApps.value = apps
                     val categorizadas = com.appinitdev.tester.Funciones.clasificarApps(apps, uid)
                     _categoriasApps.value = categorizadas
                     context?.let { verificarAppsInstaladas(it, categorizadas.aceptadas) }
-
-                    
                     if (!isFromCache || apps.isNotEmpty()) {
                         timeoutJob.cancel()
                         _isUploadingCommunityApps.value = false
@@ -1180,11 +789,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
-
-
     private fun actualizarAppLocalmente(appId: String, newTester: TesterData) {
-        
         _communityApps.update { listaActual ->
             listaActual.map { app ->
                 if (app.id == appId) {
@@ -1196,7 +801,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                 }
             }
         }
-
         _userApps.update { listaActual ->
             listaActual.map { app ->
                 if (app.id == appId) {
@@ -1208,25 +812,12 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                 }
             }
         }
-
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         _categoriasApps.value = com.appinitdev.tester.Funciones.clasificarApps(_communityApps.value, uid)
     }
-
-
-
-
     suspend fun getProfileById(userId: String): UserProfile? {
         return repo.getUserProfileById(userId)
     }
-
-    
-
-     
-
-
-
-
     fun rateTester(testerId: String, rating: Int) {
         viewModelScope.launch {
             val result = repo.rateTester(testerId, rating)
@@ -1241,65 +832,46 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         val diff = end - start
         return diff / (24 * 60 * 60 * 1000) 
     }
-
     suspend fun verificarAppsDiarias(context: Context) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-
         viewModelScope.launch {
             val perfil = repo.getUserProfile(userId) ?: return@launch
             val maxAppsPosibles = DevAppsConfig.developerApps.size.toDouble()
-
-            
             val scoreNivel = (perfil.nivel / maxAppsPosibles).coerceAtMost(1.0) * 5.0 * 0.30
-
-            
             val scorePuntos = (Math.log10(perfil.puntos.toDouble() + 1.0) / Math.log10(501.0))
                 .coerceAtMost(1.0) * 5.0 * 0.25
-
-            
             val numVotos = perfil.calificaciones.size
             val confianza = (numVotos.toDouble() / (numVotos + 5)).coerceIn(0.0, 1.0)
             val scoreEstrellas = ((perfil.promedioEstrellas * confianza) + (3.0 * (1.0 - confianza))) * 0.45
-
             val nuevaReputacion = (scoreNivel + scorePuntos + scoreEstrellas + perfil.puntosExtra).coerceIn(1.0, 5.0)
-            
             repo.updateAllUserAppsReputation(userId, nuevaReputacion, perfil.fcmToken)
             _userApps.value = _userApps.value.map { it.copy(reputacion = nuevaReputacion) }
         }
-
         val apps = repo.getAppsWhereIMTesterValidated()
         if (apps.isEmpty()) return
-
         val hoy = startOfToday()
-
         apps.forEach { app ->
             val tester = app.testers[userId] ?: return@forEach
             if (tester.validado != "Aceptado") return@forEach
-
             val yaCompleto = tester.completado
             val instalada = isAppInstalled(context, app.paquete)
             val ultimaRev = tester.ultimaRevision
             val diasPasados = if (ultimaRev == 0L) 1L else daysBetween(ultimaRev, hoy)
-
             val nuevosDias = when {
                 yaCompleto -> 14
                 !instalada -> 0
                 diasPasados <= 0L -> tester.dias
                 else -> (tester.dias + diasPasados.toInt()).coerceAtMost(14)
             }
-
             val acabaDeTerminar = !yaCompleto && nuevosDias >= 14
             val ganaPuntosProgreso = !yaCompleto && instalada && diasPasados > 0 && nuevosDias < 14
-
             val actualizaciones = mutableMapOf<String, Any>(
                 "testers.$userId.dias" to nuevosDias,
                 "testers.$userId.ultimaRevision" to hoy
             )
-
             if (acabaDeTerminar) {
                 actualizaciones["testers.$userId.completado"] = true
             }
-
             viewModelScope.launch {
                 repo.updateApp(app.id, actualizaciones).onSuccess {
                     if (acabaDeTerminar) {
@@ -1313,75 +885,48 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         }
         saveTodayCheck(context)
     }
-
     suspend fun migrarAppsParaAgregarDesarrollador() {
         val db = FirebaseFirestore.getInstance()
-
         try {
             Log.d("Migracion", "Iniciando migración de apps...")
-
-            
             val appsSnapshot = db.collection("apps").get().await()
-
             for (appDoc in appsSnapshot) {
                 val appId = appDoc.id
                 val idPropietario = appDoc.getString("idPropietario")
-
-                
                 val tieneNombre = appDoc.contains("nombreDesarrollador")
-
                 if (idPropietario != null && !tieneNombre) {
-                    
-                    
                     val userSnapshot = db.collection("users").document(idPropietario).get().await()
-
-                    
                     val devName = userSnapshot.getString("devName") ?: "Desconocido"
-
-                    
                     db.collection("apps").document(appId)
                         .update("nombreDesarrollador", devName)
                         .await()
-
                     Log.d("Migracion", "App $appId actualizada con devName: $devName")
                 }
             }
-
             Log.d("Migracion", "¡Migración completada con éxito!")
-
         } catch (e: Exception) {
             Log.e("Migracion", "Error durante la migración: ${e.message}")
         }
     }
     fun migrarAppsExistentes() {
         val db = FirebaseFirestore.getInstance()
-
-        
         db.collection("apps")
             .whereEqualTo("status", "test")
             .get()
             .addOnSuccessListener { snapshot ->
                 val batch = db.batch()
                 var contador = 0
-
                 for (document in snapshot.documents) {
                     val app = document.toObject(AppModel::class.java)
                     if (app != null) {
-                        
                         val uidsEnTesters = app.testers.keys.toList()
-
                         if (uidsEnTesters.isNotEmpty()) {
                             val docRef = db.collection("apps").document(document.id)
-
-                            
-                            
                             batch.update(docRef, "allParticipants", uidsEnTesters)
                             contador++
                         }
                     }
                 }
-
-                
                 if (contador > 0) {
                     batch.commit()
                         .addOnSuccessListener {
@@ -1398,49 +943,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                 Log.e("Migracion", "Error al obtener documentos: ${e.message}")
             }
     }
-     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
     fun startOfToday(): Long {
         val cal = Calendar.getInstance()
         cal.set(Calendar.HOUR_OF_DAY, 0)
@@ -1449,7 +951,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         cal.set(Calendar.MILLISECOND, 0)
         return cal.timeInMillis
     }
-
     private fun otorgarPuntoPorPrueba(userId: String, valor: Long = 1L) {
         viewModelScope.launch {
             repo.incrementUserPoints(userId, valor).onSuccess {
@@ -1460,9 +961,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
-
-    
     fun startObservingGlobalLinks() {
         viewModelScope.launch {
             try {
@@ -1474,9 +972,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
     fun addGlobalLink(titulo: String, url: String, tag: String) {
-
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         viewModelScope.launch {
             val nuevoLink = ComunidadLink(
@@ -1488,13 +984,11 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             repo.addLink(nuevoLink)
         }
     }
-
     fun deleteGlobalLink(linkId: String) {
         viewModelScope.launch {
             repo.deleteLink(linkId)
         }
     }
-
     fun updateAppInfo(
         appId: String,
         nombre: String,
@@ -1523,18 +1017,13 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                 _uiState.value = AuthUiState.AppActionSuccess
                 loadAndVerifyApps() 
             }.onFailure {
-                
             }
         }
     }
-
-    
-
     fun checkAndSaveToken() {
         com.google.firebase.messaging.FirebaseMessaging.getInstance().token
             .addOnSuccessListener { token ->
                 viewModelScope.launch {
-                    
                     if (isUserLoggedIn()) {
                         repo.updateFcmToken(token)
                         Log.d("FCM", "Token actualizado en perfil: $token")
@@ -1542,27 +1031,21 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                 }
             }
     }
-
-
     fun actualizarNivelPorInstalacionesFijas(context: Context) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         viewModelScope.launch {
-            
             val conteo = DevAppsConfig.developerApps.count {
                 isAppInstalled(context, it.paquete)
             }
             val nuevoNivel = if (conteo == 0) 1.0 else conteo.toDouble()
-
             FirebaseFirestore.getInstance().collection("users").document(userId)
                 .update("nivel", nuevoNivel)
                 .await()
             fetchUserProfile()
         }
     }
-
     fun registrarTokenFCM() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
-
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val token = task.result ?: return@addOnCompleteListener
@@ -1572,36 +1055,25 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
     fun notifyNewAppToRandomTesters(context: Context) {
         viewModelScope.launch {
             try {
                 val db = FirebaseFirestore.getInstance()
-
-                
-                
                 val snapshot = db.collection("users")
                     .whereNotEqualTo("fcmToken", null)
                     .get()
                     .await()
-
                 val allUsers = snapshot.documents
                 if (allUsers.isEmpty()) return@launch
-
-                
                 val randomUsers = allUsers
-
                 val titulo =
                     context.getString(R.string.bienvenido_a_testerapp) 
                 val cuerpo =
                     "${context.getString(R.string.prueba_otras_apps_y_sube_las_tuyas)}"
-
-                
                 randomUsers.forEach { userDoc ->
                     val token = userDoc.getString("fcmToken")
                     if (!token.isNullOrBlank()) {
                         try {
-                            
                             sendNotification(
                                 "TesterApp",
                                 titulo,
@@ -1610,30 +1082,25 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                                 viewModelScope
                             )
                         } catch (e: Exception) {
-                            
                             Log.e("Notification", "Error enviando a ${userDoc.id}: ${e.message}")
                         }
                     }
                 }
             } catch (e: Exception) {
-                
                 Log.e("Notification", "Error general en proceso de notificación: ${e.message}")
             }
         }
     }
-
     fun loadRanking() {
         viewModelScope.launch {
             try {
                 val db = FirebaseFirestore.getInstance()
-                
                 val snapshot = db.collection("users")
                     .whereEqualTo("perfilCompletado", true)
                     .orderBy("reputacion", com.google.firebase.firestore.Query.Direction.DESCENDING)
                     .limit(15)
                     .get()
                     .await()
-
                 val usersList = snapshot.toObjects(UserProfile::class.java)
                 Log.d("Ranking", "Usuarios encontrados: ${usersList.size}")
                 _allUsers.value = usersList
@@ -1654,15 +1121,11 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
-    
     fun uploadProfilePicture(uri: android.net.Uri, onSuccess: (String) -> Unit) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val storageRef = com.google.firebase.storage.FirebaseStorage.getInstance().reference
             .child("profile_pictures/$uid.jpg")
-
         _uiState.value = AuthUiState.Loading
-
         storageRef.putFile(uri)
             .addOnSuccessListener {
                 storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
@@ -1674,8 +1137,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                 _uiState.value = AuthUiState.Error("Error al subir imagen")
             }
     }
-
-    
     fun subirEvidenciaResena(
         appId: String,
         uri: android.net.Uri,
@@ -1685,21 +1146,15 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         tokenApp: String?,
         onSuccess: () -> Unit
     ) {
-
         _isUploading.value = true
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-
         _uiState.value = AuthUiState.Loading
-
-        
         val storageRef = com.google.firebase.storage.FirebaseStorage.getInstance().reference
             .child("production_reviews/$appId/$userId.jpg")
-
         storageRef.putFile(uri)
             .addOnSuccessListener {
                 storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
                     val url = downloadUri.toString()
-
                     val nuevaResena = ResenaProduccion(
                         userId = userId,
                         userName = userName,
@@ -1709,8 +1164,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                         fcmTokenTester = token,
                         fcmTokenApp = tokenApp
                     )
-
-                    
                     FirebaseFirestore.getInstance().collection("apps").document(appId)
                         .update("resenasProduccion.$userId", nuevaResena)
                         .addOnSuccessListener {
@@ -1719,13 +1172,11 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                             _isUploading.value = false
                             _featuredApps.value = _featuredApps.value.map { app ->
                                 if (app.id == appId) {
-                                    
                                     val mapaActualizado = app.resenasProduccion.toMutableMap()
                                     mapaActualizado[userId] = nuevaResena 
                                     app.copy(resenasProduccion = mapaActualizado)
                                 } else app
                             }
-
                             _uiState.value = AuthUiState.Success
                             onSuccess()
                             viewModelScope.launch {
@@ -1762,12 +1213,10 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                 _uiState.value = AuthUiState.Error(null)
             }
     }
-
     fun aprobarResenaProduccion(appId: String, testerId: String, resenaProduccion: ResenaProduccion) {
         val db = FirebaseFirestore.getInstance()
         val appRef = db.collection("apps").document(appId)
         val userRef = db.collection("users").document(testerId)
-
         viewModelScope.launch {
             try {
                 db.runTransaction { transaction ->
@@ -1775,15 +1224,12 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                     val resenas = snapshot.get("resenasProduccion") as? Map<String, Any> ?: emptyMap()
                     val datosResena = resenas[testerId] as? Map<String, Any>
                     val estadoActual = datosResena?.get("estado") as? String
-
                     if (estadoActual != "pendiente") {
                         throw Exception("Reseña ya procesada")
                     }
-
                     transaction.update(appRef, "resenasProduccion.$testerId.estado", "aprobada")
                     transaction.update(userRef, "puntos", com.google.firebase.firestore.FieldValue.increment(10))
                 }.await()
-
                 val appTitle = resenaProduccion.appName ?: "App"
                 sendInAppAndPushNotification(
                     targetUserId = testerId,
@@ -1791,52 +1237,16 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                     body = getString(R.string.resena_aprobada_msg, appTitle),
                     appId = appId
                 )
-
                 loadAndVerifyApps()
             } catch (e: Exception) {
                 Log.e("Reviews", "Transacción fallida o abortada: ${e.message}")
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     fun insertarAppsEstaticas() {
         val db = FirebaseFirestore.getInstance()
         val ownerId = "TLaAvv2YGObm93iLGM8xqLZOETk2"
         val tokenFijo = ""
-
-        
         val appsEstaticas = listOf(
             Pair("Color Palette", "com.appinitdev.color.free"),
             Pair("Canvas", "com.appinitdev.canvas.free"),
@@ -1847,10 +1257,8 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             Pair("Music Player & Equalizer", "com.appinitdev.music"),
             Pair("ImageTools", "com.appinitdev.imagetools")
         )
-
         appsEstaticas.forEach { (nombre, paquete) ->
             val appId = db.collection("apps").document().id 
-
             val appData = AppModel(
                 id = appId,
                 nombre = nombre,
@@ -1862,9 +1270,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                 urlAndroid = "https://play.google.com/store/apps/details?id=$paquete",
                 urlWeb = "https://play.google.com/apps/testing/$paquete",
                 instrucciones = "Descarga la app, deja una reseña positiva de 5 estrellas y sube la captura aquí.",
-
                 )
-
             db.collection("apps").document(appId).set(appData)
                 .addOnSuccessListener {
                     Log.d("InsertBatch", "App insertada: $nombre")
@@ -1874,9 +1280,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                 }
         }
     }
-
-
-
     fun lanzarFlujoPago(activity: Activity, productId: String) {
         val productList = listOf(
             QueryProductDetailsParams.Product.newBuilder()
@@ -1884,33 +1287,25 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                 .setProductType(BillingClient.ProductType.INAPP)
                 .build()
         )
-
         val params = QueryProductDetailsParams.newBuilder()
             .setProductList(productList)
             .build()
-
         billingClient.queryProductDetailsAsync(params) { billingResult, productDetailsList ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && productDetailsList != null) {
-
-                
                 val productDetails = if (productDetailsList.productDetailsList.size > 0) {
                     productDetailsList.productDetailsList.get(0)
                 } else {
                     null
                 }
-
                 if (productDetails != null) {
                     val productDetailsParamsList = listOf(
                         BillingFlowParams.ProductDetailsParams.newBuilder()
                             .setProductDetails(productDetails)
                             .build()
                     )
-
                     val flowParams = BillingFlowParams.newBuilder()
                         .setProductDetailsParamsList(productDetailsParamsList)
                         .build()
-
-                    
                     billingClient.launchBillingFlow(activity, flowParams)
                 } else {
                     Log.e("Billing", "No se encontró el producto en la tienda: $productId")
@@ -1920,7 +1315,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
     fun iniciarBilling(context: Context) {
         billingClient = BillingClient.newBuilder(context)
             .setListener { billingResult, purchases ->
@@ -1930,52 +1324,37 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                     }
                 }
             }
-            
             .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
             .build()
-
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
-                
             }
             override fun onBillingServiceDisconnected() {
-                
             }
         })
     }
-
     private fun gestionarCompraConsumible(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-
-            
             val consumeParams = ConsumeParams.newBuilder()
                 .setPurchaseToken(purchase.purchaseToken)
                 .build()
-
-            
             billingClient.consumeAsync(consumeParams) { billingResult, _ ->
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    
                     otorgarPuntosPorCompra(30, purchase.orderId ?: "compra_${System.currentTimeMillis()}")
                     _uiState.value = AuthUiState.PurchaseSuccess
                 }
             }
         }
     }
-
-
     private fun otorgarPuntosPorCompra(puntos: Int, orderId: String) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         viewModelScope.launch {
             val db = FirebaseFirestore.getInstance()
             val userRef = db.collection("users").document(uid)
-
             db.runTransaction { transaction ->
-                
                 val valorExtra = puntos * 0.25
                 transaction.update(userRef, "puntos", FieldValue.increment(puntos.toLong()))
                 transaction.update(userRef, "puntosExtra", FieldValue.increment(valorExtra))
-                
                 val registroRef = db.collection("compras").document(orderId)
                 transaction.set(registroRef, mapOf(
                     "userId" to uid,
@@ -1988,9 +1367,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
-
-
     private var featuredAppsJob: Job? = null
     fun loadFeaturedApps() {
         if (featuredAppsJob?.isActive == true) return
@@ -2000,14 +1376,11 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
     fun loadCommunityStats() {
         viewModelScope.launch {
             try {
-                
                 val appsJob = async { repo.getProductionAppsCount() }
                 val testersJob = async { repo.getTestersCount() }
-
                 _productionCount.value = appsJob.await()
                 _testersCount.value = testersJob.await()
             } catch (e: Exception) {
@@ -2015,48 +1388,16 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     fun actualizarEstadoResena(appId: String, testerId: String, nuevoEstado: String) {
         viewModelScope.launch {
-           
             try {
                 val db = FirebaseFirestore.getInstance()
                 db.collection("apps").document(appId)
                     .update("resenasProduccion.$testerId.estado", nuevoEstado)
                     .await()
-
-                
                 _userApps.value = _userApps.value.map { currentApp ->
                     if (currentApp.id == appId) {
                         val mapaEditado = currentApp.resenasProduccion.toMutableMap().apply {
-                            
                             this[testerId] = this[testerId]?.copy(estado = nuevoEstado)
                                 ?: ResenaProduccion(estado = nuevoEstado)
                         }
@@ -2073,7 +1414,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                         currentApp.copy(resenasProduccion = mapaEditado)
                     } else currentApp
                 }
-
                 _uiState.value = AuthUiState.Success
                 _uiState.value = AuthUiState.Idle 
             } catch (e: Exception) {
@@ -2083,22 +1423,16 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
     fun clearChat() {
         stopListeningToMessages()
     }
-
     fun clearBugReports() {
         _bugReports.value = emptyList()
     }
-
     fun clearAppDetailState() {
         stopListeningToMessages()
         clearBugReports()
     }
-
-    
-
     fun startObservingNotifications() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         viewModelScope.launch {
@@ -2111,7 +1445,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
     fun markNotificationAsRead(id: String) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         _notifications.update { list ->
@@ -2121,7 +1454,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             repo.markNotificationAsRead(uid, id)
         }
     }
-
     fun markAllNotificationsAsRead() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         _notifications.update { list ->
@@ -2131,7 +1463,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             repo.markAllNotificationsAsRead(uid)
         }
     }
-
     fun clearAllNotifications() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         _notifications.value = emptyList()
@@ -2139,7 +1470,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             repo.clearAllNotifications(uid)
         }
     }
-
     fun sendInAppAndPushNotification(
         targetUserId: String,
         title: String,
@@ -2160,7 +1490,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                     timestamp = System.currentTimeMillis()
                 )
                 repo.saveInAppNotification(targetUserId, userNotif)
-
                 val targetToken = getUserFcmToken(targetUserId)
                 if (!targetToken.isNullOrBlank()) {
                     sendNotification(appId ?: "TesterApp", title, body, targetToken, viewModelScope, iconUrl = iconUrl)
@@ -2170,7 +1499,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
     fun submit14DayFeedback(
         appId: String,
         ratingEstabilidad: Float,
@@ -2200,14 +1528,12 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
     fun load14DayFeedbacks(appId: String) {
         _feedbackReports14Days.value = emptyList()
         viewModelScope.launch {
             _feedbackReports14Days.value = repo.get14DayFeedbacks(appId)
         }
     }
-
     fun submitBugReport(appId: String, deviceInfo: String, steps: String, description: String) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val profile = _userProfile.value ?: return
@@ -2226,19 +1552,16 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
     fun loadBugReports(appId: String) {
         _bugReports.value = emptyList()
         viewModelScope.launch {
             _bugReports.value = repo.getBugReports(appId)
         }
     }
-
     fun updateBugStatus(bugId: String, appId: String, newStatus: String, testerUserId: String?) {
         viewModelScope.launch {
             val updates = mapOf("status" to newStatus)
             FirebaseFirestore.getInstance().collection("bug_reports").document(bugId).update(updates).await()
-            
             if (!testerUserId.isNullOrBlank()) {
                 sendInAppAndPushNotification(
                     targetUserId = testerUserId,
@@ -2250,13 +1573,11 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             loadBugReports(appId)
         }
     }
-
     fun checkStreaks() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val profile = _userProfile.value ?: return
         val hoy = startOfToday()
         val ayer = hoy - (24 * 60 * 60 * 1000L)
-
         viewModelScope.launch {
             if (profile.lastActive < hoy) {
                 val newStreaks = if (profile.lastActive >= ayer) profile.streaks + 1 else 1
@@ -2265,7 +1586,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
     fun updateChecklist(appId: String, items: List<ChecklistItem>) {
         viewModelScope.launch {
             repo.updateChecklist(appId, items).onSuccess {
@@ -2273,7 +1593,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
     fun boostApp(appId: String) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val profile = _userProfile.value ?: return
@@ -2287,7 +1606,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
     private suspend fun addPointsWithHistory(userId: String, amount: Int, reason: String) {
         repo.incrementUserPoints(userId, amount.toLong()).onSuccess {
             val transaction = PointsTransaction(
@@ -2300,28 +1618,23 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             fetchUserProfile()
         }
     }
-
     fun loadPointsHistory() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         viewModelScope.launch {
             _pointsHistory.value = repo.getPointsHistory(uid)
         }
     }
-
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
     }
-
     fun applyReferralCode(code: String) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val profile = _userProfile.value ?: return
         if (profile.referredBy != null) return 
-
         viewModelScope.launch {
             val allUsers = repo.getAllUsersListRaw()
             val referrer = allUsers.find { it.referralCode == code }
             if (referrer != null && referrer.uid != uid) {
-                
                 repo.incrementUserPoints(referrer.uid, 20)
                 repo.incrementUserPoints(uid, 10)
                 FirebaseFirestore.getInstance().collection("users").document(uid).update("referredBy", referrer.uid).await()
@@ -2329,12 +1642,10 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-
     fun generateReferralCode() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val profile = _userProfile.value ?: return
         if (profile.referralCode.isNotBlank()) return
-
         val newCode = profile.devName.take(3).uppercase() + (1000..9999).random()
         viewModelScope.launch {
             FirebaseFirestore.getInstance().collection("users").document(uid).update("referralCode", newCode).await()
@@ -2342,8 +1653,6 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         }
     }
 }
-
-
 sealed class AuthUiState {
     object Idle : AuthUiState()
     object Loading : AuthUiState()

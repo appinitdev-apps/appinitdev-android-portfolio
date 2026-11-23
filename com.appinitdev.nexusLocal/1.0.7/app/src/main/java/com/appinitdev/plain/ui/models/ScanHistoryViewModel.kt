@@ -1,8 +1,6 @@
-
 class ScanHistoryViewModel : ViewModel() {
     private val _itemsFlow = MutableStateFlow(emptyList<String>())
     val itemsFlow: StateFlow<List<String>> get() = _itemsFlow
-
     fun fetch(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             _itemsFlow.update {
@@ -10,7 +8,6 @@ class ScanHistoryViewModel : ViewModel() {
             }
         }
     }
-
     fun delete(
         context: Context,
         value: String,

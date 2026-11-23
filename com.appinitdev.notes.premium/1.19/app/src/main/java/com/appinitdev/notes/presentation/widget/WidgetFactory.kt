@@ -1,22 +1,16 @@
-
 class WidgetFactory(
     private val app: NotallyXApplication,
     private val id: Long,
     private val widgetId: Int,
 ) : RemoteViewsService.RemoteViewsFactory {
-
     private var baseNote: BaseNote? = null
     private lateinit var database: NotallyDatabase
     private val preferences = NotallyXPreferences.getInstance(app)
-
     init {
         NotallyDatabase.getDatabase(app).observeForever { database = it }
     }
-
     override fun onCreate() {}
-
     override fun onDestroy() {}
-
     override fun getCount(): Int {
         val copy = baseNote
         return if (copy != null) {
@@ -26,15 +20,12 @@ class WidgetFactory(
             }
         } else 0
     }
-
     override fun onDataSetChanged() {
         baseNote = database.getBaseNoteDao().get(id)
     }
-
     override fun getViewAt(position: Int): RemoteViews {
         val copy = baseNote
         requireNotNull(copy)
-
         return when (copy.type) {
             Type.NOTE -> getNoteView(copy)
             Type.LIST -> {
@@ -44,30 +35,24 @@ class WidgetFactory(
             }
         }
     }
-
     private fun getNoteView(note: BaseNote): RemoteViews {
         return RemoteViews(app.packageName, R.layout.widget_note).apply {
             val textSize = preferences.textSize.value
             setTextViewTextSize(R.id.Title, TypedValue.COMPLEX_UNIT_SP, textSize.displayTitleSize)
             setTextViewText(R.id.Title, note.title)
-
             val bodyTextSize = textSize.displayBodySize
-
             setTextViewTextSize(R.id.Note, TypedValue.COMPLEX_UNIT_SP, bodyTextSize)
             if (note.body.isNotEmpty()) {
                 setTextViewText(R.id.Note, note.body)
                 setViewVisibility(R.id.Note, View.VISIBLE)
             } else setViewVisibility(R.id.Note, View.GONE)
-
             setOnClickFillInIntent(R.id.ChangeNote, getWidgetSelectNoteIntent(widgetId))
             setOnClickFillInIntent(R.id.LinearLayout, getWidgetOpenNoteIntent(note.type, note.id))
-
             val (_, controlsColor) = app.extractWidgetColors(note.color, preferences)
             setTextViewsTextColor(listOf(R.id.Title, R.id.Note), controlsColor)
             setImageViewColor(R.id.ChangeNote, controlsColor)
         }
     }
-
     private fun getListHeaderView(list: BaseNote): RemoteViews {
         return RemoteViews(app.packageName, R.layout.widget_list_header).apply {
             setTextViewTextSize(
@@ -80,13 +65,11 @@ class WidgetFactory(
             val openNoteWidgetIntent = getWidgetOpenNoteIntent(list.type, list.id)
             setOnClickFillInIntent(R.id.LinearLayout, openNoteWidgetIntent)
             setOnClickFillInIntent(R.id.Title, openNoteWidgetIntent)
-
             val (_, controlsColor) = app.extractWidgetColors(list.color, preferences)
             setTextViewsTextColor(listOf(R.id.Title), controlsColor)
             setImageViewColor(R.id.ChangeNote, controlsColor)
         }
     }
-
     private fun getListItemView(index: Int, list: BaseNote): RemoteViews {
         val item = list.items[index]
         val view =
@@ -125,7 +108,6 @@ class WidgetFactory(
             setTextViewsTextColor(listOf(R.id.Title), controlsColor)
         }
     }
-
     private fun RemoteViews.setListItemTextView(item: ListItem, textViewId: Int, fontColor: Int) {
         setTextViewTextSize(
             textViewId,
@@ -144,25 +126,19 @@ class WidgetFactory(
         )
         setInt(textViewId, "setTextColor", fontColor)
     }
-
     private fun RemoteViews.setTextViewsTextColor(viewIds: List<Int>, color: Int) {
         viewIds.forEach { viewId -> setInt(viewId, "setTextColor", color) }
     }
-
     private fun RemoteViews.setImageViewColor(viewId: Int, color: Int) {
         setInt(viewId, "setColorFilter", color)
     }
-
     override fun getViewTypeCount() = 3
-
     override fun hasStableIds(): Boolean {
         return false
     }
-
     override fun getLoadingView(): RemoteViews? {
         return null
     }
-
     override fun getItemId(position: Int): Long {
         return 1
     }

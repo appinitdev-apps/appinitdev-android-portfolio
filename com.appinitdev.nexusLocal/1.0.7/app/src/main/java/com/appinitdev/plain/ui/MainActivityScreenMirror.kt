@@ -1,8 +1,6 @@
-
 internal fun MainActivity.sendScreenMirrorAudioStatus(granted: Boolean) {
     sendEvent(WebSocketEvent(EventType.SCREEN_MIRROR_AUDIO_GRANTED, JsonHelper.jsonEncode(granted)))
 }
-
 internal fun MainActivity.openAppDetailsSettingsForAudio() {
     try {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
@@ -18,7 +16,6 @@ internal fun MainActivity.openAppDetailsSettingsForAudio() {
         }
     }
 }
-
 internal fun MainActivity.showRecordAudioPermissionSettingsGuide() {
     DialogHelper.showConfirmDialog(
         LocaleHelper.getString(Res.string.permission_required),

@@ -1,9 +1,7 @@
-
 abstract class MyViewPagerFragment<BINDING : MyViewPagerFragment.InnerBinding>(context: Context, attributeSet: AttributeSet) :
     RelativeLayout(context, attributeSet) {
     protected var activity: SimpleActivity? = null
     protected var currentViewType = VIEW_TYPE_LIST
-
     var currentPath = ""
     var isGetContentIntent = false
     var isGetRingtonePicker = false
@@ -11,7 +9,6 @@ abstract class MyViewPagerFragment<BINDING : MyViewPagerFragment.InnerBinding>(c
     var wantedMimeTypes = listOf("")
     protected var isCreateDocumentIntent = false
     protected lateinit var innerBinding: BINDING
-
     protected fun clickedPath(path: String) {
         if (isGetContentIntent || isCreateDocumentIntent) {
             (activity as MainActivity).pickedPath(path)
@@ -25,25 +22,21 @@ abstract class MyViewPagerFragment<BINDING : MyViewPagerFragment.InnerBinding>(c
             activity?.tryOpenPathIntent(path, false)
         }
     }
-
     fun updateIsCreateDocumentIntent(isCreateDocumentIntent: Boolean) {
         val iconId = if (isCreateDocumentIntent) {
             C.drawable.ic_check_vector
         } else {
             C.drawable.ic_plus_vector
         }
-
         this.isCreateDocumentIntent = isCreateDocumentIntent
         val fabIcon = context.resources.getColoredDrawableWithColor(iconId, context.getProperPrimaryColor().getContrastColor())
         innerBinding.itemsFab?.setImageDrawable(fabIcon)
     }
-
     fun handleFileDeleting(files: ArrayList<FileDirItem>, hasFolder: Boolean) {
         val firstPath = files.firstOrNull()?.path
         if (firstPath == null || firstPath.isEmpty() || context == null) {
             return
         }
-
         if (context!!.isPathOnRoot(firstPath)) {
             RootHelpers(activity!!).deleteFiles(files)
         } else {
@@ -56,7 +49,6 @@ abstract class MyViewPagerFragment<BINDING : MyViewPagerFragment.InnerBinding>(c
             }
         }
     }
-
     protected fun isProperMimeType(wantedMimeType: String, path: String, isDirectory: Boolean): Boolean {
         return if (wantedMimeType.isEmpty() || wantedMimeType == "*/*" || isDirectory) {
             true
@@ -69,27 +61,19 @@ abstract class MyViewPagerFragment<BINDING : MyViewPagerFragment.InnerBinding>(c
             }
         }
     }
-
     abstract fun setupFragment(activity: SimpleActivity)
-
     abstract fun onResume(textColor: Int)
-
     abstract fun refreshFragment()
-
     abstract fun searchQueryChanged(text: String)
-
     interface InnerBinding {
         val itemsFab: MyFloatingActionButton?
     }
-
     class ItemsInnerBinding(val binding: ItemsFragmentBinding) : InnerBinding {
         override val itemsFab: MyFloatingActionButton = binding.itemsFab
     }
-
     class RecentsInnerBinding(val binding: RecentsFragmentBinding) : InnerBinding {
         override val itemsFab: MyFloatingActionButton? = null
     }
-
     class StorageInnerBinding(val binding: StorageFragmentBinding) : InnerBinding {
         override val itemsFab: MyFloatingActionButton? = null
     }

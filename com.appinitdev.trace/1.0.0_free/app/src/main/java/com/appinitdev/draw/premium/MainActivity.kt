@@ -1,15 +1,11 @@
-
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
             val context = LocalContext.current
             val scope = rememberCoroutineScope()
-            
-            
             var cameraStartState by rememberSaveable { mutableStateOf<Boolean?>(true) }
             var startWithGrid by rememberSaveable { mutableStateOf(false) } 
             var startWithSketch by rememberSaveable { mutableStateOf(false) } 
@@ -17,72 +13,36 @@ class MainActivity : ComponentActivity() {
             var selectedImageUriStr by rememberSaveable { mutableStateOf<String?>(null) }
             val selectedImageUri = selectedImageUriStr?.let { Uri.parse(it) }
             var showExitCanvasDialog by rememberSaveable { mutableStateOf(false)}
-            
             var lastBackPressTime by remember { mutableStateOf(0L) }
             var showExitDialog by remember { mutableStateOf(false) }
-
             val mViewModel: PackViewModel = viewModel(factory = object : androidx.lifecycle.ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     return PackViewModel(applicationContext) as T
                 }
             })
-
             BackHandler(enabled = true) {
                 when (currentStep) {
                     0 -> {
                         val currentTime = System.currentTimeMillis()
                         if (currentTime - lastBackPressTime < 2000) {
-                            
                             this@MainActivity.finish()
                         } else {
-                            
                             lastBackPressTime = currentTime
                             Toast.makeText(context,
                                 getString(R.string.presiona_una_vez_m_s_para_salir), Toast.LENGTH_SHORT).show()
                         }
-                        
-                        
                     }
-
                     1 -> {
-                        
                         currentStep = 0
                     }
-
                     2 -> {
-                        
-
                         showExitCanvasDialog = true
                     }
-
                     3 -> {
-                        
                         currentStep = 0
                     }
                 }
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             if (showExitCanvasDialog) {
                 AlertDialog(
                     onDismissRequest = { showExitCanvasDialog = false },
@@ -103,20 +63,14 @@ class MainActivity : ComponentActivity() {
                     }
                 )
             }
-
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-
             ) {
                 when (currentStep) {
-                    
                     0 -> {
-
-
                             HomeScreen(
                                 onImageSelected = { uri ->
-                                    
                                     scope.launch(Dispatchers.IO) {
                                         val success = if (uri.toString().startsWith("http")) {
                                             GalleryStorageManager.saveUrlToInternalStorage(
@@ -129,10 +83,8 @@ class MainActivity : ComponentActivity() {
                                                 uri
                                             )
                                         }
-
                                         withContext(Dispatchers.Main) {
                                             if (success) {
-                                                
                                                 scope.launch(Dispatchers.IO) {
                                                     val db = com.appinitdev.draw.premium.BD.GalleryDatabase.getDatabase(context)
                                                     val latest = db.galleryDao().getLatestImage()
@@ -153,9 +105,7 @@ class MainActivity : ComponentActivity() {
                                     currentStep = 3 
                                 }
                             )
-
                     }
-
                     1 -> {
                         DrawingModeScreen(
                             onModeSelected = { cameraOn, useGrid, useSketch ->
@@ -165,16 +115,11 @@ class MainActivity : ComponentActivity() {
                                 currentStep = 2
                             },
                             onBack = {
-                                
-                                
                                 currentStep = 0
-                                
                             }
                         )
                     }
-
                     2 -> {
-                        
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -199,7 +144,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     }
-
                     3 -> {
                         MyGalleryScreen(
                             onImageSelectedForDrawing = { uri ->
@@ -211,10 +155,8 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-
                 }
             }
         }
-
     }
 }

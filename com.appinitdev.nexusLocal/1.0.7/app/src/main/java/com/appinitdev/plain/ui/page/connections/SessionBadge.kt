@@ -1,4 +1,3 @@
-
 @Composable
 fun SessionBadge(m: VSession, isOnline: Boolean) {
     val label = if (m.isCustom) stringResource(Res.string.custom_token) else if (isOnline) stringResource(Res.string.online) else stringResource(Res.string.offline)

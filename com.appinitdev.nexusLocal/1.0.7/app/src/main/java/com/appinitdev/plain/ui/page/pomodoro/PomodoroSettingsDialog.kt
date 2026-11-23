@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PomodoroSettingsDialog(
@@ -14,7 +13,6 @@ fun PomodoroSettingsDialog(
     var playSoundOnComplete by remember { mutableStateOf(settings.playSoundOnComplete) }
     var soundPath by remember { mutableStateOf(settings.soundPath) }
     var originalFileName by remember { mutableStateOf(settings.originalSoundName) }
-
     LaunchedEffect(Channel.sharedFlow) {
         Channel.sharedFlow.collect { event ->
             if (event is PickFileResultEvent && event.tag == PickFileTag.POMODORO && event.uris.isNotEmpty()) {
@@ -34,7 +32,6 @@ fun PomodoroSettingsDialog(
             }
         }
     }
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(text = stringResource(Res.string.settings), style = MaterialTheme.typography.titleLarge) },

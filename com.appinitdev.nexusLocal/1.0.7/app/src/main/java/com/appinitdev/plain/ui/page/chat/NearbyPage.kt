@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NearbyPage(
@@ -8,29 +7,20 @@ fun NearbyPage(
 ) {
     val nearbyDevices = nearbyVM.nearbyDevices
     val isDiscovering by nearbyVM.isDiscovering
-
     var showQrSheet by remember { mutableStateOf(false) }
     var qrData by remember { mutableStateOf<DQrPairData?>(null) }
-
-    
     LaunchedEffect(Unit) {
         if (!isDiscovering) {
             nearbyVM.toggleDiscovering()
         }
-
-        
         if (pairDeviceJson.isNotEmpty()) {
             try {
                 val device = JsonHelper.jsonDecode<DQrPairData>(pairDeviceJson).toDNearbyDevice()
                 nearbyVM.startPairingFromDevice(device)
             } catch (e: Exception) {
-                
             }
         }
-
     }
-
-    
     LaunchedEffect(showQrSheet) {
         if (showQrSheet && qrData == null) {
             withIO {
@@ -38,8 +28,6 @@ fun NearbyPage(
             }
         }
     }
-
-    
     DisposableEffect(Unit) {
         onDispose {
             if (isDiscovering) {
@@ -47,8 +35,6 @@ fun NearbyPage(
             }
         }
     }
-
-
     PScaffold(
         topBar = {
             PTopAppBar(
@@ -82,7 +68,6 @@ fun NearbyPage(
             }
         }
     }
-
     if (showQrSheet) {
         NearbyQrBottomSheet(
             qrData = qrData,
@@ -90,4 +75,3 @@ fun NearbyPage(
         )
     }
 }
-

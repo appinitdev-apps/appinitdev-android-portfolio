@@ -1,13 +1,10 @@
-
 object FilterTools {
-
     val categories = listOf(
         FilterCategory("Estilo", Icons.Default.AutoAwesome),
         FilterCategory("Color", Icons.Default.ColorLens),
         FilterCategory("Efectos", Icons.Default.BlurOn),
         FilterCategory("Fusión", Icons.Default.Layers)
     )
-
     val textures = listOf(
         TextureItem("Texture 01", R.drawable.texture_01),
         TextureItem("Texture 02", R.drawable.texture_02),
@@ -20,19 +17,14 @@ object FilterTools {
         TextureItem("Texture 09", R.drawable.texture_09),
         TextureItem("Texture 10", R.drawable.texture_10),
     )
-
-
-
     fun getAllFilters(context: Context, textureItem: TextureItem): List<EditorFilter> {
         val blendTexture = try {
             if (textureItem.uriString != null) {
-                
                 val uri = Uri.parse(textureItem.uriString)
                 context.contentResolver.openInputStream(uri).use { inputStream ->
                     BitmapFactory.decodeStream(inputStream)
                 }
             } else {
-                
                 BitmapFactory.decodeResource(
                     context.resources,
                     textureItem.resId ?: R.drawable.texture_01
@@ -40,11 +32,9 @@ object FilterTools {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            
             BitmapFactory.decodeResource(context.resources, R.drawable.texture_01)
         }
         return listOf(
-            
             EditorFilter(
                 "Contrast",
                 "Color",
@@ -138,8 +128,6 @@ object FilterTools {
                 GPUImageVibranceFilter(),
                 listOf(FilterParameter("Intensity", 50f))
             ), 
-
-            
             EditorFilter(
                 "Sepia",
                 "Estilo",
@@ -191,8 +179,6 @@ object FilterTools {
                 )
             ),
             EditorFilter("CGA Color Space", "Estilo", GPUImageCGAColorspaceFilter()), 
-
-            
             EditorFilter(
                 "Sobel Edge Detection",
                 "Efectos",
@@ -255,7 +241,6 @@ object FilterTools {
                     FilterParameter("Scale/Deformation\n", 65f),
                     FilterParameter("X", 50f),           
                     FilterParameter("Y", 50f)            
-
                 )
             ),
             EditorFilter(
@@ -278,12 +263,6 @@ object FilterTools {
                 "Efectos",
                 GPUImageNonMaximumSuppressionFilter()
             ), 
-           
-
-
-
-
- 
             EditorFilter(
                 "Swirl",
                 "Efectos",
@@ -310,16 +289,11 @@ object FilterTools {
                 GPUImageTransformFilter(),
                 listOf(FilterParameter("Rotación 360", 0f))
             ), 
-
-            
-
-
             EditorFilter(
                 "Difference",
                 "Fusión",
                 GPUImageDifferenceBlendFilter().apply { bitmap = blendTexture },
             ),
-
             EditorFilter(
                 "Color Burn",
                 "Fusión",
@@ -332,15 +306,12 @@ object FilterTools {
                 "Darken",
                 "Fusión",
                 GPUImageDarkenBlendFilter().apply { bitmap = blendTexture }),
-
-
             EditorFilter(
                 "Dissolve",
                 "Fusión",
                 GPUImageDissolveBlendFilter().apply { bitmap = blendTexture },
                 listOf(FilterParameter("Mix", 50f))
             ),
-
             EditorFilter(
                 "Exclusion",
                 "Fusión",
@@ -374,15 +345,12 @@ object FilterTools {
                 "Screen",
                 "Fusión",
                 GPUImageScreenBlendFilter().apply { bitmap = blendTexture }),
-
-
             EditorFilter(
                 "Alpha",
                 "Fusión",
                 GPUImageAlphaBlendFilter().apply { bitmap = blendTexture },
                 listOf(FilterParameter("Opacidad", 50f))
             ),
-
             EditorFilter(
                 "Color",
                 "Fusión",
@@ -411,32 +379,25 @@ object FilterTools {
                 "Subtract",
                 "Fusión",
                 GPUImageSubtractBlendFilter().apply { bitmap = blendTexture }),
-
-
             EditorFilter(
                 "Chroma Key",
                 "Fusión",
                 GPUImageChromaKeyBlendFilter().apply { bitmap = blendTexture },
                 listOf(FilterParameter("Sensitivity", 40f), FilterParameter("Suavizado", 10f))
             ),
-
-            
         )
     }
-
     fun adjustFilter(filter: GPUImageFilter, parameters: List<FilterParameter>) {
         fun getVal(index: Int, start: Float, end: Float): Float {
             if (index >= parameters.size) return start
             val f = parameters[index].currentValue / 100.0f
             return (end - start) * f + start
         }
-
         fun getValInt(index: Int, start: Int, end: Int): Int {
             if (index >= parameters.size) return start
             val f = parameters[index].currentValue / 100.0f
             return ((end - start) * f).toInt() + start
         }
-
         when (filter) {
             is GPUImageContrastFilter -> filter.setContrast(getVal(0, 0.0f, 2.0f)) 
             is GPUImageGammaFilter -> filter.setGamma(getVal(0, 0.0f, 3.0f)) 
@@ -453,7 +414,6 @@ object FilterTools {
                 filter.setShadows(getVal(0, 0.0f, 1.0f)) 
                 filter.setHighlights(getVal(1, 0.0f, 1.0f))
             }
-
             is GPUImageMonochromeFilter -> filter.setIntensity(getVal(0, 0.0f, 1.0f)) 
             is GPUImageOpacityFilter -> filter.setOpacity(getVal(0, 0.0f, 1.0f)) 
             is GPUImageRGBFilter -> {
@@ -461,12 +421,10 @@ object FilterTools {
                 filter.setGreen(getVal(1, 0.0f, 1.0f))
                 filter.setBlue(getVal(2, 0.0f, 1.0f))
             }
-
             is GPUImageWhiteBalanceFilter -> {
                 filter.setTemperature(getVal(0, 2000.0f, 8000.0f)) 
                 filter.setTint(getVal(1, -100f, 100f))
             }
-
             is GPUImageHueFilter -> filter.setHue(getVal(0, 0.0f, 360.0f)) 
             is GPUImageLuminanceThresholdFilter -> filter.setThreshold(
                 getVal(
@@ -484,7 +442,6 @@ object FilterTools {
                     )
                 )
             }
-
             is GPUImageLevelsFilter -> filter.setMin(
                 0.0f,
                 getVal(0, 0.0f, 1.0f),
@@ -498,7 +455,6 @@ object FilterTools {
                 filter.setCrossHatchSpacing(getVal(0, 0.0f, 0.06f)) 
                 filter.setLineWidth(getVal(1, 0.0f, 0.006f))
             }
-
             is GPUImageSobelEdgeDetectionFilter -> filter.setLineSize(
                 getVal(
                     0,
@@ -510,21 +466,16 @@ object FilterTools {
                 filter.setLineSize(getVal(0, 0.0f, 5.0f)) 
                 filter.setThreshold(getVal(1, 0.0f, 1.0f))
             }
-
             is GPUImageEmbossFilter -> filter.intensity = getVal(0, 0.0f, 4.0f) 
             is GPUImagePixelationFilter -> filter.setPixel(getVal(0, 1.0f, 100.0f)) 
             is GPUImageSharpenFilter -> filter.setSharpness(getVal(0, -4.0f, 4.0f)) 
             is GPUImageVignetteFilter -> {
                 filter.setVignetteStart(getVal(0, 0.0f, 1.0f)) 
                 filter.setVignetteEnd(getVal(1, 0.0f, 1.0f))
-
                 val cx = getVal(2, 0.0f, 1.0f)
                 val cy = getVal(3, 0.0f, 1.0f)
                 filter.setVignetteCenter(PointF(cx, cy))
-
-
             }
-
             is GPUImageGaussianBlurFilter -> filter.setBlurSize(getVal(0, 0.0f, 1.0f)) 
             is GPUImageBulgeDistortionFilter -> {
                 filter.setRadius(getVal(0, 0.0f, 1.0f)) 
@@ -533,20 +484,16 @@ object FilterTools {
                 val cy = getVal(3, 0.0f, 1.0f)
                 filter.setCenter(PointF(cx, cy))
             }
-
             is GPUImageGlassSphereFilter -> {
                 filter.setRadius(getVal(0, 0.0f, 1.0f)) 
-                
                 val cx = getVal(1, 0.0f, 1.0f)
                 val cy = getVal(2, 0.0f, 1.0f)
                 filter.setCenter(PointF(cx, cy))
             }
-
             is GPUImageHazeFilter -> {
                 filter.setDistance(getVal(0, -0.3f, 0.3f)) 
                 filter.setSlope(getVal(1, -0.3f, 0.3f))
             }
-
             is GPUImageSphereRefractionFilter -> filter.setRadius(
                 getVal(
                     0,
@@ -556,8 +503,6 @@ object FilterTools {
             ) 
             is GPUImageSwirlFilter ->{
                 filter.setAngle(getVal(0, 0.0f, 2.0f)) 
-
-                
                 val cx = getVal(1, 0.0f, 1.0f)
                 val cy = getVal(2, 0.0f, 1.0f)
                 filter.setCenter(PointF(cx, cy))
@@ -581,18 +526,13 @@ object FilterTools {
                 ) 
                 filter.transform3D = transform 
             }
-
             is GPUImageMixBlendFilter -> {
-                
                 filter.setMix(getVal(0, 0.0f, 1.0f))
             }
-
             is GPUImageChromaKeyBlendFilter -> {
-                
                 filter.setThresholdSensitivity(getVal(0, 0.0f, 1.0f))
                 filter.setSmoothing(getVal(1, 0.0f, 1.0f))
             }
-
             is GPUImageDissolveBlendFilter -> filter.setMix(getVal(0, 0.0f, 1.0f)) 
         }
     }

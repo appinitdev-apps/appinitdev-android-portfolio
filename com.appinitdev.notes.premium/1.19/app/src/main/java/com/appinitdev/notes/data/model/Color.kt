@@ -1,4 +1,3 @@
-
 enum class Color {
     DEFAULT,
     CORAL,
@@ -12,14 +11,11 @@ enum class Color {
     FLOWER,
     BLOSSOM,
     CLAY;
-
     companion object {
         fun allColorStrings() = entries.map { it.toColorString() }.toList()
-
         fun random(): Color {
             return entries.random() 
         }
-
         fun valueOfOrDefault(value: String) =
             try {
                 Color.valueOf(value)
@@ -28,7 +24,6 @@ enum class Color {
             }
     }
 }
-
 fun Color.toColorString() =
     when (this) {
         Color.DEFAULT -> BaseNote.COLOR_DEFAULT
@@ -44,7 +39,6 @@ fun Color.toColorString() =
         Color.BLOSSOM -> "#F5E2DC"
         Color.CLAY -> "#E9E3D3"
     }
-
 fun String.parseToColorString() =
     try {
         android.graphics.Color.parseColor(this)

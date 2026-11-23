@@ -1,8 +1,6 @@
-
 object DocMediaStoreHelper : BaseMediaContentHelper() {
     override val uriExternal: Uri = if (isQPlus()) MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY) else MediaStore.Files.getContentUri("external")
     override val mediaType: MediaType = MediaType.FILE
-
     private val extraDocumentMimeTypes = arrayListOf(
         "application/pdf",
         "application/msword",
@@ -10,7 +8,6 @@ object DocMediaStoreHelper : BaseMediaContentHelper() {
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         "application/javascript"
     )
-
     override fun getProjection(): Array<String> {
         val cols = mutableListOf(
             MediaStore.Files.FileColumns._ID,
@@ -27,16 +24,13 @@ object DocMediaStoreHelper : BaseMediaContentHelper() {
         }
         return cols.toTypedArray()
     }
-
     override fun buildBaseWhere(filterFields: List<FilterField>): ContentWhere {
         val where = ContentWhere()
-
         val mimeTypePlaceholders = extraDocumentMimeTypes.joinToString(",") { "?" }
         where.add("(${MediaStore.Files.FileColumns.MIME_TYPE} LIKE ? OR ${MediaStore.Files.FileColumns.MIME_TYPE} IN ($mimeTypePlaceholders))")
         where.args.add("text/%")
         where.args.addAll(extraDocumentMimeTypes)
         where.addGt(MediaStore.Files.FileColumns.SIZE, "0")
-
         filterFields.forEach {
             when (it.name) {
                 "text" -> where.add("${MediaStore.Files.FileColumns.DISPLAY_NAME} LIKE ?", "%${it.value}%")
@@ -60,7 +54,6 @@ object DocMediaStoreHelper : BaseMediaContentHelper() {
         }
         return where
     }
-
     suspend fun searchAsync(
         context: Context,
         query: String,
@@ -81,7 +74,6 @@ object DocMediaStoreHelper : BaseMediaContentHelper() {
             DDoc(id, title, path, 0, size, bucketId, createdAt, updatedAt)
         } ?: emptyList()
     }
-
     suspend fun getTagRelationStubsAsync(
         context: Context,
         query: String,
@@ -93,7 +85,6 @@ object DocMediaStoreHelper : BaseMediaContentHelper() {
             TagRelationStub(id, title, size)
         } ?: emptyList()
     }
-
     suspend fun getDocExtGroupsAsync(context: Context, query: String = ""): List<Pair<String, Int>> {
         val where = buildBaseWhere(QueryHelper.parseAsync(query))
         val extCounts = mutableMapOf<String, Int>()
@@ -111,7 +102,6 @@ object DocMediaStoreHelper : BaseMediaContentHelper() {
         }
         return extCounts.map { Pair(it.key.uppercase(), it.value) }.sortedBy { it.first }
     }
-
     fun getDocBucketsAsync(context: Context): List<DMediaBucket> {
         if (!isQPlus()) return emptyList()
         val bucketMap = mutableMapOf<String, DMediaBucket>()

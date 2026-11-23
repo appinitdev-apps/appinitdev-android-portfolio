@@ -1,21 +1,7 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
 class GenericPreferencesAdapter(
         private val preferences: List<Preference>,
         private val keyword: String = ""
 ) : RecyclerView.Adapter<VerticalListViewHolder>() {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         return when (viewType) {
             VIEW_TYPE_HEADER -> {
@@ -59,7 +45,6 @@ class GenericPreferencesAdapter(
             }
         }
     }
-
     override fun onBindViewHolder(holder: VerticalListViewHolder, @SuppressLint("RecyclerView") position: Int) {
         when (holder) {
             is Header -> {
@@ -74,19 +59,15 @@ class GenericPreferencesAdapter(
                 val preference = preferences[position]
                 holder.binding.title.setText(preference.title)
                 holder.binding.summary.setSummary(preference)
-
                 if (preference.icon != -1) {
                     holder.binding.icon.setImageResource(preference.icon)
                 }
-
                 holder.binding.popup.setOnClickListener {
                     preference.onPreferenceAction?.invoke(it) {
                         holder.binding.popup.text = preference.valueAsStringProvider ?: ""
                     }
                 }
-
                 holder.binding.popup.text = preference.valueAsStringProvider ?: ""
-
                 holder.binding.title.highlight()
                 holder.binding.summary.highlight()
             }
@@ -98,13 +79,10 @@ class GenericPreferencesAdapter(
                     holder.binding.icon.setImageResource(preference.icon)
                 }
                 holder.binding.root.parent?.requestLayout()
-
                 holder.binding.container.setOnClickListener {
                     preference.onPreferenceAction?.invoke(it) {
-                         
                     }
                 }
-
                 holder.binding.title.highlight()
                 holder.binding.summary.highlight()
             }
@@ -112,7 +90,6 @@ class GenericPreferencesAdapter(
                 val preference = preferences[position]
                 val seekbarState = preference.valueAsSeekbarStateProvider
                     ?: throw IllegalStateException("SeekbarState cannot be null for slider preference")
-
                 holder.binding.title.setText(preference.title)
                 holder.binding.summary.setSummary(preference)
                 if (preference.icon != -1) {
@@ -124,29 +101,24 @@ class GenericPreferencesAdapter(
                 holder.binding.slider.setMin(seekbarState.min)
                 holder.binding.slider.setLeftLabelEnabled(seekbarState.leftLabel)
                 holder.binding.slider.setRightLabelEnabled(seekbarState.rightLabel)
-
                 if (seekbarState.leftLabel) {
                     holder.binding.slider.setLeftLabelProvider { progress, min, max ->
                         seekbarState.leftLabelProvider?.invoke(progress, min, max) ?: ""
                     }
                 }
-
                 if (seekbarState.rightLabel) {
                     holder.binding.slider.setRightLabelProvider { progress, min, max ->
                         seekbarState.rightLabelProvider?.invoke(progress, min, max) ?: ""
                     }
                 }
-
                 holder.binding.slider.setOnSeekChangeListener(object : FelicitySeekbar.OnSeekChangeListener {
                     override fun onProgressChanged(seekbar: FelicitySeekbar, progress: Float, fromUser: Boolean) {
                         if (fromUser) {
                             preference.onPreferenceAction?.invoke(seekbar) {
-                                 
                             }
                         }
                     }
                 })
-
                 holder.binding.title.highlight()
                 holder.binding.summary.highlight()
             }
@@ -157,13 +129,10 @@ class GenericPreferencesAdapter(
                 if (preference.icon != -1) {
                     holder.binding.icon.setImageResource(preference.icon)
                 }
-
                 holder.binding.container.setOnClickListener {
                     preference.onPreferenceAction?.invoke(it) {
-                         
                     }
                 }
-
                 holder.binding.title.highlight()
                 holder.binding.summary.highlight()
             }
@@ -175,13 +144,10 @@ class GenericPreferencesAdapter(
                     holder.binding.icon.setImageResource(preference.icon)
                 }
                 holder.binding.switchToggle.setChecked(preference.valueAsBooleanProvider ?: false, false)
-
                 holder.binding.switchToggle.setOnCheckedChangeListener { switch, isChecked ->
                     preference.onPreferenceAction?.invoke(switch) {
-                         
                     }
                 }
-
                 holder.binding.title.highlight()
                 holder.binding.summary.highlight()
             }
@@ -194,21 +160,16 @@ class GenericPreferencesAdapter(
                 val preference = preferences[position]
                 holder.binding.title.setText(preference.title)
                 holder.binding.summary.setSummary(preference)
-
                 if (preference.icon != -1) {
                     holder.binding.icon.setImageResource(preference.icon)
                 }
-
                 val state = preference.valueAsButtonGroupStateProvider
                     ?: throw IllegalStateException("ButtonGroupState cannot be null for button_group preference")
-
                 holder.binding.buttonGroup.setButtons(state.buttons)
                 holder.binding.buttonGroup.setSelectedIndex(state.selectedIndex, animate = false, notifyListener = false)
-
                 holder.binding.buttonGroup.setOnButtonSelectedListener {
                     preference.onPreferenceAction?.invoke(holder.binding.buttonGroup) {   }
                 }
-
                 holder.binding.title.highlight()
                 holder.binding.summary.highlight()
             }
@@ -219,13 +180,10 @@ class GenericPreferencesAdapter(
                 if (preference.icon != -1) {
                     holder.binding.icon.setImageResource(preference.icon)
                 }
-
                 holder.binding.container.setOnClickListener {
                     preference.onPreferenceAction?.invoke(it) {
-                         
                     }
                 }
-
                 holder.binding.title.highlight()
                 holder.binding.summary.highlight()
             }
@@ -236,13 +194,10 @@ class GenericPreferencesAdapter(
                 if (preference.icon != -1) {
                     holder.binding.icon.setImageResource(preference.icon)
                 }
-
                 holder.binding.container.setOnClickListener {
                     preference.onPreferenceAction?.invoke(it) {
-                         
                     }
                 }
-
                 holder.binding.title.highlight()
                 holder.binding.summary.highlight()
             }
@@ -250,27 +205,21 @@ class GenericPreferencesAdapter(
                 val preference = preferences[position]
                 holder.binding.title.setText(preference.title)
                 holder.binding.summary.setSummary(preference)
-
                 holder.binding.container.setOnClickListener {
                     preference.onPreferenceAction?.invoke(it) {
-                         
                     }
                 }
-
                 holder.binding.title.highlight()
                 holder.binding.summary.highlight()
             }
         }
     }
-
     override fun getItemCount(): Int {
         return preferences.size
     }
-
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
-
     override fun getItemViewType(position: Int): Int {
         return when (preferences[position].type) {
             PreferenceType.HEADER -> VIEW_TYPE_HEADER
@@ -289,41 +238,28 @@ class GenericPreferencesAdapter(
             else -> throw IllegalArgumentException("Unknown view type at position $position")
         }
     }
-
     inner class Popup(val binding: AdapterPreferencePopupBinding) : VerticalListViewHolder(binding.root)
-
     inner class Dialog(val binding: AdapterPreferenceDialogBinding) : VerticalListViewHolder(binding.root)
-
     inner class Slider(val binding: AdapterPreferenceSliderBinding) : VerticalListViewHolder(binding.root) {
         init {
             binding.root.clipToPadding = false
             binding.root.clipChildren = false
         }
     }
-
     inner class Panel(val binding: AdapterPreferencePanelBinding) : VerticalListViewHolder(binding.root)
-
     inner class Warning(val binding: AdapterPreferenceWarningBinding) : VerticalListViewHolder(binding.root)
-
     inner class ButtonGroup(val binding: AdapterPreferenceButtonGroupBinding) : VerticalListViewHolder(binding.root)
-
     inner class Switch(val binding: AdapterPreferenceSwitchBinding) : VerticalListViewHolder(binding.root) {
         init {
             binding.root.clipToPadding = false
             binding.root.clipChildren = false
         }
     }
-
     inner class SubHeader(val binding: AdapterPreferenceSubHeaderBinding) : VerticalListViewHolder(binding.root)
-
     inner class Header(val binding: AdapterPreferenceHeaderBinding) : VerticalListViewHolder(binding.root)
-
     inner class Normal(val binding: AdapterPreferenceNormalBinding) : VerticalListViewHolder(binding.root)
-
     inner class Link(val binding: AdapterPreferenceLinkBinding) : VerticalListViewHolder(binding.root)
-
     inner class Info(val binding: AdapterPreferenceInfoBinding) : VerticalListViewHolder(binding.root)
-
     private fun TextView.setSummary(preference: Preference) {
         when (preference.summary) {
             is Int -> {
@@ -337,20 +273,13 @@ class GenericPreferencesAdapter(
             }
         }
     }
-
-     
-
-
-
     private fun TextView.highlight() {
         if (keyword.isNotBlank()) {
             searchHighlighter(this, keyword)
         }
     }
-
     companion object {
         private const val TAG = "GenericPreferencesAdapter"
-
         const val VIEW_TYPE_HEADER = 0
         const val VIEW_TYPE_SWITCH = 1
         const val VIEW_TYPE_CHECKBOX = 2

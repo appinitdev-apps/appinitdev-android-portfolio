@@ -1,4 +1,3 @@
-
 object Language {
     val locales =
         listOf(
@@ -20,18 +19,13 @@ object Language {
             Locale("tr", ""),
             Locale("vi", ""),
         )
-
     fun setLocale(
         context: Context,
         locale: Locale,
     ) {
-        
-        
-        
         Locale.setDefault(locale)
         val localeList = LocaleList(locale)
         LocaleList.setDefault(localeList)
-
         val resources = context.resources
         val metrics = resources.displayMetrics
         val configuration = resources.configuration
@@ -39,7 +33,6 @@ object Language {
         configuration.setLocales(localeList)
         context.createConfigurationContext(configuration)
         resources.updateConfiguration(configuration, metrics)
-
         val appResources = context.applicationContext.resources
         val appMetrics = appResources.displayMetrics
         val appConfiguration = appResources.configuration
@@ -48,7 +41,6 @@ object Language {
         context.applicationContext.createConfigurationContext(appConfiguration)
         appResources.updateConfiguration(appConfiguration, appMetrics)
     }
-
     suspend fun initLocaleAsync(context: Context) {
         val locale = LanguagePreference.getLocaleAsync()
         if (locale != null) {

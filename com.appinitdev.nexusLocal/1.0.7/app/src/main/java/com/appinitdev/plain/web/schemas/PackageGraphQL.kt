@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addPackageSchema() {
     query("packages") {
         resolver { offset: Int, limit: Int, query: String, sortBy: FileSortBy ->
@@ -41,14 +40,12 @@ fun SchemaBuilder.addPackageSchema() {
             if (!file.exists()) {
                 throw GraphQLError("File does not exist")
             }
-
             try {
                 val context = MainActivity.instance.get()!!
                 if (file.name.endsWith(".apk", ignoreCase = true)) {
                     LogCat.d("Installing APK file: ${file.name}")
                     val apkMeta = ApkParsers.getMetaInfo(file)
                         ?: throw GraphQLError("Failed to parse APK package ID")
-
                     PackageHelper.install(context, file)
                     val packageName = apkMeta.packageName ?: ""
                     try {

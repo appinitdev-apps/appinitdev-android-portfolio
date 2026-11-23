@@ -1,17 +1,13 @@
-
 @HiltViewModel
 class FoldersViewModel @Inject constructor(
         application: Application,
         private val audioRepository: AudioRepository
 ) : WrappedViewModel(application) {
-
     private val _folders = MutableStateFlow<List<Folder>>(emptyList())
     val folders: StateFlow<List<Folder>> = _folders.asStateFlow()
-
     init {
         loadData()
     }
-
     private fun loadData() {
         viewModelScope.launch {
             audioRepository.getAllFoldersWithAggregation()
@@ -28,7 +24,6 @@ class FoldersViewModel @Inject constructor(
                 }
         }
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -39,9 +34,7 @@ class FoldersViewModel @Inject constructor(
             }
         }
     }
-
     companion object {
         private const val TAG = "FoldersViewModel"
     }
 }
-

@@ -1,16 +1,4 @@
-
 object ImageSearchHelper {
-     
-
-
-
-
-
-
-
-
-
-
     suspend fun searchCombinedAsync(
         context: Context,
         queryText: String,
@@ -36,7 +24,6 @@ object ImageSearchHelper {
             return ImageMediaStoreHelper.searchAsync(context, extraQuery, limit, offset, sortBy)
         }
     }
-
     suspend fun countCombinedAsync(
         context: Context,
         queryText: String,

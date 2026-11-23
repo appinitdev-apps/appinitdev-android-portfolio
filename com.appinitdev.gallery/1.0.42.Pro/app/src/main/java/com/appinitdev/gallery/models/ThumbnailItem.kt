@@ -1,2 +1,1 @@
-
 open class ThumbnailItem

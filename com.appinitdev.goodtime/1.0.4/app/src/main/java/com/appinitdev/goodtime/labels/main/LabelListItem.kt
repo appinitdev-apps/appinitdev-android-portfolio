@@ -1,21 +1,3 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @Composable
 fun LabelListItem(
     label: Label,
@@ -29,7 +11,6 @@ fun LabelListItem(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val labelName = label.name
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier =
@@ -72,7 +53,6 @@ fun LabelListItem(
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodyLarge,
         )
-
         var dropDownMenuExpanded by remember { mutableStateOf(false) }
         Box {
             IconButton(onClick = { dropDownMenuExpanded = true }) {
@@ -181,7 +161,6 @@ fun LabelListItem(
         }
     }
 }
-
 @Preview
 @Composable
 fun LabelCardPreview() {

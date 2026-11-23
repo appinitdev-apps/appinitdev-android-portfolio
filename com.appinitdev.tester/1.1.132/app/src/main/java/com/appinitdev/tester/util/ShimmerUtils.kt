@@ -1,4 +1,3 @@
-
 @Composable
 fun shimmerBrush(showShimmer: Boolean = true, targetValue: Float = 1000f): Brush {
     return if (showShimmer) {
@@ -7,7 +6,6 @@ fun shimmerBrush(showShimmer: Boolean = true, targetValue: Float = 1000f): Brush
             Color.LightGray.copy(alpha = 0.2f),
             Color.LightGray.copy(alpha = 0.6f),
         )
-
         val transition = rememberInfiniteTransition(label = "shimmer")
         val translateAnimation = transition.animateFloat(
             initialValue = 0f,
@@ -17,7 +15,6 @@ fun shimmerBrush(showShimmer: Boolean = true, targetValue: Float = 1000f): Brush
             ),
             label = "shimmer"
         )
-
         Brush.linearGradient(
             colors = shimmerColors,
             start = Offset.Zero,
@@ -31,7 +28,6 @@ fun shimmerBrush(showShimmer: Boolean = true, targetValue: Float = 1000f): Brush
         )
     }
 }
-
 @Composable
 fun ShimmerAppItem() {
     val brush = shimmerBrush()
@@ -79,7 +75,6 @@ fun ShimmerAppItem() {
         }
     }
 }
-
 @Composable
 fun ShimmerUserProfileCard() {
     val brush = shimmerBrush()
@@ -98,7 +93,6 @@ fun ShimmerUserProfileCard() {
                 .padding(20.dp)
                 .fillMaxWidth()
         ) {
-            
             Row(
                 verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -108,9 +102,7 @@ fun ShimmerUserProfileCard() {
                         .size(64.dp)
                         .background(brush, androidx.compose.foundation.shape.CircleShape)
                 )
-
                 Spacer(modifier = Modifier.width(16.dp))
-
                 Column(modifier = Modifier.weight(1f)) {
                     Spacer(
                         modifier = Modifier
@@ -127,10 +119,7 @@ fun ShimmerUserProfileCard() {
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(20.dp))
-
-            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)

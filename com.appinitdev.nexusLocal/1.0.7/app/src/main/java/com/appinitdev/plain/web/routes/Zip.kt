@@ -1,7 +1,5 @@
 private val zipSemaphore = Semaphore(1)
-
 fun Route.addZip() {
-
     get("/zip/dir") {
         val q = call.request.queryParameters
         val id = q["id"] ?: ""
@@ -9,12 +7,10 @@ fun Route.addZip() {
             call.respond(HttpStatusCode.BadRequest)
             return@get
         }
-
         if (!zipSemaphore.tryAcquire()) {
             call.respond(HttpStatusCode.TooManyRequests)
             return@get
         }
-
         try {
             val decryptedId = UrlHelper.decrypt(id)
             var dirPath: String
@@ -31,7 +27,6 @@ fun Route.addZip() {
                 call.respond(HttpStatusCode.NotFound)
                 return@get
             }
-
             val fileName = (jsonName.ifEmpty { "${folder.name}.zip" }).urlEncode().replace("+", "%20")
             call.response.header("Content-Disposition", "attachment;filename=\"${fileName}\";filename*=utf-8''\"${fileName}\"")
             call.response.header(HttpHeaders.ContentType, ContentType.Application.Zip.toString())
@@ -44,7 +39,6 @@ fun Route.addZip() {
             zipSemaphore.release()
         }
     }
-
     get("/zip/files") {
         val query = call.request.queryParameters
         val id = query["id"] ?: ""
@@ -52,12 +46,10 @@ fun Route.addZip() {
             call.respond(HttpStatusCode.BadRequest)
             return@get
         }
-
         if (!zipSemaphore.tryAcquire()) {
             call.respond(HttpStatusCode.TooManyRequests)
             return@get
         }
-
         try {
             val json = JSONObject(UrlHelper.decrypt(id))
             var paths: List<DownloadFileItem> = arrayListOf()
@@ -66,26 +58,21 @@ fun Route.addZip() {
                 call.respond(HttpStatusCode.BadRequest)
                 return@get
             }
-
             val q = json.optString("query")
             val context = MainApp.instance
             when (type) {
                 DataType.PACKAGE.name -> {
                     paths = PackageHelper.searchAsync(q, Int.MAX_VALUE, 0, FileSortBy.NAME_ASC).map { DownloadFileItem(it.path, "${it.name.replace(" ", "")}-${it.id}.apk") }
                 }
-
                 DataType.VIDEO.name -> {
                     paths = VideoMediaStoreHelper.searchAsync(context, q, Int.MAX_VALUE, 0, FileSortBy.DATE_DESC).map { DownloadFileItem(it.path, "") }
                 }
-
                 DataType.AUDIO.name -> {
                     paths = AudioMediaStoreHelper.searchAsync(context, q, Int.MAX_VALUE, 0, FileSortBy.DATE_DESC).map { DownloadFileItem(it.path, "") }
                 }
-
                 DataType.IMAGE.name -> {
                     paths = ImageMediaStoreHelper.searchAsync(context, q, Int.MAX_VALUE, 0, FileSortBy.DATE_DESC).map { DownloadFileItem(it.path, "") }
                 }
-
                 DataType.APP_FILE.name -> {
                     val appFileDao = AppDatabase.instance.appFileDao()
                     val chatDao = AppDatabase.instance.chatDao()
@@ -97,7 +84,6 @@ fun Route.addZip() {
                         DownloadFileItem(file.realPath, displayName)
                     }
                 }
-
                 DataType.FILE.name -> {
                     val tmpId = json.optString("id")
                     val value = TempHelper.getValue(tmpId)
@@ -106,11 +92,9 @@ fun Route.addZip() {
                         call.respond(HttpStatusCode.NotFound)
                         return@get
                     }
-
                     paths = jsonDecode<List<DownloadFileItem>>(value)
                 }
             }
-
             val items = paths.map { DownloadFileItemWrap(File(it.path), it.name) }.filter { it.file.exists() }
             val dirs = items.filter { it.file.isDirectory }
             val fileName = (json.optString("name").ifEmpty { "download.zip" }).urlEncode().replace("+", "%20")
@@ -141,5 +125,4 @@ fun Route.addZip() {
             zipSemaphore.release()
         }
     }
-
 }

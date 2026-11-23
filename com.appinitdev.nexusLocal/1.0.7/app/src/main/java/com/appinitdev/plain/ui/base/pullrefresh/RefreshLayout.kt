@@ -1,4 +1,3 @@
-
 @Composable
 fun RefreshLayout(
     refreshContent: @Composable RefreshLayoutState.() -> Unit,
@@ -13,7 +12,6 @@ fun RefreshLayout(
 ) {
     val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
-    
     val orientationIsHorizontal = remember(
         refreshLayoutState,
         composePosition,
@@ -33,7 +31,6 @@ fun RefreshLayout(
             composePosition, refreshLayoutState, dragEfficiency, orientationIsHorizontal, refreshingCanScroll
         )
     }
-
     Layout(
         content = {
             content()
@@ -51,7 +48,6 @@ fun RefreshLayout(
     ) { measurableList, constraints ->
         val contentPlaceable =
             measurableList[0].measure(constraints.copy(minWidth = 0, minHeight = 0))
-        
         val refreshContentPlaceable = measurableList[1].measure(
             Constraints(
                 maxWidth = if (orientationIsHorizontal) Constraints.Infinity else contentPlaceable.width,
@@ -66,7 +62,6 @@ fun RefreshLayout(
                     refreshContentPlaceable.height.toFloat()
                 }
         }
-
         layout(contentPlaceable.width, contentPlaceable.height) {
             val offset = refreshLayoutState.refreshContentOffsetState.value.roundToInt()
             when (composePosition) {
@@ -77,7 +72,6 @@ fun RefreshLayout(
                         0
                     )
                 }
-
                 ComposePosition.End -> {
                     contentPlaceable.placeRelative(offset, 0)
                     refreshContentPlaceable.placeRelative(
@@ -85,7 +79,6 @@ fun RefreshLayout(
                         0
                     )
                 }
-
                 ComposePosition.Top -> {
                     contentPlaceable.placeRelative(0, offset)
                     refreshContentPlaceable.placeRelative(
@@ -93,7 +86,6 @@ fun RefreshLayout(
                         (-refreshContentPlaceable.height) + offset
                     )
                 }
-
                 ComposePosition.Bottom -> {
                     contentPlaceable.placeRelative(0, offset)
                     refreshContentPlaceable.placeRelative(

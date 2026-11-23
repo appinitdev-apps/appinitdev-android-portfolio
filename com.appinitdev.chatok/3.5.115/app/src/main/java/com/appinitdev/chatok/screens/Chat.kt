@@ -1,5 +1,3 @@
-
-
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -21,15 +19,12 @@ fun Chat(navController: NavController,
         file
     )
     val isLoading by viewModel.isLoading.collectAsState()
-    
     val lottieSearchComp by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.animation1))
-
     val tState = rememberTimePickerState(is24Hour = false)
     val dState = rememberDatePickerState(yearRange = (2024 .. 2026))
     val cal = Calendar.getInstance()
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
-
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
         viewModel.imgUri = it
     }
@@ -71,7 +66,6 @@ fun Chat(navController: NavController,
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     var expanded by remember { mutableStateOf(false) }
-
     LaunchedEffect(key1 = viewModel.reply){
         if(viewModel.reply.isNotEmpty()) {
             viewModel.typing(true, chatId = chatId, userId = state.userData?.userId.toString())
@@ -79,25 +73,21 @@ fun Chat(navController: NavController,
             viewModel.typing(false, chatId = chatId, userId = state.userData?.userId.toString())
         }
     }
-
     LaunchedEffect(messages) {
         if (messages.isNotEmpty()) {
             listState.animateScrollToItem(0)
         }
     }
-
     LaunchedEffect(key1 = messages) {
         if(chatId!=""){
             viewModel.readAllMessagesInChat(chatId)
         }
     }
-    
     LaunchedEffect(key1 = chatId) {
         if (chatId.isNotEmpty()) {
             viewModel.popMessage(chatId)
         }
     }
-
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collect { lastVisibleIndex ->
@@ -106,7 +96,6 @@ fun Chat(navController: NavController,
                 }
             }
     }
-
     BackHandler {
         if (viewModel.searchText1.isNotBlank() || 
             srchIndx != -1 || 
@@ -152,7 +141,6 @@ fun Chat(navController: NavController,
             onBack()
         }
     }
-
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
@@ -218,7 +206,6 @@ fun Chat(navController: NavController,
                                         }
                                     } else {
                                         val isOnline = currentUser2.status
-                                        
                                         val statusText = if (isOnline) {
                                             stringResource(R.string.en_linea)
                                         } else {
@@ -226,7 +213,6 @@ fun Chat(navController: NavController,
                                                 val lastSeenDate = lastSeenTime.toDate()
                                                 val formattedTime = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(lastSeenDate)
                                                 val isToday = android.text.format.DateUtils.isToday(lastSeenDate.time)
-                                                
                                                 if (isToday) {
                                                     "últ. vez hoy $formattedTime"
                                                 } else {
@@ -326,7 +312,6 @@ fun Chat(navController: NavController,
         }
     ) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize()) {
-            
             if (state.userData?.pref?.customImg.isNullOrBlank()) {
                 Image(
                     painter = painterResource(R.drawable.blurry_gradient_haikei),
@@ -348,20 +333,17 @@ fun Chat(navController: NavController,
                     contentScale = ContentScale.Crop
                 )
             }
-
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()
             ) {
-                
                 val orderedMessages = remember(messages) {
                     messages.sortedWith(
                         compareBy<Message> { it.time == null }
                             .thenByDescending { it.time?.toDate()?.time ?: it.localTime }
                     )
                 }
-
                 if (!isLoading && orderedMessages.isEmpty() && state.chatId == chatId && state.chatId.isNotEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -377,7 +359,6 @@ fun Chat(navController: NavController,
                         }
                     }
                 }
-
                 if (isLoading) {
                     SkeletonMessageList()
                 } else {
@@ -447,15 +428,11 @@ fun Chat(navController: NavController,
                         }
                     }
                 }
-
                 if (state.userData?.isVip != true) {
                     AdBanner(modifier = Modifier.padding(vertical = 2.dp), isVip = false)
                 }
-
-                
                 val isInitiator = tp.user1?.userId == state.userData?.userId
                 val isRecipient = tp.user2?.userId == state.userData?.userId
-
                 if (tp.accepted || isInitiator) {
                     ChatInputBar(
                         viewModel = viewModel,
@@ -473,7 +450,6 @@ fun Chat(navController: NavController,
                         fileSize = size
                     )
                 } else if (isRecipient) {
-                    
                     AcceptChatPanel(
                         onAccept = { viewModel.acceptChat(chatId) },
                         onReject = { viewModel.deleteChat(listOf(chatId)); onBack() }
@@ -481,20 +457,15 @@ fun Chat(navController: NavController,
                 }
             }
         }
-
-        
         ChatOverlays(viewModel, chatId, userData, dState, tState, cal, schedule, state, context, selectedItem)
-
         if (viewModel.msg != Message()) {
             if (viewModel.msg.isEphemeral && viewModel.msg.senderId != state.userData?.userId && viewModel.msg.viewedAt != null) {
-                
                 viewModel.msg = Message()
             } else if (viewModel.msg.imgUrl.isNotEmpty()) {
                 ImageViewer(
                     userData = userData,
                     hideDialog = { 
                         if (viewModel.msg.isEphemeral && viewModel.msg.senderId != state.userData?.userId) {
-                            
                             viewModel.markMessageAsViewed(chatId, viewModel.msg.msgId)
                         }
                         viewModel.msg = Message() 
@@ -502,10 +473,8 @@ fun Chat(navController: NavController,
                     message = viewModel.msg
                 )
             } else if (viewModel.msg.audioUrl.isNotEmpty()) {
-                
                 viewModel.msg = Message()
             } else if (viewModel.msg.vidUrl.isNotEmpty()) {
-                
                 viewModel.msg = Message()
             } else if (viewModel.msg.vidUrl.isNotEmpty()) {
                 VideoPlayer(
@@ -515,7 +484,6 @@ fun Chat(navController: NavController,
                 )
             }
         }
-
         if (viewModel.imgUri != null) {
             ImagePreview(
                 uri = viewModel.imgUri,
@@ -538,7 +506,6 @@ fun Chat(navController: NavController,
                 }
             )
         }
-
         if (viewModel.vidUri != null) {
             VideoPreview(
                 uri = viewModel.vidUri,
@@ -557,7 +524,6 @@ fun Chat(navController: NavController,
                 }
             )
         }
-
         if (showReportDialog) {
             ReportDialog(
                 reportedUsername = userData.username ?: stringResource(R.string.usuario),
@@ -571,7 +537,6 @@ fun Chat(navController: NavController,
         }
     }
 }
-
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -593,7 +558,6 @@ fun ChatInputBar(
     val keyboardController = LocalSoftwareKeyboardController.current
     val voiceRecorder = remember { com.appinitdev.chatok.utils.VoiceRecorder(context) }
     var isRecording by remember { mutableStateOf(false) }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -602,31 +566,21 @@ fun ChatInputBar(
             .imePadding()
             .navigationBarsPadding()
     ) {
-        
         AnimatedVisibility(viewModel.replyMessage.msgId.isNotEmpty()) {
             ReplyPreview(viewModel.replyMessage, state) {
                 viewModel.replyMessage = Message()
             }
         }
-
         AnimatedVisibility(viewModel.editMsgId.isNotEmpty()) {
             EditPreview(viewModel.editMsgContent) {
                 viewModel.editMsgId = ""
                 viewModel.reply = ""
             }
         }
-
-         
-
-
-
-
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Bottom 
         ) {
-            
             if (isRecording) {
                 SmallGradientIconButton(
                     icon = Icons.Rounded.Stop,
@@ -652,10 +606,7 @@ fun ChatInputBar(
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
             }
-
             Spacer(modifier = Modifier.width(10.dp))
-
-            
             Surface(
                 modifier = Modifier
                     .weight(1f)
@@ -668,7 +619,6 @@ fun ChatInputBar(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(horizontal = 4.dp)
                 ) {
-                    
                     IconButton(onClick = { viewModel.isModalBottomSheetVisible = true }) {
                         Icon(
                             imageVector = Icons.Rounded.EmojiEmotions,
@@ -677,7 +627,6 @@ fun ChatInputBar(
                             modifier = Modifier.size(24.dp)
                         )
                     }
-
                     if (isRecording) {
                         Text(
                             text = stringResource(R.string.grabando),
@@ -706,8 +655,6 @@ fun ChatInputBar(
                             textStyle = MaterialTheme.typography.bodyLarge.copy(fontSize = 15.sp)
                         )
                     }
-                    
-                    
                     if (!isRecording) {
                         Box {
                             IconButton(onClick = { viewModel.showOptions = !viewModel.showOptions }) {
@@ -725,11 +672,8 @@ fun ChatInputBar(
                     }
                 }
             }
-
-            
             Spacer(modifier = Modifier.width(10.dp))
             val isTyping = (viewModel.reply.trim().isNotEmpty() || viewModel.fileUri != null) && !isRecording
-
             AnimatedContent(
                 targetState = isTyping,
                 transitionSpec = {
@@ -741,12 +685,6 @@ fun ChatInputBar(
                     SmallGradientIconButton(
                         icon = Icons.AutoMirrored.Rounded.Send,
                         onClick = {
-                             
-
-
-
-
-
 if (viewModel.editMsgId.isEmpty()) {
                                 viewModel.sendReply(chatId, viewModel.reply.trim(), replyMsg = viewModel.replyMessage)
                                 viewModel.reply = ""
@@ -769,7 +707,6 @@ if (viewModel.editMsgId.isEmpty()) {
                                 isRecording = true
                                 voiceRecorder.startRecording()
                             } else {
-                                
                             }
                         },
                         modifier = Modifier.padding(bottom = 4.dp)
@@ -781,7 +718,6 @@ if (viewModel.editMsgId.isEmpty()) {
         }
     }
 }
-
 @Composable
 fun IceBreakerButton(question: String, onClick: () -> Unit) {
     Surface(
@@ -800,7 +736,6 @@ fun IceBreakerButton(question: String, onClick: () -> Unit) {
         )
     }
 }
-
 @Composable
 fun ReplyPreview(message: Message, state: AppState, onCancel: () -> Unit) {
     Card(
@@ -827,7 +762,6 @@ fun ReplyPreview(message: Message, state: AppState, onCancel: () -> Unit) {
         }
     }
 }
-
 @Composable
 fun EditPreview(content: String, onCancel: () -> Unit) {
     Card(
@@ -845,7 +779,6 @@ fun EditPreview(content: String, onCancel: () -> Unit) {
         }
     }
 }
-
 @Composable
 fun FilePreview(name: String, size: String, onCancel: () -> Unit) {
     Card(
@@ -866,7 +799,6 @@ fun FilePreview(name: String, size: String, onCancel: () -> Unit) {
         }
     }
 }
-
 @Composable
 fun AttachmentMenu(
     viewModel: ChatViewModel,
@@ -891,7 +823,6 @@ fun AttachmentMenu(
         )
     }
 }
-
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -909,7 +840,6 @@ fun ChatOverlays(
     selectedItem: MutableList<String>
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
     if (viewModel.isModalBottomSheetVisible) {
         ModalBottomSheet(
             onDismissRequest = { viewModel.isModalBottomSheetVisible = false },
@@ -929,7 +859,6 @@ fun ChatOverlays(
             )
         }
     }
-
     if (viewModel.showDialog) {
         MsgDeleteDialog(0, hideDialog = { viewModel.showDialog = false }, deleteMsg = { 
             viewModel.deleteMsg(selectedItem.toList(), chatId)
@@ -938,14 +867,12 @@ fun ChatOverlays(
             selectedItem.clear()
         })
     }
-
     if (viewModel.datePicker) {
         DatePickerDialog(
             onDismissRequest = { viewModel.datePicker = false },
             confirmButton = { TextButton(onClick = { viewModel.datePicker = false; viewModel.timePicker = true }) { Text(stringResource(R.string.siguiente)) } }
         ) { DatePicker(state = dState) }
     }
-
     if (viewModel.timePicker) {
         TimePickerDialog(
             onCancel = { viewModel.timePicker = false },
@@ -958,11 +885,9 @@ fun ChatOverlays(
             }
         ) { TimePicker(state = tState) }
     }
-    
     if (viewModel.clearChatDialog) {
         ClearChatDialog(hideDialog = { viewModel.clearChatDialog = false }, clearChat = { viewModel.clearChat(chatId); viewModel.clearChatDialog = false })
     }
-
     if (viewModel.boostDialog) {
         BoostDialog(
             balance = state.userData?.balance ?: 0,
@@ -974,7 +899,6 @@ fun ChatOverlays(
             }
         )
     }
-
     if (viewModel.showTransferDialog) {
         TransferCoinsDialog(
             balance = state.userData?.balance ?: 0,
@@ -986,7 +910,6 @@ fun ChatOverlays(
                     onSuccess = {
                         viewModel.showTransferDialog = false
                         Toast.makeText(context, context.getString(R.string.transferencia_exitosa), Toast.LENGTH_SHORT).show()
-                        
                         viewModel.sendReply(chatId, context.getString(R.string.regalo_monedas, amount))
                     },
                     onError = { error ->
@@ -996,7 +919,6 @@ fun ChatOverlays(
             }
         )
     }
-
     if (viewModel.showTransferAnimation) {
         val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.animation3))
         Dialog(onDismissRequest = { viewModel.showTransferAnimation = false }) {
@@ -1009,13 +931,10 @@ fun ChatOverlays(
             }
         }
     }
-
     if (viewModel.msg.isEphemeral && viewModel.msg.senderId != state.userData?.userId && viewModel.msg.viewedAt == null && viewModel.msg.msgId.isNotEmpty()) {
-        
         var remainingTime by remember { mutableLongStateOf(viewModel.msg.ephemeralDuration) }
         val isTimer = viewModel.msg.ephemeralDuration > 0
         var hasStarted by remember { mutableStateOf(false) }
-
         LaunchedEffect(hasStarted) {
             if (hasStarted && isTimer) {
                 while (remainingTime > 0) {
@@ -1026,7 +945,6 @@ fun ChatOverlays(
                 viewModel.msg = Message()
             }
         }
-
         Dialog(onDismissRequest = { 
             if (!hasStarted) viewModel.msg = Message() 
         }) {
@@ -1052,7 +970,6 @@ fun ChatOverlays(
                             onClick = { 
                                 hasStarted = true
                                 if (!isTimer) {
-                                    
                                 }
                             }
                         )
@@ -1061,7 +978,6 @@ fun ChatOverlays(
                             Text(stringResource(R.string.cancelarw), color = Color.White)
                         }
                     } else {
-                        
                         Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
                             AsyncImage(
                                 model = viewModel.msg.imgUrl,
@@ -1069,7 +985,6 @@ fun ChatOverlays(
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Fit
                             )
-                            
                             if (isTimer) {
                                 Box(
                                     modifier = Modifier
@@ -1083,7 +998,6 @@ fun ChatOverlays(
                                 }
                             }
                         }
-                        
                         MainGradientButton(
                             text = stringResource(R.string.cerrar),
                             onClick = { 
@@ -1098,7 +1012,6 @@ fun ChatOverlays(
         }
     }
 }
-
 @Composable
 fun AcceptChatPanel(onAccept: () -> Unit, onReject: () -> Unit) {
     Card(
@@ -1117,7 +1030,6 @@ fun AcceptChatPanel(onAccept: () -> Unit, onReject: () -> Unit) {
         }
     }
 }
-
 @Composable
 fun PendingRequestPanel() {
     Box(modifier = Modifier.fillMaxWidth().padding(24.dp), contentAlignment = Alignment.Center) {

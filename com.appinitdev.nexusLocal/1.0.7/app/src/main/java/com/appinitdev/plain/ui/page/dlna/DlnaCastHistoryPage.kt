@@ -1,22 +1,18 @@
-
 class DlnaCastRulesViewModel : ViewModel() {
     val allowedFlow = MutableStateFlow<List<Pair<String, String>>>(emptyList())
     val deniedFlow = MutableStateFlow<List<Pair<String, String>>>(emptyList())
-
     fun load(context: android.content.Context) {
         viewModelScope.launch(Dispatchers.IO) {
             allowedFlow.value = DlnaAllowedSendersPreference.getAsync().map { decodeSenderEntry(it) }
             deniedFlow.value = DlnaDeniedSendersPreference.getAsync().map { decodeSenderEntry(it) }
         }
     }
-
     fun removeAllowed(context: android.content.Context, ip: String) {
         viewModelScope.launch(Dispatchers.IO) {
             DlnaAllowedSendersPreference.removeAsync(ip)
             allowedFlow.value = allowedFlow.value.filter { it.first != ip }
         }
     }
-
     fun removeDenied(context: android.content.Context, ip: String) {
         viewModelScope.launch(Dispatchers.IO) {
             DlnaDeniedSendersPreference.removeAsync(ip)
@@ -24,7 +20,6 @@ class DlnaCastRulesViewModel : ViewModel() {
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DlnaCastHistoryPage(
@@ -34,9 +29,7 @@ fun DlnaCastHistoryPage(
     val context = LocalContext.current
     val allowed by vm.allowedFlow.collectAsState()
     val denied by vm.deniedFlow.collectAsState()
-
     LaunchedEffect(Unit) { vm.load(context) }
-
     PScaffold(
         topBar = {
             PTopAppBar(navController = navController, title = stringResource(Res.string.dlna_cast_history))
@@ -95,5 +88,3 @@ fun DlnaCastHistoryPage(
         }
     }
 }
-
-

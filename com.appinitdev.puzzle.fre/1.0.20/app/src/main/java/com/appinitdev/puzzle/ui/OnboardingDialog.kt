@@ -1,10 +1,8 @@
-
 data class OnboardingStep(
     val title: String,
     val description: String,
     val icon: ImageVector
 )
-
 @Composable
 fun OnboardingDialog(
     onDismiss: () -> Unit
@@ -28,10 +26,8 @@ fun OnboardingDialog(
             )
         )
     }
-
     var currentStepIndex by remember { mutableIntStateOf(0) }
     val currentStep = steps[currentStepIndex]
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -61,9 +57,7 @@ fun OnboardingDialog(
                         modifier = Modifier.size(40.dp)
                     )
                 }
-
                 Spacer(modifier = Modifier.height(20.dp))
-
                 AnimatedContent(targetState = currentStep, label = "onboarding_step") { step ->
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
@@ -72,9 +66,7 @@ fun OnboardingDialog(
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
                         )
-
                         Spacer(modifier = Modifier.height(12.dp))
-
                         Text(
                             text = step.description,
                             style = MaterialTheme.typography.bodyMedium,
@@ -83,10 +75,7 @@ fun OnboardingDialog(
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.height(24.dp))
-
-                
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -103,9 +92,7 @@ fun OnboardingDialog(
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.height(24.dp))
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -118,7 +105,6 @@ fun OnboardingDialog(
                     } else {
                         Spacer(modifier = Modifier.width(1.dp))
                     }
-
                     Button(
                         onClick = {
                             if (currentStepIndex < steps.size - 1) {

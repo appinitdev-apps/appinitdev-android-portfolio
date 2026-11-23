@@ -1,4 +1,3 @@
-
 @Composable
 fun FeedsPageEffects(feedsVM: FeedsViewModel) {
     LaunchedEffect(Channel.sharedFlow) {

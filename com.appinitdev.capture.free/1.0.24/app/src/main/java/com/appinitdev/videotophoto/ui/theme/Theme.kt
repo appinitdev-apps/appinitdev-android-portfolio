@@ -1,4 +1,3 @@
-
 private val DarkColorScheme = darkColorScheme(
     primary = CyberCyan,
     onPrimary = Color.Black,
@@ -15,7 +14,6 @@ private val DarkColorScheme = darkColorScheme(
     surfaceVariant = CardDark,
     onSurfaceVariant = TextSecondary
 )
-
 @Composable
 fun VideoToPhotoTheme(
     content: @Composable () -> Unit

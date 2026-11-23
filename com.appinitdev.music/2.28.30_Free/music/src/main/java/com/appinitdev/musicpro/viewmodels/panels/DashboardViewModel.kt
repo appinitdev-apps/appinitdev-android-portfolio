@@ -1,154 +1,55 @@
-
- 
-
-
-
-
-
-
-
-
-
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
         application: Application,
         private val audioRepository: AudioRepository,
         private val songStatRepository: SongStatRepository
 ) : WrappedViewModel(application) {
-
-     
-
-
-
-
-
-
     data class LibraryStats(val trackCount: Int, val totalHours: Long)
-
-     
-
-
-
-
-
-
-
-
     data class RecommendedSpanConfig(val spanCount: Int, val bigCellPositions: List<Int>)
-
     var recommendedHeight: Int = -1
     private val _recentlyPlayed = MutableStateFlow<List<Audio>>(emptyList())
-
-     
     val recentlyPlayed: StateFlow<List<Audio>> = _recentlyPlayed.asStateFlow()
-
     private val _recentlyAdded = MutableStateFlow<List<Audio>>(emptyList())
-
-     
     val recentlyAdded: StateFlow<List<Audio>> = _recentlyAdded.asStateFlow()
-
     private val _favorites = MutableStateFlow<List<Audio>>(emptyList())
-
-     
     val favorites: StateFlow<List<Audio>> = _favorites.asStateFlow()
-
     private val _recommended = MutableStateFlow<List<Audio>?>(null)
-
-     
-
-
-
     val recommended: StateFlow<List<Audio>?> = _recommended.asStateFlow()
-
     private val _libraryStats = MutableStateFlow<LibraryStats?>(null)
-
-     
-
-
-
     val libraryStats: StateFlow<LibraryStats?> = _libraryStats.asStateFlow()
-
     private val _topArtists = MutableStateFlow<List<Artist>>(emptyList())
-
-     
-
-
-
     val topArtists: StateFlow<List<Artist>> = _topArtists.asStateFlow()
-
     private val _topAlbums = MutableStateFlow<List<Album>>(emptyList())
-
-     
-
-
-
     val topAlbums: StateFlow<List<Album>> = _topAlbums.asStateFlow()
-
     private val _recommendedSpanConfig = MutableStateFlow<RecommendedSpanConfig?>(null)
-
-     
-
-
-
-
     val recommendedSpanConfig: StateFlow<RecommendedSpanConfig?> = _recommendedSpanConfig.asStateFlow()
-
-     
-
-
-
-
     private val _recommendedRefreshTrigger = MutableStateFlow(0)
-
-     
     private var recommendedJob: Job? = null
-
-     
-
-
-
-
-
-
-
     fun getVisiblePanelPanels(): List<Panel> {
         val panels = mutableListOf<Panel>()
-
-        
         panels.add(Panel(R.string.songs, R.drawable.ic_song_16dp))
         panels.add(Panel(R.string.albums, R.drawable.ic_album_16dp))
         panels.add(Panel(R.string.artists, R.drawable.ic_people_16dp))
-
         if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_ALBUM_ARTISTS))
             panels.add(Panel(R.string.album_artists, R.drawable.ic_artist_16dp))
-
         if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_COMPOSERS))
             panels.add(Panel(R.string.composers, R.drawable.ic_composer_16dp))
-
         if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_GENRES))
             panels.add(Panel(R.string.genres, R.drawable.ic_piano_16dp))
-
         if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_YEAR))
             panels.add(Panel(R.string.year, R.drawable.ic_date_range_16dp))
-
         if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_PLAYLISTS))
             panels.add(Panel(R.string.playlists, R.drawable.ic_list_16dp))
-
         if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_PLAYING_QUEUE))
             panels.add(Panel(R.string.playing_queue, R.drawable.ic_queue_16dp))
-
         if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_RECENTLY_ADDED))
             panels.add(Panel(R.string.recently_added, R.drawable.ic_recently_added_16dp))
-
         if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_RECENTLY_PLAYED))
             panels.add(Panel(R.string.recently_played, R.drawable.ic_history_16dp))
-
         if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_MOST_PLAYED))
             panels.add(Panel(R.string.most_played, R.drawable.ic_equalizer_16dp))
-
         if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_BOOKMARKS))
             panels.add(Panel(R.string.bookmarks, R.drawable.ic_bookmark_16dp))
-
         if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_FAVORITES)) {
             panels.add(
                     if (UserInterfacePreferences.isLikeIconInsteadOfThumb()) {
@@ -158,22 +59,16 @@ class DashboardViewModel @Inject constructor(
                     }
             )
         }
-
         if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_FOLDERS))
             panels.add(Panel(R.string.folders, R.drawable.ic_folder_16dp))
-
         if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_FOLDERS_HIERARCHY))
             panels.add(Panel(R.string.folders_hierarchy, R.drawable.ic_tree_16dp))
-
         if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_ALWAYS_SKIPPED))
             panels.add(Panel(R.string.always_skipped, R.drawable.ic_skip_16dp))
-
         if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_MOST_SKIPPED))
             panels.add(Panel(R.string.most_skipped, R.drawable.ic_skip_16dp))
-
         return panels
     }
-
     init {
         startRecentlyPlayedFlow()
         startRecentlyAddedFlow()
@@ -183,7 +78,6 @@ class DashboardViewModel @Inject constructor(
         startTopArtistsFlow()
         startTopAlbumsFlow()
     }
-
     private fun startRecentlyPlayedFlow() {
         viewModelScope.launch {
             songStatRepository.getRecentlyPlayed()
@@ -198,7 +92,6 @@ class DashboardViewModel @Inject constructor(
                 }
         }
     }
-
     private fun startRecentlyAddedFlow() {
         viewModelScope.launch {
             audioRepository.getRecentAudio()
@@ -213,7 +106,6 @@ class DashboardViewModel @Inject constructor(
                 }
         }
     }
-
     private fun startFavoritesFlow() {
         viewModelScope.launch {
             audioRepository.getFavoriteAudio()
@@ -228,12 +120,6 @@ class DashboardViewModel @Inject constructor(
                 }
         }
     }
-
-     
-
-
-
-
     private fun startLibraryStatsFlow() {
         viewModelScope.launch {
             audioRepository.getAllAudio()
@@ -250,12 +136,6 @@ class DashboardViewModel @Inject constructor(
                 }
         }
     }
-
-     
-
-
-
-
     private fun startTopArtistsFlow() {
         viewModelScope.launch {
             combine(
@@ -272,12 +152,6 @@ class DashboardViewModel @Inject constructor(
                 }
         }
     }
-
-     
-
-
-
-
     private fun startTopAlbumsFlow() {
         viewModelScope.launch {
             combine(
@@ -294,22 +168,11 @@ class DashboardViewModel @Inject constructor(
                 }
         }
     }
-
-     
-
-
-
-
-
-
-
     private fun computeTopArtists(mostPlayed: List<Audio>, allAudio: List<Audio>): List<Artist> {
-        
         val artistPlayCounts = mostPlayed
             .mapNotNull { it.artist }
             .groupingBy { it }
             .eachCount()
-
         return artistPlayCounts.entries
             .sortedByDescending { it.value }
             .take(TOP_LIST_COUNT)
@@ -327,20 +190,11 @@ class DashboardViewModel @Inject constructor(
                 )
             }
     }
-
-     
-
-
-
-
-
-
     private fun computeTopAlbums(mostPlayed: List<Audio>, allAudio: List<Audio>): List<Album> {
         val albumPlayCounts = mostPlayed
             .mapNotNull { it.album }
             .groupingBy { it }
             .eachCount()
-
         return albumPlayCounts.entries
             .sortedByDescending { it.value }
             .take(TOP_LIST_COUNT)
@@ -360,15 +214,6 @@ class DashboardViewModel @Inject constructor(
                 )
             }
     }
-
-     
-
-
-
-
-
-
-
     private fun startRecommendedFlow() {
         recommendedJob?.cancel()
         recommendedJob = viewModelScope.launch(Dispatchers.IO) {
@@ -384,27 +229,12 @@ class DashboardViewModel @Inject constructor(
                 .collect { songs ->
                     if (songs.isNotEmpty()) {
                         _recommended.value = songs
-                        
-                        
                         _recommendedSpanConfig.value = buildPortraitSpanConfig()
                         Log.d(TAG, "recommended updated: ${songs.size} songs")
                     }
                 }
         }
     }
-
-     
-
-
-
-
-
-
-
-
-
-
-
     private fun computeRecommended(
             mostPlayedList: List<Audio>,
             recentlyPlayedList: List<Audio>,
@@ -415,9 +245,7 @@ class DashboardViewModel @Inject constructor(
         val recentlyPlayed = recentlyPlayedList
             .filterNot { it.id in mostPlayedIds }
             .take(RECOMMENDED_RECENTLY_PLAYED_COUNT)
-
         val composed = (mostPlayed + recentlyPlayed).distinctBy { it.id }
-
         return if (composed.size >= RECOMMENDED_MAX_COUNT) {
             composed.shuffled().take(RECOMMENDED_MAX_COUNT)
         } else {
@@ -428,14 +256,6 @@ class DashboardViewModel @Inject constructor(
             (composed + filler).shuffled()
         }
     }
-
-     
-
-
-
-
-
-
     private fun buildPortraitSpanConfig(): RecommendedSpanConfig {
         val validPatterns = listOf(
                 listOf(0, 4),
@@ -448,17 +268,6 @@ class DashboardViewModel @Inject constructor(
                 bigCellPositions = validPatterns.random()
         )
     }
-
-     
-
-
-
-
-
-
-
-
-
     fun getSpanConfigForOrientation(orientation: Int): RecommendedSpanConfig {
         return if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             RecommendedSpanConfig(
@@ -469,37 +278,16 @@ class DashboardViewModel @Inject constructor(
             _recommendedSpanConfig.value ?: buildPortraitSpanConfig()
         }
     }
-
-     
-
-
-
-
-
-
     fun refreshRecommended() {
         _recommendedRefreshTrigger.value++
     }
-
     companion object {
         private const val TAG = "DashboardViewModel"
-
-         
         private const val RECOMMENDED_MAX_COUNT = 6
-
-         
         private const val RECOMMENDED_MOST_PLAYED_COUNT = 4
-
-         
         private const val RECOMMENDED_RECENTLY_PLAYED_COUNT = 2
-
-         
         private const val RECOMMENDED_PORTRAIT_SPAN_COUNT = 3
-
-         
         private const val RECOMMENDED_LANDSCAPE_SPAN_COUNT = 5
-
-         
         private const val TOP_LIST_COUNT = 10
     }
 }

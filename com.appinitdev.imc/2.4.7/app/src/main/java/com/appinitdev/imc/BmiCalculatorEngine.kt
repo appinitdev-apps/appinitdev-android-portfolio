@@ -1,48 +1,37 @@
-
 object BmiCalculatorEngine {
-
     fun cmToInches(cm: Double): Double = cm / 2.54
     fun inchesToCm(inches: Double): Double = inches * 2.54
-
     fun kgToLbs(kg: Double): Double = kg * 2.20462
     fun lbsToKg(lbs: Double): Double = lbs * 0.453592
-
     fun formatHeight(heightCm: Double, unitSystem: UnitSystem): String {
         val totalInches = cmToInches(heightCm)
         val feet = (totalInches / 12).toInt()
         val inches = (totalInches % 12).roundToInt()
-
         val imperialStr = "${feet}' ${inches}\" (${String.format("%.1f", totalInches)} in)"
         val metricStr = "${String.format("%.0f", heightCm)} cm"
-
         return if (unitSystem == UnitSystem.METRIC) {
             "$metricStr  •  ${feet}' ${inches}\""
         } else {
             "$imperialStr  •  $metricStr"
         }
     }
-
     fun formatWeight(weightKg: Double, unitSystem: UnitSystem): String {
         val lbs = kgToLbs(weightKg)
         val metricStr = String.format("%.1f kg", weightKg)
         val imperialStr = String.format("%.1f lbs", lbs)
-
         return if (unitSystem == UnitSystem.METRIC) {
             "$metricStr  •  $imperialStr"
         } else {
             "$imperialStr  •  $metricStr"
         }
     }
-
     fun getCategoryAndSubIndexFromBirth(birthTimestamp: Long): Triple<Int, Int, String> {
         val birth = Calendar.getInstance().apply { timeInMillis = birthTimestamp }
         val now = Calendar.getInstance()
-
         var years = now.get(Calendar.YEAR) - birth.get(Calendar.YEAR)
         if (now.get(Calendar.DAY_OF_YEAR) < birth.get(Calendar.DAY_OF_YEAR)) {
             years--
         }
-
         return when {
             years < 1 -> {
                 val months = ((now.get(Calendar.YEAR) - birth.get(Calendar.YEAR)) * 12 + now.get(Calendar.MONTH) - birth.get(Calendar.MONTH)).coerceIn(0, 11)
@@ -69,7 +58,6 @@ object BmiCalculatorEngine {
             }
         }
     }
-
     fun getOptionsForCategory(context: Context, categoryId: Int): List<String>? {
         return when (categoryId) {
             1 -> listOf(
@@ -123,7 +111,6 @@ object BmiCalculatorEngine {
             else -> null
         }
     }
-
     fun calculate(
         context: Context,
         categoryId: Int,
@@ -142,16 +129,12 @@ object BmiCalculatorEngine {
             5 -> Datos.adulto
             else -> Datos.adultoMayor
         }
-
         val selectedRowIndex = subOptionIndex.coerceIn(0, datosTable.size - 1)
         val selectedRow = datosTable[selectedRowIndex]
-
         val heightMeters = heightCm / 100.0
         val bmiValue = if (heightMeters > 0) weightKg / heightMeters.pow(2) else 0.0
-
         val bmr = calculateBmr(gender, weightKg, heightCm, getApproxAgeFromCategory(categoryId, subOptionIndex))
         val healthRec = getAgeAppropriateRecommendation(categoryId, subOptionIndex, gender, weightKg, heightCm, bmr)
-
         return when (categoryId) {
             1, 2 -> calculateForBabies(
                 context = context,
@@ -184,7 +167,6 @@ object BmiCalculatorEngine {
             )
         }
     }
-
     private fun calculateForBabies(
         context: Context,
         med: DoubleArray,
@@ -209,9 +191,7 @@ object BmiCalculatorEngine {
             statusText = context.getString(R.string.normal1)
             tIMC = 2
         }
-
         val heightStatusText = if (e < med[2]) context.getString(R.string.riesgo_de_estatura_baja) else ""
-
         return BmiResult(
             pesoFormatted = formatWeight(p, unitSystem),
             estaturaFormatted = formatHeight(e, unitSystem),
@@ -229,7 +209,6 @@ object BmiCalculatorEngine {
             healthRecommendation = healthRec
         )
     }
-
     private fun calculateForChildren(
         context: Context,
         med: DoubleArray,
@@ -255,12 +234,10 @@ object BmiCalculatorEngine {
             statusText = context.getString(R.string.normal1)
             tIMC = 2
         }
-
         val heightM = e / 100.0
         val expectedWeight = med[1] * (heightM.pow(2))
         val minHealthy = med[0] * (heightM.pow(2))
         val maxHealthy = med[2] * (heightM.pow(2))
-
         return BmiResult(
             pesoFormatted = formatWeight(p, unitSystem),
             estaturaFormatted = formatHeight(e, unitSystem),
@@ -277,7 +254,6 @@ object BmiCalculatorEngine {
             healthRecommendation = healthRec
         )
     }
-
     private fun calculateForAdults(
         context: Context,
         med: DoubleArray,
@@ -294,7 +270,6 @@ object BmiCalculatorEngine {
         val minHealthy: Double
         val maxHealthy: Double
         val expectedWeight: Double
-
         if (categoryId == 6) { 
             if (bmiValue < 22.0) {
                 statusText = context.getString(R.string.riesgo_de_desnutrici_n)
@@ -315,7 +290,6 @@ object BmiCalculatorEngine {
                 statusText = context.getString(R.string.normal1)
                 tIMC = 2
             }
-
             minHealthy = 22.0 * (heightM.pow(2))
             maxHealthy = 26.9 * (heightM.pow(2))
             expectedWeight = ((22.0 + 26.9) / 2.0) * (heightM.pow(2))
@@ -339,12 +313,10 @@ object BmiCalculatorEngine {
                 statusText = context.getString(R.string.normal1)
                 tIMC = 2
             }
-
             minHealthy = 18.5 * (heightM.pow(2))
             maxHealthy = 24.9 * (heightM.pow(2))
             expectedWeight = ((18.5 + 24.9) / 2.0) * (heightM.pow(2))
         }
-
         return BmiResult(
             pesoFormatted = formatWeight(p, unitSystem),
             estaturaFormatted = formatHeight(e, unitSystem),
@@ -361,7 +333,6 @@ object BmiCalculatorEngine {
             healthRecommendation = healthRec
         )
     }
-
     private fun getAgeAppropriateRecommendation(
         categoryId: Int,
         subIndex: Int,
@@ -446,13 +417,11 @@ object BmiCalculatorEngine {
             }
         }
     }
-
     private fun calculateBmr(gender: Gender, weightKg: Double, heightCm: Double, ageYears: Int): Int {
         val s = if (gender == Gender.MALE) 5 else -161
         val bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * ageYears) + s
         return bmr.roundToInt().coerceAtLeast(400)
     }
-
     private fun getApproxAgeFromCategory(categoryId: Int, subIndex: Int): Int {
         return when (categoryId) {
             1 -> 1

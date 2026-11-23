@@ -1,8 +1,6 @@
-
 @Composable
 fun TypingIndicator(color: Color = Color(0xFF238CDD)) {
     val infiniteTransition = rememberInfiniteTransition(label = "typing")
-    
     val dot1Alpha by infiniteTransition.animateFloat(
         initialValue = 0.2f, targetValue = 1f,
         animationSpec = infiniteRepeatable(tween(600, easing = LinearEasing), RepeatMode.Reverse),
@@ -18,7 +16,6 @@ fun TypingIndicator(color: Color = Color(0xFF238CDD)) {
         animationSpec = infiniteRepeatable(tween(600, delayMillis = 400, easing = LinearEasing), RepeatMode.Reverse),
         label = "dot3"
     )
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -29,7 +26,6 @@ fun TypingIndicator(color: Color = Color(0xFF238CDD)) {
         Dot(color.copy(alpha = dot3Alpha))
     }
 }
-
 @Composable
 private fun Dot(color: Color) {
     Box(

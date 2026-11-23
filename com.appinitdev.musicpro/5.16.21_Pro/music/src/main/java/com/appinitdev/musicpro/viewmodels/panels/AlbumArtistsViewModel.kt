@@ -1,24 +1,13 @@
-
- 
-
-
-
-
-
-
 @HiltViewModel
 class AlbumArtistsViewModel @Inject constructor(
         application: Application,
         private val audioRepository: AudioRepository
 ) : WrappedViewModel(application) {
-
     private val _albumArtists = MutableStateFlow<MutableList<Artist>>(mutableListOf())
     val albumArtists: StateFlow<MutableList<Artist>> = _albumArtists.asStateFlow()
-
     init {
         loadData()
     }
-
     private fun loadData() {
         viewModelScope.launch {
             audioRepository.getAllAlbumArtistsWithAggregation()
@@ -35,7 +24,6 @@ class AlbumArtistsViewModel @Inject constructor(
                 }
         }
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -47,9 +35,7 @@ class AlbumArtistsViewModel @Inject constructor(
             }
         }
     }
-
     companion object {
         private const val TAG = "AlbumArtistsViewModel"
     }
 }
-

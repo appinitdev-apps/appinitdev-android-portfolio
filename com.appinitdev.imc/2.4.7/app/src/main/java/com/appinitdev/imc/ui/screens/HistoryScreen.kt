@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
@@ -8,7 +7,6 @@ fun HistoryScreen(
     val historyManager = remember { BmiHistoryManager(context) }
     var records by remember { mutableStateOf(historyManager.getRecords()) }
     var showDeleteAllDialog by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -85,8 +83,6 @@ fun HistoryScreen(
                 }
             } else {
                 val avgBmi = records.map { it.bmiValue }.average()
-
-                
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -117,12 +113,10 @@ fun HistoryScreen(
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                         }
-
                         if (records.size >= 2) {
                             val oldestWeight = records.last().weightKg
                             val newestWeight = records.first().weightKg
                             val weightDiff = newestWeight - oldestWeight
-
                             val (badgeBg, badgeFg, icon, text) = when {
                                 weightDiff < -0.05 -> QuadrupleTrend(
                                     Color(0xFF10B981).copy(alpha = 0.2f),
@@ -143,7 +137,6 @@ fun HistoryScreen(
                                     "0.0 kg"
                                 )
                             }
-
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
                                     text = stringResource(id = R.string.cambio_total),
@@ -177,7 +170,6 @@ fun HistoryScreen(
                                 }
                             }
                         }
-
                         Column(horizontalAlignment = Alignment.End) {
                             Text(
                                 text = stringResource(id = R.string.promedio_imc),
@@ -194,7 +186,6 @@ fun HistoryScreen(
                         }
                     }
                 }
-
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
@@ -213,7 +204,6 @@ fun HistoryScreen(
             }
         }
     }
-
     if (showDeleteAllDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteAllDialog = false },
@@ -284,21 +274,18 @@ fun HistoryScreen(
         )
     }
 }
-
 private data class QuadrupleTrend(
     val bg: Color,
     val fg: Color,
     val icon: androidx.compose.ui.graphics.vector.ImageVector,
     val text: String
 )
-
 @Composable
 fun HistoryRecordItem(
     record: BmiRecord,
     onDelete: () -> Unit
 ) {
     val dateStr = DateFormat.format("dd MMM yyyy, hh:mm a", Date(record.timestamp)).toString()
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
@@ -327,9 +314,7 @@ fun HistoryRecordItem(
                     )
                 }
             }
-
             Spacer(modifier = Modifier.width(14.dp))
-
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = record.statusText,
@@ -349,7 +334,6 @@ fun HistoryRecordItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                 )
             }
-
             IconButton(onClick = onDelete) {
                 Icon(
                     imageVector = Icons.Default.Delete,

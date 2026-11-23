@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VerificationSection(
@@ -8,24 +7,18 @@ fun VerificationSection(
     val context = LocalContext.current
     val profile by viewModel.userProfile.collectAsState()
     val icons by viewModel.fixedAppsIcons.collectAsState()
-    
     val appsStatus = remember(profile) {
         DevAppsConfig.developerApps.shuffled().map { app ->
             val instalada = com.appinitdev.tester.Funciones.isAppInstalled(context, app.paquete)
             Triple(app.nombre, app.paquete, instalada)
         }
     }
-
     LaunchedEffect(Unit) {
         viewModel.loadFixedAppsIcons(DevAppsConfig.developerApps.map { it.paquete })
     }
-
     LaunchedEffect(appsStatus) {
-        
-        
         viewModel.actualizarNivelPorInstalacionesFijas(context)
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -42,8 +35,6 @@ fun VerificationSection(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(
-
-
                     innerPadding
                 )
         ) {
@@ -61,10 +52,7 @@ fun VerificationSection(
                     stringResource(R.string.tu_nivel_depende_de_cu_ntas_apps_de_esta_lista_tengas_instaladas),
                     color = Color.Gray
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
-
-                
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
@@ -91,9 +79,7 @@ fun VerificationSection(
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.height(24.dp))
-
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(appsStatus) { (nombre, paquete, instalada) ->
                         Log.e("Dataghj", "$nombre -> $paquete -> $instalada")
@@ -105,7 +91,6 @@ fun VerificationSection(
         }
     }
 }
-
 @Composable
 fun AppVerificationItem(
     nombre: String,
@@ -115,7 +100,6 @@ fun AppVerificationItem(
 ) {
     val context = LocalContext.current
     val formattedName = nombre.lowercase().replaceFirstChar { it.uppercase() }
-
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -133,43 +117,28 @@ fun AppVerificationItem(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            
             Box(
                 modifier = Modifier
                     .size(44.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
-                
-
                 SubcomposeAsyncImage(
-
                     model = ImageRequest.Builder(LocalContext.current)
-
                         .data(iconoUrl)
-
                         .crossfade(true) 
-
                         .build(),
-
                     contentDescription = "Icono de ${nombre}",
-
                     modifier = Modifier
-
                         .fillMaxSize()
-
                         .clip(RoundedCornerShape(8.dp)),
-
                     loading = {
                         LetterLogo(formattedName, modifier = Modifier.fillMaxSize())
                     },
                     error = {
                         LetterLogo(formattedName, modifier = Modifier.fillMaxSize())
                     }
-
                 )
-
-                
                 if (estaInstalada) {
                     Box(
                         modifier = Modifier
@@ -194,9 +163,7 @@ fun AppVerificationItem(
                     }
                 }
             }
-
             Spacer(modifier = Modifier.width(16.dp))
-
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = formattedName,
@@ -212,7 +179,6 @@ fun AppVerificationItem(
                     maxLines = 1
                 )
             }
-
             if (!estaInstalada) {
                 Button(
                     onClick = {
@@ -248,4 +214,3 @@ fun AppVerificationItem(
         }
     }
 }
-

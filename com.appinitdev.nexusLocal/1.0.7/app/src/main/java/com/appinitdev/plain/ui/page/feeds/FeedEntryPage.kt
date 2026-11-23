@@ -1,4 +1,3 @@
-
 @SuppressLint("MissingPermission")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
@@ -23,7 +22,6 @@ fun FeedEntryPage(navController: NavHostController, id: String, tagsVM: TagsView
     }
     if (feedEntryVM.showSelectTagsDialog.value) { feedEntryVM.item.value?.let { m -> SelectTagsDialog(tagsVM, tagsState, tagsMapState, data = m) { feedEntryVM.showSelectTagsDialog.value = false } } }
     BackHandler(previewerState.visible) { scope.launch { previewerState.close() } }
-
     PScaffold(topBar = { FeedEntryTopBar(navController, feedEntryVM, scrollBehavior, scope, context) { scope.launch { scrollState.scrollToItem(0) } } }, modifier = Modifier.imePadding(),
         content = { paddingValues ->
             val m = feedEntryVM.item.value ?: return@PScaffold

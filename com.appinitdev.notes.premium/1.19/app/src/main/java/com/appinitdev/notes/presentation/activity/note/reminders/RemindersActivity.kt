@@ -1,11 +1,8 @@
-
 class RemindersActivity : LockedActivity<ActivityRemindersBinding>(), ReminderListener {
-
     private lateinit var alarmPermissionActivityResultLauncher: ActivityResultLauncher<Intent>
     private val model: NotallyModel by viewModels()
     private lateinit var reminderAdapter: ReminderAdapter
     private var selectedReminder: Reminder? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRemindersBinding.inflate(layoutInflater)
@@ -13,7 +10,6 @@ class RemindersActivity : LockedActivity<ActivityRemindersBinding>(), ReminderLi
         configureEdgeToEdgeInsets()
         setupToolbar()
         setupRecyclerView()
-
         alarmPermissionActivityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (canScheduleAlarms()) {
@@ -33,38 +29,15 @@ class RemindersActivity : LockedActivity<ActivityRemindersBinding>(), ReminderLi
             }
         }
     }
-
-     
-
-
-
     private fun configureEdgeToEdgeInsets() {
-        
-        
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        
-
-        
-        
-        
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
-            
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
-
-            
-            
             binding.Toolbar.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
                 requestLayout() 
             }
-            
-            
-            
-            
-            
             binding.MainListView.apply {
                 setPadding(
                     paddingLeft,
@@ -81,12 +54,9 @@ class RemindersActivity : LockedActivity<ActivityRemindersBinding>(), ReminderLi
                     systemBarsInsets.bottom + imeInsets.bottom,
                 )
             }
-
-            
             insets
         }
     }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -106,14 +76,12 @@ class RemindersActivity : LockedActivity<ActivityRemindersBinding>(), ReminderLi
             }
         }
     }
-
     private fun setupToolbar() {
         binding.Toolbar.apply {
             setNavigationOnClickListener { finish() }
             menu.add(R.string.add_reminder, R.drawable.add) { showDatePickerDialog() }
         }
     }
-
     private fun setupRecyclerView() {
         reminderAdapter = ReminderAdapter(this)
         binding.MainListView.apply {
@@ -127,7 +95,6 @@ class RemindersActivity : LockedActivity<ActivityRemindersBinding>(), ReminderLi
             } else binding.EmptyState.visibility = View.INVISIBLE
         }
     }
-
     private fun showDatePickerDialog(reminder: Reminder? = null, calendar: Calendar? = null) {
         selectedReminder = reminder
         checkNotificationPermission(
@@ -143,7 +110,6 @@ class RemindersActivity : LockedActivity<ActivityRemindersBinding>(), ReminderLi
                 .show(supportFragmentManager, "reminderDatePicker")
         }
     }
-
     private fun showTimePickerDialog(reminder: Reminder? = null, calendar: Calendar) {
         TimePickerFragment(
                 calendar,
@@ -151,7 +117,6 @@ class RemindersActivity : LockedActivity<ActivityRemindersBinding>(), ReminderLi
                     override fun onBack() {
                         showDatePickerDialog(reminder, calendar)
                     }
-
                     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
                         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                         calendar.set(Calendar.MINUTE, minute)
@@ -173,7 +138,6 @@ class RemindersActivity : LockedActivity<ActivityRemindersBinding>(), ReminderLi
             )
             .show(supportFragmentManager, "reminderTimePicker")
     }
-
     private fun showRepetitionDialog(
         reminder: Reminder? = null,
         calendar: Calendar,
@@ -189,16 +153,12 @@ class RemindersActivity : LockedActivity<ActivityRemindersBinding>(), ReminderLi
                         when {
                             this == null -> None.isChecked = true
                             value == 1 && unit == RepetitionTimeUnit.DAYS -> Daily.isChecked = true
-
                             value == 1 && unit == RepetitionTimeUnit.WEEKS ->
                                 Weekly.isChecked = true
-
                             value == 1 && unit == RepetitionTimeUnit.MONTHS ->
                                 Monthly.isChecked = true
-
                             value == 1 && unit == RepetitionTimeUnit.YEARS ->
                                 Yearly.isChecked = true
-
                             fromCustomRepetitionDialog -> Custom.isChecked = true
                             else -> {
                                 showCustomRepetitionDialog(reminder, calendar, onRepetitionSelected)
@@ -208,7 +168,6 @@ class RemindersActivity : LockedActivity<ActivityRemindersBinding>(), ReminderLi
                     }
                 }
             }
-
         val dialog =
             MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.repetition)
@@ -243,7 +202,6 @@ class RemindersActivity : LockedActivity<ActivityRemindersBinding>(), ReminderLi
             Yearly.setOnCheckedEnableButton(positiveButton)
         }
     }
-
     private fun showCustomRepetitionDialog(
         reminder: Reminder? = null,
         calendar: Calendar,
@@ -263,7 +221,6 @@ class RemindersActivity : LockedActivity<ActivityRemindersBinding>(), ReminderLi
                     Value.setText(it.value.toString())
                 }
             }
-
         val dialog =
             MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.repetition_custom)
@@ -300,7 +257,6 @@ class RemindersActivity : LockedActivity<ActivityRemindersBinding>(), ReminderLi
         }
         positiveButton.isEnabled = reminder?.repetition != null
     }
-
     private fun RadioButton.setOnCheckedEnableButton(button: Button) {
         setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -308,10 +264,8 @@ class RemindersActivity : LockedActivity<ActivityRemindersBinding>(), ReminderLi
             }
         }
     }
-
     private fun Editable?.hasValueBiggerZero() =
         (!isNullOrEmpty() && toString().toIntOrNull()?.let { it > 0 } ?: false)
-
     private fun confirmDeletion(reminder: Reminder) {
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.delete_reminder)
@@ -324,15 +278,12 @@ class RemindersActivity : LockedActivity<ActivityRemindersBinding>(), ReminderLi
             .setCancelButton()
             .show()
     }
-
     override fun delete(reminder: Reminder) {
         confirmDeletion(reminder)
     }
-
     override fun edit(reminder: Reminder) {
         showDatePickerDialog(reminder)
     }
-
     companion object {
         const val NOTE_ID = "NOTE_ID"
         const val REQUEST_NOTIFICATION_PERMISSION_ON_OPEN_REQUEST_CODE = 101

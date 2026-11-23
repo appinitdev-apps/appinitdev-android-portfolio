@@ -1,4 +1,3 @@
-
 internal fun handleFileSelection(
     event: PickFileResultEvent,
     context: Context,
@@ -25,13 +24,11 @@ internal fun handleFileSelection(
             }
         }
         if (placeholderItems.isEmpty()) return@coMain
-
         val isImageVideo = event.type == PickFileType.IMAGE_VIDEO
         val messageId = withIO { chatVM.sendFilesImmediate(placeholderItems, isImageVideo) }
         scrollToLatest(chatVM, scrollState, null)
         delay(200)
         focusManager.clearFocus()
-
         withIO {
             val finalItems = mutableListOf<DMessageFile>()
             event.uris.forEachIndexed { index, uri ->
@@ -63,7 +60,6 @@ internal fun handleFileSelection(
         }
     }
 }
-
 internal suspend fun scrollToLatest(
     chatVM: ChatViewModel,
     scrollState: LazyListState,

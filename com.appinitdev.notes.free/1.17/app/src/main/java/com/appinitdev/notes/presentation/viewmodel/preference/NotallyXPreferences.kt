@@ -1,8 +1,5 @@
-
 class NotallyXPreferences private constructor(private val context: Context) {
-
     private val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-
     private val encryptedPreferences by lazy {
         EncryptedSharedPreferences.create(
             context,
@@ -12,7 +9,6 @@ class NotallyXPreferences private constructor(private val context: Context) {
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
         )
     }
-
     val theme = createEnumPreference(preferences, "theme", Theme.FOLLOW_SYSTEM, R.string.theme)
     val useDynamicColors = BooleanPreference("useDynamicColors", preferences, false)
     val textSize =
@@ -21,7 +17,6 @@ class NotallyXPreferences private constructor(private val context: Context) {
         createEnumPreference(preferences, "dateFormat", DateFormat.RELATIVE, R.string.date_format)
     val applyDateFormatInNoteView =
         BooleanPreference("applyDateFormatInNoteView", preferences, true)
-
     val notesView = createEnumPreference(preferences, "view", NotesView.GRID, R.string.view)
     val notesSorting = NotesSortPreference(preferences)
     val startView =
@@ -33,7 +28,6 @@ class NotallyXPreferences private constructor(private val context: Context) {
             ListItemSort.AUTO_SORT_BY_CHECKED,
             R.string.list_item_auto_sort,
         )
-
     val maxItems =
         IntPreference(
             "maxItemsToDisplayInList.v1",
@@ -85,7 +79,6 @@ class NotallyXPreferences private constructor(private val context: Context) {
             20,
             R.string.max_labels_to_display,
         )
-
     val backupsFolder =
         StringPreference("autoBackup", preferences, EMPTY_PATH, R.string.auto_backups_folder)
     val backupOnSave =
@@ -93,7 +86,6 @@ class NotallyXPreferences private constructor(private val context: Context) {
     val periodicBackups = PeriodicBackupsPreference(preferences)
     val periodicBackupLastExecution =
         LongPreference("periodicBackupLastExecution", preferences, -1L)
-
     val backupPassword by lazy {
         StringPreference(
             "backupPassword",
@@ -102,7 +94,6 @@ class NotallyXPreferences private constructor(private val context: Context) {
             R.string.backup_password,
         )
     }
-
     val autoSaveAfterIdleTime =
         IntPreference(
             "autoSaveAfterIdleTime",
@@ -112,7 +103,6 @@ class NotallyXPreferences private constructor(private val context: Context) {
             20,
             R.string.auto_save_after_idle_time,
         )
-
     val biometricLock =
         createEnumPreference(
             preferences,
@@ -120,7 +110,6 @@ class NotallyXPreferences private constructor(private val context: Context) {
             BiometricLock.DISABLED,
             R.string.biometric_lock,
         )
-
     val iv = ByteArrayPreference("encryption_iv", preferences, null)
     val databaseEncryptionKey =
         EncryptedPassphrasePreference("database_encryption_key", preferences, ByteArray(0))
@@ -129,22 +118,17 @@ class NotallyXPreferences private constructor(private val context: Context) {
     }
     val secureFlag =
         BooleanPreference("secureFlag", preferences, false, R.string.disallow_screenshots)
-
     val dataInPublicFolder =
         BooleanPreference("dataOnExternalStorage", preferences, false, R.string.data_in_public)
-
     fun getWidgetData(id: Int) = preferences.getLong("widget:$id", 0)
-
     fun getWidgetNoteType(id: Int) =
         preferences.getString("widgetNoteType:$id", null)?.let { Type.valueOf(it) }
-
     fun deleteWidget(id: Int) {
         preferences.edit(true) {
             remove("widget:$id")
             remove("widgetNoteType:$id")
         }
     }
-
     fun updateWidget(id: Int, noteId: Long, noteType: Type) {
         preferences.edit(true) {
             putLong("widget:$id", noteId)
@@ -152,7 +136,6 @@ class NotallyXPreferences private constructor(private val context: Context) {
             commit()
         }
     }
-
     fun getUpdatableWidgets(noteIds: LongArray? = null): List<Pair<Int, Long>> {
         val updatableWidgets = ArrayList<Pair<Int, Long>>()
         val pairs = preferences.all
@@ -173,11 +156,9 @@ class NotallyXPreferences private constructor(private val context: Context) {
         }
         return updatableWidgets
     }
-
     fun showDateCreated(): Boolean {
         return dateFormat.value != DateFormat.NONE
     }
-
     fun toJsonString(): String {
         val jsonObject = JSONObject()
         for ((key, value) in preferences.all) {
@@ -192,10 +173,8 @@ class NotallyXPreferences private constructor(private val context: Context) {
         }
         return jsonObject.toString(4)
     }
-
     fun import(context: Context, uri: Uri) =
         context.importPreferences(uri, preferences.edit()).also { reload() }
-
     fun reset() {
         preferences.edit().clear().commit()
         encryptedPreferences.edit().clear().apply()
@@ -205,7 +184,6 @@ class NotallyXPreferences private constructor(private val context: Context) {
         reload()
         startView.refresh()
     }
-
     private fun reload() {
         setOf(
                 textSize,
@@ -229,15 +207,12 @@ class NotallyXPreferences private constructor(private val context: Context) {
             )
             .forEach { it.refresh() }
     }
-
     companion object {
         private const val TAG = "NotallyXPreferences"
         const val EMPTY_PATH = "emptyPath"
         const val START_VIEW_DEFAULT = ""
         const val START_VIEW_UNLABELED = "com.appinitdev.notes.free.startview.UNLABELED"
-
         @Volatile private var instance: NotallyXPreferences? = null
-
         fun getInstance(context: Context): NotallyXPreferences {
             return instance
                 ?: synchronized(this) {
@@ -248,6 +223,5 @@ class NotallyXPreferences private constructor(private val context: Context) {
         }
     }
 }
-
 val NotallyXPreferences.autoSortByCheckedEnabled
     get() = listItemSorting.value == ListItemSort.AUTO_SORT_BY_CHECKED

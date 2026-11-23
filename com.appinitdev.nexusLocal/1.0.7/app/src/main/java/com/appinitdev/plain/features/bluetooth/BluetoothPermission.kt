@@ -1,4 +1,3 @@
-
 object BluetoothPermission {
     private lateinit var enableBluetoothActivityLauncher: ActivityResultLauncher<Intent>
     private lateinit var requestBluetoothLocationPermissionLauncher: ActivityResultLauncher<String>
@@ -15,7 +14,6 @@ object BluetoothPermission {
                     sendEvent(BluetoothPermissionResultEvent())
                 }
             }
-
         requestBluetoothLocationPermissionLauncher =
             activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
                 if (isGranted) {
@@ -28,7 +26,6 @@ object BluetoothPermission {
                     DialogHelper.showMessage(Res.string.location_permission_should_be_enabled)
                 }
             }
-
         requestBluetoothScanConnectPermissionLauncher =
             activity.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
                 val isGranted = permissions.entries.all { it.value == true }
@@ -41,7 +38,6 @@ object BluetoothPermission {
                     sendEvent(BluetoothPermissionResultEvent())
                 }
             }
-
         collectJob?.cancel()
         collectJob = activity.lifecycleScope.launch {
             activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -76,7 +72,6 @@ object BluetoothPermission {
                             .show()
                     }
                 }
-
                 }
             }
         }

@@ -1,14 +1,10 @@
-
- 
 class MoreNoteBottomSheet(
     callbacks: MoreActions,
     additionalActions: Collection<Action> = listOf(),
     @ColorInt color: Int?,
 ) : ActionBottomSheet(createActions(callbacks, additionalActions), color) {
-
     companion object {
         const val TAG = "MoreNoteBottomSheet"
-
         internal fun createActions(callbacks: MoreActions, additionalActions: Collection<Action>) =
             listOf(
                 Action(R.string.share, R.drawable.share) { _ ->
@@ -66,25 +62,15 @@ class MoreNoteBottomSheet(
             ) + additionalActions
     }
 }
-
 interface MoreActions {
     fun share()
-
     fun export(mimeType: ExportMimeType)
-
     fun changeColor()
-
     fun changeReminders()
-
     fun changeLabels()
-
     fun pinToNotification()
-
     fun duplicateNote()
-
     fun showNoteInfo()
-
     fun copyNoteText()
-
     fun toggleFocusMode()
 }

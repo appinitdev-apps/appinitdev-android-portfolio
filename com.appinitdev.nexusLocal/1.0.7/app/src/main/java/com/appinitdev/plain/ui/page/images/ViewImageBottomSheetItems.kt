@@ -1,4 +1,3 @@
-
 @Composable
 internal fun ViewImageActionButtons(
     imagesVM: ImagesViewModel,
@@ -75,7 +74,6 @@ internal fun ViewImageActionButtons(
         })
     }
 }
-
 @Composable
 internal fun ViewImagePathCard(
     m: com.appinitdev.nexusLocal.data.DImage,

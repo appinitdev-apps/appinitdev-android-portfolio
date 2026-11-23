@@ -1,17 +1,14 @@
-
 class PreviewFileVH(
     private val binding: RecyclerPreviewFileBinding,
     onClick: (position: Int) -> Unit,
     onLongClick: (position: Int) -> Boolean,
 ) : RecyclerView.ViewHolder(binding.root) {
-
     init {
         binding.FileName.apply {
             setOnClickListener { onClick(absoluteAdapterPosition) }
             setOnLongClickListener { onLongClick(absoluteAdapterPosition) }
         }
     }
-
     fun bind(fileAttachment: FileAttachment, color: Int?) {
         binding.FileName.apply {
             text = fileAttachment.originalName
@@ -19,7 +16,6 @@ class PreviewFileVH(
             color?.let { setControlsContrastColorForAllViews(it) }
         }
     }
-
     private fun getIconForMimeType(mimeType: String): Int {
         return when {
             mimeType.startsWith("image/") -> R.drawable.add_images

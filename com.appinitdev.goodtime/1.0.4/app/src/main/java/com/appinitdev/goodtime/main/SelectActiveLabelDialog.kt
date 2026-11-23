@@ -1,21 +1,3 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @Composable
 fun SelectActiveLabelDialog(
     viewModel: LabelsViewModel = koinViewModel(),
@@ -29,10 +11,8 @@ fun SelectActiveLabelDialog(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val labels = uiState.unarchivedLabels.filter { !it.isDefault() }.map { it.getLabelData() }
-
     val labelsIsEmpty = labels.isEmpty()
     val isDefaultLabelActive = initialSelectedLabel == Label.DEFAULT_LABEL_NAME
-
     if (uiState.isLoading) return
     SelectLabelDialog(
         title = stringResource(R.string.labels_select_active_label),
@@ -71,7 +51,6 @@ fun SelectActiveLabelDialog(
         },
     )
 }
-
 @Composable
 private fun EmptyState() {
     Row(

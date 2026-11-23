@@ -1,17 +1,13 @@
-
 data class PathState(
     val path: Path,
     val color: Color,
     val strokeWidth: Float
 )
-
 fun createPathFromPoints(points: List<Offset>): Path {
     val path = Path()
     if (points.isEmpty()) return path
-
     path.moveTo(points.first().x, points.first().y)
     if (points.size == 1) return path
-
     for (i in 1 until points.size) {
         val prev = points[i - 1]
         val curr = points[i]
@@ -25,7 +21,6 @@ fun createPathFromPoints(points: List<Offset>): Path {
     path.lineTo(points.last().x, points.last().y)
     return path
 }
-
 @Composable
 fun DrawingCanvasDialog(
     onDismiss: () -> Unit,
@@ -36,7 +31,6 @@ fun DrawingCanvasDialog(
     var selectedColor by remember { mutableStateOf(Color.Red) }
     var strokeWidth by remember { mutableFloatStateOf(12f) }
     var canvasSize by remember { mutableStateOf(Size.Zero) }
-
     val colors = listOf(
         Color.Red,
         Color(0xFF2196F3),
@@ -47,9 +41,7 @@ fun DrawingCanvasDialog(
         Color.Black,
         Color.White
     )
-
     val strokeSizes = listOf(6f, 12f, 24f)
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -84,7 +76,6 @@ fun DrawingCanvasDialog(
                             fontWeight = FontWeight.Bold
                         )
                     }
-
                     Row {
                         IconButton(
                             onClick = {
@@ -100,7 +91,6 @@ fun DrawingCanvasDialog(
                                 tint = MaterialTheme.colorScheme.primary
                             )
                         }
-
                         IconButton(onClick = { paths = emptyList(); currentPoints = emptyList() }) {
                             Icon(
                                 Icons.Default.Delete,
@@ -110,9 +100,7 @@ fun DrawingCanvasDialog(
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.height(8.dp))
-
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -145,7 +133,6 @@ fun DrawingCanvasDialog(
                         }
                 ) {
                     Canvas(modifier = Modifier.fillMaxSize()) {
-                        
                         paths.forEach { pathState ->
                             drawPath(
                                 path = pathState.path,
@@ -157,8 +144,6 @@ fun DrawingCanvasDialog(
                                 )
                             )
                         }
-
-                        
                         if (currentPoints.size > 1) {
                             val activePath = createPathFromPoints(currentPoints)
                             drawPath(
@@ -179,10 +164,7 @@ fun DrawingCanvasDialog(
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.height(12.dp))
-
-                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -207,10 +189,7 @@ fun DrawingCanvasDialog(
                             )
                         }
                     }
-
                     Spacer(modifier = Modifier.width(8.dp))
-
-                    
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         strokeSizes.forEach { size ->
                             val isSelected = strokeWidth == size
@@ -232,45 +211,33 @@ fun DrawingCanvasDialog(
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Button(
                     onClick = {
                         val targetSize = 1000
                         val bitmap = Bitmap.createBitmap(targetSize, targetSize, Bitmap.Config.ARGB_8888)
                         val canvas = android.graphics.Canvas(bitmap)
                         canvas.drawColor(android.graphics.Color.WHITE)
-
-                        
                         val uiWidth = if (canvasSize.width > 0f) canvasSize.width else targetSize.toFloat()
                         val uiHeight = if (canvasSize.height > 0f) canvasSize.height else targetSize.toFloat()
-
                         val scaleX = targetSize.toFloat() / uiWidth
                         val scaleY = targetSize.toFloat() / uiHeight
-
                         val matrix = Matrix().apply {
                             setScale(scaleX, scaleY)
                         }
-
                         val paint = Paint().apply {
                             isAntiAlias = true
                             style = Paint.Style.STROKE
                             strokeCap = Paint.Cap.ROUND
                             strokeJoin = Paint.Join.ROUND
                         }
-
                         paths.forEach { pathState ->
                             paint.color = pathState.color.toArgb()
                             paint.strokeWidth = pathState.strokeWidth * scaleX
-
-                            
                             val androidPath = AndroidPath(pathState.path.asAndroidPath())
                             androidPath.transform(matrix)
-
                             canvas.drawPath(androidPath, paint)
                         }
-
                         onDrawingFinished(bitmap)
                         onDismiss()
                     },

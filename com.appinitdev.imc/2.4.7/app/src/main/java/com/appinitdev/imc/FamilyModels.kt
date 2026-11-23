@@ -1,4 +1,3 @@
-
 data class FamilyMember(
     val id: Long = System.currentTimeMillis(),
     val name: String,
@@ -7,7 +6,6 @@ data class FamilyMember(
     val relationship: String = "Hijo/a",
     val avatarDrawableResId: Int = R.drawable.uno
 )
-
 data class GrowthRecord(
     val id: Long = System.currentTimeMillis(),
     val memberId: Long,

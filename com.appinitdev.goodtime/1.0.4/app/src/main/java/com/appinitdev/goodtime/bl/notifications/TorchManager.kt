@@ -1,29 +1,7 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 data class TorchManagerData(
     val enabled: Boolean = false,
     val loop: Boolean = false,
 )
-
- 
-
-
 class TorchManager(
     context: Context,
     ioScope: CoroutineScope,
@@ -34,9 +12,7 @@ class TorchManager(
     private val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
     private var cameraId: String? = null
     private var data: TorchManagerData = TorchManagerData()
-
     private var job: Job? = null
-
     init {
         for (id in cameraManager.cameraIdList) {
             val flashAvailable =
@@ -58,9 +34,7 @@ class TorchManager(
                 }
         }
     }
-
     fun isTorchAvailable() = cameraId != null
-
     fun start() {
         if (!data.enabled) return
         job =
@@ -82,7 +56,6 @@ class TorchManager(
                 }
             }
     }
-
     fun stop() {
         if (!data.enabled) return
         job?.cancel()
@@ -95,7 +68,6 @@ class TorchManager(
         }
     }
 }
-
 private suspend fun CameraManager.lightUp(
     listOf: List<Long>,
     cameraId: String,

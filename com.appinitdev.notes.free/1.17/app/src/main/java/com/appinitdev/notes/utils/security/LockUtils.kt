@@ -1,4 +1,3 @@
-
 fun Activity.showBiometricOrPinPrompt(
     isForDecrypt: Boolean,
     cipherIv: ByteArray? = null,
@@ -19,7 +18,6 @@ fun Activity.showBiometricOrPinPrompt(
         onFailure,
     )
 }
-
 fun Fragment.showBiometricOrPinPrompt(
     isForDecrypt: Boolean,
     activityResultLauncher: ActivityResultLauncher<Intent>,
@@ -40,7 +38,6 @@ fun Fragment.showBiometricOrPinPrompt(
         onFailure,
     )
 }
-
 private fun showBiometricOrPinPrompt(
     isForDecrypt: Boolean,
     context: FragmentActivity,
@@ -87,12 +84,10 @@ private fun showBiometricOrPinPrompt(
                         super.onAuthenticationSucceeded(result)
                         onSuccess.invoke(result.cryptoObject!!.cipher!!)
                     }
-
                     override fun onAuthenticationFailed() {
                         super.onAuthenticationFailed()
                         onFailure.invoke(null)
                     }
-
                     override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                         super.onAuthenticationError(errorCode, errString)
                         onFailure.invoke(errorCode)
@@ -102,14 +97,11 @@ private fun showBiometricOrPinPrompt(
                 BiometricPrompt(context, ContextCompat.getMainExecutor(context), authCallback)
             prompt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
         }
-
         else -> {
-            
             promptPinAuthentication(context, activityResultLauncher, titleResId, onFailure)
         }
     }
 }
-
 private fun promptPinAuthentication(
     context: Context,
     activityResultLauncher: ActivityResultLauncher<Intent>,
@@ -118,7 +110,6 @@ private fun promptPinAuthentication(
 ) {
     val keyguardManager = ContextCompat.getSystemService(context, KeyguardManager::class.java)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        
         if (keyguardManager?.isDeviceSecure == true) {
             val intent =
                 keyguardManager.createConfirmDeviceCredentialIntent(
@@ -134,7 +125,6 @@ private fun promptPinAuthentication(
             onFailure.invoke(null)
         }
     } else {
-        
         if (keyguardManager?.isKeyguardSecure == true) {
             val intent =
                 keyguardManager.createConfirmDeviceCredentialIntent(

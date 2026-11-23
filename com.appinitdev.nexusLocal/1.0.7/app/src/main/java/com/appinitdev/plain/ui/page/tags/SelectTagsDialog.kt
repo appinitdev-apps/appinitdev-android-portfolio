@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun SelectTagsDialog(
@@ -12,13 +11,10 @@ fun SelectTagsDialog(
         mutableStateListOf<String>()
     }
     val scope = rememberCoroutineScope()
-
     TagNameDialog(tagsVM)
-
     LaunchedEffect(Unit) {
         tagIds.addAll(tagsMap[data.id]?.map { it.tagId } ?: emptyList())
     }
-
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surface,
         onDismissRequest = {
@@ -68,5 +64,3 @@ fun SelectTagsDialog(
         }
     )
 }
-
-

@@ -1,7 +1,5 @@
-
 class ToggleVH(private val binding: RecyclerToggleBinding, @ColorInt private val color: Int?) :
     RecyclerView.ViewHolder(binding.root) {
-
     fun bind(toggle: Toggle) {
         binding.root.apply {
             setIconResource(toggle.drawable)

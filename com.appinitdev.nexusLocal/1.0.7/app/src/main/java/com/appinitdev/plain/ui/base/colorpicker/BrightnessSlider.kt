@@ -1,4 +1,3 @@
-
 @Composable
 public fun BrightnessSlider(
     modifier: Modifier = Modifier,
@@ -27,11 +26,9 @@ public fun BrightnessSlider(
         color = controller.pureSelectedColor.value
     }
     var isInitialized by remember { mutableStateOf(false) }
-
     SideEffect {
         controller.isAttachedBrightnessSlider = true
     }
-
     Canvas(
         modifier = modifier
             .fillMaxWidth()

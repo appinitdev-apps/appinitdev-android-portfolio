@@ -1,9 +1,7 @@
-
 object CrashHandler {
     private const val CRASH_FILE_NAME = "crash_report.txt"
     private const val CRASH_LOG_NAME = "crash_log.txt"
     private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-
     fun install(context: Context) {
         val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
@@ -11,7 +9,6 @@ object CrashHandler {
             defaultHandler?.uncaughtException(thread, throwable)
         }
     }
-
     fun getPendingReport(context: Context): String? {
         val file = File(context.filesDir, CRASH_FILE_NAME)
         if (!file.exists()) return null
@@ -23,7 +20,6 @@ object CrashHandler {
             null
         }
     }
-
     fun getAppLogs(context: Context): String {
         val logFile = File(context.filesDir, "logs/latest.log")
         if (!logFile.exists()) return ""
@@ -34,7 +30,6 @@ object CrashHandler {
             ""
         }
     }
-
     private fun saveCrash(context: Context, throwable: Throwable) {
         try {
             val sw = StringWriter()
@@ -45,9 +40,6 @@ object CrashHandler {
                 append(sw.toString())
             }
             File(context.filesDir, CRASH_FILE_NAME).writeText(report)
-            
-            
-            
             File(context.filesDir, CRASH_LOG_NAME).appendText(report + "\n\n")
         } catch (_: Exception) {}
     }

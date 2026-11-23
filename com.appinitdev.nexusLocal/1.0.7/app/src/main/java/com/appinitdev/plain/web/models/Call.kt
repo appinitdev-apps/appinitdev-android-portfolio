@@ -1,4 +1,3 @@
-
 data class Call(
     var id: ID,
     var number: String,
@@ -10,7 +9,6 @@ data class Call(
     val accountId: ID,
     val geo: PhoneGeo?,
 )
-
 fun DCall.toModel(): Call {
     return Call(ID(id), number, name, FileHelper.getFileId(photoUri), startedAt, duration, type, ID(accountId), getGeo())
 }

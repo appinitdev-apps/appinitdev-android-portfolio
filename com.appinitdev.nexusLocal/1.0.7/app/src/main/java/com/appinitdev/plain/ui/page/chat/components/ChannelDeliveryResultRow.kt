@@ -1,4 +1,3 @@
-
 @Composable
 internal fun ChannelDeliveryResultRow(
     result: DMessageDeliveryResult,
@@ -28,7 +27,6 @@ internal fun ChannelDeliveryResultRow(
                 modifier = Modifier.size(18.dp),
             )
         }
-
         Column(
             modifier = Modifier
                 .weight(1f)

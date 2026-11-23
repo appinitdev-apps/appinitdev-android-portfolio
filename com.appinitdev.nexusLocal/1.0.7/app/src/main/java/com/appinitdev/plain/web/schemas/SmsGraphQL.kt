@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addSmsSchema() {
     query("sms") {
         configure {
@@ -98,7 +97,6 @@ fun SchemaBuilder.addSmsSchema() {
                 }
                 val launchTimeSec = System.currentTimeMillis() / 1000 - 1
                 MmsHelper.launchDefaultSmsApp(number, body, resolvedAttachments)
-
                 val pendingId = "pending_mms_${System.currentTimeMillis()}"
                 val pendingEntry = DPendingMms(
                     id = pendingId,

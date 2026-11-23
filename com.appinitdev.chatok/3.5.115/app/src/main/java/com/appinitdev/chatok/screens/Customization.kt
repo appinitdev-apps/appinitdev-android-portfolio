@@ -1,4 +1,3 @@
-
 @Composable
 fun Customization(viewModel: ChatViewModel, state: AppState) {
     val pref = state.userData?.pref
@@ -248,7 +247,6 @@ fun Customization(viewModel: ChatViewModel, state: AppState) {
                             activeTrackColor = MaterialTheme.colorScheme.secondary,
                             inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer
                         ),
-
                         )
                 }
             }
@@ -338,7 +336,6 @@ fun Customization(viewModel: ChatViewModel, state: AppState) {
                         )
                     }
                 }
-
             }
         }
     }
@@ -452,7 +449,6 @@ fun MessageItem1(
                     }
                     }
                 }
-
                 Text(
                     text = text,
                     modifier = Modifier.padding(top = 5.dp, start = 10.dp, end = 10.dp),
@@ -470,8 +466,6 @@ fun MessageItem1(
                     style = MaterialTheme.typography.labelSmall,
                     color = Color.White,
                 )
-
-
             }
         }
     }

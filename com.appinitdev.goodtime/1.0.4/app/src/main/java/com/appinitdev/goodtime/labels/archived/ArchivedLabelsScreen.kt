@@ -1,21 +1,3 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArchivedLabelsScreen(
@@ -24,12 +6,9 @@ fun ArchivedLabelsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val labels = uiState.archivedLabels
-
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
     var labelToDelete by remember { mutableStateOf("") }
-
     val listState = rememberLazyListState()
-
     Scaffold(
         topBar = {
             TopBar(
@@ -83,7 +62,6 @@ fun ArchivedLabelsScreen(
         },
     )
 }
-
 @Composable
 fun ArchivedLabelListItem(
     modifier: Modifier,
@@ -94,7 +72,6 @@ fun ArchivedLabelListItem(
     onLastItemUnarchive: (() -> Unit)? = null,
 ) {
     val labelName = label.name
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier =
@@ -115,7 +92,6 @@ fun ArchivedLabelListItem(
             style = MaterialTheme.typography.bodyLarge,
         )
         Spacer(modifier = Modifier.weight(1f))
-
         var dropDownMenuExpanded by remember { mutableStateOf(false) }
         Box {
             IconButton(onClick = { dropDownMenuExpanded = true }) {
@@ -124,7 +100,6 @@ fun ArchivedLabelListItem(
                     contentDescription = stringResource(R.string.labels_more_about, labelName),
                 )
             }
-
             BetterDropdownMenu(
                 expanded = dropDownMenuExpanded,
                 onDismissRequest = { dropDownMenuExpanded = false },

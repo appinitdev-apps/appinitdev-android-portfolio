@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addDocSchema() {
     query("docs") {
         configure {
@@ -18,7 +17,6 @@ fun SchemaBuilder.addDocSchema() {
             }
         }
     }
-
     query("docCount") {
         resolver { query: String ->
             if (Permission.WRITE_EXTERNAL_STORAGE.enabledAndCanAsync(MainApp.instance)) {
@@ -28,7 +26,6 @@ fun SchemaBuilder.addDocSchema() {
             }
         }
     }
-
     query("docExtGroups") {
         resolver { ->
             if (Permission.WRITE_EXTERNAL_STORAGE.enabledAndCanAsync(MainApp.instance)) {
@@ -39,4 +36,3 @@ fun SchemaBuilder.addDocSchema() {
         }
     }
 }
-

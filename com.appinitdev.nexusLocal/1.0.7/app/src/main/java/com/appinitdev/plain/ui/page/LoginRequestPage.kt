@@ -1,4 +1,3 @@
-
 @Composable
 fun LoginRequestPage(
     clientIp: String,
@@ -10,7 +9,6 @@ fun LoginRequestPage(
     val titleRes = if (isWeb) Res.string.allow_web_access else Res.string.allow_desktop_access
     val descRes = if (isWeb) Res.string.allow_web_access_desc else Res.string.allow_desktop_access_desc
     val iconRes = if (isWeb) Res.drawable.chrome else Res.drawable.laptop
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()

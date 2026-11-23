@@ -1,20 +1,16 @@
-
 class ResizeWithPathDialog(val activity: BaseSimpleActivity, val size: Point, val path: String, val callback: (newSize: Point, newPath: String) -> Unit) {
     init {
         var realPath = path.getParentPath()
         val binding = DialogResizeImageWithPathBinding.inflate(activity.layoutInflater).apply {
             folder.setText("${activity.humanizePath(realPath).trimEnd('/')}/")
-
             val fullName = path.getFilenameFromPath()
             val dotAt = fullName.lastIndexOf(".")
             var name = fullName
-
             if (dotAt > 0) {
                 name = fullName.substring(0, dotAt)
                 val extension = fullName.substring(dotAt + 1)
                 extensionValue.setText(extension)
             }
-
             filenameValue.setText(name)
             folder.setOnClickListener {
                 FilePickerDialog(activity, realPath, false, activity.config.shouldShowHidden, true, true) {
@@ -23,15 +19,11 @@ class ResizeWithPathDialog(val activity: BaseSimpleActivity, val size: Point, va
                 }
             }
         }
-
         val widthView = binding.resizeImageWidth
         val heightView = binding.resizeImageHeight
-
         widthView.setText(size.x.toString())
         heightView.setText(size.y.toString())
-
         val ratio = size.x / size.y.toFloat()
-
         widthView.onTextChangeListener {
             if (widthView.hasFocus()) {
                 var width = getViewValue(widthView)
@@ -39,11 +31,9 @@ class ResizeWithPathDialog(val activity: BaseSimpleActivity, val size: Point, va
                     widthView.setText(size.x.toString())
                     width = size.x
                 }
-
                 heightView.setText((width / ratio).toInt().toString())
             }
         }
-
         heightView.onTextChangeListener {
             if (heightView.hasFocus()) {
                 var height = getViewValue(heightView)
@@ -51,11 +41,9 @@ class ResizeWithPathDialog(val activity: BaseSimpleActivity, val size: Point, va
                     heightView.setText(size.y.toString())
                     height = size.y
                 }
-
                 widthView.setText((height * ratio).toInt().toString())
             }
         }
-
         activity.getAlertDialogBuilder()
             .setPositiveButton(org.appinitdev.commons.R.string.ok, null)
             .setNegativeButton(org.appinitdev.commons.R.string.cancel, null)
@@ -69,28 +57,23 @@ class ResizeWithPathDialog(val activity: BaseSimpleActivity, val size: Point, va
                             activity.toast(R.string.invalid_values)
                             return@setOnClickListener
                         }
-
                         val newSize = Point(getViewValue(widthView), getViewValue(heightView))
-
                         val filename = binding.filenameValue.value
                         val extension = binding.extensionValue.value
                         if (filename.isEmpty()) {
                             activity.toast(org.appinitdev.commons.R.string.filename_cannot_be_empty)
                             return@setOnClickListener
                         }
-
                         if (extension.isEmpty()) {
                             activity.toast(org.appinitdev.commons.R.string.extension_cannot_be_empty)
                             return@setOnClickListener
                         }
-
                         val newFilename = "$filename.$extension"
                         val newPath = "${realPath.trimEnd('/')}/$newFilename"
                         if (!newFilename.isAValidFilename()) {
                             activity.toast(org.appinitdev.commons.R.string.filename_invalid_characters)
                             return@setOnClickListener
                         }
-
                         if (activity.getDoesFilePathExist(newPath)) {
                             val title = String.format(activity.getString(org.appinitdev.commons.R.string.file_already_exists_overwrite), newFilename)
                             ConfirmationDialog(activity, title) {
@@ -105,7 +88,6 @@ class ResizeWithPathDialog(val activity: BaseSimpleActivity, val size: Point, va
                 }
             }
     }
-
     private fun getViewValue(view: EditText): Int {
         val textValue = view.value
         return if (textValue.isEmpty()) 0 else textValue.toInt()

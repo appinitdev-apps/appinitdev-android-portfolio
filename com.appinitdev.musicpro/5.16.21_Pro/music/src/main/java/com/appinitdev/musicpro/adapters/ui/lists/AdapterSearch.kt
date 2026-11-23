@@ -1,36 +1,10 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
 class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
-
     private var generalAdapterCallbacks: GeneralAdapterCallbacks? = null
-
-     
     private var songs: MutableList<Audio> = mutableListOf()
-
-     
     private var albums: MutableList<Album> = mutableListOf()
-
-     
     private var artists: MutableList<Artist> = mutableListOf()
-
-     
     private var genres: MutableList<Genre> = mutableListOf()
-
-     
     var layoutMode: CommonPreferencesConstants.LayoutMode = SearchPreferences.getGridSize()
-
     private val diffCallback = object : DiffUtil.ItemCallback<SearchAdapterItem>() {
         override fun areItemsTheSame(
                 oldItem: SearchAdapterItem,
@@ -41,57 +15,43 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
             return when {
                 oldItem is SearchAdapterItem.Header && newItem is SearchAdapterItem.Header ->
                     oldItem.title == newItem.title
-
                 oldItem is SearchAdapterItem.SongItem && newItem is SearchAdapterItem.SongItem ->
                     oldItem.audio.id == newItem.audio.id
-
                 oldItem is SearchAdapterItem.AlbumItem && newItem is SearchAdapterItem.AlbumItem ->
                     oldItem.album.id == newItem.album.id
-
                 oldItem is SearchAdapterItem.ArtistItem && newItem is SearchAdapterItem.ArtistItem ->
                     oldItem.artist.id == newItem.artist.id
-
                 oldItem is SearchAdapterItem.GenreItem && newItem is SearchAdapterItem.GenreItem ->
                     oldItem.genre.id == newItem.genre.id
-
                 else -> false
             }
         }
-
         override fun areContentsTheSame(
                 oldItem: SearchAdapterItem,
                 newItem: SearchAdapterItem,
         ): Boolean = oldItem == newItem
     }
-
     private val listUpdateCallback = object : ListUpdateCallback {
         override fun onInserted(position: Int, count: Int) {
             if (count > 100) notifyDataSetChanged() else notifyItemRangeInserted(position, count)
         }
-
         override fun onRemoved(position: Int, count: Int) {
             if (count > 100) notifyDataSetChanged() else notifyItemRangeRemoved(position, count)
         }
-
         override fun onMoved(fromPosition: Int, toPosition: Int) {
             notifyItemMoved(fromPosition, toPosition)
         }
-
         override fun onChanged(position: Int, count: Int, payload: Any?) {
             notifyItemRangeChanged(position, count, payload)
         }
     }
-
     private val differ = AsyncListDiffer(
             listUpdateCallback,
             AsyncDifferConfig.Builder(diffCallback).build()
     )
-
     private val items: List<SearchAdapterItem>
         get() = differ.currentList
-
     override fun getItemCount(): Int = items.size
-
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
             is SearchAdapterItem.Header -> VIEW_TYPE_HEADER
@@ -105,33 +65,25 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
             }
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             VIEW_TYPE_HEADER ->
                 HeaderHolder(AdapterSearchSectionHeaderBinding.inflate(inflater, parent, false))
-
             VIEW_TYPE_SONG_GRID ->
                 SongGridHolder(AdapterStyleGridBinding.inflate(inflater, parent, false))
-
             VIEW_TYPE_SONG_LABEL ->
                 SongLabelHolder(AdapterStyleLabelsBinding.inflate(inflater, parent, false))
-
             VIEW_TYPE_ALBUM ->
                 AlbumHolder(AdapterStyleListBinding.inflate(inflater, parent, false))
-
             VIEW_TYPE_ARTIST ->
                 ArtistHolder(AdapterStyleListBinding.inflate(inflater, parent, false))
-
             VIEW_TYPE_GENRE ->
                 GenreHolder(AdapterStyleListBinding.inflate(inflater, parent, false))
-
             else ->
                 SongListHolder(AdapterStyleListBinding.inflate(inflater, parent, false))
         }
     }
-
     override fun onBind(holder: VerticalListViewHolder, position: Int, isLightBind: Boolean) {
         when (holder) {
             is HeaderHolder -> holder.bind(items[position] as SearchAdapterItem.Header)
@@ -143,7 +95,6 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
             is GenreHolder -> holder.bind(items[position] as SearchAdapterItem.GenreItem)
         }
     }
-
     override fun onViewRecycled(holder: VerticalListViewHolder) {
         holder.itemView.clearAnimation()
         super.onViewRecycled(holder)
@@ -156,17 +107,6 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
             else -> Unit
         }
     }
-
-     
-
-
-
-
-
-
-
-
-
     fun submitResults(
             results: SearchResults,
             songsHeader: String,
@@ -178,7 +118,6 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
         albums = results.albums.toMutableList()
         artists = results.artists.toMutableList()
         genres = results.genres.toMutableList()
-
         val newItems = buildList {
             if (songs.isNotEmpty()) {
                 add(SearchAdapterItem.Header(songsHeader))
@@ -197,51 +136,22 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
                 genres.forEach { add(SearchAdapterItem.GenreItem(it)) }
             }
         }
-
         differ.submitList(newItems)
     }
-
-     
-
-
-
-
-
-
     fun getSectionPosition(headerTitle: String): Int {
         return items.indexOfFirst { it is SearchAdapterItem.Header && it.title == headerTitle }
     }
-
-     
-
-
-
-
     fun setGeneralAdapterCallbacks(callbacks: GeneralAdapterCallbacks) {
         this.generalAdapterCallbacks = callbacks
     }
-
-     
-
-
-
-
     inner class HeaderHolder(val binding: AdapterSearchSectionHeaderBinding) :
             VerticalListViewHolder(binding.root) {
-
         fun bind(item: SearchAdapterItem.Header) {
             binding.sectionTitle.text = item.title
         }
     }
-
-     
-
-
-
-
     inner class SongListHolder(val binding: AdapterStyleListBinding) :
             VerticalListViewHolder(binding.root) {
-
         fun bind(item: SearchAdapterItem.SongItem, isLightBind: Boolean) {
             val audio = item.audio
             binding.title.setTextOrUnknown(audio.getProperTitle())
@@ -249,9 +159,7 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
             binding.tertiaryDetail.setTextOrUnknown(audio.getProperAlbum())
             binding.title.addAudioQualityIcon(audio)
             binding.container.setAudioID(audio.id)
-
             if (isLightBind) return
-
             binding.cover.loadArtCoverWithPayload(audio)
             binding.container.setOnLongClickListener {
                 if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
@@ -266,15 +174,8 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
             }
         }
     }
-
-     
-
-
-
-
     inner class SongGridHolder(val binding: AdapterStyleGridBinding) :
             VerticalListViewHolder(binding.root) {
-
         fun bind(item: SearchAdapterItem.SongItem, isLightBind: Boolean) {
             val audio = item.audio
             binding.container.enableGridMode = true
@@ -282,9 +183,7 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
             binding.secondaryDetail.setTextOrUnknown(audio.getProperArtists())
             binding.tertiaryDetail.setTextOrUnknown(audio.getProperAlbum())
             binding.container.setAudioID(audio.id)
-
             if (isLightBind) return
-
             binding.albumArt.loadArtCoverWithPayload(audio)
             binding.container.setOnLongClickListener {
                 if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
@@ -299,15 +198,8 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
             }
         }
     }
-
-     
-
-
-
-
     inner class SongLabelHolder(val binding: AdapterStyleLabelsBinding) :
             VerticalListViewHolder(binding.root) {
-
         fun bind(item: SearchAdapterItem.SongItem, isLightBind: Boolean) {
             val audio = item.audio
             binding.title.setTextOrUnknown(audio.getProperTitle())
@@ -315,9 +207,7 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
             binding.tertiaryDetail.setTextOrUnknown(audio.getProperAlbum())
             binding.title.addAudioQualityIcon(audio)
             binding.container.setAudioID(audio.id)
-
             if (isLightBind) return
-
             binding.container.setOnLongClickListener {
                 if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                     generalAdapterCallbacks?.onSongLongClicked(songs, songs.indexOf(audio), null)
@@ -331,15 +221,8 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
             }
         }
     }
-
-     
-
-
-
-
     inner class AlbumHolder(val binding: AdapterStyleListBinding) :
             VerticalListViewHolder(binding.root) {
-
         fun bind(item: SearchAdapterItem.AlbumItem, isLightBind: Boolean) {
             val album = item.album
             binding.title.setTextOrUnknown(album.name)
@@ -347,9 +230,7 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
             binding.tertiaryDetail.setTextOrUnknown(
                     context.resources.getQuantityString(R.plurals.number_of_songs, album.songCount, album.songCount)
             )
-
             if (isLightBind) return
-
             binding.cover.loadArtCoverWithPayload(album)
             binding.container.setOnClickListener {
                 if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
@@ -364,15 +245,8 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
             }
         }
     }
-
-     
-
-
-
-
     inner class ArtistHolder(val binding: AdapterStyleListBinding) :
             VerticalListViewHolder(binding.root) {
-
         fun bind(item: SearchAdapterItem.ArtistItem, isLightBind: Boolean) {
             val artist = item.artist
             binding.title.setTextOrUnknown(artist.name)
@@ -382,9 +256,7 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
             binding.tertiaryDetail.setTextOrUnknown(
                     context.resources.getQuantityString(R.plurals.number_of_albums, artist.albumCount, artist.albumCount)
             )
-
             if (isLightBind) return
-
             binding.cover.loadArtCoverWithPayload(item = artist)
             binding.container.setOnClickListener {
                 if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
@@ -399,15 +271,8 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
             }
         }
     }
-
-     
-
-
-
-
     inner class GenreHolder(val binding: AdapterStyleListBinding) :
             VerticalListViewHolder(binding.root) {
-
         fun bind(item: SearchAdapterItem.GenreItem) {
             val genre = item.genre
             binding.title.text = genre.name ?: context.getString(R.string.unknown)
@@ -421,69 +286,20 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
             }
         }
     }
-
     companion object {
-         
         const val VIEW_TYPE_HEADER = 0
-
-         
         const val VIEW_TYPE_SONG_LIST = 1
-
-         
         const val VIEW_TYPE_SONG_GRID = 2
-
-         
         const val VIEW_TYPE_SONG_LABEL = 3
-
-         
         const val VIEW_TYPE_ALBUM = 4
-
-         
         const val VIEW_TYPE_ARTIST = 5
-
-         
         const val VIEW_TYPE_GENRE = 6
     }
 }
-
- 
-
-
-
 sealed class SearchAdapterItem {
-
-     
-
-
-
-
     data class Header(val title: String) : SearchAdapterItem()
-
-     
-
-
-
-
     data class SongItem(val audio: Audio) : SearchAdapterItem()
-
-     
-
-
-
-
     data class AlbumItem(val album: Album) : SearchAdapterItem()
-
-     
-
-
-
-
     data class ArtistItem(val artist: Artist) : SearchAdapterItem()
-
-     
-
-
-
-
     data class GenreItem(val genre: Genre) : SearchAdapterItem()
 }

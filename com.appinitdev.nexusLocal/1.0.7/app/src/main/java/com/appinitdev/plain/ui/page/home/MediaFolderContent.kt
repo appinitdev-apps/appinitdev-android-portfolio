@@ -1,4 +1,3 @@
-
 @Composable
 internal fun MediaFolderListContent(
     listState: LazyListState,
@@ -32,7 +31,6 @@ internal fun MediaFolderListContent(
         item { BottomSpace() }
     }
 }
-
 @Composable
 internal fun MediaFolderGridContent(
     gridState: LazyGridState,

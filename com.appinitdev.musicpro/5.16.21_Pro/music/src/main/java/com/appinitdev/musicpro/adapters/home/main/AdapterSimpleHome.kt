@@ -1,14 +1,10 @@
-
 class AdapterSimpleHome(private val data: MutableList<Any>) : RecyclerView.Adapter<VerticalListViewHolder>() {
-
     private var adapterSimpleHomeCallbacks: AdapterSimpleHomeCallbacks? = null
     private var layoutType: Int = CommonPreferencesConstants.GRID_TYPE_LIST
-
     fun setLayoutType(type: Int) {
         layoutType = type
         notifyItemRangeChanged(0, itemCount)
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         return when (viewType) {
             VIEW_TYPE_GRID -> {
@@ -22,7 +18,6 @@ class AdapterSimpleHome(private val data: MutableList<Any>) : RecyclerView.Adapt
             }
         }
     }
-
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: VerticalListViewHolder, position: Int) {
         when (holder) {
@@ -30,7 +25,6 @@ class AdapterSimpleHome(private val data: MutableList<Any>) : RecyclerView.Adapt
                 val dataItem = data[position] as Panel
                 holder.binding.title.text = holder.context.getString(dataItem.titleResId)
                 holder.binding.icon.setImageResource(dataItem.iconResId)
-
                 holder.binding.container.setOnClickListener {
                     adapterSimpleHomeCallbacks?.onItemClicked(dataItem, holder.bindingAdapterPosition, holder.binding.container)
                 }
@@ -39,7 +33,6 @@ class AdapterSimpleHome(private val data: MutableList<Any>) : RecyclerView.Adapt
                 val dataItem = data[position] as Panel
                 holder.binding.title.text = holder.context.getString(dataItem.titleResId)
                 holder.binding.icon.setImageResource(dataItem.iconResId)
-
                 holder.binding.container.setOnClickListener {
                     adapterSimpleHomeCallbacks?.onItemClicked(dataItem, holder.bindingAdapterPosition, holder.binding.container)
                 }
@@ -50,11 +43,9 @@ class AdapterSimpleHome(private val data: MutableList<Any>) : RecyclerView.Adapt
             }
         }
     }
-
     override fun getItemCount(): Int {
         return data.size
     }
-
     override fun getItemViewType(position: Int): Int {
         return when {
             data[position] is Group -> VIEW_TYPE_GROUP
@@ -62,22 +53,16 @@ class AdapterSimpleHome(private val data: MutableList<Any>) : RecyclerView.Adapt
             else -> VIEW_TYPE_SIMPLE
         }
     }
-
     inner class SimpleHolder(val binding: AdapterHomeSimpleBinding) : VerticalListViewHolder(binding.root)
-
     inner class GridHolder(val binding: AdapterHomeSimpleGridBinding) : VerticalListViewHolder(binding.root)
-
     inner class GroupHolder(val binding: AdapterHomeSimpleGroupBinding) : VerticalListViewHolder(binding.root)
-
     fun setAdapterSimpleHomeCallbacks(adapterSimpleHomeCallbacks: AdapterSimpleHomeCallbacks) {
         this.adapterSimpleHomeCallbacks = adapterSimpleHomeCallbacks
     }
-
     companion object {
         private const val VIEW_TYPE_SIMPLE = 1
         private const val VIEW_TYPE_GRID = 2
         const val VIEW_TYPE_GROUP = 3
-
         interface AdapterSimpleHomeCallbacks : GeneralAdapterCallbacks {
             fun onItemClicked(panel: Panel, position: Int, view: View)
         }

@@ -1,4 +1,3 @@
-
 @Composable
 internal fun AudioCastPlayerBarContent(
     castVM: CastViewModel,
@@ -20,7 +19,6 @@ internal fun AudioCastPlayerBarContent(
             color = MaterialTheme.colorScheme.primary,
             trackColor = MaterialTheme.colorScheme.surfaceVariant,
         )
-
         Row(
             modifier = Modifier.fillMaxWidth()
                 .padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 8.dp),
@@ -43,9 +41,7 @@ internal fun AudioCastPlayerBarContent(
                     maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
             }
-
             Spacer(modifier = Modifier.width(8.dp))
-
             if (currentUri.isNotEmpty()) {
                 IconButton(
                     onClick = { if (isPlaying) castVM.pauseCast() else castVM.playCast() },

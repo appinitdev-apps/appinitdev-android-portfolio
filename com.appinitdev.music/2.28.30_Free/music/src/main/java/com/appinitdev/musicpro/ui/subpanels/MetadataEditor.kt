@@ -1,37 +1,11 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @AndroidEntryPoint
 class MetadataEditor : MediaFragment() {
-
     private lateinit var binding: FragmentMetadataEditorBinding
-
     @Inject
     lateinit var lrcRepository: LrcRepository
-
     private val audio: Audio by lazy {
         requireArguments().parcelable<Audio>(BundleConstants.AUDIO)!!
     }
-
     private val viewModel: MetadataEditorViewModel by viewModels(
             extrasProducer = {
                 defaultViewModelCreationExtras.withCreationCallback<MetadataEditorViewModel.Factory> {
@@ -39,17 +13,13 @@ class MetadataEditor : MediaFragment() {
                 }
             }
     )
-
-     
     private var pendingArtworkFile: File? = null
-
     private val pickArtwork = registerForActivityResult(
             ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
         if (uri == null) return@registerForActivityResult
         handlePickedArtwork(uri)
     }
-
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -58,36 +28,24 @@ class MetadataEditor : MediaFragment() {
         binding = FragmentMetadataEditorBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireHiddenMiniPlayer()
-
         populateFields()
         setupAlbumArtPicker()
         observeViewModel()
         registerMetadataSearchResult()
         registerLyricsSearchResult()
-
         binding.saveButton.setOnClickListener {
             saveMetadata()
         }
-
         binding.searchButton.setOnClickListener {
             openFragment(MetadataSearch.newInstance(audio), MetadataSearch.TAG)
         }
-
         binding.searchLyrics.setOnClickListener {
             openFragment(LyricsSearch.newInstanceForEditor(audio), LyricsSearch.TAG)
         }
     }
-
-     
-
-
-
-
-
     private fun registerLyricsSearchResult() {
         parentFragmentManager.setFragmentResultListener(
                 LyricsSearch.REQUEST_KEY_LYRICS_FOR_EDITOR,
@@ -95,26 +53,16 @@ class MetadataEditor : MediaFragment() {
         ) { _, bundle ->
             val plain = bundle.getString(LyricsSearch.KEY_PLAIN_LYRICS)
             val synced = bundle.getString(LyricsSearch.KEY_SYNCED_LYRICS)
-
             if (!plain.isNullOrBlank()) {
-                
             }
-
             if (!synced.isNullOrBlank()) {
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                     lrcRepository.saveLrcToFile(synced, audio.uri)
                 }
-
                 binding.lyricsInput.setText(synced)
             }
         }
     }
-
-     
-
-
-
-
     private fun registerMetadataSearchResult() {
         parentFragmentManager.setFragmentResultListener(
                 MetadataSearch.REQUEST_KEY_METADATA_RESULT,
@@ -126,12 +74,6 @@ class MetadataEditor : MediaFragment() {
             }
         }
     }
-
-     
-
-
-
-
     private fun applySearchResult(result: MetadataSearchResult) {
         with(binding) {
             if (result.title.isNotBlank()) titleInput.setText(result.title)
@@ -141,10 +83,6 @@ class MetadataEditor : MediaFragment() {
             result.genre?.takeIf { it.isNotBlank() }?.let { genreInput.setText(it) }
         }
     }
-
-     
-
-
     private fun populateFields() {
         with(binding) {
             titleInput.setText(audio.title.orEmpty())
@@ -158,65 +96,39 @@ class MetadataEditor : MediaFragment() {
             composerInput.setText(audio.composer.orEmpty())
             writerInput.setText(audio.writer.orEmpty())
             compilationInput.setText(audio.compilation.orEmpty())
-
-            
             val discParts = audio.discNumber.orEmpty().split("/")
             discNumberInput.setText(discParts.getOrNull(0).orEmpty())
             discTotalInput.setText(discParts.getOrNull(1).orEmpty())
-
             rgTrackGainInput.setText(audio.replayGainTrackGain.orEmpty())
             rgTrackPeakInput.setText(audio.replayGainTrackPeak.orEmpty())
             rgAlbumGainInput.setText(audio.replayGainAlbumGain.orEmpty())
             rgAlbumPeakInput.setText(audio.replayGainAlbumPeak.orEmpty())
         }
-
         binding.albumArt.loadArtCoverWithPayload(audio)
     }
-
-     
-
-
-
     private fun setupAlbumArtPicker() {
         val launchPicker = View.OnClickListener {
             pickArtwork.launch(PickVisualMediaRequest(
                     ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
-
         binding.albumArt.setOnClickListener(launchPicker)
     }
-
-     
-
-
-
-
-
-
     private fun handlePickedArtwork(uri: Uri) {
         runCatching {
             val inputStream = requireContext().contentResolver.openInputStream(uri)
                 ?: return
-
             val tempFile = File(requireContext().cacheDir, "pending_artwork_${System.currentTimeMillis()}.jpg")
             FileOutputStream(tempFile).use { out ->
                 inputStream.copyTo(out)
             }
             inputStream.close()
-
             pendingArtworkFile = tempFile
-
             val bitmap = BitmapFactory.decodeFile(tempFile.absolutePath)
             binding.albumArt.setImageBitmap(bitmap)
         }.onFailure {
             Log.e(TAG, "Failed to load picked artwork: ${it.message}", it)
         }
     }
-
-     
-
-
-
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isSaving.collect { saving ->
@@ -224,7 +136,6 @@ class MetadataEditor : MediaFragment() {
                 binding.saveButton.alpha = if (saving) 0.5f else 1.0f
             }
         }
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.saveResult.collect { result ->
                 when (result) {
@@ -239,14 +150,7 @@ class MetadataEditor : MediaFragment() {
             }
         }
     }
-
-     
-
-
-
-
     private fun saveMetadata() {
-        
         val discNum = binding.discNumberInput.text?.toString()?.trim().orEmpty()
         val discTotal = binding.discTotalInput.text?.toString()?.trim().orEmpty()
         val discString = when {
@@ -254,7 +158,6 @@ class MetadataEditor : MediaFragment() {
             discNum.isNotEmpty() -> discNum
             else -> null
         }
-
         val fields = MetadataWriter.Fields(
                 title = binding.titleInput.text?.toString()?.trim(),
                 artist = binding.artistInput.text?.toString()?.trim(),
@@ -275,7 +178,6 @@ class MetadataEditor : MediaFragment() {
                 replayGainAlbumGain = binding.rgAlbumGainInput.text?.toString()?.trim(),
                 replayGainAlbumPeak = binding.rgAlbumPeakInput.text?.toString()?.trim(),
         )
-
         val updatedAudio = audio.copy().apply {
             setTitle(fields.title)
             artist = fields.artist
@@ -294,25 +196,15 @@ class MetadataEditor : MediaFragment() {
             replayGainAlbumGain = fields.replayGainAlbumGain
             replayGainAlbumPeak = fields.replayGainAlbumPeak
         }
-
         viewModel.saveMetadata(fields, updatedAudio, pendingArtworkFile)
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         pendingArtworkFile?.delete()
         pendingArtworkFile = null
     }
-
     companion object {
         const val TAG = "MetadataEditor"
-
-         
-
-
-
-
-
         fun newInstance(audio: Audio): MetadataEditor {
             return MetadataEditor().apply {
                 arguments = Bundle().apply {

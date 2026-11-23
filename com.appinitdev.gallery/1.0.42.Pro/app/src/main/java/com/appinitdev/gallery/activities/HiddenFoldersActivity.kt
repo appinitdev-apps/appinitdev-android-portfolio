@@ -1,6 +1,4 @@
-
 class HiddenFoldersActivity : SimpleActivity(), RefreshRecyclerViewListener {
-
     private val binding by viewBinding(ActivityManageFoldersBinding::inflate)
     override fun onCreate(savedInstanceState: Bundle?) {
         isMaterialActivity = true
@@ -9,16 +7,13 @@ class HiddenFoldersActivity : SimpleActivity(), RefreshRecyclerViewListener {
         updateFolders()
         setupOptionsMenu()
         binding.manageFoldersToolbar.title = getString(R.string.hidden_folders)
-
         updateMaterialActivityViews(binding.manageFoldersCoordinator, binding.manageFoldersList, useTransparentNavigation = true, useTopSearchMenu = false)
         setupMaterialScrollListener(binding.manageFoldersList, binding.manageFoldersToolbar)
     }
-
     override fun onResume() {
         super.onResume()
         setupToolbar(binding.manageFoldersToolbar, NavigationIcon.Arrow)
     }
-
     private fun updateFolders() {
         getNoMediaFolders {
             runOnUiThread {
@@ -27,13 +22,11 @@ class HiddenFoldersActivity : SimpleActivity(), RefreshRecyclerViewListener {
                     beVisibleIf(it.isEmpty())
                     setTextColor(getProperTextColor())
                 }
-
                 val adapter = ManageHiddenFoldersAdapter(this, it, this, binding.manageFoldersList) {}
                 binding.manageFoldersList.adapter = adapter
             }
         }
     }
-
     private fun setupOptionsMenu() {
         binding.manageFoldersToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
@@ -43,11 +36,9 @@ class HiddenFoldersActivity : SimpleActivity(), RefreshRecyclerViewListener {
             return@setOnMenuItemClickListener true
         }
     }
-
     override fun refreshItems() {
         updateFolders()
     }
-
     private fun addFolder() {
         FilePickerDialog(this, config.lastFilepickerPath, false, config.shouldShowHidden, false, true) {
             config.lastFilepickerPath = it

@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SleepTimerPage(onDismissRequest: () -> Unit) {
@@ -8,7 +7,6 @@ fun SleepTimerPage(onDismissRequest: () -> Unit) {
     var remainingTimeMs by remember { mutableLongStateOf(0L) }
     var selectedTimeMinutes by remember { mutableIntStateOf(15) }
     var timerJob by remember { mutableStateOf<Job?>(null) }
-
     LaunchedEffect(Unit) {
         val futureTime = TempData.audioSleepTimerFutureTime
         if (futureTime > 0) {
@@ -18,7 +16,6 @@ fun SleepTimerPage(onDismissRequest: () -> Unit) {
         }
         sheetState.expand()
     }
-
     LaunchedEffect(timerActive) {
         if (timerActive && remainingTimeMs > 0) {
             timerJob?.cancel()
@@ -31,7 +28,6 @@ fun SleepTimerPage(onDismissRequest: () -> Unit) {
             }
         }
     }
-
     PModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
         Box(modifier = Modifier.fillMaxWidth().height(500.dp).padding(bottom = 32.dp)) {
             Column(modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(horizontal = 24.dp),
@@ -40,7 +36,6 @@ fun SleepTimerPage(onDismissRequest: () -> Unit) {
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.padding(vertical = 16.dp))
                 Spacer(modifier = Modifier.height(8.dp))
-
                 if (timerActive) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxWidth().weight(1f)) {

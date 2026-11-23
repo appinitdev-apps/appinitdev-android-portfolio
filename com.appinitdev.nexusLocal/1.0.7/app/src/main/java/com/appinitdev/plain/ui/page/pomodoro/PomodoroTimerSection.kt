@@ -1,4 +1,3 @@
-
 @Composable
 internal fun PomodoroTimerSection(pomodoroVM: PomodoroViewModel, scope: CoroutineScope) {
     val context = LocalContext.current
@@ -39,9 +38,7 @@ internal fun PomodoroTimerSection(pomodoroVM: PomodoroViewModel, scope: Coroutin
                 style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
         }
     }
-
     VerticalSpace(dp = 32.dp)
-
     if (pomodoroVM.isRunning.value) {
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.fillMaxWidth()) {
             Button(onClick = { pomodoroVM.pauseSession(); sendPomodoroAction("pause", pomodoroVM) },

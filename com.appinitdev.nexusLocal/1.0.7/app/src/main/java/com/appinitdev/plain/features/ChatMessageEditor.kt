@@ -1,17 +1,4 @@
-
- 
-
-
-
-
 object ChatMessageEditor {
-
-     
-
-
-
-
-
     suspend fun updateTextAsync(
         context: Context,
         item: DChat,
@@ -22,7 +9,6 @@ object ChatMessageEditor {
         val originalUrls = originalPreviews.map { it.url }
         val newUrls = LinkPreviewHelper.extractUrls(newText)
         val linksChanged = newUrls.toSet() != originalUrls.toSet()
-
         val resolvedPreviews: List<DLinkPreview> = if (!linksChanged) {
             originalPreviews
         } else {
@@ -44,17 +30,14 @@ object ChatMessageEditor {
                     }
                 }
         }
-
         if (originalText?.text == newText && originalPreviews == resolvedPreviews) {
             return false
         }
-
         val content = DMessageContent(
             type = DMessageType.TEXT.value,
             value = DMessageText(text = newText, linkPreviews = resolvedPreviews),
         )
         ChatDbHelper.updateChatItemContent(item, content)
-
         val model = item.toModel().apply { data = getContentData() }
         sendEvent(
             WebSocketEvent(

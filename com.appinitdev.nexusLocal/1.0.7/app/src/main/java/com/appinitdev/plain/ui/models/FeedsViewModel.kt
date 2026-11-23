@@ -1,4 +1,3 @@
-
 @OptIn(androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi::class)
 class FeedsViewModel(private val savedStateHandle: SavedStateHandle) : ISelectableViewModel<DFeed>, ViewModel() {
     private val _itemsFlow = MutableStateFlow(mutableStateListOf<DFeed>())
@@ -13,10 +12,8 @@ class FeedsViewModel(private val savedStateHandle: SavedStateHandle) : ISelectab
     var editFetchContent = mutableStateOf(false)
     var editUrlError = mutableStateOf("")
     var rssChannel = mutableStateOf<RssChannel?>(null)
-
     override var selectMode = mutableStateOf(false)
     override val selectedIds = mutableStateListOf<String>()
-
     fun loadAsync(withCount: Boolean = false) {
         val countMap = if (withCount) {
             FeedHelper.getFeedCounts().associate { it.id to it.count }
@@ -29,7 +26,6 @@ class FeedsViewModel(private val savedStateHandle: SavedStateHandle) : ISelectab
         }.toMutableStateList()
         showLoading.value = false
     }
-
     fun updateFetchContent(id: String, value: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             FeedHelper.updateAsync(id) {
@@ -37,7 +33,6 @@ class FeedsViewModel(private val savedStateHandle: SavedStateHandle) : ISelectab
             }
         }
     }
-
     fun delete(ids: Set<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             val entryIds = FeedEntryHelper.feedEntryDao.getIds(ids)

@@ -1,7 +1,5 @@
-
 internal val imageTransformMutex = Mutex()
 internal val transformItemStateMap = mutableStateMapOf<Any, TransformItemState>()
-
 class TransformItemState(
     var key: Any = Unit,
     var blockCompose: (@Composable (Any) -> Unit) = {},
@@ -15,22 +13,18 @@ class TransformItemState(
         if (checkInBound == null) return
         if (checkInBound!!.invoke(this)) addItem() else removeItem()
     }
-
     internal fun onPositionChange(position: Offset, size: IntSize) {
         blockPosition = position; blockSize = size
         scope.launch { checkItemInMap() }
     }
-
     fun checkIfInBound(checkInBound: () -> Boolean) {
         if (checkInBound()) addItem() else removeItem()
     }
-
     fun addItem(key: Any? = null) {
         val currentKey = key ?: this.key
         if (checkInBound != null) return
         synchronized(imageTransformMutex) { transformItemStateMap[currentKey] = this }
     }
-
     fun removeItem(key: Any? = null) {
         synchronized(imageTransformMutex) {
             val currentKey = key ?: this.key
@@ -39,7 +33,6 @@ class TransformItemState(
         }
     }
 }
-
 @Composable
 fun rememberTransformItemState(
     scope: CoroutineScope = rememberCoroutineScope(),

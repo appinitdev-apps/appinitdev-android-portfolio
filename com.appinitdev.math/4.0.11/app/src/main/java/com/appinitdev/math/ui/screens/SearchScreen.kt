@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
@@ -8,7 +7,6 @@ fun SearchScreen(
     val searchQuery by viewModel.searchQuery.collectAsState()
     val searchResults by viewModel.advancedSearchResults.collectAsState()
     val filterExamplesOnly by viewModel.searchFilterOnlyExamples.collectAsState()
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -66,7 +64,6 @@ fun SearchScreen(
                     }
                 }
             )
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -83,7 +80,6 @@ fun SearchScreen(
                     )
                 )
             }
-
             if (searchQuery.isBlank()) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -114,7 +110,6 @@ fun SearchScreen(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
-
                 LazyColumn(
                     contentPadding = PaddingValues(bottom = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)

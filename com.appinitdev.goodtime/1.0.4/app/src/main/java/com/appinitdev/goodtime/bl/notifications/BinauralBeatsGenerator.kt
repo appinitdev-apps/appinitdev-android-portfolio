@@ -1,4 +1,3 @@
-
 enum class BinauralWaveMode(
     val title: String,
     val baseFreq: Double,
@@ -10,18 +9,14 @@ enum class BinauralWaveMode(
     THETA_CREATIVITY("Theta Waves (Creativity)", 150.0, 6.0, "6 Hz difference - Stimulates creative thinking"),
     DELTA_REST("Delta Waves (Deep Rest)", 100.0, 2.5, "2.5 Hz difference - Promotes deep rest")
 }
-
 object BinauralBeatsGenerator {
-
     @Volatile
     private var isPlaying = false
     private var audioTrack: AudioTrack? = null
     private var playThread: Thread? = null
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun startBinauralBeats(mode: BinauralWaveMode) {
         if (isPlaying) stopBinauralBeats()
-
         isPlaying = true
         playThread = thread(start = true) {
             val sampleRate = 44100
@@ -30,7 +25,6 @@ object BinauralBeatsGenerator {
                 AudioFormat.CHANNEL_OUT_STEREO,
                 AudioFormat.ENCODING_PCM_16BIT
             ).coerceAtLeast(sampleRate)
-
             audioTrack = AudioTrack.Builder()
                 .setAudioAttributes(
                     AudioAttributes.Builder()
@@ -47,21 +41,16 @@ object BinauralBeatsGenerator {
                 )
                 .setBufferSizeInBytes(bufferSize)
                 .build()
-
             audioTrack?.play()
-
             val leftFreq = mode.baseFreq
             val rightFreq = mode.baseFreq + mode.beatFreq
-
             val buffer = ShortArray(bufferSize)
             var sampleIndex = 0L
-
             while (isPlaying) {
                 for (i in 0 until buffer.size step 2) {
                     val t = sampleIndex.toDouble() / sampleRate
                     val leftVal = Math.sin(2.0 * Math.PI * leftFreq * t) * 0.3
                     val rightVal = Math.sin(2.0 * Math.PI * rightFreq * t) * 0.3
-
                     buffer[i] = (leftVal * 32767).toInt().toShort()     
                     buffer[i + 1] = (rightVal * 32767).toInt().toShort() 
                     sampleIndex++
@@ -70,7 +59,6 @@ object BinauralBeatsGenerator {
             }
         }
     }
-
     fun stopBinauralBeats() {
         isPlaying = false
         try {
@@ -81,6 +69,5 @@ object BinauralBeatsGenerator {
         audioTrack = null
         playThread = null
     }
-
     fun isPlaying(): Boolean = isPlaying
 }

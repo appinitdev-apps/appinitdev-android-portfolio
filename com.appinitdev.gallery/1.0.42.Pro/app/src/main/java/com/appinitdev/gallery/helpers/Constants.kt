@@ -1,5 +1,3 @@
-
-
 const val DIRECTORY_SORT_ORDER = "directory_sort_order"
 const val GROUP_FOLDER_PREFIX = "group_folder_"
 const val VIEW_TYPE_PREFIX = "view_type_folder_"
@@ -100,8 +98,6 @@ const val AVOID_SHOWING_ALL_FILES_PROMPT = "avoid_showing_all_files_prompt"
 const val SEARCH_ALL_FILES_BY_DEFAULT = "search_all_files_by_default"
 const val LAST_EXPORTED_FAVORITES_FOLDER = "last_exported_favorites_folder"
 const val SHOW_PERMISSION_RATIONALE = "show_permission_rationale"
-
-
 const val SLIDESHOW_INTERVAL = "slideshow_interval"
 const val SLIDESHOW_INCLUDE_VIDEOS = "slideshow_include_videos"
 const val SLIDESHOW_INCLUDE_GIFS = "slideshow_include_gifs"
@@ -113,12 +109,9 @@ const val SLIDESHOW_DEFAULT_INTERVAL = 5
 const val SLIDESHOW_SLIDE_DURATION = 500L
 const val SLIDESHOW_FADE_DURATION = 1500L
 const val SLIDESHOW_START_ON_ENTER = "slideshow_start_on_enter"
-
-
 const val SLIDESHOW_ANIMATION_NONE = 0
 const val SLIDESHOW_ANIMATION_SLIDE = 1
 const val SLIDESHOW_ANIMATION_FADE = 2
-
 const val RECYCLE_BIN = "recycle_bin"
 const val SHOW_FAVORITES = "show_favorites"
 const val SHOW_RECYCLE_BIN = "show_recycle_bin"
@@ -139,10 +132,8 @@ const val MIN_SKIP_LENGTH = 2000
 const val HIDE_SYSTEM_UI_DELAY = 500L
 const val MAX_PRINT_SIDE_SIZE = 4096
 const val FAST_FORWARD_VIDEO_MS = 10000
-
 const val EXOPLAYER_MIN_BUFFER_MS = 2000
 const val EXOPLAYER_MAX_BUFFER_MS = 8000
-
 const val DIRECTORY = "directory"
 const val MEDIUM = "medium"
 const val PATH = "path"
@@ -155,18 +146,12 @@ const val PICKED_PATHS = "picked_paths"
 const val SHOULD_INIT_FRAGMENT = "should_init_fragment"
 const val PORTRAIT_PATH = "portrait_path"
 const val SKIP_AUTHENTICATION = "skip_authentication"
-
-
 const val ROTATE_BY_SYSTEM_SETTING = 0
 const val ROTATE_BY_DEVICE_ROTATION = 1
 const val ROTATE_BY_ASPECT_RATIO = 2
-
-
 const val PRIORITY_SPEED = 0
 const val PRIORITY_COMPROMISE = 1
 const val PRIORITY_VALIDITY = 2
-
-
 const val EXT_NAME = 1
 const val EXT_PATH = 2
 const val EXT_SIZE = 4
@@ -179,21 +164,16 @@ const val EXT_DURATION = 256
 const val EXT_ARTIST = 512
 const val EXT_ALBUM = 1024
 const val EXT_GPS = 2048
-
-
 const val TYPE_IMAGES = 1
 const val TYPE_VIDEOS = 2
 const val TYPE_GIFS = 4
 const val TYPE_RAWS = 8
 const val TYPE_SVGS = 16
 const val TYPE_PORTRAITS = 32
-
 fun getDefaultFileFilter() = TYPE_IMAGES or TYPE_VIDEOS or TYPE_GIFS or TYPE_RAWS or TYPE_SVGS
-
 const val LOCATION_INTERNAL = 1
 const val LOCATION_SD = 2
 const val LOCATION_OTG = 3
-
 const val GROUP_BY_NONE = 1
 const val GROUP_BY_LAST_MODIFIED_DAILY = 2
 const val GROUP_BY_DATE_TAKEN_DAILY = 4
@@ -204,8 +184,6 @@ const val GROUP_BY_LAST_MODIFIED_MONTHLY = 64
 const val GROUP_BY_DATE_TAKEN_MONTHLY = 128
 const val GROUP_DESCENDING = 1024
 const val GROUP_SHOW_FILE_COUNT = 2048
-
-
 const val BOTTOM_ACTION_TOGGLE_FAVORITE = 1
 const val BOTTOM_ACTION_EDIT = 2
 const val BOTTOM_ACTION_SHARE = 4
@@ -221,47 +199,33 @@ const val BOTTOM_ACTION_SET_AS = 2048
 const val BOTTOM_ACTION_COPY = 4096
 const val BOTTOM_ACTION_MOVE = 8192
 const val BOTTOM_ACTION_RESIZE = 16384
-
 const val DEFAULT_BOTTOM_ACTIONS = BOTTOM_ACTION_TOGGLE_FAVORITE or BOTTOM_ACTION_EDIT or BOTTOM_ACTION_SHARE or BOTTOM_ACTION_DELETE
-
-
 const val ASPECT_RATIO_FREE = 0
 const val ASPECT_RATIO_ONE_ONE = 1
 const val ASPECT_RATIO_FOUR_THREE = 2
 const val ASPECT_RATIO_SIXTEEN_NINE = 3
 const val ASPECT_RATIO_OTHER = 4
-
-
 const val LOW_TILE_DPI = 160
 const val NORMAL_TILE_DPI = 220
 const val WEIRD_TILE_DPI = 240
 const val HIGH_TILE_DPI = 280
-
 const val ROUNDED_CORNERS_NONE = 1
 const val ROUNDED_CORNERS_SMALL = 2
 const val ROUNDED_CORNERS_BIG = 3
-
 const val FOLDER_MEDIA_CNT_LINE = 1
 const val FOLDER_MEDIA_CNT_BRACKETS = 2
 const val FOLDER_MEDIA_CNT_NONE = 3
-
 const val FOLDER_STYLE_SQUARE = 1
 const val FOLDER_STYLE_ROUNDED_CORNERS = 2
-
-
 const val THUMBNAIL_FADE_DURATION_MS = 150
-
 fun getPermissionToRequest() = if (isTiramisuPlus()) PERMISSION_READ_MEDIA_IMAGES else PERMISSION_WRITE_STORAGE
-
 fun getPermissionsToRequest(): Collection<Int> {
     val permissions = mutableListOf(getPermissionToRequest())
     if (isRPlus()) {
         permissions.add(PERMISSION_MEDIA_LOCATION)
     }
-
     if (isTiramisuPlus()) {
         permissions.add(PERMISSION_READ_MEDIA_VIDEO)
     }
-
     return permissions
 }

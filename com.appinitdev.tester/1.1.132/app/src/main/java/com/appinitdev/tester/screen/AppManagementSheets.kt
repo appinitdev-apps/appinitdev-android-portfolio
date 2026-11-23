@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddAppBottomSheet(
@@ -7,8 +6,6 @@ fun AddAppBottomSheet(
     onDismiss: () -> Unit
 ) {
     val draft by viewModel.draftApp.collectAsState()
-    
-    
     var step by remember { mutableIntStateOf(if (appToEdit == null) draft.step else 1) }
     var nombre by remember { mutableStateOf(appToEdit?.nombre ?: draft.nombre) }
     var paquete by remember { mutableStateOf(appToEdit?.paquete ?: draft.paquete) }
@@ -24,10 +21,7 @@ fun AddAppBottomSheet(
     var cuentaPrueba by remember { mutableStateOf(appToEdit?.cuentaPrueba ?: draft.cuentaPrueba) }
     var esDePago by remember { mutableStateOf(appToEdit?.esDePago ?: draft.esDePago) }
     var iconoUri by remember { mutableStateOf<android.net.Uri?>(null) }
-
     var showReputationAviso by remember { mutableStateOf(appToEdit == null) }
-
-    
     LaunchedEffect(step, nombre, paquete, categoria, paisesAgregados, metodoTest, urlGoogleGroup, instrucciones, contactoDirecto, comunidadUrl, notas, cuentaPrueba, esDePago) {
         if (appToEdit == null) {
             viewModel.updateDraft {
@@ -40,16 +34,13 @@ fun AddAppBottomSheet(
             }
         }
     }
-
     val isPaqueteValido = remember(paquete) { "^[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)+$".toRegex().matches(paquete) && paquete.length <= 150 }
-    
     LaunchedEffect(paquete) {
         if (paquete.isNotEmpty() && paquete.length > 5 && isPaqueteValido && paquete != appToEdit?.paquete) {
             delay(500)
             viewModel.verifyPackageRealtime(paquete)
         }
     }
-
     if (showReputationAviso) {
         ModalBottomSheet(
             onDismissRequest = { showReputationAviso = false },
@@ -78,21 +69,18 @@ fun AddAppBottomSheet(
                         )
                     }
                 }
-                
                 Text(
                     stringResource(R.string.aviso_reputacion_titulo),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.ExtraBold,
                     textAlign = TextAlign.Center
                 )
-                
                 Text(
                     stringResource(R.string.aviso_reputacion_msg),
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                
                 Card(
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
@@ -113,7 +101,6 @@ fun AddAppBottomSheet(
                         )
                     }
                 }
-                
                 Button(
                     onClick = { showReputationAviso = false },
                     modifier = Modifier.fillMaxWidth(),
@@ -124,7 +111,6 @@ fun AddAppBottomSheet(
             }
         }
     }
-
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
@@ -140,7 +126,6 @@ fun AddAppBottomSheet(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -153,28 +138,23 @@ fun AddAppBottomSheet(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(1f)
                 )
-                
                 if (appToEdit == null && (nombre.isNotBlank() || paquete.isNotBlank())) {
                     IconButton(onClick = { viewModel.clearDraft(); onDismiss() }) {
                         Icon(Icons.Default.DeleteSweep, contentDescription = "Borrar Progreso", tint = MaterialTheme.colorScheme.error)
                     }
                 }
             }
-            
             LinearProgressIndicator(
                 progress = { step / 7f },
                 modifier = Modifier.fillMaxWidth().clip(CircleShape),
                 color = MaterialTheme.colorScheme.primary,
                 trackColor = MaterialTheme.colorScheme.primaryContainer
             )
-            
             Text(
                 text = stringResource(R.string.paso_n, step),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.secondary
             )
-
-            
             Box(modifier = Modifier.fillMaxWidth().animateContentSize()) {
                 when (step) {
                     1 -> StepNombre(
@@ -195,8 +175,6 @@ fun AddAppBottomSheet(
                     7 -> StepPago(esDePago) { esDePago = it }
                 }
             }
-
-            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -210,7 +188,6 @@ fun AddAppBottomSheet(
                         Text(stringResource(R.string.volver))
                     }
                 }
-                
                 Button(
                     onClick = {
                         if (step < 7) {
@@ -266,7 +243,6 @@ fun AddAppBottomSheet(
         }
     }
 }
-
 @Composable
 fun StepNombre(
     nombre: String,
@@ -282,9 +258,7 @@ fun StepNombre(
     ) { uri ->
         onIconoSelected(uri)
     }
-
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
@@ -295,7 +269,6 @@ fun StepNombre(
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(8.dp))
-
             Surface(
                 modifier = Modifier
                     .size(80.dp)
@@ -349,14 +322,12 @@ fun StepNombre(
                     }
                 }
             }
-
             if (iconoUri != null || !iconoUrlActual.isNullOrBlank()) {
                 TextButton(onClick = { onIconoSelected(null) }) {
                     Text(stringResource(R.string.quitar_imagen), color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
                 }
             }
         }
-
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(stringResource(R.string.nombre_de_la_app), fontWeight = FontWeight.Bold)
             OutlinedTextField(
@@ -373,7 +344,6 @@ fun StepNombre(
                 }
             )
         }
-        
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(stringResource(R.string.descripcion_app), fontWeight = FontWeight.Bold)
             OutlinedTextField(
@@ -387,7 +357,6 @@ fun StepNombre(
         }
     }
 }
-
 @Composable
 fun StepPaquete(paquete: String, viewModel: AuthViewModel, onValueChange: (String) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -411,7 +380,6 @@ fun StepPaquete(paquete: String, viewModel: AuthViewModel, onValueChange: (Strin
         )
     }
 }
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun StepCategoria(selected: String, onSelected: (String) -> Unit) {
@@ -433,7 +401,6 @@ fun StepCategoria(selected: String, onSelected: (String) -> Unit) {
         }
     }
 }
-
 @Composable
 fun StepPaises(agregados: Boolean, onAgregados: (Boolean) -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -444,7 +411,6 @@ fun StepPaises(agregados: Boolean, onAgregados: (Boolean) -> Unit) {
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface
         )
-        
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Button(
                 onClick = { onAgregados(true) },
@@ -456,7 +422,6 @@ fun StepPaises(agregados: Boolean, onAgregados: (Boolean) -> Unit) {
                 border = if (!agregados) BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)) else null,
                 modifier = Modifier.weight(1f)
             ) { Text(stringResource(R.string.si_ya_agregue), fontWeight = FontWeight.Bold) }
-            
             Button(
                 onClick = { onAgregados(false) },
                 colors = ButtonDefaults.buttonColors(
@@ -468,7 +433,6 @@ fun StepPaises(agregados: Boolean, onAgregados: (Boolean) -> Unit) {
                 modifier = Modifier.weight(1f)
             ) { Text(stringResource(R.string.no_aun_no), fontWeight = FontWeight.Bold) }
         }
-
         if (!agregados) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
@@ -485,12 +449,10 @@ fun StepPaises(agregados: Boolean, onAgregados: (Boolean) -> Unit) {
         }
     }
 }
-
 @Composable
 fun StepMetodoTest(metodo: String, url: String, onMetodo: (String) -> Unit, onUrl: (String) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(stringResource(R.string.metodo_test_pregunta), fontWeight = FontWeight.Bold)
-        
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(
                 selected = metodo == "google_group",
@@ -505,7 +467,6 @@ fun StepMetodoTest(metodo: String, url: String, onMetodo: (String) -> Unit, onUr
                 leadingIcon = { if (metodo == "email") Icon(Icons.Default.Check, null) }
             )
         }
-
         if (metodo == "google_group") {
             OutlinedTextField(
                 value = url,
@@ -523,7 +484,6 @@ fun StepMetodoTest(metodo: String, url: String, onMetodo: (String) -> Unit, onUr
         }
     }
 }
-
 @Composable
 fun StepOpcional(
     inst: String, cont: String, com: String, notas: String, cuenta: String,
@@ -538,7 +498,6 @@ fun StepOpcional(
         OutlinedTextField(value = notas, onValueChange = onNotas, label = { Text(stringResource(R.string.notas)) }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp))
     }
 }
-
 @Composable
 fun StepPago(pago: Boolean, onPago: (Boolean) -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -564,7 +523,6 @@ fun StepPago(pago: Boolean, onPago: (Boolean) -> Unit) {
                     fontWeight = FontWeight.Bold
                 )
             }
-
             Button(
                 onClick = { onPago(true) },
                 colors = ButtonDefaults.buttonColors(
@@ -597,7 +555,6 @@ fun StepPago(pago: Boolean, onPago: (Boolean) -> Unit) {
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InstallationStepsBottomSheet(
@@ -623,7 +580,6 @@ fun InstallationStepsBottomSheet(
                 fontWeight = FontWeight.ExtraBold,
                 color = MaterialTheme.colorScheme.primary
             )
-
             InstallStepItem(
                 number = "1",
                 title = stringResource(R.string.paso_1_titulo),
@@ -633,21 +589,18 @@ fun InstallationStepsBottomSheet(
                     stringResource(R.string.paso_1_desc_email),
                 icon = if (app.metodoTest == "google_group") Icons.Default.Groups else Icons.Default.Email
             )
-
             InstallStepItem(
                 number = "2",
                 title = stringResource(R.string.paso_2_titulo),
                 description = stringResource(R.string.paso_2_desc),
                 icon = Icons.Default.Language
             )
-
             InstallStepItem(
                 number = "3",
                 title = stringResource(R.string.paso_3_titulo),
                 description = stringResource(R.string.paso_3_desc),
                 icon = Icons.Default.Shop
             )
-            
             if (app.esDePago) {
                 InstallStepItem(
                     number = "4",
@@ -655,7 +608,6 @@ fun InstallationStepsBottomSheet(
                     description = stringResource(R.string.desc_compra_tarjeta_prueba),
                     icon = Icons.Default.CreditCard
                 )
-
                 Card(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
                     shape = RoundedCornerShape(12.dp)
@@ -677,7 +629,6 @@ fun InstallationStepsBottomSheet(
         }
     }
 }
-
 @Composable
 fun InstallStepItem(number: String, title: String, description: String, icon: ImageVector) {
     Row(
@@ -693,7 +644,6 @@ fun InstallStepItem(number: String, title: String, description: String, icon: Im
                 Text(number, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
             }
         }
-        
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Icon(icon, null, modifier = Modifier.size(18.dp), tint = MaterialTheme.colorScheme.secondary)
@@ -703,7 +653,6 @@ fun InstallStepItem(number: String, title: String, description: String, icon: Im
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppDetailBottomSheet(
@@ -717,21 +666,17 @@ fun AppDetailBottomSheet(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(stringResource(R.string.info_app_titulo), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-            
             InfoSection(stringResource(R.string.descripcion_app), app.descripcion)
             InfoSection(stringResource(R.string.instrucciones), app.instrucciones)
             InfoSection("Cuenta de Acceso", app.cuentaPrueba)
             InfoSection("Notas", app.notas)
-            
             if (app.contactoDirecto.isNotBlank()) LinkItem("Contacto Directo", app.contactoDirecto)
             if (app.comunidadUrl.isNotBlank()) LinkItem("Comunidad", app.comunidadUrl)
             if (app.urlGoogleGroup.isNotBlank()) LinkItem("Google Group", app.urlGoogleGroup)
-            
             Spacer(Modifier.height(16.dp))
         }
     }
 }
-
 @Composable
 fun InfoSection(title: String, content: String) {
     if (content.isNotBlank()) {
@@ -748,7 +693,6 @@ fun InfoSection(title: String, content: String) {
         }
     }
 }
-
 @Composable
 fun LinkItem(title: String, url: String) {
     val context = LocalContext.current
@@ -771,14 +715,12 @@ fun LinkItem(title: String, url: String) {
         }
     }
 }
-
 fun copyToClipboard(context: Context, text: String) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clip = ClipData.newPlainText("app_info", text)
     clipboard.setPrimaryClip(clip)
     showNiceToast(context, context.getString(R.string.link_copiado), NiceToastType.INFO)
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageAppBottomSheet(
@@ -788,7 +730,6 @@ fun ManageAppBottomSheet(
     onEdit: () -> Unit
 ) {
     var showDeleteConfirm by remember { mutableStateOf(false) }
-
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp)) {
             ListItem(
@@ -821,7 +762,6 @@ fun ManageAppBottomSheet(
             )
         }
     }
-
     if (showDeleteConfirm) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirm = false },

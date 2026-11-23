@@ -1,4 +1,3 @@
-
 @Composable
 fun NoDataColumn(loading: Boolean = false, search: Boolean = false) {
     LazyColumn(

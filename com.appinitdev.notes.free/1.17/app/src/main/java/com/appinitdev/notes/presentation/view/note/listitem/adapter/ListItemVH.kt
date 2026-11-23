@@ -1,4 +1,3 @@
-
 class ListItemVH(
     val binding: RecyclerListItemBinding,
     val listManager: ListManager,
@@ -6,14 +5,11 @@ class ListItemVH(
     textSize: TextSize,
     private val inCheckedList: Boolean,
 ) : RecyclerView.ViewHolder(binding.root) {
-
     private var dragHandleInitialY: Float = 0f
-
     init {
         val body = textSize.editBodySize
         binding.EditText.apply {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, body)
-
             textWatcher =
                 createListTextWatcherWithHistory(
                     listManager,
@@ -26,7 +22,6 @@ class ListItemVH(
                     }
                 }
         }
-
         binding.DragHandle.setOnTouchListener { _, event ->
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> dragHandleInitialY = event.y
@@ -40,7 +35,6 @@ class ListItemVH(
             }
             false
         }
-
         binding.SwipeLayout.setOnDrawerChange { view, state, progress ->
             when (state) {
                 STATE_OPEN -> listManager.changeIsChild(absoluteAdapterPosition, true)
@@ -48,7 +42,6 @@ class ListItemVH(
             }
         }
     }
-
     fun bind(
         @ColorInt backgroundColor: Int,
         item: ListItem,
@@ -58,11 +51,8 @@ class ListItemVH(
         viewMode: NoteViewMode,
     ) {
         updateEditText(item, position, viewMode)
-
         updateCheckBox(item, position)
-
         updateDeleteButton(item, position, viewMode)
-
         updateSwipe(item.isChild, viewMode == NoteViewMode.EDIT && position != 0 && !item.checked)
         binding.DragHandle.apply {
             visibility =
@@ -73,16 +63,13 @@ class ListItemVH(
                 }
             contentDescription = "Drag$position"
         }
-
         highlights?.let {
             it.forEach { highlight ->
                 binding.EditText.highlight(highlight.startIdx, highlight.endIdx, highlight.selected)
             }
         } ?: binding.EditText.clearHighlights()
-
         binding.root.setControlsContrastColorForAllViews(backgroundColor)
     }
-
     fun focusEditText(
         selectionStart: Int = binding.EditText.text!!.length,
         selectionEnd: Int = selectionStart,
@@ -90,7 +77,6 @@ class ListItemVH(
     ) {
         binding.EditText.focusAndSelect(selectionStart, selectionEnd, inputMethodManager)
     }
-
     private fun updateDeleteButton(item: ListItem, position: Int, viewMode: NoteViewMode) {
         binding.Delete.apply {
             visibility =
@@ -105,7 +91,6 @@ class ListItemVH(
             contentDescription = "Delete$position"
         }
     }
-
     private fun updateEditText(item: ListItem, position: Int, viewMode: NoteViewMode) {
         binding.EditText.apply {
             setText(item.body)
@@ -156,9 +141,6 @@ class ListItemVH(
                         keyCode == KeyEvent.KEYCODE_DEL &&
                         item.body.isEmpty()
                 ) {
-                    
-                    
-                    
                     listManager.delete(
                         absoluteAdapterPosition,
                         inCheckedList = inCheckedList,
@@ -170,9 +152,7 @@ class ListItemVH(
             }
         }
     }
-
     private var checkBoxListener: OnCheckedChangeListener? = null
-
     private fun updateCheckBox(item: ListItem, position: Int) {
         if (checkBoxListener == null) {
             checkBoxListener = OnCheckedChangeListener { _, isChecked ->
@@ -190,7 +170,6 @@ class ListItemVH(
             contentDescription = "CheckBox$position"
         }
     }
-
     private fun updateSwipe(open: Boolean, canSwipe: Boolean) {
         binding.SwipeLayout.apply {
             intercept = canSwipe
@@ -203,7 +182,6 @@ class ListItemVH(
             }
         }
     }
-
     private fun checkListPasted(
         text: CharSequence,
         start: Int,
@@ -236,12 +214,10 @@ class ListItemVH(
         }
         return containsLines
     }
-
     private fun EditText.changeText(position: Int, after: CharSequence) {
         setText(after)
         val stateAfter = EditTextState(editableText.clone(), selectionStart)
         listManager.changeText(position, stateAfter, pushChange = false)
     }
-
     fun getSelection() = with(binding.EditText) { Pair(selectionStart, selectionEnd) }
 }

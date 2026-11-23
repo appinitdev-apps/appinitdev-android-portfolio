@@ -1,9 +1,7 @@
-
 @Composable
 fun FileExplorerWithViewer(context: Context, onBack: (() -> Unit)? = null) {
     var showDialog by remember { mutableStateOf(false) }
     var selectedPdfPath by remember { mutableStateOf<String?>(null) }
-
     Column(Modifier.fillMaxSize()) {
         FileExplorerScreen(
             onBack=onBack,
@@ -14,7 +12,6 @@ fun FileExplorerWithViewer(context: Context, onBack: (() -> Unit)? = null) {
                 showDialog = true
             }
         )
-
         if (showDialog && selectedPdfPath != null) {
             ReceiptDialog(
                 pdfPath = selectedPdfPath,

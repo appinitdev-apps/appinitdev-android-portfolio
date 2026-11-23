@@ -1,4 +1,3 @@
-
 internal fun buildRenderBlockList(
     countH: Int,
     countW: Int,
@@ -31,16 +30,11 @@ internal fun buildRenderBlockList(
         }
     }
 }
-
 internal fun getRotateBitmap(bitmap: Bitmap, degree: Float): Bitmap {
     val matrix = Matrix()
     matrix.postRotate(degree)
     return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, false)
 }
-
- 
-
-
 internal fun decodeRegionBitmap(
     decoder: BitmapRegionDecoder,
     rotation: Int,
@@ -65,7 +59,6 @@ internal fun decodeRegionBitmap(
                         val nextY2 = decoderWidth - rect.left
                         Rect(nextX1, nextY1, nextX2, nextY2)
                     }
-
                     RotationType.ROTATION_180.value -> {
                         val nextX1 = decoderWidth - rect.right
                         val nextX2 = decoderWidth - rect.left
@@ -73,7 +66,6 @@ internal fun decodeRegionBitmap(
                         val nextY2 = decoderHeight - rect.top
                         Rect(nextX1, nextY1, nextX2, nextY2)
                     }
-
                     RotationType.ROTATION_270.value -> {
                         val nextX1 = decoderHeight - rect.bottom
                         val nextX2 = decoderHeight - rect.top
@@ -81,7 +73,6 @@ internal fun decodeRegionBitmap(
                         val nextY2 = rect.right
                         Rect(nextX1, nextY1, nextX2, nextY2)
                     }
-
                     else -> throw RotationIllegalException()
                 }
                 val srcBitmap = decoder.decodeRegion(newRect, ops)

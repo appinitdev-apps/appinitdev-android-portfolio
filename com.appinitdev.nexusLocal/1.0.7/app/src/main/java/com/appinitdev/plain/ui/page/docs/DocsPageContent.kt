@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ColumnScope.DocsPageContent(
@@ -12,12 +11,10 @@ internal fun ColumnScope.DocsPageContent(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-
     if (pagerState.pageCount == 0) {
         NoDataColumn(loading = docsVM.showLoading.value, search = docsVM.showSearchBar.value)
         return
     }
-
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.weight(1f),

@@ -1,20 +1,14 @@
-
 class NotificationSettingsViewModel : ViewModel() {
     private val _selectedAppsFlow = MutableStateFlow(mutableStateListOf<DPackage>())
     val selectedAppsFlow: StateFlow<List<DPackage>> get() = _selectedAppsFlow
-    
     private val _allAppsFlow = MutableStateFlow(mutableStateListOf<DPackage>())
     val allAppsFlow: StateFlow<List<DPackage>> get() = _allAppsFlow
-    
     var filterData = mutableStateOf(NotificationFilterData())
     var isLoading = mutableStateOf(true)
     var showAppSelector = mutableStateOf(false)
     var appsLoaded = mutableStateOf(false)
     var searchQuery = mutableStateOf("")
-    
-    
     val selectedAppIds = mutableStateListOf<String>()
-
     suspend fun loadDataAsync(context: Context) {
         try {
             filterData.value = NotificationFilterPreference.getValueAsync()
@@ -24,7 +18,6 @@ class NotificationSettingsViewModel : ViewModel() {
                     val app = PackageHelper.getPackage(packageName)
                     apps.add(app)
                 } catch (e: Exception) {
-                    
                     NotificationFilterPreference.toggleAppAsync(packageName)
                 }
             }
@@ -34,10 +27,8 @@ class NotificationSettingsViewModel : ViewModel() {
             isLoading.value = false
         }
     }
-
     suspend fun loadAllAppsAsync(context: Context) {
         if (appsLoaded.value) return
-        
         try {
             val apps = PackageHelper.searchAsync("", Int.MAX_VALUE, 0, FileSortBy.NAME_ASC)
                 .filter { !filterData.value.apps.contains(it.id) && it.id != context.packageName }
@@ -47,7 +38,6 @@ class NotificationSettingsViewModel : ViewModel() {
             appsLoaded.value = false
         }
     }
-
     fun refreshNotifications() {
         sendEvent(
             WebSocketEvent(
@@ -55,21 +45,18 @@ class NotificationSettingsViewModel : ViewModel() {
             )
         )
     }
-
     suspend fun toggleModeAsync(context: Context) {
         val newMode = if (filterData.value.mode == "allowlist") "blacklist" else "allowlist"
         NotificationFilterPreference.setModeAsync(newMode)
         filterData.value = filterData.value.copy(mode = newMode)
         refreshNotifications()
     }
-
     suspend fun removeAppAsync(context: Context, packageName: String) {
         NotificationFilterPreference.toggleAppAsync(packageName)
         filterData.value = NotificationFilterPreference.getValueAsync()
         loadSelectedApps(context)
         refreshNotifications()
     }
-
     suspend fun addAppsAsync(context: Context, packageNames: List<String>) {
         packageNames.forEach { packageName ->
             NotificationFilterPreference.toggleAppAsync(packageName)
@@ -78,14 +65,12 @@ class NotificationSettingsViewModel : ViewModel() {
         loadSelectedApps(context)
         refreshNotifications()
     }
-
     suspend fun clearAllAsync(context: Context) {
         NotificationFilterPreference.putAsync(filterData.value.copy(apps = emptySet()))
         filterData.value = NotificationFilterPreference.getValueAsync()
         _selectedAppsFlow.value.clear()
         refreshNotifications()
     }
-
     private suspend fun loadSelectedApps(context: Context) {
         val apps = mutableListOf<DPackage>()
         filterData.value.apps.forEach { packageName ->
@@ -93,17 +78,14 @@ class NotificationSettingsViewModel : ViewModel() {
                 val app = PackageHelper.getPackage(packageName)
                 apps.add(app)
             } catch (e: Exception) {
-                
                 NotificationFilterPreference.toggleAppAsync(packageName)
             }
         }
         _selectedAppsFlow.value = apps.sortedBy { it.name }.toMutableStateList()
     }
-
     fun clearSelectedApps() {
         selectedAppIds.clear()
     }
-
     fun toggleAppSelection(packageName: String) {
         if (selectedAppIds.contains(packageName)) {
             selectedAppIds.remove(packageName)
@@ -111,7 +93,6 @@ class NotificationSettingsViewModel : ViewModel() {
             selectedAppIds.add(packageName)
         }
     }
-
     fun showAppSelectorDialog() {
         showAppSelector.value = true
     }

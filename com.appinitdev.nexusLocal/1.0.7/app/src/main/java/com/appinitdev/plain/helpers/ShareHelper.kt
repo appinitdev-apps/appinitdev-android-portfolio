@@ -1,4 +1,3 @@
-
 object ShareHelper {
     private fun resolveShareMimeType(
         context: Context,
@@ -27,7 +26,6 @@ object ShareHelper {
             "*/*"
         }
     }
-
     fun shareUri(
         context: Context,
         uri: Uri,
@@ -37,7 +35,6 @@ object ShareHelper {
         chooserIntent.putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, getExcludeComponentNames(context).toTypedArray())
         context.startActivity(chooserIntent)
     }
-
     fun shareUris(
         context: Context,
         uris: List<Uri>,
@@ -48,7 +45,6 @@ object ShareHelper {
             shareFileUris(context, uris)
         }
     }
-
     fun shareText(
         context: Context,
         content: String,
@@ -64,7 +60,6 @@ object ShareHelper {
         chooserIntent.putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, getExcludeComponentNames(context).toTypedArray())
         context.startActivity(chooserIntent)
     }
-
     fun sharePaths(
         context: Context,
         paths: Set<String>,
@@ -75,7 +70,6 @@ object ShareHelper {
             shareFiles(context, paths.map { File(it) })
         }
     }
-
     private fun shareFileUris(
         context: Context,
         uris: List<Uri>,
@@ -85,11 +79,9 @@ object ShareHelper {
         chooserIntent.putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, getExcludeComponentNames(context).toTypedArray())
         context.startActivity(chooserIntent)
     }
-
     fun getExcludeComponentNames(context: Context): List<ComponentName> {
         return emptyList()
     }
-
     private fun createFileIntent(
         context: Context,
         uri: Uri,
@@ -101,7 +93,6 @@ object ShareHelper {
             type = context.getMimeTypeFromUri(uri)
         }
     }
-
     private fun createFilesIntent(
         uris: List<Uri>,
     ): Intent {
@@ -112,24 +103,15 @@ object ShareHelper {
             type = "*/*"
         }
     }
-
-     
-
-
     private fun isFileAccessibleByProvider(file: File): Boolean {
         if (!file.exists() || !file.canRead()) {
             return false
         }
-        
         val path = file.absolutePath
-        
         if (path.startsWith("/apex/")) {
             return false
         }
-        
-        
         if (path.startsWith("/system/") || path.startsWith("/vendor/") || path.startsWith("/product/")) {
-            
             try {
                 file.inputStream().use { it.read() }
                 return true
@@ -137,10 +119,8 @@ object ShareHelper {
                 return false
             }
         }
-        
         return true
     }
-
     fun shareFile(
         context: Context,
         file: File,
@@ -154,7 +134,6 @@ object ShareHelper {
         } else {
             file
         }
-        
         if (!isFileAccessibleByProvider(fileToShare)) {
             val errorMessage = if (fileToShare.absolutePath.startsWith("/apex/")) {
                 LocaleHelper.getString(Res.string.cannot_share_system_component)
@@ -178,14 +157,12 @@ object ShareHelper {
             DialogHelper.showErrorMessage(e.message ?: LocaleHelper.getString(Res.string.unknown_error))
         }
     }
-
     fun shareFiles(
         context: Context,
         files: List<File>,
     ) {
         val fileUris = arrayListOf<Uri>()
         val inaccessibleFiles = mutableListOf<String>()
-
         for (file in files) {
             if (isFileAccessibleByProvider(file)) {
                 try {
@@ -197,17 +174,14 @@ object ShareHelper {
                 inaccessibleFiles.add(file.name)
             }
         }
-
         if (fileUris.isEmpty()) {
             DialogHelper.showErrorMessage(LocaleHelper.getString(Res.string.cannot_share_any_files))
             return
         }
-
         if (inaccessibleFiles.isNotEmpty()) {
             val message = LocaleHelper.getString(Res.string.some_files_cannot_be_shared) + ": ${inaccessibleFiles.joinToString(", ")}"
             DialogHelper.showErrorMessage(message)
         }
-
         val intent = Intent(Intent.ACTION_SEND_MULTIPLE)
         intent.type = "*/*"
         intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris)
@@ -216,7 +190,6 @@ object ShareHelper {
         chooserIntent.putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, getExcludeComponentNames(context).toTypedArray())
         context.startActivity(chooserIntent)
     }
-
     fun openPathWith(
         context: Context,
         path: String,
@@ -231,7 +204,6 @@ object ShareHelper {
             DialogHelper.showErrorMessage(errorMessage)
             return
         }
-        
         try {
             val intent = Intent()
             intent.action = Intent.ACTION_VIEW

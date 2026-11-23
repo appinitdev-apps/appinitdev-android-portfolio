@@ -1,8 +1,6 @@
-
 class CLIPTokenizer(tokenizerFile: File) {
     private val vocab = mutableMapOf<String, Int>()
     private val mergeRanks = mutableMapOf<Pair<String, String>, Int>()
-
     init {
         val json = JSONObject(tokenizerFile.readText())
         val model = json.getJSONObject("model")
@@ -26,7 +24,6 @@ class CLIPTokenizer(tokenizerFile: File) {
             mergeRanks[Pair(left, right)] = i
         }
     }
-
     fun encode(text: String, maxLen: Int = 77): IntArray {
         val normalized = Normalizer.normalize(text, Normalizer.Form.NFC)
             .replace(Regex("\\s+"), " ").trim().lowercase()
@@ -43,7 +40,6 @@ class CLIPTokenizer(tokenizerFile: File) {
         ids.add(EOT_ID)
         return IntArray(maxLen) { if (it < ids.size) ids[it] else 0 }
     }
-
     private fun bpeEncode(word: String): List<String> {
         val byteChars = word.toByteArray(Charsets.UTF_8)
             .map { BYTE_TO_UNICODE[it.toInt() and 0xFF]!! }
@@ -63,7 +59,6 @@ class CLIPTokenizer(tokenizerFile: File) {
         }
         return pieces
     }
-
     companion object {
         private const val SOT_ID = 49406
         private const val EOT_ID = 49407

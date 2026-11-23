@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun VideoActionButtons(
@@ -69,7 +68,6 @@ internal fun VideoActionButtons(
         })
     }
 }
-
 @Composable
 internal fun VideoPathCard(m: DVideo) {
     PCard {

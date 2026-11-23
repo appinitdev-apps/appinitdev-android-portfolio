@@ -1,4 +1,3 @@
-
 @Composable
 fun rememberScroller(
     scrollableState: ScrollableState,
@@ -7,13 +6,6 @@ fun rememberScroller(
 ): Scroller {
     return rememberScroller(scrollableState, { pixelAmount }, duration)
 }
-
- 
-
-
-
-
-
 @Composable
 fun rememberScroller(
     scrollableState: ScrollableState,
@@ -21,7 +13,6 @@ fun rememberScroller(
 ): Scroller {
     val scope = rememberCoroutineScope()
     val pixelPerSecondUpdated = rememberUpdatedState(pixelPerSecond)
-
     return remember(scrollableState, scope) {
         Scroller(
             scrollableState,
@@ -30,14 +21,6 @@ fun rememberScroller(
         )
     }
 }
-
- 
-
-
-
-
-
-
 @Composable
 fun rememberScroller(
     scrollableState: ScrollableState,
@@ -47,7 +30,6 @@ fun rememberScroller(
     val scope = rememberCoroutineScope()
     val pixelAmountProviderUpdated = rememberUpdatedState(pixelAmountProvider)
     val durationUpdated = rememberUpdatedState(duration)
-
     return remember(scrollableState, scope, duration) {
         Scroller(
             scrollableState,

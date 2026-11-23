@@ -1,4 +1,3 @@
-
 @Composable
 fun MdnsAndPortEditDialog(
     isHttps: Boolean,
@@ -11,7 +10,6 @@ fun MdnsAndPortEditDialog(
     var editHostname by remember { mutableStateOf(currentHostname) }
     var selectedPort by remember { mutableStateOf(currentPort) }
     var hostnameError by remember { mutableStateOf(false) }
-
     AlertDialog(
         modifier = Modifier.fillMaxWidth(),
         containerColor = MaterialTheme.colorScheme.surface,
@@ -73,7 +71,6 @@ fun MdnsAndPortEditDialog(
         },
     )
 }
-
 @Composable
 fun PortSelectionDialog(
     isHttps: Boolean,

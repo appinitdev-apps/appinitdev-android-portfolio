@@ -1,4 +1,3 @@
-
 @Composable
 fun InteractiveCalculator(
     topicId: String,
@@ -21,18 +20,14 @@ fun InteractiveCalculator(
         }
     }
 }
-
-
 @Composable
 fun QuadraticCalculator() {
     var aStr by remember { mutableStateOf("1") }
     var bStr by remember { mutableStateOf("-5") }
     var cStr by remember { mutableStateOf("6") }
-
     val a = aStr.toDoubleOrNull() ?: 1.0
     val b = bStr.toDoubleOrNull() ?: 0.0
     val c = cStr.toDoubleOrNull() ?: 0.0
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -46,7 +41,6 @@ fun QuadraticCalculator() {
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(12.dp))
-
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = aStr,
@@ -70,9 +64,7 @@ fun QuadraticCalculator() {
                     modifier = Modifier.weight(1f)
                 )
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 shape = RoundedCornerShape(12.dp),
@@ -85,7 +77,6 @@ fun QuadraticCalculator() {
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Spacer(modifier = Modifier.height(6.dp))
-
                     if (a == 0.0) {
                         if (b != 0.0) {
                             val x = -c / b
@@ -98,11 +89,9 @@ fun QuadraticCalculator() {
                         val delta = b * b - 4 * a * c
                         val h = -b / (2 * a)
                         val k = a * h * h + b * h + c
-
                         Text("• Ecuación Estándar: (${a})x² + (${b})x + (${c}) = 0")
                         Text("• Discriminante (Δ = b² - 4ac):")
                         Text("   Δ = ($b)² - 4($a)($c) = $delta")
-
                         if (delta > 0) {
                             val x1 = (-b + sqrt(delta)) / (2 * a)
                             val x2 = (-b - sqrt(delta)) / (2 * a)
@@ -120,7 +109,6 @@ fun QuadraticCalculator() {
                             Text("   x₁ = ${String.format(Locale.US, "%.4f", realPart)} + ${String.format(Locale.US, "%.4f", imagPart)}i")
                             Text("   x₂ = ${String.format(Locale.US, "%.4f", realPart)} - ${String.format(Locale.US, "%.4f", imagPart)}i")
                         }
-
                         Text("• Vértice de la Parábola (h, k):")
                         Text("   (h = -b/2a, k = f(h)) = (${String.format(Locale.US, "%.4f", h)}, ${String.format(Locale.US, "%.4f", k)})")
                     }
@@ -129,20 +117,15 @@ fun QuadraticCalculator() {
         }
     }
 }
-
-
 @Composable
 fun PythagoreanCalculator() {
     var aStr by remember { mutableStateOf("3") }
     var bStr by remember { mutableStateOf("4") }
-
     val a = aStr.toDoubleOrNull() ?: 3.0
     val b = bStr.toDoubleOrNull() ?: 4.0
     val c = sqrt(a * a + b * b)
-
     val angleA = Math.toDegrees(asin(a / c))
     val angleB = 90.0 - angleA
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -156,7 +139,6 @@ fun PythagoreanCalculator() {
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(12.dp))
-
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = aStr,
@@ -173,9 +155,7 @@ fun PythagoreanCalculator() {
                     modifier = Modifier.weight(1f)
                 )
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 shape = RoundedCornerShape(12.dp),
@@ -198,20 +178,15 @@ fun PythagoreanCalculator() {
         }
     }
 }
-
-
 @Composable
 fun TriangleCalculator() {
     var aStr by remember { mutableStateOf("5") }
     var bStr by remember { mutableStateOf("7") }
     var cStr by remember { mutableStateOf("8") }
-
     val a = aStr.toDoubleOrNull() ?: 5.0
     val b = bStr.toDoubleOrNull() ?: 7.0
     val c = cStr.toDoubleOrNull() ?: 8.0
-
     val isValidTriangle = (a + b > c) && (a + c > b) && (b + c > a)
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -225,7 +200,6 @@ fun TriangleCalculator() {
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(12.dp))
-
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = aStr,
@@ -249,9 +223,7 @@ fun TriangleCalculator() {
                     modifier = Modifier.weight(1f)
                 )
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 shape = RoundedCornerShape(12.dp),
@@ -261,15 +233,12 @@ fun TriangleCalculator() {
                     if (isValidTriangle) {
                         val cosA = ((b * b + c * c - a * a) / (2 * b * c)).coerceIn(-1.0, 1.0)
                         val angleA = Math.toDegrees(acos(cosA))
-
                         val cosB = ((a * a + c * c - b * b) / (2 * a * c)).coerceIn(-1.0, 1.0)
                         val angleB = Math.toDegrees(acos(cosB))
-
                         val angleC = 180.0 - angleA - angleB
                         val s = (a + b + c) / 2.0
                         val area = sqrt((s * (s - a) * (s - b) * (s - c)).coerceAtLeast(0.0))
                         val circumradius = (a * b * c) / (4 * area)
-
                         Text("• Ángulo α (opuesto a 'a'): ${String.format(Locale.US, "%.2f", angleA)}°")
                         Text("• Ángulo β (opuesto a 'b'): ${String.format(Locale.US, "%.2f", angleB)}°")
                         Text("• Ángulo γ (opuesto a 'c'): ${String.format(Locale.US, "%.2f", angleC)}°")
@@ -283,35 +252,26 @@ fun TriangleCalculator() {
         }
     }
 }
-
-
 @Composable
 fun ComplexCalculator() {
     var real1Str by remember { mutableStateOf("3") }
     var imag1Str by remember { mutableStateOf("4") }
     var real2Str by remember { mutableStateOf("1") }
     var imag2Str by remember { mutableStateOf("2") }
-
     val r1 = real1Str.toDoubleOrNull() ?: 3.0
     val i1 = imag1Str.toDoubleOrNull() ?: 4.0
     val r2 = real2Str.toDoubleOrNull() ?: 1.0
     val i2 = imag2Str.toDoubleOrNull() ?: 2.0
-
     val mod1 = sqrt(r1 * r1 + i1 * i1)
     val argRad1 = atan2(i1, r1)
     val argDeg1 = Math.toDegrees(argRad1)
-
-    
     val sumR = r1 + r2
     val sumI = i1 + i2
-
     val prodR = r1 * r2 - i1 * i2
     val prodI = r1 * i2 + i1 * r2
-
     val divDenom = r2 * r2 + i2 * i2
     val divR = if (divDenom != 0.0) (r1 * r2 + i1 * i2) / divDenom else Double.NaN
     val divI = if (divDenom != 0.0) (i1 * r2 - r1 * i2) / divDenom else Double.NaN
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -325,7 +285,6 @@ fun ComplexCalculator() {
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(12.dp))
-
             Text("Número Complejo z₁:", fontWeight = FontWeight.Bold)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
@@ -343,9 +302,7 @@ fun ComplexCalculator() {
                     modifier = Modifier.weight(1f)
                 )
             }
-
             Spacer(modifier = Modifier.height(8.dp))
-
             Text("Número Complejo z₂:", fontWeight = FontWeight.Bold)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
@@ -363,9 +320,7 @@ fun ComplexCalculator() {
                     modifier = Modifier.weight(1f)
                 )
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 shape = RoundedCornerShape(12.dp),
@@ -388,24 +343,19 @@ fun ComplexCalculator() {
         }
     }
 }
-
-
 @Composable
 fun MatrixCalculator() {
     var aStr by remember { mutableStateOf("1") }
     var bStr by remember { mutableStateOf("2") }
     var cStr by remember { mutableStateOf("3") }
     var dStr by remember { mutableStateOf("4") }
-
     val a = aStr.toDoubleOrNull() ?: 1.0
     val b = bStr.toDoubleOrNull() ?: 2.0
     val c = cStr.toDoubleOrNull() ?: 3.0
     val d = dStr.toDoubleOrNull() ?: 4.0
-
     val det = a * d - b * c
     val trace = a + d
     val eigenDisc = trace * trace - 4 * det
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -419,7 +369,6 @@ fun MatrixCalculator() {
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(12.dp))
-
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = aStr,
@@ -453,9 +402,7 @@ fun MatrixCalculator() {
                     modifier = Modifier.weight(1f)
                 )
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 shape = RoundedCornerShape(12.dp),
@@ -464,7 +411,6 @@ fun MatrixCalculator() {
                 Column(modifier = Modifier.padding(14.dp)) {
                     Text("• Determinante det(A) = ad - bc = ($a · $d) - ($b · $c) = $det")
                     Text("• Traza tr(A) = a + d = $trace")
-
                     if (eigenDisc >= 0) {
                         val l1 = (trace + sqrt(eigenDisc)) / 2.0
                         val l2 = (trace - sqrt(eigenDisc)) / 2.0
@@ -476,7 +422,6 @@ fun MatrixCalculator() {
                         val imagL = sqrt(abs(eigenDisc)) / 2.0
                         Text("• Autovalores Complejos λ = ${String.format(Locale.US, "%.4f", realL)} ± ${String.format(Locale.US, "%.4f", imagL)}i")
                     }
-
                     if (det != 0.0) {
                         Text("• Matriz Inversa A⁻¹:")
                         Text("   [ ${String.format(Locale.US, "%.4f", d/det)}   ${String.format(Locale.US, "%.4f", -b/det)} ]")
@@ -489,13 +434,10 @@ fun MatrixCalculator() {
         }
     }
 }
-
-
 @Composable
 fun GenericFunctionCalculator() {
     var xStr by remember { mutableStateOf("2") }
     val x = xStr.toDoubleOrNull() ?: 2.0
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -509,7 +451,6 @@ fun GenericFunctionCalculator() {
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(12.dp))
-
             OutlinedTextField(
                 value = xStr,
                 onValueChange = { xStr = it },
@@ -517,9 +458,7 @@ fun GenericFunctionCalculator() {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 shape = RoundedCornerShape(12.dp),

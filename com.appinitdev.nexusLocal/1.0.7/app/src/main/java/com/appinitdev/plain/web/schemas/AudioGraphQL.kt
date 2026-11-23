@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addAudioSchema() {
     query("audios") {
         configure {
@@ -65,7 +64,6 @@ fun SchemaBuilder.addAudioSchema() {
     mutation("addPlaylistAudios") {
         resolver { query: String ->
             val context = MainApp.instance
-            
             val items = AudioMediaStoreHelper.searchAsync(context, query, 1000, 0, AudioSortByPreference.getValueAsync())
             AudioPlaylistPreference.addAsync(items.map { it.toPlaylistAudio() })
             true
@@ -74,36 +72,23 @@ fun SchemaBuilder.addAudioSchema() {
     mutation("reorderPlaylistAudios") {
         resolver { paths: List<String> ->
             val context = MainApp.instance
-
-            
             val currentPlaylist = AudioPlaylistPreference.getValueAsync()
             if (currentPlaylist.isEmpty() || paths.isEmpty()) {
                 return@resolver true
             }
-
-            
             val audioMap = currentPlaylist.associateBy { it.path }
-
-            
             val reorderedPlaylist = mutableListOf<DPlaylistAudio>()
-
-            
             paths.forEach { path ->
                 audioMap[path]?.let { audio ->
                     reorderedPlaylist.add(audio)
                 }
             }
-
-            
             currentPlaylist.forEach { audio ->
                 if (!paths.contains(audio.path)) {
                     reorderedPlaylist.add(audio)
                 }
             }
-
-            
             AudioPlaylistPreference.putAsync(reorderedPlaylist)
-
             true
         }
     }

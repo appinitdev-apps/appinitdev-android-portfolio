@@ -1,9 +1,4 @@
-
- 
-
-
 internal object PointMapper {
-
   internal fun getColorPoint(controller: ColorPickerController, point: PointF): PointF {
     val size = controller.canvasSize.value
     val center = PointF(size.width / 2f, size.height / 2f)
@@ -13,7 +8,6 @@ internal object PointMapper {
       approximatedPoint(controller, point, center)
     }
   }
-
   private fun approximatedPoint(
     controller: ColorPickerController,
     start: PointF,
@@ -28,7 +22,6 @@ internal object PointMapper {
       approximatedPoint(controller, start, center)
     }
   }
-
   private fun getHuePoint(controller: ColorPickerController, point: PointF): PointF {
     val size = controller.canvasSize.value
     val centerX: Float = size.width * 0.5f
@@ -43,11 +36,9 @@ internal object PointMapper {
     }
     return PointF(x + centerX, y + centerY)
   }
-
   private fun getCenterPoint(start: PointF, end: PointF): PointF {
     return PointF((end.x + start.x) / 2, (end.y + start.y) / 2)
   }
-
   private fun getDistance(start: PointF, end: PointF): Int {
     return sqrt(
       (

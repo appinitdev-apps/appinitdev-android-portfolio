@@ -1,9 +1,6 @@
-
 object OngoingNotificationHelper {
-
     private const val CHANNEL_ID = "goodtime_live_updates_channel"
     private const val CHANNEL_NAME = "Live Focus Updates"
-
     fun buildLiveProgressNotification(
         context: Context,
         labelName: String,
@@ -13,7 +10,6 @@ object OngoingNotificationHelper {
     ): Notification {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
@@ -24,7 +20,6 @@ object OngoingNotificationHelper {
             }
             notificationManager.createNotificationChannel(channel)
         }
-
         val contentIntent = Intent(context, MainActivity::class.java)
         val pendingContent = PendingIntent.getActivity(
             context,
@@ -32,14 +27,11 @@ object OngoingNotificationHelper {
             contentIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-
         val mins = remainingSec / 60
         val secs = remainingSec % 60
         val timeFormatted = String.format(Locale.getDefault(), "%02d:%02d", mins, secs)
-
         val maxProgress = totalDurationSec.toInt().coerceAtLeast(1)
         val currentProgress = (totalDurationSec - remainingSec).toInt().coerceIn(0, maxProgress)
-
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_status_goodtime)
             .setContentTitle("Focus: $labelName")
@@ -49,7 +41,6 @@ object OngoingNotificationHelper {
             .setOnlyAlertOnce(true)
             .setContentIntent(pendingContent)
             .setCategory(NotificationCompat.CATEGORY_PROGRESS)
-
         return builder.build()
     }
 }

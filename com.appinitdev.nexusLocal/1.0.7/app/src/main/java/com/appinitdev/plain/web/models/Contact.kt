@@ -1,23 +1,15 @@
-
 data class ContentItem(var value: String, var type: Int, var label: String)
-
 fun DContentItem.toModel(): ContentItem {
     return ContentItem(value, type, label)
 }
-
-
 data class Organization(var company: String, var title: String)
-
 fun DOrganization.toModel(): Organization {
     return Organization(company, title)
 }
-
 data class ContactPhoneNumber(var value: String, var type: Int, var label: String, var normalizedNumber: String)
-
 fun DContactPhoneNumber.toModel(): ContactPhoneNumber {
     return ContactPhoneNumber(value, type, label, normalizedNumber)
 }
-
 data class Contact(
     var id: ID,
     var prefix: String,
@@ -43,7 +35,6 @@ data class Contact(
     var ringtone: String,
     var updatedAt: Instant,
 )
-
 fun DContact.toModel(): Contact {
     return Contact(
         ID(id), prefix, givenName, middleName, familyName, suffix,

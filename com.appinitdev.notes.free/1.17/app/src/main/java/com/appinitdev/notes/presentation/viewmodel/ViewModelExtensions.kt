@@ -1,4 +1,3 @@
-
 fun ViewModel.executeAsyncWithCallback(
     function: suspend () -> Unit,
     callback: (success: Boolean) -> Unit,

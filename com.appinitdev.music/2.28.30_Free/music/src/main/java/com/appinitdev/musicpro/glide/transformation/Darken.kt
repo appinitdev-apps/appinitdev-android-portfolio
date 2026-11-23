@@ -1,10 +1,7 @@
-
 class Darken(private val factor: Float = 0.6f) : BitmapTransformation() {
-
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {
         messageDigest.update(("$ID-$factor").toByteArray(CHARSET))
     }
-
     override fun transform(
             pool: BitmapPool,
             toTransform: Bitmap,
@@ -16,7 +13,6 @@ class Darken(private val factor: Float = 0.6f) : BitmapTransformation() {
         val bitmap = pool.get(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         val paint = Paint()
-
         val colorMatrix = android.graphics.ColorMatrix().apply {
             setScale(factor, factor, factor, 1f) 
             val saturationBoost = 1f 
@@ -28,18 +24,15 @@ class Darken(private val factor: Float = 0.6f) : BitmapTransformation() {
         canvas.drawBitmap(toTransform, 0f, 0f, paint)
         return bitmap
     }
-
     override fun equals(other: Any?): Boolean {
         if (other is Darken) {
             return factor == other.factor
         }
         return false
     }
-
     override fun hashCode(): Int {
         return Util.hashCode(ID.hashCode(), Util.hashCode(factor))
     }
-
     companion object {
         private const val ID = "app.simple.felicity.glide.transformations.Darken"
     }

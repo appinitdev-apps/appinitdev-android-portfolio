@@ -1,5 +1,3 @@
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ViewAudioBottomSheet(
@@ -15,7 +13,6 @@ fun ViewAudioBottomSheet(
     val onDismiss = {
         audioVM.selectedItem.value = null
     }
-
     if (audioVM.showRenameDialog.value) {
         FileRenameDialog(path = m.path, onDismiss = {
             audioVM.showRenameDialog.value = false
@@ -24,7 +21,6 @@ fun ViewAudioBottomSheet(
             onDismiss()
         })
     }
-
     PModalBottomSheet(
         onDismissRequest = {
             onDismiss()
@@ -83,5 +79,3 @@ fun ViewAudioBottomSheet(
         }
     }
 }
-
-

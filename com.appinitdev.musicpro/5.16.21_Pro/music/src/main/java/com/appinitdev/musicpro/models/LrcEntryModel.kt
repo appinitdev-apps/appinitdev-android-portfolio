@@ -1,18 +1,3 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
 data class LrcEntryModel(
         var timestampMs: Long,
         var text: String,
@@ -22,4 +7,3 @@ data class LrcEntryModel(
         private val ID_COUNTER = AtomicLong(System.currentTimeMillis())
     }
 }
-

@@ -1,4 +1,3 @@
-
 @Composable
 internal fun RowScope.TextFilePageActions(
     textFileVM: TextFileViewModel,
@@ -11,10 +10,8 @@ internal fun RowScope.TextFilePageActions(
     onSavingChanged: (Boolean) -> Unit,
 ) {
     if (!textFileVM.isEditorReady.value) return
-
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-
     if (textFileVM.readOnly.value) {
         if (type != TextFileType.APP_LOG.name && !textFileVM.isExternalFile.value) {
             PIconButton(

@@ -1,5 +1,3 @@
-
-
 @OptIn(androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi::class)
 class MainViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     var httpServerError by savedStateHandle.saveable { mutableStateOf("") }
@@ -10,7 +8,6 @@ class MainViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     var ip4s by savedStateHandle.saveable { mutableStateOf(emptyList<String>()) }
     var ip4 by savedStateHandle.saveable { mutableStateOf("") }
     var currentRootTab by savedStateHandle.saveable { mutableIntStateOf(0) }
-
     fun enableHttpServer(
         context: Context,
         enable: Boolean,
@@ -47,7 +44,6 @@ class MainViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
             }
         }
     }
-
     fun syncHttpServerState(context: Context) {
         viewModelScope.launch {
             val webEnabled = withIO { WebPreference.getAsync() }
@@ -57,15 +53,12 @@ class MainViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                 }
                 return@launch
             }
-
             if (httpServerState == HttpServerState.ERROR) {
                 return@launch
             }
-
             if (!httpServerState.isProcessing() && httpServerState != HttpServerState.ON) {
                 httpServerState = HttpServerState.STARTING
             }
-
             val serverUp = withIO { HttpServerManager.checkServerAsync() }
             if (serverUp) {
                 httpServerError = ""

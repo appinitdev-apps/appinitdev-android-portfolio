@@ -1,5 +1,3 @@
-
- 
 object TimeAgoHelper {
     fun getString(ms: Long): String = RelativeTimeFormatter.format(ms)
 }

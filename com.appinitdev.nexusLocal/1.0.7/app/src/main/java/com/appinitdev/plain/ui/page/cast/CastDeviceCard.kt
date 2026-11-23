@@ -1,4 +1,3 @@
-
 @Composable
 fun CastDeviceCard(
     title: String,

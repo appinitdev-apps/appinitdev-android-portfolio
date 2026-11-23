@@ -1,4 +1,3 @@
-
 @Composable
 fun WebAddressBar(
     context: Context,
@@ -13,7 +12,6 @@ fun WebAddressBar(
     var qrCodeUrl by remember { mutableStateOf("") }
     val ip4s = listOf(hostname) + mainVM.ip4s.ifEmpty { listOf("127.0.0.1") }
     val scope = rememberCoroutineScope()
-
     Column(
         Modifier
             .fillMaxWidth()
@@ -47,7 +45,6 @@ fun WebAddressBar(
             }
         }
     }
-
     if (mdnsEditDialogVisible) {
         MdnsAndPortEditDialog(
             isHttps = isHttps,
@@ -72,7 +69,6 @@ fun WebAddressBar(
             },
         )
     }
-
     if (portDialogVisible) {
         PortSelectionDialog(
             isHttps = isHttps,
@@ -85,7 +81,6 @@ fun WebAddressBar(
             },
         )
     }
-
     if (qrCodeDialogVisible) {
         WebAddressBarQrDialog(
             url = qrCodeUrl,

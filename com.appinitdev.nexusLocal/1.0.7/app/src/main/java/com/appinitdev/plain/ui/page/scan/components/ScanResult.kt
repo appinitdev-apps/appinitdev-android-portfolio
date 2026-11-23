@@ -1,4 +1,3 @@
-
 @Composable
 fun ScanResult(
     context: Context,

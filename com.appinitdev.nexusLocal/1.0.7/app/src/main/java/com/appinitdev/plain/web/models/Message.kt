@@ -1,4 +1,3 @@
-
 data class Message(
     val id: ID,
     val body: String,
@@ -12,13 +11,11 @@ data class Message(
     val isMms: Boolean,
     val attachments: List<MessageAttachment>,
 )
-
 data class MessageAttachment(
     val path: String,
     val contentType: String,
     val name: String,
 )
-
 fun DMessage.toModel(): Message {
     return Message(
         ID(id),
@@ -34,7 +31,6 @@ fun DMessage.toModel(): Message {
         attachments.map { it.toModel() },
     )
 }
-
 fun DMessageAttachment.toModel(): MessageAttachment {
     return MessageAttachment(path, contentType, name)
 }

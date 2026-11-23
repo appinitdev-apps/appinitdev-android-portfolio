@@ -1,4 +1,3 @@
-
 internal suspend fun executeCutFiles(
     filesVM: FilesViewModel,
     onComplete: () -> Unit,
@@ -10,7 +9,6 @@ internal suspend fun executeCutFiles(
             val dstDir = File(filesVM.selectedPath)
             val srcCanonical = srcFile.canonicalFile
             val dstCanonical = dstDir.canonicalFile
-
             if (srcCanonical.isDirectory &&
                 (dstCanonical.path == srcCanonical.path ||
                         dstCanonical.path.startsWith(srcCanonical.path + "/"))
@@ -18,7 +16,6 @@ internal suspend fun executeCutFiles(
                 DialogHelper.showErrorMessage(LocaleHelper.getStringAsync(Res.string.cannot_move_folder_into_itself))
                 return@forEach
             }
-
             val dstFile = File(dstCanonical, srcCanonical.name)
             try {
                 if (!dstFile.exists()) {
@@ -47,7 +44,6 @@ internal suspend fun executeCutFiles(
     onComplete()
     filesVM.showPasteBar.value = false
 }
-
 internal suspend fun executeCopyFiles(
     filesVM: FilesViewModel,
     onComplete: () -> Unit,
@@ -59,7 +55,6 @@ internal suspend fun executeCopyFiles(
             val dstDir = File(filesVM.selectedPath)
             val srcCanonical = srcFile.canonicalFile
             val dstCanonical = dstDir.canonicalFile
-
             if (srcCanonical.isDirectory &&
                 (dstCanonical.path == srcCanonical.path ||
                         dstCanonical.path.startsWith(srcCanonical.path + "/"))
@@ -67,7 +62,6 @@ internal suspend fun executeCopyFiles(
                 DialogHelper.showErrorMessage(LocaleHelper.getStringAsync(Res.string.cannot_copy_folder_into_itself))
                 return@forEach
             }
-
             val dstFile = File(dstCanonical, srcCanonical.name)
             try {
                 if (!dstFile.exists()) {

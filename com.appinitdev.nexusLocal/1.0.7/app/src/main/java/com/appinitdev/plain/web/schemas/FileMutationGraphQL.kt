@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addFileMutationSchema() {
     mutation("deleteFiles") {
         resolver { paths: List<String> ->

@@ -1,17 +1,13 @@
-
-
 @Keep
 data class DevAppItem(
     val nombre: String,
     val paquete: String
 )
-
 object DevAppsConfig {
     val developerApps = listOf(
         DevAppItem("Tester Community", "com.appinitdev.tester"),
         DevAppItem("ImageTools Studio", "com.appinitdev.imagetools.pro"),
         DevAppItem("Convertidor de vídeo a foto", "com.appinitdev.capture.premium"),
-
         DevAppItem("Rompecabezas fotográfico", "com.appinitdev.puzzle.fre"),
         DevAppItem("Notepad: Task & Notes", "com.appinitdev.notes.free"),
         DevAppItem("Canvas: Editor de fotos", "com.appinitdev.canvas.free"),
@@ -38,7 +34,5 @@ object DevAppsConfig {
         DevAppItem("Color Palette", "com.appinitdev.color.premium"),
         DevAppItem("Encrypted Pro", "com.appinitdev.pyrotechnics.premium"),
         DevAppItem("SketchTrace", "com.appinitdev.draw.premium")
-
-
         )
 }

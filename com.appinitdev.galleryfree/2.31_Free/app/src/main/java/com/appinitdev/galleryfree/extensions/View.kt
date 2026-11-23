@@ -1,4 +1,3 @@
-
 fun View.sendFakeClick(x: Float, y: Float) {
     val uptime = SystemClock.uptimeMillis()
     val event = MotionEvent.obtain(uptime, uptime, MotionEvent.ACTION_DOWN, x, y, 0)

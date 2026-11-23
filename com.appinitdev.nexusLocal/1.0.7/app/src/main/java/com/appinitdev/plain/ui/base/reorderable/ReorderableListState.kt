@@ -1,4 +1,3 @@
-
 class ReorderableListState internal constructor(
     listSize: Int, spacing: Float = 0f,
     private val onMove: () -> Unit, private val onSettle: (fromIndex: Int, toIndex: Int) -> Unit,
@@ -9,7 +8,6 @@ class ReorderableListState internal constructor(
     private var draggingItemIndex by mutableStateOf<Int?>(null)
     private var animatingItemIndex by mutableStateOf<Int?>(null)
     internal val isAnyItemDragging by derivedStateOf { draggingItemIndex != null }
-
     internal val draggableStates = List(listSize) { i ->
         DraggableState {
             if (!isItemDragging(i).value) return@DraggableState
@@ -36,11 +34,9 @@ class ReorderableListState internal constructor(
             if (moved) onMove()
         }
     }.toMutableStateList()
-
     internal fun isItemDragging(i: Int): State<Boolean> = derivedStateOf { i == draggingItemIndex }
     internal fun isItemAnimating(i: Int): State<Boolean> = derivedStateOf { i == animatingItemIndex }
     internal fun startDrag(i: Int) { draggingItemIndex = i; animatingItemIndex = i }
-
     internal suspend fun settle(i: Int, velocity: Float) {
         val originalStart = itemIntervals[i].start
         val originalEnd = itemIntervals[i].end

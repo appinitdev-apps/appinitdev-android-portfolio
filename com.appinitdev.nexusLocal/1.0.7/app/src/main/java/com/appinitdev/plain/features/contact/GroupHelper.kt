@@ -1,4 +1,3 @@
-
 object GroupHelper {
     fun getAll(): List<DGroup> {
         val context = MainApp.instance
@@ -10,23 +9,19 @@ object GroupHelper {
                 ContactsContract.Groups.TITLE,
                 ContactsContract.Groups.SYSTEM_ID,
             )
-
         val selection = "${ContactsContract.Groups.AUTO_ADD} = ? AND ${ContactsContract.Groups.FAVORITES} = ?"
         val selectionArgs = arrayOf("0", "0")
         context.contentResolver.queryCursor(uri, projection, selection, selectionArgs)?.forEach { cursor, cache ->
             val id = cursor.getLongValue(ContactsContract.Groups._ID, cache)
             val title = cursor.getStringValue(ContactsContract.Groups.TITLE, cache)
-
             val systemId = cursor.getStringValue(ContactsContract.Groups.SYSTEM_ID, cache)
             if (groups.map { it.name }.contains(title) && systemId.isNotEmpty()) {
                 return@forEach
             }
-
             groups.add(DGroup(id, title))
         }
         return groups
     }
-
     fun create(
         name: String,
         accountName: String,
@@ -40,12 +35,10 @@ object GroupHelper {
             withValue(ContactsContract.Groups.ACCOUNT_TYPE, accountType)
             operations.add(build())
         }
-
         val results = contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
         val rawId = ContentUris.parseId(results[0].uri!!)
         return DGroup(rawId, name)
     }
-
     fun update(
         id: String,
         name: String,
@@ -61,7 +54,6 @@ object GroupHelper {
         }
         context.contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
     }
-
     fun delete(id: String) {
         val context = MainApp.instance
         val operations = ArrayList<ContentProviderOperation>()
@@ -69,7 +61,6 @@ object GroupHelper {
             ContentUris.withAppendedId(ContactsContract.Groups.CONTENT_URI, id.toLong()).buildUpon()
                 .appendQueryParameter(ContactsContract.CALLER_IS_SYNCADAPTER, "true")
                 .build()
-
         operations.add(ContentProviderOperation.newDelete(uri).build())
         context.contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
     }

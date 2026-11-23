@@ -1,4 +1,3 @@
-
 class MostUsedPreference(context : Context) {
     val PREFERENCE_NAME = "phPref3"
     val PREFERENCE_VALUE = "phValue3"
@@ -12,6 +11,3 @@ class MostUsedPreference(context : Context) {
         editor.apply()
     }
 }
-
-
-

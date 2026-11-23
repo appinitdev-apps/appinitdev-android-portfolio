@@ -1,4 +1,3 @@
-
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
     onPrimary = md_theme_light_onPrimary,
@@ -30,8 +29,6 @@ private val LightColors = lightColorScheme(
     outlineVariant = md_theme_light_outlineVariant,
     scrim = md_theme_light_scrim,
 )
-
-
 private val DarkColors = darkColorScheme(
     primary = md_theme_dark_primary,
     onPrimary = md_theme_dark_onPrimary,
@@ -63,12 +60,9 @@ private val DarkColors = darkColorScheme(
     outlineVariant = md_theme_dark_outlineVariant,
     scrim = md_theme_dark_scrim,
 )
-
-
 @Composable
 fun ConvoixTheme(
     darkTheme: Boolean = true,
-    
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
@@ -77,7 +71,6 @@ fun ConvoixTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColors
         else -> LightColors
     }
@@ -88,7 +81,6 @@ fun ConvoixTheme(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
-
     MaterialTheme(
         colorScheme = DarkColors,
         typography = Typography,

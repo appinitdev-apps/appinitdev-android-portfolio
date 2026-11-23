@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addVideoSchema() {
     query("videos") {
         configure {

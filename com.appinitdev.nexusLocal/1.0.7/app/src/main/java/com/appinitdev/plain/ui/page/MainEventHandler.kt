@@ -1,4 +1,3 @@
-
 @Composable
 fun MainEventCollector(
     scope: CoroutineScope,
@@ -14,7 +13,6 @@ fun MainEventCollector(
 ) {
     var dismissToastJob: Job? = null
     val sharedFlow = Channel.sharedFlow
-
     LaunchedEffect(sharedFlow) {
         sharedFlow.collect { event ->
             when (event) {
@@ -25,13 +23,11 @@ fun MainEventCollector(
                     dismissToastJob?.cancel()
                     dismissToastJob = coIO { delay(event.duration); clearToast() }
                 }
-
                 is AudioActionEvent -> {
                     if (event.action == AudioAction.MEDIA_ITEM_TRANSITION) {
                         scope.launch(Dispatchers.IO) { audioPlaylistVM.loadAsync(context) }
                     }
                 }
-
                 is FetchLinkPreviewsEvent -> {
                     scope.launch(Dispatchers.IO) {
                         val data = event.chat.content.value as? DMessageText ?: return@launch
@@ -41,14 +37,12 @@ fun MainEventCollector(
                         chatVM.update(event.chat)
                     }
                 }
-
                 is HPomodoroStartEvent -> {
                     pomodoroVM.timeLeft.intValue = event.timeLeft
                     pomodoroVM.startSession()
                 }
                 is HPomodoroPauseEvent -> pomodoroVM.pauseSession()
                 is HPomodoroStopEvent -> pomodoroVM.resetTimer()
-
                 is HDownloadTaskDoneEvent -> {
                     scope.launch(Dispatchers.IO) {
                         val chat = AppDatabase.instance.chatDao().getById(event.downloadTask.messageId)
@@ -60,7 +54,6 @@ fun MainEventCollector(
                         }
                     }
                 }
-
                 is HMessageUpdatedEvent -> {
                     scope.launch(Dispatchers.IO) {
                         val chat = AppDatabase.instance.chatDao().getById(event.id)
@@ -72,7 +65,6 @@ fun MainEventCollector(
                         }
                     }
                 }
-
                 is ChannelUpdatedEvent -> peerVM.loadPeers()
                 else -> {}
             }

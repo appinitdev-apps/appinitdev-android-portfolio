@@ -1,4 +1,3 @@
-
 @Composable
 fun AudioPlayerControls(
     playMode: MediaPlayMode,
@@ -10,7 +9,6 @@ fun AudioPlayerControls(
     scope: CoroutineScope,
 ) {
     val context = LocalContext.current
-
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -59,9 +57,7 @@ fun AudioPlayerControls(
             Icon(painter = painterResource(Res.drawable.list_music), contentDescription = "Playlist", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(24.dp))
         }
     }
-
     Spacer(modifier = Modifier.height(24.dp))
-
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp),
         horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically,

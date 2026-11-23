@@ -1,8 +1,6 @@
-
 class AudioViewModel : BaseMediaViewModel<DAudio>() {
     override val dataType = DataType.AUDIO
     val scrollStateMap = mutableStateMapOf<Int, LazyListState>()
-
     fun delete(context: Context, tagsVM: TagsViewModel, ids: Set<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             DialogHelper.showLoading()

@@ -1,8 +1,5 @@
-
 class ExcludedFoldersActivity : SimpleActivity(), RefreshRecyclerViewListener {
-
     private val binding by viewBinding(ActivityManageFoldersBinding::inflate)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         isMaterialActivity = true
         super.onCreate(savedInstanceState)
@@ -10,16 +7,13 @@ class ExcludedFoldersActivity : SimpleActivity(), RefreshRecyclerViewListener {
         updateFolders()
         setupOptionsMenu()
         binding.manageFoldersToolbar.title = getString(org.appinitdev.commons.R.string.excluded_folders)
-
         updateMaterialActivityViews(binding.manageFoldersCoordinator, binding.manageFoldersList, useTransparentNavigation = true, useTopSearchMenu = false)
         setupMaterialScrollListener(binding.manageFoldersList, binding.manageFoldersToolbar)
     }
-
     override fun onResume() {
         super.onResume()
         setupToolbar(binding.manageFoldersToolbar, NavigationIcon.Arrow)
     }
-
     private fun updateFolders() {
         val folders = ArrayList<String>()
         config.excludedFolders.mapTo(folders) { it }
@@ -27,18 +21,14 @@ class ExcludedFoldersActivity : SimpleActivity(), RefreshRecyclerViewListener {
         binding.manageFoldersPlaceholder.apply {
             beVisibleIf(folders.isEmpty())
             setTextColor(getProperTextColor())
-
             if (isRPlus() && !isExternalStorageManager()) {
                 placeholderText = placeholderText.substringBefore("\n")
             }
-
             text = placeholderText
         }
-
         val adapter = ManageFoldersAdapter(this, folders, true, this, binding.manageFoldersList) {}
         binding.manageFoldersList.adapter = adapter
     }
-
     private fun setupOptionsMenu() {
         binding.manageFoldersToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
@@ -48,11 +38,9 @@ class ExcludedFoldersActivity : SimpleActivity(), RefreshRecyclerViewListener {
             return@setOnMenuItemClickListener true
         }
     }
-
     override fun refreshItems() {
         updateFolders()
     }
-
     private fun addFolder() {
         FilePickerDialog(
             activity = this,

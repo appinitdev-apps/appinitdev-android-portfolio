@@ -1,4 +1,3 @@
-
 @Composable
 fun PClickableText(
     text: AnnotatedString,
@@ -23,7 +22,6 @@ fun PClickableText(
                 }
             }, onLongPress = { onLongClick() })
         }
-
     BasicText(
         text = text,
         modifier = modifier.then(pressIndicator),
@@ -37,8 +35,6 @@ fun PClickableText(
         },
     )
 }
-
-
 @Composable
 fun PClickableText(
     text: String,

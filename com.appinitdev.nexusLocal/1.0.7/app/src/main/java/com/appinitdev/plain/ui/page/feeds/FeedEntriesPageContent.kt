@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FeedEntriesPageContent(
@@ -13,7 +12,6 @@ internal fun FeedEntriesPageContent(
     bottomPadding: Float,
 ) {
     val itemsState by feedEntriesVM.itemsFlow.collectAsState()
-
     if (!feedEntriesVM.selectMode.value) {
         PScrollableTabRow(selectedTabIndex = pagerState.currentPage, modifier = Modifier.fillMaxWidth()) {
             tabs.forEachIndexed { index, s ->

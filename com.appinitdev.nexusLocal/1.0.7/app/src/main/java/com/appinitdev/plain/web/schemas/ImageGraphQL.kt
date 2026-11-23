@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addImageSchema() {
     query("images") {
         configure {

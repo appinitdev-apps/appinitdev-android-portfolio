@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ImagesPage(
@@ -29,7 +28,6 @@ fun ImagesPage(
         baseTabs.addAll(tagsState.map { VTabData(it.name, it.id, it.count) }); baseTabs
     }
     val topRefreshLayoutState = rememberRefreshLayoutState { scope.launch { withIO { imagesVM.loadWithAiSearchAsync(context, tagsVM); mediaFoldersVM.loadAsync(context) }; setRefreshState(RefreshContentState.Finished) } }
-
     BackHandler(enabled = previewerState.visible || dragSelectState.selectMode || castVM.castMode.value || imagesVM.showSearchBar.value) {
         when {
             previewerState.visible -> scope.launch { previewerState.closeTransform() }
@@ -41,14 +39,11 @@ fun ImagesPage(
             }
         }
     }
-
     ImagesPageEffects(context, imagesVM, tagsVM, mediaFoldersVM, scrollBehavior, pagerState, scope, dragSelectState, previewerState, cellsPerRow, isFirstTime, tabs, tagsState)
-
     ViewImageBottomSheet(imagesVM, tagsVM, tagsMapState, tagsState, dragSelectState)
     MediaFoldersBottomSheet(imagesVM, mediaFoldersVM, tagsVM)
     if (imagesVM.showTagsDialog.value) { TagsBottomSheet(tagsVM) { imagesVM.showTagsDialog.value = false } }
     CastDialog(castVM)
-
     PScaffold(
         topBar = {
             MediaTopBar(
@@ -87,7 +82,6 @@ fun ImagesPage(
             ImagesPageGrid(context, imagesVM, tagsVM, castVM, itemsState, pagerState, scrollBehavior, topRefreshLayoutState, dragSelectState, previewerState, cellsPerRow, imageWidthPx, scope, paddingValues)
         }
     }
-
     MediaPreviewer(
         state = previewerState,
         tagsVM = tagsVM,

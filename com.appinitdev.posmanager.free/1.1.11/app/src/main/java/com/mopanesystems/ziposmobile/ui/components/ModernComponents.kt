@@ -1,12 +1,3 @@
-
- 
-
-
-
-
- 
-
-
 @Composable
 fun ModernPrimaryButton(
     text: String,
@@ -60,10 +51,6 @@ fun ModernPrimaryButton(
         }
     }
 }
-
- 
-
-
 @Composable
 fun ModernSecondaryButton(
     text: String,
@@ -107,10 +94,6 @@ fun ModernSecondaryButton(
         }
     }
 }
-
- 
-
-
 @Composable
 fun ModernCompactButton(
     onClick: () -> Unit,
@@ -137,10 +120,6 @@ fun ModernCompactButton(
         )
     }
 }
-
- 
-
-
 @Composable
 fun ModernFloatingActionButton(
     onClick: () -> Unit,
@@ -188,10 +167,6 @@ fun ModernFloatingActionButton(
         }
     }
 }
-
- 
-
-
 @Composable
 fun ModernCard(
     modifier: Modifier = Modifier,
@@ -229,10 +204,6 @@ fun ModernCard(
         }
     }
 }
-
- 
-
-
 @Composable
 fun ModernSurface(
     modifier: Modifier = Modifier,
@@ -259,10 +230,6 @@ fun ModernSurface(
         )
     }
 }
-
- 
-
-
 @Composable
 fun ModernChip(
     text: String,
@@ -296,10 +263,6 @@ fun ModernChip(
         )
     )
 }
-
- 
-
-
 @Composable
 fun StatusChip(
     text: String,
@@ -312,7 +275,6 @@ fun StatusChip(
         ChipStatus.Error -> MaterialTheme.colorScheme.errorContainer to MaterialTheme.colorScheme.onErrorContainer
         ChipStatus.Info -> MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
     }
-
     Surface(
         shape = MaterialTheme.shapes.small,
         color = containerColor,
@@ -328,7 +290,6 @@ fun StatusChip(
         )
     }
 }
-
 enum class ChipStatus {
     Success, Warning, Error, Info
 }

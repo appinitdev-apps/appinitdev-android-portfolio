@@ -1,6 +1,4 @@
-
 private const val FILE_DOWNLOAD_BUFFER_SIZE = 64 * 1024
-
 fun Route.addFiles() {
     get("/fs") {
         val q = call.request.queryParameters
@@ -23,7 +21,6 @@ fun Route.addFiles() {
             } else {
                 path = decryptedId
             }
-
             if (path.startsWith("content://")) {
                 val uri = path.toUri()
                 val mimeType = context.contentResolver.getType(uri).orEmpty()
@@ -34,7 +31,6 @@ fun Route.addFiles() {
                         return@get
                     }
                 }
-
                 val input = withIO { context.contentResolver.openInputStream(uri)?.buffered() }
                 if (input == null) {
                     call.respond(HttpStatusCode.NotFound)
@@ -74,7 +70,6 @@ fun Route.addFiles() {
                     call.respond(HttpStatusCode.BadRequest)
                     return@get
                 }
-
                 call.response.header("Access-Control-Expose-Headers", "Content-Disposition")
                 val fileName = (jsonName.ifEmpty { file.name }).urlEncode().replace("+", "%20")
                 if (q["dl"] == "1") {
@@ -95,7 +90,6 @@ fun Route.addFiles() {
                         "inline; filename=\"${fileName}\"; filename*=utf-8''${fileName}"
                     )
                 }
-
                 if (fileName.isImageFast()) {
                     val imageType = ImageHelper.getImageType(path, fileName)
                     if (imageType.isApplicableAnimated() || imageType == ImageType.SVG) {
@@ -103,11 +97,9 @@ fun Route.addFiles() {
                         return@get
                     }
                 }
-
                 val w = q["w"]?.toIntOrNull()
                 val h = q["h"]?.toIntOrNull()
                 val centerCrop = q["cc"]?.toBooleanStrictOrNull() != false
-                
                 if (w != null && h != null) {
                     val bytes = withIO { ThumbnailGenerator.toThumbBytesAsync(MainApp.instance, file, w, h, centerCrop, mediaId, fileName) }
                     if (bytes != null) {
@@ -123,7 +115,6 @@ fun Route.addFiles() {
                         header[6] == 0x79.toByte() && 
                         header[7] == 0x70.toByte() && 
                         String(header.copyOfRange(8, 12)) in listOf("heic", "heix", "hevc", "hevx", "avif")
-
                 if (isHeif) {
                     val bitmap = withIO { BitmapFactory.decodeFile(path) }
                     if (bitmap == null) {
@@ -146,7 +137,6 @@ fun Route.addFiles() {
             call.respondText("File is expired or does not exist. $ex", status = HttpStatusCode.Forbidden)
         }
     }
-
     get("/proxyfs") {
         val q = call.request.queryParameters
         val id = q["id"] ?: ""
@@ -154,21 +144,16 @@ fun Route.addFiles() {
             call.respond(HttpStatusCode.BadRequest)
             return@get
         }
-
         try {
             val peerUrl = UrlHelper.decrypt(id)
             if (peerUrl.isEmpty() || !peerUrl.startsWith("http")) {
                 call.respond(HttpStatusCode.BadRequest, "Invalid peer URL")
                 return@get
             }
-
             val client = HttpClientManager.createUnsafeOkHttpClient()
             val request = Request.Builder().url(peerUrl).build()
-
             val response = withIO { client.newCall(request).execute() }
-
             call.response.status(HttpStatusCode.fromValue(response.code))
-
             for ((name, value) in response.headers) {
                 if (!name.equals("Transfer-Encoding", true) &&
                     !name.equals("Connection", true)
@@ -176,12 +161,10 @@ fun Route.addFiles() {
                     call.response.headers.append(name, value)
                 }
             }
-
             val body = response.body ?: run {
                 call.respond(HttpStatusCode.NotFound)
                 return@get
             }
-
             call.respondOutputStream {
                 body.byteStream().use { input ->
                     input.copyTo(this)

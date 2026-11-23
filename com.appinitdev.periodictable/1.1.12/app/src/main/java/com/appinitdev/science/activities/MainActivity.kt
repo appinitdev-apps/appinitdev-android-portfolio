@@ -1,17 +1,9 @@
-
 class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
     private var elementList = ArrayList<Element>()
     var mAdapter = ElementAdapter(elementList, this, this)
-
-    
     private var backCallback: OnBackPressedCallback? = null
-
-    
     private var onBackInvokedCb: android.window.OnBackInvokedCallback? = null
-
-    
     private var isScrollViewRaised = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val themePreference = ThemePreference(this)
@@ -25,7 +17,6 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
         if (themePrefValue == 0) { setTheme(R.style.AppTheme) }
         if (themePrefValue == 1) { setTheme(R.style.AppThemeDark) }
         setContentView(R.layout.activity_main)
-
         val recyclerView = findViewById<RecyclerView>(R.id.element_recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         val elements = ArrayList<Element>()
@@ -41,7 +32,6 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
                 updateStatAchievement()
             }
         })
-
         setOnCLickListenerSetups(elements)
         setupNavListeners()
         onClickNav()
@@ -49,7 +39,6 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
         searchListener()
         findViewById<SlidingUpPanelLayout>(R.id.sliding_layout).panelState = PanelState.COLLAPSED
         searchFilter(elements, recyclerView)
-
         checkSale()
         initName(elements)
         val achievements = ArrayList<Achievement>()
@@ -57,65 +46,45 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
         findViewById<FloatingActionButton>(R.id.more_btn).setOnClickListener { openHover() }
         findViewById<TextView>(R.id.hover_background).setOnClickListener { closeHover() }
         findViewById<Button>(R.id.random_btn).setOnClickListener {
-            
             AchievementModel.getList(this, achievements)
             val achievement7 = achievements.find { it.id == 7 }
             achievement7?.incrementProgress(this, 1)
             getRandomItem() }
         findViewById<ConstraintLayout>(R.id.view_main).systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-
-        
         val proPref = ProVersion(this)
         var proPrefValue = proPref.getValue()
         if (proPrefValue==100) {
             proChanges()
         }
         hoverListeners(elements, proPrefValue)
-
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
             initName(elements)
         }, 250)
-
         findViewById<ImageButton>(R.id.user_btn).setOnClickListener {
             val intent = Intent(this, UserActivity::class.java)
             startActivity(intent)
         }
-        
-
-        
-        
         handleWidgetIntent()
-        
         findViewById<ImageButton>(R.id.flaschard_btn).setOnClickListener {
             AnalyticsHelper.logFeatureUsage(this, "flashcards")
             val intent = Intent(this, FlashCardActivity::class.java)
             startActivity(intent)
         }
-
-        
-        
         findViewById<SlidingUpPanelLayout>(R.id.sliding_layout).addPanelSlideListener(object : SlidingUpPanelLayout.PanelSlideListener {
             override fun onPanelSlide(panel: View?, slideOffset: Float) {}
             override fun onPanelStateChanged(panel: View?, previousState: PanelState, newState: PanelState) {
                 val navMenuInclude = findViewById<FrameLayout>(R.id.nav_menu_include)
                 val navBackground = findViewById<TextView>(R.id.nav_background)
                 if (newState == PanelState.COLLAPSED) {
-                    
                     Utils.fadeOutAnim(navBackground, 150)
                     navMenuInclude.visibility = View.GONE
-                    
                     setBackInterceptionEnabled(false)
                 } else if (newState == PanelState.EXPANDED) {
-                    
-                    
                     setBackInterceptionEnabled(true)
                 }
             }
         })
-
-        
-        
         backCallback = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
                 handleBack()
@@ -123,52 +92,32 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
         }
         onBackPressedDispatcher.addCallback(this, backCallback!!)
     }
-
     private fun maybeShowProPopup() {
         val proPref = ProVersion(this)
         val proPrefValue = proPref.getValue()
         if (proPrefValue == 100) return 
-
         val prefs = getSharedPreferences("popup_prefs", Context.MODE_PRIVATE)
         val starts = prefs.getInt("app_starts", 0) + 1
         prefs.edit().putInt("app_starts", starts).apply()
-
-        
         if (starts <= 10) return
-
-        
         val now = System.currentTimeMillis()
         val suppressedUntil = prefs.getLong("popup_suppressed_until", 0L)
         if (now < suppressedUntil) return
-
-        
         if ((0..9).random() != 0) return
-
-        
         setBackInterceptionEnabled(true)
-
-
-
         val suppressPopup: () -> Unit = {
-            
             val suppressUntil = now + 30 * 24 * 60 * 60 * 1000L
             prefs.edit().putLong("popup_suppressed_until", suppressUntil).apply()
-            
             setBackInterceptionEnabled(false)
         }
-
        }
-
-
     private fun checkSale() {
         val saleStartDate = SimpleDateFormat("yyyy/MM/dd").parse(getString(R.string.next_sale_start)) 
         val saleEndDate = SimpleDateFormat("yyyy/MM/dd").parse(getString(R.string.next_sale_end)) 
         val calendar = Calendar.getInstance(TimeZone.getDefault())
         val date = calendar.time
         val proText = findViewById<TextView>(R.id.pro_btn)
-
         if (date > saleStartDate) {
-            
             proText.text = getString(R.string.go_pro_school_start_sale)
             proText.setTextColor(getColorStateList(R.color.orange))
             proText.setCompoundDrawableTintList(getColorStateList(R.color.orange))
@@ -181,30 +130,22 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
         else {
         }
     }
-
     private fun scrollAdapter() {
         val zoomLay = findViewById<ZoomLayout>(R.id.scrollView)
         val yScroll = findViewById<ScrollView>(R.id.leftBar)
         val xScroll = findViewById<HorizontalScrollView>(R.id.topBar)
         val corner = findViewById<TextView>(R.id.corner)
-
-        
         val raisePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32f, resources.displayMetrics).toInt()
-
         val handler = Handler(Looper.getMainLooper())
         val runnable = object : Runnable {
             override fun run() {
                 if (zoomLay.zoom < 1) {
-                    
                     yScroll.visibility = View.INVISIBLE
                     xScroll.visibility = View.INVISIBLE
                     corner.visibility = View.INVISIBLE
-
-                    
                     if (!isScrollViewRaised) {
                         try {
                             val params6 = zoomLay.layoutParams as ViewGroup.MarginLayoutParams
-                            
                             params6.topMargin = (params6.topMargin - raisePx).coerceAtLeast(0)
                             zoomLay.layoutParams = params6
                             isScrollViewRaised = true
@@ -214,16 +155,12 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
                     }
                 }
                 else {
-                    
                     yScroll.visibility = View.VISIBLE
                     xScroll.visibility = View.VISIBLE
                     corner.visibility = View.VISIBLE
-
-                    
                     if (isScrollViewRaised) {
                         try {
                             val params6 = zoomLay.layoutParams as ViewGroup.MarginLayoutParams
-                            
                             params6.topMargin = params6.topMargin + raisePx
                             zoomLay.layoutParams = params6
                             isScrollViewRaised = false
@@ -232,7 +169,6 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
                         }
                     }
                 }
-
                 yScroll.scrollTo(0, -zoomLay.panY.toInt())
                 xScroll.scrollTo(-zoomLay.panX.toInt(), 0)
                 handler.postDelayed(this, 1)
@@ -240,36 +176,27 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
         }
         handler.post(runnable)
     }
-
-
     private fun getRandomItem() {
         val elements = ArrayList<Element>()
         ElementModel.getList(elements, this)
         val randomNumber = (0..117).random()
         val item = elements[randomNumber]
-
         AnalyticsHelper.logFeatureUsage(this, "random_element")
-        
         val elementSendAndLoad = ElementSendAndLoad(this)
         elementSendAndLoad.setValue(item.elementKey)
         val intent = Intent(this, ElementInfoActivity::class.java)
         startActivity(intent)
     }
-
     private fun openHover() {
         Utils.fadeInAnimBack(findViewById<TextView>(R.id.hover_background), 200)
         Utils.fadeInAnim(findViewById<ConstraintLayout>(R.id.hover_menu_include), 300)
-        
         setBackInterceptionEnabled(true)
     }
-
     private fun closeHover() {
         Utils.fadeOutAnim(findViewById<TextView>(R.id.hover_background), 200)
         Utils.fadeOutAnim(findViewById<ConstraintLayout>(R.id.hover_menu_include), 300)
-        
         setBackInterceptionEnabled(false)
     }
-
     private fun filter(text: String, list: ArrayList<Element>, recyclerView: RecyclerView) {
         val filteredList: ArrayList<Element> = ArrayList()
         for (item in list) {
@@ -298,23 +225,16 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
             }
         }, 10)
     }
-
     override fun elementClickListener2(item: Element, position: Int) {
         val elementSendAndLoad = ElementSendAndLoad(this)
         elementSendAndLoad.setValue(item.elementKey)
-
         val intent = Intent(this, ElementInfoActivity::class.java)
         startActivity(intent)
     }
-
-    
     override fun onBackPressed() {
         handleBack()
     }
-
-    
     private fun handleBack() {
-        
         val hoverBackground = findViewById<TextView>(R.id.hover_background)
         val hoverMenu = findViewById<ConstraintLayout>(R.id.hover_menu_include)
         val slidingLayout = findViewById<SlidingUpPanelLayout>(R.id.sliding_layout)
@@ -325,50 +245,32 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
         val moreBtn = findViewById<FloatingActionButton>(R.id.more_btn)
         val searchBackground = findViewById<TextView>(R.id.background) 
         val filterBox = findViewById<ConstraintLayout>(R.id.filter_box)
-
-        
-
-
-        
         if (hoverBackground?.visibility == View.VISIBLE || hoverMenu?.visibility == View.VISIBLE) {
             if (hoverBackground?.visibility == View.VISIBLE) Utils.fadeOutAnim(hoverBackground, 150)
             if (hoverMenu?.visibility == View.VISIBLE) Utils.fadeOutAnim(hoverMenu, 150)
-            
             setBackInterceptionEnabled(false)
             return
         }
-
-        
         if (slidingLayout != null && slidingLayout.panelState == PanelState.EXPANDED) {
-            
             slidingLayout.setPanelState(PanelState.COLLAPSED)
             return
         }
-        
         if (navBackground?.visibility == View.VISIBLE || navMenuInclude?.visibility == View.VISIBLE) {
-            
             slidingLayout?.setPanelState(PanelState.COLLAPSED)
             return
         }
-
-        
         if ((filterBox?.visibility == View.VISIBLE) || (searchBackground?.visibility == View.VISIBLE)) {
             if (searchBackground?.visibility == View.VISIBLE) Utils.fadeOutAnim(searchBackground, 150)
             if (filterBox?.visibility == View.VISIBLE) Utils.fadeOutAnim(filterBox, 150)
             if (moreBtn != null) Utils.fadeInAnim(moreBtn, 300)
-            
             setBackInterceptionEnabled(anyOverlayOpen())
             return
         }
-
-        
         if (searchMenu?.visibility == View.VISIBLE) {
             if (navBarMain != null) Utils.fadeInAnim(navBarMain, 150) else navBarMain?.visibility = View.VISIBLE
             if (navBackground != null) Utils.fadeOutAnim(navBackground, 150)
             Utils.fadeOutAnim(searchMenu, 150)
             if (moreBtn != null) Utils.fadeInAnim(moreBtn, 300)
-
-            
             val view = this.currentFocus
             if (view != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -378,13 +280,9 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
                     imm.hideSoftInputFromWindow(view.windowToken, 0)
                 }
             }
-
-            
             setBackInterceptionEnabled(false)
             return
         }
-
-        
         setBackInterceptionEnabled(false)
         if (isTaskRoot) {
             moveTaskToBack(true)
@@ -392,16 +290,12 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
             super.onBackPressed()
         }
     }
-
     private fun searchListener() {
         findViewById<ImageButton>(R.id.search_btn).setOnClickListener {
             Utils.fadeInAnim(findViewById<FrameLayout>(R.id.search_menu_include), 300)
             findViewById<FrameLayout>(R.id.nav_bar_main).visibility = View.GONE
             Utils.fadeOutAnim(findViewById<FloatingActionButton>(R.id.more_btn), 300)
-
-            
             setBackInterceptionEnabled(true)
-
             findViewById<EditText>(R.id.edit_element).requestFocus()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 window.insetsController?.show(WindowInsets.Type.ime())
@@ -417,10 +311,7 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
             Utils.fadeOutAnim(findViewById<FrameLayout>(R.id.search_menu_include), 300)
             Utils.fadeInAnim(findViewById<FloatingActionButton>(R.id.more_btn), 300)
             findViewById<FrameLayout>(R.id.nav_bar_main).visibility = View.VISIBLE
-
-            
             setBackInterceptionEnabled(false)
-
             val view = this.currentFocus
             if (view != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -432,17 +323,12 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
             }
         }
     }
-
-
-
-    
     private fun onClickNav() {
         findViewById<ImageButton>(R.id.menu_btn).setOnClickListener {
             findViewById<FrameLayout>(R.id.nav_menu_include).visibility = View.VISIBLE
             findViewById<TextView>(R.id.nav_background).visibility = View.VISIBLE
             Utils.fadeInAnimBack(findViewById<TextView>(R.id.nav_background), 200)
             findViewById<SlidingUpPanelLayout>(R.id.sliding_layout).panelState = PanelState.EXPANDED
-            
             setBackInterceptionEnabled(true)
         }
         findViewById<TextView>(R.id.nav_background).setOnClickListener {
@@ -450,7 +336,6 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
             findViewById<SlidingUpPanelLayout>(R.id.sliding_layout).setPanelState(PanelState.COLLAPSED)
             findViewById<FrameLayout>(R.id.nav_bar_main).visibility = View.VISIBLE
             Utils.fadeOutAnim(findViewById<TextView>(R.id.nav_background), 100)
-            
             setBackInterceptionEnabled(false)
         }
         findViewById<TextView>(R.id.pro_btn).setOnClickListener {
@@ -476,10 +361,7 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
             val intent = Intent(this, DictionaryActivity::class.java)
             startActivity(intent)
         }
-
     }
-
-    
     private fun hoverListeners(elements: ArrayList<Element>, proValue: Int) {
         findViewById<TextView>(R.id.h_name_btn).setOnClickListener { initName(elements) }
         findViewById<TextView>(R.id.h_group_btn).setOnClickListener { initGroups(elements) }
@@ -498,9 +380,6 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
         findViewById<TextView>(R.id.h_electrical_resistivity_btn).setOnClickListener { initTableChange(elements, "resistivity") }
         findViewById<TextView>(R.id.h_cas_number_btn).setOnClickListener { initTableChange(elements, "cas_number") }
         findViewById<TextView>(R.id.h_eg_number_btn).setOnClickListener { initTableChange(elements, "eg_number") }
-
-
-        
         findViewById<TextView>(R.id.h_poisson_ratio_btn).setOnClickListener {
             if (proValue == 1) {
                 val intent = Intent(this, ProActivity::class.java)
@@ -532,22 +411,18 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
             if (proValue == 100) { initTableChange(elements, "poisson_ratio") }
         }
     }
-
-
     private fun setupNavListeners() {
         findViewById<ImageButton>(R.id.settings_btn).setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
     }
-
     private fun setOnCLickListenerSetups(list: ArrayList<Element>) {
         for (item in list) {
             val name = item.elementKey
             val extBtn = "_btn"
             val eViewBtn = "$name$extBtn"
             val resIDB = resources.getIdentifier(eViewBtn, "id", packageName)
-
             val btn = findViewById<TextView>(resIDB)
             if (btn != null) {
                 btn.foreground = ContextCompat.getDrawable(this,
@@ -564,34 +439,28 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
             }
         }
     }
-
     private fun searchFilter(list: ArrayList<Element>, recyclerView: RecyclerView) {
         findViewById<ConstraintLayout>(R.id.filter_box).visibility = View.GONE
         findViewById<TextView>(R.id.background).visibility = View.GONE
         findViewById<FloatingActionButton>(R.id.filter_btn).setOnClickListener {
             Utils.fadeInAnim(findViewById<ConstraintLayout>(R.id.filter_box), 150)
             Utils.fadeInAnim(findViewById<TextView>(R.id.background), 150)
-            
             setBackInterceptionEnabled(true)
         }
-        
         findViewById<TextView>(R.id.background).setOnClickListener {
             Utils.fadeOutAnim(findViewById<ConstraintLayout>(R.id.filter_box), 150)
             Utils.fadeOutAnim(findViewById<TextView>(R.id.background), 150)
-            
             setBackInterceptionEnabled(anyOverlayOpen())
         }
         findViewById<TextView>(R.id.elmt_numb_btn2).setOnClickListener {
             val searchPreference = SearchPreferences(this)
             searchPreference.setValue(0)
-
             val filtList: ArrayList<Element> = ArrayList()
             for (item in list) {
                 filtList.add(item)
             }
             Utils.fadeOutAnim(findViewById<ConstraintLayout>(R.id.filter_box), 150)
             Utils.fadeOutAnim(findViewById<TextView>(R.id.background), 150)
-            
             setBackInterceptionEnabled(anyOverlayOpen())
             mAdapter.filterList(filtList)
             mAdapter.notifyDataSetChanged()
@@ -600,14 +469,12 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
         findViewById<TextView>(R.id.electro_btn).setOnClickListener {
             val searchPreference = SearchPreferences(this)
             searchPreference.setValue(1)
-
             val filtList: ArrayList<Element> = ArrayList()
             for (item in list) {
                 filtList.add(item)
             }
             Utils.fadeOutAnim(findViewById<ConstraintLayout>(R.id.filter_box), 150)
             Utils.fadeOutAnim(findViewById<TextView>(R.id.background), 150)
-            
             setBackInterceptionEnabled(anyOverlayOpen())
             mAdapter.filterList(filtList)
             mAdapter.notifyDataSetChanged()
@@ -616,14 +483,12 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
         findViewById<TextView>(R.id.alphabet_btn).setOnClickListener {
             val searchPreference = SearchPreferences(this)
             searchPreference.setValue(2)
-
             val filtList: ArrayList<Element> = ArrayList()
             for (item in list) {
                 filtList.add(item)
             }
             Utils.fadeOutAnim(findViewById<ConstraintLayout>(R.id.filter_box), 150)
             Utils.fadeOutAnim(findViewById<TextView>(R.id.background), 150)
-            
             setBackInterceptionEnabled(anyOverlayOpen())
             filtList.sortWith(Comparator { lhs, rhs ->
                 lhs.element.compareTo(rhs.element)
@@ -633,13 +498,10 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
             recyclerView.adapter = ElementAdapter(filtList, this, this)
         }
     }
-
     private fun proChanges() {
         findViewById<TextView>(R.id.pro_btn).text = getString(R.string.member_btn)
         findViewById<ImageButton>(R.id.pro_fab).visibility = View.GONE
     }
-
-    
     private fun setProFabVisibilityGoneIfProValue100() {
         val proPref = ProVersion(this)
         val value = proPref.getValue()
@@ -650,89 +512,66 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
             proFab?.visibility = View.VISIBLE
         }
     }
-
     override fun onResume() {
         super.onResume()
         setProFabVisibilityGoneIfProValue100()
-        
     }
-
     override fun onApplySystemInsets(top: Int, bottom: Int, left: Int, right: Int) {
         findViewById<LinearLayout>(R.id.navLin).setPadding(left, 0, right, 0)
-
         val params = findViewById<FrameLayout>(R.id.common_title_back_main).layoutParams as ViewGroup.LayoutParams
         params.height = top + resources.getDimensionPixelSize(R.dimen.title_bar_main)
         findViewById<FrameLayout>(R.id.common_title_back_main).layoutParams = params
-
         val params2 = findViewById<FrameLayout>(R.id.nav_bar_main).layoutParams as ViewGroup.LayoutParams
         params2.height = bottom + resources.getDimensionPixelSize(R.dimen.nav_bar)
         findViewById<FrameLayout>(R.id.nav_bar_main).layoutParams = params2
-
         val paramsFAB = findViewById<ImageButton>(R.id.pro_fab).layoutParams as ViewGroup.MarginLayoutParams
         paramsFAB.bottomMargin = bottom + resources.getDimensionPixelSize(R.dimen.nav_bar) + resources.getDimensionPixelSize(R.dimen.margin)
         findViewById<ImageButton>(R.id.pro_fab).layoutParams = paramsFAB
-
         val params3 = findViewById<FloatingActionButton>(R.id.more_btn).layoutParams as ViewGroup.MarginLayoutParams
         params3.bottomMargin = bottom + (resources.getDimensionPixelSize(R.dimen.nav_bar))/2 + (resources.getDimensionPixelSize(R.dimen.title_bar_elevation))
-
-
         val params4 = findViewById<FrameLayout>(R.id.common_title_back_search).layoutParams as ViewGroup.LayoutParams
         params4.height = top + resources.getDimensionPixelSize(R.dimen.title_bar)
         findViewById<FrameLayout>(R.id.common_title_back_search).layoutParams = params4
-
         findViewById<RecyclerView>(R.id.element_recyclerview).setPadding(0, resources.getDimensionPixelSize(R.dimen.title_bar) + resources.getDimensionPixelSize(R.dimen.margin_space) + top, 0, resources.getDimensionPixelSize(R.dimen.title_bar))
-
         val navSide = findViewById<FrameLayout>(R.id.nav_content).layoutParams as ViewGroup.MarginLayoutParams
         navSide.rightMargin = right
         navSide.leftMargin = left
         findViewById<FrameLayout>(R.id.nav_content).layoutParams = navSide
-
         val barSide = findViewById<FrameLayout>(R.id.search_box).layoutParams as ViewGroup.MarginLayoutParams
         barSide.rightMargin = right
         barSide.leftMargin = left
         findViewById<FrameLayout>(R.id.search_box).layoutParams = barSide
-
         val leftScrollBar = findViewById<ScrollView>(R.id.leftBar).layoutParams as ViewGroup.MarginLayoutParams
         leftScrollBar.topMargin = top + resources.getDimensionPixelSize(R.dimen.title_bar_main) + resources.getDimensionPixelSize(R.dimen.left_bar)
         findViewById<ScrollView>(R.id.leftBar).layoutParams = leftScrollBar
-
         val topScrollBar = findViewById<HorizontalScrollView>(R.id.topBar).layoutParams as ViewGroup.MarginLayoutParams
         topScrollBar.topMargin = top + resources.getDimensionPixelSize(R.dimen.title_bar_main)
         findViewById<HorizontalScrollView>(R.id.topBar).layoutParams = topScrollBar
-
         val numb = findViewById<ScrollView>(R.id.leftBar).layoutParams as ViewGroup.LayoutParams
         numb.width = left + resources.getDimensionPixelSize(R.dimen.left_bar)
         findViewById<ScrollView>(R.id.leftBar).layoutParams = numb
-
         val cornerP = findViewById<TextView>(R.id.corner).layoutParams as ViewGroup.LayoutParams
         cornerP.width = left + resources.getDimensionPixelSize(R.dimen.left_bar)
         findViewById<TextView>(R.id.corner).layoutParams = cornerP
-
         val cornerM = findViewById<TextView>(R.id.corner).layoutParams as ViewGroup.MarginLayoutParams
         cornerM.topMargin = top + resources.getDimensionPixelSize(R.dimen.title_bar_main)
         findViewById<TextView>(R.id.corner).layoutParams = cornerM
-
         val params5 = findViewById<ConstraintLayout>(R.id.hover_menu_include).layoutParams as ViewGroup.MarginLayoutParams
         params5.bottomMargin = bottom
         findViewById<ConstraintLayout>(R.id.hover_menu_include).layoutParams = params5
-
         val params6 = findViewById<ZoomLayout>(R.id.scrollView).layoutParams as ViewGroup.MarginLayoutParams
         params6.topMargin = top + resources.getDimensionPixelSize(R.dimen.title_bar_main) + resources.getDimensionPixelSize(R.dimen.left_bar)
         findViewById<ZoomLayout>(R.id.scrollView).layoutParams = params6
-
         val params7 = findViewById<SlidingUpPanelLayout>(R.id.sliding_layout).layoutParams as ViewGroup.LayoutParams
         params7.height = bottom + resources.getDimensionPixelSize(R.dimen.nav_view)
         findViewById<SlidingUpPanelLayout>(R.id.sliding_layout).layoutParams = params7
-
         val searchEmptyImgPrm = findViewById<LinearLayout>(R.id.empty_search_box).layoutParams as ViewGroup.MarginLayoutParams
         searchEmptyImgPrm.topMargin = top + (resources.getDimensionPixelSize(R.dimen.title_bar))
         findViewById<LinearLayout>(R.id.empty_search_box).layoutParams = searchEmptyImgPrm
-
         val params8 = findViewById<LinearLayout>(R.id.one).layoutParams as ViewGroup.MarginLayoutParams
         params8.marginStart = left + resources.getDimensionPixelSize(R.dimen.left_bar)
         findViewById<LinearLayout>(R.id.one).layoutParams = params8
     }
-
     private fun updateStats() {
         val statistics = java.util.ArrayList<Statistics>()
         StatisticsModel.getList(this, statistics)
@@ -745,8 +584,6 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
         val achievement8 = achievements.find { it.id == 8 } 
         achievement8?.incrementProgress(this, 1)
     }
-
-    
     private fun anyOverlayOpen(): Boolean {
         val hoverBackground = findViewById<TextView>(R.id.hover_background)
         val hoverMenu = findViewById<ConstraintLayout>(R.id.hover_menu_include)
@@ -756,7 +593,6 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
         val searchMenu = findViewById<FrameLayout>(R.id.search_menu_include)
         val searchBackground = findViewById<TextView>(R.id.background)
         val filterBox = findViewById<ConstraintLayout>(R.id.filter_box)
-
         if (hoverBackground?.visibility == View.VISIBLE) return true
         if (hoverMenu?.visibility == View.VISIBLE) return true
         if (slidingLayout != null && slidingLayout.panelState == PanelState.EXPANDED) return true
@@ -767,18 +603,13 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
         if (searchMenu?.visibility == View.VISIBLE) return true
         return false
     }
-
-    
     private fun setBackInterceptionEnabled(enabled: Boolean) {
         backCallback?.isEnabled = enabled
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             if (enabled) {
                 if (onBackInvokedCb == null) {
                     onBackInvokedCb = android.window.OnBackInvokedCallback {
-                        
                         handleBack()
-                        
                         if (!anyOverlayOpen()) {
                             try {
                                 onBackInvokedDispatcher.unregisterOnBackInvokedCallback(onBackInvokedCb!!)
@@ -802,24 +633,11 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
             }
         }
     }
-    
-     
-
-
-
-
-
-     
-
-
     private fun handleWidgetIntent() {
         val widgetElementKey = intent.getStringExtra("widget_element_key")
         if (widgetElementKey != null) {
-            
             val elementSendAndLoad = ElementSendAndLoad(this)
             elementSendAndLoad.setValue(widgetElementKey)
-            
-            
             val handler = Handler(Looper.getMainLooper())
             handler.postDelayed({
                 val elementIntent = Intent(this, ElementInfoActivity::class.java)
@@ -827,10 +645,8 @@ class MainActivity : TableExtension(), ElementAdapter.OnElementClickListener2 {
             }, 100)
         }
     }
-
     override fun onDestroy() {
         super.onDestroy()
-        
         backCallback?.remove()
         backCallback = null
         if (onBackInvokedCb != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {

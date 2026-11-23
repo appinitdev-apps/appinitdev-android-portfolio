@@ -1,11 +1,9 @@
-
 class StoragePermissionRequiredDialog(
     val activity: SimpleActivity,
     val onOkay: () -> Unit,
     val onCancel: () -> Unit,
     val callback: (dialog: AlertDialog) -> Unit
 ) {
-
     init {
         val binding = DialogStoragePermissionRequiredBinding.inflate(activity.layoutInflater)
         activity.getAlertDialogBuilder()

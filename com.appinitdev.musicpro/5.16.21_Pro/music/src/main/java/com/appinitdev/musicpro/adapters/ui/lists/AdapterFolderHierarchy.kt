@@ -1,27 +1,14 @@
-
- 
-
-
-
-
 class AdapterFolderHierarchy(contents: FolderHierarchyContents) : RecyclerView.Adapter<VerticalListViewHolder>() {
-
     private var callbacks: GeneralAdapterCallbacks? = null
-
     private var folders: List<Folder> = contents.subFolders.toList()
     private var songs: List<Audio> = contents.songs.toList()
-
     private val folderCount: Int get() = folders.size
     private val songCount: Int get() = songs.size
-
     var layoutMode: CommonPreferencesConstants.LayoutMode = FolderHierarchyPreferences.getLayoutMode()
-
     init {
         setHasStableIds(true)
     }
-
     override fun getItemCount(): Int = folderCount + songCount
-
     override fun getItemId(position: Int): Long {
         return if (position < folderCount) {
             folders[position].id
@@ -29,7 +16,6 @@ class AdapterFolderHierarchy(contents: FolderHierarchyContents) : RecyclerView.A
             songs[position - folderCount].id
         }
     }
-
     override fun getItemViewType(position: Int): Int {
         val isSong = position >= folderCount
         return when {
@@ -47,7 +33,6 @@ class AdapterFolderHierarchy(contents: FolderHierarchyContents) : RecyclerView.A
             }
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         return when (viewType) {
             VIEW_TYPE_FOLDER_LIST -> FolderListHolder(
@@ -64,7 +49,6 @@ class AdapterFolderHierarchy(contents: FolderHierarchyContents) : RecyclerView.A
             )
         }
     }
-
     override fun onBindViewHolder(holder: VerticalListViewHolder, position: Int) {
         when (holder) {
             is FolderListHolder -> holder.bind(folders[position])
@@ -73,7 +57,6 @@ class AdapterFolderHierarchy(contents: FolderHierarchyContents) : RecyclerView.A
             is SongGridHolder -> holder.bind(songs[position - folderCount])
         }
     }
-
     override fun onBindViewHolder(holder: VerticalListViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) {
             onBindViewHolder(holder, position)
@@ -87,7 +70,6 @@ class AdapterFolderHierarchy(contents: FolderHierarchyContents) : RecyclerView.A
             }
         }
     }
-
     override fun onViewRecycled(holder: VerticalListViewHolder) {
         super.onViewRecycled(holder)
         when (holder) {
@@ -97,20 +79,15 @@ class AdapterFolderHierarchy(contents: FolderHierarchyContents) : RecyclerView.A
             is FolderGridHolder -> Glide.with(holder.binding.albumArt).clear(holder.binding.albumArt)
         }
     }
-
     @SuppressLint("NotifyDataSetChanged")
     fun updateContents(contents: FolderHierarchyContents) {
         folders = contents.subFolders.toList()
         songs = contents.songs.toList()
         notifyDataSetChanged()
     }
-
     fun setCallbacks(listener: GeneralAdapterCallbacks) {
         this.callbacks = listener
     }
-
-    
-
     inner class FolderListHolder(val binding: AdapterFolderHierarchyFolderBinding) :
             VerticalListViewHolder(binding.root) {
         fun bind(folder: Folder) {
@@ -120,13 +97,11 @@ class AdapterFolderHierarchy(contents: FolderHierarchyContents) : RecyclerView.A
                     folder.songCount,
                     folder.songCount
             )
-            
             binding.container.setOnClickListener {
                 callbacks?.onFolderClicked(folder, it)
             }
         }
     }
-
     inner class FolderGridHolder(val binding: AdapterFolderHierarchyFolderGridBinding) :
             VerticalListViewHolder(binding.root) {
         fun bind(folder: Folder) {
@@ -136,19 +111,16 @@ class AdapterFolderHierarchy(contents: FolderHierarchyContents) : RecyclerView.A
                     folder.songCount,
                     folder.songCount
             )
-            
             binding.container.setOnClickListener {
                 callbacks?.onFolderClicked(folder, it)
             }
         }
     }
-
     inner class SongListHolder(val binding: AdapterStyleListBinding) :
             VerticalListViewHolder(binding.root) {
         fun bindSelectionState(song: Audio) {
             binding.container.isSelected = MediaPlaybackManager.getCurrentSongId() == song.id
         }
-
         fun bind(audio: Audio) {
             binding.title.setTextOrUnknown(audio.getProperTitle())
             binding.secondaryDetail.setTextOrUnknown(audio.getProperArtists())
@@ -165,13 +137,11 @@ class AdapterFolderHierarchy(contents: FolderHierarchyContents) : RecyclerView.A
             }
         }
     }
-
     inner class SongGridHolder(val binding: AdapterStyleGridBinding) :
             VerticalListViewHolder(binding.root) {
         fun bindSelectionState(audio: Audio) {
             binding.container.isSelected = MediaPlaybackManager.getCurrentSongId() == audio.id
         }
-
         fun bind(song: Audio) {
             binding.container.enableGridMode = true
             binding.title.setTextOrUnknown(song.getProperTitle())
@@ -188,15 +158,12 @@ class AdapterFolderHierarchy(contents: FolderHierarchyContents) : RecyclerView.A
             }
         }
     }
-
     companion object {
         const val VIEW_TYPE_FOLDER_LIST = 0
         const val VIEW_TYPE_FOLDER_GRID = 1
         private const val VIEW_TYPE_SONG_LIST = 2
         private const val VIEW_TYPE_SONG_GRID = 3
         private const val PAYLOAD_PLAYBACK_STATE = "payload_playing_state"
-
-         
         val FOLDER_VIEW_TYPES = setOf(VIEW_TYPE_FOLDER_LIST, VIEW_TYPE_FOLDER_GRID)
     }
 }

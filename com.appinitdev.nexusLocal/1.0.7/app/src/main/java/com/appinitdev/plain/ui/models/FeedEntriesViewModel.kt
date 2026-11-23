@@ -1,4 +1,3 @@
-
 @OptIn(androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi::class)
 class FeedEntriesViewModel(private val savedStateHandle: SavedStateHandle) :
     ISelectableViewModel<DFeedEntry>,
@@ -18,14 +17,11 @@ class FeedEntriesViewModel(private val savedStateHandle: SavedStateHandle) :
     val dataType = DataType.FEED_ENTRY
     var selectedItem = mutableStateOf<DFeedEntry?>(null)
     val showTagsDialog = mutableStateOf(false)
-
     override val showSearchBar = mutableStateOf(false)
     override val searchActive = mutableStateOf(false)
     override val queryText = mutableStateOf("")
-
     override var selectMode = mutableStateOf(false)
     override val selectedIds = mutableStateListOf<String>()
-
     suspend fun moreAsync(tagsViewModel: TagsViewModel) {
         offset.value += limit.intValue
         val items = FeedEntryHelper.search(getQuery(), limit.intValue, offset.intValue)
@@ -34,7 +30,6 @@ class FeedEntriesViewModel(private val savedStateHandle: SavedStateHandle) :
         showLoading.value = false
         noMore.value = items.size < limit.intValue
     }
-
     suspend fun loadAsync(tagsViewModel: TagsViewModel) {
         offset.intValue = 0
         val query = getQuery()
@@ -45,11 +40,9 @@ class FeedEntriesViewModel(private val savedStateHandle: SavedStateHandle) :
         noMore.value = _itemsFlow.value.size < limit.intValue
         showLoading.value = false
     }
-
     fun sync() {
         FeedFetchWorker.oneTimeRequest(feedId.value)
     }
-
     fun delete(tagsVM: TagsViewModel, ids: Set<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             TagHelper.deleteTagRelationByKeys(
@@ -60,25 +53,20 @@ class FeedEntriesViewModel(private val savedStateHandle: SavedStateHandle) :
             loadAsync(tagsVM)
         }
     }
-
     private fun getTotalAllQuery(): String {
         var query = queryText.value
         if (feedId.value.isNotEmpty()) {
             query += " feed_id:${feedId.value}"
         }
-
         return query
     }
-
     private fun getTotalTodayQuery(): String {
         var query = "${queryText.value} today:true"
         if (feedId.value.isNotEmpty()) {
             query += " feed_id:${feedId.value}"
         }
-
         return query
     }
-
     private fun getQuery(): String {
         var query = queryText.value
         if (filterType == FeedEntryFilterType.TODAY) {
@@ -92,7 +80,6 @@ class FeedEntriesViewModel(private val savedStateHandle: SavedStateHandle) :
         if (feedId.value.isNotEmpty()) {
             query += " feed_id:${feedId.value}"
         }
-
         return query
     }
 }

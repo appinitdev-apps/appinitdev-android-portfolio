@@ -1,9 +1,7 @@
-
 data class FormulaSymbolBtn(
     val label: String,
     val latexSnippet: String
 )
-
 @Composable
 fun FormulaEditorCard(
     initialNote: String,
@@ -13,7 +11,6 @@ fun FormulaEditorCard(
 ) {
     var textValue by remember(initialNote) { mutableStateOf(initialNote) }
     var showPreview by remember { mutableStateOf(true) }
-
     val formulaToolbar = remember {
         listOf(
             FormulaSymbolBtn("a/b", "\\frac{a}{b}"),
@@ -31,7 +28,6 @@ fun FormulaEditorCard(
             FormulaSymbolBtn("lim", "\\lim_{x \\to 0}")
         )
     }
-
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -54,21 +50,17 @@ fun FormulaEditorCard(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
-
                 FilterChip(
                     selected = showPreview,
                     onClick = { showPreview = !showPreview },
                     label = { Text(if (showPreview) "👁️ " + stringResource(id = R.string.preview) else "✏️ " + stringResource(id = R.string.edit)) }
                 )
             }
-
-            
             Text(
                 text = stringResource(id = R.string.insert_symbol_hint),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-
             LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 items(formulaToolbar) { btn ->
                     FilterChip(
@@ -86,7 +78,6 @@ fun FormulaEditorCard(
                     )
                 }
             }
-
             if (!showPreview) {
                 OutlinedTextField(
                     value = textValue,
@@ -110,7 +101,6 @@ fun FormulaEditorCard(
                             "$$ $trimmed $$"
                         }
                     }
-
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),

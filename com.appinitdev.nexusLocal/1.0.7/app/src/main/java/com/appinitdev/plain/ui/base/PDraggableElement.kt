@@ -1,4 +1,3 @@
-
 @Composable
 fun PDraggableElement(content: @Composable BoxScope.() -> Unit) {
     val offset = remember { mutableStateOf(IntOffset.Zero) }
@@ -15,4 +14,3 @@ fun PDraggableElement(content: @Composable BoxScope.() -> Unit) {
         content = content
     )
 }
-

@@ -1,4 +1,3 @@
-
 data class ListItemHighlight(
     val itemPos: Int,
     val resultPos: Int,
@@ -6,7 +5,6 @@ data class ListItemHighlight(
     val endIdx: Int,
     var selected: Boolean,
 )
-
 abstract class ListItemAdapterBase(
     private val adapter: RecyclerView.Adapter<*>,
     @ColorInt var backgroundColor: Int,
@@ -17,15 +15,12 @@ abstract class ListItemAdapterBase(
     private val isCheckedListAdapter: Boolean,
     scrollView: NestedScrollView,
 ) {
-
     private val callback = ListItemDragCallback(elevation, listManager)
     private val touchHelper = NestedScrollViewItemTouchHelper(callback, scrollView)
     private val highlights = mutableMapOf<Int, MutableList<ListItemHighlight>>()
-
     fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         touchHelper.attachToRecyclerView(recyclerView)
     }
-
     fun onBindViewHolder(holder: ListItemVH, position: Int, viewMode: NoteViewMode) {
         val item = getItem(position)
         holder.bind(
@@ -37,21 +32,17 @@ abstract class ListItemAdapterBase(
             viewMode,
         )
     }
-
     abstract fun getItem(position: Int): ListItem
-
     fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListItemVH {
         val inflater = LayoutInflater.from(parent.context)
         val binding = RecyclerListItemBinding.inflate(inflater, parent, false)
         binding.root.background = parent.background
         return ListItemVH(binding, listManager, touchHelper, textSize, isCheckedListAdapter)
     }
-
     internal fun setBackgroundColor(@ColorInt color: Int) {
         backgroundColor = color
         adapter.notifyDataSetChanged()
     }
-
     internal fun clearHighlights(): Set<Int> {
         val highlightedItemPos =
             highlights.entries.flatMap { (_, value) -> value.map { it.itemPos } }.toSet()
@@ -59,7 +50,6 @@ abstract class ListItemAdapterBase(
         highlightedItemPos.forEach { adapter.notifyItemChanged(it) }
         return highlightedItemPos
     }
-
     fun highlightText(highlight: ListItemHighlight) {
         if (highlights.containsKey(highlight.itemPos)) {
             highlights[highlight.itemPos]!!.add(highlight)
@@ -68,7 +58,6 @@ abstract class ListItemAdapterBase(
         }
         adapter.notifyItemChanged(highlight.itemPos)
     }
-
     internal fun selectHighlight(pos: Int): Int {
         var selectedItemPos = -1
         highlights.entries.forEach { (_, value) ->

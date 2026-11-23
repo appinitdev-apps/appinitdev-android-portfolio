@@ -1,21 +1,16 @@
-
 class filter {
-
     fun adjustFilter(filter: GPUImageFilter, parameters: List<FilterParameter>) {
         fun getVal(index: Int, start: Float, end: Float): Float {
             if (index >= parameters.size) return start
             val f = parameters[index].currentValue / 100.0f
             return (end - start) * f + start
         }
-
         fun getValInt(index: Int, start: Int, end: Int): Int {
             if (index >= parameters.size) return start
             val f = parameters[index].currentValue / 100.0f
             return ((end - start) * f).toInt() + start
         }
-
         when (filter) {
-
             is GPUImageContrastFilter -> filter.setContrast(getVal(0, 0.0f, 2.0f)) 
             is GPUImageGammaFilter -> filter.setGamma(getVal(0, 0.0f, 3.0f)) 
             is GPUImageBrightnessFilter -> filter.setBrightness(
@@ -31,7 +26,6 @@ class filter {
                 filter.setShadows(getVal(0, 0.0f, 1.0f)) 
                 filter.setHighlights(getVal(1, 0.0f, 1.0f))
             }
-
             is GPUImageMonochromeFilter -> filter.setIntensity(getVal(0, 0.0f, 1.0f)) 
             is GPUImageOpacityFilter -> filter.setOpacity(getVal(0, 0.0f, 1.0f)) 
             is GPUImageRGBFilter -> {
@@ -39,12 +33,10 @@ class filter {
                 filter.setGreen(getVal(1, 0.0f, 1.0f))
                 filter.setBlue(getVal(2, 0.0f, 1.0f))
             }
-
             is GPUImageWhiteBalanceFilter -> {
                 filter.setTemperature(getVal(0, 2000.0f, 8000.0f)) 
                 filter.setTint(getVal(1, -100f, 100f))
             }
-
             is GPUImageHueFilter -> filter.setHue(getVal(0, 0.0f, 360.0f)) 
             is GPUImageLuminanceThresholdFilter -> filter.setThreshold(
                 getVal(
@@ -62,7 +54,6 @@ class filter {
                     )
                 )
             }
-
             is GPUImageLevelsFilter -> filter.setMin(
                 0.0f,
                 getVal(0, 0.0f, 1.0f),
@@ -76,7 +67,6 @@ class filter {
                 filter.setCrossHatchSpacing(getVal(0, 0.0f, 0.06f)) 
                 filter.setLineWidth(getVal(1, 0.0f, 0.006f))
             }
-
             is GPUImageSobelEdgeDetectionFilter -> filter.setLineSize(
                 getVal(
                     0,
@@ -85,25 +75,19 @@ class filter {
                 )
             ) 
             is GPUImageThresholdEdgeDetectionFilter -> {
-
                 filter.setLineSize(getVal(0, 0.0f, 2.0f)) 
                 filter.setThreshold(getVal(1, 0.0f, 1.0f))
             }
-
             is GPUImageEmbossFilter -> filter.intensity = getVal(0, 0.0f, 4.0f) 
             is GPUImagePixelationFilter -> filter.setPixel(getVal(0, 1.0f, 100.0f)) 
             is GPUImageSharpenFilter -> filter.setSharpness(getVal(0, -4.0f, 4.0f)) 
             is GPUImageVignetteFilter -> {
                 filter.setVignetteStart(getVal(0, 0.0f, 1.0f)) 
                 filter.setVignetteEnd(getVal(1, 0.0f, 1.0f))
-
                 val cx = getVal(2, 0.0f, 1.0f)
                 val cy = getVal(3, 0.0f, 1.0f)
                 filter.setVignetteCenter(PointF(cx, cy))
-
-
             }
-
             is GPUImageGaussianBlurFilter -> filter.setBlurSize(getVal(0, 0.0f, 1.0f)) 
             is GPUImageBulgeDistortionFilter -> {
                 filter.setRadius(getVal(0, 0.0f, 1.0f)) 
@@ -112,20 +96,16 @@ class filter {
                 val cy = getVal(3, 0.0f, 1.0f)
                 filter.setCenter(PointF(cx, cy))
             }
-
             is GPUImageGlassSphereFilter -> {
                 filter.setRadius(getVal(0, 0.0f, 1.0f)) 
-                
                 val cx = getVal(1, 0.0f, 1.0f)
                 val cy = getVal(2, 0.0f, 1.0f)
                 filter.setCenter(PointF(cx, cy))
             }
-
             is GPUImageHazeFilter -> {
                 filter.setDistance(getVal(0, -0.3f, 0.3f)) 
                 filter.setSlope(getVal(1, -0.3f, 0.3f))
             }
-
             is GPUImageSphereRefractionFilter -> filter.setRadius(
                 getVal(
                     0,
@@ -135,8 +115,6 @@ class filter {
             ) 
             is GPUImageSwirlFilter ->{
                 filter.setAngle(getVal(0, 0.0f, 2.0f)) 
-
-                
                 val cx = getVal(1, 0.0f, 1.0f)
                 val cy = getVal(2, 0.0f, 1.0f)
                 filter.setCenter(PointF(cx, cy))
@@ -160,26 +138,19 @@ class filter {
                 ) 
                 filter.transform3D = transform 
             }
-
             is GPUImageMixBlendFilter -> {
-                
                 filter.setMix(getVal(0, 0.0f, 1.0f))
             }
-
             is GPUImageChromaKeyBlendFilter -> {
-                
                 filter.setThresholdSensitivity(getVal(0, 0.0f, 1.0f))
                 filter.setSmoothing(getVal(1, 0.0f, 1.0f))
             }
-
             is GPUImageDissolveBlendFilter -> filter.setMix(getVal(0, 0.0f, 1.0f)) 
         }
     }
-
     data class FilterParameter(
         val label: String,
         val initialPercentage: Float = 50f,
         var currentValue: Float = initialPercentage
     )
-
 }

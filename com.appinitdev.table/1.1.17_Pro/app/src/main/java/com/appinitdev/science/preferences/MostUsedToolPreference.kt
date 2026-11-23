@@ -1,4 +1,3 @@
-
 class MostUsedToolPreference(context : Context) {
     val PREFERENCE_NAME = "calPref4"
     val PREFERENCE_VALUE = "calValue2"
@@ -12,6 +11,3 @@ class MostUsedToolPreference(context : Context) {
         editor.apply()
     }
 }
-
-
-

@@ -1,4 +1,3 @@
-
 internal suspend fun <T> ReorderableLazyCollectionState<T>.moveDraggingItemToEnd(
     direction: Scroller.Direction,
 ) {
@@ -35,14 +34,12 @@ internal suspend fun <T> ReorderableLazyCollectionState<T>.moveDraggingItemToEnd
     onMoveStateMutex.unlock()
     job.join()
 }
-
 internal fun Rect.maxOutAxis(orientation: Orientation): Rect {
     return when (orientation) {
         Orientation.Vertical -> copy(top = Float.NEGATIVE_INFINITY, bottom = Float.POSITIVE_INFINITY)
         Orientation.Horizontal -> copy(left = Float.NEGATIVE_INFINITY, right = Float.POSITIVE_INFINITY)
     }
 }
-
 internal fun <T> ReorderableLazyCollectionState<T>.findTargetItem(
     draggingItemRect: Rect,
     items: List<LazyCollectionItemInfo<T>> = state.layoutInfo.getItemsInContentArea(),
@@ -58,7 +55,6 @@ internal fun <T> ReorderableLazyCollectionState<T>.findTargetItem(
         Scroller.Direction.BACKWARD -> items.findLast(targetItemFunc)
     }
 }
-
 internal suspend fun <T> ReorderableLazyCollectionState<T>.moveItems(
     draggingItem: LazyCollectionItemInfo<T>,
     targetItem: LazyCollectionItemInfo<T>,

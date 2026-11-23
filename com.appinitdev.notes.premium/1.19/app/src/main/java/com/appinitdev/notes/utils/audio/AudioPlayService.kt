@@ -1,14 +1,10 @@
-
 class AudioPlayService : Service() {
-
     private var state = IDLE
     private var stateBeforeSeeking = -1
     private var errorType = 0
     private var errorCode = 0
     private lateinit var player: MediaPlayer
-
     var onStateChange: (() -> Unit)? = null
-
     override fun onCreate() {
         super.onCreate()
         player =
@@ -24,16 +20,13 @@ class AudioPlayService : Service() {
                 }
             }
     }
-
     override fun onDestroy() {
         super.onDestroy()
         player.release()
     }
-
     override fun onBind(intent: Intent?): IBinder {
         return LocalBinder(this)
     }
-
     fun initialise(audio: Audio) {
         if (state == IDLE) {
             val audioRoot = application.getExternalAudioDirectory()
@@ -50,7 +43,6 @@ class AudioPlayService : Service() {
             } else setIOError()
         }
     }
-
     fun play() {
         when (state) {
             PREPARED,
@@ -65,7 +57,6 @@ class AudioPlayService : Service() {
             }
         }
     }
-
     fun seek(milliseconds: Long) {
         if (state == PREPARED || state == STARTED || state == PAUSED || state == COMPLETED) {
             stateBeforeSeeking = state
@@ -73,34 +64,27 @@ class AudioPlayService : Service() {
             setState(SEEKING)
         }
     }
-
     fun getState(): Int {
         return state
     }
-
     fun getErrorType(): Int {
         return errorType
     }
-
     fun getErrorCode(): Int {
         return errorCode
     }
-
     fun getCurrentPosition(): Int {
         return if (state != IDLE && state != ERROR) player.currentPosition else 0
     }
-
     private fun setState(state: Int) {
         this.state = state
         onStateChange?.invoke()
     }
-
     private fun setIOError() {
         errorCode = 0
         errorType = 15
         setState(ERROR)
     }
-
     companion object {
         private const val TAG = "AudioPlayService"
         const val IDLE = 0

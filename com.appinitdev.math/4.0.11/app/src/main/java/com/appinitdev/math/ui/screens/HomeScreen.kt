@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -17,7 +16,6 @@ fun HomeScreen(
     val activity = context as? Activity
     val interactionSource = remember { MutableInteractionSource() }
     var showSettingsDialog by remember { mutableStateOf(false) }
-
     val allLanguages = remember {
         listOf(
             Triple("es", "🇪🇸", "Español"),
@@ -42,11 +40,8 @@ fun HomeScreen(
             Triple("vi", "🇻🇳", "Tiếng Việt")
         )
     }
-
-    
     if (showSettingsDialog) {
         var settingsTab by remember { mutableIntStateOf(0) }
-
         AlertDialog(
             onDismissRequest = { showSettingsDialog = false },
             title = {
@@ -86,7 +81,6 @@ fun HomeScreen(
                             modifier = Modifier.weight(1f)
                         )
                     }
-
                     if (settingsTab == 0) {
                         LazyColumn(
                             modifier = Modifier
@@ -125,7 +119,6 @@ fun HomeScreen(
                             }
                         }
                     } else {
-                        
                         val themes = listOf(
                             Triple("SYSTEM", "📱 Sistema", Color(0xFF6200EE)),
                             Triple("DEFAULT", "🔵 Ocean Blue", Color(0xFF0284C7)),
@@ -140,7 +133,6 @@ fun HomeScreen(
                             Triple("DARK", "🌙 Dark Slate", Color(0xFF1E293B)),
                             Triple("LIGHT", "☀️ Clean Light", Color(0xFFF8FAFC))
                         )
-
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -195,7 +187,6 @@ fun HomeScreen(
             }
         )
     }
-
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -227,7 +218,6 @@ fun HomeScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -247,7 +237,6 @@ fun HomeScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -280,7 +269,6 @@ fun HomeScreen(
                                 )
                             }
                         }
-
                         IconButton(
                             onClick = { showSettingsDialog = true },
                             modifier = Modifier
@@ -293,8 +281,6 @@ fun HomeScreen(
                     }
                 }
             }
-
-            
             item {
                 Box(
                     modifier = Modifier
@@ -321,14 +307,11 @@ fun HomeScreen(
                     )
                 }
             }
-
-            
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    
                     Card(
                         onClick = { viewModel.navigateTo(Screen.FLASHCARDS) },
                         modifier = Modifier
@@ -370,8 +353,6 @@ fun HomeScreen(
                             )
                         }
                     }
-
-                    
                     Card(
                         onClick = { viewModel.navigateTo(Screen.GLOSSARY) },
                         modifier = Modifier
@@ -413,8 +394,6 @@ fun HomeScreen(
                             )
                         }
                     }
-
-                    
                     Card(
                         onClick = { viewModel.navigateTo(Screen.UNIT_CONVERTER) },
                         modifier = Modifier
@@ -458,8 +437,6 @@ fun HomeScreen(
                     }
                 }
             }
-
-            
             if (pinnedTopics.isNotEmpty()) {
                 item {
                     Column {
@@ -484,8 +461,6 @@ fun HomeScreen(
                     }
                 }
             }
-
-            
             if (recentTopics.isNotEmpty()) {
                 item {
                     Column {
@@ -510,8 +485,6 @@ fun HomeScreen(
                     }
                 }
             }
-
-            
             if (favoriteTopics.isNotEmpty()) {
                 item {
                     Column {
@@ -536,8 +509,6 @@ fun HomeScreen(
                     }
                 }
             }
-
-            
             item {
                 Column {
                     Text(
@@ -546,7 +517,6 @@ fun HomeScreen(
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-
                     val domains = listOf(
                         MathDomain.ALL to stringResource(id = R.string.tab_all),
                         MathDomain.ALGEBRA to "Álgebra",
@@ -555,7 +525,6 @@ fun HomeScreen(
                         MathDomain.GEOMETRY to "Geometría",
                         MathDomain.LOGIC_STATS to "Estadística y Lógica"
                     )
-
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
@@ -573,8 +542,6 @@ fun HomeScreen(
                     }
                 }
             }
-
-            
             items(categories) { category ->
                 CategoryCard(
                     category = category,
@@ -586,7 +553,6 @@ fun HomeScreen(
         }
     }
 }
-
 @Composable
 fun PinnedFormulaCard(
     topic: MathTopic,
@@ -619,7 +585,6 @@ fun PinnedFormulaCard(
                     color = MaterialTheme.colorScheme.primary
                 )
             }
-
             IconButton(
                 onClick = onUnpinClick,
                 modifier = Modifier

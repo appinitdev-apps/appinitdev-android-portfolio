@@ -1,28 +1,4 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
 abstract class BaseHomeFragment : PanelFragment() {
-
-     
-
-
-
-
-
-
-
-
     protected fun setupServerToggle(button: DynamicRippleImageButton) {
         button.setOnClickListener {
             if (ServerModeService.isRunning.value) {
@@ -31,14 +7,11 @@ abstract class BaseHomeFragment : PanelFragment() {
                 try {
                     ServerModeService.start(requireContext())
                 } catch (e: Exception) {
-                    
-                    
                     e.printStackTrace()
                     showWarning("failed to start server: ${e.message ?: "unknown error"}")
                 }
             }
         }
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 ServerModeService.isRunning.collect { running ->
@@ -47,7 +20,6 @@ abstract class BaseHomeFragment : PanelFragment() {
             }
         }
     }
-
     protected fun toggleServer() {
         if (ServerModeService.isRunning.value) {
             ServerModeService.stop(requireContext())
@@ -55,13 +27,6 @@ abstract class BaseHomeFragment : PanelFragment() {
             ServerModeService.start(requireContext())
         }
     }
-
-     
-
-
-
-
-
     private fun applyServerToggleTint(button: DynamicRippleImageButton, running: Boolean) {
         button.imageTintList = if (running) {
             ThemeManager.accent.primaryAccentColor.toColorStateList()
@@ -69,13 +34,6 @@ abstract class BaseHomeFragment : PanelFragment() {
             ThemeManager.theme.iconTheme.regularIconColor.toColorStateList()
         }
     }
-
-     
-
-
-
-
-
     protected fun navigateToPanel(panel: Panel) {
         when (panel.titleResId) {
             R.string.songs -> openFragment(Songs.newInstance(), Songs.TAG)
@@ -101,4 +59,3 @@ abstract class BaseHomeFragment : PanelFragment() {
         }
     }
 }
-

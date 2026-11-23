@@ -1,11 +1,8 @@
-
 @OptIn(UnstableApi::class)
 class AudioPlayerService : MediaLibraryService() {
     private lateinit var player: Player
     private lateinit var session: MediaLibrarySession
-
     private val listener = object : Player.Listener {
-
         override fun onEvents(player: Player, events: Player.Events) {
             val eventItems = mutableListOf<Int>()
             for (i in 0 until events.size()) {
@@ -26,11 +23,9 @@ class AudioPlayerService : MediaLibraryService() {
                 }
             }
         }
-
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             LogCat.d("onIsPlayingChanged: $isPlaying")
         }
-
         override fun onPlaybackStateChanged(playbackState: Int) {
             if (playbackState == Player.STATE_ENDED) {
                 if (TempData.audioPlayMode.value == MediaPlayMode.REPEAT_ONE) {
@@ -40,9 +35,7 @@ class AudioPlayerService : MediaLibraryService() {
                 }
             }
         }
-
     }
-
     private fun createPlayer(): Player {
         val attributes = AudioAttributes.Builder().setContentType(C.AUDIO_CONTENT_TYPE_MUSIC).setUsage(C.USAGE_MEDIA).build()
         val dataSourceFactory = DefaultDataSource.Factory(this)
@@ -61,7 +54,6 @@ class AudioPlayerService : MediaLibraryService() {
                 )
             ).build()
     }
-
     override fun onCreate() {
         super.onCreate()
         if (::session.isInitialized) {
@@ -74,17 +66,12 @@ class AudioPlayerService : MediaLibraryService() {
             override fun seekToPrevious() {
                 AudioPlayer.skipToPrevious()
             }
-
             override fun getAvailableCommands(): Player.Commands {
-                
                 return MediaSession.ConnectionResult.DEFAULT_PLAYER_COMMANDS
             }
-
             override fun isCommandAvailable(command: Int): Boolean {
-                
                 return true
             }
-
             override fun seekToNext() {
                 AudioPlayer.skipToNext()
             }
@@ -105,7 +92,6 @@ class AudioPlayerService : MediaLibraryService() {
         )
         session = s.build()
     }
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         if (intent?.action != null) {
@@ -115,25 +101,20 @@ class AudioPlayerService : MediaLibraryService() {
             AudioServiceAction.QUIT.name -> {
                 AudioPlayer.pause()
             }
-
         }
         return START_NOT_STICKY
     }
-
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession {
         return session
     }
-
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
         stopSelf()
     }
-
     override fun onDestroy() {
         super.onDestroy()
         releaseMediaSession()
     }
-
     private fun releaseMediaSession() {
         session.run {
             release()
@@ -143,5 +124,3 @@ class AudioPlayerService : MediaLibraryService() {
         }
     }
 }
-
-

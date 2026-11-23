@@ -1,8 +1,5 @@
-
 object GeologyModel {
     fun getList(geology: ArrayList<Geology>) {
-
-        
         geology.add(Geology(
             "Plagioclase",
             "Mineral",
@@ -15,7 +12,6 @@ object GeologyModel {
             "2.63-2.75 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Graphite",
             "Mineral",
@@ -28,7 +24,6 @@ object GeologyModel {
             "2.09-2.23 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Quartz",
             "Mineral",
@@ -41,7 +36,6 @@ object GeologyModel {
             "2.65 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Olivine",
             "Mineral",
@@ -54,7 +48,6 @@ object GeologyModel {
             "3.27-4.37 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Pyrite",
             "Mineral",
@@ -67,7 +60,6 @@ object GeologyModel {
             "4.9-5.2 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Mica",
             "Mineral",
@@ -80,7 +72,6 @@ object GeologyModel {
             "2.7-3.1 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Biotite",
             "Mineral",
@@ -93,7 +84,6 @@ object GeologyModel {
             "2.7-3.3 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Chlorite",
             "Mineral",
@@ -106,7 +96,6 @@ object GeologyModel {
             "2.6-3.3 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Talc",
             "Mineral",
@@ -119,7 +108,6 @@ object GeologyModel {
             "2.7-2.8 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Magnetite",
             "Mineral",
@@ -132,7 +120,6 @@ object GeologyModel {
             "5.17-5.18 g/cm3",
             "Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Fluorite",
             "Mineral",
@@ -145,7 +132,6 @@ object GeologyModel {
             "3.0-3.2 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Diopside",
             "Mineral",
@@ -158,7 +144,6 @@ object GeologyModel {
             "3.22-3.38 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Chalcopyrite",
             "Mineral",
@@ -171,7 +156,6 @@ object GeologyModel {
             "4.1-4.3 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Beryl",
             "Mineral",
@@ -184,7 +168,6 @@ object GeologyModel {
             "2.63-2.80 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Garnet",
             "Mineral",
@@ -197,7 +180,6 @@ object GeologyModel {
             "3.1-4.3 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Potassium Feldspar",
             "Mineral",
@@ -210,7 +192,6 @@ object GeologyModel {
             "2.55-2.63 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Hornblende",
             "Mineral",
@@ -223,7 +204,6 @@ object GeologyModel {
             "3.0-3.5 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Epidote",
             "Mineral",
@@ -236,7 +216,6 @@ object GeologyModel {
             "3.35-3.45 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Hematite",
             "Mineral",
@@ -249,7 +228,6 @@ object GeologyModel {
             "5.26 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Galena",
             "Mineral",
@@ -263,7 +241,6 @@ object GeologyModel {
             "Non-Magnetic",
             "Hydrochloride doesn't effect"
         ))
-
         geology.add(Geology(
             "Gypsum",
             "Mineral",
@@ -276,7 +253,6 @@ object GeologyModel {
             "2.3-2.4 g/cm3",
             "Non-Magnetic",
             "Hydrochloride doesn't effect"))
-
         geology.add(Geology(
             "Goethite",
             "Mineral",
@@ -290,7 +266,6 @@ object GeologyModel {
             "Non-Magnetic",
             "Hydrochloride doesn't effect"
         ))
-
         geology.add(Geology(
             "Apatite",
             "Mineral",
@@ -304,7 +279,6 @@ object GeologyModel {
             "Non-Magnetic",
             "Hydrochloride doesn't effect"
         ))
-
         geology.add(Geology(
             "Barite",
             "Mineral",
@@ -318,7 +292,6 @@ object GeologyModel {
             "Non-Magnetic",
             "Hydrochloride doesn't effect"
         ))
-
         geology.add(Geology(
             "Dolomite",
             "Mineral",
@@ -332,7 +305,5 @@ object GeologyModel {
             "Non-Magnetic",
             "Hydrochloride doesn't effect"
         ))
-
-
     }
 }

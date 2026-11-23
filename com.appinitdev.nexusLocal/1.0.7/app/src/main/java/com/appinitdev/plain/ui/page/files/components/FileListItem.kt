@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FileListItem(
@@ -14,7 +13,6 @@ fun FileListItem(
     var progress by remember { mutableFloatStateOf(0f) }
     var duration by remember { mutableFloatStateOf(0f) }
     var showAudioPlayer by remember { mutableStateOf(false) }
-
     LaunchedEffect(isCurrentlyPlaying) {
         if (isCurrentlyPlaying && isAudio) {
             scope.launch { withIO {
@@ -23,7 +21,6 @@ fun FileListItem(
             } }
         }
     }
-
     var progressUpdateJob: Job? = null
     LaunchedEffect(isCurrentlyPlaying, isPlaying) {
         progressUpdateJob?.cancel()
@@ -33,7 +30,6 @@ fun FileListItem(
             }
         }
     }
-
     Column {
         Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)
             .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp,
@@ -59,46 +55,36 @@ fun FileListItem(
                 }
             }
         }
-
         if (isCurrentlyPlaying) {
             FileListItemPlayer(isSelected = isSelected, isPlaying = isPlaying, progress = progress, duration = duration,
                 onProgressChange = { newProgress -> progress = newProgress * duration },
                 onShowFullPlayer = { showAudioPlayer = true })
         }
     }
-
     if (showAudioPlayer) {
         AudioPlayerPage(audioPlaylistVM, onDismissRequest = { showAudioPlayer = false })
     }
 }
-
 @Composable
 private fun FileListItemThumbnail(
     file: DFile, itemState: TransformItemState, previewerState: MediaPreviewerState, context: android.content.Context,
 ) {
     val isMedia = file.path.isImageFast() || file.path.isVideoFast()
     val isZipEntry = ZipBrowserHelper.isZipPath(file.path)
-
-    
-    
     var zipCachedPath by remember(file.path) { mutableStateOf<String?>(null) }
     if (isMedia && isZipEntry) {
         LaunchedEffect(file.path) {
             zipCachedPath = withIO { ZipBrowserHelper.extractEntryToCache(context, file.path)?.absolutePath }
         }
     }
-
     Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
         when {
             isMedia && !isZipEntry -> {
-                
                 TransformImageView(modifier = Modifier.size(40.dp).clip(RoundedCornerShape(4.dp)),
                     path = file.path, fileName = file.name, key = file.path,
                     itemState = itemState, previewerState = previewerState, widthPx = context.dp2px(48))
             }
             isMedia && zipCachedPath != null -> {
-                
-                
                 TransformImageView(modifier = Modifier.size(40.dp).clip(RoundedCornerShape(4.dp)),
                     path = zipCachedPath!!, fileName = file.name, key = file.path,
                     itemState = itemState, previewerState = previewerState, widthPx = context.dp2px(48))

@@ -1,21 +1,17 @@
-
 class ChangeFileThumbnailStyleDialog(val activity: BaseSimpleActivity) : DialogInterface.OnClickListener {
     private var config = activity.config
     private val binding: DialogChangeFileThumbnailStyleBinding
     private var thumbnailSpacing = config.thumbnailSpacing
-
     init {
         binding = DialogChangeFileThumbnailStyleBinding.inflate(activity.layoutInflater).apply {
             dialogFileStyleRoundedCorners.isChecked = config.fileRoundedCorners
             dialogFileStyleShowThumbnailVideoDuration.isChecked = config.showThumbnailVideoDuration
             dialogFileStyleShowThumbnailFileTypes.isChecked = config.showThumbnailFileTypes
             dialogFileStyleMarkFavoriteItems.isChecked = config.markFavoriteItems
-
             dialogFileStyleRoundedCornersHolder.setOnClickListener { dialogFileStyleRoundedCorners.toggle() }
             dialogFileStyleShowThumbnailVideoDurationHolder.setOnClickListener { dialogFileStyleShowThumbnailVideoDuration.toggle() }
             dialogFileStyleShowThumbnailFileTypesHolder.setOnClickListener { dialogFileStyleShowThumbnailFileTypes.toggle() }
             dialogFileStyleMarkFavoriteItemsHolder.setOnClickListener { dialogFileStyleMarkFavoriteItems.toggle() }
-
             dialogFileStyleSpacingHolder.setOnClickListener {
                 val items = arrayListOf(
                     RadioItem(0, "0x"),
@@ -27,16 +23,13 @@ class ChangeFileThumbnailStyleDialog(val activity: BaseSimpleActivity) : DialogI
                     RadioItem(32, "32x"),
                     RadioItem(64, "64x")
                 )
-
                 RadioGroupDialog(activity, items, thumbnailSpacing) {
                     thumbnailSpacing = it as Int
                     updateThumbnailSpacingText()
                 }
             }
         }
-
         updateThumbnailSpacingText()
-
         activity.getAlertDialogBuilder()
             .setPositiveButton(org.appinitdev.commons.R.string.ok, this)
             .setNegativeButton(org.appinitdev.commons.R.string.cancel, null)
@@ -44,7 +37,6 @@ class ChangeFileThumbnailStyleDialog(val activity: BaseSimpleActivity) : DialogI
                 activity.setupDialogStuff(binding.root, this)
             }
     }
-
     override fun onClick(dialog: DialogInterface, which: Int) {
         config.fileRoundedCorners = binding.dialogFileStyleRoundedCorners.isChecked
         config.showThumbnailVideoDuration = binding.dialogFileStyleShowThumbnailVideoDuration.isChecked
@@ -52,7 +44,6 @@ class ChangeFileThumbnailStyleDialog(val activity: BaseSimpleActivity) : DialogI
         config.markFavoriteItems = binding.dialogFileStyleMarkFavoriteItems.isChecked
         config.thumbnailSpacing = thumbnailSpacing
     }
-
     private fun updateThumbnailSpacingText() {
         binding.dialogFileStyleSpacing.text = "${thumbnailSpacing}x"
     }

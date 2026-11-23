@@ -1,4 +1,3 @@
-
 @Composable
 fun ChatLinkPreviewLoading(url: String, modifier: Modifier = Modifier) {
     Card(
@@ -20,7 +19,6 @@ fun ChatLinkPreviewLoading(url: String, modifier: Modifier = Modifier) {
         }
     }
 }
-
 @Composable
 fun ChatLinkPreviewError(url: String, modifier: Modifier = Modifier) {
     val context = LocalContext.current

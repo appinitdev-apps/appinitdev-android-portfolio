@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addAppFileSchema() {
     query("appFiles") {
         resolver { offset: Int, limit: Int ->

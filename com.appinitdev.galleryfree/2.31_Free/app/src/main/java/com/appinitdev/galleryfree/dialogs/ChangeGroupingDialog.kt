@@ -1,30 +1,25 @@
-
 class ChangeGroupingDialog(val activity: BaseSimpleActivity, val path: String = "", val callback: () -> Unit) :
     DialogInterface.OnClickListener {
     private var currGrouping = 0
     private var config = activity.config
     private val pathToUse = if (path.isEmpty()) SHOW_ALL else path
     private val binding: DialogChangeGroupingBinding
-
     init {
         currGrouping = config.getFolderGrouping(pathToUse)
         binding = DialogChangeGroupingBinding.inflate(activity.layoutInflater).apply {
             groupingDialogUseForThisFolder.isChecked = config.hasCustomGrouping(pathToUse)
             groupingDialogRadioFolder.beVisibleIf(path.isEmpty())
         }
-
         activity.getAlertDialogBuilder()
             .setPositiveButton(org.appinitdev.commons.R.string.ok, this)
             .setNegativeButton(org.appinitdev.commons.R.string.cancel, null)
             .apply {
                 activity.setupDialogStuff(binding.root, this, R.string.group_by)
             }
-
         setupGroupRadio()
         setupOrderRadio()
         binding.groupingDialogShowFileCount.isChecked = currGrouping and GROUP_SHOW_FILE_COUNT != 0
     }
-
     private fun setupGroupRadio() {
         val groupBtn = when {
             currGrouping and GROUP_BY_NONE != 0 -> binding.groupingDialogRadioNone
@@ -38,16 +33,13 @@ class ChangeGroupingDialog(val activity: BaseSimpleActivity, val path: String = 
         }
         groupBtn.isChecked = true
     }
-
     private fun setupOrderRadio() {
         var orderBtn = binding.groupingDialogRadioAscending
-
         if (currGrouping and GROUP_DESCENDING != 0) {
             orderBtn = binding.groupingDialogRadioDescending
         }
         orderBtn.isChecked = true
     }
-
     override fun onClick(dialog: DialogInterface, which: Int) {
         val groupingRadio = binding.groupingDialogRadioGrouping
         var grouping = when (groupingRadio.checkedRadioButtonId) {
@@ -60,22 +52,18 @@ class ChangeGroupingDialog(val activity: BaseSimpleActivity, val path: String = 
             R.id.grouping_dialog_radio_extension -> GROUP_BY_EXTENSION
             else -> GROUP_BY_FOLDER
         }
-
         if (binding.groupingDialogRadioOrder.checkedRadioButtonId == R.id.grouping_dialog_radio_descending) {
             grouping = grouping or GROUP_DESCENDING
         }
-
         if (binding.groupingDialogShowFileCount.isChecked) {
             grouping = grouping or GROUP_SHOW_FILE_COUNT
         }
-
         if (binding.groupingDialogUseForThisFolder.isChecked) {
             config.saveFolderGrouping(pathToUse, grouping)
         } else {
             config.removeFolderGrouping(pathToUse)
             config.groupBy = grouping
         }
-
         callback()
     }
 }

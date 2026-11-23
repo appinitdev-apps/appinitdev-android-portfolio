@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun <T : IData> MediaTopBar(
@@ -17,10 +16,8 @@ fun <T : IData> MediaTopBar(
 ) {
     val context = LocalContext.current
     val isDocs = mediaVM.dataType == DataType.DOC
-
     val title = getMediaPageTitle(mediaVM.dataType, castVM, bucket = bucketsMap[mediaVM.bucketId.value], dragSelectState, mediaVM.tag, mediaVM.trash)
     val containerColor = if (castVM.castMode.value) MaterialTheme.colorScheme.secondaryContainer else null
-
     SearchableTopBar(
         navController = navController,
         viewModel = mediaVM,
@@ -70,11 +67,9 @@ fun <T : IData> MediaTopBar(
                         castVM.showCastDialog.value = true
                     }
                 }
-
                 ActionButtonTags {
                     mediaVM.showTagsDialog.value = true
                 }
-
                 PIconButton(
                     icon = Res.drawable.sort,
                     contentDescription = stringResource(Res.string.sort),
@@ -88,7 +83,6 @@ fun <T : IData> MediaTopBar(
             onSearchAction(context, tagsVM)
         }
     )
-
     if (mediaVM.showSortAndBrowseDialog.value) {
         SortAndBrowseDialog(
             context = context,

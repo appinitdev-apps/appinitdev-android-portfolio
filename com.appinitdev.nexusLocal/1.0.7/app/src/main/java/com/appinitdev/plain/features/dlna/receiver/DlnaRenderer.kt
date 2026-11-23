@@ -1,16 +1,9 @@
-
- 
 object DlnaRenderer {
-
-     
     val deviceUuid: String by lazy { UUID.randomUUID().toString() }
-
     private val CANDIDATE_PORTS = listOf(7878, 7879, 7880)
     private var lastPort: Int? = null
     private var scope: CoroutineScope? = null
-     
     private var activeServerSocket: ServerSocket? = null
-
     fun start(context: Context) {
         if (DlnaRendererState.isRunning.value) return
         DlnaRendererState.startError.value = ""
@@ -38,10 +31,7 @@ object DlnaRenderer {
         DlnaRendererState.isRunning.value = true
         LogCat.d("DlnaRenderer started on port $port uuid=$deviceUuid")
     }
-
     fun stop() {
-        
-        
         activeServerSocket?.close()
         activeServerSocket = null
         scope?.cancel()
@@ -50,12 +40,6 @@ object DlnaRenderer {
         DlnaRendererState.reset()
         LogCat.d("DlnaRenderer stopped")
     }
-
-     
-
-
-
-
     private fun openServerSocket(): ServerSocket? {
         val candidates = lastPort
             ?.let { listOf(it) + CANDIDATE_PORTS.filter { p -> p != it } }

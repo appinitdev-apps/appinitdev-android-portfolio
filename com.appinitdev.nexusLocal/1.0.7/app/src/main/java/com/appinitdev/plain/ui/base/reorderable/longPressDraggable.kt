@@ -1,4 +1,3 @@
-
 internal fun Modifier.longPressDraggable(
     key1: Any?,
     enabled: Boolean = true,
@@ -10,7 +9,6 @@ internal fun Modifier.longPressDraggable(
     val coroutineScope = rememberCoroutineScope()
     var dragInteractionStart by remember { mutableStateOf<DragInteraction.Start?>(null) }
     var dragStarted by remember { mutableStateOf(false) }
-
     DisposableEffect(key1) {
         onDispose {
             if (dragStarted) {
@@ -19,16 +17,13 @@ internal fun Modifier.longPressDraggable(
                         interactionSource?.emit(DragInteraction.Cancel(it))
                     }
                 }
-
                 if (dragStarted) {
                     onDragStopped()
                 }
-
                 dragStarted = false
             }
         }
     }
-
     pointerInput(key1, enabled) {
         if (enabled) {
             detectDragGesturesAfterLongPress(
@@ -39,7 +34,6 @@ internal fun Modifier.longPressDraggable(
                             interactionSource?.emit(it)
                         }
                     }
-
                     onDragStarted(it)
                 },
                 onDragEnd = {
@@ -48,13 +42,10 @@ internal fun Modifier.longPressDraggable(
                             interactionSource?.emit(DragInteraction.Stop(it))
                         }
                     }
-
                     if (dragStarted) {
                         onDragStopped()
                     }
-
                     dragStarted = false
-
                 },
                 onDragCancel = {
                     dragInteractionStart?.also {
@@ -62,13 +53,10 @@ internal fun Modifier.longPressDraggable(
                             interactionSource?.emit(DragInteraction.Cancel(it))
                         }
                     }
-
                     if (dragStarted) {
                         onDragStopped()
                     }
-
                     dragStarted = false
-
                 },
                 onDrag = onDrag,
             )

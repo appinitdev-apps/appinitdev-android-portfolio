@@ -1,4 +1,3 @@
-
 @Composable
 fun AudioPlayerBar(audioPlaylistVM: AudioPlaylistViewModel, castVM: CastViewModel, modifier: Modifier = Modifier, dragSelectState: DragSelectState) {
     val context = LocalContext.current
@@ -12,7 +11,6 @@ fun AudioPlayerBar(audioPlaylistVM: AudioPlaylistViewModel, castVM: CastViewMode
     var showSleepTimer by remember { mutableStateOf(false) }
     var showPlaylist by remember { mutableStateOf(false) }
     val currentPlayingPath = audioPlaylistVM.selectedPath
-
     LaunchedEffect(currentPlayingPath.value) {
         scope.launch {
             val path = currentPlayingPath.value
@@ -24,7 +22,6 @@ fun AudioPlayerBar(audioPlaylistVM: AudioPlaylistViewModel, castVM: CastViewMode
             if (showPlayer) showPlayer = path.isNotEmpty()
         }
     }
-
     var progressUpdateJob: Job? = null
     LaunchedEffect(isPlaying) {
         progressUpdateJob?.cancel()
@@ -34,7 +31,6 @@ fun AudioPlayerBar(audioPlaylistVM: AudioPlaylistViewModel, castVM: CastViewMode
             }
         }
     }
-
     AnimatedVisibility(
         visible = currentPlayingPath.value.isNotEmpty() && !dragSelectState.selectMode && !castVM.castMode.value,
         enter = slideInVertically { it }, exit = slideOutVertically { it }, modifier = modifier
@@ -45,7 +41,6 @@ fun AudioPlayerBar(audioPlaylistVM: AudioPlaylistViewModel, castVM: CastViewMode
             onClickContent = { showPlayer = true }, onClickPlaylist = { showPlaylist = true }
         )
     }
-
     if (showPlayer) AudioPlayerPage(audioPlaylistVM, onDismissRequest = { showPlayer = false })
     if (showSleepTimer) SleepTimerPage(onDismissRequest = { showSleepTimer = false })
     if (showPlaylist) AudioPlaylistPage(audioPlaylistVM, onDismissRequest = { showPlaylist = false })

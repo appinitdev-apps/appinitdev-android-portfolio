@@ -1,4 +1,3 @@
-
 @Composable
 fun CategoryCard(
     category: MathCategory,
@@ -33,7 +32,6 @@ fun CategoryCard(
         "various" -> Pair(R.drawable.ic_various, listOf(Color(0xFF475569), Color(0xFF94A3B8)))
         else -> Pair(R.drawable.ic_algebra, listOf(Color(0xFF2563EB), Color(0xFF60A5FA)))
     }
-
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -50,7 +48,6 @@ fun CategoryCard(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            
             Box(
                 modifier = Modifier
                     .size(54.dp)
@@ -64,9 +61,7 @@ fun CategoryCard(
                     modifier = Modifier.size(28.dp)
                 )
             }
-
             Spacer(modifier = Modifier.width(14.dp))
-
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -84,7 +79,6 @@ fun CategoryCard(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-
                     Surface(
                         shape = RoundedCornerShape(12.dp),
                         color = MaterialTheme.colorScheme.primaryContainer
@@ -98,9 +92,7 @@ fun CategoryCard(
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.height(4.dp))
-
                 Text(
                     text = category.description,
                     style = MaterialTheme.typography.bodyMedium,

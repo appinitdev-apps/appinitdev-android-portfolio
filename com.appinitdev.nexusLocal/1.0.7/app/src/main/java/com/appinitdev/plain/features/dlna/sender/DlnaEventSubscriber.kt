@@ -1,6 +1,4 @@
-
 object DlnaEventSubscriber {
-
     suspend fun subscribeEvent(device: DlnaDevice, callbackUrl: String): String {
         val service = device.getAVTransportService() ?: return ""
         return try {
@@ -16,7 +14,6 @@ object DlnaEventSubscriber {
             response.headers["SID"].orEmpty()
         } catch (ex: Exception) { ex.printStackTrace(); "" }
     }
-
     suspend fun renewEvent(device: DlnaDevice, sid: String): String {
         val service = device.getAVTransportService() ?: return ""
         return try {
@@ -28,7 +25,6 @@ object DlnaEventSubscriber {
             response.headers["SID"].orEmpty()
         } catch (ex: Exception) { ex.printStackTrace(); "" }
     }
-
     suspend fun unsubscribeEvent(device: DlnaDevice, sid: String): String {
         val service = device.getAVTransportService() ?: return ""
         return try {
@@ -43,12 +39,10 @@ object DlnaEventSubscriber {
             if (response.status == HttpStatusCode.OK) xml else ""
         } catch (ex: Exception) { ex.printStackTrace(); "" }
     }
-
     private suspend fun HttpClient.subscribe(
         urlString: String,
         block: HttpRequestBuilder.() -> Unit = {},
     ): HttpResponse = request(HttpRequestBuilder().apply { method = HttpMethod("SUBSCRIBE"); url(urlString); block() })
-
     private suspend fun HttpClient.unsubscribe(
         urlString: String,
         block: HttpRequestBuilder.() -> Unit = {},

@@ -1,4 +1,3 @@
-
 data class Geology(val name: String,
                    val type: String,
                    val group: String,
@@ -10,4 +9,3 @@ data class Geology(val name: String,
                    val density: String,
                    val magnetism: String,
                    val hydrochloride: String)
-

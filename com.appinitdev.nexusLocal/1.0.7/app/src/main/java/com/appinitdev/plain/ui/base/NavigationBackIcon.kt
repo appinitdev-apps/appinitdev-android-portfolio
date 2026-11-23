@@ -1,4 +1,3 @@
-
 @Composable
 fun NavigationBackIcon(onClick: () -> Unit = {}) {
     PIconButton(
@@ -9,7 +8,6 @@ fun NavigationBackIcon(onClick: () -> Unit = {}) {
         onClick()
     }
 }
-
 @Composable
 fun NavigationCloseIcon(onClick: () -> Unit = {}) {
     PIconButton(

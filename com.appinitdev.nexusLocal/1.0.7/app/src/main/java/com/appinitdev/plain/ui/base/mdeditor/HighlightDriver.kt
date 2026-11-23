@@ -1,4 +1,3 @@
-
 class HighlightDriver(
     private val fileExtension: String,
 ) {
@@ -8,7 +7,6 @@ class HighlightDriver(
         firstColoredIndex: Int,
     ): MutableList<HighlightInfo> {
         val highlights = mutableListOf<HighlightInfo>()
-
         if (fileExtension.contains(HtmlExtension) ||
             fileExtension.contains(XmlExtension)
         ) {
@@ -52,15 +50,12 @@ class HighlightDriver(
             } else {
                 highlights.addAll(matchPatternHighlights(Patterns.GENERAL_COMMENTS, textToHighlight, firstColoredIndex))
             }
-
             if (listOf(*MimeTypes.MIME_MARKDOWN).contains(fileExtension)) {
                 highlights.addAll(matchPatternHighlights(Patterns.LINK, textToHighlight, firstColoredIndex))
             }
         }
-
         return highlights
     }
-
     companion object {
         private const val HtmlExtension = "htm"
         private const val XmlExtension = "xml"
@@ -70,7 +65,6 @@ class HighlightDriver(
         private const val PhpExtension = "php"
     }
 }
-
 data class HighlightInfo(
     val color: Color,
     val start: Int,

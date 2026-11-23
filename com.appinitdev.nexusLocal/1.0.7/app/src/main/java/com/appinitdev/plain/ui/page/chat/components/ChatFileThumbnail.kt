@@ -1,4 +1,3 @@
-
 @Composable
 fun ChatFileThumbnail(
     context: Context,
@@ -33,7 +32,6 @@ fun ChatFileThumbnail(
                 contentDescription = fileName,
             )
         }
-
         if (isActive && downloadTask != null) {
             DownloadProgressOverlay(
                 modifier = Modifier.size(48.dp),

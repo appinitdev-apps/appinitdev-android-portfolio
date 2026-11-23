@@ -1,4 +1,3 @@
-
 @Composable
 internal fun FileInfoActionButtons(
     file: DFile,
@@ -19,21 +18,17 @@ internal fun FileInfoActionButtons(
                 onDismiss()
             }
         }
-
         IconTextCutButton {
             performCutFiles(filesVM, listOf(file), onShowPasteBar) { onDismiss() }
         }
-
         IconTextCopyButton {
             performCopyFiles(filesVM, listOf(file), onShowPasteBar) { onDismiss() }
         }
-
         if (file.isDir) {
             IconTextFavoriteButton(isFavorite = isFavorite) {
                 onFavoriteToggle()
             }
         }
-
         IconTextShareButton {
             ShareHelper.sharePaths(context, setOf(file.path))
             onDismiss()
@@ -59,4 +54,3 @@ internal fun FileInfoActionButtons(
         }
     }
 }
-

@@ -1,22 +1,3 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 data class WidgetViewScope(
         val context: Context,
         val views: RemoteViews,
@@ -25,4 +6,3 @@ data class WidgetViewScope(
         val isPlaying: Boolean,
         val pendingIntentBuilder: (Context, String) -> PendingIntent
 )
-

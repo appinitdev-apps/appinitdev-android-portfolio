@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addChatChannelSchema() {
     query("chatChannels") {
         resolver { ->

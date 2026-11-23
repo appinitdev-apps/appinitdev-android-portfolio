@@ -1,4 +1,3 @@
-
 internal class AdaptiveQualityMonitor(
     private val getQuality: () -> DScreenMirrorQuality,
     private val getFirstPeerSession: () -> WebRtcPeerSession?,
@@ -8,10 +7,8 @@ internal class AdaptiveQualityMonitor(
     var targetFps = 20
     var minFrameIntervalNs = 1_000_000_000L / targetFps
     var lastFrameTimeNs = 0L
-
     private var statsHandler: Handler? = null
     private val statsIntervalMs = 3000L
-
     fun start() {
         stop()
         if (getQuality().mode != ScreenMirrorMode.AUTO) return
@@ -24,19 +21,15 @@ internal class AdaptiveQualityMonitor(
             }
         }, statsIntervalMs)
     }
-
     fun stop() {
         statsHandler?.removeCallbacksAndMessages(null)
         statsHandler = null
     }
-
     private fun pollStatsAndAdapt() {
         val session = getFirstPeerSession() ?: return
         session.getStats { availableBitrateKbps, packetLossPercent, rttMs ->
             val oldResolution = adaptiveResolution
             val oldFps = targetFps
-
-            
             if (packetLossPercent > 2.0) {
                 if (targetFps > 10) {
                     targetFps = max(10, (targetFps * 0.7).toInt())
@@ -46,8 +39,6 @@ internal class AdaptiveQualityMonitor(
                     adaptiveResolution = 720
                 }
             }
-
-            
             if (rttMs > 150) {
                 if (targetFps > 15) {
                     targetFps = 15
@@ -55,8 +46,6 @@ internal class AdaptiveQualityMonitor(
                 }
                 if (rttMs > 300 && adaptiveResolution > 720) adaptiveResolution = 720
             }
-
-            
             if (availableBitrateKbps in 1 until 2000) {
                 if (adaptiveResolution > 720) adaptiveResolution = 720
                 if (targetFps > 15) {
@@ -64,8 +53,6 @@ internal class AdaptiveQualityMonitor(
                     minFrameIntervalNs = 1_000_000_000L / targetFps
                 }
             }
-
-            
             val isHealthy = availableBitrateKbps > 4000 && packetLossPercent < 1.0 && rttMs < 50
             if (isHealthy) {
                 if (adaptiveResolution < 1080) adaptiveResolution = 1080
@@ -74,7 +61,6 @@ internal class AdaptiveQualityMonitor(
                     minFrameIntervalNs = 1_000_000_000L / targetFps
                 }
             }
-
             if (oldResolution != adaptiveResolution || oldFps != targetFps) {
                 LogCat.d(
                     "webrtc: adaptive ${oldResolution}p@${oldFps}fps → ${adaptiveResolution}p@${targetFps}fps " +

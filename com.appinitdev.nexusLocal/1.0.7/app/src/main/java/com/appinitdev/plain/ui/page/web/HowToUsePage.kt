@@ -1,8 +1,6 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HowToUsePage(navController: NavHostController, webVM: WebConsoleViewModel = viewModel()) {
-
     WebSettingsProvider {
         val webEnabled = LocalWeb.current
         val context = LocalContext.current

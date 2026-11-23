@@ -1,4 +1,3 @@
-
 @Composable
 fun PlayerSlider(
     modifier: Modifier = Modifier,
@@ -18,13 +17,11 @@ fun PlayerSlider(
     var dragPosition by remember { mutableFloatStateOf(progress) }
     val density = LocalDensity.current
     val thumbPx = with(density) { thumbSize.toPx() }
-
     LaunchedEffect(progress) {
         if (!isDragging) {
             dragPosition = progress
         }
     }
-
     Box(
         modifier = modifier
             .onGloballyPositioned { size = it.size }
@@ -65,7 +62,6 @@ fun PlayerSlider(
                 .height(20.dp)
                 .align(Alignment.Center)
         )
-
         Box(
             modifier = Modifier
                 .align(Alignment.Center)
@@ -74,7 +70,6 @@ fun PlayerSlider(
                 .clip(RoundedCornerShape(sliderHeight / 2))
                 .background(trackColor)
         )
-
         Box(
             modifier = Modifier
                 .align(Alignment.CenterStart)
@@ -83,7 +78,6 @@ fun PlayerSlider(
                 .clip(RoundedCornerShape(sliderHeight / 2))
                 .background(bufferColor)
         )
-
         Box(
             modifier = Modifier
                 .align(Alignment.CenterStart)
@@ -92,7 +86,6 @@ fun PlayerSlider(
                 .clip(RoundedCornerShape(sliderHeight / 2))
                 .background(progressColor)
         )
-
         Box(
             modifier = Modifier
                 .size(thumbSize)

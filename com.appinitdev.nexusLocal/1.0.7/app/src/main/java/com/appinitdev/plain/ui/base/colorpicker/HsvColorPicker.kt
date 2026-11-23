@@ -1,4 +1,3 @@
-
 @Composable
 public fun HsvColorPicker(
   modifier: Modifier,
@@ -25,12 +24,10 @@ public fun HsvColorPicker(
         }
       }
     }
-
     onDispose {
       controller.releaseBitmap()
     }
   }
-
   Canvas(
     modifier = modifier
       .fillMaxSize()
@@ -56,7 +53,6 @@ public fun HsvColorPicker(
   ) {
     drawIntoCanvas { canvas ->
       hsvBitmapDrawable?.draw(canvas.nativeCanvas)
-
       val point = controller.selectedPoint.value
       val wheelBitmap = controller.wheelBitmap
       if (wheelBitmap != null) {
@@ -66,7 +62,6 @@ public fun HsvColorPicker(
           Paint(),
         )
       }
-
       if (drawDefaultWheelIndicator) {
         canvas.drawCircle(
           Offset(point.x, point.y),
@@ -74,11 +69,9 @@ public fun HsvColorPicker(
           controller.wheelPaint,
         )
       }
-
       if (drawOnPosSelected != null) {
         this.drawOnPosSelected()
       }
-
       if (initialColor != null && !isInitialized) {
         drawInitialColor(initialColor, controller, center.x, center.y) {
           isInitialized = true

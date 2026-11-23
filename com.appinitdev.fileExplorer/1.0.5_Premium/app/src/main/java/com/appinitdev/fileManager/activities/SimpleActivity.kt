@@ -1,4 +1,3 @@
-
 open class SimpleActivity : BaseSimpleActivity() {
     override fun getAppIconIDs() = arrayListOf(
         R.mipmap.ic_launcher_red,
@@ -21,15 +20,11 @@ open class SimpleActivity : BaseSimpleActivity() {
         R.mipmap.ic_launcher_blue_grey,
         R.mipmap.ic_launcher_grey_black
     )
-
     companion object {
         private const val MANAGE_STORAGE_RC = 201
     }
-
     override fun getAppLauncherName() = getString(R.string.app_launcher_name)
-
     override fun getRepositoryName() = "File-Manager"
-
    @SuppressLint("NewApi")
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         super.onActivityResult(requestCode, resultCode, resultData)
@@ -38,7 +33,6 @@ open class SimpleActivity : BaseSimpleActivity() {
             actionOnPermission?.invoke(Environment.isExternalStorageManager())
         }
     }
-
     @SuppressLint("NewApi")
     fun hasStoragePermission(): Boolean {
         return if (isRPlus()) {
@@ -47,7 +41,6 @@ open class SimpleActivity : BaseSimpleActivity() {
             hasPermission(PERMISSION_WRITE_STORAGE)
         }
     }
-
     @SuppressLint("InlinedApi")
     fun handleStoragePermission(callback: (granted: Boolean) -> Unit) {
         actionOnPermission = null

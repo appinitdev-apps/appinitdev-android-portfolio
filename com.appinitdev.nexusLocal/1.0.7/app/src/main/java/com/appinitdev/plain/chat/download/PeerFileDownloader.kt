@@ -1,4 +1,3 @@
-
 object PeerFileDownloader {
     suspend fun downloadAsync(
         context: Context,
@@ -7,22 +6,15 @@ object PeerFileDownloader {
         val messageFile = task.messageFile
         val fileName = messageFile.fileName
         val downloadUrl = task.peer.getFileUrl(messageFile.parseFileId())
-
-        
-        
         val tempFile = File(context.cacheDir, "dl_${task.messageFile.id}_${System.currentTimeMillis()}")
         tempFile.parentFile?.mkdirs()
-
         try {
             task.status = DownloadStatus.DOWNLOADING
             task.downloadedSize = 0
-
             tempFile.createNewFile()
-
             var downloadedBytes = 0L
             val client = HttpClientManager.createUnsafeOkHttpClient()
             task.httpClient = client
-
             val response = client.newCall(Request.Builder().url(downloadUrl).build()).execute()
             if (!response.isSuccessful) {
                 val error = "HTTP ${response.code}"
@@ -31,21 +23,17 @@ object PeerFileDownloader {
                 task.error = error
                 return null
             }
-
             response.body.byteStream().use { inputStream ->
                 tempFile.outputStream().use { outputStream ->
                     val buffer = ByteArray(8192)
                     var lastProgressUpdate = System.currentTimeMillis()
                     var lastDownloadedSize = 0L
-
                     while (task.status == DownloadStatus.DOWNLOADING) {
                         val bytesRead = inputStream.read(buffer)
                         if (bytesRead == -1) break
-
                         outputStream.write(buffer, 0, bytesRead)
                         downloadedBytes += bytesRead
                         val now = System.currentTimeMillis()
-
                         task.downloadedSize = downloadedBytes
                         if (now - lastProgressUpdate > 1000) {
                             val downloadedSinceLast = downloadedBytes - lastDownloadedSize
@@ -60,20 +48,14 @@ object PeerFileDownloader {
                     }
                 }
             }
-
             if (downloadedBytes == messageFile.size) {
                 task.status = DownloadStatus.COMPLETED
                 task.downloadedSize = downloadedBytes
                 task.downloadSpeed = 0
-
-                
                 val mimeType = MimeTypeMap.getSingleton()
                     .getMimeTypeFromExtension(fileName.getFilenameExtension()) ?: ""
-
-                
                 val fidUri = ChatFileSaveHelper.importDownloadedFile(context, tempFile, mimeType)
                 val realPath = AppFileStore.resolveUri(context, fidUri)
-
                 updateMessageFileUri(task.messageId, messageFile.uri, fidUri)
                 return realPath
             } else {
@@ -92,11 +74,9 @@ object PeerFileDownloader {
             return null
         }
     }
-
     private fun updateMessageFileUri(messageId: String, originalUri: String, newUri: String) {
         val message = AppDatabase.Companion.instance.chatDao().getById(messageId) ?: return
         val content = message.content
-
         when (content.value) {
             is DMessageFiles -> {
                 val files = content.value as DMessageFiles
@@ -105,7 +85,6 @@ object PeerFileDownloader {
                 }
                 content.value = DMessageFiles(updatedFiles)
             }
-
             is DMessageImages -> {
                 val images = content.value as DMessageImages
                 val updatedImages = images.items.map { image ->
@@ -114,7 +93,6 @@ object PeerFileDownloader {
                 content.value = DMessageImages(updatedImages)
             }
         }
-
         AppDatabase.Companion.instance.chatDao().updateData(ChatItemDataUpdate(messageId, content))
         LogCat.d("PeerFileDownloader: updated URI $originalUri -> $newUri")
     }

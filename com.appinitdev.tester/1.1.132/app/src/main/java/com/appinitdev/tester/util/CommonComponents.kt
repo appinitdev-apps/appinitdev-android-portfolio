@@ -1,4 +1,3 @@
-
 @Composable
 fun LetterLogo(name: String, modifier: Modifier = Modifier) {
     Surface(

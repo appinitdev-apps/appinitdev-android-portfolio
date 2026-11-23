@@ -1,4 +1,3 @@
-
 object PhoneHelper {
     fun getDeviceName(context: Context): String {
         var name = Settings.Global.getString(context.contentResolver, Settings.Global.DEVICE_NAME) ?: ""
@@ -20,7 +19,6 @@ object PhoneHelper {
         }
         return name
     }
-
     fun getBatteryPercentage(context: Context): Int {
         var percentage = 0
         val batteryStatus = getBatteryStatusIntent(context)
@@ -31,21 +29,15 @@ object PhoneHelper {
         }
         return percentage
     }
-
     fun getDeviceType(context: Context): DeviceType {
-        
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION ||
             context.packageManager.hasSystemFeature("android.software.leanback")) {
             return DeviceType.TV
         }
-
-        
         val config = context.resources.configuration
         if (config.smallestScreenWidthDp >= 600) {
             return DeviceType.TABLET
         }
-
-        
         val model = Build.MODEL.lowercase()
         val product = Build.PRODUCT.lowercase()
         val manufacturer = Build.MANUFACTURER.lowercase()
@@ -56,17 +48,13 @@ object PhoneHelper {
         if (isComputerLike) {
             return DeviceType.COMPUTER
         }
-
-        
         return DeviceType.PHONE
     }
-
     private fun getBatteryStatusIntent(context: Context): Intent? {
         val batFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         if (isTPlus()) {
             return context.registerReceiver(null, batFilter, Context.RECEIVER_NOT_EXPORTED)
         }
-
         return context.registerReceiver(null, batFilter)
     }
 }

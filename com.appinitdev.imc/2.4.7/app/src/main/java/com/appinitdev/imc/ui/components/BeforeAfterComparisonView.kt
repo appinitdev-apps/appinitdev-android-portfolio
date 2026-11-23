@@ -1,4 +1,3 @@
-
 @Composable
 fun BeforeAfterComparisonView(
     beforePhotoPath: String,
@@ -8,7 +7,6 @@ fun BeforeAfterComparisonView(
     modifier: Modifier = Modifier
 ) {
     var sliderRatio by remember { mutableFloatStateOf(0.5f) }
-
     val beforeBitmap = remember(beforePhotoPath) {
         try {
             val file = File(beforePhotoPath)
@@ -17,7 +15,6 @@ fun BeforeAfterComparisonView(
             null
         }
     }
-
     val afterBitmap = remember(afterPhotoPath) {
         try {
             val file = File(afterPhotoPath)
@@ -26,7 +23,6 @@ fun BeforeAfterComparisonView(
             null
         }
     }
-
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(22.dp),
@@ -61,7 +57,6 @@ fun BeforeAfterComparisonView(
                     )
                 }
             }
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -70,7 +65,6 @@ fun BeforeAfterComparisonView(
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 if (beforeBitmap != null && afterBitmap != null) {
-                    
                     Row(modifier = Modifier.fillMaxSize()) {
                         Box(
                             modifier = Modifier
@@ -100,7 +94,6 @@ fun BeforeAfterComparisonView(
                                 )
                             }
                         }
-
                         Box(
                             modifier = Modifier
                                 .weight((1f - sliderRatio).coerceAtLeast(0.05f))
@@ -130,14 +123,11 @@ fun BeforeAfterComparisonView(
                             }
                         }
                     }
-
-                    
                     val draggableState = rememberDraggableState { deltaPx ->
                         val totalWidth = 300f
                         val deltaRatio = deltaPx / totalWidth
                         sliderRatio = (sliderRatio + deltaRatio).coerceIn(0.1f, 0.9f)
                     }
-
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()

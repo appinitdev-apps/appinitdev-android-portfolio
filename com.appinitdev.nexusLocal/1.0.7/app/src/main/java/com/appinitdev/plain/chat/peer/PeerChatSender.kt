@@ -1,5 +1,3 @@
-
-
 object PeerChatSender {
     suspend fun send(peer: DPeer, content: DMessageContent): String? {
         try {
@@ -8,7 +6,6 @@ object PeerChatSender {
                 clientId = TempData.clientId,
                 content = content.toPeerMessageContent()
             )
-
             if (response != null && response.errors.isNullOrEmpty()) {
                 LogCat.d("Message sent successfully to peer ${peer.id}: ${response.data}")
                 return null
@@ -21,7 +18,6 @@ object PeerChatSender {
                 LogCat.e("Failed to send message to peer ${peer.id}: $errorMessage")
                 return errorMessage
             }
-
         } catch (e: Exception) {
             val errorMessage = e.message ?: "Unknown error"
             LogCat.e("Error sending message to peer ${peer.id}: $e")

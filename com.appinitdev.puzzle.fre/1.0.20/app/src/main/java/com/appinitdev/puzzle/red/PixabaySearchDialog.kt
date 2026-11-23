@@ -1,4 +1,3 @@
-
 @Composable
 fun PixabaySearchDialog(
     onDismiss: () -> Unit,
@@ -10,9 +9,7 @@ fun PixabaySearchDialog(
     var errorMessage by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-
     val recommendations = listOf(
-
         "Woman 👧",
         "Cosplay 🎭",
         "Anime 🌸",
@@ -22,7 +19,6 @@ fun PixabaySearchDialog(
         "Fantasía ✨",
         "Paisajes 🏔️"
     )
-
     val performSearch: (String) -> Unit = { searchQuery ->
         scope.launch {
             if (searchQuery.isBlank()) return@launch
@@ -51,11 +47,9 @@ fun PixabaySearchDialog(
             }
         }
     }
-
     LaunchedEffect(Unit) {
         performSearch(query)
     }
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -85,17 +79,13 @@ fun PixabaySearchDialog(
                         modifier = Modifier.size(32.dp)
                     )
                 }
-
                 Spacer(modifier = Modifier.height(10.dp))
-
                 Text(
                     text = "Buscar en Pixabay",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.ExtraBold
                 )
-
                 Spacer(modifier = Modifier.height(12.dp))
-
                 OutlinedTextField(
                     value = query,
                     onValueChange = { query = it },
@@ -109,9 +99,7 @@ fun PixabaySearchDialog(
                         }
                     }
                 )
-
                 Spacer(modifier = Modifier.height(10.dp))
-
                 Text(
                     text = "Recomendaciones de Búsqueda:",
                     style = MaterialTheme.typography.labelSmall,
@@ -119,9 +107,7 @@ fun PixabaySearchDialog(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.align(Alignment.Start)
                 )
-
                 Spacer(modifier = Modifier.height(6.dp))
-
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(vertical = 4.dp)
@@ -138,9 +124,7 @@ fun PixabaySearchDialog(
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.height(12.dp))
-
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -194,9 +178,7 @@ fun PixabaySearchDialog(
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Button(
                     onClick = onDismiss,
                     shape = CircleShape,

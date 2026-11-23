@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 data class DocsPageState(
     val pagerState: PagerState,
@@ -22,7 +21,6 @@ data class DocsPageState(
                 tagsVM.dataType.value = docsVM.dataType
                 mediaFoldersVM.dataType.value = docsVM.dataType
             }
-
             val tagsState by tagsVM.itemsFlow.collectAsState()
             val pagerState = rememberPagerState(pageCount = { docsVM.tabs.value.size })
             val itemsState by docsVM.itemsFlow.collectAsState()
@@ -35,7 +33,6 @@ data class DocsPageState(
             )
             val tagsMapState by tagsVM.tagsMapFlow.collectAsState()
             val bucketsMap by mediaFoldersVM.bucketsMapFlow.collectAsState()
-
             return DocsPageState(
                 pagerState = pagerState,
                 itemsState = itemsState,

@@ -1,19 +1,13 @@
-
 @Composable
 fun NotificationPermissionButton() {
     val context = LocalContext.current
     val activity = context as Activity
-
-    
     var hasPermission by remember {
         mutableStateOf(notificationsEnabled(context))
     }
-
-    
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
-            
             if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
                 hasPermission = notificationsEnabled(context)
             }
@@ -23,18 +17,14 @@ fun NotificationPermissionButton() {
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
-
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        
         hasPermission = isGranted
     }
-
     OutlinedButton(
         onClick = {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return@OutlinedButton
-
             when {
                 hasPermission -> openAppNotificationSettings(context)
                 ActivityCompat.shouldShowRequestPermissionRationale(
@@ -48,7 +38,6 @@ fun NotificationPermissionButton() {
             .padding(horizontal = 2.dp)
             .height(34.dp),
         shape = RoundedCornerShape(8.dp),
-        
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = if (hasPermission)
                 MaterialTheme.colorScheme.primaryContainer
@@ -69,13 +58,5 @@ fun NotificationPermissionButton() {
             contentDescription = null,
             modifier = Modifier.size(18.dp) 
         )
-
-
-
-
-
-
-
-
     }
 }

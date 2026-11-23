@@ -1,4 +1,3 @@
-
 @Entity(tableName = "favorites", indices = [Index(value = ["full_path"], unique = true)])
 data class Favorite(
     @PrimaryKey(autoGenerate = true) var id: Int?,

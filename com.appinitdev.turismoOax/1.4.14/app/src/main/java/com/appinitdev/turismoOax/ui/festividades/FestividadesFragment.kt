@@ -1,17 +1,11 @@
-
 class FestividadesFragment : Fragment() {
-
     private var _binding: FragmentFestividadesBinding? = null
     private val binding get() = _binding!!
-
     private lateinit var festividadAdapter: FestividadAdapter
     private lateinit var diaPlazaAdapter: DiaPlazaAdapter
-
     private var listaFestividades: List<Festividad> = emptyList()
     private var listaPlazas: List<DiaPlaza> = emptyList()
-
     private var currentModeIsFestividades = true
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -22,7 +16,6 @@ class FestividadesFragment : Fragment() {
         setupUI()
         return binding.root
     }
-
     private fun sortFestividadesByUpcoming(list: List<Festividad>): List<Festividad> {
         val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
         return list.sortedBy { fest ->
@@ -34,7 +27,6 @@ class FestividadesFragment : Fragment() {
             }
         }
     }
-
     private fun setupData() {
         val rawFestividades = listOf(
             Festividad(
@@ -248,9 +240,7 @@ class FestividadesFragment : Fragment() {
                 recomendacion = "Ubicación ideal: Corredor turístico de la calle Macedonio Alcalá."
             )
         )
-
         listaFestividades = sortFestividadesByUpcoming(rawFestividades)
-
         listaPlazas = listOf(
             DiaPlaza(
                 id = "plaza_1",
@@ -331,14 +321,11 @@ class FestividadesFragment : Fragment() {
             )
         )
     }
-
     private fun setupUI() {
         festividadAdapter = FestividadAdapter(listaFestividades)
         diaPlazaAdapter = DiaPlazaAdapter(listaPlazas)
-
         binding.rvContent.layoutManager = LinearLayoutManager(requireContext())
         binding.rvContent.adapter = festividadAdapter
-
         binding.chipGroupCategories.setOnCheckedStateChangeListener { _, checkedIds ->
             if (checkedIds.isNotEmpty()) {
                 when (checkedIds.first()) {
@@ -364,7 +351,6 @@ class FestividadesFragment : Fragment() {
                 }
             }
         }
-
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -373,21 +359,18 @@ class FestividadesFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
     }
-
     private fun showFestividades(items: List<Festividad>) {
         currentModeIsFestividades = true
         binding.rvContent.adapter = festividadAdapter
         festividadAdapter.updateData(items)
         checkEmpty(items.isEmpty())
     }
-
     private fun showPlazas(items: List<DiaPlaza>) {
         currentModeIsFestividades = false
         binding.rvContent.adapter = diaPlazaAdapter
         diaPlazaAdapter.updateData(items)
         checkEmpty(items.isEmpty())
     }
-
     private fun applyQuery(query: String) {
         val q = query.lowercase()
         if (currentModeIsFestividades) {
@@ -417,11 +400,9 @@ class FestividadesFragment : Fragment() {
             checkEmpty(filtered.isEmpty())
         }
     }
-
     private fun checkEmpty(isEmpty: Boolean) {
         binding.tvEmptyState.visibility = if (isEmpty) View.VISIBLE else View.GONE
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

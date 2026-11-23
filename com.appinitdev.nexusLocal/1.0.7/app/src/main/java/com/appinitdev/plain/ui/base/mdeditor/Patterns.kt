@@ -1,6 +1,4 @@
-
 object Patterns {
-    
     val GENERAL_STRINGS = Pattern.compile("\"(.*?)\"|'(.*?)'")
     val HTML_TAGS =
         Pattern.compile(
@@ -10,9 +8,6 @@ object Patterns {
         Pattern.compile(
             "(\\S+)=[\"']?((?:.(?![\"']?\\s+(?:\\S+)=|[>\"']))+.)[\"']?",
         )
-
-    
-    
     val CSS_ATTRS =
         Pattern.compile(
             "(.+?):(.+?);",
@@ -25,9 +20,6 @@ object Patterns {
         Pattern.compile(
             "(\\b(\\d*[.]?\\d+)\\b)",
         )
-
-    
-    
     val SYMBOLS =
         Pattern.compile(
             "(!|,|\\(|\\)|\\+|\\-|\\*|<|>|=|\\.|\\?|;|\\{|\\}|\\[|\\]|\\|)",
@@ -60,15 +52,11 @@ object Patterns {
                 "|(?i)\\b(assert|collectgarbage|coroutine.create|coroutine.resume|coroutine.running|coroutine.status|coroutine.wrap|coroutine.yield|debug.debug|debug.getfenv|debug.gethook|debug.getinfo|debug.getlocal|debug.getmetatable|debug.getregistry|debug.getupvalue|debug.setfenv|debug.sethook|debug.setlocal|debug.setmetatable|debug.setupvalue|debug.traceback|dofile|error|file:close|file:flush|file:lines|file:read|file:seek|file:setvbuf|file:write|getfenv|getmetatable|io.close|io.flush|io.input|io.lines|io.open|io.output|io.popen|io.read|io.tmpfile|io.type|io.write|ipairs|load|loadfile|loadstring|math.abs|math.acos|math.asin|math.atan2|math.atan|math.ceil|math.cosh|math.cos|math.deg|math.exp|math.floor|math.fmod|math.frexp|math.ldexp|math.log10|math.log|math.max|math.min|math.modf|math.pow|math.rad|math.random|math.randomseed|math.sinh|math.sin|math.sqrt|math.tanh|math.tan|module|next|os.clock|os.date|os.difftime|os.execute|os.exit|os.getenv|os.remove|os.rename|os.setlocale|os.time|os.tmpname|package.cpath|package.loaded|package.loadlib|package.path|package.preload|package.seeal|pairs|pcall|print|rawequal|rawget|rawset|require|select|setfenv|setmetatable|string.byte|string.char|string.dump|string.find|string.format|string.gmatch|string.gsub|string.len|string.lower|string.match|string.rep|string.reverse|string.sub|string.upper|table.concat|table.insert|table.maxn|table.remove|table.sort|tonumber|tostring|type|unpack|xpcall)\\b",
         )
     val PHP_VARIABLES = Pattern.compile("\\$\\s*(\\w+)")
-
-    
     val XML_COMMENTS = Pattern.compile("(?s)<!--.*?-->")
     val GENERAL_COMMENTS =
         Pattern.compile(
             "/\\*(?:.|[\\n\\r])*?\\*/|(?<!:)//.*|#.*",
         )
-
-    
     val GENERAL_COMMENTS_NO_SLASH =
         Pattern.compile(
             "/\\*(?:.|[\\n\\r])*?\\*/|#.*",

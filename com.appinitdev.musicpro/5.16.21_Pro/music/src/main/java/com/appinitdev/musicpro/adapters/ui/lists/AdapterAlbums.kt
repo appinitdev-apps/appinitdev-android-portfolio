@@ -1,8 +1,5 @@
-
 class AdapterAlbums(initial: List<Album>) : FastScrollAdapter<VerticalListViewHolder>() {
-
     private var generalAdapterCallbacks: GeneralAdapterCallbacks? = null
-
     private val listUpdateCallback = object : ListUpdateCallback {
         override fun onInserted(position: Int, count: Int) {
             if (count > 100) {
@@ -11,7 +8,6 @@ class AdapterAlbums(initial: List<Album>) : FastScrollAdapter<VerticalListViewHo
                 notifyItemRangeInserted(position, count)
             }
         }
-
         override fun onRemoved(position: Int, count: Int) {
             if (count > 100) {
                 notifyDataSetChanged()
@@ -19,35 +15,27 @@ class AdapterAlbums(initial: List<Album>) : FastScrollAdapter<VerticalListViewHo
                 notifyItemRangeRemoved(position, count)
             }
         }
-
         override fun onMoved(fromPosition: Int, toPosition: Int) {
             notifyItemMoved(fromPosition, toPosition)
         }
-
         override fun onChanged(position: Int, count: Int, payload: Any?) {
             notifyItemRangeChanged(position, count, payload)
         }
     }
-
     private val diffCallback = object : DiffUtil.ItemCallback<Album>() {
         override fun areItemsTheSame(oldItem: Album, newItem: Album) = oldItem.id == newItem.id
         override fun areContentsTheSame(oldItem: Album, newItem: Album) = oldItem == newItem
     }
-
     private val differ = AsyncListDiffer(
             listUpdateCallback,
             AsyncDifferConfig.Builder(diffCallback).build()
     )
-
     private val albums: List<Album> get() = differ.currentList
-
     init {
         setHasStableIds(true)
         differ.submitList(initial.toList())
     }
-
     override fun getItemId(position: Int): Long = albums[position].id
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         return when (viewType) {
             CommonPreferencesConstants.GRID_TYPE_GRID -> {
@@ -61,7 +49,6 @@ class AdapterAlbums(initial: List<Album>) : FastScrollAdapter<VerticalListViewHo
             }
         }
     }
-
     override fun onBind(holder: VerticalListViewHolder, position: Int, isLightBind: Boolean) {
         val album = albums[position]
         when (holder) {
@@ -70,7 +57,6 @@ class AdapterAlbums(initial: List<Album>) : FastScrollAdapter<VerticalListViewHo
             is LabelHolder -> holder.bind(album, isLightBind)
         }
     }
-
     override fun getItemViewType(position: Int): Int {
         val mode = AlbumPreferences.getGridSize()
         return when {
@@ -79,9 +65,7 @@ class AdapterAlbums(initial: List<Album>) : FastScrollAdapter<VerticalListViewHo
             else -> CommonPreferencesConstants.GRID_TYPE_LIST
         }
     }
-
     override fun getItemCount(): Int = albums.size
-
     override fun onViewRecycled(holder: VerticalListViewHolder) {
         super.onViewRecycled(holder)
         when (holder) {
@@ -90,17 +74,13 @@ class AdapterAlbums(initial: List<Album>) : FastScrollAdapter<VerticalListViewHo
             is LabelHolder -> Unit
         }
     }
-
     fun setGeneralAdapterCallbacks(callbacks: GeneralAdapterCallbacks) {
         this.generalAdapterCallbacks = callbacks
     }
-
     fun getGeneralAdapterCallbacks(): GeneralAdapterCallbacks? = generalAdapterCallbacks
-
     fun updateList(newAlbums: List<Album>) {
         differ.submitList(newAlbums.toList())
     }
-
     inner class ListHolder(val binding: AdapterStyleListBinding) : VerticalListViewHolder(binding.root) {
         fun bind(album: Album, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(album.name)
@@ -117,7 +97,6 @@ class AdapterAlbums(initial: List<Album>) : FastScrollAdapter<VerticalListViewHo
             }
         }
     }
-
     inner class GridHolder(val binding: AdapterStyleGridBinding) : VerticalListViewHolder(binding.root) {
         fun bind(album: Album, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(album.name)
@@ -134,7 +113,6 @@ class AdapterAlbums(initial: List<Album>) : FastScrollAdapter<VerticalListViewHo
             }
         }
     }
-
     inner class LabelHolder(val binding: AdapterStyleLabelsBinding) : VerticalListViewHolder(binding.root) {
         fun bind(album: Album, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(album.name)

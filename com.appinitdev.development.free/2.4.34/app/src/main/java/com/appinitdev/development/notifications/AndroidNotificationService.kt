@@ -1,9 +1,6 @@
-
 class AndroidNotificationService(private val context: Context) : NotificationService {
-    
     override fun scheduleANCNotifications(visits: List<PregnancyEngine.ANCVisit>) {
         ANCNotificationManager.scheduleANCNotifications(context, visits)
-        
         NotificationScheduler.scheduleNotification(
             context,
             context.getString(R.string.notif_sync_active_title),
@@ -11,7 +8,6 @@ class AndroidNotificationService(private val context: Context) : NotificationSer
             500,
             101,
         )
-
         val currentTime = System.currentTimeMillis()
         val nextVisit = visits.firstOrNull { 
             try {
@@ -20,11 +16,8 @@ class AndroidNotificationService(private val context: Context) : NotificationSer
                 date != null && date.time > currentTime
             } catch (_: Exception) { false }
         }
-
         if (nextVisit != null) {
-            
             val purposeText = ResourceUtils.getString(nextVisit.purpose)
-            
             NotificationScheduler.scheduleNotification(
                 context,
                 context.getString(R.string.notif_upcoming_visit_title, nextVisit.week),
@@ -33,7 +26,6 @@ class AndroidNotificationService(private val context: Context) : NotificationSer
                 102
             )
         }
-
         NotificationScheduler.scheduleNotification(
             context,
             context.getString(R.string.notif_welcome_title),
@@ -42,7 +34,6 @@ class AndroidNotificationService(private val context: Context) : NotificationSer
             103
         )
     }
-
     override fun scheduleRiskFollowUp() {
         val fourHoursMillis: Long = 4 * 60 * 60 * 1000 
         NotificationScheduler.scheduleNotification(
@@ -52,7 +43,6 @@ class AndroidNotificationService(private val context: Context) : NotificationSer
             fourHoursMillis,
             201 
         )
-
         NotificationScheduler.scheduleNotification(
             context,
             context.getString(R.string.notif_risk_followup_title),

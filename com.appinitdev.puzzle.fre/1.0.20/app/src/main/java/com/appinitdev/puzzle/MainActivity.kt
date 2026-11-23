@@ -1,17 +1,12 @@
-
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         SoundEffectsManager.init(this)
-
         val sharedPrefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-
         setContent {
             val context = LocalContext.current
             val scope = rememberCoroutineScope()
-
             val db = remember {
                 Room.databaseBuilder(
                     context.applicationContext,
@@ -22,7 +17,6 @@ class MainActivity : ComponentActivity() {
                     .fallbackToDestructiveMigration()
                     .build()
             }
-
             var showOnboarding by remember {
                 mutableStateOf(!sharedPrefs.getBoolean("onboarding_seen", false))
             }
@@ -31,14 +25,11 @@ class MainActivity : ComponentActivity() {
             var showDrawingCanvas by remember { mutableStateOf(false) }
             var showAIGenerator by remember { mutableStateOf(false) }
             var appSettings by remember { mutableStateOf(loadAppSettings(context)) }
-
             LaunchedEffect(Unit) {
                 withContext(Dispatchers.IO) {
                     val isComplete = sharedPrefs.getBoolean("initial_download_complete", false)
-
                     if (!isComplete) {
                         val success = downloadInitialAssets(this@MainActivity, db)
-
                         if (success) {
                             sharedPrefs.edit().putBoolean("initial_download_complete", true).apply()
                             Log.d("Download", "Descarga inicial completada con éxito")
@@ -51,16 +42,13 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-
             val puzzleDao = db.puzzleDao()
             val savedPuzzles by puzzleDao.getAllPuzzles().collectAsState(initial = emptyList())
-
             var currentScreen by remember { mutableStateOf(Screen.Gallery) }
             var selectedPuzzleId by remember { mutableIntStateOf(-1) }
             var selectedBitmap by remember { mutableStateOf<Bitmap?>(null) }
             var showPixabay by remember { mutableStateOf(false) }
             var backPressedTime by remember { mutableLongStateOf(0L) }
-
             if (currentScreen != Screen.Gallery) {
                 BackHandler {
                     currentScreen = Screen.Gallery
@@ -80,7 +68,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-
             PuzzleTheme {
                 Box(modifier = Modifier.fillMaxSize()) {
                     if (appSettings.customBackgroundPath != null) {
@@ -91,7 +78,6 @@ class MainActivity : ComponentActivity() {
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier.fillMaxSize()
                             )
-                            
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -107,7 +93,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     }
-
                     if (showOnboarding) {
                         OnboardingDialog(
                             onDismiss = {
@@ -116,7 +101,6 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-
                     if (showSettings) {
                         SettingsDialog(
                             onDismiss = { showSettings = false },
@@ -125,7 +109,6 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-
                     if (showProfile) {
                         val allStats by puzzleDao.getStatsForPuzzle(-1).collectAsState(initial = emptyList())
                         PlayerProfileDialog(
@@ -133,7 +116,6 @@ class MainActivity : ComponentActivity() {
                             onDismiss = { showProfile = false }
                         )
                     }
-
                     if (showDrawingCanvas) {
                         DrawingCanvasDialog(
                             onDismiss = { showDrawingCanvas = false },
@@ -143,7 +125,6 @@ class MainActivity : ComponentActivity() {
                                     val newId = puzzleDao.insert(
                                         PuzzleEntity(imagePath = path, isCustomImage = true, category = "Mis Fotos")
                                     )
-
                                     selectedPuzzleId = newId.toInt()
                                     selectedBitmap = drawnBitmap
                                     currentScreen = Screen.ImagePuzzle
@@ -151,7 +132,6 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-
                     if (showAIGenerator) {
                         AIPuzzleGeneratorDialog(
                             onDismiss = { showAIGenerator = false },
@@ -161,7 +141,6 @@ class MainActivity : ComponentActivity() {
                                     val newId = puzzleDao.insert(
                                         PuzzleEntity(imagePath = path, isCustomImage = true, category = "IA Generada")
                                     )
-
                                     selectedPuzzleId = newId.toInt()
                                     selectedBitmap = aiBitmap
                                     currentScreen = Screen.ImagePuzzle
@@ -169,7 +148,6 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-
                     val cropLauncher =
                         rememberLauncherForActivityResult(CropImageContract()) { result ->
                             if (result.isSuccessful) {
@@ -187,13 +165,11 @@ class MainActivity : ComponentActivity() {
                                             decoder.isMutableRequired = true
                                         }
                                     }
-
                                     scope.launch(Dispatchers.IO) {
                                         val path = saveBitmapToInternalStorage(context, bitmap)
                                         val newId = puzzleDao.insert(
                                             PuzzleEntity(imagePath = path, isCustomImage = true, category = "Mis Fotos")
                                         )
-
                                         selectedPuzzleId = newId.toInt()
                                         selectedBitmap = BitmapFactory.decodeFile(path)
                                         currentScreen = Screen.ImagePuzzle
@@ -201,7 +177,6 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         }
-
                     val galleryLauncher =
                         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
                             uri?.let {
@@ -214,7 +189,6 @@ class MainActivity : ComponentActivity() {
                                 cropLauncher.launch(options)
                             }
                         }
-
                     val cameraLauncher =
                         rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { photoBitmap ->
                             photoBitmap?.let { bitmap ->
@@ -223,14 +197,12 @@ class MainActivity : ComponentActivity() {
                                     val newId = puzzleDao.insert(
                                         PuzzleEntity(imagePath = path, isCustomImage = true, category = "Mis Fotos")
                                     )
-
                                     selectedPuzzleId = newId.toInt()
                                     selectedBitmap = bitmap
                                     currentScreen = Screen.ImagePuzzle
                                 }
                             }
                         }
-
                     if (showPixabay) {
                         PixabaySearchDialog(
                             onDismiss = { showPixabay = false },
@@ -241,7 +213,6 @@ class MainActivity : ComponentActivity() {
                                     val newId = puzzleDao.insert(
                                         PuzzleEntity(imagePath = path, isCustomImage = true, category = "Naturaleza")
                                     )
-
                                     selectedPuzzleId = newId.toInt()
                                     selectedBitmap = BitmapFactory.decodeFile(path)
                                     currentScreen = Screen.ImagePuzzle
@@ -249,7 +220,6 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-
                     Scaffold(
                         containerColor = if (appSettings.customBackgroundPath != null) Color.Transparent else MaterialTheme.colorScheme.background
                     ) { innerPadding ->
@@ -276,11 +246,9 @@ class MainActivity : ComponentActivity() {
                                         db = db
                                     )
                                 }
-
                                 Screen.ImagePuzzle -> {
                                     val statsHistory by puzzleDao.getStatsForPuzzle(selectedPuzzleId)
                                         .collectAsState(initial = emptyList())
-
                                     Column {
                                         IconButton(onClick = { currentScreen = Screen.Gallery }) {
                                             Icon(
@@ -289,7 +257,6 @@ class MainActivity : ComponentActivity() {
                                                 tint = MaterialTheme.colorScheme.primary
                                             )
                                         }
-
                                         if (selectedBitmap != null) {
                                             PuzzleApp(
                                                 originalBitmap = selectedBitmap!!,
@@ -326,7 +293,6 @@ class MainActivity : ComponentActivity() {
                                         }
                                     }
                                 }
-
                                 Screen.NumberPuzzle -> {
                                     Column {
                                         IconButton(onClick = { currentScreen = Screen.Gallery }) {
@@ -346,13 +312,11 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
     override fun onDestroy() {
         super.onDestroy()
         SoundEffectsManager.release()
     }
 }
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GalleryScreen(
@@ -371,15 +335,11 @@ fun GalleryScreen(
 ) {
     val scope = rememberCoroutineScope()
     var showSecretChallengeInput by remember { mutableStateOf(false) }
-
     var selectedIds by rememberSaveable { mutableStateOf(setOf<Int>()) }
     val isSelectionMode by remember { derivedStateOf { selectedIds.isNotEmpty() } }
-
     var selectedCategory by rememberSaveable { mutableStateOf("Todas") }
     val categories = listOf("Todas", "Mis Fotos", "Naturaleza", "Arte", "IA Generada")
-
     val customPuzzles = remember(puzzles) { puzzles.filter { it.isCustomImage } }
-
     val filteredPuzzles = remember(customPuzzles, selectedCategory) {
         if (selectedCategory == "Todas") {
             customPuzzles
@@ -387,7 +347,6 @@ fun GalleryScreen(
             customPuzzles.filter { it.category == selectedCategory }
         }
     }
-
     if (showSecretChallengeInput) {
         SecretMessageInputDialog(
             initialMessage = "",
@@ -398,7 +357,6 @@ fun GalleryScreen(
             }
         )
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -415,7 +373,6 @@ fun GalleryScreen(
                 ),
                 style = MaterialTheme.typography.headlineSmall
             )
-
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onOpenProfile) {
                     Icon(
@@ -424,7 +381,6 @@ fun GalleryScreen(
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
-
                 IconButton(onClick = onOpenSettings) {
                     Icon(
                         Icons.Default.Settings,
@@ -432,7 +388,6 @@ fun GalleryScreen(
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
-
                 IconButton(onClick = onOpenTutorial) {
                     Icon(
                         Icons.AutoMirrored.Filled.HelpOutline,
@@ -440,7 +395,6 @@ fun GalleryScreen(
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
-
                 if (isSelectionMode) {
                     IconButton(onClick = {
                         scope.launch(Dispatchers.IO) {
@@ -458,9 +412,7 @@ fun GalleryScreen(
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(12.dp))
-
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(vertical = 4.dp)
@@ -474,9 +426,7 @@ fun GalleryScreen(
                 )
             }
         }
-
         Spacer(modifier = Modifier.height(12.dp))
-
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -490,7 +440,6 @@ fun GalleryScreen(
                     onClick = onOpenAIGenerator
                 )
             }
-
             item {
                 GalleryActionButton(
                     label = stringResource(R.string.tomar_foto),
@@ -499,7 +448,6 @@ fun GalleryScreen(
                     onClick = onCameraClick
                 )
             }
-
             item {
                 GalleryActionButton(
                     label = stringResource(R.string.nueva_imagen),
@@ -508,7 +456,6 @@ fun GalleryScreen(
                     onClick = onAddClick
                 )
             }
-
             item {
                 GalleryActionButton(
                     label = stringResource(R.string.pinta_tu_puzzle),
@@ -517,7 +464,6 @@ fun GalleryScreen(
                     onClick = onOpenDrawingCanvas
                 )
             }
-
             item {
                 GalleryActionButton(
                     label = stringResource(R.string.desde_la_red),
@@ -526,7 +472,6 @@ fun GalleryScreen(
                     onClick = onPixabayClick
                 )
             }
-
             item {
                 GalleryActionButton(
                     label = stringResource(R.string.modo_n_meros),
@@ -535,7 +480,6 @@ fun GalleryScreen(
                     onClick = onNumberModeClick
                 )
             }
-
             item {
                 GalleryActionButton(
                     label = stringResource(R.string.desafio_secreto),
@@ -544,10 +488,8 @@ fun GalleryScreen(
                     onClick = { showSecretChallengeInput = true }
                 )
             }
-
             items(filteredPuzzles, key = { it.id }) { puzzle ->
                 val isSelected = selectedIds.contains(puzzle.id)
-
                 Card(
                     modifier = Modifier
                         .aspectRatio(1f)
@@ -578,11 +520,9 @@ fun GalleryScreen(
                                 .fillMaxSize()
                                 .alpha(if (isSelected) 0.5f else 1f)
                         )
-
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             val strokeWidth = 1.dp.toPx()
                             val color = Color.White.copy(alpha = 0.7f)
-
                             drawLine(
                                 color = color,
                                 start = Offset(size.width / 3, 0f),
@@ -595,7 +535,6 @@ fun GalleryScreen(
                                 end = Offset(2 * size.width / 3, size.height),
                                 strokeWidth = strokeWidth
                             )
-
                             drawLine(
                                 color = color,
                                 start = Offset(0f, size.height / 3),
@@ -609,7 +548,6 @@ fun GalleryScreen(
                                 strokeWidth = strokeWidth
                             )
                         }
-
                         if (isSelected) {
                             Icon(
                                 Icons.Default.CheckCircle,
@@ -625,26 +563,21 @@ fun GalleryScreen(
             }
         }
     }
-
     BackHandler(enabled = isSelectionMode) {
         selectedIds = emptySet()
     }
 }
-
 suspend fun downloadUnsplashImage(context: Context, url: String): Bitmap? {
     val loader = coil.ImageLoader(context)
     val request = coil.request.ImageRequest.Builder(context)
         .data(url)
         .allowHardware(false)
         .build()
-
     val result = loader.execute(request)
-
     return when (result) {
         is coil.request.SuccessResult -> {
             (result.drawable as? android.graphics.drawable.BitmapDrawable)?.bitmap
         }
-
         is coil.request.ErrorResult -> {
             Log.e("DownloadError", "Error al descargar: ${result.throwable.message}")
             result.throwable.printStackTrace()
@@ -652,7 +585,6 @@ suspend fun downloadUnsplashImage(context: Context, url: String): Bitmap? {
         }
     }
 }
-
 suspend fun downloadInitialAssets(context: Context, database: AppDatabase): Boolean {
     return try {
         val response = RetrofitClient.service.searchPhotos(
@@ -661,7 +593,6 @@ suspend fun downloadInitialAssets(context: Context, database: AppDatabase): Bool
             imageType = "photo",
             perPage = 9
         )
-
         if (response.hits.isNotEmpty()) {
             response.hits.forEach { photo ->
                 val bitmap = downloadUnsplashImage(context, photo.largeImageURL)
@@ -679,7 +610,6 @@ suspend fun downloadInitialAssets(context: Context, database: AppDatabase): Bool
         false
     }
 }
-
 @Composable
 fun GalleryActionButton(
     label: String,
@@ -693,7 +623,6 @@ fun GalleryActionButton(
     } else {
         MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
     }
-
     OutlinedCard(
         modifier = Modifier
             .aspectRatio(1f)
@@ -723,9 +652,7 @@ fun GalleryActionButton(
                     modifier = Modifier.size(32.dp),
                     tint = contentColor
                 )
-
                 Spacer(modifier = Modifier.height(8.dp))
-
                 Text(
                     text = label,
                     style = MaterialTheme.typography.labelLarge,
@@ -737,5 +664,4 @@ fun GalleryActionButton(
         }
     }
 }
-
 enum class Screen { Gallery, ImagePuzzle, NumberPuzzle }

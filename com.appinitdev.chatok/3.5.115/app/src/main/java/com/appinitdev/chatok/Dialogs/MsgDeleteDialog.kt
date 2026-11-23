@@ -1,4 +1,3 @@
-
 @Composable
 fun MsgDeleteDialog(number: Int, hideDialog: () -> Unit, deleteMsg: () -> Unit) {
     Dialog(
@@ -27,18 +26,14 @@ fun MsgDeleteDialog(number: Int, hideDialog: () -> Unit, deleteMsg: () -> Unit) 
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
-                
                 Spacer(modifier = Modifier.height(16.dp))
-                
                 Text(
                     text = stringResource(R.string.eliminar_mensaje_confirm),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray,
                     textAlign = TextAlign.Center
                 )
-                
                 Spacer(modifier = Modifier.height(32.dp))
-                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -54,7 +49,6 @@ fun MsgDeleteDialog(number: Int, hideDialog: () -> Unit, deleteMsg: () -> Unit) 
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    
                     Button(
                         onClick = deleteMsg,
                         modifier = Modifier.weight(1f),

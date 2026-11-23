@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun BatchSelectTagsDialog(
@@ -10,7 +9,6 @@ fun BatchSelectTagsDialog(
 ) {
     TagNameDialog(tagsVM)
     val tagIds = remember { mutableStateListOf<String>() }
-
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surface,
         onDismissRequest = {
@@ -68,5 +66,3 @@ fun BatchSelectTagsDialog(
             }
         })
 }
-
-

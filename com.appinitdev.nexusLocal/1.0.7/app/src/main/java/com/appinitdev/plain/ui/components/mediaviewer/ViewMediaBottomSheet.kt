@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ViewMediaBottomSheet(
@@ -15,7 +14,6 @@ fun ViewMediaBottomSheet(
     var showQrScanResult by remember { mutableStateOf(false) }
     var qrScanResult by remember { mutableStateOf("") }
     val context = LocalContext.current
-
     if (showRenameDialog) {
         FileRenameDialog(path = m.path, onDismiss = { showRenameDialog = false }, onDoneAsync = {
             m.path = m.path.substring(0, m.path.lastIndexOf("/") + 1) + it
@@ -23,7 +21,6 @@ fun ViewMediaBottomSheet(
             onDismiss()
         })
     }
-
     val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         if (m.data is DImage) {
@@ -38,7 +35,6 @@ fun ViewMediaBottomSheet(
             }
         }
     }
-
     PModalBottomSheet(onDismissRequest = { onDismiss() }) {
         LazyColumn {
             item { VerticalSpace(32.dp) }
@@ -87,7 +83,6 @@ fun ViewMediaBottomSheet(
             item { BottomSpace() }
         }
     }
-
     if (showQrScanResult) {
         QrScanResultBottomSheet(context, qrScanResult) { showQrScanResult = false }
     }

@@ -1,4 +1,3 @@
-
 @Composable
 fun ActionButtonTags(onClick: () -> Unit) {
     PIconButton(
@@ -8,7 +7,6 @@ fun ActionButtonTags(onClick: () -> Unit) {
         click = onClick,
     )
 }
-
 @Composable
 fun ActionButtonSort(onClick: () -> Unit) {
     PIconButton(
@@ -18,7 +16,6 @@ fun ActionButtonSort(onClick: () -> Unit) {
         click = onClick,
     )
 }
-
 @Composable
 fun ActionButtonSearch(onClick: () -> Unit) {
     PIconButton(
@@ -28,7 +25,6 @@ fun ActionButtonSearch(onClick: () -> Unit) {
         click = onClick,
     )
 }
-
 @Composable
 fun ActionButtonFolderKanban(onClick: () -> Unit) {
     PIconButton(
@@ -38,7 +34,6 @@ fun ActionButtonFolderKanban(onClick: () -> Unit) {
         click = onClick,
     )
 }
-
 @Composable
 fun ActionButtonFolders(onClick: () -> Unit) {
     PIconButton(
@@ -48,7 +43,6 @@ fun ActionButtonFolders(onClick: () -> Unit) {
         click = onClick,
     )
 }
-
 @Composable
 fun ActionButtonCast(onClick: () -> Unit) {
     PIconButton(
@@ -58,7 +52,6 @@ fun ActionButtonCast(onClick: () -> Unit) {
         click = onClick,
     )
 }
-
 @Composable
 fun ActionButtonInfo(contentDescription: String, onClick: () -> Unit) {
     PIconButton(
@@ -68,8 +61,6 @@ fun ActionButtonInfo(contentDescription: String, onClick: () -> Unit) {
         click = onClick,
     )
 }
-
-
 @Composable
 fun IconTextFavoriteButton(
     isFavorite: Boolean = false,

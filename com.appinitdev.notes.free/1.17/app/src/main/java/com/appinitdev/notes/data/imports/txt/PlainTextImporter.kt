@@ -1,6 +1,4 @@
-
 class PlainTextImporter : ExternalImporter {
-
     override fun import(
         app: Application,
         source: Uri,
@@ -13,7 +11,6 @@ class PlainTextImporter : ExternalImporter {
                 file.isDirectory -> {
                     file.listFiles().forEach { readTxtFiles(it) }
                 }
-
                 file.isFile -> {
                     if (file.type?.isTextMimeType() == false) {
                         return
@@ -57,12 +54,10 @@ class PlainTextImporter : ExternalImporter {
         file?.let { readTxtFiles(it) }
         return Pair(notes, null)
     }
-
     private fun String.isTextMimeType(): Boolean {
         return startsWith("text/") || this in APPLICATION_TEXT_MIME_TYPES
     }
 }
-
 val APPLICATION_TEXT_MIME_TYPES =
     arrayOf(
         MIME_TYPE_JSON,

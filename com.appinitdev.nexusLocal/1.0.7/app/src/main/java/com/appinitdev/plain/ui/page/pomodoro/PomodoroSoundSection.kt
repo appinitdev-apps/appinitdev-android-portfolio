@@ -1,4 +1,3 @@
-
 @Composable
 fun PomodoroSoundSection(
     soundPath: String,

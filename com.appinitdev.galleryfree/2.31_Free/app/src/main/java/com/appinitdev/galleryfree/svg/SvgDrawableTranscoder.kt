@@ -1,4 +1,3 @@
-
 class SvgDrawableTranscoder : ResourceTranscoder<SVG, PictureDrawable> {
     override fun transcode(toTranscode: Resource<SVG>, options: Options): Resource<PictureDrawable> {
         val svg = toTranscode.get()

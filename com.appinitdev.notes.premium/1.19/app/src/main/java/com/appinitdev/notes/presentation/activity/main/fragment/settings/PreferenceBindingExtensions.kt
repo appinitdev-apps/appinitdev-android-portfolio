@@ -1,4 +1,3 @@
-
 inline fun <reified T> PreferenceBinding.setup(
     enumPreference: EnumPreference<T>,
     value: T,
@@ -22,7 +21,6 @@ inline fun <reified T> PreferenceBinding.setup(
             .show()
     }
 }
-
 fun PreferenceBinding.setup(
     preference: EnumPreference<BiometricLock>,
     value: BiometricLock,
@@ -33,12 +31,10 @@ fun PreferenceBinding.setup(
     onNotSetup: () -> Unit,
 ) {
     Title.setText(preference.titleResId!!)
-
     Value.text = value.getText(context)
     val enumEntries = BiometricLock.entries
     val entries = enumEntries.map { context.getString(it.textResId) }.toTypedArray()
     val checked = enumEntries.indexOfFirst { it == value }
-
     root.setOnClickListener {
         MaterialAlertDialogBuilder(context)
             .setTitle(preference.titleResId)
@@ -54,7 +50,6 @@ fun PreferenceBinding.setup(
                         BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
                             context.showToast(R.string.biometrics_no_support)
                         }
-
                         BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> onNotSetup()
                     }
                 } else {
@@ -67,7 +62,6 @@ fun PreferenceBinding.setup(
                                 BiometricLock.DISABLED,
                             )
                         }
-
                         BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
                             onNotSetup()
                             model.savePreference(
@@ -82,7 +76,6 @@ fun PreferenceBinding.setup(
             .show()
     }
 }
-
 fun PreferenceBinding.setup(
     preference: NotesSortPreference,
     value: NotesSort,
@@ -91,9 +84,7 @@ fun PreferenceBinding.setup(
     model: BaseNoteModel,
 ) {
     Title.setText(preference.titleResId!!)
-
     Value.text = value.getText(context)
-
     root.setOnClickListener {
         val layout = DialogNotesSortBinding.inflate(layoutInflater, null, false)
         NotesSortBy.entries.forEachIndexed { idx, notesSortBy ->
@@ -108,7 +99,6 @@ fun PreferenceBinding.setup(
                 }
             }
         }
-
         SortDirection.entries.forEachIndexed { idx, sortDir ->
             ChoiceItemBinding.inflate(layoutInflater).root.apply {
                 id = idx
@@ -121,7 +111,6 @@ fun PreferenceBinding.setup(
                 }
             }
         }
-
         MaterialAlertDialogBuilder(context)
             .setTitle(preference.titleResId)
             .setView(layout.root)
@@ -139,7 +128,6 @@ fun PreferenceBinding.setup(
             .show()
     }
 }
-
 fun PreferenceBinding.setup(
     dateFormatPreference: EnumPreference<DateFormat>,
     dateFormatValue: DateFormat,
@@ -149,9 +137,7 @@ fun PreferenceBinding.setup(
     onSave: (dateFormat: DateFormat, applyToEditMode: Boolean) -> Unit,
 ) {
     Title.setText(dateFormatPreference.titleResId!!)
-
     Value.text = dateFormatValue.getText(context)
-
     root.setOnClickListener {
         val layout = DialogPreferenceEnumWithToggleBinding.inflate(layoutInflater, null, false)
         layout.EnumHint.apply {
@@ -169,12 +155,10 @@ fun PreferenceBinding.setup(
                 }
             }
         }
-
         layout.Toggle.apply {
             setText(R.string.date_format_apply_in_note_view)
             isChecked = applyToNoteViewValue
         }
-
         MaterialAlertDialogBuilder(context)
             .setTitle(dateFormatPreference.titleResId)
             .setView(layout.root)
@@ -188,7 +172,6 @@ fun PreferenceBinding.setup(
             .show()
     }
 }
-
 fun PreferenceBinding.setup(
     themePreference: EnumPreference<Theme>,
     themeValue: Theme,
@@ -198,9 +181,7 @@ fun PreferenceBinding.setup(
     onSave: (theme: Theme, useDynamicColors: Boolean) -> Unit,
 ) {
     Title.setText(themePreference.titleResId!!)
-
     Value.text = themeValue.getText(context)
-
     root.setOnClickListener {
         val layout = DialogPreferenceEnumWithToggleBinding.inflate(layoutInflater, null, false)
         Theme.entries.forEachIndexed { idx, theme ->
@@ -214,13 +195,11 @@ fun PreferenceBinding.setup(
                 }
             }
         }
-
         layout.Toggle.apply {
             isVisible = DynamicColors.isDynamicColorAvailable()
             setText(R.string.theme_use_dynamic_colors)
             isChecked = useDynamicColorsValue
         }
-
         MaterialAlertDialogBuilder(context)
             .setTitle(themePreference.titleResId)
             .setView(layout.root)
@@ -234,7 +213,6 @@ fun PreferenceBinding.setup(
             .show()
     }
 }
-
 fun PreferenceBinding.setup(
     preference: BooleanPreference,
     value: Boolean,
@@ -246,7 +224,6 @@ fun PreferenceBinding.setup(
     onSave: (newValue: Boolean) -> Unit,
 ) {
     Title.setText(preference.titleResId!!)
-
     if (enabled) {
         Value.setText(if (value) R.string.enabled else R.string.disabled)
     } else {
@@ -282,7 +259,6 @@ fun PreferenceBinding.setup(
         }
     }
 }
-
 fun PreferenceBinding.setupPeriodicBackup(
     value: Boolean,
     context: Context,
@@ -328,7 +304,6 @@ fun PreferenceBinding.setupPeriodicBackup(
         }
     }
 }
-
 fun PreferenceBinding.setupBackupPassword(
     preference: StringPreference,
     password: String,
@@ -337,7 +312,6 @@ fun PreferenceBinding.setupBackupPassword(
     onSave: (newValue: String) -> Unit,
 ) {
     Title.setText(preference.titleResId!!)
-
     Value.transformationMethod =
         if (password != PASSWORD_EMPTY) PasswordTransformationMethod.getInstance() else null
     Value.text =
@@ -371,7 +345,6 @@ fun PreferenceBinding.setupBackupPassword(
             .showAndFocus(allowFullSize = true)
     }
 }
-
 fun PreferenceBinding.setupBackupsFolder(
     value: String,
     context: Context,
@@ -379,10 +352,8 @@ fun PreferenceBinding.setupBackupsFolder(
     onDisable: () -> Unit,
 ) {
     Title.setText(R.string.auto_backups_folder)
-
     if (value == EMPTY_PATH) {
         Value.setText(R.string.tap_to_set_up)
-
         root.setOnClickListener { chooseBackupFolder() }
     } else {
         val uri = Uri.parse(value)
@@ -391,7 +362,6 @@ fun PreferenceBinding.setupBackupsFolder(
             val path = uri.toReadablePath()
             Value.text = path
         } else Value.setText(R.string.cant_find_folder)
-
         root.setOnClickListener {
             MenuDialog(context)
                 .add(R.string.clear) { onDisable() }
@@ -400,7 +370,6 @@ fun PreferenceBinding.setupBackupsFolder(
         }
     }
 }
-
 fun PreferenceSeekbarBinding.setup(
     value: Int,
     titleResId: Int,
@@ -421,7 +390,6 @@ fun PreferenceSeekbarBinding.setup(
         addOnSliderTouchListener(
             object : Slider.OnSliderTouchListener {
                 override fun onStartTrackingTouch(slider: Slider) {}
-
                 override fun onStopTrackingTouch(slider: Slider) {
                     onChange(slider.value.toInt())
                 }
@@ -430,7 +398,6 @@ fun PreferenceSeekbarBinding.setup(
         contentDescription = context.getString(titleResId)
     }
 }
-
 fun PreferenceSeekbarBinding.setup(
     preference: IntPreference,
     context: Context,
@@ -441,7 +408,6 @@ fun PreferenceSeekbarBinding.setup(
         onChange(newValue)
     }
 }
-
 fun PreferenceSeekbarBinding.setupAutoSaveIdleTime(
     preference: IntPreference,
     context: Context,
@@ -464,7 +430,6 @@ fun PreferenceSeekbarBinding.setupAutoSaveIdleTime(
     }
     setup(preference, context, value, onChange)
 }
-
 fun PreferenceBinding.setupStartView(
     preference: StringPreference,
     value: String,
@@ -474,7 +439,6 @@ fun PreferenceBinding.setupStartView(
     onSave: (value: String) -> Unit,
 ) {
     Title.setText(preference.titleResId!!)
-
     val notesText = "${context.getText(R.string.notes)} (${context.getText(R.string.text_default)})"
     val unlabeledText = context.getText(R.string.unlabeled).toString()
     val textValue =
@@ -484,7 +448,6 @@ fun PreferenceBinding.setupStartView(
             else -> value
         }
     Value.text = textValue
-
     root.setOnClickListener {
         val layout = DialogSelectionBoxBinding.inflate(layoutInflater, null, false)
         layout.Message.setText(R.string.start_view_hint)

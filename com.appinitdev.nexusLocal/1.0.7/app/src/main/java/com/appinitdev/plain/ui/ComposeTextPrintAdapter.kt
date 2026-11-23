@@ -1,36 +1,25 @@
-
 class ComposeTextPrintAdapter(
     private val context: Context,
     private val textMeasurer: TextMeasurer,
     private val title: String,
     private val content: String,
 ) : PrintDocumentAdapter() {
-
     companion object {
-        
         private const val PAGE_WIDTH = 595
         private const val PAGE_HEIGHT = 842
-
         private const val MARGIN = 48
-
         private const val CONTENT_WIDTH =
             PAGE_WIDTH - MARGIN * 2
-
         private const val CONTENT_HEIGHT =
             PAGE_HEIGHT - MARGIN * 2
-
         private const val HEADER_HEIGHT = 32
         private const val FOOTER_HEIGHT = 32
-
         private const val TEXT_TOP =
             MARGIN + HEADER_HEIGHT
-
         private const val TEXT_HEIGHT =
             CONTENT_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT
     }
-
     private lateinit var layoutResult: TextLayoutResult
-
     override fun onLayout(
         oldAttributes: PrintAttributes?,
         newAttributes: PrintAttributes?,
@@ -38,7 +27,6 @@ class ComposeTextPrintAdapter(
         callback: LayoutResultCallback?,
         extras: android.os.Bundle?
     ) {
-
         layoutResult = textMeasurer.measure(
             text = AnnotatedString(content),
             style = TextStyle(
@@ -51,9 +39,7 @@ class ComposeTextPrintAdapter(
                 maxWidth = CONTENT_WIDTH
             )
         )
-
         val pageCount = calculatePages(layoutResult)
-
         callback?.onLayoutFinished(
             PrintDocumentInfo.Builder("$title.pdf")
                 .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
@@ -62,55 +48,40 @@ class ComposeTextPrintAdapter(
             true
         )
     }
-
     override fun onWrite(
         pages: Array<out PageRange>,
         destination: ParcelFileDescriptor,
         cancellationSignal: CancellationSignal?,
         callback: WriteResultCallback?
     ) {
-
         val pdf = PdfDocument()
-
         val totalPages = calculatePages(layoutResult)
-
         var currentLine = 0
-
         for (pageIndex in 0 until totalPages) {
-
             val pageInfo = PdfDocument.PageInfo.Builder(
                 PAGE_WIDTH,
                 PAGE_HEIGHT,
                 pageIndex + 1
             ).create()
-
             val page = pdf.startPage(pageInfo)
-
             val canvas = page.canvas
-
-            
-
             val headerPaint = android.graphics.Paint().apply {
                 textSize = 11f
                 color = Color.Gray.toArgb()
                 isAntiAlias = true
             }
-
             canvas.drawText(
                 title,
                 MARGIN.toFloat(),
                 (MARGIN - 12).toFloat(),
                 headerPaint
             )
-
             val textPaint = android.text.TextPaint().apply {
                 textSize = 11f.spToPx()
                 color = Color(0xFF222222).toArgb()
                 isAntiAlias = true
             }
-
             val startLine = currentLine
-
             while (
                 currentLine < layoutResult.lineCount &&
                 layoutResult.getLineBottom(currentLine) -
@@ -118,9 +89,7 @@ class ComposeTextPrintAdapter(
             ) {
                 currentLine++
             }
-
             val endLine = currentLine
-
             drawLines(
                 canvas = canvas,
                 layout = layoutResult,
@@ -129,24 +98,18 @@ class ComposeTextPrintAdapter(
                 startLine = startLine,
                 endLine = endLine
             )
-
-            
-
             canvas.drawText(
                 "Page ${pageIndex + 1}",
                 (PAGE_WIDTH - MARGIN - 60).toFloat(),
                 (PAGE_HEIGHT - MARGIN / 2).toFloat(),
                 headerPaint
             )
-
             pdf.finishPage(page)
         }
-
         try {
             FileOutputStream(destination.fileDescriptor).use {
                 pdf.writeTo(it)
             }
-
             callback?.onWriteFinished(
                 arrayOf(PageRange.ALL_PAGES)
             )
@@ -156,18 +119,13 @@ class ComposeTextPrintAdapter(
             pdf.close()
         }
     }
-
     private fun calculatePages(
         layout: TextLayoutResult
     ): Int {
-
         var pages = 1
         var startLine = 0
-
         while (startLine < layout.lineCount) {
-
             var currentLine = startLine
-
             while (
                 currentLine < layout.lineCount &&
                 layout.getLineBottom(currentLine) -
@@ -175,17 +133,13 @@ class ComposeTextPrintAdapter(
             ) {
                 currentLine++
             }
-
             if (currentLine < layout.lineCount) {
                 pages++
             }
-
             startLine = currentLine
         }
-
         return pages
     }
-
     private fun drawLines(
         canvas: android.graphics.Canvas,
         layout: TextLayoutResult,
@@ -194,16 +148,12 @@ class ComposeTextPrintAdapter(
         startLine: Int,
         endLine: Int
     ) {
-
         val startOffset =
             layout.getLineStart(startLine)
-
         val endOffset =
             layout.getLineEnd(endLine - 1)
-
         val pageText =
             text.substring(startOffset, endOffset)
-
         val staticLayout =
             android.text.StaticLayout.Builder
                 .obtain(
@@ -215,19 +165,14 @@ class ComposeTextPrintAdapter(
                 )
                 .setLineSpacing(8f, 1f)
                 .build()
-
         canvas.save()
-
         canvas.translate(
             MARGIN.toFloat(),
             TEXT_TOP.toFloat()
         )
-
         staticLayout.draw(canvas)
-
         canvas.restore()
     }
-
     private fun Float.spToPx(): Float {
         return this * context.resources.displayMetrics.scaledDensity
     }

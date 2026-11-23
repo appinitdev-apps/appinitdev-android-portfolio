@@ -1,4 +1,3 @@
-
 object DownloadHelper {
     suspend fun downloadAsync(url: String, dir: String): DownloadResult {
         val httpClient = HttpClientManager.browserClient()
@@ -25,7 +24,6 @@ object DownloadHelper {
             DownloadResult("", false, ex.toString())
         }
     }
-
     suspend fun downloadToTempAsync(url: String, tempFile: File): DownloadResult {
         val httpClient = HttpClientManager.browserClient()
         return try {

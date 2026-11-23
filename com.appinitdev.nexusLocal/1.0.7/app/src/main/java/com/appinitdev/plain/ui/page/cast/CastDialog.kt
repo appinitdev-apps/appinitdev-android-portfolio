@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CastDialog(castVM: CastViewModel) {
@@ -11,7 +10,6 @@ fun CastDialog(castVM: CastViewModel) {
     val heroHeight by animateDpAsState(if (hasDevices) 104.dp else 156.dp, label = "castHeroHeight")
     var job by remember { mutableStateOf<Job?>(null) }
     val onDismiss = { castVM.showCastDialog.value = false }
-
     LaunchedEffect(Unit) {
         if (job?.isActive != true) {
             job = coIO { castVM.searchAsync(context) }
@@ -26,7 +24,6 @@ fun CastDialog(castVM: CastViewModel) {
             job = null
         }
     }
-
     PModalBottomSheet(
         modifier = Modifier.defaultMinSize(minHeight = 360.dp),
         onDismissRequest = onDismiss,
@@ -78,4 +75,3 @@ fun CastDialog(castVM: CastViewModel) {
         }
     }
 }
-

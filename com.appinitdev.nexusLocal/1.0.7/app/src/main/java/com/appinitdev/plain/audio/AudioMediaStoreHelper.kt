@@ -1,8 +1,6 @@
-
 object AudioMediaStoreHelper : BaseMediaContentHelper() {
     override val uriExternal: Uri = if (isQPlus()) MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL) else MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
     override val mediaType: MediaType = MediaType.AUDIO
-
     override fun getProjection(): Array<String> {
         val projection = mutableListOf(
             MediaStore.Audio.Media._ID,
@@ -15,15 +13,12 @@ object AudioMediaStoreHelper : BaseMediaContentHelper() {
             MediaStore.Audio.Media.DATA,
             MediaStore.Audio.Media.ALBUM_ID,
         )
-
         if (isQPlus()) {
             projection.add(MediaStore.Audio.Media.BUCKET_ID)
             projection.add(MediaStore.Audio.Media.IS_FAVORITE)
         }
-
         return projection.toTypedArray()
     }
-
     override fun buildBaseWhere(filterFields: List<FilterField>): ContentWhere {
         val where = ContentWhere()
         where.addGt(MediaStore.Audio.Media.DURATION, "0")
@@ -35,23 +30,18 @@ object AudioMediaStoreHelper : BaseMediaContentHelper() {
                         arrayListOf(it.value, it.value),
                     )
                 }
-
                 "name" -> {
                     where.addEqual(MediaStore.Audio.Media.TITLE, it.value)
                 }
-
                 "bucket_id" -> {
                     where.addEqual(MediaStore.Audio.Media.BUCKET_ID, it.value)
                 }
-
                 "artist" -> {
                     where.addEqual(MediaStore.Audio.Media.ARTIST, it.value)
                 }
-
                 "trash" -> {
                     where.trash = it.value.toBooleanStrictOrNull()
                 }
-
                 "excluded_dir" -> {
                     where.addNotStartsWith(MediaStore.Audio.Media.DATA, it.value)
                 }
@@ -59,7 +49,6 @@ object AudioMediaStoreHelper : BaseMediaContentHelper() {
         }
         return where
     }
-
     suspend fun searchAsync(
         context: Context,
         query: String,
@@ -84,7 +73,6 @@ object AudioMediaStoreHelper : BaseMediaContentHelper() {
             DAudio(id, title, artist, path, duration, size, bucketId, albumId, createdAt, updatedAt, isFavorite)
         } ?: emptyList()
     }
-
     suspend fun getTagRelationStubsAsync(
         context: Context,
         query: String,

@@ -1,4 +1,3 @@
-
 object FormatHelper {
     @Composable
     fun formatSeconds(n: Int, plural: @Composable (PluralStringResource, Int, Int) -> String): String {
@@ -9,18 +8,14 @@ object FormatHelper {
         if (hours > 0) {
             r += plural(Res.plurals.n_hours, hours, hours)
         }
-
         if (minutes > 0) {
             r += plural(Res.plurals.n_minutes, minutes, minutes)
         }
-
         if (seconds > 0) {
             r += plural(Res.plurals.n_seconds, seconds, seconds)
         }
-
         return r.trimEnd()
     }
-
     fun formatMoney(
         value: Double,
         currencyCode: String,
@@ -35,10 +30,8 @@ object FormatHelper {
             format.isGroupingUsed = true
             format.roundingMode = RoundingMode.HALF_UP
         }
-
         return format.format(value)
     }
-
     fun formatDouble(
         value: Double,
         digits: Int = 2,
@@ -51,7 +44,6 @@ object FormatHelper {
         format.roundingMode = RoundingMode.HALF_UP
         return format.format(value)
     }
-
     fun formatFloat(
         value: Float,
         digits: Int = 2,

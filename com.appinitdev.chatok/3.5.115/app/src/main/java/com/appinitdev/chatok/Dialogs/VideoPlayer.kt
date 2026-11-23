@@ -1,4 +1,3 @@
-
 @OptIn(UnstableApi::class)
 @Composable
 fun VideoPlayer(userData: ChatUserData, hideDialog:()->Unit, message: Message) {
@@ -14,7 +13,6 @@ fun VideoPlayer(userData: ChatUserData, hideDialog:()->Unit, message: Message) {
     var show by remember {
         mutableStateOf(true)
     }
-
     val cacheSink = Factory()
         .setCache(simpleCache)
     val upstreamFactory = DefaultDataSource.Factory(context, DefaultHttpDataSource.Factory())
@@ -69,7 +67,6 @@ fun VideoPlayer(userData: ChatUserData, hideDialog:()->Unit, message: Message) {
                     }
                     .fillMaxSize()
             ){
-
             }
             AndroidView(
                 modifier = Modifier
@@ -117,14 +114,12 @@ fun VideoPlayer(userData: ChatUserData, hideDialog:()->Unit, message: Message) {
                         )
                         Text(
                             text = if(message.time != null) {
-                                
                                 formatter.format(message.time.toDate())
                             } else "",
                             color = Color.LightGray,
                             style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Light)
                         )
                     }
-
                 }
             }
         }

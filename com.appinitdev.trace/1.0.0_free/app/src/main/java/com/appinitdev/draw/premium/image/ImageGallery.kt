@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryChip(
@@ -6,7 +5,6 @@ fun CategoryChip(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    
     FilterChip(
         selected = isSelected,
         onClick = onClick,
@@ -18,7 +16,6 @@ fun CategoryChip(
         }
     )
 }
-
 @Composable
 fun ImageGallery(images: List<Image>, onImageClick: (String) -> Unit) {
     LazyVerticalGrid(
@@ -42,7 +39,6 @@ fun ImageGallery(images: List<Image>, onImageClick: (String) -> Unit) {
         }
     }
 }
-
 @Composable
 fun ShowGalleryDialog(
     images: List<Image>,
@@ -57,7 +53,6 @@ fun ShowGalleryDialog(
     onImageClick: (String) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
-
     Dialog(
         onDismissRequest = onDismissRequest,
         properties = DialogProperties(usePlatformDefaultWidth = false) 
@@ -73,8 +68,6 @@ fun ShowGalleryDialog(
             Column(modifier = Modifier
                 .fillMaxSize()
                 .padding(20.dp)) { 
-
-                
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
@@ -93,8 +86,6 @@ fun ShowGalleryDialog(
                     shape = MaterialTheme.shapes.medium,
                     textStyle = MaterialTheme.typography.bodyLarge
                 )
-
-                
                 LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -111,8 +102,6 @@ fun ShowGalleryDialog(
                         }
                     }
                 }
-
-                
                 Box(modifier = Modifier.weight(1f)) {
                     if (isLoading) {
                         CircularProgressIndicator(
@@ -130,8 +119,6 @@ fun ShowGalleryDialog(
                         ImageGallery(images, onImageClick)
                     }
                 }
-
-                
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -148,7 +135,6 @@ fun ShowGalleryDialog(
                             contentDescription = stringResource(R.string.anterior)
                         )
                     }
-
                     ElevatedButton( 
                         onClick = onNextPage,
                         modifier = Modifier.weight(1f),

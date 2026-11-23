@@ -1,4 +1,3 @@
-
 interface MediaItemBinding {
     val root: ViewGroup
     val mediaItemHolder: ViewGroup
@@ -10,7 +9,6 @@ interface MediaItemBinding {
     val mediumCheck: ImageView
     val mediumThumbnail: MySquareImageView
 }
-
 class PhotoListMediaItemBinding(val binding: PhotoItemListBinding) : MediaItemBinding {
     override val root: ViewGroup = binding.root
     override val mediaItemHolder: ViewGroup = binding.mediaItemHolder
@@ -22,9 +20,7 @@ class PhotoListMediaItemBinding(val binding: PhotoItemListBinding) : MediaItemBi
     override val mediumCheck: ImageView = binding.mediumCheck
     override val mediumThumbnail: MySquareImageView = binding.mediumThumbnail
 }
-
 fun PhotoItemListBinding.toMediaItemBinding() = PhotoListMediaItemBinding(this)
-
 class PhotoGridMediaItemBinding(val binding: PhotoItemGridBinding) : MediaItemBinding {
     override val root: ViewGroup = binding.root
     override val mediaItemHolder: ViewGroup = binding.mediaItemHolder
@@ -36,9 +32,7 @@ class PhotoGridMediaItemBinding(val binding: PhotoItemGridBinding) : MediaItemBi
     override val mediumCheck: ImageView = binding.mediumCheck
     override val mediumThumbnail: MySquareImageView = binding.mediumThumbnail
 }
-
 fun PhotoItemGridBinding.toMediaItemBinding() = PhotoGridMediaItemBinding(this)
-
 class VideoListMediaItemBinding(val binding: VideoItemListBinding) : MediaItemBinding {
     override val root: ViewGroup = binding.root
     override val mediaItemHolder: ViewGroup = binding.mediaItemHolder
@@ -50,9 +44,7 @@ class VideoListMediaItemBinding(val binding: VideoItemListBinding) : MediaItemBi
     override val mediumCheck: ImageView = binding.mediumCheck
     override val mediumThumbnail: MySquareImageView = binding.mediumThumbnail
 }
-
 fun VideoItemListBinding.toMediaItemBinding() = VideoListMediaItemBinding(this)
-
 class VideoGridMediaItemBinding(val binding: VideoItemGridBinding) : MediaItemBinding {
     override val root: ViewGroup = binding.root
     override val mediaItemHolder: ViewGroup = binding.mediaItemHolder
@@ -64,5 +56,4 @@ class VideoGridMediaItemBinding(val binding: VideoItemGridBinding) : MediaItemBi
     override val mediumCheck: ImageView = binding.mediumCheck
     override val mediumThumbnail: MySquareImageView = binding.mediumThumbnail
 }
-
 fun VideoItemGridBinding.toMediaItemBinding() = VideoGridMediaItemBinding(this)

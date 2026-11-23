@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedSettingsPage(
@@ -9,12 +8,10 @@ fun FeedSettingsPage(
     LaunchedEffect(Unit) {
         feedSettingsVM.loadSettings(context)
     }
-
     if (feedSettingsVM.showIntervalDialog.value) {
         val options = remember {
             setOf(900, 1800, 3600, 7200, 21600, 43200, 86400).map { FeedAutoRefreshInterval(it) }
         }
-
         RadioDialog(
             title = stringResource(Res.string.auto_refresh_interval),
             options = options.map {
@@ -29,11 +26,9 @@ fun FeedSettingsPage(
             feedSettingsVM.showIntervalDialog.value = false
         }
     }
-
     if (feedSettingsVM.showClearFeedsDialog.value) {
         ClearFeedsDialog(feedSettingsVM)
     }
-
     PScaffold(
         topBar = {
             PTopAppBar(navController = navController, title = stringResource(Res.string.settings))
@@ -57,7 +52,6 @@ fun FeedSettingsPage(
                             feedSettingsVM.setAutoRefresh(context, it)
                         }
                     }
-
                     if (feedSettingsVM.autoRefresh.value) {
                         PListItem(
                             modifier = Modifier.clickable {

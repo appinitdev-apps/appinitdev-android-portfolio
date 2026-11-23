@@ -1,17 +1,13 @@
-
 @HiltViewModel
 class RecentlyAddedViewModel @Inject constructor(
         application: Application,
         private val audioRepository: AudioRepository
 ) : WrappedViewModel(application) {
-
     private val _songs = MutableStateFlow<List<Audio>>(emptyList())
     val songs: StateFlow<List<Audio>> = _songs.asStateFlow()
-
     init {
         loadData()
     }
-
     private fun loadData() {
         viewModelScope.launch {
             audioRepository.getRecentAudio()
@@ -26,7 +22,6 @@ class RecentlyAddedViewModel @Inject constructor(
                 }
         }
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -36,9 +31,7 @@ class RecentlyAddedViewModel @Inject constructor(
             }
         }
     }
-
     companion object {
         private const val TAG = "RecentlyAddedViewModel"
     }
 }
-

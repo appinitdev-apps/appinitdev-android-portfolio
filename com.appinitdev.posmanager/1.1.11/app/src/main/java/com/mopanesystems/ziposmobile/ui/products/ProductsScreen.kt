@@ -1,22 +1,9 @@
-
- 
-
-
-
-
-
-
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductsScreenCompose(
     viewModel: ProductViewModel,
     viewModelPOS: POSViewModel,
-
     ) {
-
-
     val filteredProducts by viewModel.filteredProducts.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val errorMessage by viewModel.errorMessage.observeAsState()
@@ -31,14 +18,12 @@ fun ProductsScreenCompose(
     val categories = categoriesAll.map { it.name }
     val mode by viewModel.selectedMode.collectAsState()
     var productToDelete by remember { mutableStateOf<Product?>(null) }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
@@ -64,8 +49,6 @@ fun ProductsScreenCompose(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-
-
                 Surface(
                     onClick = {
                         productEdit = !productEdit
@@ -102,13 +85,9 @@ fun ProductsScreenCompose(
                                 modifier = Modifier.size(24.dp)
                             )
                         }
-
                 }
-
             }
         }
-
-        
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
@@ -119,7 +98,6 @@ fun ProductsScreenCompose(
                 modifier = Modifier.padding(10.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = {
@@ -155,8 +133,6 @@ fun ProductsScreenCompose(
                         unfocusedBorderColor = MaterialTheme.colorScheme.outline
                     )
                 )
-
-                
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
@@ -195,14 +171,12 @@ fun ProductsScreenCompose(
                 }
             }
         }
-
         if (showProductDialogCreate) {
             ProductFormDialog(
                 showDialog = showProductDialogCreate,
                 onDismiss = { showProductDialogCreate = false },
                 onSave = { product ->
                     viewModel.addProduct(product)
-                    
                     Log.d("Products", "Producto creado: $product")
                     showProductDialogCreate = false
                 },
@@ -210,14 +184,12 @@ fun ProductsScreenCompose(
                 categories = categories
             )
         }
-
         if (showProductDialogUpdate && productToEdit != null) {
             ProductFormDialog(
                 showDialog = showProductDialogUpdate,
                 onDismiss = { showProductDialogUpdate = false },
                 onSave = { product ->
                     viewModel.updateProduct(product)
-                    
                     Log.d("Products", "Producto actualizado: $product")
                     showProductDialogUpdate = false
                 },
@@ -225,9 +197,6 @@ fun ProductsScreenCompose(
                 categories = categories
             )
         }
-
-
-        
         if (isLoading) {
             Surface(
                 modifier = Modifier
@@ -285,9 +254,7 @@ fun ProductsScreenCompose(
                             )
                         }
                     }
-
                     Spacer(modifier = Modifier.height(16.dp))
-
                     Text(
                         text = stringResource(R.string.no_products_found),
                         style = MaterialTheme.typography.titleLarge,
@@ -315,21 +282,16 @@ fun ProductsScreenCompose(
                         edit = productEdit,
                         onDelete = {
                             productToDelete = product
-                            
                                    },
                         onAddToCart = { viewModelPOS.addProductToCart(product) }
                     )
                 }
             }
         }
-
-        
         errorMessage?.let { message ->
             LaunchedEffect(message) {
-                
             }
         }
-
         if (productToDelete != null) {
             AlertDialog(
                 onDismissRequest = { productToDelete = null },
@@ -380,13 +342,9 @@ fun ProductsScreenCompose(
                 containerColor = MaterialTheme.colorScheme.surfaceVariant,
                 tonalElevation = 6.dp
             )
-
         }
-
     }
 }
-
-
 @Composable
 fun ModernProductCard(
     product: com.mopanesystems.ziposmobile.data.model.Product,
@@ -395,8 +353,6 @@ fun ModernProductCard(
     onDelete: () -> Unit,
     onAddToCart: () -> Unit,
 ) {
-
-
     var isAdded by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (isAdded) 1.1f else 1f,
@@ -405,9 +361,7 @@ fun ModernProductCard(
             easing = FastOutSlowInEasing
         )
     )
-
     val coroutineScope = rememberCoroutineScope()
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -425,7 +379,6 @@ fun ModernProductCard(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            
             Surface(
                 modifier = Modifier.size(64.dp),
                 shape = MaterialTheme.shapes.large,
@@ -440,8 +393,6 @@ fun ModernProductCard(
                     )
                 }
             }
-
-            
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -452,13 +403,11 @@ fun ModernProductCard(
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.SemiBold
                 )
-
                 Text(
                     text = product.categoryId ?: stringResource(R.string.uncategorized),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -469,8 +418,6 @@ fun ModernProductCard(
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
-
-                    
                     Surface(
                         shape = MaterialTheme.shapes.small,
                         color = if (product.stockQuantity < product.minStockLevel) {
@@ -500,14 +447,10 @@ fun ModernProductCard(
                     }
                 }
             }
-
-            
-
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.End
             ) {
-                
                 if (!edit)
                     Button(
                         onClick = {
@@ -544,15 +487,11 @@ fun ModernProductCard(
                             )
                         }
                     }
-
-                
                 if (edit)
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        
                         FilledTonalButton(
-
                             onClick = onEdit,
                             modifier = Modifier.size(42.dp),
                             shape = MaterialTheme.shapes.medium,
@@ -568,8 +507,6 @@ fun ModernProductCard(
                                 tint = MaterialTheme.colorScheme.onTertiaryContainer
                             )
                         }
-
-                        
                         FilledTonalButton(
                             onClick = onDelete,
                             modifier = Modifier.size(42.dp),
@@ -583,134 +520,11 @@ fun ModernProductCard(
                                 Icons.Default.DeleteOutline,
                                 contentDescription = "Delete product",
                                 modifier = Modifier.size(22.dp),
-
                                tint = MaterialTheme.colorScheme.onErrorContainer
                             )
                         }
                     }
-
             }
         }
     }
 }
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-

@@ -1,7 +1,5 @@
-
 object MediaPreviewData {
     var items = listOf<PreviewItem>()
-
     fun setDataAsync(
         context: Context,
         itemState: TransformItemState,
@@ -24,7 +22,6 @@ object MediaPreviewData {
             itemState.intrinsicSize = it.intrinsicSize.toSize()
         }
     }
-
     fun setDataAsync(
         itemState: TransformItemState,
         items: List<DImage>,
@@ -38,7 +35,6 @@ object MediaPreviewData {
             itemState.intrinsicSize = it.intrinsicSize.toSize()
         }
     }
-
     fun setDataAsync(
         itemState: TransformItemState,
         items: List<DVideo>,
@@ -52,7 +48,6 @@ object MediaPreviewData {
             itemState.intrinsicSize = it.intrinsicSize.toSize()
         }
     }
-    
     fun setDataAsync(
         context: Context,
         itemState: TransformItemState,

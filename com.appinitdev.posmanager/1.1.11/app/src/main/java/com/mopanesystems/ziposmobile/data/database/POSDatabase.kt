@@ -1,4 +1,3 @@
-
 @Database(
     entities = [
         Product::class,
@@ -28,7 +27,6 @@
 )
 @TypeConverters(Converters::class)
 abstract class POSDatabase : RoomDatabase() {
-    
     abstract fun productDao(): ProductDao
     abstract fun customerDao(): CustomerDao
     abstract fun transactionDao(): TransactionDao
@@ -45,11 +43,9 @@ abstract class POSDatabase : RoomDatabase() {
     abstract fun customerAnalyticsDao(): CustomerAnalyticsDao
     abstract fun refundAnalyticsDao(): RefundAnalyticsDao
     abstract fun syncLogDao(): SyncLogDao
-
     companion object {
         @Volatile
         private var INSTANCE: POSDatabase? = null
-
         fun getDatabase(context: Context): POSDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(

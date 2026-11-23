@@ -1,4 +1,3 @@
-
 class FormularioActivity : AppCompatActivity() {
     private lateinit var databaseHelper: DatabaseHelper
     private lateinit var binding: ActivityFormularioBinding
@@ -15,7 +14,6 @@ class FormularioActivity : AppCompatActivity() {
             getString(com.appinitdev.turismoOax.R.string.otro)
         )
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFormularioBinding.inflate(layoutInflater)
@@ -26,18 +24,15 @@ class FormularioActivity : AppCompatActivity() {
         setupSpinner()
         setupButton()
     }
-
     private fun setupSpinner() {
         val adapter = ArrayAdapter(
             this,
             R.layout.simple_dropdown_item_1line,
             motivos
         )
-
         (binding.actvMotivo as? AutoCompleteTextView)?.apply {
             setAdapter(adapter)
             setOnItemClickListener { _, _, position, _ ->
-                
                 if (position == -1) {
                     binding.actvMotivo.error =
                         context.getString(com.appinitdev.turismoOax.R.string.seleccione_un_motivo)
@@ -47,7 +42,6 @@ class FormularioActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun setupButton() {
         binding.btnEnviar.setOnClickListener {
             if (validarFormulario()) {
@@ -55,18 +49,13 @@ class FormularioActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun validarFormulario(): Boolean {
         var valido = true
-
-        
         if (binding.etNombre.text.toString().trim().length < 3) {
             binding.etNombre.error =
                 getString(com.appinitdev.turismoOax.R.string.m_nimo_3_caracteres)
             valido = false
         }
-
-        
         val telefono = binding.etTelefono.text.toString().trim()
         if (telefono.isEmpty()) {
             binding.etTelefono.error = getString(com.appinitdev.turismoOax.R.string.campo_requerido)
@@ -75,8 +64,6 @@ class FormularioActivity : AppCompatActivity() {
             binding.etTelefono.error = getString(com.appinitdev.turismoOax.R.string.formato_inv_lido_ej_9511231235)
             valido = false
         }
-
-        
         val telefonoLada = binding.etTelefonoLada.text.toString().trim()
         if (telefonoLada.isEmpty()) {
             binding.etTelefonoLada.error = getString(com.appinitdev.turismoOax.R.string.campo_requerido)
@@ -85,30 +72,22 @@ class FormularioActivity : AppCompatActivity() {
             binding.etTelefonoLada.error = getString(com.appinitdev.turismoOax.R.string.formato_inv_lido_ej_m_xico_52)
             valido = false
         }
-
-        
         val email = binding.etEmail.text.toString().trim()
         if (email.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.etEmail.error = getString(com.appinitdev.turismoOax.R.string.formato_inv_lido)
             valido = false
         }
-
-        
         if (binding.actvMotivo.text.toString().trim().isEmpty()) {
             binding.actvMotivo.error = getString(com.appinitdev.turismoOax.R.string.seleccione_un_motivo)
             valido = false
         }
-
-        
         if (binding.etDescripcion.text.toString().trim().length < 10) {
             binding.etDescripcion.error =
                 getString(com.appinitdev.turismoOax.R.string.m_nimo_10_caracteres)
             valido = false
         }
-
         return valido
     }
-
     private fun mostrarConfirmacion() {
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(com.appinitdev.turismoOax.R.string.confirmar_env_o))
@@ -117,13 +96,11 @@ class FormularioActivity : AppCompatActivity() {
             .setNegativeButton(getString(com.appinitdev.turismoOax.R.string.cancelar), null)
             .show()
     }
-
     fun generarTicketID(): String {
         val tiempoCorto = (System.currentTimeMillis() % 10000).toInt().toString(36).uppercase()
         val aleatorio = (100..999).random().toString(36).uppercase()
         return "R-"+tiempoCorto + aleatorio
     }
-
     private fun enviarFormulario() {
         val id = generarTicketID()
         val datos = """
@@ -136,20 +113,17 @@ class FormularioActivity : AppCompatActivity() {
             Descripción: ${binding.etDescripcion.text}
         """.trimIndent()
         val desc = "Tel: +(${binding.etTelefonoLada.text}) ${binding.etTelefono.text}\nContent: ${binding.etDescripcion.text}"
-
         enviarEmailCotizacion(datos, binding.actvMotivo.text.toString(),
             desc,
             id
         )
     }
-
     private fun enviarEmailCotizacion(cotizacion: String, motivo:String, desc:String, id: String) {
         val sender = GmailSender()
         val asunto = "[$id]Pregunta o duda: $motivo "
         val destinatario = "cruzyoloxochitl@gmail.com"
         binding.btnEnviar.isEnabled = false
         binding.progressBar.visibility = View.VISIBLE
-
         sender.enviarCorreo(
             destinatario = destinatario,
             asunto = asunto,
@@ -158,12 +132,10 @@ class FormularioActivity : AppCompatActivity() {
             runOnUiThread {
                 binding.progressBar.visibility = View.GONE
                 binding.btnEnviar.isEnabled = true
-
                 if (exito) {
                     databaseHelper.insertNotificaciones(asunto, desc + " Ticket: " + id)
                     binding.cvResultado.visibility = View.VISIBLE
                     binding.btnEnviar.visibility = View.GONE
-
                     MaterialAlertDialogBuilder(this)
                         .setTitle(getString(com.appinitdev.turismoOax.R.string.solicitud_enviada_exito_titulo))
                         .setMessage(getString(com.appinitdev.turismoOax.R.string.solicitud_enviada_exito_mensaje, id))
@@ -180,8 +152,5 @@ class FormularioActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
-
-
 }

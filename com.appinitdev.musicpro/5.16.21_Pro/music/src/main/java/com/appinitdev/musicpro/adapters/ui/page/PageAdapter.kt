@@ -1,32 +1,12 @@
-
- 
-
-
-
 class PageAdapter(
         private var data: PageData,
         private val pageType: PageType
 ) : RecyclerView.Adapter<VerticalListViewHolder>() {
-
     private var listener: GeneralAdapterCallbacks? = null
     private val items = mutableListOf<PageItem>()
-
-     
     private var artistInfo: MusicBrainzArtistInfo? = null
-
-     
     private var albumInfo: MusicBrainzAlbumInfo? = null
-
-     
-
-
-
-
     private var livePlaylist: Playlist? = (pageType as? PageType.PlaylistPage)?.playlist
-
-     
-
-
     sealed class PageType {
         data class AlbumPage(val album: Album) : PageType()
         data class ArtistPage(val artist: Artist) : PageType()
@@ -36,46 +16,28 @@ class PageAdapter(
         data class YearPage(val yearGroup: YearGroup) : PageType()
         data class PlaylistPage(val playlist: Playlist) : PageType()
     }
-
     init {
         buildItemsList()
     }
-
-     
-
-
-
     fun updateData(newData: PageData) {
         Log.d(TAG, "updateData: Updating with ${newData.songs.size} songs, ${newData.albums.size} albums, ${newData.artists.size} artists")
-
         val oldItems = items.toList()
         this.data = newData
         buildItemsList()
-
         val diffCallback = PageDiffCallback(oldItems, items)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
-
         diffResult.dispatchUpdatesTo(this)
         Log.d(TAG, "updateData: DiffUtil updates dispatched")
     }
-
-     
-
-
     private class PageDiffCallback(
             private val oldList: List<PageItem>,
             private val newList: List<PageItem>
     ) : DiffUtil.Callback() {
-
         override fun getOldListSize(): Int = oldList.size
-
         override fun getNewListSize(): Int = newList.size
-
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             val oldItem = oldList[oldItemPosition]
             val newItem = newList[newItemPosition]
-
-            
             return when {
                 oldItem is PageItem.Header && newItem is PageItem.Header -> true
                 oldItem is PageItem.SongItem && newItem is PageItem.SongItem ->
@@ -88,11 +50,9 @@ class PageAdapter(
                 else -> false
             }
         }
-
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             val oldItem = oldList[oldItemPosition]
             val newItem = newList[newItemPosition]
-
             return when (oldItem) {
                 is PageItem.Header if newItem is PageItem.Header ->
                     oldItem == newItem
@@ -112,11 +72,8 @@ class PageAdapter(
             }
         }
     }
-
     private fun buildItemsList() {
         items.clear()
-
-        
         when (pageType) {
             is PageType.AlbumPage -> {
                 items.add(PageItem.Header(
@@ -212,8 +169,6 @@ class PageAdapter(
                 ))
             }
         }
-
-        
         data.songs.forEachIndexed { index, audio ->
             items.add(PageItem.SongItem(
                     audio = audio,
@@ -221,20 +176,14 @@ class PageAdapter(
                     allSongs = data.songs
             ))
         }
-
-        
         val currentArtistInfo = artistInfo
         if (currentArtistInfo != null && (pageType is PageType.ArtistPage || pageType is PageType.ComposerPage)) {
             items.add(1, PageItem.ArtistInfoSection(currentArtistInfo))
         }
-
-        
         val currentAlbumInfo = albumInfo
         if (currentAlbumInfo != null && pageType is PageType.AlbumPage) {
             items.add(1, PageItem.AlbumInfoSection(currentAlbumInfo))
         }
-
-        
         if (data.albums.isNotEmpty()) {
             val artistName = when (pageType) {
                 is PageType.AlbumPage -> pageType.album.name
@@ -250,22 +199,17 @@ class PageAdapter(
                     artistName = artistName
             ))
         }
-
-        
         if (data.artists.isNotEmpty()) {
             items.add(PageItem.ArtistsSection(
                     artists = data.artists
             ))
         }
-
-        
         if (data.genres.isNotEmpty()) {
             items.add(PageItem.GenresSection(
                     genres = data.genres
             ))
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
@@ -300,10 +244,8 @@ class PageAdapter(
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
     }
-
     override fun onBindViewHolder(holder: VerticalListViewHolder, position: Int) {
         val item = items[position]
-
         when (holder) {
             is Header -> {
                 val headerItem = item as PageItem.Header
@@ -332,7 +274,6 @@ class PageAdapter(
                 holder.binding.container.setOnClickListener {
                     listener?.onSongClicked(songItem.allSongs, songItem.position, holder.binding.cover)
                 }
-
                 holder.binding.container.setOnLongClickListener {
                     listener?.onSongLongClicked(songItem.allSongs, songItem.position, holder.binding.cover)
                     true
@@ -348,9 +289,7 @@ class PageAdapter(
             }
         }
     }
-
     override fun getItemCount(): Int = items.size
-
     override fun onViewRecycled(holder: VerticalListViewHolder) {
         super.onViewRecycled(holder)
         when (holder) {
@@ -368,7 +307,6 @@ class PageAdapter(
             }
         }
     }
-
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
             is PageItem.Header -> PageConstants.VIEW_TYPE_HEADER
@@ -380,19 +318,14 @@ class PageAdapter(
             is PageItem.AlbumInfoSection -> PageConstants.VIEW_TYPE_ALBUM_INFO
         }
     }
-
     inner class Albums(val binding: AdapterGenreAlbumsBinding) : VerticalListViewHolder(binding.root) {
         private var adapter: AdapterCarouselItems? = null
-
         fun bind(item: PageItem.AlbumsSection, adapterListener: GeneralAdapterCallbacks?, pageType: PageType) {
             if (item.albums.isEmpty()) {
                 binding.root.visibility = View.GONE
                 return
             }
-
             binding.root.visibility = View.VISIBLE
-
-            
             binding.title.text = when (pageType) {
                 is PageType.AlbumPage -> context.getString(
                         R.string.albums_from_artist,
@@ -423,41 +356,31 @@ class PageAdapter(
                         item.artistName ?: context.getString(R.string.unknown)
                 )
             }
-
             if (binding.recyclerView.adapter == null) {
                 binding.recyclerView.setHasFixedSize(true)
                 binding.recyclerView.addItemDecoration(LinearHorizontalSpacingDecoration(24))
             }
-
             binding.recyclerView.setUniqueKey("albums_carousel")
-
             adapter = AdapterCarouselItems(ArtFlowData(R.string.unknown, item.albums))
             binding.recyclerView.adapter = adapter
-
             adapter?.setAdapterCarouselCallbacks(object : AdapterCarouselItems.Companion.AdapterCarouselCallbacks {
                 override fun onClicked(view: View, position: Int) {
                     adapterListener?.onAlbumClicked(item.albums, position, view)
                 }
             })
         }
-
         fun cleanup() {
             adapter = null
         }
     }
-
     inner class Artists(val binding: AdapterGenreAlbumsBinding) : VerticalListViewHolder(binding.root) {
         private var adapter: AdapterCarouselItems? = null
-
         fun bind(item: PageItem.ArtistsSection, adapterListener: GeneralAdapterCallbacks?, pageType: PageType) {
             if (item.artists.isEmpty()) {
                 binding.root.visibility = View.GONE
                 return
             }
-
             binding.root.visibility = View.VISIBLE
-
-            
             binding.title.text = when (pageType) {
                 is PageType.AlbumPage -> context.getString(R.string.album_artists)
                 is PageType.ArtistPage -> context.getString(
@@ -485,24 +408,15 @@ class PageAdapter(
                         pageType.playlist.name
                 )
             }
-
             if (binding.recyclerView.adapter == null) {
                 binding.recyclerView.setHasFixedSize(true)
                 binding.recyclerView.addItemDecoration(LinearHorizontalSpacingDecoration(24))
             }
-
             binding.recyclerView.setUniqueKey("artists_carousel")
-
             adapter = AdapterCarouselItems(ArtFlowData(R.string.unknown, item.artists))
             binding.recyclerView.adapter = adapter
-
             adapter?.setAdapterCarouselCallbacks(object : AdapterCarouselItems.Companion.AdapterCarouselCallbacks {
                 override fun onClicked(view: View, position: Int) {
-                     
-
-
-
-
                     if (pageType is PageType.AlbumPage) {
                         adapterListener?.onAlbumArtistClicked(item.artists, position, view)
                     } else {
@@ -511,46 +425,36 @@ class PageAdapter(
                 }
             })
         }
-
         fun cleanup() {
             adapter = null
         }
     }
-
     inner class Genres(val binding: AdapterGenreAlbumsBinding) : VerticalListViewHolder(binding.root) {
         private var adapter: AdapterCarouselItems? = null
-
         fun bind(item: PageItem.GenresSection, adapterListener: GeneralAdapterCallbacks?) {
             if (item.genres.isEmpty()) {
                 binding.root.visibility = View.GONE
                 return
             }
-
             binding.root.visibility = View.VISIBLE
             binding.title.text = context.getString(R.string.album_genres)
-
             if (binding.recyclerView.adapter == null) {
                 binding.recyclerView.setHasFixedSize(true)
                 binding.recyclerView.addItemDecoration(LinearHorizontalSpacingDecoration(24))
             }
-
             binding.recyclerView.setUniqueKey("genres_carousel")
-
             adapter = AdapterCarouselItems(ArtFlowData(R.string.unknown, item.genres))
             binding.recyclerView.adapter = adapter
-
             adapter?.setAdapterCarouselCallbacks(object : AdapterCarouselItems.Companion.AdapterCarouselCallbacks {
                 override fun onClicked(view: View, position: Int) {
                     adapterListener?.onGenreClicked(item.genres[position], view)
                 }
             })
         }
-
         fun cleanup() {
             adapter = null
         }
     }
-
     inner class Header(val binding: AdapterHeaderArtistPageBinding) : VerticalListViewHolder(binding.root) {
         fun bind(item: PageItem.Header, pageData: PageData, pageType: PageType) {
             binding.apply {
@@ -559,7 +463,6 @@ class PageAdapter(
                 albums.text = pageData.albums.size.toString()
                 artists.text = item.albumArtists.size.toString()
                 totalTime.text = item.totalDuration.toDynamicTimeString()
-
                 when (pageType) {
                     is PageType.ArtistPage -> {
                         sortStyle.setArtistPageSort()
@@ -574,8 +477,6 @@ class PageAdapter(
                         sortStyle.setAlbumPageSort()
                     }
                 }
-
-                
                 when (pageType) {
                     is PageType.AlbumPage, is PageType.ComposerPage, is PageType.FolderPage, is PageType.PlaylistPage -> {
                         artFlow.visibility = View.VISIBLE
@@ -611,7 +512,6 @@ class PageAdapter(
                         artFlow.visible(false)
                     }
                 }
-
                 play.setOnClickListener {
                     listener?.onPlayClicked(item.songs, 0)
                 }
@@ -631,8 +531,6 @@ class PageAdapter(
             }
         }
     }
-
-    
     inner class GenreHeader(val binding: AdapterHeaderArtistPageBinding) : VerticalListViewHolder(binding.root) {
         fun bind(item: PageItem.Header, pageData: PageData, pageType: PageType) {
             binding.apply {
@@ -648,7 +546,6 @@ class PageAdapter(
                 totalTime.text = item.totalDuration.toDynamicTimeString()
                 artFlow.setAdapter(SliderAdapter(ArtFlowData(R.string.songs, item.songs)))
                 artFlow.start()
-
                 when (pageType) {
                     is PageType.GenrePage -> {
                         sortStyle.setGenrePageSort()
@@ -666,7 +563,6 @@ class PageAdapter(
                         sortStyle.setArtistPageSort()
                     }
                 }
-
                 play.setOnClickListener {
                     listener?.onPlayClicked(item.songs, 0)
                 }
@@ -682,20 +578,9 @@ class PageAdapter(
             }
         }
     }
-
-     
-
-
-
-
-
-
     private inner class SliderAdapter(private val data: ArtFlowData<Any>) : FelicityPager.PageAdapter {
-
         override fun getCount(): Int = data.items.size.coerceAtMost(12)
-
         override fun getItemId(position: Int): Long = position.toLong()
-
         override fun onCreateView(position: Int, parent: ViewGroup): View {
             return ImageView(parent.context).apply {
                 scaleType = ImageView.ScaleType.CENTER_CROP
@@ -705,7 +590,6 @@ class PageAdapter(
                 )
             }
         }
-
         override fun onBindView(position: Int, view: View) {
             if (data.items.isNotEmpty()) {
                 (view as ImageView).loadArtCover(
@@ -716,40 +600,19 @@ class PageAdapter(
                 )
             }
         }
-
         override fun onRecycleView(position: Int, view: View) {
             val iv = view as ImageView
             Glide.with(iv.context).clear(iv)
             iv.setImageDrawable(null)
         }
     }
-
     fun setArtistAdapterListener(listener: GeneralAdapterCallbacks) {
         this.listener = listener
     }
-
-     
-
-
-
-
-
-
-
     fun updatePlaylist(playlist: Playlist) {
         livePlaylist = playlist
         notifyItemChanged(0)
     }
-
-     
-
-
-
-
-
-
-
-
     fun setArtistInfo(info: MusicBrainzArtistInfo?) {
         artistInfo = info
         val oldItems = items.toList()
@@ -757,16 +620,6 @@ class PageAdapter(
         val diff = DiffUtil.calculateDiff(PageDiffCallback(oldItems, items))
         diff.dispatchUpdatesTo(this)
     }
-
-     
-
-
-
-
-
-
-
-
     fun setAlbumInfo(info: MusicBrainzAlbumInfo?) {
         albumInfo = info
         val oldItems = items.toList()
@@ -774,30 +627,22 @@ class PageAdapter(
         val diff = DiffUtil.calculateDiff(PageDiffCallback(oldItems, items))
         diff.dispatchUpdatesTo(this)
     }
-
     inner class ArtistInfo(val binding: AdapterArtistInfoBinding) : VerticalListViewHolder(binding.root) {
-
         private var bioExpanded = false
-
         fun bind(info: MusicBrainzArtistInfo) {
             binding.apply {
-                
                 if (!info.type.isNullOrBlank()) {
                     typeBadge.text = info.type
                     typeBadge.visibility = View.VISIBLE
                 } else {
                     typeBadge.visibility = View.GONE
                 }
-
-                
                 if (!info.country.isNullOrBlank()) {
                     countryBadge.text = info.country
                     countryBadge.visibility = View.VISIBLE
                 } else {
                     countryBadge.visibility = View.GONE
                 }
-
-                
                 val yearText = when {
                     info.beginYear != null && info.endYear != null ->
                         context.getString(R.string.active_years, info.beginYear, info.endYear)
@@ -813,11 +658,8 @@ class PageAdapter(
                 } else {
                     yearsBadge.visibility = View.GONE
                 }
-
-                
                 val tagList = if (info.tags.isBlank()) emptyList()
                 else info.tags.split("|").filter { it.isNotBlank() }
-
                 if (tagList.isNotEmpty()) {
                     tagsContainer.removeAllViews()
                     val inflater = LayoutInflater.from(context)
@@ -832,22 +674,15 @@ class PageAdapter(
                 } else {
                     tagsScroll.visibility = View.GONE
                 }
-
-                
-                
                 if (!info.bio.isNullOrBlank()) {
                     bio.text = info.bio
                     bio.visibility = View.VISIBLE
-
-                    
                     bioExpanded = false
-
                     bio.post {
                         val ellipsisCount = bio.layout.getEllipsisCount(bio.layout.lineCount - 1)
                         val isEllipsized = ellipsisCount > 0
                         bioToggle.visibility = if (isEllipsized) View.VISIBLE else View.GONE
                     }
-
                     bioToggle.setOnClickListener {
                         bioExpanded = !bioExpanded
                         bio.maxLines = if (bioExpanded) Int.MAX_VALUE else 4
@@ -860,14 +695,10 @@ class PageAdapter(
             }
         }
     }
-
     inner class AlbumInfo(val binding: AdapterAlbumInfoBinding) : VerticalListViewHolder(binding.root) {
-
         private var bioExpanded = false
-
         fun bind(info: MusicBrainzAlbumInfo) {
             binding.apply {
-                
                 val displayDate = info.releaseDate?.take(4)?.takeIf { it.isNotBlank() }
                 if (displayDate != null) {
                     dateBadge.text = context.getString(R.string.released_in, displayDate)
@@ -875,27 +706,20 @@ class PageAdapter(
                 } else {
                     dateBadge.visibility = View.GONE
                 }
-
-                
                 if (!info.country.isNullOrBlank()) {
                     countryBadge.text = info.country
                     countryBadge.visibility = View.VISIBLE
                 } else {
                     countryBadge.visibility = View.GONE
                 }
-
-                
                 if (!info.status.isNullOrBlank()) {
                     statusBadge.text = info.status
                     statusBadge.visibility = View.VISIBLE
                 } else {
                     statusBadge.visibility = View.GONE
                 }
-
-                
                 val labelList = if (info.labels.isBlank()) emptyList()
                 else info.labels.split("|").filter { it.isNotBlank() }
-
                 if (labelList.isNotEmpty()) {
                     labelsContainer.removeAllViews()
                     val inflater = LayoutInflater.from(context)
@@ -910,11 +734,8 @@ class PageAdapter(
                 } else {
                     labelsScroll.visibility = View.GONE
                 }
-
-                
                 val tagList = if (info.tags.isBlank()) emptyList()
                 else info.tags.split("|").filter { it.isNotBlank() }
-
                 if (tagList.isNotEmpty()) {
                     tagsContainer.removeAllViews()
                     val inflater = LayoutInflater.from(context)
@@ -929,20 +750,15 @@ class PageAdapter(
                 } else {
                     tagsScroll.visibility = View.GONE
                 }
-
-                
                 if (!info.bio.isNullOrBlank()) {
                     bio.text = info.bio
                     bio.visibility = View.VISIBLE
-
                     bioExpanded = false
-
                     bio.post {
                         val ellipsisCount = bio.layout.getEllipsisCount(bio.layout.lineCount - 1)
                         val isEllipsized = ellipsisCount > 0
                         bioToggle.visibility = if (isEllipsized) View.VISIBLE else View.GONE
                     }
-
                     bioToggle.setOnClickListener {
                         bioExpanded = !bioExpanded
                         bio.maxLines = if (bioExpanded) Int.MAX_VALUE else 4
@@ -955,7 +771,6 @@ class PageAdapter(
             }
         }
     }
-
     companion object {
         private const val TAG = "PageAdapter"
     }

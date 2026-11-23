@@ -1,7 +1,5 @@
-
 class MediaActivity : SimpleActivity(), MediaOperationsListener {
     private val LAST_MEDIA_CHECK_PERIOD = 3000L
-
     private var mPath = ""
     private var mIsGetImageIntent = false
     private var mIsGetVideoIntent = false
@@ -19,7 +17,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
     private var mTempShowHiddenHandler = Handler()
     private var mCurrAsyncTask: GetMediaAsynctask? = null
     private var mZoomListener: MyRecyclerView.MyZoomListener? = null
-
     private var mStoredAnimateGifs = true
     private var mStoredCropThumbnails = true
     private var mStoredScrollHorizontally = true
@@ -29,25 +26,20 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
     private var mStoredTextColor = 0
     private var mStoredPrimaryColor = 0
     private var mStoredThumbnailSpacing = 0
-
     private val binding by viewBinding(ActivityMediaBinding::inflate)
-
     companion object {
         var mMedia = ArrayList<ThumbnailItem>()
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         isMaterialActivity = true
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
         intent.apply {
             mIsGetImageIntent = getBooleanExtra(GET_IMAGE_INTENT, false)
             mIsGetVideoIntent = getBooleanExtra(GET_VIDEO_INTENT, false)
             mIsGetAnyIntent = getBooleanExtra(GET_ANY_INTENT, false)
             mAllowPickingMultiple = getBooleanExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
         }
-
         binding.mediaRefreshLayout.setOnRefreshListener { getMedia() }
         try {
             mPath = intent.getStringExtra(DIRECTORY) ?: ""
@@ -56,7 +48,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             finish()
             return
         }
-
         setupOptionsMenu()
         refreshMenuItems()
         storeStateVariables()
@@ -66,7 +57,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             useTransparentNavigation = false,
             useTopSearchMenu = false
         )
-
         ViewCompat.setOnApplyWindowInsetsListener(binding.mediaHolder) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             view.setPadding(
@@ -77,17 +67,13 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             )
             insets
         }
-
         if (mShowAll) {
             registerFileUpdateListener()
         }
-
         binding.mediaEmptyTextPlaceholder2.setOnClickListener {
             showFilterMediaDialog()
         }
-
         updateWidgets()
-
         onBackPressedDispatcher.addCallback(this) {
             if (binding.mediaMenu.isSearchOpen) {
                 binding.mediaMenu.closeSearch()
@@ -95,50 +81,39 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                 if (config.showAll) {
                     appLockManager.lock()
                 }
-                
-                
                 isEnabled = false
                 onBackPressedDispatcher.onBackPressed()
             }
         }
-
     }
-
     override fun onStart() {
         super.onStart()
         mTempShowHiddenHandler.removeCallbacksAndMessages(null)
     }
-
     override fun onResume() {
         super.onResume()
         updateMenuColors()
         if (mStoredAnimateGifs != config.animateGifs) {
             getMediaAdapter()?.updateAnimateGifs(config.animateGifs)
         }
-
         if (mStoredCropThumbnails != config.cropThumbnails) {
             getMediaAdapter()?.updateCropThumbnails(config.cropThumbnails)
         }
-
         if (mStoredScrollHorizontally != config.scrollHorizontally) {
             mLoadedInitialPhotos = false
             binding.mediaGrid.adapter = null
             getMedia()
         }
-
         if (mStoredShowFileTypes != config.showThumbnailFileTypes) {
             getMediaAdapter()?.updateShowFileTypes(config.showThumbnailFileTypes)
         }
-
         if (mStoredTextColor != getProperTextColor()) {
             getMediaAdapter()?.updateTextColor(getProperTextColor())
         }
-
         val primaryColor = getProperPrimaryColor()
         if (mStoredPrimaryColor != primaryColor) {
             getMediaAdapter()?.updatePrimaryColor()
         }
-
         if (
             mStoredThumbnailSpacing != config.thumbnailSpacing
             || mStoredRoundedCorners != config.fileRoundedCorners
@@ -147,22 +122,17 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             binding.mediaGrid.adapter = null
             setupAdapter()
         }
-
         refreshMenuItems()
-
         binding.mediaFastscroller.updateColors(primaryColor)
         binding.mediaRefreshLayout.isEnabled = config.enablePullToRefresh
         getMediaAdapter()?.apply {
             dateFormat = config.dateFormat
             timeFormat = getTimeFormat()
         }
-
         binding.loadingIndicator.setIndicatorColor(getProperPrimaryColor())
         binding.mediaEmptyTextPlaceholder.setTextColor(getProperTextColor())
         binding.mediaEmptyTextPlaceholder2.setTextColor(getProperPrimaryColor())
         binding.mediaEmptyTextPlaceholder2.bringToFront()
-
-        
         val isRandomSorting = config.getFolderSorting(mPath) and SORT_BY_RANDOM != 0
         if (mMedia.isEmpty() || !isRandomSorting || (isRandomSorting && !mWasFullscreenViewOpen)) {
             if (shouldSkipAuthentication()) {
@@ -178,22 +148,18 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             }
         }
     }
-
     override fun onPause() {
         super.onPause()
         mIsGettingMedia = false
         binding.mediaRefreshLayout.isRefreshing = false
         storeStateVariables()
         mLastMediaHandler.removeCallbacksAndMessages(null)
-
         if (!mMedia.isEmpty()) {
             mCurrAsyncTask?.stopFetching()
         }
     }
-
     override fun onStop() {
         super.onStop()
-
         if (config.temporarilyShowHidden || config.tempSkipDeleteConfirmation) {
             mTempShowHiddenHandler.postDelayed({
                 config.temporarilyShowHidden = false
@@ -204,7 +170,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             mTempShowHiddenHandler.removeCallbacksAndMessages(null)
         }
     }
-
     override fun onDestroy() {
         super.onDestroy()
         if (config.showAll && !isChangingConfigurations) {
@@ -214,22 +179,8 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             unregisterFileUpdateListener()
             GalleryDatabase.destroyInstance()
         }
-
         mTempShowHiddenHandler.removeCallbacksAndMessages(null)
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         if (requestCode == REQUEST_EDIT_IMAGE) {
             if (resultCode == RESULT_OK && resultData != null) {
@@ -239,49 +190,38 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
         }
         super.onActivityResult(requestCode, resultCode, resultData)
     }
-
     private fun refreshMenuItems() {
         val isDefaultFolder = !config.defaultFolder.isEmpty()
                 && File(config.defaultFolder).compareTo(File(mPath)) == 0
-
         binding.mediaMenu.getToolbar().menu.apply {
             findItem(R.id.group).isVisible = !config.scrollHorizontally
-
             findItem(R.id.empty_recycle_bin).isVisible = mPath == RECYCLE_BIN
             findItem(R.id.empty_disable_recycle_bin).isVisible = mPath == RECYCLE_BIN
             findItem(R.id.restore_all_files).isVisible = mPath == RECYCLE_BIN
-
             findItem(R.id.folder_view).isVisible = mShowAll
             findItem(R.id.open_camera).isVisible = mShowAll
-
             findItem(R.id.create_new_folder).isVisible =
                 !mShowAll && mPath != RECYCLE_BIN && mPath != FAVORITES
             findItem(R.id.open_recycle_bin).isVisible = config.useRecycleBin && mPath != RECYCLE_BIN
-
             findItem(R.id.temporarily_show_hidden).isVisible = !config.shouldShowHidden
             findItem(R.id.stop_showing_hidden).isVisible =
                 (!isRPlus() || isExternalStorageManager()) && config.temporarilyShowHidden
-
             findItem(R.id.set_as_default_folder).isVisible = !isDefaultFolder
             findItem(R.id.unset_as_default_folder).isVisible = isDefaultFolder
-
             val viewType = config.getFolderViewType(if (mShowAll) SHOW_ALL else mPath)
             findItem(R.id.column_count).isVisible = viewType == VIEW_TYPE_GRID
             findItem(R.id.toggle_filename).isVisible = viewType == VIEW_TYPE_GRID
         }
     }
-
     private fun setupOptionsMenu() {
         binding.mediaMenu.getToolbar().inflateMenu(R.menu.menu_media)
         binding.mediaMenu.toggleHideOnScroll(!config.scrollHorizontally)
         binding.mediaMenu.setupMenu()
-
         binding.mediaMenu.onSearchTextChangedListener = { text ->
             mLastSearchedText = text
             searchQueryChanged(text)
             binding.mediaRefreshLayout.isEnabled = text.isEmpty() && config.enablePullToRefresh
         }
-
         binding.mediaMenu.getToolbar().setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.sort -> showSortingDialog()
@@ -308,7 +248,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             return@setOnMenuItemClickListener true
         }
     }
-
     private fun startSlideshow() {
         if (mMedia.isNotEmpty()) {
             hideKeyboard()
@@ -322,12 +261,10 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             }
         }
     }
-
     private fun updateMenuColors() {
         updateStatusbarColor(getProperBackgroundColor())
         binding.mediaMenu.updateColors()
     }
-
     private fun storeStateVariables() {
         mStoredTextColor = getProperTextColor()
         mStoredPrimaryColor = getProperPrimaryColor()
@@ -342,7 +279,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             mShowAll = showAll && mPath != RECYCLE_BIN
         }
     }
-
     private fun searchQueryChanged(text: String) {
         ensureBackgroundThread {
             try {
@@ -362,7 +298,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                         binding.mediaEmptyTextPlaceholder.beGone()
                         binding.mediaFastscroller.beVisible()
                     }
-
                     handleGridSpacing(grouped)
                     getMediaAdapter()?.updateMedia(grouped)
                 }
@@ -370,7 +305,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             }
         }
     }
-
     private fun tryLoadGallery() {
         requestMediaPermissions {
             val dirName = when (mPath) {
@@ -379,13 +313,11 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                 config.OTGPath -> getString(org.appinitdev.commons.R.string.usb)
                 else -> getHumanizedFilename(mPath)
             }
-
             val searchHint = if (mShowAll) {
                 getString(org.appinitdev.commons.R.string.search_files)
             } else {
                 getString(org.appinitdev.commons.R.string.search_in_placeholder, dirName)
             }
-
             binding.mediaMenu.updateHintText(searchHint)
             if (!mShowAll) {
                 binding.mediaMenu.toggleForceArrowBackIcon(true)
@@ -393,24 +325,19 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                     onBackPressed()
                 }
             }
-
             if (mShowLoadingIndicator) {
                 binding.loadingIndicator.show()
                 mShowLoadingIndicator = false
             }
-
             getMedia()
             setupLayoutManager()
         }
     }
-
     private fun getMediaAdapter() = binding.mediaGrid.adapter as? MediaAdapter
-
     private fun setupAdapter() {
         if (!mShowAll && isDirEmpty()) {
             return
         }
-
         val currAdapter = binding.mediaGrid.adapter
         if (currAdapter == null) {
             initZoomListener()
@@ -430,12 +357,10 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                 setupZoomListener(mZoomListener)
                 binding.mediaGrid.adapter = this
             }
-
             val viewType = config.getFolderViewType(if (mShowAll) SHOW_ALL else mPath)
             if (viewType == VIEW_TYPE_LIST && areSystemAnimationsEnabled) {
                 binding.mediaGrid.scheduleLayoutAnimation()
             }
-
             setupLayoutManager()
             handleGridSpacing()
         } else if (mLastSearchedText.isEmpty()) {
@@ -444,21 +369,17 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
         } else {
             searchQueryChanged(mLastSearchedText)
         }
-
         setupScrollDirection()
     }
-
     private fun setupScrollDirection() {
         val viewType = config.getFolderViewType(if (mShowAll) SHOW_ALL else mPath)
         val scrollHorizontally = config.scrollHorizontally && viewType == VIEW_TYPE_GRID
         binding.mediaFastscroller.setScrollVertically(!scrollHorizontally)
     }
-
     private fun checkLastMediaChanged() {
         if (isDestroyed || config.getFolderSorting(mPath) and SORT_BY_RANDOM != 0) {
             return
         }
-
         mLastMediaHandler.removeCallbacksAndMessages(null)
         mLastMediaHandler.postDelayed({
             ensureBackgroundThread {
@@ -476,7 +397,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             }
         }, LAST_MEDIA_CHECK_PERIOD)
     }
-
     private fun showSortingDialog() {
         ChangeSortingDialog(this, false, true, mPath) {
             mLoadedInitialPhotos = false
@@ -484,7 +404,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             getMedia()
         }
     }
-
     private fun showFilterMediaDialog() {
         FilterMediaDialog(this) {
             mLoadedInitialPhotos = false
@@ -493,7 +412,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             getMedia()
         }
     }
-
     private fun emptyRecycleBin() {
         showRecycleBinEmptyingDialog {
             emptyTheRecycleBin {
@@ -501,7 +419,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             }
         }
     }
-
     private fun emptyAndDisableRecycleBin() {
         showRecycleBinEmptyingDialog {
             emptyAndDisableTheRecycleBin {
@@ -509,7 +426,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             }
         }
     }
-
     private fun restoreAllFiles() {
         val paths = mMedia.filter { it is Medium }.map { (it as Medium).path } as ArrayList<String>
         showRestoreConfirmationDialog(paths.size) {
@@ -521,19 +437,16 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             }
         }
     }
-
     private fun toggleFilenameVisibility() {
         config.displayFileNames = !config.displayFileNames
         getMediaAdapter()?.updateDisplayFilenames(config.displayFileNames)
     }
-
     private fun switchToFolderView() {
         hideKeyboard()
         config.showAll = false
         startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
-
     private fun changeViewType() {
         ChangeViewTypeDialog(this, false, mPath) {
             refreshMenuItems()
@@ -542,7 +455,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             setupAdapter()
         }
     }
-
     private fun showGroupByDialog() {
         ChangeGroupingDialog(this, mPath) {
             mLoadedInitialPhotos = false
@@ -550,7 +462,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             getMedia()
         }
     }
-
     private fun deleteDirectoryIfEmpty() {
         if (config.deleteEmptyFolders) {
             val fileDirItem = FileDirItem(mPath, mPath.getFilenameFromPath(), true)
@@ -563,12 +474,10 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             }
         }
     }
-
     private fun getMedia() {
         if (mIsGettingMedia) {
             return
         }
-
         mIsGettingMedia = true
         if (mLoadedInitialPhotos) {
             startAsyncTask()
@@ -588,10 +497,8 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                 startAsyncTask()
             }
         }
-
         mLoadedInitialPhotos = true
     }
-
     private fun startAsyncTask() {
         mCurrAsyncTask?.stopFetching()
         mCurrAsyncTask = GetMediaAsynctask(
@@ -606,8 +513,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                 val newMedia = it
                 try {
                     gotMedia(newMedia, false)
-
-                    
                     val newPaths = newMedia.mapNotNull { it as? Medium }.map { it.path }
                     oldMedia
                         .mapNotNull { it as? Medium }
@@ -624,23 +529,19 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                 }
             }
         }
-
         mCurrAsyncTask!!.execute()
     }
-
     private fun isDirEmpty(): Boolean {
         return if (mMedia.isEmpty() && config.filterMedia > 0) {
             if (mPath != FAVORITES && mPath != RECYCLE_BIN) {
                 deleteDirectoryIfEmpty()
                 deleteDBDirectory()
             }
-
             if (mPath == FAVORITES) {
                 ensureBackgroundThread {
                     directoryDB.deleteDirPath(FAVORITES)
                 }
             }
-
             if (mPath == RECYCLE_BIN) {
                 binding.mediaEmptyTextPlaceholder.setText(org.appinitdev.commons.R.string.no_items_found)
                 binding.mediaEmptyTextPlaceholder.beVisible()
@@ -648,13 +549,11 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             } else {
                 finish()
             }
-
             true
         } else {
             false
         }
     }
-
     private fun deleteDBDirectory() {
         ensureBackgroundThread {
             try {
@@ -663,13 +562,11 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             }
         }
     }
-
     private fun createNewFolder() {
         CreateNewFolderDialog(this, mPath) {
             config.tempFolderPath = it
         }
     }
-
     private fun tryToggleTemporarilyShowHidden() {
         if (config.temporarilyShowHidden) {
             toggleTemporarilyShowHidden(false)
@@ -683,14 +580,12 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             }
         }
     }
-
     private fun toggleTemporarilyShowHidden(show: Boolean) {
         mLoadedInitialPhotos = false
         config.temporarilyShowHidden = show
         getMedia()
         refreshMenuItems()
     }
-
     private fun setupLayoutManager() {
         val viewType = config.getFolderViewType(if (mShowAll) SHOW_ALL else mPath)
         if (viewType == VIEW_TYPE_GRID) {
@@ -699,7 +594,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             setupListLayoutManager()
         }
     }
-
     private fun setupGridLayoutManager() {
         val layoutManager = binding.mediaGrid.layoutManager as MyGridLayoutManager
         if (config.scrollHorizontally) {
@@ -715,7 +609,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
         }
-
         layoutManager.spanCount = config.mediaColumnCnt
         val adapter = getMediaAdapter()
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -728,7 +621,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             }
         }
     }
-
     private fun setupListLayoutManager() {
         val layoutManager = binding.mediaGrid.layoutManager as MyGridLayoutManager
         layoutManager.spanCount = 1
@@ -739,21 +631,18 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
         )
         mZoomListener = null
     }
-
     private fun handleGridSpacing(media: ArrayList<ThumbnailItem> = mMedia) {
         val viewType = config.getFolderViewType(if (mShowAll) SHOW_ALL else mPath)
         if (viewType == VIEW_TYPE_GRID) {
             val spanCount = config.mediaColumnCnt
             val spacing = config.thumbnailSpacing
             val useGridPosition = media.firstOrNull() is ThumbnailSection
-
             var currentGridDecoration: GridSpacingItemDecoration? = null
             if (binding.mediaGrid.itemDecorationCount > 0) {
                 currentGridDecoration =
                     binding.mediaGrid.getItemDecorationAt(0) as GridSpacingItemDecoration
                 currentGridDecoration.items = media
             }
-
             val newGridDecoration = GridSpacingItemDecoration(
                 spanCount = spanCount,
                 spacing = spacing,
@@ -770,7 +659,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             }
         }
     }
-
     private fun initZoomListener() {
         val viewType = config.getFolderViewType(if (mShowAll) SHOW_ALL else mPath)
         if (viewType == VIEW_TYPE_GRID) {
@@ -782,7 +670,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                         getMediaAdapter()?.finishActMode()
                     }
                 }
-
                 override fun zoomOut() {
                     if (layoutManager.spanCount < MAX_COLUMN_COUNT) {
                         increaseColumnCount()
@@ -794,7 +681,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             mZoomListener = null
         }
     }
-
     private fun changeColumnCount() {
         val items = ArrayList<RadioItem>()
         for (i in 1..MAX_COLUMN_COUNT) {
@@ -807,7 +693,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                 )
             )
         }
-
         val currentColumnCount = (binding.mediaGrid.layoutManager as MyGridLayoutManager).spanCount
         RadioGroupDialog(this, items, currentColumnCount) {
             val newColumnCount = it as Int
@@ -817,17 +702,14 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             }
         }
     }
-
     private fun increaseColumnCount() {
         config.mediaColumnCnt += 1
         columnCountChanged()
     }
-
     private fun reduceColumnCount() {
         config.mediaColumnCnt -= 1
         columnCountChanged()
     }
-
     private fun columnCountChanged() {
         (binding.mediaGrid.layoutManager as MyGridLayoutManager).spanCount = config.mediaColumnCnt
         handleGridSpacing()
@@ -836,22 +718,17 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             notifyItemRangeChanged(0, media.size)
         }
     }
-
     private fun isSetWallpaperIntent() = intent.getBooleanExtra(SET_WALLPAPER_INTENT, false)
-
     private fun itemClicked(path: String) {
         hideKeyboard()
         if (isSetWallpaperIntent()) {
             toast(R.string.setting_wallpaper)
-
             val wantedWidth = wallpaperDesiredMinimumWidth
             val wantedHeight = wallpaperDesiredMinimumHeight
             val ratio = wantedWidth.toFloat() / wantedHeight
-
             val options = RequestOptions()
                 .override((wantedWidth * ratio).toInt(), wantedHeight)
                 .fitCenter()
-
             Glide.with(this)
                 .asBitmap()
                 .load(File(path))
@@ -866,7 +743,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                             setResult(RESULT_OK)
                         } catch (ignored: IOException) {
                         }
-
                         finish()
                     }
                 })
@@ -885,7 +761,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                 if (path.startsWith(recycleBinPath)) {
                     extras[IS_IN_RECYCLE_BIN] = true
                 }
-
                 if (shouldSkipAuthentication()) {
                     extras[SKIP_AUTHENTICATION] = true
                 }
@@ -903,25 +778,21 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             }
         }
     }
-
     private fun gotMedia(media: ArrayList<ThumbnailItem>, isFromCache: Boolean) {
         mIsGettingMedia = false
         checkLastMediaChanged()
         mMedia = media
-
         runOnUiThread {
             binding.loadingIndicator.hide()
             binding.mediaRefreshLayout.isRefreshing = false
             binding.mediaEmptyTextPlaceholder.beVisibleIf(media.isEmpty() && !isFromCache)
             binding.mediaEmptyTextPlaceholder2.beVisibleIf(media.isEmpty() && !isFromCache)
-
             if (binding.mediaEmptyTextPlaceholder.isVisible()) {
                 binding.mediaEmptyTextPlaceholder.text = getString(R.string.no_media_with_filters)
             }
             binding.mediaFastscroller.beVisibleIf(binding.mediaEmptyTextPlaceholder.isGone())
             setupAdapter()
         }
-
         mLatestMediaId = getLatestMediaId()
         mLatestMediaDateId = getLatestMediaByDateId()
         if (!isFromCache) {
@@ -935,14 +806,12 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             }.start()
         }
     }
-
     override fun tryDeleteFiles(fileDirItems: ArrayList<FileDirItem>, skipRecycleBin: Boolean) {
         val filtered = fileDirItems
             .filter { !getIsPathDirectory(it.path) && it.path.isMediaFile() } as ArrayList
         if (filtered.isEmpty()) {
             return
         }
-
         if (
             config.useRecycleBin
             && !skipRecycleBin
@@ -954,7 +823,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                 filtered.size
             )
             toast(movingItems)
-
             movePathsInRecycleBin(filtered.map { it.path } as ArrayList<String>) {
                 if (it) {
                     deleteFilteredFiles(filtered)
@@ -972,20 +840,16 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             deleteFilteredFiles(filtered)
         }
     }
-
     private fun shouldSkipAuthentication(): Boolean {
         return intent.getBooleanExtra(SKIP_AUTHENTICATION, false)
     }
-
     private fun deleteFilteredFiles(filtered: ArrayList<FileDirItem>) {
         deleteFiles(filtered) {
             if (!it) {
                 toast(org.appinitdev.commons.R.string.unknown_error_occurred)
                 return@deleteFiles
             }
-
             mMedia.removeAll { filtered.map { it.path }.contains((it as? Medium)?.path) }
-
             ensureBackgroundThread {
                 val useRecycleBin = config.useRecycleBin
                 filtered.forEach {
@@ -994,7 +858,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                     }
                 }
             }
-
             if (mMedia.isEmpty()) {
                 deleteDirectoryIfEmpty()
                 deleteDBDirectory()
@@ -1002,11 +865,9 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             }
         }
     }
-
     override fun refreshItems() {
         getMedia()
     }
-
     override fun selectedPaths(paths: ArrayList<String>) {
         Intent().apply {
             putExtra(PICKED_PATHS, paths)
@@ -1014,7 +875,6 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
         }
         finish()
     }
-
     override fun updateMediaGridDecoration(media: ArrayList<ThumbnailItem>) {
         var currentGridPosition = 0
         media.forEach {
@@ -1024,19 +884,16 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                 currentGridPosition = 0
             }
         }
-
         if (binding.mediaGrid.itemDecorationCount > 0) {
             val currentGridDecoration =
                 binding.mediaGrid.getItemDecorationAt(0) as GridSpacingItemDecoration
             currentGridDecoration.items = media
         }
     }
-
     private fun setAsDefaultFolder() {
         config.defaultFolder = mPath
         refreshMenuItems()
     }
-
     private fun unsetAsDefaultFolder() {
         config.defaultFolder = ""
         refreshMenuItems()

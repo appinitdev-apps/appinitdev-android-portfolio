@@ -1,17 +1,12 @@
-
 @androidx.media3.common.util.UnstableApi
 class ChatViewModel : ViewModel() {
     private val firestore = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
-    
     @androidx.media3.common.util.UnstableApi
     private val chatDao = BaseApplication.database.chatDao()
     private val repository = ChatRepository(firestore, chatDao, viewModelScope)
-
     private val _state = MutableStateFlow(AppState())
     val state = _state.asStateFlow()
-
-    
     var chats by mutableStateOf<List<ChatData>>(emptyList())
     var solicitudesRecibidas by mutableStateOf<List<ChatData>>(emptyList())
     var solicitudesEnviadas by mutableStateOf<List<ChatData>>(emptyList())
@@ -25,8 +20,6 @@ class ChatViewModel : ViewModel() {
     var notifications by mutableStateOf<List<NotificationEntity>>(emptyList())
     var verificationRequests by mutableStateOf<List<VerificationRequest>>(emptyList())
     var reportRequests by mutableStateOf<List<ReportRequest>>(emptyList())
-
-    
     var tp by mutableStateOf(ChatData())
     var forwardMsgs = mutableStateListOf<Message>()
     var reply by mutableStateOf("")
@@ -36,8 +29,6 @@ class ChatViewModel : ViewModel() {
     var showDialog by mutableStateOf(false)
     var msg by mutableStateOf(Message())
     var searchText by mutableStateOf("")
-    
-    
     var fileUri by mutableStateOf<Uri?>(null)
     var searchText1 by mutableStateOf("")
     var showSearch by mutableStateOf(false)
@@ -60,21 +51,17 @@ class ChatViewModel : ViewModel() {
                 val msgRef = firestore.collection("chats").document(chatId).collection("message").document(msgId)
                 val msgDoc = msgRef.get().await()
                 val message = msgDoc.toObject(Message::class.java) ?: return@launch
-                
                 val updatedReactions = message.reaction.toMutableList()
                 val existingIndex = updatedReactions.indexOfFirst { it.userId == reaction.userId }
-                
                 if (existingIndex != -1) {
                     updatedReactions[existingIndex] = reaction
                 } else {
                     updatedReactions.add(reaction)
                 }
-                
                 msgRef.update("reaction", updatedReactions).await()
             } catch (e: Exception) { Log.e("ChatViewModel", "Add reaction error", e) }
         }
     }
-
     fun Reaction(emoji: String, chatId: String, msgId: String) {
         val myUser = state.value.userData ?: return
         addReaction(chatId, msgId, com.appinitdev.chatok.Firebase.Reaction(
@@ -84,50 +71,39 @@ class ChatViewModel : ViewModel() {
             reaction = emoji
         ))
     }
-
     fun isBLockedByMe(userId: String): Boolean {
         return state.value.userData?.blockedUsers?.contains(userId) ?: false
     }
-
     fun isBlocked(userId: String, callback: (Boolean) -> Unit) {
         callback(false)
     }
-    
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
-
     private val _isSearchingRandom = MutableStateFlow(false)
     val isSearchingRandom = _isSearchingRandom.asStateFlow()
-
     private var chatsJob: Job? = null
     private var messagesJob: Job? = null
     private var storiesJob: Job? = null
     private var userJob: Job? = null
     var tpListener: ListenerRegistration? = null
     var userDataListener: ListenerRegistration? = null
-
     val brush = Brush.linearGradient(listOf(Color(0xFF238CDD), Color(0xFF1952C4)))
-
     init {
         observeChats()
         observeStories()
     }
-
     private fun observeChats() {
         chatsJob?.cancel()
         chatsJob = repository.getChatsFlow()
             .combine(state.map { it.userData?.userId }.distinctUntilChanged()) { allChats, myId ->
                 val currentMyId = myId ?: ""
-                
                 chats = allChats.filter { it.accepted }
                 val pendientes = allChats.filter { !it.accepted }
-                
                 solicitudesRecibidas = pendientes.filter { it.user1?.userId != currentMyId }
                 solicitudesEnviadas = pendientes.filter { it.user1?.userId == currentMyId }
             }
             .launchIn(viewModelScope)
     }
-
     private var notificationsJob: Job? = null
     fun observeNotifications() {
         val uid = state.value.userData?.userId ?: return
@@ -136,20 +112,16 @@ class ChatViewModel : ViewModel() {
             .onEach { notifications = it }
             .launchIn(viewModelScope)
     }
-
     fun clearNotifications() {
         val uid = state.value.userData?.userId ?: return
         viewModelScope.launch { repository.clearNotifications(uid) }
     }
-
     fun submitVerificationRequest(message: String, uris: List<Uri>) {
         val myUser = state.value.userData ?: return
         val cost = 50
         if (myUser.balance < cost) {
-            
             return
         }
-
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val imageUrls = mutableListOf<String>()
@@ -163,7 +135,6 @@ class ChatViewModel : ViewModel() {
                         imageUrls.add(url)
                     }
                 }
-
                 if (imageUrls.isNotEmpty()) {
                     val requestId = firestore.collection("verification_requests").document().id
                     val request = VerificationRequest(
@@ -177,27 +148,23 @@ class ChatViewModel : ViewModel() {
                     )
                     viewModelScope.launch { 
                         repository.submitVerificationRequest(request)
-                        
                         firestore.collection("users").document(myUser.userId).update("balance", FieldValue.increment(-cost.toLong()))
                     }
                 }
             } catch (e: Exception) { Log.e("ChatViewModel", "submitVerification error", e) }
         }
     }
-
     fun observeVerificationRequests() {
         repository.getPendingVerificationRequests()
             .onEach { verificationRequests = it }
             .launchIn(viewModelScope)
     }
-
     fun updateVerificationStatus(userId: String, requestId: String, approved: Boolean) {
         viewModelScope.launch {
             try { repository.updateVerificationStatus(userId, requestId, approved) }
             catch (e: Exception) { Log.e("ChatViewModel", "updateVerification error", e) }
         }
     }
-
     fun submitReport(reportedUserId: String, reportedUsername: String, reason: String, details: String) {
         val myId = state.value.userData?.userId ?: return
         viewModelScope.launch(Dispatchers.IO) {
@@ -213,40 +180,31 @@ class ChatViewModel : ViewModel() {
                     status = "pending"
                 )
                 repository.submitReport(report)
-                
-                
                 val userRef = firestore.collection("users").document(reportedUserId)
                 firestore.runTransaction { transaction ->
                     val snapshot = transaction.get(userRef)
                     val currentReports = snapshot.getLong("reportCount")?.toInt() ?: 0
                     val nextReports = currentReports + 1
-                    
                     transaction.update(userRef, "reportCount", nextReports)
-                    
                     if (nextReports >= 3) {
-                        
                         val suspendedUntil = Timestamp(Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
                         transaction.update(userRef, "suspendedUntil", suspendedUntil)
                     }
                 }.await()
-
             } catch (e: Exception) { Log.e("ChatViewModel", "submitReport error", e) }
         }
     }
-
     fun observeReports() {
         repository.getPendingReports()
             .onEach { reportRequests = it }
             .launchIn(viewModelScope)
     }
-
     fun dismissReport(reportId: String) {
         viewModelScope.launch {
             try { repository.updateReportStatus(reportId, "dismissed") }
             catch (e: Exception) { Log.e("ChatViewModel", "dismissReport error", e) }
         }
     }
-
     fun deleteAccount(onSuccess: () -> Unit) {
         val uid = state.value.userData?.userId ?: return
         viewModelScope.launch {
@@ -257,9 +215,6 @@ class ChatViewModel : ViewModel() {
             } catch (e: Exception) { Log.e("ChatViewModel", "deleteAccount error", e) }
         }
     }
-
-    
-
     fun addCoins(amount: Int) {
         val uid = state.value.userData?.userId ?: return
         viewModelScope.launch {
@@ -267,7 +222,6 @@ class ChatViewModel : ViewModel() {
             catch (e: Exception) { Log.e("ChatViewModel", "addCoins error", e) }
         }
     }
-
     fun buyVip(days: Int, cost: Int) {
         val uid = state.value.userData?.userId ?: return
         viewModelScope.launch {
@@ -275,7 +229,6 @@ class ChatViewModel : ViewModel() {
             catch (e: Exception) { Log.e("ChatViewModel", "buyVip error", e) }
         }
     }
-
     fun unlockChatWithSeller(sellerId: String, cost: Int, onSuccess: () -> Unit) {
         val uid = state.value.userData?.userId ?: return
         viewModelScope.launch {
@@ -287,7 +240,6 @@ class ChatViewModel : ViewModel() {
             }
         }
     }
-
     fun unlockStory(storyId: String, cost: Int) {
         val uid = state.value.userData?.userId ?: return
         viewModelScope.launch {
@@ -295,7 +247,6 @@ class ChatViewModel : ViewModel() {
             catch (e: Exception) { Log.e("ChatViewModel", "unlockStory error", e) }
         }
     }
-
     fun boostProfile(cost: Int) {
         val uid = state.value.userData?.userId ?: return
         viewModelScope.launch {
@@ -303,7 +254,6 @@ class ChatViewModel : ViewModel() {
             catch (e: Exception) { Log.e("ChatViewModel", "boostProfile error", e) }
         }
     }
-
     fun transferCoins(toUserId: String, amount: Int, onSuccess: () -> Unit, onError: (String) -> Unit) {
         val fromUid = state.value.userData?.userId ?: return
         viewModelScope.launch {
@@ -318,7 +268,6 @@ class ChatViewModel : ViewModel() {
             }
         }
     }
-
     private fun observeStories() {
         storiesJob?.cancel()
         repository.syncStories()
@@ -332,11 +281,7 @@ class ChatViewModel : ViewModel() {
             .onEach { stories = it }
             .launchIn(viewModelScope)
     }
-
-    
-
     fun showChats(userId: String) = repository.syncChats(userId)
-
     fun acceptChat(chatId: String) {
         viewModelScope.launch {
             try {
@@ -346,7 +291,6 @@ class ChatViewModel : ViewModel() {
             }
         }
     }
-
     fun popMessage(chatId: String) {
         if (chatId.isEmpty()) return
         _isLoading.value = true
@@ -357,8 +301,6 @@ class ChatViewModel : ViewModel() {
             val oldMessagesSize = messages.size
             messages = it 
             _isLoading.value = false
-            
-            
             if (it.isNotEmpty() && oldMessagesSize > 0 && it.size > oldMessagesSize) {
                 val lastMsg = it.first() 
                 if (lastMsg.senderId != state.value.userData?.userId && 
@@ -372,7 +314,6 @@ class ChatViewModel : ViewModel() {
             }
         }.launchIn(viewModelScope)
     }
-
     fun getUserData(userId: String) {
         if (userId.isBlank() || userId == "null") return
         userJob?.cancel()
@@ -381,15 +322,11 @@ class ChatViewModel : ViewModel() {
             repository.observeUser(userId).collect { usr -> usr?.let { _state.update { s -> s.copy(userData = it) } } }
         }
     }
-
     fun uploadMedia(uri: Uri = Uri.EMPTY, bytes: ByteArray = ByteArray(0), folder: String = "photos", 
                     msgId: String = "", chatId: String = "", callback: (String) -> Unit) {
-        
         val uid = state.value.userData?.userId ?: "anonymous"
         val fileName = "${System.currentTimeMillis()}.jpg"
         val ref = storage.reference.child("$folder/$uid/$fileName")
-        
-        
         val finalBytes = if (uri != Uri.EMPTY && folder == "photos") {
             try {
                 com.appinitdev.chatok.utils.MediaUtils.compressImage(BaseApplication.instance.applicationContext, uri)
@@ -398,7 +335,6 @@ class ChatViewModel : ViewModel() {
                 null
             }
         } else null
-
         val uploadTask = if (finalBytes != null) {
             val metadata = com.google.firebase.storage.StorageMetadata.Builder()
                 .setContentType("image/jpeg")
@@ -412,7 +348,6 @@ class ChatViewModel : ViewModel() {
                 .build()
             ref.putBytes(bytes, metadata)
         }
-
         uploadTask.addOnSuccessListener {
             ref.downloadUrl.addOnSuccessListener { callback(it.toString()) }
         }.addOnFailureListener { e -> 
@@ -426,7 +361,6 @@ class ChatViewModel : ViewModel() {
             }
         }
     }
-
     fun sendReply(
         chatId: String, 
         msg: String, 
@@ -462,13 +396,9 @@ class ChatViewModel : ViewModel() {
             time = Timestamp.now(),
             forwarded = forwarded
         )
-        
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                
                 chatDao.insertMessages(listOf(message.toEntity(chatId)))
-                
-                
                 repository.getLocalChat(chatId)?.let { chatEntity ->
                     chatDao.insertChats(listOf(chatEntity.copy(
                         lastMessageId = msgId,
@@ -476,31 +406,20 @@ class ChatViewModel : ViewModel() {
                         lastMessageTime = message.time?.toDate()?.time ?: System.currentTimeMillis()
                     )))
                 }
-                
-                
                 firestore.collection("chats").document(chatId).collection("message").document(msgId).set(message).await()
-                
                 val chatDoc = firestore.collection("chats").document(chatId).get().await()
                 val isAccepted = chatDoc.getBoolean("accepted") ?: false
-                
                 val user1Id = chatDoc.getString("user1.userId")
                 val isUser1 = user1Id == finalSenderId
-                
                 val otherUserInChat = if (isUser1) chatDoc.getBoolean("user2.isInChat") ?: false else chatDoc.getBoolean("user1.isInChat") ?: false
                 val otherUserId = if (isUser1) chatDoc.getString("user2.userId") else chatDoc.getString("user1.userId")
-                
                 val unreadField = if (isUser1) "user2.unread" else "user1.unread"
-                
                 val updates = mutableMapOf<String, Any>("last" to message)
-                
-                
                 val user2Id = chatDoc.getString("user2.userId")
                 if (!isAccepted && finalSenderId == user2Id) {
                     updates["accepted"] = true
-                    
                     repository.acceptChatLocally(chatId)
                 }
-
                 if (!otherUserInChat) {
                     updates[unreadField] = FieldValue.increment(1)
                     if (otherUserId != null) {
@@ -512,13 +431,11 @@ class ChatViewModel : ViewModel() {
                         sendNotification(notificationContent, otherUserId)
                     }
                 }
-                
                 firestore.collection("chats").document(chatId).update(updates).await()
             } catch (e: Exception) { Log.e("ChatViewModel", "Send error", e) }
         }
         return msgId
     }
-
     fun storyReaction(id: String, index: Int, reaction: String, storyUserId: String) {
         val myUser = state.value.userData ?: return
         viewModelScope.launch(Dispatchers.IO) {
@@ -526,11 +443,9 @@ class ChatViewModel : ViewModel() {
                 val storyRef = firestore.collection("stories").document(id)
                 val storyDoc = storyRef.get().await()
                 val story = storyDoc.toObject(Story::class.java) ?: return@launch
-                
                 val updatedImages = story.images.toMutableList()
                 val image = updatedImages[index]
                 val updatedViewers = image.viewedBy.toMutableList()
-                
                 val viewerIndex = updatedViewers.indexOfFirst { it.userId == myUser.userId }
                 val newViewer = StoryViewer(
                     ppurl = myUser.ppurl ?: "",
@@ -539,57 +454,45 @@ class ChatViewModel : ViewModel() {
                     reaction = reaction,
                     time = Timestamp.now()
                 )
-                
                 if (viewerIndex != -1) {
                     updatedViewers[viewerIndex] = newViewer
                 } else {
                     updatedViewers.add(newViewer)
                 }
-                
                 updatedImages[index] = image.copy(viewedBy = updatedViewers)
                 storyRef.update("images", updatedImages).await()
-                
                 sendNotification("${myUser.username} reaccionó a tu historia: $reaction", storyUserId)
             } catch (e: Exception) {
                 Log.e("ChatViewModel", "storyReaction error", e)
             }
         }
     }
-
     fun viewStory(storyId: String, imageIndex: Int) {
         val myUser = state.value.userData ?: return
         if (myUser.userId.isEmpty()) return
-        
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val storyRef = firestore.collection("stories").document(storyId)
                 val storyDoc = storyRef.get().await()
                 val story = storyDoc.toObject(Story::class.java) ?: return@launch
-                
                 if (story.userId == myUser.userId) return@launch 
-                
                 val updatedImages = story.images.toMutableList()
                 val image = updatedImages[imageIndex]
-                
                 if (image.viewedBy.any { it.userId == myUser.userId }) return@launch 
-                
                 val newViewer = StoryViewer(
                     ppurl = myUser.ppurl ?: "",
                     username = myUser.username ?: "",
                     userId = myUser.userId,
                     time = Timestamp.now()
                 )
-                
                 val updatedViewers = image.viewedBy + newViewer
                 updatedImages[imageIndex] = image.copy(viewedBy = updatedViewers)
-                
                 storyRef.update("images", updatedImages).await()
             } catch (e: Exception) {
                 Log.e("ChatViewModel", "viewStory error", e)
             }
         }
     }
-
     fun findChatId(otherUserId: String, callback: (String) -> Unit) {
         val myId = state.value.userData?.userId ?: return
         firestore.collection("chats")
@@ -605,15 +508,12 @@ class ChatViewModel : ViewModel() {
             }
             .addOnFailureListener { callback("") }
     }
-
     fun findChatIdPro(otherUserId: String, callback: (String) -> Unit) {
         findChatId(otherUserId, callback)
     }
-
     fun createChat(otherUser: UserData) {
         val myUser = state.value.userData ?: return
         val chatId = if (myUser.userId < otherUser.userId) "${myUser.userId}_${otherUser.userId}" else "${otherUser.userId}_${myUser.userId}"
-        
         val chatData = ChatData(
             chatId = chatId,
             user1 = ChatUserData(
@@ -630,14 +530,11 @@ class ChatViewModel : ViewModel() {
             ),
             accepted = false 
         )
-        
         firestore.collection("chats").document(chatId).set(chatData)
     }
-
     fun createChatAndReply(otherUser: UserData, replyMessage: Message, replyContent: String) {
         val myUser = state.value.userData ?: return
         val chatId = if (myUser.userId < otherUser.userId) "${myUser.userId}_${otherUser.userId}" else "${otherUser.userId}_${myUser.userId}"
-        
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val chatDoc = firestore.collection("chats").document(chatId).get().await()
@@ -660,17 +557,13 @@ class ChatViewModel : ViewModel() {
                     )
                     firestore.collection("chats").document(chatId).set(chatData).await()
                 }
-                
-                
                 sendReply(chatId, replyContent, replyMsg = replyMessage)
             } catch (e: Exception) {
                 Log.e("ChatViewModel", "createChatAndReply error", e)
             }
         }
     }
-
     fun sendNotification(message: String, userId: String) {
-        
         val notification = mapOf(
             "to" to userId,
             "message" to message,
@@ -679,23 +572,17 @@ class ChatViewModel : ViewModel() {
         )
         firestore.collection("notifications").add(notification)
     }
-
     fun deleteMsg(msgIds: List<String>, chatId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             msgIds.forEach { msgId ->
-                
                 val msgRef = firestore.collection("chats").document(chatId).collection("message").document(msgId)
                 msgRef.update("isDeleted", true, "content", "Mensaje borrado").await()
-                
-                
                 val chatDoc = firestore.collection("chats").document(chatId).get().await()
                 val lastMsg = chatDoc.get("last", Message::class.java)
                 if (lastMsg?.msgId == msgId) {
                     val updatedLast = lastMsg.copy(isDeleted = true, content = "Mensaje borrado")
                     firestore.collection("chats").document(chatId).update("last", updatedLast)
                 }
-                
-                
                 try {
                     val directory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "ChatOk")
                     directory.listFiles()?.forEach { file ->
@@ -707,16 +594,12 @@ class ChatViewModel : ViewModel() {
             }
         }
     }
-
     fun downloadMedia(context: Context, url: String, fileName: String) {
         if (url.isEmpty() || url.startsWith("uploading")) return
-        
         val directory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "ChatOk")
         if (!directory.exists()) directory.mkdirs()
-        
         val file = File(directory, fileName)
         if (file.exists()) return 
-
         val request = DownloadManager.Request(Uri.parse(url))
             .setTitle(fileName)
             .setDescription(context.getString(R.string.descargando_archivo))
@@ -724,11 +607,9 @@ class ChatViewModel : ViewModel() {
             .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "ChatOk/$fileName")
             .setAllowedOverMetered(true)
             .setAllowedOverRoaming(true)
-
         val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         downloadManager.enqueue(request)
     }
-
     fun toggleVendedora(isVendedora: Boolean) {
         val uid = state.value.userData?.userId ?: return
         viewModelScope.launch {
@@ -736,11 +617,9 @@ class ChatViewModel : ViewModel() {
             catch (e: Exception) { Log.e("ChatViewModel", "Vendedora error", e) }
         }
     }
-
     fun addChatWithRandomUser(callback: (UserData?) -> Unit) {
         val currentUser = state.value.userData ?: return
         val existingEmails = (chats + solicitudesRecibidas + solicitudesEnviadas).flatMap { listOfNotNull(it.user1?.email, it.user2?.email) }.toSet()
-
         viewModelScope.launch {
             _isSearchingRandom.value = true
             try {
@@ -750,80 +629,59 @@ class ChatViewModel : ViewModel() {
             finally { _isSearchingRandom.value = false }
         }
     }
-
-    
-
     fun loadMyGroups() {
         val uid = state.value.userData?.userId ?: return
         repository.getMyGroupsFlow(uid).onEach { myGroups = it }.launchIn(viewModelScope)
     }
-
     fun updateStatus(online: Boolean, userId: String? = null, v: Boolean = false) {
         val uid = userId ?: state.value.userData?.userId ?: return
         viewModelScope.launch { 
             repository.updateOnlineStatus(uid, online, ignorePref = v)
         }
     }
-
-    
     fun actualizarEstadoYStatusUsuario(online: Boolean, userId: String) {
         updateStatus(online, userId)
     }
-
     fun actualizarTodosUsuariosOffline() {
         viewModelScope.launch { repository.setAllUsersOffline() }
     }
-
     fun ejecutarUnaVezPorDia(context: Context, action: () -> Unit) {
         val prefs = context.getSharedPreferences("daily_tasks", Context.MODE_PRIVATE)
         val hoy = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         val ultimaFecha = prefs.getString("last_run_date", null)
-
         if (ultimaFecha != hoy) {
             action()
             prefs.edit().putString("last_run_date", hoy).apply()
         }
     }
-
     fun readAllMessagesInChat(chatId: String) {
         if (chatId.isEmpty()) return
-        
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val myId = state.value.userData?.userId ?: return@launch
                 val messagesCollection = firestore.collection("chats").document(chatId).collection("message")
-                
-                
-                
                 val unread = messagesCollection
                     .whereEqualTo("read", false)
                     .get().await()
                     .documents
                     .filter { it.getString("senderId") != myId }
-
                 if (unread.isNotEmpty()) {
                     val batch = firestore.batch()
                     unread.forEach { batch.update(it.reference, "read", true) }
                     batch.commit().await()
                 }
-
-                
                 val chatDoc = firestore.collection("chats").document(chatId).get().await()
                 val user1Id = chatDoc.getString("user1.userId")
                 val fieldToReset = if (user1Id == myId) "user1.unread" else "user2.unread"
                 firestore.collection("chats").document(chatId).update(fieldToReset, 0).await()
-                
             } catch (e: Exception) {
                 Log.e("ChatViewModel", "readAllMessages error", e)
             }
         }
     }
-
     fun setchatUser(usr: ChatUserData, id: String) {
         _state.update { it.copy(User2 = usr, chatId = id) }
         val myId = state.value.userData?.userId ?: return
-        
-        
         userJob?.cancel()
         userJob = viewModelScope.launch {
             repository.observeUser(usr.userId).collect { updatedUser ->
@@ -838,7 +696,6 @@ class ChatViewModel : ViewModel() {
                 }
             }
         }
-
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val chatDoc = firestore.collection("chats").document(id).get().await()
@@ -850,13 +707,11 @@ class ChatViewModel : ViewModel() {
             } catch (e: Exception) { Log.e("ChatViewModel", "setchatUser error", e) }
         }
     }
-
     fun dltchatUser() {
         val chatId = state.value.chatId
         val myId = state.value.userData?.userId
         _state.update { it.copy(chatId = "") }
         userJob?.cancel() 
-        
         if (chatId.isNotEmpty() && myId != null) {
             viewModelScope.launch(Dispatchers.IO) {
                 try {
@@ -870,22 +725,18 @@ class ChatViewModel : ViewModel() {
             }
         }
     }
-
     fun getTp(chatId: String) {
         tpListener?.remove()
         tpListener = firestore.collection("chats").document(chatId).addSnapshotListener { snp, _ ->
             snp?.toObject(ChatData::class.java)?.let { tp = it }
         }
     }
-
     fun depopTp() {
         tpListener?.remove()
     }
-
     fun popStory() {
         observeStories()
     }
-
     fun getFCMToken(userId: String) {
         com.google.firebase.messaging.FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
@@ -896,60 +747,43 @@ class ChatViewModel : ViewModel() {
             firestore.collection("users").document(userId).update("fcmToken", token)
         }
     }
-
     fun resetState() {
         _state.update { AppState() }
     }
-
     fun onSignInResult(result: SignInResult) {
         _state.update { it.copy(isSignedIn = result.data != null, signInError = result.errmsg) }
-        
         if (result.data != null) {
             if (_state.value.userData == null || _state.value.userData?.username.isNullOrEmpty()) {
                 _state.update { it.copy(userData = result.data) }
             }
         }
     }
-
     fun addUserDataToFirestore(userData: UserData, age: String = "", gender: String = "") {
         val updatedUser = userData.copy(
             age = if(age.isNotEmpty()) age else userData.age, 
             gender = if(gender.isNotEmpty()) gender else userData.gender
         )
-        
         _state.update { it.copy(userData = updatedUser, isSignedIn = true) }
-        
         viewModelScope.launch {
             try { 
                 firestore.collection("users").document(updatedUser.userId).set(updatedUser).await() 
-                
                 repository.insertUser(updatedUser)
             }
             catch (e: Exception) { Log.e("ChatViewModel", "Error adding user data", e) }
         }
     }
-
     fun dePopMsg() {
         messagesJob?.cancel()
         messages = emptyList()
     }
-
     fun getBlockedUsers(userIds: List<String>) {
-        
     }
-
     fun unblockUser(userId: String) {
-        
     }
-
     fun blockUser(userId: String) {
-        
     }
-
     fun loadMoreMessages(chatId: String) {
-        
     }
-
     fun clearChat(chatId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -961,36 +795,25 @@ class ChatViewModel : ViewModel() {
             } catch (e: Exception) { Log.e("ChatViewModel", "Clear chat error", e) }
         }
     }
-
     fun addUrl(chatId: String, msgId: String, imgUrl: String = "", vidUrl: String = "", fileUrl: String = "") {
         val updates = mutableMapOf<String, Any>()
         if (imgUrl.isNotEmpty()) updates["imgUrl"] = imgUrl
         if (vidUrl.isNotEmpty()) updates["vidUrl"] = vidUrl
         if (fileUrl.isNotEmpty()) updates["fileUrl"] = fileUrl
-        
         firestore.collection("chats").document(chatId).collection("message").document(msgId).update(updates)
     }
-
     fun uploadVideo(vidUri: Uri, chatId: String, msgId: String, callback: (String) -> Unit) {
         uploadMedia(uri = vidUri, folder = "videos", chatId = chatId, msgId = msgId, callback = callback)
     }
-
     fun uploadFile(fileUri: Uri, chatId: String, msgId: String, callback: (String) -> Unit) {
         uploadMedia(uri = fileUri, folder = "files", chatId = chatId, msgId = msgId, callback = callback)
     }
-
     fun removeReaction(chatId: String, msgId: String) {
-        
     }
-
     fun addScheduledMsg(msg: ScheduledMsg) {
-        
     }
-
     fun cancelScheduledMsg(chatId: String, content: String, senderId: String = "") {
-        
     }
-
     fun deleteChat(chatIds: List<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             chatIds.forEach { chatId ->
@@ -999,7 +822,6 @@ class ChatViewModel : ViewModel() {
             }
         }
     }
-
     fun deleteStory(story: Story, index: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -1015,15 +837,12 @@ class ChatViewModel : ViewModel() {
             } catch (e: Exception) { Log.e("ChatViewModel", "Delete story error", e) }
         }
     }
-
     fun hideDialog() {
         _state.update { it.copy(showDialog = false) }
     }
-
     fun showDialog() {
         _state.update { it.copy(showDialog = true) }
     }
-
     fun addChat(email: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -1039,11 +858,9 @@ class ChatViewModel : ViewModel() {
             }
         }
     }
-
     fun setSrEmail(email: String) {
         _state.update { it.copy(srEmail = email) }
     }
-
     fun uploadStory(imgUrl: String, storyId: String = "", isLocked: Boolean = false, price: Int = 0) {
         val myUser = state.value.userData ?: return
         viewModelScope.launch(Dispatchers.IO) {
@@ -1059,8 +876,6 @@ class ChatViewModel : ViewModel() {
                         return@launch
                     }
                 }
-                
-                
                 val newId = firestore.collection("stories").document().id
                 val newStory = Story(
                     id = newId,
@@ -1074,15 +889,11 @@ class ChatViewModel : ViewModel() {
             } catch (e: Exception) { Log.e("ChatViewModel", "Upload story error", e) }
         }
     }
-
     fun markUserAsRejected(email: String) {
-        
     }
-
     fun updatePref(userData: UserData, pref: Pref) {
         firestore.collection("users").document(userData.userId).update("pref", pref)
     }
-
     fun forwardMsg(chatIds: List<String>) {
         chatIds.forEach { chatId ->
             forwardMsgs.forEach { msg ->
@@ -1091,11 +902,9 @@ class ChatViewModel : ViewModel() {
         }
         forwardMsgs.clear()
     }
-
     fun updateProfile(userData: UserData) {
         firestore.collection("users").document(userData.userId).set(userData)
     }
-
     fun removeL() {
         viewModelScope.launch {
             try {
@@ -1111,19 +920,15 @@ class ChatViewModel : ViewModel() {
             }
         }
     }
-
     fun removeFCMToken(userId: String) {
         firestore.collection("users").document(userId).update("fcmToken", FieldValue.delete())
     }
-
     fun updateNetworkStatus(isOffline: Boolean) {
         _state.update { it.copy(isOffline = isOffline) }
     }
-
     fun editMessage(chatId: String, msgId: String, newContent: String) {
         firestore.collection("chats").document(chatId).collection("message").document(msgId).update("content", newContent)
     }
-
     fun typing(isTyping: Boolean, chatId: String, userId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -1136,24 +941,19 @@ class ChatViewModel : ViewModel() {
             } catch (e: Exception) { Log.e("ChatViewModel", "typing error", e) }
         }
     }
-
     fun uploadVoiceNote(file: File, chatId: String, callback: (String) -> Unit) {
         val dir = SimpleDateFormat("yyyy_MMMM", Locale("es", "ES")).format(Date())
         val fileName = "voice_${System.currentTimeMillis()}.m4a"
         val ref = storage.reference.child("voice_notes/$dir/$fileName")
-        
         ref.putFile(Uri.fromFile(file)).addOnSuccessListener {
             ref.downloadUrl.addOnSuccessListener { callback(it.toString()) }
         }
     }
-
     fun markMessageAsViewed(chatId: String, msgId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 firestore.collection("chats").document(chatId).collection("message").document(msgId)
                     .update("viewedAt", Timestamp.now())
-                
-                
                 val entity = chatDao.getMessageById(msgId)
                 if (entity != null) {
                     chatDao.insertMessages(listOf(entity.copy(viewedAt = System.currentTimeMillis())))
@@ -1161,22 +961,17 @@ class ChatViewModel : ViewModel() {
             } catch (e: Exception) { Log.e("ChatViewModel", "markViewed error", e) }
         }
     }
-
     fun getAllMedia(onResult: (List<String>) -> Unit, onError: (Exception) -> Unit) {
         val uid = state.value.userData?.userId ?: return
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val storage = FirebaseStorage.getInstance()
-                
                 val photosRef = storage.reference.child("photos/$uid")
                 val videosRef = storage.reference.child("videos/$uid")
-                
                 val photosResult = try { photosRef.listAll().await() } catch(e: Exception) { null }
                 val videosResult = try { videosRef.listAll().await() } catch(e: Exception) { null }
-                
                 val photoUrls = photosResult?.items?.map { it.downloadUrl.await().toString() } ?: emptyList()
                 val videoUrls = videosResult?.items?.map { it.downloadUrl.await().toString() } ?: emptyList()
-                
                 val allUrls = photoUrls + videoUrls
                 withContext(Dispatchers.Main) { onResult(allUrls) }
             } catch (e: Exception) {
@@ -1185,7 +980,6 @@ class ChatViewModel : ViewModel() {
             }
         }
     }
-
     fun deleteMedia(url: String, onSuccess: () -> Unit, onError: (Exception) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -1199,7 +993,6 @@ class ChatViewModel : ViewModel() {
             }
         }
     }
-
     override fun onCleared() {
         super.onCleared()
         repository.clearAllListeners()
@@ -1210,7 +1003,6 @@ class ChatViewModel : ViewModel() {
         tpListener?.remove()
         userDataListener?.remove()
     }
-
     companion object {
         @Volatile private var instance: ChatViewModel? = null
         fun getInstance(): ChatViewModel = instance ?: synchronized(this) {

@@ -1,65 +1,44 @@
-
- 
-
-
-
-
 @AndroidEntryPoint
 class Year : BasePanelFragment() {
-
     private val yearViewModel: YearViewModel by viewModels({ requireActivity() })
-
     private lateinit var binding: FragmentYearBinding
     private lateinit var headerBinding: HeaderYearBinding
-
     private var adapterYear: AdapterYear? = null
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentYearBinding.inflate(inflater, container, false)
         headerBinding = HeaderYearBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.header.setContentView(headerBinding.root)
         binding.header.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
         binding.recyclerView.attachSlideFastScroller()
         binding.recyclerView.requireAttachedMiniPlayer()
-
         binding.recyclerView.setupGridLayoutManager(YearPreferences.getGridSize().spanCount)
-
         setupClickListeners()
-
         yearViewModel.years.collectListWhenStarted({ adapterYear != null }) { years ->
             updateYearList(years)
         }
     }
-
     override fun onDestroyView() {
         adapterYear = null
         super.onDestroyView()
     }
-
     private fun setupClickListeners() {
         headerBinding.menu.setOnClickListener {
             openPreferencesPanel()
         }
-
         headerBinding.listStyle.setOnClickListener {
             childFragmentManager.showListStyleDialog(GenericListStyleDialog.Companion.PANEL.YEAR)
         }
-
         headerBinding.sortStyle.setOnClickListener {
             childFragmentManager.showYearSortDialog()
         }
-
         headerBinding.search.setOnClickListener {
             openSearch()
         }
     }
-
     private fun updateYearList(years: List<YearGroup>) {
         if (adapterYear == null) {
             adapterYear = AdapterYear(years)
@@ -76,21 +55,18 @@ class Year : BasePanelFragment() {
                 binding.recyclerView.adapter = adapterYear
             }
         }
-
         headerBinding.count.text = getString(R.string.x_years, years.size)
         binding.recyclerView.requireAttachedSectionScroller(
                 sections = provideScrollPositions(years),
                 header = binding.header,
                 view = headerBinding.scroll
         )
-
         headerBinding.sortStyle.setCurrentSortStyle()
         headerBinding.scroll.hideOnUnfavorableSort(
                 sorts = listOf(CommonPreferencesConstants.BY_YEAR),
                 preference = YearPreferences.getSortStyle()
         )
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -99,7 +75,6 @@ class Year : BasePanelFragment() {
             }
         }
     }
-
     private fun provideScrollPositions(years: List<YearGroup>): List<SectionedFastScroller.Position> {
         val yearToIndex = linkedMapOf<String, Int>()
         years.forEachIndexed { index, yearGroup ->
@@ -112,7 +87,6 @@ class Year : BasePanelFragment() {
             SectionedFastScroller.Position(year, index)
         }
     }
-
     companion object {
         fun newInstance(): Year {
             val args = Bundle()
@@ -120,7 +94,6 @@ class Year : BasePanelFragment() {
             fragment.arguments = args
             return fragment
         }
-
         const val TAG = "Year"
     }
 }

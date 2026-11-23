@@ -1,10 +1,8 @@
-
 @OptIn(UnstableApi::class)
 class BillingManager(
     private val context: Context,
     private val viewModel: ChatViewModel
 ) : PurchasesUpdatedListener {
-
     private val billingClient = BillingClient.newBuilder(context)
         .setListener(this)
         .enablePendingPurchases(
@@ -13,11 +11,9 @@ class BillingManager(
                 .build()
         )
         .build()
-
     init {
         startConnection()
     }
-
     private fun startConnection() {
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
@@ -30,7 +26,6 @@ class BillingManager(
             }
         })
     }
-
     fun launchPurchaseFlow(activity: Activity, productId: String) {
         val productList = listOf(
             QueryProductDetailsParams.Product.newBuilder()
@@ -38,11 +33,9 @@ class BillingManager(
                 .setProductType(BillingClient.ProductType.INAPP)
                 .build()
         )
-
         val params = QueryProductDetailsParams.newBuilder()
             .setProductList(productList)
             .build()
-
         billingClient.queryProductDetailsAsync(params) { billingResult, productDetailsResult ->
             val productDetailsList = productDetailsResult.productDetailsList
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && productDetailsList.isNotEmpty()) {
@@ -58,7 +51,6 @@ class BillingManager(
             }
         }
     }
-
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             for (purchase in purchases) {
@@ -66,7 +58,6 @@ class BillingManager(
             }
         }
     }
-
     private fun handlePurchase(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             if (!purchase.isAcknowledged) {
@@ -75,7 +66,6 @@ class BillingManager(
                     .build()
                 billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
                     if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                        
                         val coins = when (purchase.products[0]) {
                             "chatcoins_100" -> 100
                             "chatcoins_500" -> 500

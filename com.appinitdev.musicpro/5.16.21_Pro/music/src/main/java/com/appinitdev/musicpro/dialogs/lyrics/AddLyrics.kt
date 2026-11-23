@@ -1,15 +1,10 @@
-
 @AndroidEntryPoint
 class AddLyrics : MediaBottomDialogFragment() {
-
     private lateinit var binding: DialogLyricsAddBinding
-
     private var listener: OnLyricsCreatedListener? = null
-
     private val audio: Audio by lazy {
         requireArguments().parcelable(BundleConstants.AUDIO)!!
     }
-
     private val addLyricsViewModel: AddLyricsViewModel by viewModels(
             extrasProducer = {
                 defaultViewModelCreationExtras.withCreationCallback<AddLyricsViewModel.Factory> {
@@ -17,24 +12,19 @@ class AddLyrics : MediaBottomDialogFragment() {
                 }
             }
     )
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DialogLyricsAddBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.cancel.setOnClickListener {
             dismiss()
         }
-
         binding.save.setOnClickListener {
             val text = binding.editText.text?.toString() ?: ""
             addLyricsViewModel.saveLyrics(text)
         }
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 addLyricsViewModel.saveResult.collect { result ->
@@ -51,11 +41,9 @@ class AddLyrics : MediaBottomDialogFragment() {
             }
         }
     }
-
     fun setOnLyricsCreatedListener(listener: OnLyricsCreatedListener) {
         this.listener = listener
     }
-
     companion object {
         fun newInstance(audio: Audio): AddLyrics {
             val args = Bundle()
@@ -64,15 +52,12 @@ class AddLyrics : MediaBottomDialogFragment() {
             fragment.arguments = args
             return fragment
         }
-
         private const val TAG = "AddLyrics"
-
         fun FragmentManager.showAddLyrics(audio: Audio): AddLyrics {
             val dialog = newInstance(audio)
             dialog.show(this, TAG)
             return dialog
         }
-
         interface OnLyricsCreatedListener {
             fun onLyricsCreated()
         }

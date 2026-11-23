@@ -1,4 +1,3 @@
-
 enum class Permission {
     WRITE_EXTERNAL_STORAGE,
     READ_SMS,
@@ -22,7 +21,6 @@ enum class Permission {
     QUERY_ALL_PACKAGES,
     NONE
     ;
-
     @Composable
     fun getText(): String {
         return when (this) {
@@ -39,30 +37,24 @@ enum class Permission {
             else -> ""
         }
     }
-
     suspend fun isEnabledAsync(context: Context): Boolean {
         val apiPermissions = ApiPermissionsPreference.getAsync()
         return apiPermissions.contains(name)
     }
-
     fun toSysPermission(): String {
         return "android.permission.${this.name}"
     }
-
     suspend fun enabledAndCanAsync(context: Context): Boolean {
         return can(context) && isEnabledAsync(context)
     }
-
     fun can(context: Context): Boolean {
         return when {
             this == WRITE_EXTERNAL_STORAGE -> {
                 FileHelper.hasStoragePermission(context)
             }
-
             this == QUERY_ALL_PACKAGES -> {
                 true
             }
-
             this == POST_NOTIFICATIONS -> {
                 if (isTPlus()) {
                     context.hasPermission(this.toSysPermission())
@@ -70,45 +62,37 @@ enum class Permission {
                     NotificationManagerCompat.from(context).areNotificationsEnabled()
                 }
             }
-
             this == SYSTEM_ALERT_WINDOW -> {
                 Settings.canDrawOverlays(context)
             }
-
             this == NOTIFICATION_LISTENER -> {
                 val componentName = ComponentName(context, PNotificationListenerService::class.java)
                 val enabledListeners =
                     Settings.Secure.getString(context.contentResolver, "enabled_notification_listeners")
                 return enabledListeners?.contains(componentName.flattenToString()) == true
             }
-
             else -> context.hasPermission(this.toSysPermission())
         }
     }
-
     fun grant(context: Context): Boolean {
         if (can(context)) {
             return true
         } else {
             sendEvent(RequestPermissionsEvent(this))
         }
-
         return false
     }
-
     companion object {
         fun getEnableNotificationIntent(context: Context): Intent {
             return Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
                 .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
         }
     }
-
     suspend fun checkAsync(context: Context) {
         if (!isEnabledAsync(context)) {
             throw Exception("no_permission")
         }
     }
-
     @Composable
     fun getGrantAccessText(): String {
         return when {
@@ -119,7 +103,6 @@ enum class Permission {
             else -> ""
         }
     }
-
     fun request(
         context: Context,
         launcher: ActivityResultLauncher<String>?,
@@ -197,9 +180,7 @@ enum class Permission {
         }
     }
 }
-
 data class PermissionItem(val icon: DrawableResource?, val permission: Permission, val permissions: Set<Permission>, var granted: Boolean = false) {
-
     companion object {
         fun create(context: Context, icon: DrawableResource?, permission: Permission, permissions: Set<Permission> = setOf(permission)): PermissionItem {
             return PermissionItem(icon, permission, permissions).apply {
@@ -208,13 +189,11 @@ data class PermissionItem(val icon: DrawableResource?, val permission: Permissio
         }
     }
 }
-
 object Permissions {
     private val launcherMap = mutableMapOf<Permission, ActivityResultLauncher<String>>()
     private val events = mutableListOf<Job>()
     private val intentLauncherMap = mutableMapOf<Permission, ActivityResultLauncher<Intent>>()
     private lateinit var multipleLauncher: ActivityResultLauncher<Array<String>>
-
     suspend fun checkAsync(context: Context, permissions: Set<Permission>) {
         val apiPermissions = ApiPermissionsPreference.getAsync().toMutableSet()
         if (apiPermissions.contains(Permission.WRITE_CONTACTS.toString())) {
@@ -229,11 +208,9 @@ object Permissions {
             }
         }
     }
-
     fun allCan(context: Context, permissions: Set<Permission>): Boolean {
         return permissions.all { it.can(context) }
     }
-
     fun getWebList(context: Context): List<PermissionItem> {
         val list = mutableListOf<PermissionItem>()
         list.add(
@@ -244,34 +221,6 @@ object Permissions {
         list.add(
             PermissionItem.create(context, Res.drawable.contact_round, Permission.WRITE_CONTACTS, setOf(Permission.READ_CONTACTS, Permission.WRITE_CONTACTS))
         )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         if (AppFeatureType.APPS.has()) {
             list.add(
                 PermissionItem.create(context, Res.drawable.package2, Permission.QUERY_ALL_PACKAGES)
@@ -279,25 +228,18 @@ object Permissions {
         }
         return list
     }
-
     fun init(activity: AppCompatActivity) {
         setOf(
             Permission.CAMERA,
             Permission.WRITE_EXTERNAL_STORAGE,
-
-
-
             Permission.READ_CONTACTS,
             Permission.WRITE_CONTACTS,
-
-
             Permission.POST_NOTIFICATIONS,
             Permission.RECORD_AUDIO,
             Permission.READ_MEDIA_IMAGES,
             Permission.READ_MEDIA_VIDEOS,
             Permission.READ_MEDIA_AUDIO,
             Permission.READ_PHONE_STATE,
-
             Permission.SCHEDULE_EXACT_ALARM,
         ).forEach { permission ->
             launcherMap[permission] =
@@ -307,10 +249,8 @@ object Permissions {
                     sendEvent(PermissionsResultEvent(map))
                 }
         }
-
         setOf(
             Permission.WRITE_EXTERNAL_STORAGE,
-
             Permission.POST_NOTIFICATIONS,
             Permission.NOTIFICATION_LISTENER,
             Permission.SCHEDULE_EXACT_ALARM,
@@ -319,9 +259,6 @@ object Permissions {
                 activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                     canContinue = true
                     if (permission == Permission.WRITE_EXTERNAL_STORAGE) {
-                        
-                        
-                        
                         coIO {
                             delay(1500)
                             val map = mapOf(permission.toSysPermission() to permission.can(MainApp.instance))
@@ -333,12 +270,10 @@ object Permissions {
                     }
                 }
         }
-
         multipleLauncher = activity.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             canContinue = true
             sendEvent(PermissionsResultEvent(permissions))
         }
-
         events.add(
             receiveEventHandler<RequestPermissionsEvent> { event ->
                 if (event.permissions.size == 1) {
@@ -350,9 +285,7 @@ object Permissions {
             },
         )
     }
-
     private var canContinue = false
-
     suspend fun ensureNotificationAsync(context: Context): Boolean {
         val permission = Permission.POST_NOTIFICATIONS
         val ready = isNotificationPermissionReadyWithRequest(context)
@@ -366,20 +299,16 @@ object Permissions {
                 delay(500)
             }
         }
-
         return true
     }
-
     private fun isNotificationPermissionReadyWithRequest(context: Context): Boolean {
         val permission = Permission.POST_NOTIFICATIONS
         if (!permission.can(context)) {
             sendEvent(RequestPermissionsEvent(permission))
             return false
         }
-
         return true
     }
-
     fun checkNotification(
         context: Context,
         stringResource: StringResource,
@@ -402,7 +331,6 @@ object Permissions {
             }
         }
     }
-
     fun release() {
         events.forEach {
             it.cancel()

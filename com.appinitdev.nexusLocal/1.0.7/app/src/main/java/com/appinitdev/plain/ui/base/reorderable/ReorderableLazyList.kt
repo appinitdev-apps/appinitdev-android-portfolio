@@ -1,4 +1,3 @@
-
 @Composable
 fun rememberReorderableLazyListState(
     lazyListState: LazyListState,
@@ -12,7 +11,6 @@ fun rememberReorderableLazyListState(
 ): ReorderableLazyListState {
     val density = LocalDensity.current
     val scrollThresholdPx = with(density) { scrollThreshold.toPx() }
-
     val scope = rememberCoroutineScope()
     val onMoveState = rememberUpdatedState(onMove)
     val layoutDirection = LocalLayoutDirection.current
@@ -36,7 +34,6 @@ fun rememberReorderableLazyListState(
     }
     return state
 }
-
 @Stable
 class ReorderableLazyListState internal constructor(
     state: LazyListState,
@@ -52,7 +49,6 @@ class ReorderableLazyListState internal constructor(
     scope, onMoveState, scrollThreshold, scrollThresholdPadding,
     scroller, layoutDirection, shouldItemMove = shouldItemMove,
 )
-
 @Composable
 fun LazyItemScope.ReorderableItem(
     state: ReorderableLazyListState,
@@ -77,7 +73,6 @@ fun LazyItemScope.ReorderableItem(
     } else {
         animateItemModifier
     }
-
     ReorderableCollectionItem(
         state = state, key = key, modifier = modifier.then(offsetModifier),
         enabled = enabled, dragging = dragging, content = content,

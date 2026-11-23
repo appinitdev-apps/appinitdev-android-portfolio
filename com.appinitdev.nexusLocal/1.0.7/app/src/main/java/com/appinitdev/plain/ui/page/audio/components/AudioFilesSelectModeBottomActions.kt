@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AudioFilesSelectModeBottomActions(
@@ -12,7 +11,6 @@ fun AudioFilesSelectModeBottomActions(
     val scope = rememberCoroutineScope()
     var showSelectTagsDialog by remember { mutableStateOf(false) }
     var removeFromTags by remember { mutableStateOf(false) }
-
     if (showSelectTagsDialog) {
         val selectedIds = dragSelectState.selectedIds
         val selectedItems = audioVM.itemsFlow.collectAsState().value.filter { selectedIds.contains(it.id) }
@@ -21,7 +19,6 @@ fun AudioFilesSelectModeBottomActions(
             dragSelectState.exitSelectMode()
         }
     }
-
     PBottomAppBar {
         BottomActionButtons {
             if (!audioVM.trash.value) {

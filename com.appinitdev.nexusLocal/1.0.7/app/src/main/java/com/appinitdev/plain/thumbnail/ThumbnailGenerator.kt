@@ -1,28 +1,4 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 object ThumbnailGenerator {
-
-     
-
-
-
     suspend fun getBitmapAsync(
         context: Context,
         file: File,
@@ -43,12 +19,7 @@ object ThumbnailGenerator {
                 null
             }
         }
-
         var bitmap: Bitmap? = null
-
-        
-        
-        
         if (isQPlus()) {
             val isMedia = effectiveName.isVideoFast() || effectiveName.isImageFast() || effectiveName.isAudioFast()
             if (isMedia) {
@@ -67,7 +38,6 @@ object ThumbnailGenerator {
                 if (bitmap != null) return bitmap
             }
         }
-
         if (effectiveName.isPartialSupportVideo()) {
             return try {
                 if (isQPlus()) {
@@ -81,7 +51,6 @@ object ThumbnailGenerator {
                 null
             }
         }
-
         if (effectiveName.isVideoFast()) {
             return try {
                 if (isQPlus()) {
@@ -95,15 +64,11 @@ object ThumbnailGenerator {
                 null
             }
         }
-
-        
         try {
             bitmap = decodeSampledBitmapFromFile(file.absolutePath, width, height, centerCrop)
         } catch (ex: Exception) {
             LogCat.e(ex.toString())
         }
-
-        
         if (bitmap == null) {
             try {
                 val imageLoader = SingletonImageLoader.get(context)
@@ -118,15 +83,8 @@ object ThumbnailGenerator {
                 LogCat.e(ex.toString())
             }
         }
-
         return bitmap
     }
-
-     
-
-
-
-
     suspend fun toThumbBytesAsync(
         context: Context,
         file: File,
@@ -136,8 +94,6 @@ object ThumbnailGenerator {
         mediaId: String,
         fileName: String = "",
     ): ByteArray? {
-        
-        
         if (mediaId.isNotEmpty() && width <= 512) {
             val bitmap = getBitmapAsync(context, file, width, height, centerCrop, mediaId, fileName)
             if (bitmap != null) {
@@ -147,20 +103,13 @@ object ThumbnailGenerator {
                 return stream.toByteArray()
             }
         }
-
-        
         ThumbnailCache.get(context, file.absolutePath, width, height, centerCrop)?.let { return it }
-
-        
         val bitmap = getBitmapAsync(context, file, width, height, centerCrop, fileName = fileName) ?: return null
         val stream = ByteArrayOutputStream()
-        
         bitmap.compress(Bitmap.CompressFormat.JPEG, 85, stream)
         bitmap.recycle()
         val bytes = stream.toByteArray()
-
         ThumbnailCache.put(context, file.absolutePath, width, height, centerCrop, bytes)
-
         return bytes
     }
 }

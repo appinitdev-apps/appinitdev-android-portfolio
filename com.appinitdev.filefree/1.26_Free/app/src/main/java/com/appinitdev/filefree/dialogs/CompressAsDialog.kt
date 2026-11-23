@@ -1,16 +1,12 @@
-
 class CompressAsDialog(val activity: BaseSimpleActivity, val path: String, val callback: (destination: String, password: String?) -> Unit) {
     private val binding = DialogCompressAsBinding.inflate(activity.layoutInflater)
-
     init {
         val filename = path.getFilenameFromPath()
         val indexOfDot = if (filename.contains('.') && !activity.getIsPathDirectory(path)) filename.lastIndexOf(".") else filename.length
         val baseFilename = filename.substring(0, indexOfDot)
         var realPath = path.getParentPath()
-
         binding.apply {
             filenameValue.setText(baseFilename)
-
             folder.setText(activity.humanizePath(realPath))
             folder.setOnClickListener {
                 FilePickerDialog(activity, realPath, false, activity.config.shouldShowHidden(), true, true, showFavoritesButton = true) {
@@ -18,12 +14,10 @@ class CompressAsDialog(val activity: BaseSimpleActivity, val path: String, val c
                     realPath = it
                 }
             }
-
             passwordProtect.setOnCheckedChangeListener { _, _ ->
                 enterPasswordHint.beVisibleIf(passwordProtect.isChecked)
             }
         }
-
         activity.getAlertDialogBuilder()
             .setPositiveButton(C.string.ok, null)
             .setNegativeButton(C.string.cancel, null)
@@ -48,11 +42,9 @@ class CompressAsDialog(val activity: BaseSimpleActivity, val path: String, val c
                                     activity.toast(C.string.name_taken)
                                     return@OnClickListener
                                 }
-
                                 alertDialog.dismiss()
                                 callback(newPath, password)
                             }
-
                             else -> activity.toast(C.string.invalid_name)
                         }
                     })

@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ComponentShowcasePage(navController: NavHostController) {
@@ -22,7 +21,6 @@ fun ComponentShowcasePage(navController: NavHostController) {
         }
     }
 }
-
 @Composable
 internal fun SectionTitle(title: String) {
     Text(
@@ -32,7 +30,6 @@ internal fun SectionTitle(title: String) {
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
     )
 }
-
 @Composable
 private fun ShowcaseAlerts() {
     SectionTitle("PAlert")
@@ -45,14 +42,12 @@ private fun ShowcaseAlerts() {
     }
     VerticalSpace(16.dp)
 }
-
 @Composable
 private fun ShowcaseBanners() {
     SectionTitle("PBanner")
     PBanner(title = "Banner Title", desc = "Banner description.", icon = Res.drawable.lightbulb, onClick = {})
     VerticalSpace(16.dp)
 }
-
 @Composable
 private fun ShowcaseCards() {
     SectionTitle("PCard + PListItem")
@@ -66,7 +61,6 @@ private fun ShowcaseCards() {
     }
     VerticalSpace(16.dp)
 }
-
 @Composable
 private fun ShowcaseButtons() {
     SectionTitle("Buttons")
@@ -81,7 +75,6 @@ private fun ShowcaseButtons() {
     }
     VerticalSpace(16.dp)
 }
-
 @Composable
 private fun ShowcaseChipsAndSwitches() {
     SectionTitle("Chips & Switches")
@@ -101,7 +94,6 @@ private fun ShowcaseChipsAndSwitches() {
     }
     VerticalSpace(16.dp)
 }
-
 @Composable
 private fun ShowcaseTips() {
     SectionTitle("Tips")

@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun ChatListItem(
@@ -78,7 +77,6 @@ fun ChatListItem(
             }
         }
         VerticalSpace(4.dp)
-
         showDeliveryDialog.value?.let { statusData ->
             if (peer != null) {
                 PeerDeliveryStatusDialog(statusData = statusData, onRetry = { chatVM.resendMessage(m.id) }, onDismiss = { showDeliveryDialog.value = null })

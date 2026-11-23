@@ -1,22 +1,14 @@
-
 class SettingsActivity : BaseActivity() {
-
     data class LanguageOption(val englishName: String, val nativeName: String, val locale: Locale) {
         fun getDisplayName(): String =
             if (englishName == nativeName) englishName else "$englishName ($nativeName)"
     }
-
-    
     private var backCallback: OnBackPressedCallback? = null
-
-    
     private var onBackInvokedCb: android.window.OnBackInvokedCallback? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val themePreference = ThemePreference(this)
         val themePrefValue = themePreference.getValue()
-
         if (themePrefValue == 100) {
             when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
                 Configuration.UI_MODE_NIGHT_NO -> { setTheme(R.style.AppTheme) }
@@ -26,7 +18,6 @@ class SettingsActivity : BaseActivity() {
         if (themePrefValue == 0) { setTheme(R.style.AppTheme) }
         if (themePrefValue == 1) { setTheme(R.style.AppThemeDark) }
         setContentView(R.layout.activity_settings)
-
         if (themePrefValue == 100) {
             findViewById<TextView>(R.id.system_default_btn).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_radio_checked, 0, 0, 0)
             findViewById<TextView>(R.id.light_btn).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_radio_unchecked, 0, 0, 0)
@@ -42,7 +33,6 @@ class SettingsActivity : BaseActivity() {
             findViewById<TextView>(R.id.light_btn).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_radio_unchecked, 0, 0, 0)
             findViewById<TextView>(R.id.dark_btn).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_radio_checked, 0, 0, 0)
         }
-
         openPages()
         themeSettings()
         initializeCache()
@@ -50,7 +40,6 @@ class SettingsActivity : BaseActivity() {
         initOfflineSwitches()
         initNavSwitches()
         initAnalyticsSwitch()
-
         findViewById<RelativeLayout>(R.id.offline_settings).setOnClickListener {
             findViewById<SwitchCompat>(R.id.offline_internet_switch).toggle()
         }
@@ -60,71 +49,21 @@ class SettingsActivity : BaseActivity() {
         findViewById<RelativeLayout>(R.id.analytics_settings).setOnClickListener {
             findViewById<SwitchCompat>(R.id.analytics_switch).toggle()
         }
-
         findViewById<ConstraintLayout>(R.id.view).systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-
-        
-         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         findViewById<ImageButton>(R.id.back_btn_set).setOnClickListener {
             this.onBackPressed()
         }
-
         findViewById<RelativeLayout>(R.id.unit_settings).setOnClickListener {
             val intent = Intent(this, UnitActivity::class.java)
             startActivity(intent)
         }
-
-
-        
-        
         backCallback = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
-                
                 val consumed = handleBackPress()
                 if (consumed) {
-                    
                     backCallback?.isEnabled = anyOverlayOpen()
                     return
                 }
-
-                
-                
                 backCallback?.isEnabled = false
                 try {
                     if (isTaskRoot) {
@@ -138,36 +77,25 @@ class SettingsActivity : BaseActivity() {
             }
         }
         onBackPressedDispatcher.addCallback(this, backCallback!!)
-
-        
         findViewById<RelativeLayout>(R.id.language_setting).setOnClickListener {
             showLanguageSelectionDialog()
         }
         updateLanguageContentText()
     }
-
-    
     private fun anyOverlayOpen(): Boolean {
         val themePanel = findViewById<FrameLayout?>(R.id.theme_panel)
         return themePanel?.visibility == View.VISIBLE
     }
-
-    
     private fun setBackInterceptionEnabled(enabled: Boolean) {
         backCallback?.isEnabled = enabled
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             if (enabled) {
                 if (onBackInvokedCb == null) {
                     onBackInvokedCb = android.window.OnBackInvokedCallback {
-                        
                         handleBackPress()
-                        
                         if (!anyOverlayOpen()) {
-                            
                             onBackInvokedDispatcher.unregisterOnBackInvokedCallback(onBackInvokedCb!!)
                             onBackInvokedCb = null
-                            
                             backCallback?.isEnabled = false
                         }
                     }
@@ -181,16 +109,12 @@ class SettingsActivity : BaseActivity() {
                     try {
                         onBackInvokedDispatcher.unregisterOnBackInvokedCallback(onBackInvokedCb!!)
                     } catch (_: Exception) {
-                        
                     }
                     onBackInvokedCb = null
                 }
             }
         }
     }
-
-    
-
     private fun getSupportedLanguages(): List<LanguageOption> = listOf(
         LanguageOption("English", Locale("en").getDisplayLanguage(Locale("en")), Locale("en")),
         LanguageOption("Swedish", Locale("sv", "SE").getDisplayLanguage(Locale("sv", "SE")), Locale("sv", "SE")),
@@ -215,27 +139,23 @@ class SettingsActivity : BaseActivity() {
             resources.configuration.locale
         }
     }
-
     private fun getSystemLanguageOption(): LanguageOption {
         val systemLocale = getSystemLocale()
         return getSupportedLanguages().find {
             it.locale.language == systemLocale.language && (it.locale.country.isEmpty() || it.locale.country == systemLocale.country)
         } ?: getSupportedLanguages()[0]
     }
-
     private fun setupLanguageListener() {
         findViewById<RelativeLayout>(R.id.language_setting).setOnClickListener {
             showLanguageSelectionDialog()
         }
     }
-
     private fun showLanguageSelectionDialog() {
         val languages = getSupportedLanguages()
         val systemLangOption = getSystemLanguageOption()
         val languageNames = mutableListOf<String>()
         languageNames.add(getString(R.string.system_default))
         languageNames.addAll(languages.map { it.getDisplayName() })
-
         val currentPref = getCurrentLanguagePreference()
         var checkedItem = 0
         if (currentPref != null) {
@@ -244,11 +164,7 @@ class SettingsActivity : BaseActivity() {
             }
             if (checkedItem != -1) checkedItem += 1 else checkedItem = 0
         }
-
-        
         val adapter = ArrayAdapter<String>(this, R.layout.dialog_language_item, R.id.lang_name, languageNames)
-
-        
         val dialog = AlertDialog.Builder(this)
             .setTitle(getString(R.string.language_title))
             .setSingleChoiceItems(adapter, checkedItem) { dialogInterface, which ->
@@ -264,10 +180,7 @@ class SettingsActivity : BaseActivity() {
             }
             .setNegativeButton(android.R.string.cancel, null)
             .create()
-
-        
         dialog.window?.setBackgroundDrawableResource(R.drawable.dialog_popup_bg)
-
         dialog.show()
     }
     private fun getColorFromAttr(attr: Int): Int {
@@ -275,7 +188,6 @@ class SettingsActivity : BaseActivity() {
         theme.resolveAttribute(attr, typedValue, true)
         return typedValue.data
     }
-
     private fun updateLanguageContentText() {
         val langOption = when (val pref = getCurrentLanguagePreference()) {
             null -> getSystemLanguageOption()
@@ -285,7 +197,6 @@ class SettingsActivity : BaseActivity() {
         }
         findViewById<TextView>(R.id.language_content).text = langOption.getDisplayName()
     }
-
     private fun getCurrentLanguagePreference(): Locale? {
         val prefs = getSharedPreferences("settings", MODE_PRIVATE)
         val lang = prefs.getString("app_language", null)
@@ -293,7 +204,6 @@ class SettingsActivity : BaseActivity() {
         return if (lang.isNullOrBlank()) null
         else Locale(lang, country ?: "")
     }
-
     private fun setLanguagePreference(locale: Locale?) {
         val prefs = getSharedPreferences("settings", MODE_PRIVATE)
         if (locale == null) {
@@ -304,87 +214,67 @@ class SettingsActivity : BaseActivity() {
                 .putString("app_country", locale.country ?: "")
                 .apply()
         }
-        
         com.appinitdev.science.utils.ElementDataLoader.clearCache()
     }
-
     override fun onApplySystemInsets(top: Int, bottom: Int, left: Int, right: Int) {
         val params = findViewById<FrameLayout>(R.id.common_title_back_set).layoutParams as ViewGroup.LayoutParams
         params.height = top + resources.getDimensionPixelSize(R.dimen.title_bar)
         findViewById<FrameLayout>(R.id.common_title_back_set).layoutParams = params
-
         val titleParam = findViewById<FrameLayout>(R.id.title_box_settings).layoutParams as ViewGroup.MarginLayoutParams
         titleParam.rightMargin = right
         titleParam.leftMargin = left
         findViewById<FrameLayout>(R.id.title_box_settings).layoutParams = titleParam
-
         val params2 = findViewById<TextView>(R.id.element_title_downstate).layoutParams as ViewGroup.MarginLayoutParams
         params2.topMargin = top
         findViewById<TextView>(R.id.element_title_downstate).layoutParams = params2
-
         findViewById<LinearLayout>(R.id.personalization_box).setPadding(left, 0, right, 0)
         findViewById<LinearLayout>(R.id.advanced_box).setPadding(left, 0, right, 0)
     }
-
-    
     private fun handleBackPress(): Boolean {
         val themePanel = findViewById<FrameLayout>(R.id.theme_panel)
-
         return if (themePanel.visibility == View.VISIBLE) {
             Utils.fadeOutAnim(themePanel, 300) 
-            
             setBackInterceptionEnabled(false)
             true 
         } else {
             false 
         }
     }
-
-    
     override fun onBackPressed() {
         if (!handleBackPress()) {
             super.onBackPressed()
         }
     }
-
     private fun initOfflineSwitches() {
         val offlinePreferences = offlinePreference(this)
         val offlinePrefValue = offlinePreferences.getValue()
         findViewById<SwitchCompat>(R.id.offline_internet_switch).isChecked = offlinePrefValue == 1
-
         findViewById<SwitchCompat>(R.id.offline_internet_switch).setOnCheckedChangeListener { _, _ ->
             if (findViewById<SwitchCompat>(R.id.offline_internet_switch).isChecked) { offlinePreferences.setValue(1) }
             else { offlinePreferences.setValue(0) }
         }
     }
-
     private fun initNavSwitches() {
         val navPreferences = hideNavPreference(this)
         val navPrefValue = navPreferences.getValue()
         findViewById<SwitchCompat>(R.id.nav_bar_switch).isChecked = navPrefValue == 1
-
         findViewById<SwitchCompat>(R.id.nav_bar_switch).setOnCheckedChangeListener { _, _ ->
             if (findViewById<SwitchCompat>(R.id.nav_bar_switch).isChecked) { navPreferences.setValue(1) }
             else { navPreferences.setValue(0) }
         }
     }
-
     private fun initAnalyticsSwitch() {
         val analyticsPreferences = AnalyticsPreference(this)
         val analyticsPrefValue = analyticsPreferences.getValue()
         findViewById<SwitchCompat>(R.id.analytics_switch).isChecked = analyticsPrefValue
-
         findViewById<SwitchCompat>(R.id.analytics_switch).setOnCheckedChangeListener { _, isChecked ->
             analyticsPreferences.setValue(isChecked)
             AnalyticsHelper.updateAnalyticsCollection(this)
-            
-            
             if (isChecked) {
                 AnalyticsHelper.logEvent(this, "analytics_enabled", null)
             }
         }
     }
-
     private fun openPages() {
         findViewById<RelativeLayout>(R.id.favorite_settings).setOnClickListener {
             val intent = Intent(this, FavoritePageActivity::class.java)
@@ -399,14 +289,12 @@ class SettingsActivity : BaseActivity() {
             startActivity(intent)
         }
     }
-
     private fun cacheSettings() {
         findViewById<LinearLayout>(R.id.cache_lay).setOnClickListener {
             this.cacheDir.deleteRecursively()
             initializeCache()
         }
     }
-
     private fun initializeCache() {
         try {
             var size: Long = 0
@@ -418,7 +306,6 @@ class SettingsActivity : BaseActivity() {
             ToastUtil.showToast(this, "Error Code: 11002")
         }
     }
-
     private fun getDirSize(dir: File?): Long {
         var size: Long = 0
         if (dir != null) {
@@ -432,17 +319,14 @@ class SettingsActivity : BaseActivity() {
         }
         return size
     }
-
     private fun readableFileSize(size: Long): String? {
         if (size <= 0) return "0 Bytes"
         val units = arrayOf("Bytes", "kB", "MB", "GB", "TB")
         val digitGroups = (log10(size.toDouble()) / log10(1024.0)).toInt()
         return DecimalFormat("#,##0.#").format(size / 1024.0.pow(digitGroups.toDouble())).toString() + " " + units[digitGroups]
     }
-
     private fun themeSettings() {
         val themePanel = findViewById<FrameLayout>(R.id.theme_panel)
-
         findViewById<TextView>(R.id.system_default_btn).setOnClickListener {
             val themePreference = ThemePreference(this)
             themePreference.setValue(100)
@@ -456,9 +340,7 @@ class SettingsActivity : BaseActivity() {
                 } 
             }
             Utils.fadeOutAnim(themePanel, 300)
-            
             setBackInterceptionEnabled(false)
-
             val delayChange = Handler()
             delayChange.postDelayed({
                 finish()
@@ -475,7 +357,6 @@ class SettingsActivity : BaseActivity() {
             setTheme(R.style.AppTheme)
             Utils.fadeOutAnim(themePanel, 300)
             setBackInterceptionEnabled(false)
-
             val delayChange = Handler()
             delayChange.postDelayed({
                 finish()
@@ -492,7 +373,6 @@ class SettingsActivity : BaseActivity() {
             setTheme(R.style.AppThemeDark)
             Utils.fadeOutAnim(themePanel, 300)
             setBackInterceptionEnabled(false)
-
             val delayChange = Handler()
             delayChange.postDelayed({
                 finish()
@@ -505,12 +385,10 @@ class SettingsActivity : BaseActivity() {
         }
         findViewById<RelativeLayout>(R.id.themes_settings).setOnClickListener {
             Utils.fadeInAnim(themePanel, 300)
-            
             setBackInterceptionEnabled(true)
         }
         findViewById<TextView>(R.id.theme_background).setOnClickListener {
             Utils.fadeOutAnim(themePanel, 300)
-            
             setBackInterceptionEnabled(false)
         }
         findViewById<TextView>(R.id.cancel_btn).setOnClickListener {
@@ -518,7 +396,6 @@ class SettingsActivity : BaseActivity() {
             setBackInterceptionEnabled(false)
         }
     }
-
     override fun onDestroy() {
         super.onDestroy()
         backCallback?.remove()

@@ -1,6 +1,3 @@
- 
-
-
 internal fun ImageToolboxApplication.attachLogWriter() {
     Logger.attachLogWriter(
         context = this@attachLogWriter,

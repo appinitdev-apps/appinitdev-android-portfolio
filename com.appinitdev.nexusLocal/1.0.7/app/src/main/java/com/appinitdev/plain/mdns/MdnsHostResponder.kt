@@ -1,33 +1,11 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 object MdnsHostResponder {
     private const val MDNS_GROUP = "224.0.0.251"
     private const val MDNS_PORT = 5353
-
     @Volatile private var hostname = "plainapp.local"
-
     private val stateLock = Any()
     private var socket: MulticastSocket? = null
     private var worker: Thread? = null
     private var multicastLock: WifiManager.MulticastLock? = null
-
     fun start(context: Context, mdnsHostname: String): Boolean {
         val normalized = normalizeHostname(mdnsHostname)
         if (normalized.isEmpty()) {
@@ -36,13 +14,11 @@ object MdnsHostResponder {
         }
         stop()
         hostname = normalized
-
         val candidates = candidateInterfaces()
         if (candidates.isEmpty()) {
             LogCat.e("mDNS: no candidate interfaces found")
             return false
         }
-
         val multicastGroup = InetAddress.getByName(MDNS_GROUP)
         val groupSockAddr = InetSocketAddress(multicastGroup, MDNS_PORT)
         synchronized(stateLock) {
@@ -51,11 +27,6 @@ object MdnsHostResponder {
                 MulticastSocket(null).apply {
                     reuseAddress = true
                     soTimeout = 1000
-                    
-                    
-                    
-                    
-                    
                     bind(InetSocketAddress(InetAddress.getByName("0.0.0.0"), MDNS_PORT))
                     var joinCount = 0
                     for ((iface, ip) in candidates) {
@@ -63,8 +34,6 @@ object MdnsHostResponder {
                             .onSuccess { joinCount++; LogCat.d("mDNS joined ${iface.name} (${ip.hostAddress})") }
                             .onFailure { LogCat.e("mDNS joinGroup ${iface.name}: ${it.message}") }
                     }
-                    
-                    
                     if (joinCount == 0) {
                         runCatching { joinGroup(multicastGroup) }
                             .onSuccess { joinCount++; LogCat.d("mDNS joined multicast group (default interface)") }
@@ -90,7 +59,6 @@ object MdnsHostResponder {
         LogCat.d("mDNS responder started for $hostname on ${candidates.size} interface(s)")
         return true
     }
-
     fun stop() {
         synchronized(stateLock) {
             val t = worker; worker = null
@@ -101,15 +69,12 @@ object MdnsHostResponder {
             multicastLock = null
         }
     }
-
     private fun runLoop(s: MulticastSocket) {
         val buf = ByteArray(1500)
         while (!s.isClosed) {
             val packet = DatagramPacket(buf, buf.size)
             try {
                 s.receive(packet)
-                
-                
                 val senderIp = extractInet4Address(packet.address) ?: continue
                 val fresh = candidateInterfaces()
                 if (fresh.isEmpty()) continue
@@ -124,10 +89,6 @@ object MdnsHostResponder {
                 val destPort = if (useUnicast) packet.port else MDNS_PORT
                 val dest = "${destAddress.hostAddress}:$destPort"
                 val queryInfo = formatQuestions(response.matchedQuestions)
-
-                
-                
-                
                 runCatching {
                     if (!useUnicast) s.networkInterface = responseIface
                     s.send(DatagramPacket(response.bytes, response.bytes.size, destAddress, destPort))
@@ -137,22 +98,15 @@ object MdnsHostResponder {
                     )
                 }.onFailure { LogCat.e("mDNS send to ${senderIp.hostAddress}: ${it.message}") }
             } catch (_: SocketTimeoutException) {
-                
             } catch (_: Exception) {
                 if (s.isClosed) break
             }
         }
     }
-
-     
-
-
-
     internal fun extractInet4Address(addr: InetAddress): Inet4Address? {
         if (addr is Inet4Address) return addr
         if (addr is Inet6Address) {
             val b = addr.address
-            
             if (b.size == 16 && b[0] == 0.toByte() && b[10] == 0xFF.toByte() && b[11] == 0xFF.toByte() &&
                 b.take(10).all { it == 0.toByte() }
             ) {
@@ -161,19 +115,16 @@ object MdnsHostResponder {
         }
         return null
     }
-
     private fun formatQuestions(questions: List<MdnsQuestion>): String {
         return questions.joinToString(separator = ",", prefix = "[", postfix = "]") {
             "qtype=${it.qtype} qclass=${it.qclass} QU=${it.unicastResponseRequested}"
         }
     }
-
     internal fun normalizeHostname(value: String): String {
         val trimmed = value.trim().trim('.').lowercase()
         if (trimmed.isEmpty()) return ""
         return if (trimmed.endsWith(".local")) trimmed else "$trimmed.local"
     }
-
     private fun acquireMulticastLock(context: Context): WifiManager.MulticastLock? {
         val wifi = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager
             ?: return null

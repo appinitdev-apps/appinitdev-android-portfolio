@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FamilyProfilesScreen(
@@ -7,17 +6,13 @@ fun FamilyProfilesScreen(
     val context = LocalContext.current
     val manager = remember { FamilyProfileManager(context) }
     val dbHelper = remember { BmiDatabaseHelper(context) }
-
     var members by remember { mutableStateOf(manager.getMembers()) }
     var selectedMember by remember { mutableStateOf<FamilyMember?>(null) }
-
     var showAddMemberDialog by remember { mutableStateOf(false) }
     var memberToEdit by remember { mutableStateOf<FamilyMember?>(null) }
     var memberToDelete by remember { mutableStateOf<FamilyMember?>(null) }
-
     var showAddMeasurementDialog by remember { mutableStateOf(false) }
     var recordToDelete by remember { mutableStateOf<GrowthRecord?>(null) }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -97,7 +92,6 @@ fun FamilyProfilesScreen(
                 .background(MaterialTheme.colorScheme.background)
         ) {
             if (selectedMember == null) {
-                
                 if (members.isEmpty()) {
                     Box(
                         modifier = Modifier
@@ -146,7 +140,6 @@ fun FamilyProfilesScreen(
                         items(members, key = { it.id }) { member ->
                             val records = manager.getGrowthRecordsForMember(member.id)
                             val latestRecord = records.lastOrNull()
-
                             FamilyMemberCard(
                                 member = member,
                                 latestRecord = latestRecord,
@@ -159,21 +152,17 @@ fun FamilyProfilesScreen(
                     }
                 }
             } else {
-                
                 val activeMember = selectedMember!!
                 var memberRecords by remember(activeMember.id) {
                     mutableStateOf(manager.getGrowthRecordsForMember(activeMember.id))
                 }
-
                 var selectedMetricTab by remember { mutableIntStateOf(0) }
                 val metricKeys = listOf("WEIGHT", "HEIGHT", "BMI", "HEAD_CIRCUMFERENCE", "BODY_FAT", "ICE")
                 val metricTitles = listOf("⚖️ Peso", "📏 Estatura", "📊 IMC", "🧠 Perímetro", "💪 Grasa %", "🫀 ICE")
-
                 val activeMetricKey = metricKeys[selectedMetricTab]
                 val currentMetricMeasurements = remember(activeMember.id, activeMetricKey, memberRecords) {
                     dbHelper.getMeasurementsForMemberAndMetric(activeMember.id, activeMetricKey)
                 }
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -181,7 +170,6 @@ fun FamilyProfilesScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(20.dp),
@@ -210,9 +198,7 @@ fun FamilyProfilesScreen(
                                     )
                                 }
                             }
-
                             Spacer(modifier = Modifier.width(16.dp))
-
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     text = activeMember.name,
@@ -226,7 +212,6 @@ fun FamilyProfilesScreen(
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
-
                             IconButton(onClick = { memberToEdit = activeMember }) {
                                 Icon(
                                     imageVector = Icons.Default.Edit,
@@ -236,8 +221,6 @@ fun FamilyProfilesScreen(
                             }
                         }
                     }
-
-                    
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -256,7 +239,6 @@ fun FamilyProfilesScreen(
                                         heightCm = latestRecord.heightCm
                                     )
                                 } else null
-
                                 DirectPrintManager.printClinicalReport(
                                     context = context,
                                     memberName = activeMember.name,
@@ -274,7 +256,6 @@ fun FamilyProfilesScreen(
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(text = stringResource(id = R.string.imprimir), fontSize = 12.sp, fontWeight = FontWeight.Bold)
                         }
-
                         Button(
                             onClick = {
                                 val latestRecord = memberRecords.lastOrNull()
@@ -289,7 +270,6 @@ fun FamilyProfilesScreen(
                                         heightCm = latestRecord.heightCm
                                     )
                                 } else null
-
                                 PdfReportGenerator.generateAndSharePdf(
                                     context = context,
                                     memberName = activeMember.name,
@@ -307,7 +287,6 @@ fun FamilyProfilesScreen(
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(text = stringResource(id = R.string.pdf_label), fontSize = 12.sp, fontWeight = FontWeight.Bold)
                         }
-
                         OutlinedButton(
                             onClick = {
                                 CsvExportManager.exportAndShareCsv(
@@ -324,8 +303,6 @@ fun FamilyProfilesScreen(
                             Text(text = stringResource(id = R.string.excel_label), fontSize = 12.sp, fontWeight = FontWeight.Bold)
                         }
                     }
-
-                    
                     Button(
                         onClick = { showAddMeasurementDialog = true },
                         modifier = Modifier
@@ -344,18 +321,13 @@ fun FamilyProfilesScreen(
                             fontWeight = FontWeight.Bold
                         )
                     }
-
-                    
                     WhoPercentileChart(records = memberRecords)
-
-                    
                     Text(
                         text = stringResource(id = R.string.filtro_graficas_evolucion),
                         fontSize = 15.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
-
                     ScrollableTabRow(
                         selectedTabIndex = selectedMetricTab,
                         containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -376,14 +348,10 @@ fun FamilyProfilesScreen(
                             )
                         }
                     }
-
-                    
                     GenericMetricChart(
                         title = "Evolución de ${metricTitles[selectedMetricTab]}",
                         measurements = currentMetricMeasurements
                     )
-
-                    
                     if (memberRecords.isNotEmpty()) {
                         Text(
                             text = stringResource(id = R.string.historial_de_mediciones),
@@ -392,7 +360,6 @@ fun FamilyProfilesScreen(
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(top = 8.dp)
                         )
-
                         memberRecords.reversed().forEach { rec ->
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
@@ -427,7 +394,6 @@ fun FamilyProfilesScreen(
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                     }
-
                                     IconButton(
                                         onClick = { recordToDelete = rec }
                                     ) {
@@ -445,18 +411,14 @@ fun FamilyProfilesScreen(
             }
         }
     }
-
-    
     if (showAddMemberDialog) {
         var nameInput by remember { mutableStateOf("") }
         var relationshipInput by remember { mutableStateOf("Hijo/a") }
         var genderInput by remember { mutableStateOf(Gender.MALE) }
         var birthYearInput by remember { mutableStateOf("2020") }
-
         val currentYear = remember { Calendar.getInstance().get(Calendar.YEAR) }
         val parsedYear = birthYearInput.trim().toIntOrNull()
         val isYearValid = parsedYear != null && parsedYear in 1900..currentYear
-
         AlertDialog(
             onDismissRequest = { showAddMemberDialog = false },
             title = {
@@ -471,7 +433,6 @@ fun FamilyProfilesScreen(
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
-
                     OutlinedTextField(
                         value = relationshipInput,
                         onValueChange = { relationshipInput = it },
@@ -479,7 +440,6 @@ fun FamilyProfilesScreen(
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -497,7 +457,6 @@ fun FamilyProfilesScreen(
                                 Text(text = "${stringResource(id = R.string.femenino)} 🌸", fontWeight = FontWeight.Bold, fontSize = 13.sp)
                             }
                         }
-
                         Surface(
                             shape = RoundedCornerShape(10.dp),
                             color = if (genderInput == Gender.MALE) Color(0xFF2196F3) else MaterialTheme.colorScheme.surfaceVariant,
@@ -512,7 +471,6 @@ fun FamilyProfilesScreen(
                             }
                         }
                     }
-
                     OutlinedTextField(
                         value = birthYearInput,
                         onValueChange = { birthYearInput = it },
@@ -566,21 +524,16 @@ fun FamilyProfilesScreen(
             tonalElevation = 6.dp
         )
     }
-
-    
     if (memberToEdit != null) {
         val target = memberToEdit!!
         val birthCal = Calendar.getInstance().apply { timeInMillis = target.birthTimestamp }
-
         var nameInput by remember(target.id) { mutableStateOf(target.name) }
         var relationshipInput by remember(target.id) { mutableStateOf(target.relationship) }
         var genderInput by remember(target.id) { mutableStateOf(target.gender) }
         var birthYearInput by remember(target.id) { mutableStateOf(birthCal.get(Calendar.YEAR).toString()) }
-
         val currentYear = remember { Calendar.getInstance().get(Calendar.YEAR) }
         val parsedYear = birthYearInput.trim().toIntOrNull()
         val isYearValid = parsedYear != null && parsedYear in 1900..currentYear
-
         AlertDialog(
             onDismissRequest = { memberToEdit = null },
             title = {
@@ -595,7 +548,6 @@ fun FamilyProfilesScreen(
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
-
                     OutlinedTextField(
                         value = relationshipInput,
                         onValueChange = { relationshipInput = it },
@@ -603,7 +555,6 @@ fun FamilyProfilesScreen(
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -621,7 +572,6 @@ fun FamilyProfilesScreen(
                                 Text(text = "${stringResource(id = R.string.femenino)} 🌸", fontWeight = FontWeight.Bold, fontSize = 13.sp)
                             }
                         }
-
                         Surface(
                             shape = RoundedCornerShape(10.dp),
                             color = if (genderInput == Gender.MALE) Color(0xFF2196F3) else MaterialTheme.colorScheme.surfaceVariant,
@@ -636,7 +586,6 @@ fun FamilyProfilesScreen(
                             }
                         }
                     }
-
                     OutlinedTextField(
                         value = birthYearInput,
                         onValueChange = { birthYearInput = it },
@@ -693,8 +642,6 @@ fun FamilyProfilesScreen(
             tonalElevation = 6.dp
         )
     }
-
-    
     if (memberToDelete != null) {
         val target = memberToDelete!!
         AlertDialog(
@@ -756,8 +703,6 @@ fun FamilyProfilesScreen(
             tonalElevation = 6.dp
         )
     }
-
-    
     if (recordToDelete != null && selectedMember != null) {
         val activeMember = selectedMember!!
         val rec = recordToDelete!!
@@ -800,13 +745,10 @@ fun FamilyProfilesScreen(
             tonalElevation = 6.dp
         )
     }
-
-    
     if (showAddMeasurementDialog && selectedMember != null) {
         val activeMember = selectedMember!!
         var weightInput by remember { mutableStateOf("12.5") }
         var heightInput by remember { mutableStateOf("85.0") }
-
         AlertDialog(
             onDismissRequest = { showAddMeasurementDialog = false },
             title = {
@@ -822,7 +764,6 @@ fun FamilyProfilesScreen(
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
-
                     OutlinedTextField(
                         value = heightInput,
                         onValueChange = { heightInput = it },
@@ -848,7 +789,6 @@ fun FamilyProfilesScreen(
                                 weightKg = w,
                                 heightCm = h
                             )
-
                             val record = GrowthRecord(
                                 memberId = activeMember.id,
                                 weightKg = w,
@@ -879,7 +819,6 @@ fun FamilyProfilesScreen(
         )
     }
 }
-
 @Composable
 fun FamilyMemberCard(
     member: FamilyMember,
@@ -920,9 +859,7 @@ fun FamilyMemberCard(
                     )
                 }
             }
-
             Spacer(modifier = Modifier.width(14.dp))
-
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = member.name,
@@ -950,7 +887,6 @@ fun FamilyMemberCard(
                     )
                 }
             }
-
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onEdit) {
                     Icon(
@@ -975,16 +911,13 @@ fun FamilyMemberCard(
         }
     }
 }
-
 private fun getAgeFormatted(birthTimestamp: Long): String {
     val birth = Calendar.getInstance().apply { timeInMillis = birthTimestamp }
     val now = Calendar.getInstance()
-
     var years = now.get(Calendar.YEAR) - birth.get(Calendar.YEAR)
     if (now.get(Calendar.DAY_OF_YEAR) < birth.get(Calendar.DAY_OF_YEAR)) {
         years--
     }
-
     return if (years <= 0) {
         val months = (now.get(Calendar.MONTH) - birth.get(Calendar.MONTH) + 12) % 12
         "$months meses"
@@ -992,7 +925,6 @@ private fun getAgeFormatted(birthTimestamp: Long): String {
         "$years años"
     }
 }
-
 private fun getCategoryIdFromBirth(birthTimestamp: Long): Int {
     val birth = Calendar.getInstance().apply { timeInMillis = birthTimestamp }
     val now = Calendar.getInstance()
@@ -1000,7 +932,6 @@ private fun getCategoryIdFromBirth(birthTimestamp: Long): Int {
     if (now.get(Calendar.DAY_OF_YEAR) < birth.get(Calendar.DAY_OF_YEAR)) {
         years--
     }
-
     return when {
         years < 1 -> 1
         years in 1..4 -> 2

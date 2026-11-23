@@ -1,4 +1,3 @@
-
 @Stable
 data class ScrollbarSettings(
     val enabled: Boolean = true,
@@ -16,4 +15,3 @@ data class ScrollbarSettings(
         val Default = ScrollbarSettings()
     }
 }
-

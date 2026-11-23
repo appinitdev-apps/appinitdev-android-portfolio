@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addPomodoroSchema() {
     query("pomodoroSettings") {
         resolver { ->

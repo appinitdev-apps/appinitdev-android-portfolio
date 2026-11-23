@@ -1,4 +1,3 @@
-
 class UnitConversionActivity : BaseActivity() {
     private val unitCategories: Map<String, List<UnitDefinition>> = mapOf(
         "Length" to listOf(
@@ -83,7 +82,6 @@ class UnitConversionActivity : BaseActivity() {
             UnitDefinition("PSI", 6894.757)
         )
     )
-
     private lateinit var categorySpinner: Spinner
     private lateinit var fromUnitSpinner: Spinner
     private lateinit var toUnitSpinner: Spinner
@@ -92,27 +90,21 @@ class UnitConversionActivity : BaseActivity() {
     private lateinit var formulaValue: TextView
     private lateinit var addFavoriteButton: Button
     private lateinit var favoritesList: RecyclerView
-
     private val favorites = mutableListOf<UnitConversionFavorite>()
     private lateinit var favoritesAdapter: FavoriteRecyclerAdapter
     private val favoritesKey = ""
-
-    
     private var backCallback: OnBackPressedCallback? = null
     private var onBackInvokedCb: android.window.OnBackInvokedCallback? = null
     private val handler = Handler(Looper.getMainLooper())
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val themePreference = ThemePreference(this)
         val themePrefValue = themePreference.getValue()
-
         if (themePrefValue == 100) {
             when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
                 Configuration.UI_MODE_NIGHT_NO -> {
                     setTheme(R.style.AppTheme)
                 }
-
                 Configuration.UI_MODE_NIGHT_YES -> {
                     setTheme(R.style.AppThemeDark)
                 }
@@ -127,57 +119,20 @@ class UnitConversionActivity : BaseActivity() {
         setContentView(R.layout.activity_unit_converter)
         findViewById<FrameLayout>(R.id.view_unit).systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-
-         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         findViewById<ImageButton>(R.id.back_btn).setOnClickListener {
             this.onBackPressed()
         }
-
-        
         backCallback = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
-                
                 if (!handleBackPress()) {
-                    
                     isEnabled = false
-                    
                     onBackPressedDispatcher.onBackPressed()
-                    
                     isEnabled = false
                 }
             }
         }
         onBackPressedDispatcher.addCallback(this, backCallback!!)
-
-        
         setBackInterceptionEnabled(true)
-
-        
         val proPref = ProVersion(this)
         val proPrefValue = proPref.getValue()
         if (proPrefValue == 1) {
@@ -192,13 +147,10 @@ class UnitConversionActivity : BaseActivity() {
             findViewById<TextView>(R.id.pro_button_cal).visibility = View.GONE
             findViewById<AppCompatButton>(R.id.add_favorite_button).visibility = View.VISIBLE
         }
-
         findViewById<TextView>(R.id.pro_button_cal).setOnClickListener {
             val intent = Intent(this, ProActivity::class.java)
             startActivity(intent)
         }
-
-        
         val mostUsedPreference = MostUsedToolPreference(this)
         val mostUsedPrefValue = mostUsedPreference.getValue()
         val targetLabel = "uni"
@@ -214,8 +166,6 @@ class UnitConversionActivity : BaseActivity() {
                 )
             )
         }
-
-        
         categorySpinner = findViewById(R.id.category_spinner)
         fromUnitSpinner = findViewById(R.id.from_unit_spinner)
         toUnitSpinner = findViewById(R.id.to_unit_spinner)
@@ -224,71 +174,24 @@ class UnitConversionActivity : BaseActivity() {
         formulaValue = findViewById(R.id.formula_value)
         addFavoriteButton = findViewById(R.id.add_favorite_button)
         favoritesList = findViewById(R.id.favorites_list)
-
-        
         outputValue.isFocusable = false
         outputValue.isFocusableInTouchMode = false
         outputValue.isClickable = false
         outputValue.isLongClickable = false
         outputValue.isCursorVisible = false
         outputValue.keyListener = null
-
         formulaValue.text = getString(R.string.unit_display_formula)
-
         setupSpinners()
         setupListeners()
         setupRecyclerView()
         loadFavorites()
         updateFavoriteButtonState()
-
-         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
-
     private fun setupSpinners() {
         val categories = unitCategories.keys.toList()
         val categoryAdapter = ArrayAdapter(this, R.layout.spinner_item_text, categories)
         categoryAdapter.setDropDownViewResource(R.layout.spinner_item_text)
         categorySpinner.adapter = categoryAdapter
-
         categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
@@ -303,28 +206,23 @@ class UnitConversionActivity : BaseActivity() {
                 unitAdapter.setDropDownViewResource(R.layout.spinner_item_text)
                 fromUnitSpinner.adapter = unitAdapter
                 toUnitSpinner.adapter = unitAdapter
-
                 fromUnitSpinner.setSelection(0)
                 toUnitSpinner.setSelection(if (units.size > 1) 1 else 0)
                 convertUnits()
                 updateFavoriteButtonState()
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
-
     private fun setupListeners() {
         inputValue.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 convertUnits()
                 updateFavoriteButtonState()
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
-
         fromUnitSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
@@ -335,7 +233,6 @@ class UnitConversionActivity : BaseActivity() {
                 convertUnits()
                 updateFavoriteButtonState()
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
         toUnitSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -348,15 +245,12 @@ class UnitConversionActivity : BaseActivity() {
                 convertUnits()
                 updateFavoriteButtonState()
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
-
         addFavoriteButton.setOnClickListener {
             addFavorite()
         }
     }
-
     private fun setupRecyclerView() {
         favoritesAdapter = FavoriteRecyclerAdapter(
             favorites,
@@ -378,7 +272,6 @@ class UnitConversionActivity : BaseActivity() {
         favoritesList.layoutManager = LinearLayoutManager(this)
         favoritesList.adapter = favoritesAdapter
     }
-
     private fun convertUnits() {
         val category = categorySpinner.selectedItem as? String ?: return
         val fromUnit = fromUnitSpinner.selectedItem as? String ?: return
@@ -406,7 +299,6 @@ class UnitConversionActivity : BaseActivity() {
         outputValue.setText(result.toString())
         formulaValue.text = formula
     }
-
     private fun convertTemperature(from: String, to: String, value: Double): Pair<Double, String> {
         val celsius = when (from) {
             "Celsius" -> value
@@ -431,7 +323,6 @@ class UnitConversionActivity : BaseActivity() {
         }
         return Pair(result, formula)
     }
-
     private fun addFavorite() {
         val category = categorySpinner.selectedItem as? String ?: return
         val fromUnit = fromUnitSpinner.selectedItem as? String ?: return
@@ -448,7 +339,6 @@ class UnitConversionActivity : BaseActivity() {
         updateFavoritesList()
         updateFavoriteButtonState()
     }
-
     private fun removeFavorite(position: Int) {
         if (position < 0 || position >= favorites.size) return
         favorites.removeAt(position)
@@ -456,11 +346,9 @@ class UnitConversionActivity : BaseActivity() {
         updateFavoritesList()
         updateFavoriteButtonState()
     }
-
     private fun updateFavoritesList() {
         favoritesAdapter.notifyDataSetChanged()
     }
-
     private fun loadFavorites() {
         val prefs = getSharedPreferences("unit_converter", Context.MODE_PRIVATE)
         val json = prefs.getString(favoritesKey, null)
@@ -472,7 +360,6 @@ class UnitConversionActivity : BaseActivity() {
             updateFavoritesList()
         }
     }
-
     private fun saveFavorites() {
         val prefs = getSharedPreferences("unit_converter", Context.MODE_PRIVATE)
         val editor = prefs.edit()
@@ -480,7 +367,6 @@ class UnitConversionActivity : BaseActivity() {
         editor.putString(favoritesKey, json)
         editor.apply()
     }
-
     private fun isCurrentConversionFavorite(): Boolean {
         val category = categorySpinner.selectedItem as? String ?: return false
         val fromUnit = fromUnitSpinner.selectedItem as? String ?: return false
@@ -491,59 +377,38 @@ class UnitConversionActivity : BaseActivity() {
                     it.toUnit == toUnit && it.inputValue == value
         }
     }
-
     private fun updateFavoriteButtonState() {
         addFavoriteButton.isEnabled = !isCurrentConversionFavorite()
     }
-
-
     override fun onApplySystemInsets(top: Int, bottom: Int, left: Int, right: Int) {
         val params =
             findViewById<FrameLayout>(R.id.common_title_back_unit).layoutParams as ViewGroup.LayoutParams
         params.height = top + resources.getDimensionPixelSize(R.dimen.title_bar)
         findViewById<FrameLayout>(R.id.common_title_back_unit).layoutParams = params
-
         val params2 =
             findViewById<TextView>(R.id.unit_title_downstate).layoutParams as ViewGroup.MarginLayoutParams
         params2.topMargin =
             top
         findViewById<TextView>(R.id.unit_title_downstate).layoutParams = params2
     }
-
-    
     private fun anyOverlayOpen(): Boolean {
-        
         return false
     }
-
-    
     private fun handleBackPress(): Boolean {
-        
         return false
     }
-
-     
-
-
-
-
     private fun setBackInterceptionEnabled(enabled: Boolean) {
-        
         backCallback?.isEnabled = enabled
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             if (enabled) {
                 if (onBackInvokedCb == null) {
                     onBackInvokedCb = android.window.OnBackInvokedCallback {
                         handler.post {
                             try {
-                                
                                 onBackPressedDispatcher.onBackPressed()
                             } catch (e: Exception) {
-                                
                                 val consumed = handleBackPress()
                                 if (!consumed) {
-                                    
                                     finish()
                                 }
                             }
@@ -555,7 +420,6 @@ class UnitConversionActivity : BaseActivity() {
                             onBackInvokedCb!!
                         )
                     } catch (_: Exception) {
-                        
                     }
                 }
             } else {
@@ -563,17 +427,14 @@ class UnitConversionActivity : BaseActivity() {
                     try {
                         onBackInvokedDispatcher.unregisterOnBackInvokedCallback(onBackInvokedCb!!)
                     } catch (_: Exception) {
-                        
                     }
                     onBackInvokedCb = null
                 }
             }
         }
     }
-
     override fun onDestroy() {
         super.onDestroy()
-        
         backCallback?.remove()
         backCallback = null
         if (onBackInvokedCb != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -585,14 +446,11 @@ class UnitConversionActivity : BaseActivity() {
         }
     }
 }
-
-
 class FavoriteRecyclerAdapter(
     private val favorites: List<UnitConversionFavorite>,
     private val onItemClick: (UnitConversionFavorite) -> Unit,
     private val onItemLongClick: (Int) -> Unit
 ) : RecyclerView.Adapter<FavoriteRecyclerAdapter.FavoriteViewHolder>() {
-
     inner class FavoriteViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView = view.findViewById(android.R.id.text1)
         init {
@@ -609,15 +467,12 @@ class FavoriteRecyclerAdapter(
             }
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(android.R.layout.simple_list_item_1, parent, false)
         return FavoriteViewHolder(view)
     }
-
     override fun getItemCount(): Int = favorites.size
-
     override fun onBindViewHolder(holder: FavoriteViewHolder, position: Int) {
         val fav = favorites[position]
         holder.textView.text = holder.itemView.context.getString(R.string.unit_conversion_format, fav.inputValue, fav.fromUnit, fav.convertedValue, fav.toUnit, fav.category)

@@ -1,9 +1,7 @@
-
 class NetworkStateReceiver : BroadcastReceiver() {
     @SuppressLint("MissingPermission")
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == WifiManager.NETWORK_STATE_CHANGED_ACTION) {
-            
             if (Permission.POST_NOTIFICATIONS.can(context)) {
                 try {
                     val notificationId = HttpServerManager.notificationId

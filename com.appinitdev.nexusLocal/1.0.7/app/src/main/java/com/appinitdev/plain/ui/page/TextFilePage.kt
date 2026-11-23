@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextFilePage(
@@ -13,14 +12,12 @@ fun TextFilePage(
     val scope = rememberCoroutineScope()
     val darkTheme = LocalDarkTheme.current
     val isDarkTheme = DarkTheme.isDarkTheme(darkTheme)
-
     var isSaving by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(
         targetValue = if (isSaving) 360f else 0f,
         animationSpec = tween(durationMillis = 600),
         label = "save_rotation"
     )
-
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
             textFileVM.loadConfigAsync(context)
@@ -28,7 +25,6 @@ fun TextFilePage(
             textFileVM.isDataLoading.value = false
         }
     }
-
     if (textFileVM.showMoreActions.value) {
         ViewTextFileBottomSheet(textFileVM, path, textFileVM.file.value, onDeleted = {
             scope.launch {
@@ -36,11 +32,9 @@ fun TextFilePage(
             }
         })
     }
-
     BackHandler(enabled = !textFileVM.readOnly.value) {
         textFileVM.exitEditMode()
     }
-
     PScaffold(
         topBar = {
             PTopAppBar(
@@ -70,8 +64,6 @@ fun TextFilePage(
             )
         },
         content = { paddingValues ->
-            
-            
             Box(modifier = Modifier
                 .padding(top = paddingValues.calculateTopPadding())
                 .fillMaxSize()) {
@@ -100,4 +92,3 @@ fun TextFilePage(
         },
     )
 }
-

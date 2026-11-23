@@ -1,4 +1,3 @@
-
 fun Resources.getActionBarHeight(context: Context): Int {
     val tv = TypedValue()
     return if (context.theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
@@ -6,7 +5,6 @@ fun Resources.getActionBarHeight(context: Context): Int {
     } else
         0
 }
-
 fun Resources.getStatusBarHeight(): Int {
     val id = getIdentifier("status_bar_height", "dimen", "android")
     return if (id > 0) {
@@ -14,7 +12,6 @@ fun Resources.getStatusBarHeight(): Int {
     } else
         0
 }
-
 fun Resources.getNavBarHeight(): Int {
     val id = getIdentifier("navigation_bar_height", "dimen", "android")
     return if (id > 0) {

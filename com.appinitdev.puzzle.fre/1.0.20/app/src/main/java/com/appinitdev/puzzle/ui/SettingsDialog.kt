@@ -1,4 +1,3 @@
-
 data class AppSettings(
     val isSoundEnabled: Boolean = true,
     val isHapticEnabled: Boolean = true,
@@ -10,14 +9,12 @@ data class AppSettings(
     val isAccessibilityPatternEnabled: Boolean = false,
     val customBackgroundPath: String? = null
 )
-
 data class BoardSkinStyle(
     val name: String,
     val containerColor: Color,
     val textColor: Color,
     val borderColor: Color
 )
-
 fun getBoardSkinStyle(skinName: String): BoardSkinStyle {
     return when (skinName) {
         "Madera" -> BoardSkinStyle(
@@ -46,9 +43,7 @@ fun getBoardSkinStyle(skinName: String): BoardSkinStyle {
         )
     }
 }
-
 val ACCESSIBILITY_PATTERNS = listOf("▲", "●", "■", "★", "✦", "⬢", "✚", "♦", "▼", "◆", "▲", "●", "■", "★", "✦", "⬢")
-
 fun loadAppSettings(context: Context): AppSettings {
     val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     return AppSettings(
@@ -63,7 +58,6 @@ fun loadAppSettings(context: Context): AppSettings {
         customBackgroundPath = prefs.getString("custom_bg_path", null)
     )
 }
-
 fun saveAppSettings(context: Context, settings: AppSettings) {
     val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     prefs.edit()
@@ -77,10 +71,8 @@ fun saveAppSettings(context: Context, settings: AppSettings) {
         .putBoolean("accessibility_pattern_enabled", settings.isAccessibilityPatternEnabled)
         .putString("custom_bg_path", settings.customBackgroundPath)
         .apply()
-
     SoundEffectsManager.isSoundEnabled = settings.isSoundEnabled
 }
-
 @Composable
 fun SettingsDialog(
     onDismiss: () -> Unit,
@@ -88,11 +80,9 @@ fun SettingsDialog(
 ) {
     val context = LocalContext.current
     var settings by remember { mutableStateOf(loadAppSettings(context)) }
-
     val skinOptions = listOf("Clásico", "Madera", "Neón", "OLED")
     val tileStyleOptions = listOf("Relieve 3D", "Soft Round", "Marco Foto", "Plano")
     val timeOptions = listOf(60, 90, 120, 180)
-
     val bgImageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
@@ -112,7 +102,6 @@ fun SettingsDialog(
             onSettingsChanged(settings)
         }
     }
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -142,19 +131,14 @@ fun SettingsDialog(
                         modifier = Modifier.size(32.dp)
                     )
                 }
-
                 Spacer(modifier = Modifier.height(10.dp))
-
                 Text(
                     text = stringResource(R.string.ajustes_de_juego),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.ExtraBold
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    
                     Surface(
                         shape = RoundedCornerShape(16.dp),
                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
@@ -188,8 +172,6 @@ fun SettingsDialog(
                             }
                         }
                     }
-
-                    
                     Surface(
                         shape = RoundedCornerShape(16.dp),
                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
@@ -223,7 +205,6 @@ fun SettingsDialog(
                             }
                         }
                     }
-
                     SettingSwitchRow(
                         title = stringResource(R.string.modo_accesibilidad),
                         subtitle = stringResource(R.string.simbolos_de_alto_contraste),
@@ -235,8 +216,6 @@ fun SettingsDialog(
                             onSettingsChanged(settings)
                         }
                     )
-
-                    
                     Surface(
                         shape = RoundedCornerShape(16.dp),
                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
@@ -262,7 +241,6 @@ fun SettingsDialog(
                                 ) {
                                     Text(stringResource(R.string.elegir_de_galeria), style = MaterialTheme.typography.labelMedium)
                                 }
-
                                 if (settings.customBackgroundPath != null) {
                                     OutlinedButton(
                                         onClick = {
@@ -279,7 +257,6 @@ fun SettingsDialog(
                             }
                         }
                     }
-
                     SettingSwitchRow(
                         title = stringResource(R.string.efectos_de_sonido),
                         subtitle = stringResource(R.string.audio_al_mover_mezclar),
@@ -291,7 +268,6 @@ fun SettingsDialog(
                             onSettingsChanged(settings)
                         }
                     )
-
                     SettingSwitchRow(
                         title = stringResource(R.string.vibracion_haptica),
                         subtitle = stringResource(R.string.respuesta_al_tacto),
@@ -303,7 +279,6 @@ fun SettingsDialog(
                             onSettingsChanged(settings)
                         }
                     )
-
                     SettingSwitchRow(
                         title = stringResource(R.string.resaltar_piezas_correctas),
                         subtitle = stringResource(R.string.borde_verde_en_piezas),
@@ -315,7 +290,6 @@ fun SettingsDialog(
                             onSettingsChanged(settings)
                         }
                     )
-
                     SettingSwitchRow(
                         title = stringResource(R.string.modo_contrarreloj),
                         subtitle = stringResource(R.string.reloj_en_cuenta_regresiva),
@@ -327,7 +301,6 @@ fun SettingsDialog(
                             onSettingsChanged(settings)
                         }
                     )
-
                     if (settings.isTimeAttackEnabled) {
                         Column(modifier = Modifier.padding(start = 12.dp, top = 4.dp)) {
                             Text(
@@ -354,9 +327,7 @@ fun SettingsDialog(
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.height(20.dp))
-
                 Button(
                     onClick = onDismiss,
                     shape = CircleShape,
@@ -368,7 +339,6 @@ fun SettingsDialog(
         }
     }
 }
-
 @Composable
 fun SettingSwitchRow(
     title: String,

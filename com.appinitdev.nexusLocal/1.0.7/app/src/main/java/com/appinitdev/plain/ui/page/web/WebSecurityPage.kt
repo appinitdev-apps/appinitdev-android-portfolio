@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WebSecurityPage(navController: NavHostController) {
@@ -13,7 +12,6 @@ fun WebSecurityPage(navController: NavHostController) {
         var keyStorePassword by remember { mutableStateOf("") }
         var sslSignature by remember { mutableStateOf("") }
         val editPassword = remember { mutableStateOf("") }
-
         LaunchedEffect(password) {
             if (editPassword.value != password) editPassword.value = password
             scope.launch(Dispatchers.IO) {
@@ -25,7 +23,6 @@ fun WebSecurityPage(navController: NavHostController) {
                 }
             }
         }
-
         PScaffold(
             topBar = { PTopAppBar(navController = navController, title = stringResource(Res.string.security)) },
             content = { paddingValues ->

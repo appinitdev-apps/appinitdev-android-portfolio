@@ -1,4 +1,3 @@
-
 @Composable
 private fun ActionButton(
     icon: DrawableResource,
@@ -29,7 +28,6 @@ private fun ActionButton(
         )
     }
 }
-
 @Composable
 fun ScanHistoryItem(
     context: Context,
@@ -53,15 +51,12 @@ fun ScanHistoryItem(
                     onClick = { position -> newText.urlAt(context, position) },
                 )
             }
-
             VerticalSpace(dp = 8.dp)
-
             HorizontalDivider(
                 thickness = 1.dp,
                 color = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {

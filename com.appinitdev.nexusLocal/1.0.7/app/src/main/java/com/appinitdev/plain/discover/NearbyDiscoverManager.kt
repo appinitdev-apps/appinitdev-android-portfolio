@@ -1,14 +1,10 @@
-
 object NearbyDiscoverManager {
     private const val BROADCAST_INTERVAL_MS = 5_000L
-
     private var broadcastJob: Job? = null
     private var restartJob: Job? = null
-
     fun start() {
         NearbyNetwork.startReceiver(::onDatagram)
     }
-
     fun startPeriodicDiscovery() {
         if (broadcastJob?.isActive == true) return
         broadcastJob = coIO {
@@ -19,12 +15,10 @@ object NearbyDiscoverManager {
             }
         }
     }
-
     fun stopPeriodicDiscovery() {
         broadcastJob?.cancel()
         broadcastJob = null
     }
-
     fun discoverSpecificDevice(toId: String, key: ByteArray) {
         broadcastDiscover(
             DDiscoverRequest(
@@ -33,7 +27,6 @@ object NearbyDiscoverManager {
             )
         )
     }
-
     fun scheduleRestart(reason: String) {
         restartJob?.cancel()
         restartJob = coIO {
@@ -43,15 +36,10 @@ object NearbyDiscoverManager {
             NearbyNetwork.startReceiver(::onDatagram)
         }
     }
-
-    
-
     private fun onDatagram(message: String, senderIP: String) {
         if (NetworkHelper.getDeviceIP4s().contains(senderIP)) return
-
         val type = NearbyMessageType.entries.firstOrNull { message.startsWith(it.toPrefix()) } ?: return
         val payload = message.removePrefix(type.toPrefix())
-
         when (type) {
             NearbyMessageType.DISCOVER -> coIO { handleDiscoverRequest(payload, senderIP) }
             NearbyMessageType.DISCOVER_REPLY -> handleDiscoverReply(payload)
@@ -61,26 +49,20 @@ object NearbyDiscoverManager {
                 sendEvent(PairingRequestReceivedEvent(request))
                 sendEvent(WebSocketEvent(EventType.PAIRING_REQUEST_RECEIVED, JsonHelper.jsonEncode(request)))
             }
-
             NearbyMessageType.PAIR_RESPONSE -> {
                 val response = JsonHelper.jsonDecode<DPairingResponse>(payload)
                 coIO { NearbyPairManager.handlePairingResponse(response, senderIP) }
             }
-
             NearbyMessageType.PAIR_CANCEL -> {
                 val cancel = JsonHelper.jsonDecode<DPairingCancel>(payload)
                 NearbyPairManager.handlePairingCancel(cancel)
             }
         }
     }
-
-    
-
     private fun broadcastDiscover(request: DDiscoverRequest) {
         val message = "${NearbyMessageType.DISCOVER.toPrefix()}${JsonHelper.jsonEncode(request)}"
         NearbyNetwork.sendMulticast(message)
     }
-
     private suspend fun handleDiscoverRequest(payload: String, senderIP: String) {
         try {
             val request = JsonHelper.jsonDecode<DDiscoverRequest>(payload)
@@ -98,7 +80,6 @@ object NearbyDiscoverManager {
             LogCat.e("Error handling discover request: ${e.message}")
         }
     }
-
     private fun sendDiscoverReply(targetIP: String) {
         val reply = DDiscoverReply(
             id = TempData.clientId,
@@ -112,7 +93,6 @@ object NearbyDiscoverManager {
         val message = "${NearbyMessageType.DISCOVER_REPLY.toPrefix()}${JsonHelper.jsonEncode(reply)}"
         NearbyNetwork.sendUnicast(message, targetIP)
     }
-
     private fun handleDiscoverReply(payload: String) {
         try {
             val reply = JsonHelper.jsonDecode<DDiscoverReply>(payload)
@@ -134,10 +114,8 @@ object NearbyDiscoverManager {
             LogCat.e("Error handling discover reply: ${e.message}")
         }
     }
-
     private fun isDirectedQueryForUs(request: DDiscoverRequest): Boolean {
         if (request.fromId.isEmpty() || request.toId.isEmpty()) return false
-
         val peer = AppDatabase.instance.peerDao().getById(request.fromId)
         if (peer == null || peer.status != "paired") return false
         val decrypted = CryptoHelper.chaCha20Decrypt(

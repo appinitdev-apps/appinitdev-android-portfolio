@@ -1,4 +1,3 @@
-
 data class Series(
     val name: String,           
     val voltage: Double,        
@@ -6,4 +5,3 @@ data class Series(
     val short: String,          
     val nameKey: String = name.lowercase()  
 )
-

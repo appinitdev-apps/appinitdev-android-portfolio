@@ -1,9 +1,4 @@
-
 private val defaultAnimateSpec: AnimationSpec<Float> = SpringSpec()
-
- 
-
-
 suspend fun MediaViewerState.reset(animationSpec: AnimationSpec<Float> = defaultAnimateSpec) {
     coroutineScope {
         launch {
@@ -24,10 +19,6 @@ suspend fun MediaViewerState.reset(animationSpec: AnimationSpec<Float> = default
         }
     }
 }
-
- 
-
-
 private suspend fun MediaViewerState.scaleToMax(
     offset: Offset,
     animationSpec: AnimationSpec<Float>? = null,
@@ -45,10 +36,6 @@ private suspend fun MediaViewerState.scaleToMax(
         launch { offsetY.animateTo(bcy, currentAnimateSpec) }
     }
 }
-
- 
-
-
 suspend fun MediaViewerState.toggleScale(
     offset: Offset,
     animationSpec: AnimationSpec<Float> = defaultAnimateSpec,
@@ -59,10 +46,6 @@ suspend fun MediaViewerState.toggleScale(
         scaleToMax(offset, animationSpec)
     }
 }
-
- 
-
-
 suspend fun MediaViewerState.fixToBound() {
     val boundX = getBound(defaultSize.width.toFloat() * scale.value, containerSize.width.toFloat())
     val boundY = getBound(defaultSize.height.toFloat() * scale.value, containerSize.height.toFloat())

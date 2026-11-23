@@ -1,7 +1,5 @@
-
 object CallMediaStoreHelper : BaseContentHelper() {
     override val uriExternal: Uri = CallLog.Calls.CONTENT_URI
-
     override fun getProjection(): Array<String> {
         return arrayOf(
             CallLog.Calls._ID,
@@ -14,7 +12,6 @@ object CallMediaStoreHelper : BaseContentHelper() {
             CallLog.Calls.PHONE_ACCOUNT_ID,
         )
     }
-
     override suspend fun buildWhereAsync(query: String): ContentWhere {
         val where = ContentWhere()
         if (query.isNotEmpty()) {
@@ -23,21 +20,17 @@ object CallMediaStoreHelper : BaseContentHelper() {
                     "text" -> {
                         where.add("${CallLog.Calls.NUMBER} LIKE ?", "%${it.value}%")
                     }
-
                     "ids" -> {
                         where.addIn(BaseColumns._ID, it.value.split(","))
                     }
-
                     "type" -> {
                         where.add("${CallLog.Calls.TYPE} = ?", it.value)
                     }
-
                     "duration" -> {
                         val (op, rawValue) = it.normalizeComparison(defaultOp = "=")
                         val seconds = rawValue.trim().toLongOrNull() ?: return@forEach
                         where.add("${CallLog.Calls.DURATION} $op ?", seconds.toString())
                     }
-
                     "start_time" -> {
                         val (op, rawValue) = it.normalizeComparison(defaultOp = "=")
                         val ts = rawValue.parseEpochMillis() ?: return@forEach
@@ -46,10 +39,8 @@ object CallMediaStoreHelper : BaseContentHelper() {
                 }
             }
         }
-
         return where
     }
-
     suspend fun searchAsync(
         context: Context,
         query: String,
@@ -59,7 +50,6 @@ object CallMediaStoreHelper : BaseContentHelper() {
         if (limit <= 0) {
             return emptyList()
         }
-
         val where = buildWhereAsync(query)
         return context.contentResolver.query(
             uriExternal.withCallLogPaging(limit, offset),
@@ -79,7 +69,6 @@ object CallMediaStoreHelper : BaseContentHelper() {
             DCall(id, number, name, photoUri, startTS, duration, type, accountId)
         } ?: emptyList()
     }
-
     private fun Uri.withCallLogPaging(
         limit: Int,
         offset: Int,
@@ -93,7 +82,6 @@ object CallMediaStoreHelper : BaseContentHelper() {
             }
             .build()
     }
-
     fun call(
         context: Context,
         number: String,

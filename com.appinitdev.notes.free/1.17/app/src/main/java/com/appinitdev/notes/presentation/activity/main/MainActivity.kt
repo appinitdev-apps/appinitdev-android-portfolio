@@ -1,11 +1,8 @@
-
 class MainActivity : LockedActivity<ActivityMainBinding>() {
-
     private lateinit var navController: NavController
     private lateinit var configuration: AppBarConfiguration
     private lateinit var exportFileActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var exportNotesActivityResultLauncher: ActivityResultLauncher<Intent>
-
     private var isStartViewFragment = false
     private val actionModeCancelCallback =
         object : OnBackPressedCallback(true) {
@@ -13,35 +10,28 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                 baseModel.actionMode.close(true)
             }
         }
-
     var getCurrentFragmentNotes: (() -> Collection<BaseNote>?)? = null
-
     override fun onSupportNavigateUp(): Boolean {
         baseModel.keyword = ""
         return navController.navigateUp(configuration)
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.Toolbar)
         configureEdgeToEdgeInsets()
-
         setupFAB()
         setupMenu()
         setupActionMode()
         setupNavigation()
-
         setupActivityResultLaunchers()
-
         val fragmentIdToLoad = intent.getIntExtra(EXTRA_FRAGMENT_TO_OPEN, -1)
         if (fragmentIdToLoad != -1) {
             navController.navigate(fragmentIdToLoad, intent.extras)
         } else if (savedInstanceState == null) {
             navigateToStartView()
         }
-
         onBackPressedDispatcher.addCallback(
             this,
             object : OnBackPressedCallback(true) {
@@ -62,47 +52,30 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
         )
         onBackPressedDispatcher.addCallback(this, actionModeCancelCallback)
     }
-
     private fun configureEdgeToEdgeInsets() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         val navHostFragment = binding.NavHostFragment
         ViewCompat.setOnApplyWindowInsetsListener(binding.RelativeLayout) { view, insets ->
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
-
-            
-            
             binding.Toolbar.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
                 requestLayout()
             }
-
             binding.ActionMode.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
                 requestLayout()
             }
-
-            
             binding.NavigationView.getHeaderView(0).apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
                 requestLayout()
             }
-
-            
             binding.TakeNote.apply {
                 val marginLayoutParams = layoutParams as ViewGroup.MarginLayoutParams
                 marginLayoutParams.bottomMargin = 16.dp + systemBarsInsets.bottom + imeInsets.bottom
                 marginLayoutParams.marginEnd = 16.dp
                 requestLayout()
             }
-
-            
-            
-
-            
-            
-            
-            
             navHostFragment.apply {
                 setPadding(
                     paddingLeft,
@@ -114,7 +87,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
             insets
         }
     }
-
     private fun getStartViewNavigation(): Pair<Int, Bundle> {
         return when (val startView = preferences.startView.value) {
             START_VIEW_DEFAULT -> Pair(R.id.Notes, Bundle())
@@ -125,12 +97,10 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
             }
         }
     }
-
     private fun navigateToStartView() {
         val (id, bundle) = getStartViewNavigation()
         navController.navigate(id, bundle)
     }
-
     private fun setupFAB() {
         binding.TakeNote.setOnClickListener {
             val intent = Intent(this, EditNoteActivity::class.java)
@@ -141,7 +111,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
             startActivity(prepareNewNoteIntent(intent))
         }
     }
-
     private fun prepareNewNoteIntent(intent: Intent): Intent {
         return supportFragmentManager
             .findFragmentById(R.id.NavHostFragment)
@@ -154,16 +123,13 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                 } else intent
             } ?: intent
     }
-
     private var labelsMenuItems: List<MenuItem> = listOf()
     private var labelsMoreMenuItem: MenuItem? = null
     private var labels: List<String> = listOf()
     private var labelsLiveData: LiveData<List<String>>? = null
-
     private fun setupMenu() {
         binding.NavigationView.menu.apply {
             add(0, R.id.Notes, 0, R.string.notes).setCheckable(true).setIcon(R.drawable.home)
-
             addStaticLabelsMenuItems()
             NotallyDatabase.getDatabase(application).observe(this@MainActivity) { database ->
                 labelsLiveData?.removeObservers(this@MainActivity)
@@ -175,7 +141,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                         }
                     }
             }
-
             add(2, R.id.Deleted, CATEGORY_SYSTEM + 1, R.string.deleted)
                 .setCheckable(true)
                 .setIcon(R.drawable.delete)
@@ -196,7 +161,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
             binding.NavigationView.menu.setupLabelsMenuItems(labels, maxLabels)
         }
     }
-
     private fun Menu.addStaticLabelsMenuItems() {
         add(1, R.id.Unlabeled, CATEGORY_CONTAINER + 1, R.string.unlabeled)
             .setCheckable(true)
@@ -206,7 +170,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
             .setCheckable(true)
             .setIcon(R.drawable.label_more)
     }
-
     private fun Menu.setupLabelsMenuItems(labels: List<String>, maxLabelsToDisplay: Int) {
         removeGroup(1)
         addStaticLabelsMenuItems()
@@ -224,7 +187,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                         }
                 }
                 .toList()
-
         labelsMoreMenuItem =
             if (labelsMenuItems.size > maxLabelsToDisplay) {
                 add(
@@ -240,12 +202,10 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
         setupActionBarWithNavController(navController, configuration)
         hideLabelsInNavigation(baseModel.preferences.labelsHidden.value, maxLabelsToDisplay)
     }
-
     private fun navigateToLabel(label: String) {
         val bundle = Bundle().apply { putString(EXTRA_DISPLAYED_LABEL, label) }
         navController.navigate(R.id.DisplayLabel, bundle)
     }
-
     private fun hideLabelsInNavigation(hiddenLabels: Set<String>, maxLabelsToDisplay: Int) {
         var visibleLabels = 0
         labelsMenuItems.forEach { menuItem ->
@@ -258,10 +218,8 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
         }
         labelsMoreMenuItem?.setTitle(getString(R.string.more, labels.size - visibleLabels))
     }
-
     private fun setupActionMode() {
         binding.ActionMode.setNavigationOnClickListener { baseModel.actionMode.close(true) }
-
         val transition =
             MaterialFade().apply {
                 secondaryAnimatorProvider = null
@@ -271,7 +229,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                 excludeTarget(binding.MakeList, true)
                 excludeTarget(binding.NavigationView, true)
             }
-
         baseModel.actionMode.enabled.observe(this) { enabled ->
             TransitionManager.beginDelayedTransition(binding.RelativeLayout, transition)
             if (enabled) {
@@ -285,14 +242,12 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
             }
             actionModeCancelCallback.isEnabled = enabled
         }
-
         val menu = binding.ActionMode.menu
         baseModel.folder.observe(this@MainActivity, ModelFolderObserver(menu, baseModel))
         baseModel.actionMode.loading.observe(this@MainActivity) { loading ->
             menu.setGroupEnabled(Menu.NONE, !loading)
         }
     }
-
     private fun moveNotes(folderTo: Folder) {
         if (baseModel.actionMode.loading.value || baseModel.actionMode.isEmpty()) {
             return
@@ -312,12 +267,10 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
             baseModel.actionMode.loading.value = false
         }
     }
-
     private fun share() {
         val baseNote = baseModel.actionMode.getFirstNote()
         this.shareNote(baseNote)
     }
-
     private fun deleteForever() {
         MaterialAlertDialogBuilder(this)
             .setMessage(R.string.delete_selected_notes)
@@ -325,7 +278,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
             .setCancelButton()
             .show()
     }
-
     private fun label() {
         val baseNotes = baseModel.actionMode.selectedNotes.values
         lifecycleScope.launch {
@@ -338,7 +290,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
             }
         }
     }
-
     private fun displaySelectLabelsDialog(labels: Array<String>, baseNotes: Collection<BaseNote>) {
         val checkedPositions =
             labels
@@ -352,7 +303,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                     }
                 }
                 .toTypedArray()
-
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.labels)
             .setCancelButton()
@@ -393,7 +343,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
             }
             .show()
     }
-
     private fun exportSelectedNotes(mimeType: ExportMimeType) {
         exportNotes(
             mimeType,
@@ -402,24 +351,20 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
             exportNotesActivityResultLauncher,
         )
     }
-
     private fun setupNavigation() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.NavHostFragment) as NavHostFragment
         navController = navHostFragment.navController
         configuration = AppBarConfiguration(binding.NavigationView.menu, binding.DrawerLayout)
         setupActionBarWithNavController(navController, configuration)
-
         var fragmentIdToLoad: Int? = null
         binding.NavigationView.setNavigationItemSelectedListener { item ->
             fragmentIdToLoad = item.itemId
             binding.DrawerLayout.closeDrawer(GravityCompat.START)
             return@setNavigationItemSelectedListener true
         }
-
         binding.DrawerLayout.addDrawerListener(
             object : DrawerLayout.SimpleDrawerListener() {
-
                 override fun onDrawerClosed(drawerView: View) {
                     if (
                         fragmentIdToLoad != null &&
@@ -430,7 +375,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                 }
             }
         )
-
         navController.addOnDestinationChangedListener { _, destination, bundle ->
             fragmentIdToLoad = destination.id
             when (fragmentIdToLoad) {
@@ -457,7 +401,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                     binding.TakeNote.show()
                     binding.MakeList.show()
                 }
-
                 else -> {
                     binding.TakeNote.hide()
                     binding.MakeList.hide()
@@ -466,14 +409,12 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
             isStartViewFragment = isStartViewFragment(destination.id, bundle)
         }
     }
-
     private fun isStartViewFragment(id: Int, bundle: Bundle?): Boolean {
         val (startViewId, startViewBundle) = getStartViewNavigation()
         return startViewId == id &&
             startViewBundle.getString(EXTRA_DISPLAYED_LABEL) ==
                 bundle?.getString(EXTRA_DISPLAYED_LABEL)
     }
-
     private fun navigateWithAnimation(id: Int) {
         val options = navOptions {
             launchSingleTop = true
@@ -487,7 +428,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
         }
         navController.navigate(id, null, options)
     }
-
     private fun setupActivityResultLaunchers() {
         exportFileActivityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -502,7 +442,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                 }
             }
     }
-
     private inner class ModelFolderObserver(
         private val menu: Menu,
         private val model: BaseNoteModel,
@@ -510,7 +449,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
         override fun onChanged(value: Folder) {
             menu.clear()
             model.actionMode.count.removeObservers(this@MainActivity)
-
             menu.add(
                 R.string.select_all,
                 R.drawable.select_all,
@@ -529,7 +467,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                     menu.addExportMenu()
                     model.actionMode.count.observeCountAndPinned(this@MainActivity, share, pinned)
                 }
-
                 Folder.ARCHIVED -> {
                     menu.add(
                         R.string.unarchive,
@@ -546,7 +483,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                     val share = menu.addShare()
                     model.actionMode.count.observeCountAndPinned(this@MainActivity, share, pinned)
                 }
-
                 Folder.DELETED -> {
                     menu.add(R.string.restore, R.drawable.restore, MenuItem.SHOW_AS_ACTION_ALWAYS) {
                         moveNotes(Folder.NOTES)
@@ -565,15 +501,12 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                 }
             }
         }
-
         private fun Menu.addPinned(showAsAction: Int = MenuItem.SHOW_AS_ACTION_IF_ROOM): MenuItem {
             return add(R.string.pin, R.drawable.pin, showAsAction) {}
         }
-
         private fun Menu.addLabels(showAsAction: Int = MenuItem.SHOW_AS_ACTION_IF_ROOM): MenuItem {
             return add(R.string.labels, R.drawable.label, showAsAction) { label() }
         }
-
         private fun Menu.addChangeColor(
             showAsAction: Int = MenuItem.SHOW_AS_ACTION_IF_ROOM
         ): MenuItem {
@@ -589,7 +522,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                                 .getBaseNoteDao()
                                 .getAllColors()
                         }
-                    
                     val currentColor =
                         model.actionMode.selectedNotes.values
                             .map { it.color }
@@ -612,17 +544,14 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                 }
             }
         }
-
         private fun Menu.addDelete(showAsAction: Int = MenuItem.SHOW_AS_ACTION_IF_ROOM): MenuItem {
             return add(R.string.delete, R.drawable.delete, showAsAction) {
                 moveNotes(Folder.DELETED)
             }
         }
-
         private fun Menu.addShare(showAsAction: Int = MenuItem.SHOW_AS_ACTION_IF_ROOM): MenuItem {
             return add(R.string.share, R.drawable.share, showAsAction) { share() }
         }
-
         private fun Menu.addExportMenu(
             showAsAction: Int = MenuItem.SHOW_AS_ACTION_IF_ROOM
         ): MenuItem {
@@ -636,14 +565,12 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                 }
                 .item
         }
-
         fun MenuItem.onClick(function: () -> Unit) {
             setOnMenuItemClickListener {
                 function()
                 return@setOnMenuItemClickListener false
             }
         }
-
         private fun NotNullLiveData<Int>.observeCount(
             lifecycleOwner: LifecycleOwner,
             share: MenuItem,
@@ -655,7 +582,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                 share.setVisible(count == 1)
             }
         }
-
         private fun NotNullLiveData<Int>.observeCountAndPinned(
             lifecycleOwner: LifecycleOwner,
             share: MenuItem,
@@ -675,7 +601,6 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
             }
         }
     }
-
     companion object {
         const val EXTRA_FRAGMENT_TO_OPEN = "notes.intent.extra.FRAGMENT_TO_OPEN"
         const val EXTRA_SKIP_START_VIEW_ON_BACK = "notes.intent.extra.SKIP_START_VIEW_ON_BACK"

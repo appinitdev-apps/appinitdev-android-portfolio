@@ -1,30 +1,23 @@
-
 class CastViewModel : ViewModel() {
     private val _itemsFlow = MutableStateFlow(mutableStateListOf<DlnaDevice>())
     val itemsFlow: StateFlow<List<DlnaDevice>> get() = _itemsFlow
     var castMode = mutableStateOf(false)
     var showCastDialog = mutableStateOf(false)
     val isLoading = mutableStateOf(false)
-    
     internal var positionUpdateJob: Job? = null
-
     fun enterCastMode() {
         castMode.value = true
         showCastDialog.value = false
     }
-
     fun selectDevice(device: DlnaDevice) {
         CastPlayer.currentDevice = device
     }
-
     fun exitCastMode() {
         castMode.value = false
         val device = CastPlayer.currentDevice ?: return
         viewModelScope.launch(Dispatchers.IO) {
             DlnaTransportController.stopAVTransportAsync(device)
             CastPlayer.isPlaying.value = false
-            
-            
             if (CastPlayer.sid.isNotEmpty()) {
                 DlnaTransportController.unsubscribeEvent(device, CastPlayer.sid)
                 CastPlayer.sid = ""
@@ -32,17 +25,12 @@ class CastViewModel : ViewModel() {
             CastPlayer.supportsCallback.value = false
             CastPlayer.progress.value = 0f
             CastPlayer.duration.value = 0f
-            
-            
             positionUpdateJob?.cancel()
             positionUpdateJob = null
         }
     }
-
     fun cast(path: String) = castPath(path)
-
     fun cast(item: IMedia) = castItem(item)
-
     suspend fun searchAsync(context: Context) {
         DlnaDeviceScanner.search(context).flowOn(Dispatchers.IO).buffer().collect { device ->
             try {
@@ -62,13 +50,11 @@ class CastViewModel : ViewModel() {
             }
         }
     }
-
     private fun addDevice(device: DlnaDevice) {
         if (!_itemsFlow.value.any { it.hostAddress == device.hostAddress }) {
             _itemsFlow.value.add(device)
         }
     }
-
     fun playCast() {
         val device = CastPlayer.currentDevice ?: return
         viewModelScope.launch(Dispatchers.IO) {
@@ -76,7 +62,6 @@ class CastViewModel : ViewModel() {
             CastPlayer.isPlaying.value = true
         }
     }
-
     fun pauseCast() {
         val device = CastPlayer.currentDevice ?: return
         viewModelScope.launch(Dispatchers.IO) {

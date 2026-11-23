@@ -1,21 +1,9 @@
-
- 
-
-
-
 open class HighlightableEditText(context: Context, attrs: AttributeSet) :
     EditTextWithWatcher(context, attrs) {
-
     fun getSpanRange(span: CharacterStyle): Pair<Int, Int> {
         val text = super.getText()!!
         return Pair(text.getSpanStart(span), text.getSpanEnd(span))
     }
-
-     
-
-
-
-
     protected fun removeSpan(span: CharacterStyle, removeText: Boolean = false) {
         val (start, end) = getSpanRange(span)
         text?.removeSelectionFromSpans(start, end)
@@ -23,7 +11,6 @@ open class HighlightableEditText(context: Context, attrs: AttributeSet) :
             text?.delete(start, end)
         }
     }
-
     protected fun applySpan(
         span: CharacterStyle,
         start: Int = selectionStart,
@@ -31,10 +18,8 @@ open class HighlightableEditText(context: Context, attrs: AttributeSet) :
     ) {
         text?.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
-
     private val highlightedSpans: MutableList<CharacterStyle> = mutableListOf()
     private var selectedHighlightedSpan: CharacterStyle? = null
-
     fun clearHighlights() {
         highlightedSpans.apply {
             forEach { span -> removeSpan(span) }
@@ -42,15 +27,7 @@ open class HighlightableEditText(context: Context, attrs: AttributeSet) :
         }
         selectedHighlightedSpan = null
     }
-
-     
-
-
-
-
-
     fun highlight(startIdx: Int, endIdx: Int, selected: Boolean): Int? {
-        
         if (selected) {
             selectedHighlightedSpan?.unselect()
         }
@@ -71,11 +48,9 @@ open class HighlightableEditText(context: Context, attrs: AttributeSet) :
             layout.getLineTop(line)
         }
     }
-
     fun unselectHighlight() {
         selectedHighlightedSpan?.unselect()
     }
-
     private fun CharacterStyle.unselect() {
         val (previousHighlightedStartIdx, previousHighlightedEndIdx) = getSpanRange(this)
         if (previousHighlightedStartIdx != -1) {
@@ -84,5 +59,4 @@ open class HighlightableEditText(context: Context, attrs: AttributeSet) :
         }
     }
 }
-
 class HighlightSpan(@ColorInt color: Int) : BackgroundColorSpan(color)

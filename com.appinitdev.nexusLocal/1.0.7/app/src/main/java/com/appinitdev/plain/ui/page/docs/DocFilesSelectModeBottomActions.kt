@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun DocFilesSelectModeBottomActions(
@@ -10,7 +9,6 @@ fun DocFilesSelectModeBottomActions(
     val context = LocalContext.current
     var showSelectTagsDialog by remember { mutableStateOf(false) }
     var removeFromTags by remember { mutableStateOf(false) }
-
     if (showSelectTagsDialog) {
         val selectedIds = dragSelectState.selectedIds
         val selectedItems = docsVM.itemsFlow.collectAsState().value.filter { selectedIds.contains(it.id) }
@@ -19,7 +17,6 @@ fun DocFilesSelectModeBottomActions(
             dragSelectState.exitSelectMode()
         }
     }
-
     PBottomAppBar {
         BottomActionButtons {
             if (!docsVM.trash.value) {

@@ -1,4 +1,3 @@
-
 data class DNearbyDevice(
     val id: String,
     val name: String,

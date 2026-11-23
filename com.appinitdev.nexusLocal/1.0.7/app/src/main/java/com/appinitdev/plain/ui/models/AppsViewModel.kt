@@ -1,4 +1,3 @@
-
 @OptIn(SavedStateHandleSaveableApi::class)
 class AppsViewModel(private val savedStateHandle: SavedStateHandle) : ISearchableViewModel<VPackage>, ViewModel() {
     private val _itemsFlow = MutableStateFlow(mutableStateListOf<VPackage>())
@@ -13,11 +12,9 @@ class AppsViewModel(private val savedStateHandle: SavedStateHandle) : ISearchabl
     val showSortDialog = mutableStateOf(false)
     val sortBy = mutableStateOf(FileSortBy.NAME_ASC)
     var tabs = mutableStateOf(listOf<VTabData>())
-
     override val showSearchBar = mutableStateOf(false)
     override val searchActive = mutableStateOf(false)
     override val queryText = mutableStateOf("")
-
     suspend fun moreAsync() {
         offset.value += limit.intValue
         val items = PackageHelper.searchAsync(getQuery(), limit.intValue, offset.intValue, sortBy.value).map { VPackage.from(it) }
@@ -25,7 +22,6 @@ class AppsViewModel(private val savedStateHandle: SavedStateHandle) : ISearchabl
         showLoading.value = false
         noMore.value = items.size < limit.intValue
     }
-
     suspend fun loadAsync() {
         offset.intValue = 0
         _itemsFlow.value = PackageHelper.searchAsync(getQuery(), limit.intValue, 0, sortBy.value).map { VPackage.from(it) }.toMutableStateList()
@@ -39,7 +35,6 @@ class AppsViewModel(private val savedStateHandle: SavedStateHandle) : ISearchabl
         )
         showLoading.value = false
     }
-
     private fun getQuery(): String {
         var query = queryText.value
         if (appType.value.isNotEmpty()) {

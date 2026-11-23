@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T : IData> ListSearchBar(
@@ -14,7 +13,6 @@ fun <T : IData> ListSearchBar(
             }
         }
     }
-
     Column(
         modifier = Modifier
             .fillMaxWidth(),

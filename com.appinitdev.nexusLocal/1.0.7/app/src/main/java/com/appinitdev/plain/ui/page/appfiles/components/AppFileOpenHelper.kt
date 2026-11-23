@@ -1,4 +1,3 @@
-
 fun openAppFile(
     context: Context,
     files: List<VAppFile>,
@@ -9,7 +8,6 @@ fun openAppFile(
 ) {
     val path = file.appFile.realPath
     val fileName = file.fileName
-
     when {
         fileName.isImageFast() || fileName.isVideoFast() -> {
             coMain {
@@ -37,9 +35,7 @@ fun openAppFile(
                 )
             }
         }
-
         fileName.isAudioFast() -> ShareHelper.openPathWith(context, path)
-
         fileName.isTextFile() -> {
             if (file.appFile.size <= Constants.MAX_READABLE_TEXT_FILE_SIZE) {
                 navController.navigateTextFile(path, fileName)
@@ -47,7 +43,6 @@ fun openAppFile(
                 DialogHelper.showMessage(Res.string.text_file_size_limit)
             }
         }
-
         fileName.isPdfFile() -> {
             try {
                 navController.navigatePdf(File(path).toUri())
@@ -55,7 +50,6 @@ fun openAppFile(
                 DialogHelper.showMessage(Res.string.pdf_open_error)
             }
         }
-
         else -> navController.navigateOtherFile(path, fileName)
     }
 }

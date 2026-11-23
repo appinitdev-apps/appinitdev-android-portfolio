@@ -1,4 +1,3 @@
-
 fun RssItem.toDFeedEntry(
     feedId: String,
     feedUrl: String,
@@ -14,31 +13,24 @@ fun RssItem.toDFeedEntry(
     } else {
         item.title = ""
     }
-
     val feedBaseUrl = HtmlUtils.getBaseUrl(feedUrl)
     item.description = HtmlUtils.improveHtmlContent(content ?: description ?: "", feedBaseUrl)
     item.description = MDConverter().convert(item.description)
     item.url = link ?: ""
-
     item.image = image ?: ""
-
     item.author = author?.ifEmpty { sourceName ?: "" } ?: ""
-
     if (pubDate != null) {
         val date = DateParser.parseDate(pubDate!!, Locale.US)
         if (date != null && date.time < item.publishedAt.toEpochMilliseconds()) {
             item.publishedAt = Instant.fromEpochMilliseconds(date.time)
         }
     }
-
     return item
 }
-
 suspend fun DFeedEntry.fetchContentAsync(): ApiResult {
     try {
         val httpClient = HttpClientManager.browserClient()
         val response = httpClient.get(url)
-
         if (response.isOk()) {
             val input = response.body<String>()
             Readability4J.parse(
@@ -56,7 +48,6 @@ suspend fun DFeedEntry.fetchContentAsync(): ApiResult {
                             image = HtmlUtils.getMainImageURL(imagesList)
                         }
                     }
-
                     if (image.isNotEmpty() && !image.startsWith("/")) {
                         try {
                             val r = httpClient.get(image)
@@ -89,7 +80,6 @@ suspend fun DFeedEntry.fetchContentAsync(): ApiResult {
                 }
             }
         }
-
         return ApiResult(response)
     } catch (ex: Throwable) {
         ex.printStackTrace()

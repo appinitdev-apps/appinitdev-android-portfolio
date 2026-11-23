@@ -1,13 +1,9 @@
-
 class MainApp : Application() {
     override fun onCreate() {
         super.onCreate()
-
         instance = this
-        
         Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME)
         Security.addProvider(BouncyCastleProvider())
-
         initDataStore(dataStore)
         initDatabase(
             androidx.room.Room.databaseBuilder(this, AppDatabase::class.java, Constants.DATABASE_NAME)
@@ -23,36 +19,27 @@ class MainApp : Application() {
                 })
                 .build()
         )
-
         CrashHandler.install(this)
-
         SingletonImageLoader.setSafe { context ->
             newImageLoader(context)
         }
-
         LogCat.addLogAdapter(
             DiskLogAdapter(
                 DiskLogFormatStrategy.getInstance(this),
                 minPriority = if (BuildConfig.DEBUG) LogCat.VERBOSE else LogCat.WARN,
             ),
         )
-
         AppEvents.register()
         HttpServerManager.warmUp()
         NetworkMonitor.init(this)
-
-        
         if (isUPlus()) {
             ZipPathValidator.clearCallback()
         }
-
-        
         try {
             val manager = getSystemService(TextClassificationManager::class.java)
             manager?.setTextClassifier(TextClassifier.NO_OP)
         } catch (_: Throwable) {
         }
-
         coIO {
             val preferences = getPreferencesAsync()
             TempData.webEnabled.value = WebPreference.get(preferences)
@@ -71,7 +58,6 @@ class MainApp : Application() {
             UrlTokenPreference.ensureValueAsync(preferences)
             SignatureKeyPreference.ensureKeyPairAsync(preferences)
             MdnsHostnamePreference.ensureValueAsync(preferences)
-
             DarkThemePreference.setDarkMode(DarkTheme.parse(DarkThemePreference.get(preferences)))
             if (TempData.webEnabled.value && PlugInControlReceiver.isUSBConnected(this@MainApp)) {
                 sendEvent(PowerConnectedEvent())
@@ -88,7 +74,6 @@ class MainApp : Application() {
             if (FeedAutoRefreshPreference.get(preferences)) {
                 FeedFetchWorker.startRepeatWorkerAsync(instance)
             }
-            
             sendEvent(StartNearbyServiceEvent())
             HttpServerManager.clientTsInterval()
             ImageSearchManager.restoreIfEnabled()
@@ -96,17 +81,13 @@ class MainApp : Application() {
             AppDatabase.instance.videoPlayProgressDao().getRecentProgress(thirtyDaysAgo).forEach {
                 TempData.videoPlayProgressMap[it.mediaId] = it.duration
             }
-
         }
     }
-
     companion object {
         lateinit var instance: MainApp
-
         fun getAppVersion(): String {
             return BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")"
         }
-
         fun getAndroidVersion(): String {
             return Build.VERSION.RELEASE + " (" + Build.VERSION.SDK_INT + ")"
         }

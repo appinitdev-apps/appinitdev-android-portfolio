@@ -1,75 +1,43 @@
-
- 
-
-
-
-
-
-
-
-
-
-
 @AndroidEntryPoint
 class Playlists : BasePanelFragment() {
-
     private lateinit var binding: FragmentPlaylistsBinding
     private lateinit var headerBinding: HeaderPlaylistsBinding
-
     private var adapterPlaylists: AdapterPlaylists? = null
-
     private val playlistsViewModel: PlaylistsViewModel by viewModels()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
         headerBinding = HeaderPlaylistsBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.recyclerView.requireAttachedMiniPlayer()
         binding.appHeader.setContentView(headerBinding.root)
         binding.appHeader.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
-
         binding.recyclerView.setupGridLayoutManager(PlaylistPreferences.getGridSize().spanCount)
-
         setupClickListeners()
-
         playlistsViewModel.playlists.collectListWhenStarted({ adapterPlaylists != null }) { playlists ->
             updateList(playlists)
         }
     }
-
     override fun onDestroyView() {
         adapterPlaylists = null
         super.onDestroyView()
     }
-
     private fun setupClickListeners() {
         headerBinding.menu.setOnClickListener {
             openPreferencesPanel()
         }
-
         headerBinding.listStyle.setOnClickListener {
             childFragmentManager.showListStyleDialog(GenericListStyleDialog.Companion.PANEL.PLAYLISTS)
         }
-
         headerBinding.sortStyle.setOnClickListener {
             childFragmentManager.showPlaylistsSort()
         }
-
         headerBinding.newPlaylist.setOnClickListener {
             childFragmentManager.showCreatePlaylistDialog()
         }
     }
-
-     
-
-
-
-
     private fun updateList(playlists: List<PlaylistWithSongs>) {
         if (adapterPlaylists == null) {
             adapterPlaylists = AdapterPlaylists(playlists)
@@ -86,11 +54,9 @@ class Playlists : BasePanelFragment() {
                 binding.recyclerView.adapter = adapterPlaylists
             }
         }
-
         headerBinding.count.text = playlists.size.toString()
         headerBinding.sortStyle.setPlaylistSort()
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -105,10 +71,8 @@ class Playlists : BasePanelFragment() {
             }
         }
     }
-
     companion object {
         const val TAG = "Playlists"
-
         fun newInstance(): Playlists {
             return Playlists().apply {
                 arguments = Bundle()

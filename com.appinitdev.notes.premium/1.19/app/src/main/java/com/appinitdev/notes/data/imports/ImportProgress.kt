@@ -1,4 +1,3 @@
-
 open class ImportProgress(
     current: Int = 0,
     total: Int = 0,
@@ -6,7 +5,6 @@ open class ImportProgress(
     indeterminate: Boolean = false,
     val stage: ImportStage = ImportStage.IMPORT_NOTES,
 ) : Progress(current, total, inProgress, indeterminate)
-
 enum class ImportStage {
     IMPORT_NOTES,
     EXTRACT_FILES,

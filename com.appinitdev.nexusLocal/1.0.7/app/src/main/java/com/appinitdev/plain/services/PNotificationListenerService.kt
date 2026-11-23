@@ -1,9 +1,7 @@
-
 class PNotificationListenerService : NotificationListenerService() {
     private val events = mutableListOf<Job>()
     var isConnected = false
         private set
-
     private fun isValidNotification(statusBarNotification: StatusBarNotification): Boolean {
         val notification = statusBarNotification.notification
         if (notification.flags and Notification.FLAG_FOREGROUND_SERVICE != 0
@@ -11,25 +9,17 @@ class PNotificationListenerService : NotificationListenerService() {
             || notification.flags and Notification.FLAG_LOCAL_ONLY != 0
             || notification.flags and NotificationCompat.FLAG_GROUP_SUMMARY != 0 
         ) {
-            
             return false
         }
-
         val packageName = statusBarNotification.packageName
-
         if ("com.facebook.orca" == packageName && statusBarNotification.id == 10012 && notification.tickerText == null) {
-            
             return false
         }
-
         if (applicationContext.packageName == packageName && !BuildConfig.DEBUG) {
-            
             return false
         }
-
         return true
     }
-
     override fun onNotificationPosted(statusBarNotification: StatusBarNotification) {
         if (isValidNotification(statusBarNotification)) {
             val n = statusBarNotification.toDNotification()
@@ -38,7 +28,6 @@ class PNotificationListenerService : NotificationListenerService() {
                 AndroidTempData.notifications.remove(old)
             }
             AndroidTempData.notifications.add(n)
-            
             val rawActions = statusBarNotification.notification.actions
             if (rawActions != null) {
                 AndroidTempData.notificationActions[n.id] = rawActions
@@ -63,7 +52,6 @@ class PNotificationListenerService : NotificationListenerService() {
             }
         }
     }
-
     override fun onNotificationRemoved(statusBarNotification: StatusBarNotification) {
         if (isValidNotification(statusBarNotification)) {
             val old = AndroidTempData.notifications.find { it.id == statusBarNotification.key }
@@ -81,7 +69,6 @@ class PNotificationListenerService : NotificationListenerService() {
             }
         }
     }
-
     override fun onListenerConnected() {
         super.onListenerConnected()
         isConnected = true
@@ -109,9 +96,7 @@ class PNotificationListenerService : NotificationListenerService() {
         } catch (ex: Exception) {
             LogCat.e("Error getting active notifications: ${ex.message}")
         }
-
         try {
-
             events.add(receiveEventHandler<HCancelNotificationsEvent> { event ->
                 if (!isConnected) {
                     LogCat.w("PNotificationListenerService: not connected, ignoring cancel request")
@@ -122,7 +107,6 @@ class PNotificationListenerService : NotificationListenerService() {
                     isConnected = false
                     return@receiveEventHandler
                 }
-                
                 try {
                     if (event.ids.size == AndroidTempData.notifications.size) {
                         cancelAllNotifications()
@@ -138,7 +122,6 @@ class PNotificationListenerService : NotificationListenerService() {
                     }
                 } catch (ex: SecurityException) {
                     LogCat.e("SecurityException when canceling notifications: ${ex.message}")
-                    
                     isConnected = false
                 } catch (ex: Exception) {
                     LogCat.e("Error canceling notifications: ${ex.message}")
@@ -148,7 +131,6 @@ class PNotificationListenerService : NotificationListenerService() {
             LogCat.e("Error setting up event handlers: ${ex.message}")
         }
     }
-
     override fun onDestroy() {
         super.onDestroy()
         isConnected = false
@@ -159,7 +141,6 @@ class PNotificationListenerService : NotificationListenerService() {
             LogCat.e("Error cleaning up events in onDestroy: ${ex.message}")
         }
     }
-
     override fun onListenerDisconnected() {
         super.onListenerDisconnected()
         isConnected = false
@@ -176,7 +157,6 @@ class PNotificationListenerService : NotificationListenerService() {
             LogCat.e("Error requesting rebind: ${ex.message}")
         }
     }
-
     companion object {
         fun toggle(context: Context, enable: Boolean) {
             if (!AppFeatureType.NOTIFICATIONS.has()) {
@@ -213,4 +193,3 @@ class PNotificationListenerService : NotificationListenerService() {
         }
     }
 }
-

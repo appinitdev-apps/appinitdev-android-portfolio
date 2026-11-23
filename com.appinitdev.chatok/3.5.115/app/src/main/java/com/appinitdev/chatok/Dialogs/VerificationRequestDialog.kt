@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VerificationRequestDialog(
@@ -9,7 +8,6 @@ fun VerificationRequestDialog(
     var message by remember { mutableStateOf("") }
     val selectedImages = remember { mutableStateListOf<Uri>() }
     val context = LocalContext.current
-    
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents()
     ) { uris ->
@@ -17,7 +15,6 @@ fun VerificationRequestDialog(
             selectedImages.addAll(uris)
         }
     }
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -44,9 +41,7 @@ fun VerificationRequestDialog(
                     tint = Color(0xFF238CDD),
                     modifier = Modifier.size(48.dp)
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Text(
                     text = stringResource(R.string.solicitar_verificacion),
                     style = MaterialTheme.typography.headlineSmall,
@@ -54,18 +49,14 @@ fun VerificationRequestDialog(
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
-                
                 Spacer(modifier = Modifier.height(8.dp))
-                
                 Text(
                     text = stringResource(R.string.verificacion_desc),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray,
                     textAlign = TextAlign.Center
                 )
-
                 Spacer(modifier = Modifier.height(24.dp))
-
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.05f)),
@@ -81,9 +72,7 @@ fun VerificationRequestDialog(
                         Text(text = stringResource(R.string.correo_formato, state.userData?.email ?: ""), color = Color.Gray, fontSize = 12.sp)
                     }
                 }
-
                 Spacer(modifier = Modifier.height(20.dp))
-
                 OutlinedTextField(
                     value = message,
                     onValueChange = { message = it },
@@ -98,18 +87,14 @@ fun VerificationRequestDialog(
                         unfocusedTextColor = Color.White
                     )
                 )
-
                 Spacer(modifier = Modifier.height(24.dp))
-
                 Text(
                     text = stringResource(R.string.prueba_identidad_desc),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.LightGray,
                     textAlign = TextAlign.Center
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 if (selectedImages.isNotEmpty()) {
                     LazyRow(
                         modifier = Modifier.fillMaxWidth(),
@@ -158,9 +143,7 @@ fun VerificationRequestDialog(
                         icon = Icons.Default.Image
                     )
                 }
-
                 Spacer(modifier = Modifier.height(32.dp))
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -170,7 +153,6 @@ fun VerificationRequestDialog(
                         onClick = onDismiss,
                         modifier = Modifier.weight(1f)
                     )
-                    
                     MainGradientButton(
                         text = stringResource(R.string.enviar_solicitud),
                         onClick = {

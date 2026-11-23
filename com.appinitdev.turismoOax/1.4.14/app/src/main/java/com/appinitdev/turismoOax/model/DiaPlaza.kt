@@ -1,4 +1,3 @@
-
 data class DiaPlaza(
     val id: String,
     val diaSemanaNum: Int, 

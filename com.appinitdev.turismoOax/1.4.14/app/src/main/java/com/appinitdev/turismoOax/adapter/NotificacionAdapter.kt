@@ -1,18 +1,13 @@
-
 class NotificacionAdapter(private val notificaciones: List<Notificacion>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
     private val VIEW_TYPE_EMPTY = 0
     private val VIEW_TYPE_NOTIFICACION = 1
-
     class NotificacionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val asunto: TextView = itemView.findViewById(R.id.asunto)
         val name: TextView = itemView.findViewById(R.id.name)
         val fecha: TextView = itemView.findViewById(R.id.fecha)
     }
-
     class EmptyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_NOTIFICACION) {
             val view = LayoutInflater.from(parent.context)
@@ -24,11 +19,9 @@ class NotificacionAdapter(private val notificaciones: List<Notificacion>) :
             EmptyViewHolder(view)
         }
     }
-
     private fun formatDateTime(dateTime: String): String {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val outputFormat = SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault())
-
         return try {
             val date = inputFormat.parse(dateTime)
             outputFormat.format(date ?: Date())
@@ -36,20 +29,17 @@ class NotificacionAdapter(private val notificaciones: List<Notificacion>) :
             dateTime
         }
     }
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is NotificacionViewHolder) {
             val notificacion = notificaciones[position]
             holder.asunto.text = notificacion.asunto
             holder.name.text = notificacion.name
             holder.fecha.text = formatDateTime(notificacion.fecha)
-
             holder.itemView.setOnClickListener {
                 val context = holder.itemView.context
                 val ticketRegex = "\\[([^]]+)\\]".toRegex()
                 val ticketMatch = ticketRegex.find(notificacion.asunto)
                 val ticketId = ticketMatch?.groupValues?.get(1) ?: "N/A"
-
                 MaterialAlertDialogBuilder(context)
                     .setTitle(notificacion.asunto)
                     .setMessage("${notificacion.name}\n\nFecha: ${formatDateTime(notificacion.fecha)}")
@@ -72,11 +62,9 @@ class NotificacionAdapter(private val notificaciones: List<Notificacion>) :
             }
         }
     }
-
     override fun getItemCount(): Int {
         return if (notificaciones.isEmpty()) 1 else notificaciones.size
     }
-
     override fun getItemViewType(position: Int): Int {
         return if (notificaciones.isEmpty()) VIEW_TYPE_EMPTY else VIEW_TYPE_NOTIFICACION
     }

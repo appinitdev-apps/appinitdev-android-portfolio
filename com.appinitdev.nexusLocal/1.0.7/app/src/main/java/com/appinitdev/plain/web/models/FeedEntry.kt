@@ -1,4 +1,3 @@
-
 data class FeedEntry(
     val id: ID,
     val title: String,
@@ -13,7 +12,6 @@ data class FeedEntry(
     val createdAt: Instant,
     val updatedAt: Instant,
 )
-
 fun DFeedEntry.toModel(): FeedEntry {
     return FeedEntry(
         ID(id), title, url, FileHelper.getFileId(image), description, author, content, feedId, rawId, publishedAt, createdAt, updatedAt,

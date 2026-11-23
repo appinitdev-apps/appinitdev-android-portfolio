@@ -1,11 +1,9 @@
-
 private data class TrendBadgeInfo(
     val bg: Color,
     val fg: Color,
     val icon: ImageVector,
     val text: String,
 )
-
 @Composable
 fun WeightEvolutionChart(
     records: List<GrowthRecord>,
@@ -13,8 +11,6 @@ fun WeightEvolutionChart(
     lineColor: Color = MaterialTheme.colorScheme.primary,
 ) {
     var selectedIndex by remember(records) { mutableStateOf<Int?>(null) }
-
-    
     val infiniteTransition = rememberInfiniteTransition(label = "PulseTransitionWeight")
     val pulseScale by infiniteTransition.animateFloat(
         initialValue = 1f,
@@ -34,9 +30,7 @@ fun WeightEvolutionChart(
         ),
         label = "PulseAlphaWeight",
     )
-
     val textMeasurer = rememberTextMeasurer()
-
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(22.dp),
@@ -67,17 +61,14 @@ fun WeightEvolutionChart(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
-                    
                     if (records.size >= 2) {
                         val first = records.first().weightKg
                         val last = records.last().weightKg
                         val diff = last - first
-
                         val badgeInfo = when {
                             diff < -0.05 -> TrendBadgeInfo(
                                 Color(0xFF10B981).copy(alpha = 0.15f),
@@ -98,7 +89,6 @@ fun WeightEvolutionChart(
                                 "0.0 kg",
                             )
                         }
-
                         Surface(
                             shape = RoundedCornerShape(10.dp),
                             color = badgeInfo.bg,
@@ -123,8 +113,6 @@ fun WeightEvolutionChart(
                             }
                         }
                     }
-
-                    
                     if (records.isNotEmpty()) {
                         val latest = records.last().weightKg
                         Surface(
@@ -142,7 +130,6 @@ fun WeightEvolutionChart(
                     }
                 }
             }
-
             if (records.size < 2) {
                 Box(
                     modifier = Modifier
@@ -167,18 +154,14 @@ fun WeightEvolutionChart(
                 val minWeight = weights.minOrNull() ?: 0f
                 val maxWeight = weights.maxOrNull() ?: 10f
                 val range = (maxWeight - minWeight).coerceAtLeast(1f)
-
                 val dates = records.map {
                     DateFormat.format("dd/MM", Date(it.timestamp)).toString()
                 }
-
                 val labelStyle = TextStyle(
                     fontSize = 9.sp,
                     fontWeight = FontWeight.Bold,
                     color = lineColor,
                 )
-
-                
                 val activeIndex = selectedIndex
                 if (activeIndex != null && (activeIndex in records.indices)) {
                     val selRecord = records[activeIndex]
@@ -210,7 +193,6 @@ fun WeightEvolutionChart(
                         }
                     }
                 }
-
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -232,17 +214,13 @@ fun WeightEvolutionChart(
                         val width = size.width
                         val height = size.height
                         val points = mutableListOf<Offset>()
-
                         val stepX = width / (records.size - 1).coerceAtLeast(1)
-
                         for (i in records.indices) {
                             val x = i * stepX
                             val normalizedY = (records[i].weightKg.toFloat() - minWeight) / range
                             val y = height - (normalizedY * (height * 0.65f)) - (height * 0.18f)
                             points.add(Offset(x, y))
                         }
-
-                        
                         val gridCount = 3
                         for (g in 0..gridCount) {
                             val gy = height * (g / gridCount.toFloat())
@@ -253,8 +231,6 @@ fun WeightEvolutionChart(
                                 strokeWidth = 1.dp.toPx(),
                             )
                         }
-
-                        
                         val areaPath = Path().apply {
                             if (points.isNotEmpty()) {
                                 moveTo(points.first().x, height)
@@ -266,7 +242,6 @@ fun WeightEvolutionChart(
                                 close()
                             }
                         }
-
                         drawPath(
                             path = areaPath,
                             brush = Brush.verticalGradient(
@@ -276,8 +251,6 @@ fun WeightEvolutionChart(
                                 ),
                             ),
                         )
-
-                        
                         val linePath = Path().apply {
                             if (points.isNotEmpty()) {
                                 moveTo(points.first().x, points.first().y)
@@ -286,14 +259,11 @@ fun WeightEvolutionChart(
                                 }
                             }
                         }
-
                         drawPath(
                             path = linePath,
                             color = lineColor,
                             style = Stroke(width = 3.8.dp.toPx(), cap = StrokeCap.Round),
                         )
-
-                        
                         if (points.isNotEmpty()) {
                             val lastPoint = points.last()
                             drawCircle(
@@ -302,14 +272,10 @@ fun WeightEvolutionChart(
                                 center = lastPoint,
                             )
                         }
-
-                        
                         for (i in points.indices) {
                             val p = points[i]
                             val isSelected = (i == activeIndex)
-
                             if (isSelected) {
-                                
                                 drawLine(
                                     color = lineColor.copy(alpha = 0.4f),
                                     start = Offset(p.x, 0f),
@@ -322,7 +288,6 @@ fun WeightEvolutionChart(
                                     center = p,
                                 )
                             }
-
                             drawCircle(
                                 color = Color.White,
                                 radius = if (isSelected) 8.dp.toPx() else 6.dp.toPx(),
@@ -333,8 +298,6 @@ fun WeightEvolutionChart(
                                 radius = if (isSelected) 5.dp.toPx() else 4.dp.toPx(),
                                 center = p,
                             )
-
-                            
                             if (records.size <= 8 || isSelected || i == 0 || i == points.lastIndex) {
                                 val valueText = String.format(Locale.US, "%.1f", records[i].weightKg)
                                 val textLayoutResult = textMeasurer.measure(
@@ -343,7 +306,6 @@ fun WeightEvolutionChart(
                                 )
                                 val labelX = (p.x - textLayoutResult.size.width / 2f).coerceIn(0f, width - textLayoutResult.size.width)
                                 val labelY = (p.y - 18.dp.toPx()).coerceAtLeast(0f)
-
                                 drawText(
                                     textLayoutResult = textLayoutResult,
                                     topLeft = Offset(labelX, labelY),
@@ -351,8 +313,6 @@ fun WeightEvolutionChart(
                             }
                         }
                     }
-
-                    
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -371,7 +331,6 @@ fun WeightEvolutionChart(
         }
     }
 }
-
 @Composable
 fun HeightEvolutionChart(
     records: List<GrowthRecord>,
@@ -379,8 +338,6 @@ fun HeightEvolutionChart(
     lineColor: Color = Color(0xFF0288D1),
 ) {
     var selectedIndex by remember(records) { mutableStateOf<Int?>(null) }
-
-    
     val infiniteTransition = rememberInfiniteTransition(label = "PulseTransitionHeight")
     val pulseScale by infiniteTransition.animateFloat(
         initialValue = 1f,
@@ -400,9 +357,7 @@ fun HeightEvolutionChart(
         ),
         label = "PulseAlphaHeight",
     )
-
     val textMeasurer = rememberTextMeasurer()
-
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(22.dp),
@@ -433,17 +388,14 @@ fun HeightEvolutionChart(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
-                    
                     if (records.size >= 2) {
                         val first = records.first().heightCm
                         val last = records.last().heightCm
                         val diff = last - first
-
                         if (diff > 0.1) {
                             Surface(
                                 shape = RoundedCornerShape(10.dp),
@@ -470,8 +422,6 @@ fun HeightEvolutionChart(
                             }
                         }
                     }
-
-                    
                     if (records.isNotEmpty()) {
                         val latest = records.last().heightCm
                         Surface(
@@ -489,7 +439,6 @@ fun HeightEvolutionChart(
                     }
                 }
             }
-
             if (records.size < 2) {
                 Box(
                     modifier = Modifier
@@ -514,18 +463,14 @@ fun HeightEvolutionChart(
                 val minHeight = heights.minOrNull() ?: 0f
                 val maxHeight = heights.maxOrNull() ?: 100f
                 val range = (maxHeight - minHeight).coerceAtLeast(1f)
-
                 val dates = records.map {
                     DateFormat.format("dd/MM", Date(it.timestamp)).toString()
                 }
-
                 val labelStyle = TextStyle(
                     fontSize = 9.sp,
                     fontWeight = FontWeight.Bold,
                     color = lineColor,
                 )
-
-                
                 val activeIndex = selectedIndex
                 if (activeIndex != null && (activeIndex in records.indices)) {
                     val selRecord = records[activeIndex]
@@ -557,7 +502,6 @@ fun HeightEvolutionChart(
                         }
                     }
                 }
-
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -579,16 +523,13 @@ fun HeightEvolutionChart(
                         val width = size.width
                         val canvasHeight = size.height
                         val points = mutableListOf<Offset>()
-
                         val stepX = width / (records.size - 1).coerceAtLeast(1)
-
                         for (i in records.indices) {
                             val x = i * stepX
                             val normalizedY = (records[i].heightCm.toFloat() - minHeight) / range
                             val y = canvasHeight - (normalizedY * (canvasHeight * 0.65f)) - (canvasHeight * 0.18f)
                             points.add(Offset(x, y))
                         }
-
                         val linePath = Path().apply {
                             if (points.isNotEmpty()) {
                                 moveTo(points.first().x, points.first().y)
@@ -597,14 +538,11 @@ fun HeightEvolutionChart(
                                 }
                             }
                         }
-
                         drawPath(
                             path = linePath,
                             color = lineColor,
                             style = Stroke(width = 3.8.dp.toPx(), cap = StrokeCap.Round),
                         )
-
-                        
                         if (points.isNotEmpty()) {
                             val lastPoint = points.last()
                             drawCircle(
@@ -613,11 +551,9 @@ fun HeightEvolutionChart(
                                 center = lastPoint,
                             )
                         }
-
                         for (i in points.indices) {
                             val p = points[i]
                             val isSelected = (i == activeIndex)
-
                             if (isSelected) {
                                 drawLine(
                                     color = lineColor.copy(alpha = 0.4f),
@@ -631,10 +567,8 @@ fun HeightEvolutionChart(
                                     center = p,
                                 )
                             }
-
                             drawCircle(color = Color.White, radius = if (isSelected) 8.dp.toPx() else 6.dp.toPx(), center = p)
                             drawCircle(color = if (isSelected) Color(0xFFFF9800) else lineColor, radius = if (isSelected) 5.dp.toPx() else 4.dp.toPx(), center = p)
-
                             if (records.size <= 8 || isSelected || i == 0 || i == points.lastIndex) {
                                 val valueText = String.format(Locale.US, "%.0f", records[i].heightCm)
                                 val textLayoutResult = textMeasurer.measure(
@@ -643,7 +577,6 @@ fun HeightEvolutionChart(
                                 )
                                 val labelX = (p.x - textLayoutResult.size.width / 2f).coerceIn(0f, width - textLayoutResult.size.width)
                                 val labelY = (p.y - 18.dp.toPx()).coerceAtLeast(0f)
-
                                 drawText(
                                     textLayoutResult = textLayoutResult,
                                     topLeft = Offset(labelX, labelY),
@@ -651,7 +584,6 @@ fun HeightEvolutionChart(
                             }
                         }
                     }
-
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()

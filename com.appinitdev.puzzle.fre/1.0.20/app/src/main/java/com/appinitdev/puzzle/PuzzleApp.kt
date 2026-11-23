@@ -1,11 +1,9 @@
-
 data class Piece(
     val id: Int,
     val bitmap: Bitmap? = null,
     val isBlank: Boolean = false,
     val rotationDegrees: Float = 0f
 )
-
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun PuzzleApp(
@@ -20,7 +18,6 @@ fun PuzzleApp(
     val haptic = LocalHapticFeedback.current
     val appSettings = remember { loadAppSettings(context) }
     val skinStyle = remember(appSettings.boardSkin) { getBoardSkinStyle(appSettings.boardSkin) }
-
     var n by remember { mutableIntStateOf(3) }
     var showBackgroundHint by remember { mutableStateOf(false) }
     var showHelp by remember { mutableStateOf(false) }
@@ -38,42 +35,31 @@ fun PuzzleApp(
     var wasAssisted by remember { mutableStateOf(false) }
     var hasStartedMSM by remember { mutableStateOf(false) }
     var showPreview by remember { mutableStateOf(false) }
-
-    
     var isMemoryMode by remember { mutableStateOf(false) }
     var memoryPreviewTimer by remember { mutableIntStateOf(0) }
     var revealedIndex by remember { mutableStateOf<Int?>(null) }
-
     var isPadlockMode by remember { mutableStateOf(false) }
     var padlockCounters by remember { mutableStateOf<Map<Int, Int>>(emptyMap()) }
-
     var isRotationMode by remember { mutableStateOf(false) }
-
     var secretMessage by remember { mutableStateOf("") }
     var showSecretMessageInput by remember { mutableStateOf(false) }
     var showSecretMessageModal by remember { mutableStateOf(false) }
     var showQRCodeDialog by remember { mutableStateOf(false) }
-
     val isTimeAttack = appSettings.isTimeAttackEnabled
     val timeLimit = appSettings.timeAttackLimitSeconds
     val displaySeconds = if (isTimeAttack) maxOf(0, timeLimit - timeSeconds) else timeSeconds
-
-    
     var moveHistory by remember { mutableStateOf(listOf<Int>()) }
     var initialPiecesState by remember { mutableStateOf<List<Piece>>(emptyList()) }
     var isReplaying by remember { mutableStateOf(false) }
-
     val squaredBitmap = remember(originalBitmap) {
         val size = minOf(originalBitmap.width, originalBitmap.height)
         val xOffset = (originalBitmap.width - size) / 2
         val yOffset = (originalBitmap.height - size) / 2
         Bitmap.createBitmap(originalBitmap, xOffset, yOffset, size, size)
     }
-
     var pieces by remember(n, squaredBitmap) {
         mutableStateOf(createPuzzlePieces(squaredBitmap, n))
     }
-
     val triggerSmartHint: () -> Unit = {
         coroutineScope.launch {
             val solutionSteps = withContext(Dispatchers.Default) {
@@ -86,7 +72,6 @@ fun PuzzleApp(
             }
         }
     }
-
     val rotatePiece: (Int) -> Unit = { index ->
         val pieceToRotate = pieces[index]
         if (!pieceToRotate.isBlank) {
@@ -102,25 +87,19 @@ fun PuzzleApp(
             }
         }
     }
-
     val movePiece: (Int) -> Unit = { index ->
         val pieceToMove = pieces[index]
         val lockCount = padlockCounters[pieceToMove.id] ?: 0
-
         if (lockCount <= 0) {
             val blankIndex = pieces.indexOfFirst { it.isBlank }
             val lineIndices = getLineToMoveIndices(index, blankIndex, n)
-
             if (lineIndices.isNotEmpty()) {
                 if (!isActive) isActive = true
-
                 SocialAndHaptics.triggerMoveHaptic(haptic, context)
                 if (hintPieceId != null) hintPieceId = null
-
                 if (isPadlockMode && padlockCounters.isNotEmpty()) {
                     padlockCounters = padlockCounters.mapValues { maxOf(0, it.value - 1) }
                 }
-
                 if (isMemoryMode) {
                     revealedIndex = index
                     coroutineScope.launch {
@@ -128,7 +107,6 @@ fun PuzzleApp(
                         if (revealedIndex == index) revealedIndex = null
                     }
                 }
-
                 val newList = pieces.toMutableList()
                 for (stepIndex in lineIndices) {
                     val tempBlank = newList.indexOfFirst { it.isBlank }
@@ -139,7 +117,6 @@ fun PuzzleApp(
                     moveCount++
                 }
                 pieces = newList
-
                 isSolved = checkVictory(pieces)
                 if (isSolved) {
                     isActive = false
@@ -155,7 +132,6 @@ fun PuzzleApp(
             Toast.makeText(context, "🔒 Candado bloqueado: realiza $lockCount movimientos más", Toast.LENGTH_SHORT).show()
         }
     }
-
     val playReplay: () -> Unit = {
         coroutineScope.launch {
             if (moveHistory.isNotEmpty()) {
@@ -179,9 +155,7 @@ fun PuzzleApp(
             }
         }
     }
-
     var showBestRecordsDialog by remember { mutableStateOf(false) }
-
     val recordsByLevel = remember(statsHistory, n) {
         statsHistory.groupBy { it.n }.mapNotNull { (levelN, stats) ->
             val bestTime = stats.minByOrNull { it.time }
@@ -194,12 +168,10 @@ fun PuzzleApp(
                 .thenBy { it.first }
         )
     }
-
     LaunchedEffect(n, squaredBitmap) {
         isActive = false
         val savedProgress = onCheckProgress(n)
         val basePieces = createPuzzlePieces(squaredBitmap, n)
-
         if (savedProgress != null) {
             val savedIds = savedProgress.state.split(",").mapNotNull { it.toIntOrNull() }
             if (savedIds.size == basePieces.size) {
@@ -215,7 +187,6 @@ fun PuzzleApp(
             timeSeconds = 0
         }
     }
-
     LaunchedEffect(isMemoryMode, hasStarted) {
         if (isMemoryMode && hasStarted) {
             memoryPreviewTimer = 5
@@ -225,7 +196,6 @@ fun PuzzleApp(
             }
         }
     }
-
     LaunchedEffect(isSolved) {
         if (isSolved && moveCount > 0 && !wasAssisted) {
             if (secretMessage.isNotBlank()) {
@@ -236,7 +206,6 @@ fun PuzzleApp(
             showHistoryDialog = true
         }
     }
-
     LaunchedEffect(isActive, isSolved, timeSeconds) {
         if (isActive && !isSolved) {
             if (isTimeAttack && displaySeconds <= 0) {
@@ -249,7 +218,6 @@ fun PuzzleApp(
             }
         }
     }
-
     if (showHistoryDialog) {
         val hasEnoughData = statsHistory.groupBy { it.n }.any { it.value.size >= 2 }
         if (hasEnoughData)
@@ -258,14 +226,12 @@ fun PuzzleApp(
                 onDismiss = { showHistoryDialog = false }
             )
     }
-
     if (showAchievementsDialog) {
         AchievementsDialog(
             stats = statsHistory,
             onDismiss = { showAchievementsDialog = false }
         )
     }
-
     if (showSecretMessageInput) {
         SecretMessageInputDialog(
             initialMessage = secretMessage,
@@ -273,14 +239,12 @@ fun PuzzleApp(
             onMessageSaved = { secretMessage = it }
         )
     }
-
     if (showSecretMessageModal) {
         SecretMessageRevelationDialog(
             message = secretMessage,
             onDismiss = { showSecretMessageModal = false }
         )
     }
-
     if (showQRCodeDialog) {
         QRCodeDialog(
             qrData = if (secretMessage.isNotBlank()) secretMessage else "¡Te desafío a resolver este Puzzle ${n}x${n}! Récord: $moveCount movs en ${timeSeconds}s.",
@@ -288,7 +252,6 @@ fun PuzzleApp(
             onDismiss = { showQRCodeDialog = false }
         )
     }
-
     if (showBestRecordsDialog && recordsByLevel.isNotEmpty()) {
         Dialog(
             onDismissRequest = { showBestRecordsDialog = false },
@@ -319,17 +282,13 @@ fun PuzzleApp(
                             modifier = Modifier.size(36.dp)
                         )
                     }
-
                     Spacer(modifier = Modifier.height(12.dp))
-
                     Text(
                         text = stringResource(R.string.sal_n_de_la_fama),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.ExtraBold
                     )
-
                     Spacer(modifier = Modifier.height(20.dp))
-
                     androidx.compose.foundation.lazy.LazyColumn(
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier
@@ -340,7 +299,6 @@ fun PuzzleApp(
                             val levelN = recordPair.first
                             val (bestTimeStat, bestMovesStat) = recordPair.second
                             val isCurrentLevel = levelN == n
-
                             Card(
                                 colors = CardDefaults.cardColors(
                                     containerColor = if (isCurrentLevel) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)
@@ -363,9 +321,7 @@ fun PuzzleApp(
                                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                                         )
                                     }
-
                                     Spacer(modifier = Modifier.height(12.dp))
-
                                     Row(modifier = Modifier.fillMaxWidth()) {
                                         RecordColumn(
                                             title = stringResource(R.string.m_s_r_pido),
@@ -374,7 +330,6 @@ fun PuzzleApp(
                                             subValue = "${bestTimeStat.moves} movs",
                                             modifier = Modifier.weight(1f)
                                         )
-
                                         Box(
                                             modifier = Modifier
                                                 .width(1.dp)
@@ -382,7 +337,6 @@ fun PuzzleApp(
                                                 .background(MaterialTheme.colorScheme.outlineVariant)
                                                 .align(Alignment.CenterVertically)
                                         )
-
                                         RecordColumn(
                                             title = stringResource(R.string.mejor_precisi_n),
                                             icon = Icons.Default.Star,
@@ -396,9 +350,7 @@ fun PuzzleApp(
                             }
                         }
                     }
-
                     Spacer(modifier = Modifier.height(24.dp))
-
                     Button(
                         onClick = { showBestRecordsDialog = false },
                         shape = CircleShape
@@ -409,7 +361,6 @@ fun PuzzleApp(
             }
         }
     }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -445,11 +396,9 @@ fun PuzzleApp(
                         fontWeight = FontWeight.Bold
                     )
                 }
-
                 val minutes = displaySeconds / 60
                 val seconds = displaySeconds % 60
                 val timeString = "%02d:%02d".format(minutes, seconds)
-
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
                         text = if (isTimeAttack) "Contrarreloj" else if (isMemoryMode && memoryPreviewTimer > 0) "Memoriza ($memoryPreviewTimer s)" else stringResource(R.string.tiempo),
@@ -464,8 +413,6 @@ fun PuzzleApp(
                     )
                 }
             }
-
-            
             LazyRow(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -480,7 +427,6 @@ fun PuzzleApp(
                         shape = RoundedCornerShape(10.dp)
                     )
                 }
-
                 item {
                     FilterChip(
                         selected = isPadlockMode,
@@ -490,7 +436,6 @@ fun PuzzleApp(
                         shape = RoundedCornerShape(10.dp)
                     )
                 }
-
                 item {
                     FilterChip(
                         selected = isRotationMode,
@@ -500,7 +445,6 @@ fun PuzzleApp(
                         shape = RoundedCornerShape(10.dp)
                     )
                 }
-
                 item {
                     FilterChip(
                         selected = secretMessage.isNotBlank(),
@@ -510,7 +454,6 @@ fun PuzzleApp(
                     )
                 }
             }
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -523,14 +466,12 @@ fun PuzzleApp(
                     color = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
-
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(horizontal = 4.dp)
                 ) {
                     lazyListItems((3..8).toList()) { size ->
                         val isSelected = n == size
-
                         Surface(
                             modifier = Modifier
                                 .size(width = 70.dp, height = 45.dp)
@@ -565,9 +506,7 @@ fun PuzzleApp(
                     }
                 }
             }
-
             Spacer(modifier = Modifier.height(8.dp))
-
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -583,14 +522,12 @@ fun PuzzleApp(
                             .alpha(0.5f)
                     )
                 }
-
                 val tileCornerShape = when (appSettings.tileStyle) {
                     "Soft Round" -> RoundedCornerShape(14.dp)
                     "Marco Foto" -> RoundedCornerShape(4.dp)
                     "Plano" -> RoundedCornerShape(0.dp)
                     else -> RoundedCornerShape(8.dp)
                 }
-
                 LazyVerticalGrid(
                     userScrollEnabled = false,
                     columns = GridCells.Fixed(n),
@@ -601,24 +538,19 @@ fun PuzzleApp(
                     itemsIndexed(pieces, key = { _, piece -> piece.id }) { index, piece ->
                         val isHintPiece = hintPieceId != null && piece.id == hintPieceId
                         val isPieceCorrect = !piece.isBlank && piece.id == index && piece.rotationDegrees == 0f && appSettings.isHighlightCorrectEnabled
-
                         val lockCount = padlockCounters[piece.id] ?: 0
                         val isLocked = isPadlockMode && lockCount > 0
-
                         val isObscuredByMemory = isMemoryMode &&
                                 memoryPreviewTimer == 0 &&
                                 piece.id != index &&
                                 revealedIndex != index &&
                                 !piece.isBlank
-
                         val borderColor = when {
                             isHintPiece -> Color(0xFFFFC107)
                             isPieceCorrect -> Color(0xFF4CAF50)
                             else -> skinStyle.borderColor
                         }
-
                         val borderWidth = if (isHintPiece) 3.5.dp else if (isPieceCorrect) 2.dp else 0.5.dp
-
                         Box(
                             modifier = Modifier
                                 .animateItem(
@@ -641,14 +573,12 @@ fun PuzzleApp(
                                 .pointerInput(index) {
                                     detectDragGestures { change, dragAmount ->
                                         change.consume()
-
                                         if (isSolved || isAutoSolving || !hasStarted || isReplaying || isTimeOut) return@detectDragGestures
                                         if (showPreview) showPreview = false
                                         val threshold = 10f
                                         val isHorizontal = abs(dragAmount.x) > abs(dragAmount.y)
                                         val blankIndex = pieces.indexOfFirst { it.isBlank }
                                         var targetIndex = -1
-
                                         if (isHorizontal && abs(dragAmount.x) > threshold) {
                                             targetIndex =
                                                 if (dragAmount.x > 0) index + 1 else index - 1
@@ -656,7 +586,6 @@ fun PuzzleApp(
                                             targetIndex =
                                                 if (dragAmount.y > 0) index + n else index - n
                                         }
-
                                         if (targetIndex == blankIndex && isAdjacent(
                                                 index,
                                                 blankIndex,
@@ -688,7 +617,6 @@ fun PuzzleApp(
                                             .graphicsLayer { rotationZ = piece.rotationDegrees }
                                     )
                                 }
-
                                 if (appSettings.isAccessibilityPatternEnabled) {
                                     val patternSymbol = ACCESSIBILITY_PATTERNS[piece.id % ACCESSIBILITY_PATTERNS.size]
                                     Surface(
@@ -705,7 +633,6 @@ fun PuzzleApp(
                                         )
                                     }
                                 }
-
                                 if (isLocked) {
                                     Box(
                                         modifier = Modifier
@@ -719,7 +646,6 @@ fun PuzzleApp(
                                         }
                                     }
                                 }
-
                                 if (showHelp) {
                                     Text(
                                         "${piece.id}",
@@ -740,7 +666,6 @@ fun PuzzleApp(
                         }
                     }
                 }
-
                 if (hasStartedMSM) {
                     Surface(
                         color = Color.Black.copy(alpha = 0.6f),
@@ -757,7 +682,6 @@ fun PuzzleApp(
                         )
                     }
                 }
-
                 Box(modifier = Modifier.fillMaxSize()) {
                     androidx.compose.animation.AnimatedVisibility(
                         visible = showPreview,
@@ -790,7 +714,6 @@ fun PuzzleApp(
                     }
                 }
             }
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -807,26 +730,22 @@ fun PuzzleApp(
                             val solvedPieces = createPuzzlePieces(originalBitmap, n)
                             var currentPieces = solvedPieces
                             val totalMoves = n * n * 5
-
                             repeat(totalMoves) {
                                 val blankIndex = currentPieces.indexOfFirst { it.isBlank }
                                 val neighbors = getPossibleMoves(blankIndex, n)
                                 val randomIndex = neighbors.random()
-
                                 val newList = currentPieces.toMutableList()
                                 val temp = newList[randomIndex]
                                 newList[randomIndex] = newList[blankIndex]
                                 newList[blankIndex] = temp
                                 currentPieces = newList
                             }
-
                             if (isRotationMode) {
                                 currentPieces = currentPieces.map { p ->
                                     if (p.isBlank) p
                                     else p.copy(rotationDegrees = listOf(0f, 90f, 180f, 270f).random())
                                 }
                             }
-
                             pieces = currentPieces
                             initialPiecesState = currentPieces.toList()
                             moveHistory = emptyList()
@@ -837,14 +756,12 @@ fun PuzzleApp(
                             hasStarted = true
                             hasStartedMSM = false
                             wasAssisted = false
-
                             if (isPadlockMode) {
                                 val nonBlankIds = currentPieces.filter { !it.isBlank }.map { it.id }.shuffled()
                                 padlockCounters = nonBlankIds.take(2).associateWith { 5 }
                             } else {
                                 padlockCounters = emptyMap()
                             }
-
                             SoundEffectsManager.playShuffleSound()
                         },
                         modifier = Modifier
@@ -857,7 +774,6 @@ fun PuzzleApp(
                         Spacer(Modifier.width(8.dp))
                         Text(stringResource(R.string.mezclar), fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
                     }
-
                     OutlinedButton(
                         onClick = {
                             pieces = createPuzzlePieces(squaredBitmap, n)
@@ -882,7 +798,6 @@ fun PuzzleApp(
                         Text(stringResource(R.string.resetear), style = MaterialTheme.typography.labelLarge)
                     }
                 }
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -896,21 +811,18 @@ fun PuzzleApp(
                         icon = Icons.Default.Lightbulb,
                         activeColor = Color(0xFFFFC107)
                     )
-
                     ControlIconButton(
                         selected = showAchievementsDialog,
                         onClick = { showAchievementsDialog = true },
                         icon = Icons.Default.MilitaryTech,
                         activeColor = MaterialTheme.colorScheme.tertiary
                     )
-
                     ControlIconButton(
                         selected = showPreview,
                         onClick = { showPreview = !showPreview },
                         icon = if (showPreview) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                         activeColor = MaterialTheme.colorScheme.primary
                     )
-
                     if (recordsByLevel.isNotEmpty()) {
                         ControlIconButton(
                             selected = showBestRecordsDialog,
@@ -919,21 +831,18 @@ fun PuzzleApp(
                             activeColor = Color(0xFFFFD700)
                         )
                     }
-
                     ControlIconButton(
                         selected = showBackgroundHint,
                         onClick = { showBackgroundHint = !showBackgroundHint },
                         icon = Icons.Default.Image,
                         activeColor = MaterialTheme.colorScheme.secondary
                     )
-
                     ControlIconButton(
                         selected = showHelp,
                         onClick = { showHelp = !showHelp },
                         icon = Icons.Default.GridOn,
                         activeColor = MaterialTheme.colorScheme.tertiary
                     )
-
                     ControlIconButton(
                         selected = showQRCodeDialog,
                         onClick = { showQRCodeDialog = true },
@@ -941,7 +850,6 @@ fun PuzzleApp(
                         activeColor = MaterialTheme.colorScheme.primary
                     )
                 }
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -958,7 +866,6 @@ fun PuzzleApp(
                         Spacer(Modifier.width(8.dp))
                         Text(stringResource(R.string.guardar))
                     }
-
                     if (n <= 4) {
                         Button(
                             enabled = !isSolved && !isAutoSolving && !isTimeOut,
@@ -969,7 +876,6 @@ fun PuzzleApp(
                                     val solutionSteps = withContext(Dispatchers.Default) {
                                         solvePuzzleIDAStar(pieces, n)
                                     }
-
                                     if (solutionSteps == null) {
                                         isAutoSolving = false
                                     } else {
@@ -995,7 +901,6 @@ fun PuzzleApp(
                             Text(if (isAutoSolving) stringResource(R.string.calculando) else stringResource(R.string.auto))
                         }
                     }
-
                     val hasEnoughData = statsHistory.any { it.n == n }
                     if (hasEnoughData) {
                         IconButton(
@@ -1017,7 +922,6 @@ fun PuzzleApp(
                 }
             }
         }
-
         if (isTimeOut) {
             Dialog(
                 onDismissRequest = { isTimeOut = false },
@@ -1048,27 +952,21 @@ fun PuzzleApp(
                                 modifier = Modifier.size(36.dp)
                             )
                         }
-
                         Spacer(modifier = Modifier.height(12.dp))
-
                         Text(
                             text = "¡Tiempo Agotado!",
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.error
                         )
-
                         Spacer(modifier = Modifier.height(8.dp))
-
                         Text(
                             text = "Se acabó el tiempo del modo Contrarreloj. ¡Inténtalo de nuevo!",
                             style = MaterialTheme.typography.bodyMedium,
                             textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-
                         Spacer(modifier = Modifier.height(20.dp))
-
                         Button(
                             onClick = {
                                 isTimeOut = false
@@ -1086,7 +984,6 @@ fun PuzzleApp(
                 }
             }
         }
-
         if (isSolved && !wasAssisted) {
             Box(
                 modifier = Modifier
@@ -1117,9 +1014,7 @@ fun PuzzleApp(
                                 color = Color.Cyan,
                                 style = MaterialTheme.typography.titleMedium
                             )
-
                             Spacer(modifier = Modifier.height(20.dp))
-
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                                 verticalAlignment = Alignment.CenterVertically
@@ -1140,7 +1035,6 @@ fun PuzzleApp(
                                     Spacer(Modifier.width(6.dp))
                                     Text("Compartir")
                                 }
-
                                 if (moveHistory.isNotEmpty()) {
                                     OutlinedButton(
                                         onClick = { playReplay() },
@@ -1157,7 +1051,6 @@ fun PuzzleApp(
                         }
                     }
                 }
-
                 ConfettiKit(
                     modifier = Modifier
                         .fillMaxSize()
@@ -1168,17 +1061,13 @@ fun PuzzleApp(
         }
     }
 }
-
 fun createPuzzlePieces(bitmap: Bitmap, n: Int): List<Piece> {
     val pieces = mutableListOf<Piece>()
-
     val size = Math.min(bitmap.width, bitmap.height)
     val xOffset = (bitmap.width - size) / 2
     val yOffset = (bitmap.height - size) / 2
-
     val squaredBitmap = Bitmap.createBitmap(bitmap, xOffset, yOffset, size, size)
     val pieceSize = size / n
-
     for (y in 0 until n) {
         for (x in 0 until n) {
             val id = y * n + x
@@ -1198,19 +1087,15 @@ fun createPuzzlePieces(bitmap: Bitmap, n: Int): List<Piece> {
     }
     return pieces
 }
-
 fun isAdjacent(index: Int, blankIndex: Int, n: Int): Boolean {
     val row1 = index / n
     val col1 = index % n
     val row2 = blankIndex / n
     val col2 = blankIndex % n
-
     val rowDiff = Math.abs(row1 - row2)
     val colDiff = Math.abs(col1 - col2)
-
     return (rowDiff == 1 && col1 == col2) || (colDiff == 1 && row1 == row2)
 }
-
 fun checkVictory(pieces: List<Piece>): Boolean {
     for (i in pieces.indices) {
         if (pieces[i].id != i || pieces[i].rotationDegrees != 0f) {
@@ -1219,20 +1104,16 @@ fun checkVictory(pieces: List<Piece>): Boolean {
     }
     return true
 }
-
 fun getPossibleMoves(blankIndex: Int, n: Int): List<Int> {
     val moves = mutableListOf<Int>()
     val row = blankIndex / n
     val col = blankIndex % n
-
     if (row > 0) moves.add(blankIndex - n)
     if (row < n - 1) moves.add(blankIndex + n)
     if (col > 0) moves.add(blankIndex - 1)
     if (col < n - 1) moves.add(blankIndex + 1)
-
     return moves
 }
-
 fun saveBitmapToInternalStorage(context: Context, bitmap: Bitmap): String {
     val maxDimension = 1200
     val scaledBitmap = if (bitmap.width > maxDimension || bitmap.height > maxDimension) {
@@ -1246,22 +1127,18 @@ fun saveBitmapToInternalStorage(context: Context, bitmap: Bitmap): String {
     } else {
         bitmap
     }
-
     val file = File(context.filesDir, "puzzle_${System.currentTimeMillis()}.jpg")
     FileOutputStream(file).use { out ->
         scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
     }
     return file.absolutePath
 }
-
 fun getLineToMoveIndices(clickedIndex: Int, blankIndex: Int, n: Int): List<Int> {
     val clickedRow = clickedIndex / n
     val clickedCol = clickedIndex % n
     val blankRow = blankIndex / n
     val blankCol = blankIndex % n
-
     val indicesToMove = mutableListOf<Int>()
-
     if (clickedRow == blankRow) {
         if (clickedCol < blankCol) {
             for (col in blankCol - 1 downTo clickedCol) {
@@ -1283,18 +1160,14 @@ fun getLineToMoveIndices(clickedIndex: Int, blankIndex: Int, n: Int): List<Int> 
             }
         }
     }
-
     return indicesToMove
 }
-
 fun solvePuzzleIDAStar(pieces: List<Piece>, n: Int): List<Int>? {
     val initialState = pieces.map { it.id }
     val targetState = (0 until n * n).toList()
-
     var threshold = calculateManhattan(initialState, n)
     val path = mutableListOf<Int>()
     val pieceIdsPath = mutableListOf<Int>()
-
     while (true) {
         val result = search(initialState, 0, threshold, n, targetState, path, pieceIdsPath, -1)
         if (result == 0) return pieceIdsPath
@@ -1303,7 +1176,6 @@ fun solvePuzzleIDAStar(pieces: List<Piece>, n: Int): List<Int>? {
         if (threshold > 100) return null
     }
 }
-
 private fun search(
     state: List<Int>,
     g: Int,
@@ -1318,35 +1190,26 @@ private fun search(
     val f = g + h
     if (f > threshold) return f
     if (state == target) return 0
-
     var min = Int.MAX_VALUE
     val blankIndex = state.indexOf(n * n - 1)
-
     for (nextIndex in getPossibleMoves(blankIndex, n)) {
         if (nextIndex == lastMove) continue
-
         val newState = state.toMutableList()
         val movedPieceId = newState[nextIndex]
         newState[blankIndex] = movedPieceId
         newState[nextIndex] = n * n - 1
-
         path.add(nextIndex)
         pieceIdsPath.add(movedPieceId)
-
         val t = search(newState, g + 1, threshold, n, target, path, pieceIdsPath, blankIndex)
-
         if (t == 0) return 0
         if (t < min) min = t
-
         path.removeAt(path.size - 1)
         pieceIdsPath.removeAt(pieceIdsPath.size - 1)
     }
     return min
 }
-
 fun getVictoryConfetti(): List<Party> {
     val colors = listOf(0xfce18a, 0xff726d, 0xb48def, 0xf4306d, 0x66ccff)
-
     val baseParty = Party(
         speed = 10f,
         maxSpeed = 40f,
@@ -1355,7 +1218,6 @@ fun getVictoryConfetti(): List<Party> {
         emitter = Emitter(duration = 2000.milliseconds).max(100),
         size = listOf(Size.SMALL, Size.MEDIUM, Size.LARGE)
     )
-
     return listOf(
         baseParty.copy(
             angle = 315,
@@ -1379,7 +1241,6 @@ fun getVictoryConfetti(): List<Party> {
         )
     )
 }
-
 fun deletePuzzleFiles(context: Context, puzzles: List<PuzzleEntity>) {
     puzzles.forEach { puzzle ->
         val file = File(puzzle.imagePath)
@@ -1388,7 +1249,6 @@ fun deletePuzzleFiles(context: Context, puzzles: List<PuzzleEntity>) {
         }
     }
 }
-
 @Composable
 fun ControlIconButton(
     selected: Boolean,
@@ -1412,7 +1272,6 @@ fun ControlIconButton(
         )
     }
 }
-
 @Composable
 fun RecordColumn(
     title: String,
@@ -1432,7 +1291,6 @@ fun RecordColumn(
         Text(text = subValue, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
     }
 }
-
 fun formatTime(seconds: Int): String {
     val m = seconds / 60
     val s = seconds % 60

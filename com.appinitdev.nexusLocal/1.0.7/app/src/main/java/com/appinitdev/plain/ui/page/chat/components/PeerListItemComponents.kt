@@ -1,4 +1,3 @@
-
 @Composable
 internal fun PeerIconWithStatus(
     icon: DrawableResource,
@@ -33,7 +32,6 @@ internal fun PeerIconWithStatus(
         }
     }
 }
-
 @Composable
 internal fun PeerContextMenu(
     peerId: String,

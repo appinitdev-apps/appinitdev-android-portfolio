@@ -1,37 +1,21 @@
-
- 
-
-
-
-
-
-
-
-
 @HiltViewModel
 class SearchViewModel @Inject constructor(
         application: Application,
         private val audioRepository: AudioRepository) : WrappedViewModel(application) {
-
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
-
     private val _categoryFilter = MutableStateFlow(loadCategoryFilter())
     val categoryFilter: StateFlow<SearchCategoryFilter> = _categoryFilter.asStateFlow()
-
     private val _searchResults = MutableStateFlow(SearchResults.empty())
     val searchResults: StateFlow<SearchResults> = _searchResults.asStateFlow()
-
     init {
         observeSearchQuery()
     }
-
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     private fun observeSearchQuery() {
         val debouncedQuery = _searchQuery
             .debounce(300L)
             .distinctUntilChanged()
-
         viewModelScope.launch {
             combine(debouncedQuery, _categoryFilter) { query, filter ->
                 Pair(query, filter)
@@ -59,11 +43,6 @@ class SearchViewModel @Inject constructor(
                 }
         }
     }
-
-     
-
-
-
     private fun buildSearchResults(
             byTitle: List<Audio>,
             artists: List<Artist>,
@@ -71,13 +50,10 @@ class SearchViewModel @Inject constructor(
             byGenre: List<Audio>,
             byComposer: List<Audio>,
             filter: SearchCategoryFilter): SearchResults {
-
         val allAudio = (byTitle + byAlbum + byGenre + byComposer)
             .distinctBy { it.id }
             .searchSorted()
-
         val songs = if (filter.songsEnabled) allAudio else emptyList()
-
         val albums = if (filter.albumsEnabled) {
             byAlbum.groupBy { it.album }
                 .mapNotNull { (albumName, songs) ->
@@ -96,9 +72,7 @@ class SearchViewModel @Inject constructor(
         } else {
             emptyList()
         }
-
         val filteredArtists = if (filter.artistsEnabled) artists else emptyList()
-
         val genres = if (filter.genresEnabled) {
             byGenre.groupBy { it.genre }
                 .mapNotNull { (genreName, songs) ->
@@ -114,7 +88,6 @@ class SearchViewModel @Inject constructor(
         } else {
             emptyList()
         }
-
         return SearchResults(
                 songs = songs,
                 albums = albums,
@@ -122,29 +95,21 @@ class SearchViewModel @Inject constructor(
                 genres = genres
         )
     }
-
     private fun resort() {
         viewModelScope.launch(Dispatchers.IO) {
             val current = _searchResults.value
             _searchResults.value = current.copy(songs = current.songs.searchSorted())
         }
     }
-
-     
-
-
-
     fun setSearchQuery(query: String) {
         _searchQuery.value = query
     }
-
     private fun loadCategoryFilter() = SearchCategoryFilter(
             songsEnabled = SearchPreferences.isSongsEnabled(),
             albumsEnabled = SearchPreferences.isAlbumsEnabled(),
             artistsEnabled = SearchPreferences.isArtistsEnabled(),
             genresEnabled = SearchPreferences.isGenresEnabled()
     )
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, s: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, s)
         when (s) {
@@ -157,7 +122,6 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
-
     companion object {
         private const val TAG = "SearchViewModel"
     }

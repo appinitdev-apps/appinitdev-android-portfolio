@@ -1,15 +1,4 @@
-
- 
-
-
-
-
-
-
-
-
 object ChannelManager {
-
     suspend fun createChannel(name: String): DChatChannel {
         val channel = DChatChannel()
         channel.name = name.trim()
@@ -17,14 +6,11 @@ object ChannelManager {
         channel.key = CryptoHelper.generateChaCha20Key()
         channel.version = 1
         channel.members = listOf(ChannelMember(id = TempData.clientId))
-
         AppDatabase.instance.chatChannelDao().insert(channel)
         ChatCacheManager.loadKeyCacheAsync()
         sendEvent(ChannelUpdatedEvent())
         return channel
     }
-
-     
     suspend fun renameChannel(channelId: String, newName: String): DChatChannel {
         val channel = AppDatabase.instance.chatChannelDao().getById(channelId)
             ?: throw Exception("Channel not found")
@@ -38,7 +24,6 @@ object ChannelManager {
         sendEvent(ChannelUpdatedEvent())
         return channel
     }
-
     suspend fun deleteChannel(context: Context, channelId: String) {
         val channel = AppDatabase.instance.chatChannelDao().getById(channelId)
             ?: throw Exception("Channel not found")
@@ -50,13 +35,10 @@ object ChannelManager {
         ChatCacheManager.loadKeyCacheAsync()
         sendEvent(ChannelUpdatedEvent())
     }
-
-     
     suspend fun leaveChannel(channelId: String) {
         val channel = AppDatabase.instance.chatChannelDao().getById(channelId)
             ?: throw Exception("Channel not found")
         if (channel.owner == "me") throw Exception("Owner cannot leave; delete the channel instead")
-
         val ownerPeer = AppDatabase.instance.peerDao().getById(channel.owner)
         if (ownerPeer != null) {
             ChannelSystemMessageSender.sendLeave(channel.id, ownerPeer, channel.key)
@@ -67,13 +49,11 @@ object ChannelManager {
         ChatCacheManager.loadKeyCacheAsync()
         sendEvent(ChannelUpdatedEvent())
     }
-
     suspend fun addMember(channelId: String, peerId: String): DChatChannel {
         val channel = AppDatabase.instance.chatChannelDao().getById(channelId)
             ?: throw Exception("Channel not found")
         if (channel.owner != "me") throw Exception("Only owner can add members")
         if (channel.hasMember(peerId)) throw Exception("Already a member")
-
         val peer = AppDatabase.instance.peerDao().getById(peerId)
         channel.members += ChannelMember(
                     id = peerId,
@@ -82,14 +62,12 @@ object ChannelManager {
         channel.version++
         channel.updatedAt = TimeHelper.now()
         AppDatabase.instance.chatChannelDao().update(channel)
-
         if (peer != null) {
             ChannelSystemMessageSender.sendInvite(channel, peer)
         }
         sendEvent(ChannelUpdatedEvent())
         return channel
     }
-
     suspend fun resendInvite(channelId: String, peerId: String) {
         val channel = AppDatabase.instance.chatChannelDao().getById(channelId)
             ?: throw Exception("Channel not found")
@@ -100,18 +78,15 @@ object ChannelManager {
             ?: throw Exception("Peer not found")
         ChannelSystemMessageSender.sendInvite(channel, peer)
     }
-
     suspend fun removeMember(channelId: String, peerId: String): DChatChannel {
         val channel = AppDatabase.instance.chatChannelDao().getById(channelId)
             ?: throw Exception("Channel not found")
         if (channel.owner != "me") throw Exception("Only owner can remove members")
         if (!channel.hasMember(peerId)) throw Exception("Not a member")
-
         channel.members = channel.members.filter { it.id != peerId }
         channel.version++
         channel.updatedAt = TimeHelper.now()
         AppDatabase.instance.chatChannelDao().update(channel)
-
         val peer = AppDatabase.instance.peerDao().getById(peerId)
         if (peer != null) {
             ChannelSystemMessageSender.sendKick(channel.id, peer, channel.key)
@@ -120,7 +95,6 @@ object ChannelManager {
         sendEvent(ChannelUpdatedEvent())
         return channel
     }
-
     suspend fun acceptInvite(channelId: String) {
         val channel = AppDatabase.instance.chatChannelDao().getById(channelId)
             ?: throw Exception("Channel not found")
@@ -128,7 +102,6 @@ object ChannelManager {
             ?: throw Exception("Owner peer not found")
         ChannelSystemMessageSender.sendInviteAccept(channel.id, ownerPeer)
     }
-
     suspend fun declineInvite(context: Context, channelId: String) {
         val channel = AppDatabase.instance.chatChannelDao().getById(channelId)
             ?: throw Exception("Channel not found")

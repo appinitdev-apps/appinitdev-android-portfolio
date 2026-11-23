@@ -1,5 +1,3 @@
-
-
 @Composable
 fun StepNumber(num: Int) {
     val primaryColor = MaterialTheme.colorScheme.primary

@@ -1,16 +1,12 @@
-
 internal fun Context.findActivity(): Activity {
     return MainActivity.instance.get()!!
 }
-
 internal fun Context.isActivityStatePipMode(): Boolean {
     return findActivity().isInPictureInPictureMode
 }
-
 internal fun Activity.setFullScreen(fullscreen: Boolean) {
     window.setFullScreen(fullscreen)
 }
-
 @Suppress("Deprecation")
 internal fun Window.setFullScreen(fullscreen: Boolean) {
     if (fullscreen) {

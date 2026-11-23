@@ -1,7 +1,4 @@
-
-
 class PicassoRoundedCornersTransformation(private val radius: Float) : Transformation {
-
     override fun transform(source: Bitmap): Bitmap {
         val size = Math.min(source.width, source.height)
         val x = (source.width - size) / 2
@@ -10,19 +7,16 @@ class PicassoRoundedCornersTransformation(private val radius: Float) : Transform
         if (squaredBitmap != source) {
             source.recycle()
         }
-
         val bitmap = Bitmap.createBitmap(size, size, source.config ?: Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         val paint = Paint()
         val shader = BitmapShader(squaredBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
         paint.shader = shader
         paint.isAntiAlias = true
-
         val rect = RectF(0f, 0f, source.width.toFloat(), source.height.toFloat())
         canvas.drawRoundRect(rect, radius, radius, paint)
         squaredBitmap.recycle()
         return bitmap
     }
-
     override fun key() = "rounded_corners"
 }

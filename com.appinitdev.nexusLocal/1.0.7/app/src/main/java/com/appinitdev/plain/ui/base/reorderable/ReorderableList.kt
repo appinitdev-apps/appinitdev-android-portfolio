@@ -1,4 +1,3 @@
-
 @Composable
 fun <T> ReorderableColumn(
     list: List<T>, onSettle: (fromIndex: Int, toIndex: Int) -> Unit,
@@ -24,7 +23,6 @@ fun <T> ReorderableColumn(
         }
     }
 }
-
 @Composable
 fun <T> ReorderableRow(
     list: List<T>, onSettle: (fromIndex: Int, toIndex: Int) -> Unit,

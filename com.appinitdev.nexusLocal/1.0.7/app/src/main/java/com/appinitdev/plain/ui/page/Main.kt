@@ -1,4 +1,3 @@
-
 @Composable
 fun Main(
     navControllerState: MutableState<NavHostController?>,
@@ -19,22 +18,18 @@ fun Main(
     navControllerState.value = navController
     val useDarkTheme = DarkTheme.isDarkTheme(LocalDarkTheme.current)
     val view = LocalView.current
-
     var confirmDialogEvent by remember { mutableStateOf<ConfirmDialogEvent?>(null) }
     var loadingDialogEvent by remember { mutableStateOf<LoadingDialogEvent?>(null) }
     var toastState by remember { mutableStateOf<ToastEvent?>(null) }
-
     val activity = context as? Activity
     LaunchedEffect(loadingDialogEvent) {
         if (loadingDialogEvent != null) activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         else activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
-
     LaunchedEffect(Unit) {
         onLaunched()
         scope.launch(Dispatchers.IO) { pomodoroVM.loadAsync(context) }
     }
-
     MainEventCollector(
         scope, context, chatVM, audioPlaylistVM, pomodoroVM, peerVM,
         onConfirmDialog = { confirmDialogEvent = it },
@@ -42,7 +37,6 @@ fun Main(
         onToast = { toastState = it },
         clearToast = { toastState = null },
     )
-
     DisposableEffect(useDarkTheme) {
         val window = (view.context as Activity).window
         WindowCompat.getInsetsController(window, window.decorView).apply {
@@ -54,11 +48,8 @@ fun Main(
         }
         onDispose { }
     }
-
     Box(modifier = Modifier.background(MaterialTheme.colorScheme.backgroundNormal)) {
         MainNavGraph(navController, mainVM, audioPlaylistVM, chatVM, peerVM, channelVM, notesVM, feedTagsVM, noteTagsVM, pomodoroVM)
-
         MainDialogs(loadingDialogEvent, confirmDialogEvent, { confirmDialogEvent = null }, toastState, { toastState = null })
     }
 }
-

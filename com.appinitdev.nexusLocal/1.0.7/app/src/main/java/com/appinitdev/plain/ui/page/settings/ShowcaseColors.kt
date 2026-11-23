@@ -1,4 +1,3 @@
-
 @Composable
 fun ShowcaseColors() {
     val cs = MaterialTheme.colorScheme
@@ -66,7 +65,6 @@ fun ShowcaseColors() {
     )
     VerticalSpace(16.dp)
 }
-
 @Composable
 private fun ColorGrid(colors: List<Pair<String, Color>>) {
     Column(modifier = Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -80,7 +78,6 @@ private fun ColorGrid(colors: List<Pair<String, Color>>) {
         }
     }
 }
-
 @Composable
 private fun ColorSwatch(name: String, color: Color, modifier: Modifier = Modifier) {
     Row(modifier = modifier.padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {

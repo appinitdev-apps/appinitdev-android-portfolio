@@ -1,11 +1,7 @@
-
 fun String.isThisOrParentIncluded(includedPaths: MutableSet<String>) =
     includedPaths.any { equals(it, true) } || includedPaths.any { "$this/".startsWith("$it/", true) }
-
 fun String.isThisOrParentExcluded(excludedPaths: MutableSet<String>) =
     excludedPaths.any { equals(it, true) } || excludedPaths.any { "$this/".startsWith("$it/", true) }
-
-
 fun String.shouldFolderBeVisible(
     excludedPaths: MutableSet<String>, includedPaths: MutableSet<String>, showHidden: Boolean,
     folderNoMediaStatuses: HashMap<String, Boolean>, callback: (path: String, hasNoMedia: Boolean) -> Unit
@@ -13,7 +9,6 @@ fun String.shouldFolderBeVisible(
     if (isEmpty()) {
         return false
     }
-
     val file = File(this)
     val filename = file.name
     if (filename.startsWith("img_", true) && file.isDirectory) {
@@ -24,19 +19,16 @@ fun String.shouldFolderBeVisible(
             }
         }
     }
-
     if (!showHidden && filename.startsWith('.')) {
         return false
     } else if (includedPaths.contains(this)) {
         return true
     }
-
     val containsNoMedia = if (showHidden) {
         false
     } else {
         folderNoMediaStatuses.getOrElse("$this/$NOMEDIA") { false } || ((!isRPlus() || isExternalStorageManager()) && File(this, NOMEDIA).exists())
     }
-
     return if (!showHidden && containsNoMedia) {
         false
     } else if (excludedPaths.contains(this)) {
@@ -72,8 +64,6 @@ fun String.shouldFolderBeVisible(
         true
     }
 }
-
-
 fun String.getDistinctPath(): String {
     return try {
         File(this).canonicalPath.lowercase(Locale.getDefault())
@@ -81,16 +71,13 @@ fun String.getDistinctPath(): String {
         lowercase(Locale.getDefault())
     }
 }
-
 fun String.isDownloadsFolder() = equals(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString(), true)
-
 fun String.isThisOrParentFolderHidden(): Boolean {
     var curFile = File(this)
     while (true) {
         if (curFile.isHidden) {
             return true
         }
-
         curFile = curFile.parentFile ?: break
         if (curFile.absolutePath == "/") {
             break

@@ -1,4 +1,3 @@
-
 object FeedsLoader {
     fun load(
         ids: List<String>,

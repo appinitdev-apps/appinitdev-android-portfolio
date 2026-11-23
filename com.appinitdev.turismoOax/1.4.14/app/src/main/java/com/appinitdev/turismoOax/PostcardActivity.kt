@@ -1,9 +1,6 @@
-
 class PostcardActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityPostcardBinding
     private var selectedBitmap: Bitmap? = null
-
     private val selectImageLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
@@ -16,23 +13,18 @@ class PostcardActivity : AppCompatActivity() {
                 }
             }
         }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPostcardBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setupStampSelection()
-
         binding.btnSelectPhoto.setOnClickListener {
             selectImageLauncher.launch("image/*")
         }
-
         binding.btnSharePostcard.setOnClickListener {
             compartirPostal()
         }
     }
-
     private fun setupStampSelection() {
         binding.cgStamps.setOnCheckedStateChangeListener { _, checkedIds ->
             if (checkedIds.isNotEmpty()) {
@@ -46,23 +38,19 @@ class PostcardActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun compartirPostal() {
         try {
             val cardView = binding.ivPostcardPreview.parent as android.view.View
             val resultBitmap = Bitmap.createBitmap(cardView.width, cardView.height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(resultBitmap)
             cardView.draw(canvas)
-
             val cachePath = File(cacheDir, "images")
             cachePath.mkdirs()
             val file = File(cachePath, "postal_oaxaca.png")
             val stream = FileOutputStream(file)
             resultBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
             stream.close()
-
             val contentUri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
-
             if (contentUri != null) {
                 val shareIntent = Intent(Intent.ACTION_SEND).apply {
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

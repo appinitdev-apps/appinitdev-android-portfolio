@@ -1,4 +1,3 @@
-
 internal class ViewerContainerState(
     var scope: CoroutineScope = MainScope(),
     var transformState: TransformContentState = TransformContentState(),
@@ -8,33 +7,25 @@ internal class ViewerContainerState(
     internal var viewerContainerAlpha = Animatable(1F)
     internal var showLoading by mutableStateOf(true)
     internal var openTransformJob: Deferred<Unit>? = null
-
     internal fun cancelOpenTransform() { openTransformJob?.cancel(); openTransformJob = null }
-
     internal suspend fun awaitOpenTransform() = doAwaitOpenTransform()
-
     internal suspend fun transformSnapToViewer(isViewer: Boolean) {
         if (isViewer) { transformContentAlpha.snapTo(0F); viewerContainerAlpha.snapTo(1F) }
         else { transformContentAlpha.snapTo(1F); viewerContainerAlpha.snapTo(0F) }
     }
-
     internal suspend fun copyViewerContainerStateToTransformState() = doCopyViewerContainerStateToTransformState()
     internal suspend fun copyViewerPosToContent(itemState: TransformItemState) = doCopyViewerPosToContent(itemState)
-
     var containerSize: IntSize by mutableStateOf(IntSize.Zero)
     var offsetX = Animatable(0F)
     var offsetY = Animatable(0F)
     var scale = Animatable(1F)
-
     suspend fun reset(animationSpec: AnimationSpec<Float> = DEFAULT_SOFT_ANIMATION_SPEC) {
         scope.apply {
             listOf(async { offsetX.animateTo(0F, animationSpec) }, async { offsetY.animateTo(0F, animationSpec) },
                 async { scale.animateTo(1F, animationSpec) }).awaitAll()
         }
     }
-
     suspend fun resetImmediately() { offsetX.snapTo(0F); offsetY.snapTo(0F); scale.snapTo(1F) }
-
     companion object {
         val Saver: Saver<ViewerContainerState, *> = mapSaver(
             save = { mapOf<String, Any>(it::offsetX.name to it.offsetX.value, it::offsetY.name to it.offsetY.value, it::scale.name to it.scale.value) },
@@ -48,7 +39,6 @@ internal class ViewerContainerState(
         )
     }
 }
-
 @Composable
 internal fun rememberViewerContainerState(
     scope: CoroutineScope = rememberCoroutineScope(),
@@ -59,7 +49,6 @@ internal fun rememberViewerContainerState(
     state.scope = scope; state.viewerState = viewerState; state.transformState = transformContentState
     return state
 }
-
 @Composable
 internal fun MediaViewerContainer(
     modifier: Modifier = Modifier, containerState: ViewerContainerState,

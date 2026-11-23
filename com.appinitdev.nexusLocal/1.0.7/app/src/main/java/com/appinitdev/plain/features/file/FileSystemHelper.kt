@@ -1,4 +1,3 @@
-
 object FileSystemHelper {
     private val physicalPaths =
         arrayListOf(
@@ -17,24 +16,19 @@ object FileSystemHelper {
             "/storage/usbdisk1",
             "/storage/usbdisk2",
         )
-
     fun getInternalStorageStats(): DStorageStatsItem {
         val stats = DStorageStatsItem()
         val uuid = StorageManager.UUID_DEFAULT
         stats.totalBytes = storageStatsManager.getTotalBytes(uuid)
         stats.freeBytes = storageStatsManager.getFreeBytes(uuid)
-
         return stats
     }
-
     fun getSDCardStorageStats(context: Context): DStorageStatsItem {
         return getStorageStats(getSDCardPath(context))
     }
-
     fun getUSBStorageStats(): List<DStorageStatsItem> {
         return getUsbDiskPaths().map { getStorageStats(it) }
     }
-
     private fun getStorageStats(path: String): DStorageStatsItem {
         if (path.isNotEmpty()) {
             val stat = StatFs(path)
@@ -42,10 +36,8 @@ object FileSystemHelper {
             val totalBytes = stat.blockSizeLong * stat.blockCountLong
             return DStorageStatsItem(totalBytes, availableBytes)
         }
-
         return DStorageStatsItem(0, 0)
     }
-
     fun getInternalStoragePath(): String {
         return (
                 if (isRPlus()) {
@@ -55,11 +47,9 @@ object FileSystemHelper {
                 }
                 ) ?: Environment.getExternalStorageDirectory()?.absolutePath?.trimEnd('/') ?: ""
     }
-
     fun getInternalStorageName(): String {
         return LocaleHelper.getString(Res.string.internal_storage)
     }
-
     fun getSDCardPath(context: Context): String {
         val internalPath = getInternalStoragePath()
         val directories =
@@ -70,12 +60,10 @@ object FileSystemHelper {
                             true,
                         )
             }
-
         val fullSDPattern = Pattern.compile("^/storage/[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$")
         var sdCardPath =
             directories.firstOrNull { fullSDPattern.matcher(it).matches() }
                 ?: directories.firstOrNull { !physicalPaths.contains(it.lowercase()) } ?: ""
-
         if (sdCardPath.isEmpty()) {
             val sdPattern = Pattern.compile("^[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$")
             try {
@@ -87,10 +75,8 @@ object FileSystemHelper {
             } catch (e: Exception) {
             }
         }
-
         return sdCardPath.trimEnd('/')
     }
-
     fun getUsbDiskPaths(): List<String> {
         val storageVolumes = storageManager.storageVolumes
         val paths = mutableListOf<String>()
@@ -112,10 +98,8 @@ object FileSystemHelper {
                 }
             }
         }
-
         return paths
     }
-
     private fun getStorageDirectories(context: Context): Array<String> {
         val paths = HashSet<String>()
         val rawSecondaryStoragesStr = System.getenv("SECONDARY_STORAGE")
@@ -140,7 +124,6 @@ object FileSystemHelper {
                 isDigit = true
             } catch (ignored: NumberFormatException) {
             }
-
             val rawUserId = if (isDigit) lastFolder else ""
             if (TextUtils.isEmpty(rawUserId)) {
                 paths.add(rawEmulatedStorageTarget)
@@ -148,7 +131,6 @@ object FileSystemHelper {
                 paths.add(rawEmulatedStorageTarget + File.separator + rawUserId)
             }
         }
-
         if (!rawSecondaryStoragesStr.isNullOrEmpty()) {
             val rawSecondaryStorages =
                 rawSecondaryStoragesStr.split(
@@ -158,7 +140,6 @@ object FileSystemHelper {
         }
         return paths.map { it.trimEnd('/') }.toTypedArray()
     }
-
     private fun convertFile(
         file: File,
         showHidden: Boolean,
@@ -179,7 +160,6 @@ object FileSystemHelper {
             if (isDir) file.getDirectChildrenCount(showHidden) else 0,
         )
     }
-
     fun getFilesList(
         dir: String,
         showHidden: Boolean,
@@ -196,10 +176,8 @@ object FileSystemHelper {
                 files.add(convertFile(file, showHidden))
             }
         }
-
         return files.sorted(sortBy)
     }
-
     suspend fun search(
         query: String,
         root: String,
@@ -212,17 +190,13 @@ object FileSystemHelper {
         val fileSizeFields = filterFields.filter { it.name == "file_size" }
         val dir = parent.ifEmpty { root }
         val items = if (text.isNotEmpty() || fileSizeFields.isNotEmpty()) {
-            
-            
             search(text, dir, showHidden).sorted(sortBy)
         } else {
             getFilesList(dir, showHidden, sortBy)
         }
-
         if (fileSizeFields.isEmpty()) return items
         return items.filter { !it.isDir && matchFileSizeFilters(it.size, fileSizeFields) }
     }
-
     private fun matchFileSizeFilters(size: Long, fileSizeFields: List<FilterField>): Boolean {
         for (f in fileSizeFields) {
             val (op, rawValue) = f.normalizeComparison(defaultOp = "=")
@@ -240,7 +214,6 @@ object FileSystemHelper {
         }
         return true
     }
-
     fun search(
         q: String,
         dir: String,
@@ -251,32 +224,25 @@ object FileSystemHelper {
             if (!showHidden && it.isHidden) {
                 return@forEach
             }
-
             if (it.name.contains(q, true)) {
                 files.add(convertFile(it, showHidden))
             }
-
             if (it.isDirectory) {
                 files.addAll(search(q, it.absolutePath, showHidden))
             }
         }
-
         return files
     }
-
     fun createDirectory(path: String): DFile {
         val file = File(path)
         file.mkdirs()
         return convertFile(file, false)
     }
-
     fun createFile(path: String): DFile {
         val file = File(path)
         file.createNewFile()
         return convertFile(file, false)
     }
-
-
     fun getAllVolumeNames(context: Context): List<String> {
         val volumeNames = mutableListOf(MediaStore.VOLUME_EXTERNAL_PRIMARY)
         context.getExternalFilesDirs(null)
@@ -288,19 +254,14 @@ object FileSystemHelper {
             }
         return volumeNames
     }
-
     fun getRecentFiles(): List<File> {
         val externalStorageDir = Environment.getExternalStorageDirectory()
-
         val recentFilesQueue = PriorityQueue<File>(100) { f1, f2 ->
             f1.lastModified().compareTo(f2.lastModified())
         }
-
         gatherRecentFiles(externalStorageDir, recentFilesQueue)
-
         return recentFilesQueue.sortedByDescending { it.lastModified() }
     }
-
     private fun gatherRecentFiles(directory: File, recentFilesQueue: PriorityQueue<File>) {
         val files = directory.listFiles()
         if (files != null) {
@@ -321,5 +282,3 @@ object FileSystemHelper {
         }
     }
 }
-
-

@@ -1,8 +1,5 @@
-
 object OfflineImageManager {
-
     private const val FOLDER_NAME = "tour_images"
-
     private fun getImagesDir(context: Context): File {
         val dir = File(context.filesDir, FOLDER_NAME)
         if (!dir.exists()) {
@@ -10,7 +7,6 @@ object OfflineImageManager {
         }
         return dir
     }
-
     fun getFileNameForUrl(url: String): String {
         return try {
             val md = MessageDigest.getInstance("MD5")
@@ -31,13 +27,11 @@ object OfflineImageManager {
             "img_${url.hashCode()}.jpg"
         }
     }
-
     fun getFileForUrl(context: Context, url: String?): File? {
         if (url.isNullOrEmpty()) return null
         val dir = getImagesDir(context)
         return File(dir, getFileNameForUrl(url))
     }
-
     fun getFileOrUrl(context: Context, url: String?): Any {
         if (url.isNullOrEmpty()) return ""
         val file = getFileForUrl(context, url)
@@ -47,15 +41,8 @@ object OfflineImageManager {
             url
         }
     }
-
-     
-
-
-
-
     suspend fun syncImages(context: Context, tours: List<Tour>) = withContext(Dispatchers.IO) {
         val activeUrls = mutableSetOf<String>()
-
         for (tour in tours) {
             if (!tour.imagenPrincipal.isNullOrEmpty()) activeUrls.add(tour.imagenPrincipal)
             if (!tour.flayer.isNullOrEmpty()) activeUrls.add(tour.flayer)
@@ -63,11 +50,8 @@ object OfflineImageManager {
                 if (!img.isNullOrEmpty()) activeUrls.add(img)
             }
         }
-
         val dir = getImagesDir(context)
         val activeFileNames = activeUrls.map { getFileNameForUrl(it) }.toSet()
-
-        
         val existingFiles = dir.listFiles()
         existingFiles?.forEach { file ->
             if (file.isFile && file.name !in activeFileNames) {
@@ -75,8 +59,6 @@ object OfflineImageManager {
                 Log.d("OfflineImageManager", "Imagen obsoleta eliminada: ${file.name} (éxito: $deleted)")
             }
         }
-
-        
         for (imageUrl in activeUrls) {
             val file = File(dir, getFileNameForUrl(imageUrl))
             if (!file.exists() || file.length() == 0L) {
@@ -84,7 +66,6 @@ object OfflineImageManager {
             }
         }
     }
-
     private fun downloadImage(imageUrl: String, targetFile: File) {
         try {
             val url = URL(imageUrl)
@@ -93,7 +74,6 @@ object OfflineImageManager {
             conn.readTimeout = 8000
             conn.doInput = true
             conn.connect()
-
             if (conn.responseCode == HttpURLConnection.HTTP_OK) {
                 conn.inputStream.use { input ->
                     FileOutputStream(targetFile).use { output ->

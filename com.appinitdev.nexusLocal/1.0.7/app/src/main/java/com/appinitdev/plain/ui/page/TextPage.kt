@@ -1,4 +1,3 @@
-
 @SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -13,18 +12,15 @@ fun TextPage(
     val scope = rememberCoroutineScope()
     val darkTheme = LocalDarkTheme.current
     val isDarkTheme = DarkTheme.isDarkTheme(darkTheme)
-
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
             textFileVM.loadConfigAsync(context)
             textFileVM.isDataLoading.value = false
         }
     }
-
     if (textFileVM.showMoreActions.value) {
         ViewTextContentBottomSheet(textFileVM, content)
     }
-
     PScaffold(
         topBar = {
             PTopAppBar(navController = navController, title = title, actions = {
@@ -56,7 +52,3 @@ fun TextPage(
         },
     )
 }
-
-
-
-

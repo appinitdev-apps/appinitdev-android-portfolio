@@ -1,23 +1,17 @@
-
 sealed class WebSocketData {
     data class Text(val value: String) : WebSocketData()
     data class Binary(val value: ByteArray) : WebSocketData() {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false
-
             other as Binary
-
             return value.contentEquals(other.value)
         }
-
         override fun hashCode(): Int {
             return value.contentHashCode()
         }
     }
 }
-
-
 class WebSocketEvent(
     val type: EventType,
     val data: WebSocketData,
@@ -26,7 +20,6 @@ class WebSocketEvent(
     constructor(type: EventType, data: String) : this(type, WebSocketData.Text(data))
     constructor(type: EventType, data: ByteArray) : this(type, WebSocketData.Binary(data))
 }
-
 enum class EventType(val value: Int) {
     MESSAGE_CREATED(1),
     MESSAGE_DELETED(2),
@@ -53,15 +46,12 @@ enum class EventType(val value: Int) {
     PAIRING_FAILED(24),
     PAIRING_CANCELED(25),
 }
-
-
 @Serializable
 data class PomodoroActionData(
     val action: String, val timeLeft: Int,
     val totalTime: Int, val completedCount: Int,
     val round: Int, val state: PomodoroState
 ) 
-
 @Serializable
 data class PeerStatusData(
     val id: String,

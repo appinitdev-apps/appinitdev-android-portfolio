@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FilesSelectModeBottomActions(
@@ -9,7 +8,6 @@ fun FilesSelectModeBottomActions(
     val scope = rememberCoroutineScope()
     val selectedFiles = filesVM.itemsFlow.value.filter { file -> filesVM.selectedIds.contains(file.path) }
     val showRenameDialog = remember { mutableStateOf(false) }
-
     if (showRenameDialog.value && filesVM.selectedIds.size == 1) {
         FileRenameDialog(
             file = selectedFiles[0],
@@ -17,7 +15,6 @@ fun FilesSelectModeBottomActions(
             showDialog = showRenameDialog,
         )
     }
-
     PBottomAppBar {
         BottomActionButtons {
             IconTextSmallButtonCut {

@@ -1,14 +1,10 @@
-
 @AndroidEntryPoint
 class YearPage : BasePageFragment() {
-
     private lateinit var binding: FragmentPageYearBinding
-
     private val yearGroup: YearGroup by lazy {
         requireArguments().parcelable(BundleConstants.YEAR_GROUP)
             ?: throw IllegalArgumentException("YearGroup is required")
     }
-
     private val yearViewerViewModel by viewModels<YearViewerViewModel>(
             extrasProducer = {
                 defaultViewModelCreationExtras.withCreationCallback<YearViewerViewModel.Factory> {
@@ -16,30 +12,23 @@ class YearPage : BasePageFragment() {
                 }
             }
     )
-
     override val pageRecyclerView: RecyclerView
         get() = binding.recyclerView
-
     override val pageType: PageAdapter.PageType by lazy { PageAdapter.PageType.YearPage(yearGroup) }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentPageYearBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         collectPageData { yearViewerViewModel.data }
     }
-
     override fun resortPageData() {
         yearViewerViewModel.resort()
     }
-
     override fun onMenuClicked(view: View) {
         viewLifecycleOwner.lifecycleScope.launch {
             val currentData = yearViewerViewModel.data.value ?: return@launch
-
             SharedScrollViewPopup(
                     container = requireContainerView(),
                     anchorView = view,
@@ -63,15 +52,10 @@ class YearPage : BasePageFragment() {
             ).show()
         }
     }
-
     companion object {
         const val TAG = "YearPage"
-
         fun newInstance(yearGroup: YearGroup): YearPage {
             val args = Bundle()
-            
-            
-            
             args.putParcelable(BundleConstants.YEAR_GROUP, yearGroup.copy(songPaths = emptyList()))
             val fragment = YearPage()
             fragment.arguments = args
@@ -79,5 +63,3 @@ class YearPage : BasePageFragment() {
         }
     }
 }
-
-

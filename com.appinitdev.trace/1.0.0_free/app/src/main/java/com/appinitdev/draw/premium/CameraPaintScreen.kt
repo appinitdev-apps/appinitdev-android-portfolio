@@ -1,5 +1,3 @@
-
-
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -14,14 +12,10 @@ fun CameraPaintScreen(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-
-    
     val OffsetSaver = listSaver<MutableState<Offset>, Float>(
         save = { listOf(it.value.x, it.value.y) },
         restore = { mutableStateOf(Offset(it[0], it[1])) }
     )
-
-    
     var permissionsGranted by rememberSaveable { mutableStateOf(false) }
     var showCamera by rememberSaveable { mutableStateOf(startWithCameraOn) }
     var isFlashOn by rememberSaveable { mutableStateOf(false) }
@@ -32,50 +26,38 @@ fun CameraPaintScreen(
     var flipY by rememberSaveable { mutableStateOf(1f) } 
     var offset by rememberSaveable(saver = OffsetSaver) { mutableStateOf(Offset.Zero) }
     var isLocked by rememberSaveable { mutableStateOf(false) }
-    
-    
     var imageUriStr by rememberSaveable { mutableStateOf(initialImageUri?.toString()) }
     var originalImageUriStr by rememberSaveable { mutableStateOf(initialImageUri?.toString()) }
-    
     val imageUri = imageUriStr?.let { Uri.parse(it) }
     val originalImageUri = originalImageUriStr?.let { Uri.parse(it) }
-
     var sketchLineSize by rememberSaveable { mutableStateOf(1.0f) } 
     var sketchThreshold by rememberSaveable { mutableStateOf(0.15f) } 
     var isSketchMode by rememberSaveable { mutableStateOf(false) } 
-
     var imageAlpha by rememberSaveable { mutableStateOf(if (!startWithCameraOn) 1.0f else 0.5f) }
     var currentColor by remember { mutableStateOf(Color(0xFFFF4081)) }
     var currentFilter by rememberSaveable { mutableStateOf(initialFilter) } 
     var gridType by rememberSaveable { mutableStateOf(initialGridType) } 
     var gridSize by rememberSaveable { mutableFloatStateOf(200f) } 
     var showImage by rememberSaveable { mutableStateOf(true) }
-
     var cameraControl: CameraControl? by remember { mutableStateOf(null) }
     var isProcessingBg by remember { mutableStateOf(false) }
     var isRecordingTimeLapse by rememberSaveable { mutableStateOf(false) } 
     var timeLapseCount by rememberSaveable { mutableIntStateOf(0) } 
     var currentTimeLapseSessionId by rememberSaveable { mutableStateOf<String?>(null) } 
-    
-    
     var showPip by rememberSaveable { mutableStateOf(false) }
     var pipOffset by rememberSaveable(saver = OffsetSaver) { mutableStateOf(Offset(20f, 600f)) } 
     var pipSize by rememberSaveable { mutableFloatStateOf(160f) }
-    
     var isWorldLockActive by rememberSaveable { mutableStateOf(false) }
     var referencePoints by rememberSaveable { mutableStateOf<List<Offset>>(emptyList()) }
     var isRefPointsActive by rememberSaveable { mutableStateOf(false) }
-
     var pencilColorMode by rememberSaveable { mutableStateOf("BLUE") }
     var posterizeLevels by rememberSaveable { mutableFloatStateOf(10f) }
     var gammaValue by rememberSaveable { mutableFloatStateOf(2.0f) }
     var sharpnessValue by rememberSaveable { mutableFloatStateOf(2.0f) }
     var grayscaleSaturation by rememberSaveable { mutableFloatStateOf(0.0f) }
     var filterJob by remember { mutableStateOf<Job?>(null) }
-    
     var showColorGuide by remember { mutableStateOf(false) }
     var selectedColorForGuide by remember { mutableStateOf<Color?>(null) }
-
     var showSidePanel by remember { mutableStateOf(true) } 
     val activeColor = Color(0xFFFF4081)
     var showCaptureDialog by remember { mutableStateOf(false) } 
@@ -83,77 +65,57 @@ fun CameraPaintScreen(
     var showRealTimeCapturePreview by remember { mutableStateOf(false) } 
     var captureModeSelected by remember { mutableStateOf("NONE") } 
     var capturePreviewViewRef by remember { mutableStateOf<PreviewView?>(null) } 
-
-    
     LaunchedEffect(initialFilter, originalImageUriStr) {
         if (initialFilter == "SKETCH" && originalImageUriStr != null) {
             val uriActual = originalImageUri ?: return@LaunchedEffect
             isProcessingBg = true
-
             scope.launch(Dispatchers.IO) {
                 try {
-                    
                     val options = BitmapFactory.Options().apply {
                         inJustDecodeBounds = true
                     }
                     context.contentResolver.openInputStream(uriActual)?.use { 
                         BitmapFactory.decodeStream(it, null, options)
                     }
-                    
-                    
                     var inSampleSize = 1
                     while (options.outWidth / inSampleSize > 2048 || options.outHeight / inSampleSize > 2048) {
                         inSampleSize *= 2
                     }
-                    
                     val decodeOptions = BitmapFactory.Options().apply {
                         inSampleSize = inSampleSize
                         inMutable = true
                     }
-                    
                     val bitmapOriginal: Bitmap = context.contentResolver.openInputStream(uriActual)?.use {
                         BitmapFactory.decodeStream(it, null, decodeOptions)
                     } ?: throw Exception("No se pudo cargar la imagen")
-
                     val gpuImage = com.appinitdev.gpuimage.GPUImage(context)
                     gpuImage.setImage(bitmapOriginal)
-
                     val filterSketch = GPUImageThresholdEdgeDetectionFilter()
                     filterSketch.setLineSize(sketchLineSize)
                     filterSketch.setThreshold(sketchThreshold)
-
                     gpuImage.setFilter(filterSketch)
                     val bitmapProcesado = gpuImage.bitmapWithFilterApplied
-
                     val width = bitmapProcesado.width
                     val height = bitmapProcesado.height
                     val pixels = IntArray(width * height)
                     bitmapProcesado.getPixels(pixels, 0, width, 0, 0, width, height)
-
                     for (i in pixels.indices) {
                         val p = pixels[i]
                         val r = (p shr 16) and 0xFF
                         val g = (p shr 8) and 0xFF
                         val b = p and 0xFF
-                        
                         if (r > 220 && g > 220 && b > 220) {
                             pixels[i] = 0x00000000
                         }
                     }
-
                     val bitmapFinal = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
                     bitmapFinal.setPixels(pixels, 0, width, 0, 0, width, height)
-
                     val archivoTemporal = File(context.cacheDir, "sketch_${System.currentTimeMillis()}.png")
                     FileOutputStream(archivoTemporal).use { stream ->
                         bitmapFinal.compress(Bitmap.CompressFormat.PNG, 90, stream)
                     }
                     val nuevoUri = Uri.fromFile(archivoTemporal)
-
-                    
                     bitmapOriginal.recycle()
-                    
-
                     withContext(Dispatchers.Main) {
                         imageUriStr = nuevoUri.toString()
                         isProcessingBg = false
@@ -175,7 +137,6 @@ fun CameraPaintScreen(
             val uriActual = originalImageUri ?: return@launch
             val gpuFilter = filterSupplier()
             isProcessingBg = true
-
             try {
                 withContext(Dispatchers.IO) {
                     val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
@@ -189,20 +150,16 @@ fun CameraPaintScreen(
                     val bitmapOriginal: Bitmap = context.contentResolver.openInputStream(uriActual)?.use {
                         BitmapFactory.decodeStream(it, null, decodeOptions)
                     } ?: throw Exception("No se pudo cargar")
-
                     val gpuImage = com.appinitdev.gpuimage.GPUImage(context)
                     gpuImage.setImage(bitmapOriginal)
                     gpuImage.setFilter(gpuFilter)
                     val bitmapProcesado = gpuImage.bitmapWithFilterApplied
-
                     val archivoTemporal = File(context.cacheDir, "filter_${System.currentTimeMillis()}.png")
                     FileOutputStream(archivoTemporal).use { stream ->
                         bitmapProcesado.compress(Bitmap.CompressFormat.PNG, 90, stream)
                     }
                     val nuevoUri = Uri.fromFile(archivoTemporal)
-                    
                     bitmapOriginal.recycle()
-
                     withContext(Dispatchers.Main) {
                         imageUriStr = nuevoUri.toString()
                         isProcessingBg = false
@@ -216,22 +173,17 @@ fun CameraPaintScreen(
             }
         }
     }
-
-    
     val permissionLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perms ->
             permissionsGranted = perms[Manifest.permission.CAMERA] == true
         }
     LaunchedEffect(Unit) { permissionLauncher.launch(arrayOf(Manifest.permission.CAMERA)) }
-
-    
     LaunchedEffect(isRecordingTimeLapse) {
         if (isRecordingTimeLapse) {
             val sessionId = java.util.UUID.randomUUID().toString()
             currentTimeLapseSessionId = sessionId
             timeLapseCount = 0
             Toast.makeText(context, "TimeLapse iniciado", Toast.LENGTH_SHORT).show()
-
             delay(500)
             val firstBitmap = withContext(Dispatchers.Main) { previewViewRef?.bitmap }
             if (firstBitmap != null) {
@@ -244,7 +196,6 @@ fun CameraPaintScreen(
                 )
                 timeLapseCount = 1
             }
-
             while (isActive && isRecordingTimeLapse) {
                 delay(5000) 
                 val bitmap = withContext(Dispatchers.Main) { previewViewRef?.bitmap }
@@ -266,13 +217,11 @@ fun CameraPaintScreen(
             currentTimeLapseSessionId = null
         }
     }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF7F8FA))
     ) {
-        
         if (permissionsGranted && showCamera) {
             CameraPreviewComposable(
                 modifier = Modifier.fillMaxSize(),
@@ -281,8 +230,6 @@ fun CameraPaintScreen(
                 onPreviewReady = { previewView -> previewViewRef = previewView }
             )
         }
-
-        
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -299,7 +246,6 @@ fun CameraPaintScreen(
                 .pointerInput(isLocked, isRefPointsActive) {
                     detectTapGestures(
                         onLongPress = { tapOffset ->
-                            
                             if (!isLocked && isRefPointsActive) {
                                 if (referencePoints.size < 4) {
                                     referencePoints = referencePoints + tapOffset
@@ -357,8 +303,6 @@ fun CameraPaintScreen(
                         else -> null
                     }
                 )
-
-                
                 referencePoints.forEachIndexed { index, point ->
                     Box(
                         modifier = Modifier
@@ -380,25 +324,21 @@ fun CameraPaintScreen(
                             .pointerInput(index) {
                                 detectTapGestures(
                                     onTap = {
-                                        
                                         referencePoints = referencePoints.filterIndexed { i, _ -> i != index }
                                     }
                                 )
                             },
                         contentAlignment = Alignment.Center
                     ) {
-                        
                         androidx.compose.foundation.Canvas(modifier = Modifier.size(24.dp)) {
                             val lineLength = size.width * 0.6f
                             val stroke = 2.dp.toPx()
-                            
                             drawLine(
                                 color = Color.Black.copy(alpha = 0.3f),
                                 start = Offset(size.width / 2 - lineLength / 2 + 1, size.height / 2 + 1),
                                 end = Offset(size.width / 2 + lineLength / 2 + 1, size.height / 2 + 1),
                                 strokeWidth = stroke
                             )
-                            
                             drawLine(
                                 color = Color.White,
                                 start = Offset(size.width / 2 - lineLength / 2, size.height / 2),
@@ -415,8 +355,6 @@ fun CameraPaintScreen(
                     }
                 }
             }
-
-            
             if (gridType != "NONE") {
                 GridOverlay(
                     type = gridType,
@@ -425,8 +363,6 @@ fun CameraPaintScreen(
                 )
             }
         }
-
-        
         if (showPip && imageUri != null) {
             val pipPainter = rememberAsyncImagePainter(imageUri)
             val intrinsicSize = pipPainter.intrinsicSize
@@ -435,7 +371,6 @@ fun CameraPaintScreen(
             } else {
                 1f
             }
-
             Box(
                 modifier = Modifier
                     .offset { IntOffset(pipOffset.x.roundToInt(), pipOffset.y.roundToInt()) }
@@ -458,8 +393,6 @@ fun CameraPaintScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit
                 )
-                
-                
                 IconButton(
                     onClick = { showPip = false },
                     modifier = Modifier
@@ -470,8 +403,6 @@ fun CameraPaintScreen(
                 ) {
                     Icon(Icons.Default.Close, null, tint = Color.White, modifier = Modifier.size(14.dp))
                 }
-
-                
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
@@ -489,16 +420,12 @@ fun CameraPaintScreen(
                 }
             }
         }
-
-        
         if (showColorGuide) {
             ColorMixingDialog(
                 onDismiss = { showColorGuide = false },
                 activeColor = activeColor
             )
         }
-
-        
         if (isProcessingBg) {
             Box(
                 modifier = Modifier
@@ -522,8 +449,6 @@ fun CameraPaintScreen(
                 }
             }
         }
-
-        
         Box(
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {
@@ -557,16 +482,12 @@ fun CameraPaintScreen(
                         if (uriActual != null) {
                             if (isProcessingBg) return@CameraControlsPanelPro
                             isProcessingBg = true
-
                             scope.launch(Dispatchers.IO) {
                                 try {
-                                    
                                     val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
                                     context.contentResolver.openInputStream(uriActual)?.use { BitmapFactory.decodeStream(it, null, options) }
-                                    
                                     var inSampleSize = 1
                                     while (options.outWidth / inSampleSize > 2048 || options.outHeight / inSampleSize > 2048) inSampleSize *= 2
-                                    
                                     val decodeOptions = BitmapFactory.Options().apply { 
                                         this.inSampleSize = inSampleSize
                                         inMutable = true 
@@ -574,20 +495,13 @@ fun CameraPaintScreen(
                                     val bitmapOriginal = context.contentResolver.openInputStream(uriActual)?.use {
                                         BitmapFactory.decodeStream(it, null, decodeOptions)
                                     } ?: throw Exception("No se pudo cargar la imagen")
-
-                                    
                                     val bitmapSinFondo = bitmapOriginal.removeBackground(context = context)
-
-                                    
                                     val archivoTemporal = File(context.cacheDir, "nobg_${System.currentTimeMillis()}.png")
                                     FileOutputStream(archivoTemporal).use { stream ->
                                         bitmapSinFondo.compress(Bitmap.CompressFormat.PNG, 90, stream)
                                     }
                                     val nuevoUri = Uri.fromFile(archivoTemporal)
-                                    
                                     bitmapOriginal.recycle()
-
-                                    
                                     withContext(Dispatchers.Main) {
                                         imageUriStr = nuevoUri.toString()
                                         isProcessingBg = false
@@ -609,18 +523,13 @@ fun CameraPaintScreen(
                         if (uriActual != null) {
                             if (isProcessingBg) return@CameraControlsPanelPro
                             isProcessingBg = true
-
                             Toast.makeText(context, context.getString(R.string.procesando_boceto), Toast.LENGTH_SHORT).show()
-
                             scope.launch(Dispatchers.IO) {
                                 try {
-                                    
                                     val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
                                     context.contentResolver.openInputStream(uriActual)?.use { BitmapFactory.decodeStream(it, null, options) }
-                                    
                                     var inSampleSize = 1
                                     while (options.outWidth / inSampleSize > 2048 || options.outHeight / inSampleSize > 2048) inSampleSize *= 2
-                                    
                                     val decodeOptions = BitmapFactory.Options().apply { 
                                         this.inSampleSize = inSampleSize
                                         inMutable = true 
@@ -628,56 +537,42 @@ fun CameraPaintScreen(
                                     val bitmapOriginal = context.contentResolver.openInputStream(uriActual)?.use {
                                         BitmapFactory.decodeStream(it, null, decodeOptions)
                                     } ?: throw Exception("No se pudo cargar la imagen")
-
                                     val gpuImage = com.appinitdev.gpuimage.GPUImage(context)
-                                    
-                                    
                                     val blurFilter = com.appinitdev.gpuimage.filter.GPUImageBilateralBlurFilter()
                                     blurFilter.setDistanceNormalizationFactor(0.8f)
                                     gpuImage.setImage(bitmapOriginal)
                                     gpuImage.setFilter(blurFilter)
                                     val bitmapBlurred = gpuImage.bitmapWithFilterApplied
-
                                     gpuImage.setImage(bitmapBlurred)
                                     val filterSketch = GPUImageThresholdEdgeDetectionFilter()
-                                    
                                     filterSketch.setLineSize(lineSize * 1.5f) 
                                     filterSketch.setThreshold(threshold)
-
                                     gpuImage.setFilter(filterSketch)
                                     val bitmapProcesado = gpuImage.bitmapWithFilterApplied
-
                                     val width = bitmapProcesado.width
                                     val height = bitmapProcesado.height
                                     val pixels = IntArray(width * height)
                                     bitmapProcesado.getPixels(pixels, 0, width, 0, 0, width, height)
-
                                     for (i in pixels.indices) {
                                         val p = pixels[i]
                                         val r = (p shr 16) and 0xFF
                                         val g = (p shr 8) and 0xFF
                                         val b = p and 0xFF
-                                        
                                         if (r > 215 && g > 215 && b > 215) {
                                             pixels[i] = 0x00000000
                                         } else {
-                                            
                                             pixels[i] = (p and 0xFF000000.toInt()) or 0x00000000
                                         }
                                     }
-
                                     val bitmapFinal = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
                                     bitmapFinal.setPixels(pixels, 0, width, 0, 0, width, height)
-
                                     val archivoTemporal = File(context.cacheDir, "sketch_${System.currentTimeMillis()}.png")
                                     FileOutputStream(archivoTemporal).use { stream ->
                                         bitmapFinal.compress(Bitmap.CompressFormat.PNG, 90, stream)
                                     }
                                     val nuevoUri = Uri.fromFile(archivoTemporal)
-                                    
                                     bitmapOriginal.recycle()
                                     bitmapBlurred.recycle()
-
                                     withContext(Dispatchers.Main) {
                                         imageUriStr = nuevoUri.toString()
                                         isProcessingBg = false
@@ -712,14 +607,11 @@ fun CameraPaintScreen(
                     onFlipVertical = { flipY *= -1f },
                     currentFilter = currentFilter,
                     onFilterChange = { nuevoFiltro ->
-                        
                         val processedFilters = listOf("SKETCH", "POSTERIZE", "SHARPEN", "GAMMA")
                         if (processedFilters.contains(currentFilter) && !processedFilters.contains(nuevoFiltro)) {
                             imageUriStr = originalImageUriStr
                         }
                         currentFilter = nuevoFiltro 
-                        
-                        
                         when (nuevoFiltro) {
                             "POSTERIZE" -> applyGpuFilterDebounced(0L) { GPUImagePosterizeFilter(posterizeLevels.toInt()) }
                             "SHARPEN" -> applyGpuFilterDebounced(0L) { GPUImageSharpenFilter(sharpnessValue) }
@@ -771,8 +663,6 @@ fun CameraPaintScreen(
                 )
             }
         }
-
-        
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -780,22 +670,15 @@ fun CameraPaintScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Top
         ) {
-            
             IconButton(
                 onClick = onBack,
                 modifier = Modifier.size(48.dp).clip(CircleShape).background(Color.Black.copy(alpha = 0.25f))
             ) {
                 Icon(Icons.Filled.ArrowBack, null, tint = Color.White)
             }
-
-            
             Row(verticalAlignment = Alignment.CenterVertically) {
-
             }
-
-                
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    
                     if (isRecordingTimeLapse) {
                         Surface(
                             color = Color.Red.copy(alpha = 0.8f),
@@ -821,16 +704,12 @@ fun CameraPaintScreen(
                             }
                         }
                     }
-
-                    
                     IconButton(
                         onClick = { showSidePanel = !showSidePanel },
                         modifier = Modifier.size(48.dp).clip(CircleShape).background(Color.Black.copy(alpha = 0.25f))
                     ) {
                         Icon(if (showSidePanel) Icons.Filled.Visibility else Icons.Filled.VisibilityOff, null, tint = Color.White)
                     }
-
-                
                 IconButton(
                     onClick = { isLocked = !isLocked },
                     modifier = Modifier.size(48.dp).clip(CircleShape).background(Color.Black.copy(alpha = 0.25f))
@@ -839,10 +718,6 @@ fun CameraPaintScreen(
                 }
             }
         }
-
-        
-
-        
         if (showRealTimeCapturePreview) {
             Box(
                 modifier = Modifier
@@ -855,7 +730,6 @@ fun CameraPaintScreen(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -871,8 +745,6 @@ fun CameraPaintScreen(
                             letterSpacing = 2.sp
                         )
                     }
-
-                    
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -881,7 +753,6 @@ fun CameraPaintScreen(
                             .background(Color.DarkGray)
                     ) {
                         if (captureModeSelected == "CAMERA_ONLY") {
-                            
                             CameraPreviewComposable(
                                 modifier = Modifier.fillMaxSize(),
                                 showCamera = true,
@@ -889,9 +760,7 @@ fun CameraPaintScreen(
                                 onPreviewReady = { capturePreviewViewRef = it }
                             )
                         } else {
-                            
                             Row(modifier = Modifier.fillMaxSize()) {
-                                
                                 Box(modifier = Modifier.weight(1f)) {
                                     CameraPreviewComposable(
                                         modifier = Modifier.fillMaxSize(),
@@ -900,7 +769,6 @@ fun CameraPaintScreen(
                                         onPreviewReady = { capturePreviewViewRef = it }
                                     )
                                 }
-                                
                                 Box(modifier = Modifier.weight(1f).background(Color.White)) {
                                     if (imageUri != null) {
                                         Image(
@@ -914,8 +782,6 @@ fun CameraPaintScreen(
                             }
                         }
                     }
-
-                    
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -923,59 +789,42 @@ fun CameraPaintScreen(
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        
                         IconButton(
                             onClick = { 
                                 showRealTimeCapturePreview = false 
-                                
                                 showCamera = true 
                             },
                             modifier = Modifier.size(60.dp).background(Color.White.copy(alpha = 0.2f), CircleShape)
                         ) {
                             Icon(Icons.Default.Close, null, tint = Color.White)
                         }
-
-                        
                         FloatingActionButton(
                             onClick = {
                                 isProcessingBg = true
                                 scope.launch(Dispatchers.IO) {
                                     try {
-                                        
                                         val cameraBitmap = withContext(Dispatchers.Main) { 
                                             capturePreviewViewRef?.bitmap 
                                         }
-                                        
                                         if (cameraBitmap == null) {
                                             withContext(Dispatchers.Main) { isProcessingBg = false }
                                             return@launch
                                         }
-
                                         val resultBitmap = if (captureModeSelected == "SIDE_BY_SIDE") {
-                                            
                                             val templateBitmap = imageUri?.let { uri ->
                                                 val source = ImageDecoder.createSource(context.contentResolver, uri)
                                                 ImageDecoder.decodeBitmap(source)
                                             }
-                                            
                                             val camW = cameraBitmap.width
                                             val camH = cameraBitmap.height
                                             val totalWidth = if (templateBitmap != null) camW * 2 else camW
                                             val rb = Bitmap.createBitmap(totalWidth, camH, Bitmap.Config.ARGB_8888)
                                             val canvas = android.graphics.Canvas(rb)
-                                            
-                                            
                                             canvas.drawBitmap(cameraBitmap, 0f, 0f, null)
-                                            
-                                            
                                             templateBitmap?.let { tb ->
                                                 val paint = android.graphics.Paint().apply { isFilterBitmap = true }
-                                                
-                                                
                                                 val bgPaint = android.graphics.Paint().apply { color = android.graphics.Color.WHITE }
                                                 canvas.drawRect(android.graphics.RectF(camW.toFloat(), 0f, totalWidth.toFloat(), camH.toFloat()), bgPaint)
-
-                                                
                                                 val scale = camH.toFloat() / tb.height.toFloat()
                                                 val finalW = tb.width * scale
                                                 val left = camW + (camW - finalW) / 2f
@@ -985,7 +834,6 @@ fun CameraPaintScreen(
                                         } else {
                                             cameraBitmap
                                         }
-
                                         withContext(Dispatchers.Main) {
                                             isProcessingBg = false
                                             showRealTimeCapturePreview = false
@@ -1003,15 +851,11 @@ fun CameraPaintScreen(
                         ) {
                             Icon(Icons.Default.CameraAlt, null, tint = Color.White, modifier = Modifier.size(40.dp))
                         }
-
-                        
                         Box(modifier = Modifier.size(60.dp))
                     }
                 }
             }
         }
-
-        
         if (capturedBitmapForPreview != null) {
             Box(
                 modifier = Modifier
@@ -1024,7 +868,6 @@ fun CameraPaintScreen(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -1039,8 +882,6 @@ fun CameraPaintScreen(
                             fontSize = 18.sp
                         )
                     }
-
-                    
                     Surface(
                         modifier = Modifier
                             .weight(1f)
@@ -1056,15 +897,12 @@ fun CameraPaintScreen(
                             contentScale = ContentScale.Fit
                         )
                     }
-
-                    
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp, vertical = 32.dp),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        
                         Button(
                             onClick = { capturedBitmapForPreview = null },
                             modifier = Modifier
@@ -1078,8 +916,6 @@ fun CameraPaintScreen(
                             Spacer(Modifier.width(8.dp))
                             Text(stringResource(R.string.cerrar), color = Color.White, fontWeight = FontWeight.Bold)
                         }
-
-                        
                         Button(
                             onClick = {
                                 val bitmapToSave = capturedBitmapForPreview
@@ -1121,16 +957,12 @@ fun CameraPaintScreen(
         }
     }
 }
-
-
-
 @Composable
 fun CameraPreviewComposable(
     modifier: Modifier = Modifier,
     showCamera: Boolean,
     onCameraReady: (CameraControl) -> Unit,
     onPreviewReady: (PreviewView) -> Unit,
-
     ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -1139,9 +971,7 @@ fun CameraPreviewComposable(
             implementationMode = PreviewView.ImplementationMode.COMPATIBLE
         }
     }
-
     LaunchedEffect(Unit) { onPreviewReady(previewView) }
-
     LaunchedEffect(showCamera) {
         if (showCamera) try {
             val provider = ProcessCameraProvider.getInstance(context).get()
@@ -1157,7 +987,6 @@ fun CameraPreviewComposable(
     }
     AndroidView(factory = { previewView }, modifier = modifier)
 }
-
 private fun getGridLetter(index: Int): String {
     var n = index
     var res = ""
@@ -1167,7 +996,6 @@ private fun getGridLetter(index: Int): String {
     }
     return res
 }
-
 @Composable
 fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier) {
     val gridColor = Color.Black.copy(alpha = 0.5f)
@@ -1178,17 +1006,12 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
         fontSize = 12.sp,
         fontWeight = FontWeight.Bold
     )
-
-    
     val safeSpacing = gridSpacing.coerceAtLeast(20f)
-
     androidx.compose.foundation.Canvas(modifier = modifier) {
         val width = size.width
         val height = size.height
-
         when (type) {
             "GRID" -> {
-                
                 var x = safeSpacing
                 var col = 0
                 while (x < width) {
@@ -1198,8 +1021,6 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
                         end = Offset(x, height),
                         strokeWidth = strokeWidth.toPx()
                     )
-                    
-                    
                     val textPosX = x + 4.dp.toPx()
                     if (textPosX < width - 10.dp.toPx()) {
                         drawText(
@@ -1210,12 +1031,9 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
                             size = androidx.compose.ui.geometry.Size(100f, 100f) 
                         )
                     }
-                    
                     x += safeSpacing
                     col++
                 }
-                
-                
                 var y = safeSpacing
                 var row = 1
                 while (y < height) {
@@ -1225,7 +1043,6 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
                         end = Offset(width, y),
                         strokeWidth = strokeWidth.toPx()
                     )
-                    
                     val textPosY = y + 4.dp.toPx()
                     if (textPosY < height - 10.dp.toPx()) {
                         drawText(
@@ -1236,13 +1053,11 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
                             size = androidx.compose.ui.geometry.Size(100f, 100f) 
                         )
                     }
-                    
                     y += safeSpacing
                     row++
                 }
             }
             "TRIANGLES" -> {
-                
                 var x = -height
                 while (x < width) {
                     drawLine(
@@ -1267,8 +1082,6 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
             "CIRCLES" -> {
                 val center = Offset(width / 2f, height / 2f)
                 val maxDimension = kotlin.math.max(width, height)
-                
-                
                 var radius = safeSpacing
                 var index = 1
                 while (radius < maxDimension) {
@@ -1284,14 +1097,11 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
                     radius += safeSpacing
                     index++
                 }
-
-                
                 val radialLines = when {
                     safeSpacing < 100 -> 16
                     safeSpacing < 200 -> 12
                     else -> 8
                 }
-                
                 for (i in 0 until radialLines) {
                     val angle = (i * 360f / radialLines) * (kotlin.math.PI / 180f).toFloat()
                     val lineEnd = Offset(
@@ -1305,8 +1115,6 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
                         strokeWidth = strokeWidth.toPx()
                     )
                 }
-
-                
                 val crossSize = 20.dp.toPx()
                 drawLine(
                     color = gridColor,
@@ -1324,11 +1132,9 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
         }
     }
 }
-
 @Composable
 fun ColorMixingDialog(onDismiss: () -> Unit, activeColor: Color) {
     var selectedCategory by remember { mutableStateOf("BASICS") }
-    
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { 
@@ -1348,9 +1154,7 @@ fun ColorMixingDialog(onDismiss: () -> Unit, activeColor: Color) {
                     CategoryChip("SKIN", stringResource(R.string.piel), selectedCategory == "SKIN") { selectedCategory = it }
                     CategoryChip("NATURE", stringResource(R.string.naturaleza), selectedCategory == "NATURE") { selectedCategory = it }
                 }
-                
                 Spacer(Modifier.height(16.dp))
-                
                 Column(
                     modifier = Modifier.verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -1382,7 +1186,6 @@ fun ColorMixingDialog(onDismiss: () -> Unit, activeColor: Color) {
         shape = RoundedCornerShape(28.dp)
     )
 }
-
 @Composable
 fun CategoryChip(id: String, label: String, isSelected: Boolean, onClick: (String) -> Unit) {
     Surface(
@@ -1399,7 +1202,6 @@ fun CategoryChip(id: String, label: String, isSelected: Boolean, onClick: (Strin
         )
     }
 }
-
 @Composable
 fun MixingRecipeItem(name: String, ingredients: List<String>, previewColor: Color) {
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -1411,8 +1213,3 @@ fun MixingRecipeItem(name: String, ingredients: List<String>, previewColor: Colo
         }
     }
 }
-
-
-
-
-

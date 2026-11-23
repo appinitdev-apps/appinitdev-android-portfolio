@@ -1,13 +1,9 @@
-
 class Themes : MediaFragment() {
-
     private lateinit var binding: FragmentGenericRecyclerViewBinding
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentGenericRecyclerViewBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
@@ -15,7 +11,6 @@ class Themes : MediaFragment() {
         view.startTransitionOnPreDraw()
         requireHiddenMiniPlayer()
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             AppearancePreferences.THEME -> {
@@ -23,14 +18,11 @@ class Themes : MediaFragment() {
             }
         }
     }
-
     override fun getTransitionType(): TransitionType {
         return TransitionType.DRIFT
     }
-
     override val wantsMiniPlayerVisible: Boolean
         get() = false
-
     companion object {
         fun newInstance(): Themes {
             val args = Bundle()
@@ -38,7 +30,6 @@ class Themes : MediaFragment() {
             fragment.arguments = args
             return fragment
         }
-
         const val TAG = "Theme"
     }
 }

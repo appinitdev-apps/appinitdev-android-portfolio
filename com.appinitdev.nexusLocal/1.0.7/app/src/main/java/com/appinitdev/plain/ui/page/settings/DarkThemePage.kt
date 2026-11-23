@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DarkThemePage(navController: NavHostController) {
@@ -6,7 +5,6 @@ fun DarkThemePage(navController: NavHostController) {
     val darkTheme = LocalDarkTheme.current
     val amoledDarkTheme = LocalAmoledDarkTheme.current
     val scope = rememberCoroutineScope()
-
     PScaffold(
         topBar = {
             PTopAppBar(

@@ -1,4 +1,3 @@
-
 @Composable
 fun ChatAudioInlineControls(
     progress: Float,
@@ -27,7 +26,6 @@ fun ChatAudioInlineControls(
                 progressColor = MaterialTheme.colorScheme.primary,
                 thumbColor = MaterialTheme.colorScheme.primary,
             )
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -44,9 +42,7 @@ fun ChatAudioInlineControls(
                 )
             }
         }
-
         HorizontalSpace(16.dp)
-
         Row {
             if (isPlaying) {
                 IconButton(
@@ -81,9 +77,7 @@ fun ChatAudioInlineControls(
                     )
                 }
             }
-
             HorizontalSpace(8.dp)
-
             IconButton(
                 onClick = onShowFullPlayer,
                 modifier = Modifier

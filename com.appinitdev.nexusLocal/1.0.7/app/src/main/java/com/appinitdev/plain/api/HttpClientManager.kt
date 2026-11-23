@@ -1,4 +1,3 @@
-
 object HttpClientManager {
     fun browserClient() =
         HttpClient(CIO) {
@@ -20,16 +19,12 @@ object HttpClientManager {
                 set("accept", "*/*")
             }
         }
-
     fun downloadClient(): OkHttpClient =
         OkHttpClient.Builder()
-            
-            
             .protocols(listOf(Protocol.HTTP_1_1))
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
             .build()
-
     fun httpClient() =
         HttpClient(CIO) {
             install(HttpTimeout) {
@@ -38,35 +33,28 @@ object HttpClientManager {
             }
             install(WebSockets)
         }
-
     private fun OkHttpClient.Builder.ignoreAllSSLErrors(): OkHttpClient.Builder {
         val naiveTrustManager =
             object : X509TrustManager {
                 override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-
                 override fun checkClientTrusted(
                     certs: Array<X509Certificate>,
                     authType: String,
                 ) = Unit
-
                 override fun checkServerTrusted(
                     certs: Array<X509Certificate>,
                     authType: String,
                 ) = Unit
             }
-
         val insecureSocketFactory =
             SSLContext.getInstance("TLSv1.2").apply {
                 val trustAllCerts = arrayOf<TrustManager>(naiveTrustManager)
-                
                 init(arrayOf<KeyManager>(), trustAllCerts, SecureRandom())
             }.socketFactory
-
         sslSocketFactory(insecureSocketFactory, naiveTrustManager)
         hostnameVerifier { _, _ -> true }
         return this
     }
-
     fun createCryptoHttpClient(
         token: String,
         timeout: Int,
@@ -105,7 +93,6 @@ object HttpClientManager {
             .ignoreAllSSLErrors()
             .build()
     }
-
     fun createUnsafeOkHttpClient(): OkHttpClient {
         val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
             override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {}
@@ -113,10 +100,8 @@ object HttpClientManager {
             override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
         })
         val sslContext = SSLContext.getInstance("TLS")
-        
         sslContext.init(arrayOf<KeyManager>(), trustAllCerts, SecureRandom())
         val sslSocketFactory = sslContext.socketFactory
-
         return OkHttpClient.Builder()
             .sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
             .hostnameVerifier { hostname, _ ->
@@ -124,7 +109,6 @@ object HttpClientManager {
             }
             .build()
     }
-
     private fun bodyToString(request: RequestBody): String {
         val buffer = okio.Buffer()
         request.writeTo(buffer)

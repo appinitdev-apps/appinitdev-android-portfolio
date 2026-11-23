@@ -1,28 +1,15 @@
-
 class PreferencesViewModel(application: Application) : WrappedViewModel(application) {
-
     private val preference: MutableLiveData<List<Preference>> by lazy {
         MutableLiveData<List<Preference>>().also {
             loadPreferences()
         }
     }
-
     fun getPreferences(): LiveData<List<Preference>> {
         return preference
     }
-
     private fun loadPreferences() {
         viewModelScope.launch(Dispatchers.Default) {
             val preferences = mutableListOf<Preference>()
-
-
-
-
-
-
-
-
-
             preferences.add(
                     Preference(
                             title = R.string.appearance,
@@ -30,7 +17,6 @@ class PreferencesViewModel(application: Application) : WrappedViewModel(applicat
                             icon = R.drawable.ic_water_drop
                     )
             )
-
             preferences.add(
                     Preference(
                             title = R.string.configration,
@@ -38,7 +24,6 @@ class PreferencesViewModel(application: Application) : WrappedViewModel(applicat
                             icon = R.drawable.ic_app_settings
                     )
             )
-
             preferences.add(
                     Preference(
                             title = R.string.behavior,
@@ -46,7 +31,6 @@ class PreferencesViewModel(application: Application) : WrappedViewModel(applicat
                             icon = R.drawable.ic_behavior
                     )
             )
-
             preferences.add(
                     Preference(
                             title = R.string.user_interface,
@@ -54,7 +38,6 @@ class PreferencesViewModel(application: Application) : WrappedViewModel(applicat
                             icon = R.drawable.ic_carousel
                     )
             )
-
             preferences.add(
                     Preference(
                             title = R.string.audio,
@@ -62,7 +45,6 @@ class PreferencesViewModel(application: Application) : WrappedViewModel(applicat
                             icon = R.drawable.ic_volume_up
                     )
             )
-
             preferences.add(
                     Preference(
                             title = R.string.library,
@@ -70,7 +52,6 @@ class PreferencesViewModel(application: Application) : WrappedViewModel(applicat
                             icon = R.drawable.ic_library
                     )
             )
-
             preferences.add(
                     Preference(
                             title = R.string.accessibility,
@@ -78,7 +59,6 @@ class PreferencesViewModel(application: Application) : WrappedViewModel(applicat
                             icon = R.drawable.ic_accessibility
                     )
             )
-
             preferences.add(
                     Preference(
                             title = R.string.about,
@@ -86,11 +66,9 @@ class PreferencesViewModel(application: Application) : WrappedViewModel(applicat
                             icon = R.drawable.ic_info
                     )
             )
-
             preference.postValue(preferences)
         }
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -99,7 +77,6 @@ class PreferencesViewModel(application: Application) : WrappedViewModel(applicat
             }
         }
     }
-
     companion object {
         data class Preference(
                 val title: Int,

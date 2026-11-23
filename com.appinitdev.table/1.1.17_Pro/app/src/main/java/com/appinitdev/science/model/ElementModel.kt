@@ -1,12 +1,5 @@
-
 object ElementModel {
-     
-
-
-
-
     fun getList(elements: ArrayList<Element>, context: Context? = null) {
-        
         val elementData = listOf(
             Triple("hydrogen", "H", arrayOf(1, 2.20, 7)),
             Triple("helium", "He", arrayOf(2, 0.0, 8)),
@@ -127,8 +120,6 @@ object ElementModel {
             Triple("tennessine", "Ts", arrayOf(117, 0.0, 0)),
             Triple("oganesson", "Og", arrayOf(118, 0.0, 0))
         )
-        
-        
         if (context != null) {
             for ((elementKey, symbol, data) in elementData) {
                 val jsonObject = ElementDataLoader.loadElementData(context, elementKey)
@@ -143,7 +134,6 @@ object ElementModel {
                 ))
             }
         } else {
-            
             for ((elementKey, symbol, data) in elementData) {
                 elements.add(Element(
                     element = elementKey.replaceFirstChar { it.uppercase() },

@@ -1,4 +1,3 @@
-
 @Composable
 fun SkeletonChatList() {
     val transition = rememberInfiniteTransition(label = "skeleton")
@@ -11,26 +10,22 @@ fun SkeletonChatList() {
         ),
         label = "skeleton_anim"
     )
-
     val shimmerColors = listOf(
         Color.White.copy(alpha = 0.05f),
         Color.White.copy(alpha = 0.15f),
         Color.White.copy(alpha = 0.05f),
     )
-
     val brush = Brush.linearGradient(
         colors = shimmerColors,
         start = Offset.Zero,
         end = Offset(x = translateAnim.value, y = translateAnim.value)
     )
-
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(10) {
             SkeletonChatItem(brush)
         }
     }
 }
-
 @Composable
 fun SkeletonChatItem(brush: Brush) {
     Row(
@@ -65,7 +60,6 @@ fun SkeletonChatItem(brush: Brush) {
         }
     }
 }
-
 @Composable
 fun SkeletonMessageList() {
     val transition = rememberInfiniteTransition(label = "skeleton_msg")
@@ -78,19 +72,16 @@ fun SkeletonMessageList() {
         ),
         label = "skeleton_msg_anim"
     )
-
     val shimmerColors = listOf(
         Color.White.copy(alpha = 0.05f),
         Color.White.copy(alpha = 0.15f),
         Color.White.copy(alpha = 0.05f),
     )
-
     val brush = Brush.linearGradient(
         colors = shimmerColors,
         start = Offset.Zero,
         end = Offset(x = translateAnim.value, y = translateAnim.value)
     )
-
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         reverseLayout = true,
@@ -103,7 +94,6 @@ fun SkeletonMessageList() {
         }
     }
 }
-
 @Composable
 fun SkeletonMessageItem(brush: Brush, alignment: Alignment.Horizontal) {
     Column(

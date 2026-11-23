@@ -1,4 +1,3 @@
-
 data class Image(
     var id: ID,
     var title: String,
@@ -10,7 +9,6 @@ data class Image(
     val takenAt: Instant?,
     val isFavorite: Boolean,
 )
-
 fun DImage.toModel(): Image {
     return Image(ID(id), title, path, size, bucketId, createdAt, updatedAt, takenAt, isFavorite)
 }

@@ -1,4 +1,3 @@
-
 @Composable
 fun NotificationFilterModeCard(
     mode: String,

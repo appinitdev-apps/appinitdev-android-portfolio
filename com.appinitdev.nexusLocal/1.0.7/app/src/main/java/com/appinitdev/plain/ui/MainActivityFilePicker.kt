@@ -1,4 +1,3 @@
-
 internal fun MainActivity.handlePickFileEvent(event: PickFileEvent) {
     try {
         pickFileType = event.type
@@ -24,7 +23,6 @@ internal fun MainActivity.handlePickFileEvent(event: PickFileEvent) {
         LogCat.e("Error launching pick file: ${e.message}")
     }
 }
-
 internal fun MainActivity.handleExportFileEvent(event: ExportFileEvent) {
     try {
         exportFileType = event.type
@@ -45,7 +43,6 @@ internal fun MainActivity.handleExportFileEvent(event: ExportFileEvent) {
         LogCat.e("Error launching export file: ${e.message}")
     }
 }
-
 internal fun MainActivity.doPickFile(event: PickFileEvent) {
     try {
         val intent = when (event.type) {

@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainNavigation(navController: NavHostController = rememberNavController()) {
@@ -6,10 +5,8 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
     val viewModelPOS: POSViewModel = hiltViewModel()
     val viewModelCustomer: CustomerViewModel = hiltViewModel()
     val itemCount by viewModelPOS.itemCount.collectAsStateWithLifecycle()
-
     val lowStockCount by viewModelPOS.lowStockCount.observeAsState(0)
     val outOfStockCount by viewModelPOS.outOfStockCount.observeAsState(0)
-
     val barcodeScannerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -17,24 +14,19 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
             val barcode = result.data?.getStringExtra(BarcodeScannerActivity.EXTRA_BARCODE_RESULT)
             if (!barcode.isNullOrEmpty()) {
                 Log.e("codelab", barcode)
-                
                 viewModelPOS.findProductByBarcode(barcode)
             }
         }
     }
-
     val startBarcodeScanner = {
         val intent = Intent(context, BarcodeScannerActivity::class.java)
         barcodeScannerLauncher.launch(intent)
     }
-
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.app_name)) },
                 actions = {
-
                     BadgedBox(
                         badge = {
                             if ((lowStockCount+outOfStockCount) > 0) {
@@ -77,7 +69,6 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                         )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
-
                     IconButton(onClick = { navController.navigate("settings") }) {
                         Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.configuraciones))
                     }
@@ -96,8 +87,6 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
             startDestination = "pos",
             modifier = Modifier.padding(paddingValues)
         ) {
-
-
             composable("settings") {
                 SettingsScreenCompose(
                     onBack = { navController.popBackStack() },
@@ -106,14 +95,12 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     onNavigateToExplorer = { navController.navigate("explorer") }
                 )
             }
-
             composable("categories") {
                 CategoryCrudScreen(
                     onBack = { navController.popBackStack() },
                     viewModel = hiltViewModel(),
                 )
             }
-
             composable("store") {
                 val storeViewModel: StoreViewModel = hiltViewModel()
                 StoreScreen(
@@ -121,14 +108,9 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     onBack = { navController.popBackStack() }
                 )
             }
-
             composable("explorer") {
                 FileExplorerWithViewer(context = context, onBack = { navController.popBackStack() })
             }
-
-
-
-
             composable("pos") {
                 POSScreenCompose(
                     viewModel = viewModelPOS,
@@ -144,26 +126,22 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                     viewModelCustomerViewModel = viewModelCustomer,
                 )
             }
-
             composable("products") {
                 ProductsScreenCompose(
                     viewModel = hiltViewModel(),
                     viewModelPOS = viewModelPOS
                 )
             }
-
             composable("customers") {
                 CustomersScreenCompose(
                     viewModel = hiltViewModel()
                 )
             }
-
             composable("inventory") {
                 InventoryScreenCompose(
                     viewModel = hiltViewModel()
                 )
             }
-
             composable("analytics") {
                 AnalyticsScreenCompose(
                     viewModel = hiltViewModel()
@@ -172,7 +150,6 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
         }
     }
 }
-
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
@@ -182,10 +159,8 @@ fun BottomNavigationBar(navController: NavController) {
         BottomNavItem("inventory", stringResource(R.string.inventoryt), Icons.Default.Storage),
         BottomNavItem("analytics", stringResource(R.string.analyticst), Icons.Default.Analytics)
     )
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-
     NavigationBar {
         items.forEach { item ->
             NavigationBarItem(
@@ -205,7 +180,6 @@ fun BottomNavigationBar(navController: NavController) {
         }
     }
 }
-
 data class BottomNavItem(
     val route: String,
     val title: String,

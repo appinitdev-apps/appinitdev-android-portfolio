@@ -1,4 +1,3 @@
-
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @Composable
@@ -6,9 +5,7 @@
 fun BoxWithConstraintsScope.IvyNavGraph(screen: Screen?) {
     when (screen) {
         null -> {
-            
         }
-
         is MainScreen -> MainScreen(screen = screen)
         is OnboardingScreen -> OnboardingScreen(screen = screen)
         is ExchangeRatesScreen -> ExchangeRatesScreen()

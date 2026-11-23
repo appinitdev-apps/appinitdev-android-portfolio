@@ -1,8 +1,6 @@
-
 @Module
 @InstallIn(SingletonComponent::class)
 object BackupModule {
-
     @Provides
     @Singleton
     fun provideDatabaseBackupHelper(

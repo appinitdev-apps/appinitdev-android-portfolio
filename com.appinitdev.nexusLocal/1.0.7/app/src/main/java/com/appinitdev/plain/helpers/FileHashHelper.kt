@@ -1,29 +1,5 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 object FileHashHelper {
-
     private const val EDGE_BYTES = 4 * 1024 
-
-     
-
-
-
-
     fun weakHash(file: File): String {
         val size = file.length()
         val buf = if (size <= EDGE_BYTES * 2) {
@@ -40,8 +16,6 @@ object FileHashHelper {
         }
         return sha256Bytes(buf)
     }
-
-     
     fun weakHash(data: ByteArray): String {
         val buf = if (data.size <= EDGE_BYTES * 2) {
             data
@@ -50,27 +24,15 @@ object FileHashHelper {
         }
         return sha256Bytes(buf)
     }
-
-     
-
-
     fun strongHash(file: File): String {
         return file.inputStream().use { sha256Stream(it) }
     }
-
-     
-
-
     fun strongHash(bytes: ByteArray): String = sha256Bytes(bytes)
-
-    
-
     private fun sha256Bytes(data: ByteArray): String {
         return MessageDigest.getInstance("SHA-256")
             .digest(data)
             .toHexString()
     }
-
     private fun sha256Stream(inputStream: InputStream): String {
         val digest = MessageDigest.getInstance("SHA-256")
         val buffer = ByteArray(8192)
@@ -80,7 +42,6 @@ object FileHashHelper {
         }
         return digest.digest().toHexString()
     }
-
     private fun ByteArray.toHexString(): String =
         joinToString("") { "%02x".format(it) }
 }

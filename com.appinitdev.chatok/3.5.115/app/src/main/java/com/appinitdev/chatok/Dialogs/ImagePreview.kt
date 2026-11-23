@@ -1,4 +1,3 @@
-
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -6,15 +5,12 @@ fun ImagePreview(uri: Uri?, hideDialog: () -> Unit, send: (Uri?, String, Long) -
     var reply by remember { mutableStateOf("") }
     var croppedUri by remember { mutableStateOf<Uri?>(null) }
     var ephemeralDuration by remember { mutableStateOf(0L) } 
-
     val cropImage = rememberLauncherForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
             croppedUri = result.uriContent
         }
     }
-
     val brush = Brush.linearGradient(listOf(Color(0xFF238CDD), Color(0xFF1952C4)))
-
     Dialog(
         onDismissRequest = hideDialog,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -32,7 +28,6 @@ fun ImagePreview(uri: Uri?, hideDialog: () -> Unit, send: (Uri?, String, Long) -
                         contentScale = ContentScale.Fit
                     )
                 }
-
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -40,7 +35,6 @@ fun ImagePreview(uri: Uri?, hideDialog: () -> Unit, send: (Uri?, String, Long) -
                         .padding(16.dp)
                 ) {
                     Text(stringResource(R.string.configuracion_privacidad), color = Color.Gray, style = MaterialTheme.typography.labelSmall)
-                    
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -51,9 +45,7 @@ fun ImagePreview(uri: Uri?, hideDialog: () -> Unit, send: (Uri?, String, Long) -
                         PrivacyChip(text = "30s", isSelected = ephemeralDuration == 30000L) { ephemeralDuration = 30000L }
                         PrivacyChip(text = "1m", isSelected = ephemeralDuration == 60000L) { ephemeralDuration = 60000L }
                     }
-
                     Spacer(modifier = Modifier.height(8.dp))
-
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
@@ -70,7 +62,6 @@ fun ImagePreview(uri: Uri?, hideDialog: () -> Unit, send: (Uri?, String, Long) -
                                 unfocusedTextColor = Color.White
                             )
                         )
-
                         IconButton(
                             modifier = Modifier
                                 .background(brush, CircleShape),
@@ -81,7 +72,6 @@ fun ImagePreview(uri: Uri?, hideDialog: () -> Unit, send: (Uri?, String, Long) -
                     }
                 }
             }
-
             IconButton(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -97,7 +87,6 @@ fun ImagePreview(uri: Uri?, hideDialog: () -> Unit, send: (Uri?, String, Long) -
         }
     }
 }
-
 @Composable
 fun PrivacyChip(text: String, isSelected: Boolean, onClick: () -> Unit) {
     Surface(

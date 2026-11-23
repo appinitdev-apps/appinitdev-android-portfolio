@@ -1,59 +1,29 @@
-
- 
-
-
-
-
-
-
-
-
-
 @RunWith(AndroidJUnit4::class)
 class ThumbnailBenchmarkTest {
-
     @get:Rule
     val tmp = TemporaryFolder()
-
     private lateinit var testJpeg: File
     private val TAG = "ThumbBench"
-
-    
     private val thumbW = 1024
     private val thumbH = 1024
-
     @Before
     fun setUp() {
-        
-        
-        
         testJpeg = File(tmp.newFolder("bench"), "photo.jpg")
         if (!testJpeg.exists()) {
             createSyntheticJpeg(testJpeg, width = 3024, height = 4032)
         }
         Log.i(TAG, "Test image: ${testJpeg.absolutePath} (${testJpeg.length() / 1024} KB)")
     }
-
-    
-
     @Test
     fun benchmark_naive_fullDecode() {
-        
         repeat(3) { naiveDecode(testJpeg, thumbW, thumbH) }
-
         val times = LongArray(5) { measureMs { naiveDecode(testJpeg, thumbW, thumbH) } }
         val avg = times.average().toLong()
         Log.i(TAG, "Naive full-decode avg=${avg}ms runs=${times.toList()}")
-        
     }
-
-    
-
     @Test
     fun benchmark_optimised_decode() {
-        
         repeat(3) { decodeSampledBitmapFromFile(testJpeg.absolutePath, thumbW, thumbH, true) }
-
         val times = LongArray(5) { measureMs { decodeSampledBitmapFromFile(testJpeg.absolutePath, thumbW, thumbH, true) } }
         val avg = times.average().toLong()
         Log.i(TAG, "Optimised decode avg=${avg}ms runs=${times.toList()}")
@@ -62,50 +32,33 @@ class ThumbnailBenchmarkTest {
             avg < 300,
         )
     }
-
-    
-
     @Test
     fun benchmark_full_pipeline_nocache() {
-        
         repeat(3) { fullPipeline(testJpeg, thumbW, thumbH) }
-
         val times = LongArray(5) { measureMs { fullPipeline(testJpeg, thumbW, thumbH) } }
         val avg = times.average().toLong()
         Log.i(TAG, "Full pipeline (no cache) avg=${avg}ms runs=${times.toList()}")
     }
-
-    
-
     @Test
     fun benchmark_disk_cache_roundtrip() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-
-        
         val bytes = fullPipeline(testJpeg, thumbW, thumbH) ?: return
         val cacheFile = File(context.cacheDir, "thumbs/bench_test.jpg")
         cacheFile.parentFile?.mkdirs()
         val writeMs = measureMs { cacheFile.writeBytes(bytes) }
         Log.i(TAG, "Cache write ${bytes.size / 1024} KB in ${writeMs}ms")
-
-        
         val times = LongArray(5) { measureMs { cacheFile.readBytes() } }
         val avg = times.average().toLong()
         Log.i(TAG, "Cache read avg=${avg}ms runs=${times.toList()}")
         Assert.assertTrue("Cache read avg ${avg}ms should be < 30 ms", avg < 30)
-
         cacheFile.delete()
     }
-
-    
-
     @Test
     fun correctness_dimensions_centerCrop() {
         val bmp = decodeSampledBitmapFromFile(testJpeg.absolutePath, thumbW, thumbH, true)
         Assert.assertNotNull("Bitmap must not be null", bmp)
         bmp!!
         Log.i(TAG, "CenterCrop result: ${bmp.width}×${bmp.height}")
-        
         Assert.assertTrue(
             "Width (${bmp.width}) should be ≤ $thumbW",
             bmp.width <= thumbW,
@@ -116,7 +69,6 @@ class ThumbnailBenchmarkTest {
         )
         bmp.recycle()
     }
-
     @Test
     fun correctness_dimensions_fit() {
         val bmp = decodeSampledBitmapFromFile(testJpeg.absolutePath, 200, 200, false)
@@ -127,24 +79,17 @@ class ThumbnailBenchmarkTest {
         Assert.assertTrue("Height should be ≤ 200", bmp.height <= 200)
         bmp.recycle()
     }
-
-    
-
     private inline fun measureMs(block: () -> Unit): Long {
         val start = System.currentTimeMillis()
         block()
         return System.currentTimeMillis() - start
     }
-
-     
     private fun naiveDecode(file: File, w: Int, h: Int): Bitmap? {
         val bitmap = BitmapFactory.decodeFile(file.absolutePath) ?: return null
         val scaled = Bitmap.createScaledBitmap(bitmap, w, h, true)
         if (scaled !== bitmap) bitmap.recycle()
         return scaled
     }
-
-     
     private fun fullPipeline(file: File, w: Int, h: Int): ByteArray? {
         val bitmap = decodeSampledBitmapFromFile(file.absolutePath, w, h, true) ?: return null
         val out = ByteArrayOutputStream()
@@ -152,11 +97,6 @@ class ThumbnailBenchmarkTest {
         bitmap.recycle()
         return out.toByteArray()
     }
-
-     
-
-
-
     private fun createSyntheticJpeg(dest: File, width: Int, height: Int) {
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val pixels = IntArray(width * height)

@@ -1,4 +1,3 @@
-
 @Composable
 internal fun PeerMemberRow(
     peer: DPeer,

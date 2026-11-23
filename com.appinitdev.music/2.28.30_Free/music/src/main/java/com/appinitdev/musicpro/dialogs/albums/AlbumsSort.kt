@@ -1,16 +1,11 @@
-
 class AlbumsSort : ScopedBottomSheetFragment() {
-
     private lateinit var binding: DialogSortAlbumsBinding
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DialogSortAlbumsBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         when (AlbumPreferences.getAlbumSort()) {
             CommonPreferencesConstants.BY_ALBUM_NAME -> binding.title.isChecked = true
             CommonPreferencesConstants.BY_ARTIST -> binding.artist.isChecked = true
@@ -18,10 +13,8 @@ class AlbumsSort : ScopedBottomSheetFragment() {
             CommonPreferencesConstants.BY_LAST_YEAR -> binding.lastYear.isChecked = true
             CommonPreferencesConstants.BY_NUMBER_OF_SONGS -> binding.numberOfSongs.isChecked = true
         }
-
         binding.normal.isChecked = AlbumPreferences.getSortingStyle() == CommonPreferencesConstants.ASCENDING
         binding.reversed.isChecked = AlbumPreferences.getSortingStyle() == CommonPreferencesConstants.DESCENDING
-
         binding.sortByChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             when (checkedIds.firstOrNull()) {
                 binding.title.id -> AlbumPreferences.setAlbumSort(CommonPreferencesConstants.BY_ALBUM_NAME)
@@ -31,7 +24,6 @@ class AlbumsSort : ScopedBottomSheetFragment() {
                 binding.lastYear.id -> AlbumPreferences.setAlbumSort(CommonPreferencesConstants.BY_LAST_YEAR)
             }
         }
-
         binding.sortingStyleChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             when (checkedIds.firstOrNull()) {
                 binding.normal.id -> AlbumPreferences.setSortingStyle(CommonPreferencesConstants.ASCENDING)
@@ -39,7 +31,6 @@ class AlbumsSort : ScopedBottomSheetFragment() {
             }
         }
     }
-
     companion object {
         fun newInstance(): AlbumsSort {
             val args = Bundle()
@@ -47,13 +38,11 @@ class AlbumsSort : ScopedBottomSheetFragment() {
             fragment.arguments = args
             return fragment
         }
-
         fun FragmentManager.showAlbumsSort(): AlbumsSort {
             val dialog = newInstance()
             dialog.show(this, TAG)
             return dialog
         }
-
         private const val TAG = "AlbumsSort"
     }
 }

@@ -1,36 +1,25 @@
-
 @AndroidEntryPoint
 @Suppress("TooManyFunctions")
 class RootActivity : AppCompatActivity(), RootScreen {
     @Inject
     lateinit var ivyContext: IvyWalletCtx
-
     @Inject
     lateinit var navigation: Navigation
-
     @Inject
     lateinit var customerJourneyLogic: CustomerJourneyCardsProvider
-
     @Inject
     lateinit var timeConverter: TimeConverter
-
     @Inject
     lateinit var timeProvider: TimeProvider
-
     @Inject
     lateinit var timeFormatter: TimeFormatter
-
     @Inject
     lateinit var dateTimePicker: DateTimePicker
-
     private lateinit var createFileLauncher: ActivityResultLauncher<String>
     private lateinit var onFileCreated: (fileUri: Uri) -> Unit
-
     private lateinit var openFileLauncher: ActivityResultLauncher<Unit>
     private lateinit var onFileOpened: (fileUri: Uri) -> Unit
-
     private val viewModel: RootViewModel by viewModels()
-
     @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -39,11 +28,9 @@ class RootActivity : AppCompatActivity(), RootScreen {
         setContent {
             val viewModel: RootViewModel = viewModel()
             val isSystemInDarkTheme = isSystemInDarkTheme()
-
             LaunchedEffect(isSystemInDarkTheme) {
                 viewModel.start(isSystemInDarkTheme, intent)
             }
-
             val appLocked by viewModel.appLocked.collectAsState()
             when (appLocked) {
                 null -> { 
@@ -67,7 +54,6 @@ class RootActivity : AppCompatActivity(), RootScreen {
                         )
                     }
                 }
-
                 false -> {
                     NavigationRoot(navigation = navigation) { screen ->
                         IvyUI(
@@ -82,7 +68,6 @@ class RootActivity : AppCompatActivity(), RootScreen {
                     }
                 }
             }
-
             IvyMaterial3Theme(
                 dark = isDarkThemeEnabled(
                     ivyDesign = appDesign(ivyContext),
@@ -94,7 +79,6 @@ class RootActivity : AppCompatActivity(), RootScreen {
             }
         }
     }
-
     private fun setupApp() {
         setupActivityForResultLaunchers()
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -104,11 +88,9 @@ class RootActivity : AppCompatActivity(), RootScreen {
         AddTransactionWidgetCompact.updateBroadcast(this)
         WalletBalanceWidgetReceiver.updateBroadcast(this)
     }
-
     private companion object {
         private const val MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000
     }
-
     private fun setupDatePicker() {
         ivyContext.onShowDatePicker = { minDate,
                                         maxDate,
@@ -128,19 +110,16 @@ class RootActivity : AppCompatActivity(), RootScreen {
             datePicker.addOnPositiveButtonClickListener {
                 onDatePicked(LocalDate.ofEpochDay(it / MILLISECONDS_IN_DAY))
             }
-
             if (minDate != null) {
                 datePicker.addOnCancelListener {
                     onDatePicked(minDate)
                 }
             }
-
             if (maxDate != null) {
                 datePicker.addOnCancelListener {
                     onDatePicked(maxDate)
                 }
             }
-
             if (initialDate != null) {
                 datePicker.addOnCancelListener {
                     onDatePicked(initialDate)
@@ -148,14 +127,12 @@ class RootActivity : AppCompatActivity(), RootScreen {
             }
         }
     }
-
     private fun setupTimePicker() {
         ivyContext.onShowTimePicker = { initialTime,
                                         onTimePicked ->
             val nowLocal = initialTime ?: timeProvider.localTimeNow()
             val is24Hour = android.text.format.DateFormat.is24HourFormat(this)
             val timeFormat = if (is24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
-
             val picker =
                 MaterialTimePicker.Builder()
                     .setTimeFormat(timeFormat)
@@ -170,7 +147,6 @@ class RootActivity : AppCompatActivity(), RootScreen {
             }
         }
     }
-
     private fun isDarkThemeEnabled(ivyDesign: IvyDesign, systemDarkTheme: Boolean): Boolean {
         return when (ivyDesign.context().theme) {
             Theme.LIGHT -> false
@@ -179,13 +155,10 @@ class RootActivity : AppCompatActivity(), RootScreen {
             else -> systemDarkTheme
         }
     }
-
     private fun setupActivityForResultLaunchers() {
         createFileLauncher()
-
         openFileLauncher()
     }
-
     private fun createFileLauncher() {
         createFileLauncher = activityForResultLauncher(
             createIntent = { _, fileName ->
@@ -193,9 +166,6 @@ class RootActivity : AppCompatActivity(), RootScreen {
                     addCategory(Intent.CATEGORY_OPENABLE)
                     type = "application/csv"
                     putExtra(Intent.EXTRA_TITLE, fileName)
-
-                    
-                    
                     putExtra(
                         DocumentsContract.EXTRA_INITIAL_URI,
                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
@@ -208,14 +178,11 @@ class RootActivity : AppCompatActivity(), RootScreen {
                 onFileCreated(it)
             }
         }
-
         ivyContext.createNewFile = { fileName, onFileCreatedCallback ->
             onFileCreated = onFileCreatedCallback
-
             createFileLauncher.launch(fileName)
         }
     }
-
     private fun openFileLauncher() {
         openFileLauncher = simpleActivityForResultLauncher(
             intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
@@ -227,14 +194,11 @@ class RootActivity : AppCompatActivity(), RootScreen {
                 onFileOpened(it)
             }
         }
-
         ivyContext.openFile = { onFileOpenedCallback ->
             onFileOpened = onFileOpenedCallback
-
             openFileLauncher.launch(Unit)
         }
     }
-
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (viewModel.isAppLockEnabled() && !hasFocus) {
@@ -246,21 +210,18 @@ class RootActivity : AppCompatActivity(), RootScreen {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
     }
-
     override fun onResume() {
         super.onResume()
         if (viewModel.isAppLockEnabled()) {
             viewModel.checkUserInactiveTimeStatus()
         }
     }
-
     override fun onPause() {
         super.onPause()
         if (viewModel.isAppLockEnabled()) {
             viewModel.startUserInactiveTimeCounter()
         }
     }
-
     private fun authenticateWithOSBiometricsModal(
         biometricPromptCallback: BiometricPrompt.AuthenticationCallback
     ) {
@@ -270,7 +231,6 @@ class RootActivity : AppCompatActivity(), RootScreen {
             executor,
             biometricPromptCallback
         )
-
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle(
                 getString(R.string.authentication_required)
@@ -284,10 +244,8 @@ class RootActivity : AppCompatActivity(), RootScreen {
             )
             .setConfirmationRequired(false)
             .build()
-
         biometricPrompt.authenticate(promptInfo)
     }
-
     override fun onBackPressed() {
         if (viewModel.isAppLocked()) {
             super.onBackPressed()
@@ -297,7 +255,6 @@ class RootActivity : AppCompatActivity(), RootScreen {
             }
         }
     }
-
     @Suppress("TooGenericExceptionCaught", "PrintStackTrace")
     override fun openUrlInBrowser(url: String) {
         try {
@@ -314,9 +271,6 @@ class RootActivity : AppCompatActivity(), RootScreen {
             ).show()
         }
     }
-
-
-
     @Suppress("SwallowedException")
     override fun openGooglePlayAppPage(appId: String) {
         try {
@@ -330,7 +284,6 @@ class RootActivity : AppCompatActivity(), RootScreen {
             )
         }
     }
-
     override fun shareCSVFile(fileUri: Uri) {
         val intent = Intent.createChooser(
             Intent().apply {
@@ -342,7 +295,6 @@ class RootActivity : AppCompatActivity(), RootScreen {
         )
         startActivity(intent)
     }
-
     override fun shareZipFile(fileUri: Uri) {
         val intent = Intent.createChooser(
             Intent().apply {
@@ -354,31 +306,24 @@ class RootActivity : AppCompatActivity(), RootScreen {
         )
         startActivity(intent)
     }
-
     override val isDebug: Boolean
         get() = BuildConfig.DEBUG
     override val buildVersionName: String
         get() = BuildConfig.VERSION_NAME
     override val buildVersionCode: Int
         get() = BuildConfig.VERSION_CODE
-
     override fun reviewIvyWallet(dismissReviewCard: Boolean) {
         val manager = ReviewManagerFactory.create(this)
         val request = manager.requestReviewFlow()
         request.addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                
                 val reviewInfo = task.result
                 reviewInfo.let { review ->
                     val flow = manager.launchReviewFlow(this, review!!)
                     flow.addOnCompleteListener {
-                        
-                        
-                        
                         if (dismissReviewCard) {
                             customerJourneyLogic.dismissCard(CustomerJourneyCardsProvider.rateUsCard())
                         }
-
                         openGooglePlayAppPage(packageName)
                     }
                 }
@@ -387,11 +332,8 @@ class RootActivity : AppCompatActivity(), RootScreen {
             }
         }
     }
-
     override fun shareIvyWallet() {
-
     }
-
     override fun <T> pinWidget(widget: Class<T>) {
         val appWidgetManager: AppWidgetManager = this.getSystemService(AppWidgetManager::class.java)
         val addTransactionWidget = ComponentName(this, widget)

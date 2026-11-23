@@ -1,4 +1,3 @@
-
 @Composable
 fun AdBanner(modifier: Modifier = Modifier, isVip: Boolean = false) {
     AndroidView(

@@ -1,4 +1,3 @@
-
 @OptIn(UnstableApi::class)
 @Composable
 fun DlnaReceiverVideoPlayer(vm: DlnaReceiverViewModel, onExit: () -> Unit) {
@@ -9,12 +8,10 @@ fun DlnaReceiverVideoPlayer(vm: DlnaReceiverViewModel, onExit: () -> Unit) {
     val seekTargetMs by DlnaRendererState.seekTargetMs.collectAsState()
     val positionMs by DlnaRendererState.currentPositionMs.collectAsState()
     val durationMs by DlnaRendererState.durationMs.collectAsState()
-
     val player = rememberVideoPlayer(context)
     val playerView = remember { PlayerView(context) }
     var showControls by remember { mutableStateOf(true) }
     var controlsSeed by remember { mutableIntStateOf(0) }
-
     LaunchedEffect(mediaUri) {
         if (mediaUri.isNotEmpty()) {
             player.playWhenReady = false
@@ -39,7 +36,6 @@ fun DlnaReceiverVideoPlayer(vm: DlnaReceiverViewModel, onExit: () -> Unit) {
         context.findActivity().setFullScreen(true)
         onDispose { context.findActivity().setFullScreen(false); player.stop(); player.release() }
     }
-
     val interactionSource = remember { MutableInteractionSource() }
     Box(
         modifier = Modifier.fillMaxSize().background(Color.Black)
@@ -70,7 +66,6 @@ fun DlnaReceiverVideoPlayer(vm: DlnaReceiverViewModel, onExit: () -> Unit) {
         }
     }
 }
-
 @Composable
 private fun DlnaVideoControls(
     mediaTitle: String,
@@ -83,7 +78,6 @@ private fun DlnaVideoControls(
 ) {
     val darkOverlay = Color.Black.copy(alpha = 0.55f)
     Column(modifier = Modifier.fillMaxSize()) {
-        
         Row(
             modifier = Modifier.fillMaxWidth().background(darkOverlay).statusBarsPadding().padding(4.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -93,9 +87,7 @@ private fun DlnaVideoControls(
             }
             Text(text = mediaTitle, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Medium, color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f).padding(end = 8.dp))
         }
-        
         Box(modifier = Modifier.weight(1f))
-        
         Column(
             modifier = Modifier.fillMaxWidth().background(darkOverlay).navigationBarsPadding().padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),

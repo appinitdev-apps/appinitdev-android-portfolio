@@ -1,4 +1,3 @@
-
 @Serializable
 data class GoogleKeepNote(
     val attachments: List<GoogleKeepAttachment> = listOf(),
@@ -14,9 +13,6 @@ data class GoogleKeepNote(
     val createdTimestampUsec: Long = System.currentTimeMillis(),
     val listContent: List<GoogleKeepListItem> = listOf(),
 )
-
 @Serializable data class GoogleKeepLabel(val name: String)
-
 @Serializable data class GoogleKeepAttachment(val filePath: String, val mimetype: String)
-
 @Serializable data class GoogleKeepListItem(val text: String, val isChecked: Boolean)

@@ -1,4 +1,3 @@
-
 @Composable
 fun GenericMetricChart(
     title: String,
@@ -7,8 +6,6 @@ fun GenericMetricChart(
     lineColor: Color = MaterialTheme.colorScheme.primary,
 ) {
     var selectedIndex by remember(measurements) { mutableStateOf<Int?>(null) }
-
-    
     val infiniteTransition = rememberInfiniteTransition(label = "PulseTransitionMetric")
     val pulseScale by infiniteTransition.animateFloat(
         initialValue = 1f,
@@ -28,9 +25,7 @@ fun GenericMetricChart(
         ),
         label = "PulseAlphaMetric",
     )
-
     val textMeasurer = rememberTextMeasurer()
-
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(22.dp),
@@ -61,7 +56,6 @@ fun GenericMetricChart(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-
                 if (measurements.isNotEmpty()) {
                     val latest = measurements.last()
                     Surface(
@@ -78,7 +72,6 @@ fun GenericMetricChart(
                     }
                 }
             }
-
             if (measurements.size < 2) {
                 Box(
                     modifier = Modifier
@@ -103,18 +96,14 @@ fun GenericMetricChart(
                 val minVal = values.minOrNull() ?: 0f
                 val maxVal = values.maxOrNull() ?: 100f
                 val rangeVal = (maxVal - minVal).coerceAtLeast(1f)
-
                 val dates = measurements.map {
                     DateFormat.format("dd/MM", Date(it.timestamp)).toString()
                 }
-
                 val labelStyle = TextStyle(
                     fontSize = 9.sp,
                     fontWeight = FontWeight.Bold,
                     color = lineColor,
                 )
-
-                
                 val activeIndex = selectedIndex
                 if (activeIndex != null && (activeIndex in measurements.indices)) {
                     val selRecord = measurements[activeIndex]
@@ -146,7 +135,6 @@ fun GenericMetricChart(
                         }
                     }
                 }
-
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -168,17 +156,13 @@ fun GenericMetricChart(
                         val width = size.width
                         val height = size.height
                         val points = mutableListOf<Offset>()
-
                         val stepX = width / (measurements.size - 1).coerceAtLeast(1)
-
                         for (i in measurements.indices) {
                             val x = i * stepX
                             val normalizedY = (measurements[i].valueNumeric.toFloat() - minVal) / rangeVal
                             val y = height - (normalizedY * (height * 0.65f)) - (height * 0.18f)
                             points.add(Offset(x, y))
                         }
-
-                        
                         for (g in 0..3) {
                             val gy = height * (g / 3f)
                             drawLine(
@@ -188,8 +172,6 @@ fun GenericMetricChart(
                                 strokeWidth = 1.dp.toPx(),
                             )
                         }
-
-                        
                         val areaPath = Path().apply {
                             if (points.isNotEmpty()) {
                                 moveTo(points.first().x, height)
@@ -201,7 +183,6 @@ fun GenericMetricChart(
                                 close()
                             }
                         }
-
                         drawPath(
                             path = areaPath,
                             brush = Brush.verticalGradient(
@@ -211,8 +192,6 @@ fun GenericMetricChart(
                                 ),
                             ),
                         )
-
-                        
                         val linePath = Path().apply {
                             if (points.isNotEmpty()) {
                                 moveTo(points.first().x, points.first().y)
@@ -221,14 +200,11 @@ fun GenericMetricChart(
                                 }
                             }
                         }
-
                         drawPath(
                             path = linePath,
                             color = lineColor,
                             style = Stroke(width = 3.8.dp.toPx(), cap = StrokeCap.Round),
                         )
-
-                        
                         if (points.isNotEmpty()) {
                             val lastPoint = points.last()
                             drawCircle(
@@ -237,12 +213,9 @@ fun GenericMetricChart(
                                 center = lastPoint,
                             )
                         }
-
-                        
                         for (i in points.indices) {
                             val p = points[i]
                             val isSelected = (i == activeIndex)
-
                             if (isSelected) {
                                 drawLine(
                                     color = lineColor.copy(alpha = 0.4f),
@@ -256,10 +229,8 @@ fun GenericMetricChart(
                                     center = p,
                                 )
                             }
-
                             drawCircle(color = Color.White, radius = if (isSelected) 8.dp.toPx() else 6.dp.toPx(), center = p)
                             drawCircle(color = if (isSelected) Color(0xFFFF9800) else lineColor, radius = if (isSelected) 5.dp.toPx() else 4.dp.toPx(), center = p)
-
                             if (measurements.size <= 8 || isSelected || i == 0 || i == points.lastIndex) {
                                 val valueText = String.format(Locale.US, "%.1f", measurements[i].valueNumeric)
                                 val textLayoutResult = textMeasurer.measure(
@@ -268,7 +239,6 @@ fun GenericMetricChart(
                                 )
                                 val labelX = (p.x - textLayoutResult.size.width / 2f).coerceIn(0f, width - textLayoutResult.size.width)
                                 val labelY = (p.y - 18.dp.toPx()).coerceAtLeast(0f)
-
                                 drawText(
                                     textLayoutResult = textLayoutResult,
                                     topLeft = Offset(labelX, labelY),
@@ -276,8 +246,6 @@ fun GenericMetricChart(
                             }
                         }
                     }
-
-                    
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()

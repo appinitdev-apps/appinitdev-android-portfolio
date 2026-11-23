@@ -1,4 +1,3 @@
-
 @Serializable
 data class PairingRequestInput(
     val fromId: String,

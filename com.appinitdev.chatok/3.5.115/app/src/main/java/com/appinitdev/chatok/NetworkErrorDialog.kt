@@ -1,4 +1,3 @@
-
 @Composable
 fun NetworkErrorDialog(showDialog: Boolean) {
     if (showDialog) {
@@ -26,28 +25,3 @@ fun NetworkErrorDialog(showDialog: Boolean) {
         )
     }
 }
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

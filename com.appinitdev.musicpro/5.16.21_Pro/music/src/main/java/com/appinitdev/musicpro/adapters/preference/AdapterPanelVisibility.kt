@@ -1,20 +1,6 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
 class AdapterPanelVisibility(
         private val preferences: List<Preference>
 ) : RecyclerView.Adapter<VerticalListViewHolder>() {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
@@ -30,44 +16,33 @@ class AdapterPanelVisibility(
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
     }
-
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: VerticalListViewHolder, position: Int) {
         val preference = preferences[position]
         when (holder) {
             is Header -> {
-                
                 holder.binding.title.setText(preference.title)
                 holder.binding.summary.setText(R.string.panel_visibility_summary)
             }
             is SubHeader -> {
-                
                 holder.binding.title.setText(preference.title)
             }
             is Switch -> {
                 holder.binding.title.setText(preference.title)
-
-                
                 if (preference.icon != 0) {
                     holder.binding.icon.setImageResource(preference.icon)
                 }
-
-                
-                
                 holder.binding.switchToggle.setChecked(
                         preference.valueAsBooleanProvider ?: false,
                         animateThumb = false
                 )
-
                 holder.binding.switchToggle.setOnCheckedChangeListener { switch, _ ->
                     preference.onPreferenceAction?.invoke(switch) {   }
                 }
             }
         }
     }
-
     override fun getItemCount(): Int = preferences.size
-
     override fun getItemViewType(position: Int): Int {
         return when (preferences[position].type) {
             PreferenceType.HEADER -> VIEW_TYPE_HEADER
@@ -76,27 +51,17 @@ class AdapterPanelVisibility(
             else -> throw IllegalArgumentException("Unsupported type at position $position")
         }
     }
-
     inner class Header(val binding: AdapterPanelVisibilityHeaderBinding) : VerticalListViewHolder(binding.root)
-
     inner class SubHeader(val binding: AdapterPreferenceSubHeaderBinding) : VerticalListViewHolder(binding.root)
-
     inner class Switch(val binding: AdapterPanelVisibilityBinding) : VerticalListViewHolder(binding.root) {
         init {
-            
-            
             binding.root.clipChildren = false
             binding.root.clipToPadding = false
         }
     }
-
     companion object {
         private const val VIEW_TYPE_HEADER = 0
         private const val VIEW_TYPE_SUB_HEADER = 1
         private const val VIEW_TYPE_SWITCH = 2
     }
 }
-
-
-
-

@@ -1,9 +1,7 @@
-
 @AndroidEntryPoint
 class ProductsFragment : Fragment() {
     private val viewModel: ProductViewModel by viewModels()
     private val viewModelPOS: POSViewModel by viewModels()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -22,5 +20,4 @@ class ProductsFragment : Fragment() {
             }
         }
     }
-
 }

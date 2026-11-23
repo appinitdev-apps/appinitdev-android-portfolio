@@ -1,9 +1,7 @@
-
 object FeedEntryHelper {
     val feedEntryDao: FeedEntryDao by lazy {
         AppDatabase.instance.feedEntryDao()
     }
-
     suspend fun count(query: String): Int {
         var sql = "SELECT COUNT(id) FROM feed_entries"
         val where = ContentWhere()
@@ -11,10 +9,8 @@ object FeedEntryHelper {
             parseQuery(where, query)
             sql += " WHERE ${where.toSelection()}"
         }
-
         return feedEntryDao.count(rawQuery(sql, where.args.toTypedArray()))
     }
-
     suspend fun getIdsAsync(query: String): Set<String> {
         var sql = "SELECT id FROM feed_entries"
         val where = ContentWhere()
@@ -22,10 +18,8 @@ object FeedEntryHelper {
             parseQuery(where, query)
             sql += " WHERE ${where.toSelection()}"
         }
-
         return feedEntryDao.getIds(rawQuery(sql, where.args.toTypedArray())).map { it.id }.toSet()
     }
-
     suspend fun search(
         query: String,
         limit: Int,
@@ -37,20 +31,16 @@ object FeedEntryHelper {
             parseQuery(where, query)
             sql += " WHERE ${where.toSelection()}"
         }
-
         sql += if (limit == Int.MAX_VALUE) {
             " ORDER BY published_at DESC"
         } else {
             " ORDER BY published_at DESC LIMIT $limit OFFSET $offset"
         }
-
         return feedEntryDao.search(rawQuery(sql, where.args.toTypedArray()))
     }
-
     fun getAsync(id: String): DFeedEntry? {
         return feedEntryDao.getById(id)
     }
-
     fun updateAsync(
         id: String,
         updateItem: DFeedEntry.() -> Unit,
@@ -59,27 +49,22 @@ object FeedEntryHelper {
         item.updatedAt = TimeHelper.now()
         updateItem(item)
         feedEntryDao.update(item)
-
         return item.id
     }
-
     fun updateAsync(
         item: DFeedEntry,
     ) {
         item.updatedAt = TimeHelper.now()
         feedEntryDao.update(item)
     }
-
     fun deleteAsync(ids: Set<String>) {
         ids.chunked(50).forEach { chunk ->
             feedEntryDao.delete(chunk.toSet())
         }
     }
-
     fun deleteAllAsync() {
         feedEntryDao.deleteAll()
     }
-
     private suspend fun parseQuery(
         where: ContentWhere,
         query: String,

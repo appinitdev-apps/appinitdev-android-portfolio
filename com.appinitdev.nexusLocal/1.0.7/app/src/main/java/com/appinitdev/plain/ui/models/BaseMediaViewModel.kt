@@ -1,4 +1,3 @@
-
 abstract class BaseMediaViewModel<T : IData> : ISearchableViewModel<T>, ViewModel() {
     internal val _itemsFlow = MutableStateFlow(mutableStateListOf<T>())
     val itemsFlow: StateFlow<List<T>> get() = _itemsFlow
@@ -18,13 +17,10 @@ abstract class BaseMediaViewModel<T : IData> : ISearchableViewModel<T>, ViewMode
     val showRenameDialog = mutableStateOf(false)
     val showTagsDialog = mutableStateOf(false)
     val showSortAndBrowseDialog = mutableStateOf(false)
-
     override val showSearchBar = mutableStateOf(false)
     override val searchActive = mutableStateOf(false)
     override val queryText = mutableStateOf("")
-
     abstract val dataType: DataType
-
     internal open fun getTotalQuery(): String {
         var query = "${queryText.value} trash:false"
         if (bucketId.value.isNotEmpty()) {
@@ -32,7 +28,6 @@ abstract class BaseMediaViewModel<T : IData> : ISearchableViewModel<T>, ViewMode
         }
         return query
     }
-
     internal fun getTrashQuery(): String {
         var query = "${queryText.value} trash:true"
         if (bucketId.value.isNotEmpty()) {
@@ -40,7 +35,6 @@ abstract class BaseMediaViewModel<T : IData> : ISearchableViewModel<T>, ViewMode
         }
         return query
     }
-
     internal open fun getQuery(): String {
         var query = "${queryText.value} trash:${trash.value}"
         if (tag.value != null) {
@@ -53,7 +47,6 @@ abstract class BaseMediaViewModel<T : IData> : ISearchableViewModel<T>, ViewMode
         }
         return query
     }
-
     suspend fun moreAsync(context: Context, tagsVM: TagsViewModel) {
         offset.intValue += limit.intValue
         val items = searchMediaAsync(context, getQuery())
@@ -66,7 +59,6 @@ abstract class BaseMediaViewModel<T : IData> : ISearchableViewModel<T>, ViewMode
         noMore.value = items.size < limit.intValue
         showLoading.value = false
     }
-
     open suspend fun loadAsync(context: Context, tagsVM: TagsViewModel) {
         offset.intValue = 0
         _itemsFlow.value = searchMediaAsync(context, getQuery()).toMutableStateList()
@@ -76,11 +68,9 @@ abstract class BaseMediaViewModel<T : IData> : ISearchableViewModel<T>, ViewMode
         noMore.value = _itemsFlow.value.size < limit.intValue
         showLoading.value = false
     }
-
     fun trash(context: Context, tagsVM: TagsViewModel, ids: Set<String>) {
         trashItems(context, tagsVM, ids)
     }
-
     fun restore(context: Context, tagsVM: TagsViewModel, ids: Set<String>) {
         restoreItems(context, tagsVM, ids)
     }

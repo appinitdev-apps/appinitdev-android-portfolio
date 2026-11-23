@@ -1,4 +1,3 @@
-
 class MigrationsManager @Inject constructor(
     @ApplicationContext
     private val context: Context,
@@ -9,13 +8,10 @@ class MigrationsManager @Inject constructor(
             disableGitHubAutoBackupMigration.get(),
         )
     }
-
     @Suppress("TooGenericExceptionCaught", "PrintStackTrace", "MagicNumber")
     suspend fun executeMigrations() {
         delay(2_000L) 
-
         val data = context.dataStore.data.firstOrNull()
-
         for (migration in migrations) {
             val key = booleanPreferencesKey("migration_${migration.key}")
             val isExecuted = data?.get(key) ?: false
@@ -28,8 +24,6 @@ class MigrationsManager @Inject constructor(
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-
-                
                 context.dataStore.edit {
                     it[key] = true
                 }

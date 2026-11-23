@@ -1,4 +1,3 @@
-
 @Composable
 fun ClipboardTextField(
     modifier: Modifier = Modifier,
@@ -82,7 +81,6 @@ fun ClipboardTextField(
         }
     }
 }
-
 private fun action(
     focusManager: FocusManager?,
     onConfirm: (String) -> Unit,

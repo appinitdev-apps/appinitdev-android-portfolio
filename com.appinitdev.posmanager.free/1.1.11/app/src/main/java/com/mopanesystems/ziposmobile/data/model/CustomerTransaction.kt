@@ -1,4 +1,3 @@
-
 @Entity(tableName = "customer_transactions")
 data class CustomerTransaction(
     @PrimaryKey
@@ -12,10 +11,8 @@ data class CustomerTransaction(
     val description: String? = null,
     val createdAt: LocalDateTime = LocalDateTime.now()
 ) : Identifiable {
-
     val isDeposit: Boolean
         get() = type == TransactionType.DEPOSIT || type == TransactionType.PAYMENT
-
     val isWithdrawal: Boolean
         get() = type == TransactionType.WITHDRAWAL || type == TransactionType.PURCHASE
 }

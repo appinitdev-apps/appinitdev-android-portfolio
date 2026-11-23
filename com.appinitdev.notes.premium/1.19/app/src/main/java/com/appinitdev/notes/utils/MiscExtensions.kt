@@ -1,4 +1,3 @@
-
 fun CharSequence.truncate(limit: Int): CharSequence {
     return if (length > limit) {
         val truncated = take(limit)
@@ -8,12 +7,10 @@ fun CharSequence.truncate(limit: Int): CharSequence {
         this
     }
 }
-
 fun CharSequence.startsWithAnyOf(vararg s: String): Boolean {
     s.forEach { if (startsWith(it)) return true }
     return false
 }
-
 fun CharSequence.fromCamelCaseToEnumName(): String {
     return this.fold(StringBuilder()) { acc, char ->
             if (char.isUpperCase() && acc.isNotEmpty()) {
@@ -23,11 +20,9 @@ fun CharSequence.fromCamelCaseToEnumName(): String {
         }
         .toString()
 }
-
 fun CharSequence?.isWebUrl(): Boolean {
     return this?.let { Patterns.WEB_URL.matcher(this).matches() } ?: false
 }
-
 fun CharSequence?.findWebUrls(): Collection<Pair<Int, Int>> {
     return this?.let {
         val matcher = Patterns.WEB_URL.matcher(this)
@@ -38,7 +33,6 @@ fun CharSequence?.findWebUrls(): Collection<Pair<Int, Int>> {
         matches
     } ?: listOf()
 }
-
 fun String.findAllOccurrences(
     search: String,
     caseSensitive: Boolean = false,
@@ -50,11 +44,9 @@ fun String.findAllOccurrences(
         .map { match -> match.range.first to match.range.last + 1 }
         .toList()
 }
-
 fun String.removeTrailingParentheses(): String {
     return substringBeforeLast(" (")
 }
-
 fun String.toCamelCase(): String {
     return this.lowercase()
         .split("_")
@@ -67,13 +59,11 @@ fun String.toCamelCase(): String {
         }
         .joinToString("")
 }
-
 fun String.getUrl(start: Int, end: Int): String {
     return if (end <= length) {
         substring(start, end).toUrl()
     } else substring(start, length).toUrl()
 }
-
 private fun String.toUrl(): String {
     return when {
         matches(Patterns.PHONE.toRegex()) -> "tel:$this"
@@ -82,17 +72,14 @@ private fun String.toUrl(): String {
         else -> this
     }
 }
-
 val String.toPreservedByteArray: ByteArray
     get() {
         return this.toByteArray(Charsets.ISO_8859_1)
     }
-
 val ByteArray.toPreservedString: String
     get() {
         return String(this, Charsets.ISO_8859_1)
     }
-
 fun now(): Calendar =
     Calendar.getInstance().apply {
         set(Calendar.SECOND, 0)

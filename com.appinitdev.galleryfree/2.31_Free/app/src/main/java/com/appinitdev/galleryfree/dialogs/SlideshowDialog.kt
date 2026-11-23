@@ -1,59 +1,48 @@
-
 class SlideshowDialog(val activity: BaseSimpleActivity, val callback: () -> Unit) {
     private val binding: DialogSlideshowBinding
-
     init {
         binding = DialogSlideshowBinding.inflate(activity.layoutInflater).apply {
             intervalHint.hint = activity.getString(org.appinitdev.commons.R.string.seconds_raw).replaceFirstChar { it.uppercaseChar() }
             intervalValue.setOnClickListener {
                 intervalValue.selectAll()
             }
-
             intervalValue.setOnFocusChangeListener { v, hasFocus ->
                 if (!hasFocus)
                     activity.hideKeyboard(v)
             }
-
             animationHolder.setOnClickListener {
                 val items = arrayListOf(
                     RadioItem(SLIDESHOW_ANIMATION_NONE, activity.getString(R.string.no_animation)),
                     RadioItem(SLIDESHOW_ANIMATION_SLIDE, activity.getString(R.string.slide)),
                     RadioItem(SLIDESHOW_ANIMATION_FADE, activity.getString(R.string.fade))
                 )
-
                 RadioGroupDialog(activity, items, activity.config.slideshowAnimation) {
                     activity.config.slideshowAnimation = it as Int
                     animationValue.text = getAnimationText()
                 }
             }
-
             includeVideosHolder.setOnClickListener {
                 intervalValue.clearFocus()
                 includeVideos.toggle()
             }
-
             includeGifsHolder.setOnClickListener {
                 intervalValue.clearFocus()
                 includeGifs.toggle()
             }
-
             randomOrderHolder.setOnClickListener {
                 intervalValue.clearFocus()
                 randomOrder.toggle()
             }
-
             moveBackwardsHolder.setOnClickListener {
                 intervalValue.clearFocus()
                 moveBackwards.toggle()
             }
-
             loopSlideshowHolder.setOnClickListener {
                 intervalValue.clearFocus()
                 loopSlideshow.toggle()
             }
         }
         setupValues()
-
         activity.getAlertDialogBuilder()
             .setPositiveButton(org.appinitdev.commons.R.string.ok, null)
             .setNegativeButton(org.appinitdev.commons.R.string.cancel, null)
@@ -68,7 +57,6 @@ class SlideshowDialog(val activity: BaseSimpleActivity, val callback: () -> Unit
                 }
             }
     }
-
     private fun setupValues() {
         val config = activity.config
         binding.apply {
@@ -81,12 +69,10 @@ class SlideshowDialog(val activity: BaseSimpleActivity, val callback: () -> Unit
             loopSlideshow.isChecked = config.loopSlideshow
         }
     }
-
     private fun storeValues() {
         var interval = binding.intervalValue.text.toString()
         if (interval.trim('0').isEmpty())
             interval = SLIDESHOW_DEFAULT_INTERVAL.toString()
-
         activity.config.apply {
             slideshowAnimation = getAnimationValue(binding.animationValue.value)
             slideshowInterval = interval.toInt()
@@ -97,7 +83,6 @@ class SlideshowDialog(val activity: BaseSimpleActivity, val callback: () -> Unit
             loopSlideshow = binding.loopSlideshow.isChecked
         }
     }
-
     private fun getAnimationText(): String {
         return when (activity.config.slideshowAnimation) {
             SLIDESHOW_ANIMATION_SLIDE -> activity.getString(R.string.slide)
@@ -105,7 +90,6 @@ class SlideshowDialog(val activity: BaseSimpleActivity, val callback: () -> Unit
             else -> activity.getString(R.string.no_animation)
         }
     }
-
     private fun getAnimationValue(text: String): Int {
         return when (text) {
             activity.getString(R.string.slide) -> SLIDESHOW_ANIMATION_SLIDE

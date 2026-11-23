@@ -1,16 +1,12 @@
-
 object ImageSearchIndexer {
     private const val BATCH_SIZE = 20
     private const val PRELOAD_BUFFER = 16
     private const val NUM_WORKERS = 4
     private const val NUM_LOADERS = 3
-
     @Volatile var isRunning = false; private set
     @Volatile private var cancelled = false
     var totalImages = 0; private set
     var indexedImages = 0; private set
-
-     
     suspend fun indexImages(images: List<com.appinitdev.nexusLocal.data.DImage>) = withContext(Dispatchers.IO) {
         if (images.isEmpty()) return@withContext
         val dao = AppDatabase.instance.imageEmbeddingDao()
@@ -32,8 +28,6 @@ object ImageSearchIndexer {
             worker.close()
         }
     }
-
-     
     suspend fun start(forceReindex: Boolean = false) = withContext(Dispatchers.IO) {
         if (isRunning) return@withContext
         if (ImageSearchManager.status.value != ImageSearchStatus.READY) return@withContext
@@ -49,15 +43,12 @@ object ImageSearchIndexer {
             val dao = AppDatabase.instance.imageEmbeddingDao()
             if (forceReindex) dao.deleteAll()
             val existingIds = dao.getAllIds().toSet()
-
             val currentIds = allImages.map { it.id }.toSet()
             val staleIds = existingIds - currentIds
             if (staleIds.isNotEmpty()) dao.deleteByIds(staleIds.toList())
-
             val toIndex = allImages.filter { it.id !in existingIds }
             indexedImages = totalImages - toIndex.size
             emitProgress()
-
             indexWithParallelWorkers(toIndex, dao)
         } catch (e: Exception) {
             LogCat.e("Image indexing failed", e)
@@ -66,7 +57,6 @@ object ImageSearchIndexer {
             emitProgress()
         }
     }
-
     private suspend fun indexWithParallelWorkers(
         toIndex: List<com.appinitdev.nexusLocal.data.DImage>,
         dao: com.appinitdev.nexusLocal.db.ImageEmbeddingDao,
@@ -76,8 +66,6 @@ object ImageSearchIndexer {
         val bitmapCh = Channel<Triple<String, String, Bitmap>>(PRELOAD_BUFFER)
         val resultCh = Channel<DImageEmbedding>(BATCH_SIZE * 2)
         val indexed = AtomicInteger(indexedImages)
-
-        
         launch(Dispatchers.IO) {
             for (image in toIndex) {
                 if (cancelled) break
@@ -85,8 +73,6 @@ object ImageSearchIndexer {
             }
             imageCh.close()
         }
-
-        
         val loaderJobs = (0 until NUM_LOADERS).map {
             launch(Dispatchers.IO) {
                 for (image in imageCh) {
@@ -97,8 +83,6 @@ object ImageSearchIndexer {
             }
         }
         launch { loaderJobs.joinAll(); bitmapCh.close() }
-
-        
         val workers = (0 until NUM_WORKERS).map { ImageEmbedWorker(modelFile) }
         val workerJobs = workers.map { worker ->
             launch(Dispatchers.Default) {
@@ -110,8 +94,6 @@ object ImageSearchIndexer {
             }
         }
         launch { workerJobs.joinAll(); resultCh.close() }
-
-        
         val batch = mutableListOf<DImageEmbedding>()
         for (item in resultCh) {
             batch.add(item)
@@ -127,12 +109,9 @@ object ImageSearchIndexer {
             batch.clear()
         }
         emitProgress()
-
         workers.forEach { it.close() }
     }
-
     fun cancel() { cancelled = true }
-
     private fun emitProgress() {
         sendEvent(ImageIndexProgressEvent(totalImages, indexedImages, isRunning))
     }

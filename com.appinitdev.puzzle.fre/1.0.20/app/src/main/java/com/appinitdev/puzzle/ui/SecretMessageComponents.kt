@@ -1,4 +1,3 @@
-
 data class CustomSecretMessage(
     val text: String = "",
     val fontStyle: String = "Normal",
@@ -9,7 +8,6 @@ data class CustomSecretMessage(
     fun toEncodedString(): String {
         return "SMSG::$text::$fontStyle::$textColorHex::$emoji::$theme"
     }
-
     companion object {
         fun fromEncodedString(encoded: String): CustomSecretMessage {
             if (!encoded.startsWith("SMSG::")) {
@@ -26,7 +24,6 @@ data class CustomSecretMessage(
         }
     }
 }
-
 fun getFontFamily(fontStyle: String): FontFamily {
     return when (fontStyle) {
         "Cursiva" -> FontFamily.Cursive
@@ -35,20 +32,17 @@ fun getFontFamily(fontStyle: String): FontFamily {
         else -> FontFamily.Default
     }
 }
-
 fun getFontWeight(fontStyle: String): FontWeight {
     return when (fontStyle) {
         "Negrita" -> FontWeight.ExtraBold
         else -> FontWeight.Bold
     }
 }
-
 data class MessageThemeStyle(
     val containerColor: Color,
     val borderColor: Color,
     val textColor: Color
 )
-
 fun getThemeStyle(theme: String): MessageThemeStyle {
     return when (theme) {
         "Amor ❤️" -> MessageThemeStyle(
@@ -83,7 +77,6 @@ fun getThemeStyle(theme: String): MessageThemeStyle {
         )
     }
 }
-
 @Composable
 fun SecretMessageInputDialog(
     initialMessage: String,
@@ -91,13 +84,11 @@ fun SecretMessageInputDialog(
     onMessageSaved: (String) -> Unit
 ) {
     val initialParsed = remember(initialMessage) { CustomSecretMessage.fromEncodedString(initialMessage) }
-
     var text by remember { mutableStateOf(initialParsed.text) }
     var fontStyle by remember { mutableStateOf(initialParsed.fontStyle) }
     var selectedEmoji by remember { mutableStateOf(initialParsed.emoji) }
     var selectedTheme by remember { mutableStateOf(initialParsed.theme) }
     var showQRModal by remember { mutableStateOf(false) }
-
     val presetMessages = listOf(
         "¡Feliz Cumpleaños! 🎂🎉",
         "¡Eres una persona increíble! 🌟",
@@ -105,11 +96,9 @@ fun SecretMessageInputDialog(
         "¿Quieres salir por un café? ☕",
         "¡Lo lograste, Campeón! 🏆"
     )
-
     val emojis = listOf("❤️", "🎉", "🎂", "☕", "🏆", "🌟", "🤫", "💎", "🚀", "🎁")
     val fontStyles = listOf("Normal", "Cursiva", "Negrita", "Elegante", "Código")
     val themes = listOf("Amor ❤️", "Fiesta 🎉", "Ciberpunk ⚡", "Esmeralda 🌿", "Noche Gold 🏆", "Clásico")
-
     val currentCustomMessage = CustomSecretMessage(
         text = text,
         fontStyle = fontStyle,
@@ -117,7 +106,6 @@ fun SecretMessageInputDialog(
         emoji = selectedEmoji,
         theme = selectedTheme
     )
-
     if (showQRModal) {
         QRCodeDialog(
             qrData = currentCustomMessage.toEncodedString(),
@@ -126,7 +114,6 @@ fun SecretMessageInputDialog(
             onDismiss = { showQRModal = false }
         )
     }
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -158,26 +145,20 @@ fun SecretMessageInputDialog(
                         modifier = Modifier.size(32.dp)
                     )
                 }
-
                 Spacer(modifier = Modifier.height(8.dp))
-
                 Text(
                     text = stringResource(R.string.personalizar_mensaje_secreto),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.ExtraBold
                 )
-
                 Spacer(modifier = Modifier.height(4.dp))
-
                 Text(
                     text = stringResource(R.string.configura_el_texto),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
-
                 Spacer(modifier = Modifier.height(12.dp))
-
                 OutlinedTextField(
                     value = text,
                     onValueChange = { text = it },
@@ -185,10 +166,7 @@ fun SecretMessageInputDialog(
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier.fillMaxWidth()
                 )
-
                 Spacer(modifier = Modifier.height(10.dp))
-
-                
                 val themeStyle = getThemeStyle(selectedTheme)
                 Card(
                     colors = CardDefaults.cardColors(containerColor = themeStyle.containerColor),
@@ -217,10 +195,7 @@ fun SecretMessageInputDialog(
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.height(10.dp))
-
-                
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = "Emoji:",
@@ -241,9 +216,7 @@ fun SecretMessageInputDialog(
                             )
                         }
                     }
-
                     Spacer(modifier = Modifier.height(6.dp))
-
                     Text(
                         text = stringResource(R.string.tipo_de_letra),
                         style = MaterialTheme.typography.labelSmall,
@@ -269,9 +242,7 @@ fun SecretMessageInputDialog(
                             )
                         }
                     }
-
                     Spacer(modifier = Modifier.height(6.dp))
-
                     Text(
                         text = stringResource(R.string.tema_color),
                         style = MaterialTheme.typography.labelSmall,
@@ -292,9 +263,7 @@ fun SecretMessageInputDialog(
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -307,7 +276,6 @@ fun SecretMessageInputDialog(
                     ) {
                         Text(stringResource(R.string.cerrar), maxLines = 1)
                     }
-
                     OutlinedButton(
                         onClick = { showQRModal = true },
                         shape = CircleShape,
@@ -318,7 +286,6 @@ fun SecretMessageInputDialog(
                         Spacer(Modifier.width(4.dp))
                         Text("Compartir QR", maxLines = 1, fontWeight = FontWeight.Bold)
                     }
-
                     Button(
                         onClick = {
                             onMessageSaved(currentCustomMessage.toEncodedString())
@@ -335,7 +302,6 @@ fun SecretMessageInputDialog(
         }
     }
 }
-
 @Composable
 fun SecretMessageRevelationDialog(
     message: String,
@@ -344,7 +310,6 @@ fun SecretMessageRevelationDialog(
     val context = LocalContext.current
     val parsedMsg = remember(message) { CustomSecretMessage.fromEncodedString(message) }
     val themeStyle = remember(parsedMsg.theme) { getThemeStyle(parsedMsg.theme) }
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -374,9 +339,7 @@ fun SecretMessageRevelationDialog(
                         modifier = Modifier.size(38.dp)
                     )
                 }
-
                 Spacer(modifier = Modifier.height(12.dp))
-
                 Text(
                     text = "¡Mensaje Secreto Revelado!",
                     style = MaterialTheme.typography.headlineSmall,
@@ -384,9 +347,7 @@ fun SecretMessageRevelationDialog(
                     color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Card(
                     colors = CardDefaults.cardColors(containerColor = themeStyle.containerColor),
                     shape = RoundedCornerShape(20.dp),
@@ -409,9 +370,7 @@ fun SecretMessageRevelationDialog(
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.height(24.dp))
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -424,7 +383,6 @@ fun SecretMessageRevelationDialog(
                     ) {
                         Text("Aceptar", maxLines = 1, fontWeight = FontWeight.Bold)
                     }
-
                     Button(
                         onClick = {
                             val shareText = "💌 Mensaje Secreto Revelado:\n\n${parsedMsg.emoji} \"${parsedMsg.text}\"\n\n¡Descarga la app de Rompecabezas!"

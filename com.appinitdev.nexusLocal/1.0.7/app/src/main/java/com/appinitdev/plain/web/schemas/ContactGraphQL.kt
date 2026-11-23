@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addContactSchema() {
     query("contacts") {
         configure {
@@ -45,7 +44,6 @@ fun SchemaBuilder.addContactSchema() {
             val groups = GroupHelper.getAll().map { it.toModel() }
             val fields = node.getFields()
             if (fields.contains(ContactGroup::contactCount.name)) {
-                
             }
             groups
         }

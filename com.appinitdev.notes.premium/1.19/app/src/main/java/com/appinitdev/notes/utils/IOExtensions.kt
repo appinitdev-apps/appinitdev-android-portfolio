@@ -1,22 +1,14 @@
-
 private const val TAG = "IO"
-
 const val SUBFOLDER_IMAGES = "Images"
 const val SUBFOLDER_FILES = "Files"
 const val SUBFOLDER_AUDIOS = "Audios"
-
 fun ContextWrapper.getExternalImagesDirectory() = getExternalMediaDirectory(SUBFOLDER_IMAGES)
-
 fun ContextWrapper.getExternalAudioDirectory() = getExternalMediaDirectory(SUBFOLDER_AUDIOS)
-
 fun ContextWrapper.getExternalFilesDirectory() = getExternalMediaDirectory(SUBFOLDER_FILES)
-
 fun ContextWrapper.getExternalMediaDirectory() = getExternalMediaDirectory("")
-
 fun Context.getTempAudioFile(): File {
     return File(externalCacheDir, "Temp.m4a")
 }
-
 fun InputStream.copyToFile(destination: File) {
     val output = FileOutputStream(destination)
     copyTo(output)
@@ -24,12 +16,10 @@ fun InputStream.copyToFile(destination: File) {
     output.close()
     Log.d(TAG, "Copied InputStream to '${destination.absolutePath}'")
 }
-
 fun File.write(bytes: ByteArray) {
     outputStream().use { outputStream -> outputStream.write(bytes) }
     Log.d(TAG, "Wrote ${bytes.size} bytes to '${this.absolutePath}'")
 }
-
 fun File.rename(newName: String): Boolean {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val source = toPath()
@@ -41,7 +31,6 @@ fun File.rename(newName: String): Boolean {
         renameTo(destination)
     }
 }
-
 fun File.clearDirectory() {
     val files = listFiles()
     if (files != null) {
@@ -50,12 +39,10 @@ fun File.clearDirectory() {
         }
     }
 }
-
 fun File.decodeToBitmap(): Bitmap? {
     val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
     return BitmapFactory.decodeFile(absolutePath, options)
 }
-
 fun File.isAudioFile(context: Context): Boolean {
     val retriever = MediaMetadataRetriever()
     return try {
@@ -71,7 +58,6 @@ fun File.isAudioFile(context: Context): Boolean {
         retriever.release() 
     }
 }
-
 fun File.toRelativePathFrom(baseFolderName: String): String {
     val parentFolderIndex = absolutePath.indexOf("/$baseFolderName/")
     if (parentFolderIndex == -1) {
@@ -80,7 +66,6 @@ fun File.toRelativePathFrom(baseFolderName: String): String {
     val relativePath = absolutePath.substring(parentFolderIndex + baseFolderName.length + 2)
     return relativePath.trimStart(File.separatorChar)
 }
-
 fun File.recreateDir(): File {
     if (exists()) {
         deleteRecursively()
@@ -88,7 +73,6 @@ fun File.recreateDir(): File {
     mkdirs()
     return this
 }
-
 fun ContextWrapper.deleteAttachments(
     attachments: Collection<Attachment>,
     ids: LongArray? = null,
@@ -103,7 +87,6 @@ fun ContextWrapper.deleteAttachments(
             val file =
                 when (attachment) {
                     is Audio -> if (audioRoot != null) File(audioRoot, attachment.name) else null
-
                     is FileAttachment -> {
                         val root = if (attachment.isImage) imageRoot else fileRoot
                         if (root != null) File(root, attachment.localName) else null
@@ -120,23 +103,16 @@ fun ContextWrapper.deleteAttachments(
     }
     progress?.postValue(Progress(inProgress = false))
 }
-
 fun Context.getBackupDir() = getEmptyFolder("backup")
-
 fun Context.getExportedPath() = getEmptyFolder("exported")
-
 fun ContextWrapper.getLogsDir() = File(filesDir, "logs").also { it.mkdir() }
-
 const val APP_LOG_FILE_NAME = "notallyx-logs.txt"
-
 fun ContextWrapper.getLogFile(): File {
     return File(getLogsDir(), APP_LOG_FILE_NAME)
 }
-
 private fun ContextWrapper.getExternalMediaDirectory(name: String): File? {
     return externalMediaDirs.firstOrNull()?.let { getDirectory(it, name) }
 }
-
 private fun getDirectory(dir: File, name: String): File? {
     var file: File? = null
     try {
@@ -150,16 +126,13 @@ private fun getDirectory(dir: File, name: String): File? {
     } catch (exception: Exception) {
         exception.printStackTrace()
     }
-
     return file
 }
-
 private fun File.createDirectory() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         Files.createDirectory(toPath())
     } else mkdir()
 }
-
 private fun Context.getEmptyFolder(name: String): File {
     val folder = File(cacheDir, name)
     if (folder.exists()) {
@@ -167,7 +140,6 @@ private fun Context.getEmptyFolder(name: String): File {
     } else folder.mkdir()
     return folder
 }
-
 fun String.mimeTypeToFileExtension(): String? {
     return when (this) {
         "image/png" -> "png"
@@ -176,12 +148,10 @@ fun String.mimeTypeToFileExtension(): String? {
         else -> null
     }
 }
-
 fun File.listFilesRecursive(filter: FileFilter? = null): List<File> {
     val files = mutableListOf<File>()
     files.addAll(walkTopDown().filter { filter?.accept(it) ?: true })
     return files
 }
-
 const val MIME_TYPE_ZIP = "application/zip"
 const val MIME_TYPE_JSON = "application/json"

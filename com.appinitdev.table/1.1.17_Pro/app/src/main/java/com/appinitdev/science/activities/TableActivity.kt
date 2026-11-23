@@ -1,9 +1,6 @@
-
 class TableActivity : BaseActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
         val themePreference = ThemePreference(this)
         val themePrefValue = themePreference.getValue()
         if (themePrefValue == 100) {
@@ -15,53 +12,12 @@ class TableActivity : BaseActivity() {
         if (themePrefValue == 0) { setTheme(R.style.AppTheme) }
         if (themePrefValue == 1) { setTheme(R.style.AppThemeDark) }
         setContentView(R.layout.activity_tables)
-
         findViewById<FrameLayout>(R.id.view_sub).systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-
-        
-         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         tableListeners()
         mostUsedBar()
-
         findViewById<ImageButton>(R.id.back_btn).setOnClickListener {
             this.onBackPressed()
         }
-        
         val proPref = ProVersion(this)
         val proPrefValue = proPref.getValue()
         if (proPrefValue == 1) {
@@ -79,27 +35,22 @@ class TableActivity : BaseActivity() {
             findViewById<TextView>(R.id.pro_emi_text).visibility = View.GONE
         }
     }
-
     override fun onApplySystemInsets(top: Int, bottom: Int, left: Int, right: Int) {
             val params = findViewById<FrameLayout>(R.id.common_title_back_tab).layoutParams as ViewGroup.LayoutParams
             params.height = top + resources.getDimensionPixelSize(R.dimen.title_bar)
             findViewById<FrameLayout>(R.id.common_title_back_tab).layoutParams = params
-
             val params2 = findViewById<TextView>(R.id.tables_title_downstate).layoutParams as ViewGroup.MarginLayoutParams
             params2.topMargin = top
             findViewById<TextView>(R.id.tables_title_downstate).layoutParams = params2
     }
-
     private fun mostUsedBar() {
         val mostUsedPreference = MostUsedPreference(this)
         val mostUsedPrefValue = mostUsedPreference.getValue()
         val proPref = ProVersion(this)
         val proPrefValue = proPref.getValue()
-
         val regex = Regex("(\\w{3})=(\\d.\\d)")
         val matches = regex.findAll(mostUsedPrefValue).map { it.groups[1]!!.value to it.groups[2]!!.value.toDouble() }.toList()
         val sortedValues = matches.sortedByDescending { it.second }
-
         val textView1: TextView = findViewById(R.id.most_1)
         val textView2: TextView = findViewById(R.id.most_2)
         val textView3: TextView = findViewById(R.id.most_3)
@@ -111,13 +62,9 @@ class TableActivity : BaseActivity() {
         val textView9: TextView = findViewById(R.id.most_9)
         val textView10: TextView = findViewById(R.id.most_10)
         val textView11: TextView = findViewById(R.id.most_11)
-
-
         val textViewList = listOf(textView1, textView2, textView3, textView4, textView5, textView6, textView7, textView8, textView9, textView10, textView11)
-
         sortedValues.forEachIndexed { index, pair ->
             if (index < textViewList.size) {
-                
                 if (pair.first == "geo") {textViewList[index].text = getString(R.string.geo)}
                 if (pair.first == "phi") {textViewList[index].text = getString(R.string.phi)}
                 if (pair.first == "eqe") {textViewList[index].text = getString(R.string.eqe)}
@@ -129,8 +76,6 @@ class TableActivity : BaseActivity() {
                 if (pair.first == "ele") {textViewList[index].text = getString(R.string.ele)}
                 if (pair.first == "iso") {textViewList[index].text = getString(R.string.iso)}
                 if (pair.first == "emi") {textViewList[index].text = getString(R.string.emi)}
-
-                
                 if (proPrefValue==1) {
                     textViewList[index].setOnClickListener {
                         if (pair.first == "iso") {
@@ -190,7 +135,6 @@ class TableActivity : BaseActivity() {
                         }
                     }
                 }
-                
                 if (proPrefValue==100) {
                     textViewList[index].setOnClickListener {
                         if (pair.first == "iso") {
@@ -253,7 +197,6 @@ class TableActivity : BaseActivity() {
             }
         }
     }
-
     private fun tableListeners() {
         findViewById<FrameLayout>(R.id.sol_table).setOnClickListener {
             val intent = Intent(this, SolubilityActivity::class.java)
@@ -432,8 +375,4 @@ class TableActivity : BaseActivity() {
             }
         }
     }
-
 }
-
-
-

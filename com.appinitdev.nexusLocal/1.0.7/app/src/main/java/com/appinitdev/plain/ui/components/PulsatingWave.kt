@@ -1,4 +1,3 @@
-
 @Composable
 fun PulsatingWave(
     isPlaying: Boolean,
@@ -6,10 +5,8 @@ fun PulsatingWave(
     modifier: Modifier = Modifier
 ) {
     if (!isPlaying) return
-    
     val infiniteTransition = rememberInfiniteTransition(label = "audio_playing_animation")
     val density = LocalDensity.current
-    
     val scale1 = infiniteTransition.animateFloat(
         initialValue = 0.4f,
         targetValue = 1.0f,
@@ -19,7 +16,6 @@ fun PulsatingWave(
         ),
         label = "bar1"
     )
-    
     val scale2 = infiniteTransition.animateFloat(
         initialValue = 0.7f,
         targetValue = 1.0f,
@@ -29,7 +25,6 @@ fun PulsatingWave(
         ),
         label = "bar2"
     )
-    
     val scale3 = infiniteTransition.animateFloat(
         initialValue = 0.5f,
         targetValue = 1.0f,
@@ -39,7 +34,6 @@ fun PulsatingWave(
         ),
         label = "bar3"
     )
-    
     Row(
         modifier = modifier.padding(horizontal = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -47,7 +41,6 @@ fun PulsatingWave(
     ) {
         val barWidth = with(density) { 3.dp.toPx() }
         val maxBarHeight = 16.dp
-        
         Box(
             modifier = Modifier
                 .width(with(density) { barWidth.toDp() })
@@ -55,7 +48,6 @@ fun PulsatingWave(
                 .clip(RoundedCornerShape(1.dp))
                 .background(color)
         )
-        
         Box(
             modifier = Modifier
                 .width(with(density) { barWidth.toDp() })
@@ -63,7 +55,6 @@ fun PulsatingWave(
                 .clip(RoundedCornerShape(1.dp))
                 .background(color)
         )
-        
         Box(
             modifier = Modifier
                 .width(with(density) { barWidth.toDp() })

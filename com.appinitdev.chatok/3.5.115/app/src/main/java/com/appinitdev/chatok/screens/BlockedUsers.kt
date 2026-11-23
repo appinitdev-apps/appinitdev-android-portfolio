@@ -1,4 +1,3 @@
-
 @Composable
 fun BlockedUsers(
     viewModel: ChatViewModel, 
@@ -7,7 +6,6 @@ fun BlockedUsers(
 ) {
     var showDialog by remember { mutableStateOf(false) }
     var selectedUserId by remember { mutableStateOf("") }
-
     AnimatedVisibility(visible = showDialog) {
         UnblockDialog(
             hideDialog = { showDialog = false }, 
@@ -17,7 +15,6 @@ fun BlockedUsers(
             }
         )
     }
-
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             modifier = Modifier.fillMaxSize(),
@@ -25,13 +22,9 @@ fun BlockedUsers(
             contentDescription = null,
             contentScale = ContentScale.Crop,
         )
-        
-        
         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
-
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(40.dp))
-            
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -52,9 +45,7 @@ fun BlockedUsers(
                     fontWeight = FontWeight.Bold
                 )
             }
-
             Spacer(modifier = Modifier.height(24.dp))
-
             if (viewModel.list.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -96,7 +87,6 @@ fun BlockedUsers(
         }
     }
 }
-
 @Composable
 fun BlockedUserItem(userData: UserData, onUnblockClick: () -> Unit) {
     Card(
@@ -126,9 +116,7 @@ fun BlockedUserItem(userData: UserData, onUnblockClick: () -> Unit) {
                     .clip(CircleShape)
                     .border(1.dp, Color.White.copy(alpha = 0.2f), CircleShape)
             )
-            
             Spacer(modifier = Modifier.width(16.dp))
-            
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = userData.username.orEmpty(),
@@ -142,7 +130,6 @@ fun BlockedUserItem(userData: UserData, onUnblockClick: () -> Unit) {
                     color = Color.Gray
                 )
             }
-            
             Text(
                 text = stringResource(R.string.desbloquear),
                 color = Color(0xFF238CDD),

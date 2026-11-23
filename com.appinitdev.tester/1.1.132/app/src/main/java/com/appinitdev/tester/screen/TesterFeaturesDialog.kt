@@ -1,6 +1,4 @@
-
 data class Feature(val icon: ImageVector, val title: String, val desc: String)
-
 @Composable
 fun TesterFeaturesDialog(onDismiss: () -> Unit) {
     val features = listOf(
@@ -25,7 +23,6 @@ fun TesterFeaturesDialog(onDismiss: () -> Unit) {
             stringResource(R.string.reportes_de_errores_y_rendimiento_detallados)
         )
     )
-
     Dialog(
         onDismissRequest = {   },
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -47,22 +44,17 @@ fun TesterFeaturesDialog(onDismiss: () -> Unit) {
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
-
                 Text(
                     text = stringResource(R.string.lanza_tu_app_con_total_confianza),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
-
                 Divider(color = MaterialTheme.colorScheme.outlineVariant)
-
                 features.forEach { feature ->
                     FeatureRow(feature)
                 }
-
                 Spacer(modifier = Modifier.height(24.dp))
-
                 Button(
                     onClick = onDismiss,
                     modifier = Modifier.fillMaxWidth(),
@@ -74,7 +66,6 @@ fun TesterFeaturesDialog(onDismiss: () -> Unit) {
         }
     }
 }
-
 @Composable
 fun FeatureRow(feature: Feature) {
     Row(

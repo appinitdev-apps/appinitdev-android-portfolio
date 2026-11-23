@@ -1,8 +1,5 @@
-
 class AdapterTypeface : RecyclerView.Adapter<VerticalListViewHolder>() {
-
     private val typefaces = TypeFace.list
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         when (viewType) {
             RecyclerViewUtils.TYPE_HEADER -> {
@@ -16,7 +13,6 @@ class AdapterTypeface : RecyclerView.Adapter<VerticalListViewHolder>() {
             else -> throw IllegalStateException("unknown view type")
         }
     }
-
     override fun onBindViewHolder(holder: VerticalListViewHolder, position: Int) {
         if (holder is Holder) {
             val typeface = typefaces[position - 1]
@@ -24,7 +20,6 @@ class AdapterTypeface : RecyclerView.Adapter<VerticalListViewHolder>() {
             holder.binding.type.text = typeface.type
             holder.binding.license.text = typeface.license
             holder.binding.description.text = typeface.description
-
             if (position == 1) {
                 holder.binding.license.visibility = ViewGroup.GONE
                 holder.binding.description.visibility = ViewGroup.GONE
@@ -32,9 +27,7 @@ class AdapterTypeface : RecyclerView.Adapter<VerticalListViewHolder>() {
                 holder.binding.license.visibility = ViewGroup.VISIBLE
                 holder.binding.description.visibility = ViewGroup.VISIBLE
             }
-
             holder.binding.name.setSelectedIndicator(typeface.name == AppearancePreferences.getAppFont())
-
             holder.binding.name.typeface = TypeFace.getTypeFace(typeface.name, TypefaceStyle.BOLD.style, holder.context)
             holder.binding.license.typeface = TypeFace.getTypeFace(typeface.name, TypefaceStyle.REGULAR.style, holder.context)
             holder.binding.description.typeface = TypeFace.getTypeFace(typeface.name, TypefaceStyle.REGULAR.style, holder.context)
@@ -46,7 +39,6 @@ class AdapterTypeface : RecyclerView.Adapter<VerticalListViewHolder>() {
             holder.binding.bold.typeface = TypeFace.getTypeFace(typeface.name, TypefaceStyle.BOLD.style, holder.context)
             holder.binding.black.typeface = TypeFace.getTypeFace(typeface.name, TypefaceStyle.BLACK.style, holder.context)
             holder.binding.backdrop.typeface = TypeFace.getTypeFace(typeface.name, TypefaceStyle.BLACK.style, holder.context)
-
             holder.binding.container.setOnClickListener {
                 AppearancePreferences.setAppFont(typeface.name)
                 notifyDataSetChanged()
@@ -58,11 +50,9 @@ class AdapterTypeface : RecyclerView.Adapter<VerticalListViewHolder>() {
             holder.binding.summary.typeface = TypeFace.getTypeFace(AppearancePreferences.getAppFont(), TypefaceStyle.REGULAR.style, holder.context)
         }
     }
-
     override fun getItemCount(): Int {
         return typefaces.size.plus(1) 
     }
-
     override fun getItemViewType(position: Int): Int {
         return if (position == 0) {
             RecyclerViewUtils.TYPE_HEADER
@@ -70,8 +60,6 @@ class AdapterTypeface : RecyclerView.Adapter<VerticalListViewHolder>() {
             RecyclerViewUtils.TYPE_ITEM
         }
     }
-
     inner class Holder(val binding: AdapterTypefaceBinding) : VerticalListViewHolder(binding.root)
-
     inner class Header(val binding: AdapterPreferenceHeaderBinding) : VerticalListViewHolder(binding.root)
 }

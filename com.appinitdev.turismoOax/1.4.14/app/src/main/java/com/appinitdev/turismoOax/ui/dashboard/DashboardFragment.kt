@@ -1,43 +1,31 @@
-
 class DashboardFragment : Fragment() {
-
     private var _binding: FragmentDashboardBinding? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var tourAdapter: TourAdapter
     private lateinit var dbHelper: DatabaseHelper
-
     private var listaOriginal: List<Tour> = emptyList()
     private var listaFiltrada: MutableList<Tour> = mutableListOf()
-
     private val binding get() = _binding!!
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         ViewModelProvider(this).get(DashboardViewModel::class.java)
-
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
         dbHelper = DatabaseHelper(requireContext())
-
         if (!estaConectado(requireContext())) {
             mostrarMensajeSinConexion(requireContext())
         }
-
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-
         setupSearchAndFilters()
         setupExtraActions()
         cargarClimaDestinos()
         cargarTours()
-
         return root
     }
-
     private fun cargarClimaDestinos() {
         val destinations = listOf(
             WeatherDestination("1", "Oaxaca Centro", "Oaxaca City", "25°C", "☀️", "Cálido y Soleado", "Warm & Sunny", "Clima agradable para recorrer el Centro Histórico y mercados.", "Great weather for exploring downtown.", 17.0604, -96.7253),
@@ -46,11 +34,9 @@ class DashboardFragment : Fragment() {
             WeatherDestination("4", "San José del Pacífico", "Sierra Mountains", "16°C", "🌲", "Fresco de Montaña", "Fresh Mountain Air", "Lleva chamarra o suéter abrigador para la tarde.", "Bring a warm jacket or sweater.", 16.1711, -96.5022),
             WeatherDestination("5", "Puerto Escondido", "Pacific Coast", "29°C", "🌊", "Cálido Tropical", "Warm Tropical Coast", "Día perfecto para playa, surf y avistamiento marítimo.", "Perfect beach day.", 15.8614, -97.0664)
         )
-
         val weatherAdapter = WeatherAdapter(destinations)
         binding.rvWeather.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rvWeather.adapter = weatherAdapter
-
         lifecycleScope.launch(Dispatchers.IO) {
             for (dest in destinations) {
                 try {
@@ -65,7 +51,6 @@ class DashboardFragment : Fragment() {
                         val currentWeather = jsonObject.getJSONObject("current_weather")
                         val tempValue = currentWeather.getDouble("temperature").toInt()
                         val code = if (currentWeather.has("weathercode")) currentWeather.getInt("weathercode") else 0
-                        
                         dest.temp = "$tempValue°C"
                         when (code) {
                             0 -> {
@@ -111,7 +96,6 @@ class DashboardFragment : Fragment() {
                         }
                     }
                 } catch (_: Exception) {
-                    
                 }
             }
             withContext(Dispatchers.Main) {
@@ -119,7 +103,6 @@ class DashboardFragment : Fragment() {
             }
         }
     }
-
     private fun setupSearchAndFilters() {
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -128,14 +111,11 @@ class DashboardFragment : Fragment() {
             }
             override fun afterTextChanged(s: Editable?) {}
         })
-
         binding.chipGroupFilters.setOnCheckedStateChangeListener { _, _ ->
             aplicarFiltros()
         }
     }
-
     private fun setupExtraActions() {
-        
         binding.btnLanguage.setOnClickListener {
             val opciones = arrayOf("Español 🇲🇽", "English 🇺🇸")
             MaterialAlertDialogBuilder(requireContext())
@@ -147,20 +127,15 @@ class DashboardFragment : Fragment() {
                 }
                 .show()
         }
-
-
     }
-
     private fun aplicarFiltros() {
         val query = binding.etSearch.text.toString().trim().lowercase()
         val checkedChipId = binding.chipGroupFilters.checkedChipId
-
         val baseLista = when (checkedChipId) {
             R.id.chipFavoritos -> dbHelper.getAllFavoritos()
             R.id.chipDirectos -> listaOriginal.filter { it.id.startsWith("directo_") }
             else -> listaOriginal
         }
-
         listaFiltrada = if (query.isEmpty()) {
             baseLista.toMutableList()
         } else {
@@ -169,12 +144,10 @@ class DashboardFragment : Fragment() {
                         tour.getDescripcionActual().lowercase().contains(query)
             }.toMutableList()
         }
-
         if (::tourAdapter.isInitialized) {
             tourAdapter.updateData(listaFiltrada)
         }
     }
-
     private fun mostrarMensajeSinConexion(context: Context) {
         MaterialAlertDialogBuilder(context)
             .setTitle(getString(R.string.sin_conexi_n_a_internet))
@@ -185,19 +158,15 @@ class DashboardFragment : Fragment() {
             .setCancelable(false)
             .show()
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
     private fun estaConectado(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val network = connectivityManager.activeNetwork ?: return false
             val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
-
             return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
                     capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
                     capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
@@ -211,7 +180,6 @@ class DashboardFragment : Fragment() {
             return activeNetwork?.isConnected == true
         }
     }
-
     private fun cargarTours() {
         lifecycleScope.launch {
             val toursBase = withContext(Dispatchers.IO) {
@@ -224,18 +192,14 @@ class DashboardFragment : Fragment() {
                 } catch (e: Exception) {
                     Log.e("API Error", "Error al cargar de API, intentando cache local: ${e.message}")
                 }
-
                 if (tours.isEmpty()) {
                     tours = dbHelper.getCacheTours()
                 }
-
                 if (tours.isEmpty()) {
                     tours = cargarToursDesdeRaw()
                 }
-
                 tours
             }
-
             val serviciosDirectos = listOf(
                 Tour(
                     id = "directo_transporte",
@@ -283,12 +247,10 @@ class DashboardFragment : Fragment() {
                     flayer = "https://appinitdev.com/oaxaca/otros/directo_colaboraciones.png"
                 )
             )
-
             val listaCompleta = toursBase.toMutableList()
             listaCompleta.addAll(serviciosDirectos)
             listaOriginal = listaCompleta
             listaFiltrada = listaCompleta.toMutableList()
-
             tourAdapter = TourAdapter(listaFiltrada) { tour ->
                 if (tour.id.startsWith("directo_")) {
                     val intent = Intent(requireContext(), CotizacionActivity::class.java)
@@ -300,10 +262,7 @@ class DashboardFragment : Fragment() {
                     startActivity(intent)
                 }
             }
-
             recyclerView.adapter = tourAdapter
-
-            
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     com.appinitdev.turismoOax.network.OfflineImageManager.syncImages(requireContext().applicationContext, listaCompleta)
@@ -313,7 +272,6 @@ class DashboardFragment : Fragment() {
             }
         }
     }
-
     private fun cargarToursDesdeRaw(): List<Tour> {
         return try {
             val inputStream = resources.openRawResource(R.raw.tours)

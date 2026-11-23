@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun FeedEntriesPage(
@@ -22,24 +21,19 @@ fun FeedEntriesPage(
             *tagsState.map { VTabData(it.name, it.id, it.count) }.toTypedArray())
     }
     val topRefreshLayoutState = rememberRefreshLayoutState { scope.launch { feedEntriesVM.sync() } }
-
     val onSearch: (String) -> Unit = {
         feedEntriesVM.searchActive.value = false; feedEntriesVM.showLoading.value = true
         scope.launch { scrollStateMap[pagerState.currentPage]?.scrollToItem(0) }
         scope.launch(Dispatchers.IO) { feedEntriesVM.loadAsync(tagsVM) }
     }
-
     FeedEntriesPageEffects(feedEntriesVM, feedsVM, tagsVM, feedId, scope, tabs, pagerState, scrollBehavior, scrollStateMap, topRefreshLayoutState, isFirstTime, onSearch)
-
     val feed = if (feedEntriesVM.feedId.value.isEmpty()) null else feedsMap.value[feedEntriesVM.feedId.value]
     val feedName = feed?.name ?: stringResource(Res.string.feeds)
     val pageTitle = if (feedEntriesVM.selectMode.value) LocaleHelper.getStringF(Res.string.x_selected, "count", feedEntriesVM.selectedIds.size)
         else if (feedEntriesVM.tag.value != null) listOf(feedName, feedEntriesVM.tag.value!!.name).joinToString(" - ")
         else if (feedEntriesVM.filterType == FeedEntryFilterType.TODAY) feedName + " - " + stringResource(Res.string.today) else feedName
-
     ViewFeedEntryBottomSheet(feedEntriesVM, tagsVM, tagsMapState, tagsState)
     if (feedEntriesVM.showTagsDialog.value) { TagsBottomSheet(tagsVM) { feedEntriesVM.showTagsDialog.value = false } }
-
     PScaffold(topBar = {
         if (feedEntriesVM.showSearchBar.value) { ListSearchBar(viewModel = feedEntriesVM, onSearch = onSearch); return@PScaffold }
         PTopAppBar(modifier = Modifier.combinedClickable(onClick = {}, onDoubleClick = { scope.launch { scrollStateMap[pagerState.currentPage]?.scrollToItem(0) } }),

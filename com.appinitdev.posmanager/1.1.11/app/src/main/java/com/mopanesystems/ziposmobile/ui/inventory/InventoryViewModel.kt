@@ -1,80 +1,45 @@
-
 @HiltViewModel
 class InventoryViewModel @Inject constructor(
     private val inventoryRepository: InventoryRepository,
     private val productRepository: ProductRepository
 ) : ViewModel() {
-
-
     private val _lowStockProducts = MutableLiveData<List<Product>>()
     val lowStockProducts: LiveData<List<Product>> = _lowStockProducts
-
     private val _stockAlerts = MutableLiveData<List<StockAlert>>()
     val stockAlerts: LiveData<List<StockAlert>> = _stockAlerts
-
     private val _recentAdjustments = MutableLiveData<List<InventoryAdjustment>>()
     val recentAdjustments: LiveData<List<InventoryAdjustment>> = _recentAdjustments
-
     private val _totalInventoryValue = MutableStateFlow(BigDecimal.ZERO)
     val totalInventoryValue: StateFlow<BigDecimal> get() = _totalInventoryValue
-
     private val _productsInventoryValue = MutableStateFlow<List<ProductWithValue>>(emptyList())
     val productsInventoryValue: StateFlow<List<ProductWithValue>> get() = _productsInventoryValue
-
-
     private val _lowStockCount = MutableLiveData<Int>()
     val lowStockCount: LiveData<Int> = _lowStockCount
-
     private val _outOfStockCount = MutableLiveData<Int>()
     val outOfStockCount: LiveData<Int> = _outOfStockCount
-
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
-
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = _errorMessage
-
     private val _productCount = MutableLiveData<Int>()
     val productCount: LiveData<Int> = _productCount
-
     val allCategories: StateFlow<List<Category>> =
         productRepository.getAllCategories()
             .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-
     init {
         loadInventoryData()
     }
-
     private fun loadInventoryData() {
         _isLoading.value = true
-
-        
-         
-
-
-
-
-
-
-
-
-
-
-
-
         viewModelScope.launch {
             productRepository.getLowStockProducts().collect { products ->
                 _lowStockProducts.value = products
             }
         }
-
-
-
         viewModelScope.launch {
             try {
                 productRepository.getLowStockCount().collect {count ->
                     _lowStockCount.value = count
-
                 }
             } catch (e: Exception) {
                 _errorMessage.value = "Error loading stock alerts: ${e.message}"
@@ -86,7 +51,6 @@ class InventoryViewModel @Inject constructor(
             try {
                 productRepository.getOutOfStockProductsCount().collect {count ->
                     _outOfStockCount.value = count
-
                 }
             } catch (e: Exception) {
                 _errorMessage.value = "Error loading stock alerts: ${e.message}"
@@ -94,17 +58,13 @@ class InventoryViewModel @Inject constructor(
                 _isLoading.value = false
             }
         }
-
         viewModelScope.launch {
             _totalInventoryValue.value = productRepository.getTotalInventoryValue()
-          
         }
-
         viewModelScope.launch {
             try {
                 productRepository.getActiveProductCount().collect {count ->
                     _productCount.value = count
-
                 }
             } catch (e: Exception) {
                 _errorMessage.value = "Error loading stock alerts: ${e.message}"
@@ -112,7 +72,6 @@ class InventoryViewModel @Inject constructor(
                 _isLoading.value = false
             }
         }
-        
         viewModelScope.launch {
             try {
                 inventoryRepository.getAllAdjustments().collect { adjustmentList ->
@@ -123,7 +82,6 @@ class InventoryViewModel @Inject constructor(
             }
         }
     }
-
     fun updateProduct(product: Product) {
         viewModelScope.launch {
             try {
@@ -134,16 +92,12 @@ class InventoryViewModel @Inject constructor(
             }
         }
     }
-
-
     private fun updateStockCounts(alerts: List<StockAlert>) {
         val lowStock = alerts.count { it.alertType == StockAlertType.LOW_STOCK }
         val outOfStock = alerts.count { it.alertType == StockAlertType.OUT_OF_STOCK }
-
         _lowStockCount.value = lowStock
         _outOfStockCount.value = outOfStock
     }
-
     fun acknowledgeAlert(alert: StockAlert) {
         viewModelScope.launch {
             try {
@@ -154,7 +108,6 @@ class InventoryViewModel @Inject constructor(
             }
         }
     }
-
     fun createStockAdjustment(
         productId: String,
         quantity: Int,
@@ -175,23 +128,15 @@ class InventoryViewModel @Inject constructor(
                     storeId = storeId,
                     createdAt = LocalDateTime.now()
                 )
-
                 inventoryRepository.insertAdjustment(adjustment)
-
-                
                 updateProductStock(productId, quantity)
-
-                
                 checkStockAlerts(productId)
-
                 loadInventoryData() 
-
             } catch (e: Exception) {
                 _errorMessage.value = "Error creating stock adjustment: ${e.message}"
             }
         }
     }
-
     private suspend fun updateProductStock(productId: String, quantityChange: Int) {
         val product = productRepository.getProductById(productId)
         if (product != null) {
@@ -199,7 +144,6 @@ class InventoryViewModel @Inject constructor(
             productRepository.updateStockQuantity(productId, newQuantity)
         }
     }
-
     private suspend fun checkStockAlerts(productId: String) {
         val product = productRepository.getProductById(productId)
         if (product != null) {
@@ -224,7 +168,6 @@ class InventoryViewModel @Inject constructor(
             }
         }
     }
-
     private suspend fun createStockAlertInternal(
         productId: String,
         currentStock: Int,
@@ -244,7 +187,6 @@ class InventoryViewModel @Inject constructor(
         )
         inventoryRepository.insertAlert(alert)
     }
-
     fun createStockAlert(
         productId: String,
         currentStock: Int,
@@ -264,20 +206,15 @@ class InventoryViewModel @Inject constructor(
                     createdAt = LocalDateTime.now(),
                     storeId = storeId
                 )
-
                 inventoryRepository.insertAlert(alert)
                 loadInventoryData() 
-
             } catch (e: Exception) {
                 _errorMessage.value = "Error creating stock alert: ${e.message}"
             }
         }
     }
-
-    
     private val _suppliers = MutableStateFlow<List<Supplier>>(emptyList())
     val suppliers: StateFlow<List<Supplier>> get() = _suppliers
-
     fun loadSuppliers() {
         viewModelScope.launch {
             inventoryRepository.getAllActiveSuppliers().collect { list ->
@@ -285,7 +222,6 @@ class InventoryViewModel @Inject constructor(
             }
         }
     }
-
     fun insertSupplier(supplier: Supplier) {
         viewModelScope.launch {
             try {
@@ -296,7 +232,6 @@ class InventoryViewModel @Inject constructor(
             }
         }
     }
-
     fun updateSupplier(supplier: Supplier) {
         viewModelScope.launch {
             try {
@@ -307,7 +242,6 @@ class InventoryViewModel @Inject constructor(
             }
         }
     }
-
     fun deactivateSupplier(supplierId: String) {
         viewModelScope.launch {
             try {
@@ -318,11 +252,8 @@ class InventoryViewModel @Inject constructor(
             }
         }
     }
-
-    
     private val _purchaseOrders = MutableStateFlow<List<PurchaseOrder>>(emptyList())
     val purchaseOrders: StateFlow<List<PurchaseOrder>> get() = _purchaseOrders
-
     fun loadPurchaseOrders() {
         viewModelScope.launch {
             inventoryRepository.getAllOrders().collect { list ->
@@ -330,7 +261,6 @@ class InventoryViewModel @Inject constructor(
             }
         }
     }
-
     fun insertPurchaseOrder(order: PurchaseOrder, items: List<PurchaseOrderItem>) {
         viewModelScope.launch {
             try {
@@ -342,7 +272,6 @@ class InventoryViewModel @Inject constructor(
             }
         }
     }
-
     fun updatePurchaseOrderStatus(orderId: String, status: OrderStatus) {
         viewModelScope.launch {
             try {
@@ -353,7 +282,6 @@ class InventoryViewModel @Inject constructor(
             }
         }
     }
-
     fun filterAdjustmentsByReason(reason: AdjustmentReason) {
         viewModelScope.launch {
             inventoryRepository.getAdjustmentsByReason(reason).collect { list ->
@@ -361,7 +289,6 @@ class InventoryViewModel @Inject constructor(
             }
         }
     }
-
     fun filterAdjustmentsByProduct(productId: String) {
         viewModelScope.launch {
             inventoryRepository.getAdjustmentsByProduct(productId).collect { list ->
@@ -369,7 +296,6 @@ class InventoryViewModel @Inject constructor(
             }
         }
     }
-
     fun refreshData() {
         loadInventoryData()
         loadSuppliers()

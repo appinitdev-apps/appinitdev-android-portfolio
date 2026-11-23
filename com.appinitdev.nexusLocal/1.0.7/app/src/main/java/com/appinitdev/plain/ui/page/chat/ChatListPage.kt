@@ -1,4 +1,3 @@
-
 @Composable
 fun ChatListPage(
     navController: NavHostController, mainVM: MainViewModel, peerVM: PeerViewModel,
@@ -24,7 +23,6 @@ fun ChatListPage(
     var renameChannelId by remember { mutableStateOf<String?>(null) }
     var renameChannelName by remember { mutableStateOf("") }
     val channels = channelVM.channels.collectAsStateValue()
-
     PScaffold(
         topBar = { TopBarChat(navController, channelVM, onNavigateBack = { navController.popBackStack() }) },
     ) { paddingValues ->
@@ -98,7 +96,6 @@ fun ChatListPage(
                 item { BottomSpace(paddingValues) }
             }
         }
-
         if (showCreateChannelDialog) {
             CreateChannelDialog(onDismiss = { showCreateChannelDialog = false }, onConfirm = { showCreateChannelDialog = false; channelVM.createChannel(it) })
         }

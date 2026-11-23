@@ -1,9 +1,7 @@
-
 class NoteReminderVH(
     private val binding: RecyclerNoteReminderBinding,
     private val listener: NoteReminderListener,
 ) : RecyclerView.ViewHolder(binding.root) {
-
     fun bind(value: NoteReminder) {
         binding.apply {
             Layout.setOnClickListener { listener.openReminder(value) }

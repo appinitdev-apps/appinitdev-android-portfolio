@@ -1,9 +1,7 @@
-
 object PeerManager {
     suspend fun deletePeer(context: Context, peerId: String): Boolean {
         val peerDao = AppDatabase.instance.peerDao()
         if (peerDao.getById(peerId) == null) return false
-
         ChatDbHelper.deleteAllChatsAsync(context, peerId)
         val isChannelMember = AppDatabase.instance.chatChannelDao().getAll().any { it.hasMember(peerId) }
         if (isChannelMember) {
@@ -17,12 +15,6 @@ object PeerManager {
         ChatCacheManager.loadKeyCacheAsync()
         return true
     }
-
-     
-
-
-
-
     suspend fun markUnpaired(peerId: String): Boolean {
         val peerDao = AppDatabase.instance.peerDao()
         val peer = peerDao.getById(peerId) ?: run {
@@ -36,12 +28,6 @@ object PeerManager {
         LogCat.d("Device unpaired: $peerId")
         return true
     }
-
-     
-
-
-
-
     suspend fun applyDeviceDiscovered(
         deviceId: String,
         ips: List<String>,
@@ -52,7 +38,6 @@ object PeerManager {
         val peerDao = AppDatabase.instance.peerDao()
         val peer = peerDao.getById(deviceId) ?: return null
         if (peer.status != "paired") return null
-
         val newIpString = ips.joinToString(",")
         var changed = false
         if (peer.ip != newIpString) { peer.ip = newIpString; changed = true }
@@ -60,16 +45,10 @@ object PeerManager {
         if (peer.name != name) { peer.name = name; changed = true }
         if (peer.deviceType != deviceType.value) { peer.deviceType = deviceType.value; changed = true }
         if (!changed) return null
-
         peer.updatedAt = TimeHelper.now()
         peerDao.update(peer)
         return peer
     }
-
-     
-
-
-
     suspend fun upsertPaired(
         deviceId: String,
         deviceName: String,

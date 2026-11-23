@@ -1,9 +1,7 @@
-
 enum class AlertType {
     WARNING,
     ERROR,
 }
-
 @Composable
 fun PAlert(
     description: String,
@@ -16,7 +14,6 @@ fun PAlert(
     } else {
         MaterialTheme.colorScheme.red.copy(alpha = 0.12f)
     }
-
     Surface(
         modifier = Modifier
             .fillMaxWidth()

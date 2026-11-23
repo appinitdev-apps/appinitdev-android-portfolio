@@ -1,12 +1,9 @@
-
-
 object VideoHelper {
     fun getMeta(path: String): DVideoMeta? {
         val file = File(path)
         if (!file.exists()) {
             return null
         }
-
         return try {
             val retriever = MediaMetadataRetriever()
             retriever.setDataSource(path)
@@ -24,14 +21,12 @@ object VideoHelper {
             val writer = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_WRITER) ?: ""
             val composer = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPOSER) ?: ""
             retriever.release()
-
             DVideoMeta(width, height, rotation, duration, bitrate, frameRate, title, artist, album, genre, convertDateTimeToInstant(takenAt), writer, composer)
         } catch (e: Exception) {
             LogCat.e(e.toString())
             null
         }
     }
-
     fun getIntrinsicSize(path: String): IntSize {
         val meta = getMeta(path) ?: return IntSize(0, 0)
         val w = meta.width
@@ -43,17 +38,14 @@ object VideoHelper {
             IntSize(w, h)
         }
     }
-
     private fun convertDateTimeToInstant(dateTime: String?): Instant? {
         if (dateTime == null) {
             return null
         }
-
         try {
             val formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss.SSSX")
             val localDateTime = LocalDateTime.parse(dateTime, formatter)
             val javaInstant = ZonedDateTime.of(localDateTime, ZoneOffset.UTC).toInstant()
-
             return Instant.fromEpochMilliseconds(javaInstant.toEpochMilli())
         } catch (ex: Exception) {
             LogCat.e(ex.toString())

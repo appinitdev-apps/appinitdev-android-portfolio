@@ -1,24 +1,8 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
 class AdapterSongsWithStat(
         initial: List<AudioWithStat>,
         private val statTextProvider: (AudioWithStat) -> CharSequence
 ) : FastScrollAdapter<VerticalListViewHolder>() {
-
     private var generalAdapterCallbacks: GeneralAdapterCallbacks? = null
-
     private val listUpdateCallback = object : ListUpdateCallback {
         @SuppressLint("NotifyDataSetChanged")
         override fun onInserted(position: Int, count: Int) {
@@ -28,7 +12,6 @@ class AdapterSongsWithStat(
                 notifyItemRangeInserted(position, count)
             }
         }
-
         @SuppressLint("NotifyDataSetChanged")
         override fun onRemoved(position: Int, count: Int) {
             if (count > 100) {
@@ -37,20 +20,16 @@ class AdapterSongsWithStat(
                 notifyItemRangeRemoved(position, count)
             }
         }
-
         override fun onMoved(fromPosition: Int, toPosition: Int) {
             notifyItemMoved(fromPosition, toPosition)
         }
-
         override fun onChanged(position: Int, count: Int, payload: Any?) {
             notifyItemRangeChanged(position, count, payload)
         }
     }
-
     private val diffCallback = object : DiffUtil.ItemCallback<AudioWithStat>() {
         override fun areItemsTheSame(oldItem: AudioWithStat, newItem: AudioWithStat) =
             oldItem.audio.id == newItem.audio.id
-
         override fun areContentsTheSame(oldItem: AudioWithStat, newItem: AudioWithStat): Boolean {
             return oldItem.audio.title == newItem.audio.title &&
                     oldItem.audio.artist == newItem.audio.artist &&
@@ -60,24 +39,17 @@ class AdapterSongsWithStat(
                     oldItem.playCount == newItem.playCount
         }
     }
-
     private val differ = AsyncListDiffer(
             listUpdateCallback,
             AsyncDifferConfig.Builder(diffCallback).build()
     )
-
     private val songs: List<AudioWithStat> get() = differ.currentList
-
-     
     private val audioList: List<Audio> get() = songs.map { it.audio }
-
     init {
         setHasStableIds(true)
         differ.submitList(initial.toList())
     }
-
     override fun getItemId(position: Int): Long = songs[position].audio.id
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         return when (viewType) {
             CommonPreferencesConstants.GRID_TYPE_GRID -> {
@@ -94,7 +66,6 @@ class AdapterSongsWithStat(
             }
         }
     }
-
     override fun onBind(holder: VerticalListViewHolder, position: Int, isLightBind: Boolean) {
         val item = songs[position]
         when (holder) {
@@ -103,9 +74,7 @@ class AdapterSongsWithStat(
             is LabelHolder -> holder.bind(item, isLightBind)
         }
     }
-
     override fun getItemCount(): Int = songs.size
-
     override fun getItemViewType(position: Int): Int {
         val mode = AlbumPreferences.getGridSize()
         return when {
@@ -114,7 +83,6 @@ class AdapterSongsWithStat(
             else -> CommonPreferencesConstants.GRID_TYPE_LIST
         }
     }
-
     override fun onViewRecycled(holder: VerticalListViewHolder) {
         holder.itemView.clearAnimation()
         super.onViewRecycled(holder)
@@ -124,30 +92,19 @@ class AdapterSongsWithStat(
             is LabelHolder -> Unit
         }
     }
-
-     
     fun setGeneralAdapterCallbacks(callbacks: GeneralAdapterCallbacks) {
         this.generalAdapterCallbacks = callbacks
     }
-
-     
     fun updateSongs(newSongs: List<AudioWithStat>) {
         differ.submitList(newSongs.toList())
     }
-
-     
-
-
-
     private fun buildTertiaryText(item: AudioWithStat): CharSequence {
         val album = item.audio.getProperAlbum().takeIf { it.isNotEmpty() }
         val stat = statTextProvider(item)
         return if (album != null) "$stat \u2022 $album" else stat
     }
-
     inner class ListHolder(val binding: AdapterStyleListBinding) :
             VerticalListViewHolder(binding.root) {
-
         fun bind(item: AudioWithStat, isLightBind: Boolean) {
             val audio = item.audio
             binding.title.setTextOrUnknown(audio.getProperTitle())
@@ -166,10 +123,8 @@ class AdapterSongsWithStat(
             }
         }
     }
-
     inner class GridHolder(val binding: AdapterStyleGridBinding) :
             VerticalListViewHolder(binding.root) {
-
         fun bind(item: AudioWithStat, isLightBind: Boolean) {
             val audio = item.audio
             binding.title.setTextOrUnknown(audio.getProperTitle())
@@ -187,10 +142,8 @@ class AdapterSongsWithStat(
             }
         }
     }
-
     inner class LabelHolder(val binding: AdapterStyleLabelsBinding) :
             VerticalListViewHolder(binding.root) {
-
         fun bind(item: AudioWithStat, isLightBind: Boolean) {
             val audio = item.audio
             binding.title.setTextOrUnknown(audio.getProperTitle())
@@ -208,12 +161,7 @@ class AdapterSongsWithStat(
             }
         }
     }
-
     companion object {
-         
-
-
-
         fun formatRelativeTime(timestamp: Long): CharSequence {
             return DateUtils.getRelativeTimeSpanString(
                     timestamp,

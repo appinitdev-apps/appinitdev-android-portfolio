@@ -1,4 +1,3 @@
-
 @Composable
 fun MainTimerView(
     modifier: Modifier,
@@ -16,9 +15,7 @@ fun MainTimerView(
     val labelColor = MaterialTheme.getLabelColor(labelColorIndex)
     val breakColor = MaterialTheme.breakColor()
     val isBreak = timerUiState.timerType != TimerType.FOCUS
-
     val isCountdown = domainLabel.profile.isCountdown
-
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -38,7 +35,6 @@ fun MainTimerView(
             showStreak = timerStyle.showStreak,
             showBreakBudget = timerStyle.showBreakBudget && domainLabel.profile.isBreakEnabled && !timerUiState.isBreak,
         )
-
         TimerTextView(
             modifier = gestureModifier,
             state = state,
@@ -57,7 +53,6 @@ fun MainTimerView(
             },
             onLongClick = onLongClick,
         )
-
         val imageSize =
             with(LocalDensity.current) {
                 (
@@ -68,7 +63,6 @@ fun MainTimerView(
         Spacer(modifier = Modifier.height(imageSize))
     }
 }
-
 @Composable
 fun CurrentStatusSection(
     modifier: Modifier = Modifier,
@@ -86,7 +80,6 @@ fun CurrentStatusSection(
 ) {
     val statusColor = color.copy(alpha = 0.75f)
     val statusBackgroundColor = color.copy(alpha = 0.15f)
-
     val imageSize =
         with(LocalDensity.current) {
             (
@@ -94,7 +87,6 @@ fun CurrentStatusSection(
                     .toDp() + 5.dp
             ) * 2f
         }
-
     Row(
         modifier =
             modifier
@@ -125,7 +117,6 @@ fun CurrentStatusSection(
         )
     }
 }
-
 @Composable
 fun StatusIndicator(
     showStatus: Boolean,
@@ -150,7 +141,6 @@ fun StatusIndicator(
             alpha.animateTo(targetValue = 1f, animationSpec = tween(200))
         }
     }
-
     AnimatedVisibility(
         showStatus,
         enter = fadeIn() + expandHorizontally(),
@@ -193,7 +183,6 @@ fun StatusIndicator(
         }
     }
 }
-
 @Composable
 fun StreakIndicator(
     showStreak: Boolean,
@@ -244,7 +233,6 @@ fun StreakIndicator(
         }
     }
 }
-
 @Composable
 fun BreakBudgetIndicator(
     showBreakBudget: Boolean,
@@ -252,7 +240,6 @@ fun BreakBudgetIndicator(
 ) {
     val color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f)
     val backgroundColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f)
-
     AnimatedVisibility(
         showBreakBudget,
         enter = fadeIn() + expandHorizontally(),
@@ -293,7 +280,6 @@ fun BreakBudgetIndicator(
         }
     }
 }
-
 @Composable
 fun FractionText(
     modifier: Modifier,
@@ -303,7 +289,6 @@ fun FractionText(
 ) {
     val superscripts = listOf('⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸')
     val subscripts = listOf('₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈')
-
     val baseStyle =
         MaterialTheme.typography.labelLarge
             .copy(
@@ -311,7 +296,6 @@ fun FractionText(
                 color = color,
                 letterSpacing = TextUnit(0.0f, TextUnitType.Sp),
             ).toSpanStyle()
-
     val annotatedString =
         buildAnnotatedString {
             withStyle(baseStyle.copy(letterSpacing = TextUnit(-0.1f, TextUnitType.Em))) {
@@ -324,13 +308,11 @@ fun FractionText(
                 append(subscripts[denominator])
             }
         }
-
     Text(
         modifier = modifier.then(Modifier.padding(end = 1.dp)),
         text = annotatedString,
     )
 }
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TimerTextView(
@@ -348,7 +330,6 @@ fun TimerTextView(
         animationSpec = tween(durationMillis = 100),
         label = "timer scale",
     )
-
     val alpha = remember { Animatable(1f) }
     LaunchedEffect(isPaused) {
         if (isPaused) {
@@ -365,7 +346,6 @@ fun TimerTextView(
             alpha.animateTo(targetValue = 1f, animationSpec = tween(200))
         }
     }
-
     val clickableModifier =
         onClick?.let {
             Modifier.combinedClickable(
@@ -390,7 +370,6 @@ fun TimerTextView(
             ),
     )
 }
-
 @Preview
 @Composable
 fun CurrentStatusSectionPreview() {

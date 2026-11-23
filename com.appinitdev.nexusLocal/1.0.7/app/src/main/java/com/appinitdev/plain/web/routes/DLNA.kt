@@ -1,4 +1,3 @@
-
 fun Route.addDLNA() {
     get("/media/{id}") {
         val id = call.parameters["id"]?.split(".")?.get(0) ?: ""
@@ -12,7 +11,6 @@ fun Route.addDLNA() {
                 call.respond(HttpStatusCode.BadRequest)
                 return@get
             }
-
             if (path.isUrl()) {
                 try {
                     val client = HttpClientManager.browserClient()
@@ -45,7 +43,6 @@ fun Route.addDLNA() {
                         "Server",
                         "DLNADOC/1.50 UPnP/1.0 Plain/1.0 Android/" + Build.VERSION.RELEASE,
                     )
-
                     EntityTagVersion(file.lastModified().hashCode().toString())
                     LastModifiedVersion(Date(file.lastModified()))
                     status(HttpStatusCode.PartialContent) 
@@ -53,19 +50,16 @@ fun Route.addDLNA() {
                 call.respondFile(file)
             }
         } catch (ex: Exception) {
-            
             call.respondText(
                 "File is expired or does not exist. $ex",
                 status = HttpStatusCode.Forbidden
             )
         }
     }
-
     route("/callback/cast", HttpMethod("NOTIFY")) {
         handle {
             val xml = call.receiveText()
             LogCat.d(xml)
-            
             if (xml.contains("TransportState val=\"STOPPED\"") && !xml.contains("AVTransportURIMetaData")) {
                 withIO {
                     CastPlayer.isPlaying.value = false
@@ -101,13 +95,11 @@ fun Route.addDLNA() {
                     CastPlayer.isPlaying.value = false
                 }
             }
-
             if (xml.contains("RelTime val=") && xml.contains("TrackDuration val=")) {
                 withIO {
                     try {
                         val relTimeMatch = Regex("RelTime val=\"([^\"]+)\"").find(xml)
                         val durationMatch = Regex("TrackDuration val=\"([^\"]+)\"").find(xml)
-
                         if (relTimeMatch != null && durationMatch != null) {
                             val relTime = relTimeMatch.groupValues[1]
                             val trackDuration = durationMatch.groupValues[1]
@@ -121,5 +113,4 @@ fun Route.addDLNA() {
             call.respond(HttpStatusCode.OK)
         }
     }
-
 }

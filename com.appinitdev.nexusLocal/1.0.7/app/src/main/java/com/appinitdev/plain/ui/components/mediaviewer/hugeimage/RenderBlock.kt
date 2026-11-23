@@ -1,4 +1,3 @@
-
 data class RenderBlock(
     var inBound: Boolean = false,
     var inSampleSize: Int = 1,

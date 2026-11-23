@@ -1,4 +1,2 @@
-
 class SourcesActivity : BaseActivity() {
-
 }

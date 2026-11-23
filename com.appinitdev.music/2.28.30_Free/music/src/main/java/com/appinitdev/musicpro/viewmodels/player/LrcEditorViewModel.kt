@@ -1,36 +1,15 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @HiltViewModel(assistedFactory = LrcEditorViewModel.Factory::class)
 class LrcEditorViewModel @AssistedInject constructor(
         application: Application,
         @Assisted val audio: Audio,
         private val lrcRepository: LrcRepository
 ) : WrappedViewModel(application) {
-
     private val _entries: MutableLiveData<MutableList<LrcEntryModel>> = MutableLiveData(mutableListOf())
     private val _seekPositionMs: MutableLiveData<Long> = MutableLiveData(0L)
     private val _durationMs: MutableLiveData<Long> = MutableLiveData(audio.duration)
     private val _isPlaying: MutableLiveData<Boolean> = MutableLiveData(false)
     private val _saved: MutableLiveData<Boolean> = MutableLiveData(false)
-
     private var localPlayer: ExoPlayer? = null
-
-     
     private val seekHandler = Handler(Looper.getMainLooper())
     private val seekRunnable: Runnable = object : Runnable {
         override fun run() {
@@ -40,105 +19,54 @@ class LrcEditorViewModel @AssistedInject constructor(
             seekHandler.postDelayed(this, SEEK_POLL_INTERVAL_MS)
         }
     }
-
     init {
-        
         if (MediaPlaybackManager.isPlaying()) {
             MediaPlaybackManager.pause()
         }
-
         initLocalPlayer()
         loadLrcEntries()
     }
-
-     
     fun getEntries(): LiveData<MutableList<LrcEntryModel>> = _entries
-
-     
     fun getSeekPosition(): LiveData<Long> = _seekPositionMs
-
-     
     fun getDuration(): LiveData<Long> = _durationMs
-
-     
     fun isPlayingLiveData(): LiveData<Boolean> = _isPlaying
-
-     
-
-
-
     fun getSaved(): LiveData<Boolean> = _saved
-
-     
     val currentPositionMs: Long
         get() = localPlayer?.currentPosition?.coerceAtLeast(0L) ?: 0L
-
     fun play() {
         localPlayer?.play()
     }
-
     fun pause() {
         localPlayer?.pause()
     }
-
-     
     fun flipPlayback() {
         if (localPlayer?.isPlaying == true) pause() else play()
     }
-
-     
-
-
-
-
     fun seekTo(positionMs: Long) {
         val clamped = positionMs.coerceIn(0L, _durationMs.value ?: 0L)
         localPlayer?.seekTo(clamped)
         _seekPositionMs.value = clamped
     }
-
-     
-
-
-
     fun seekRelative(deltaMs: Long) {
         seekTo(currentPositionMs + deltaMs)
     }
-
-     
-
-
-
     fun stampTimestamp(index: Int) {
         val list = _entries.value ?: return
         if (index !in list.indices) return
         list[index] = list[index].copy(timestampMs = currentPositionMs)
         _entries.value = list
     }
-
-     
-
-
     fun removeEntry(index: Int) {
         val list = _entries.value ?: return
         if (index !in list.indices) return
         list.removeAt(index)
         _entries.value = list
     }
-
-     
-
-
     fun addEmptyEntry() {
         val list = _entries.value ?: mutableListOf()
         list.add(LrcEntryModel(timestampMs = 0L, text = ""))
         _entries.value = list
     }
-
-     
-
-
-
     fun pasteLines(text: String) {
         val list = _entries.value ?: mutableListOf()
         text.split("\n")
@@ -147,12 +75,6 @@ class LrcEditorViewModel @AssistedInject constructor(
             .forEach { line -> list.add(LrcEntryModel(timestampMs = 0L, text = line)) }
         _entries.value = list
     }
-
-     
-
-
-
-
     fun saveLrc() {
         val entries = _entries.value ?: return
         viewModelScope.launch(Dispatchers.IO) {
@@ -175,7 +97,6 @@ class LrcEditorViewModel @AssistedInject constructor(
             }
         }
     }
-
     private fun initLocalPlayer() {
         localPlayer = ExoPlayer.Builder(getApplication()).build().also { player ->
             player.setMediaItem(MediaItem.fromUri(audio.uri.toUri()))
@@ -187,7 +108,6 @@ class LrcEditorViewModel @AssistedInject constructor(
                         _durationMs.postValue(dur)
                     }
                 }
-
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
                     _isPlaying.postValue(isPlaying)
                     if (isPlaying) startSeekPolling() else stopSeekPolling()
@@ -195,7 +115,6 @@ class LrcEditorViewModel @AssistedInject constructor(
             })
         }
     }
-
     private fun loadLrcEntries() {
         viewModelScope.launch(Dispatchers.IO) {
             val result = lrcRepository.loadLrcFromFile(audio.uri)
@@ -216,34 +135,25 @@ class LrcEditorViewModel @AssistedInject constructor(
             }
         }
     }
-
     private fun startSeekPolling() {
         seekHandler.removeCallbacks(seekRunnable)
         seekHandler.post(seekRunnable)
     }
-
     private fun stopSeekPolling() {
         seekHandler.removeCallbacks(seekRunnable)
     }
-
     override fun onCleared() {
         super.onCleared()
         stopSeekPolling()
         localPlayer?.release()
         localPlayer = null
     }
-
     @AssistedFactory
     interface Factory {
-         
         fun create(audio: Audio): LrcEditorViewModel
     }
-
     companion object {
         private const val TAG = "LrcEditorViewModel"
-
-         
         private const val SEEK_POLL_INTERVAL_MS = 100L
     }
 }
-

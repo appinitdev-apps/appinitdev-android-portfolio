@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PageIndicator(pagerState: PagerState, color: Color = MaterialTheme.colorScheme.primary) {

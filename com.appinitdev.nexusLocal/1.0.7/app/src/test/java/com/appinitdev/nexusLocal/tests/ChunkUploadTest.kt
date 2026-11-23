@@ -1,43 +1,27 @@
-
- 
-
-
-
-
-
-
 class ChunkUploadTest {
-
     @get:Rule
     val tmp = TemporaryFolder()
-
-    
-
     @Test
     fun `atomic chunk write produces correct file`() {
         val chunkDir = tmp.newFolder("upload_tmp", "file123")
         val bytes = ByteArray(5 * 1024 * 1024) { (it % 256).toByte() } 
         val chunkFile = File(chunkDir, "chunk_0")
         val tempFile = File(chunkDir, ".tmp_chunk_0_${System.nanoTime()}")
-
         FileOutputStream(tempFile).use { fos ->
             fos.write(bytes)
             fos.fd.sync()
             assertEquals(bytes.size.toLong(), fos.channel.position())
         }
-
         assertTrue(tempFile.renameTo(chunkFile))
         assertFalse(tempFile.exists())
         assertTrue(chunkFile.exists())
         assertEquals(bytes.size.toLong(), chunkFile.length())
     }
-
     @Test
     fun `atomic write cleans up temp file on failure`() {
         val chunkDir = tmp.newFolder("upload_tmp", "file456")
         val tempFile = File(chunkDir, ".tmp_chunk_0_${System.nanoTime()}")
         val chunkFile = File(chunkDir, "chunk_0")
-
         try {
             FileOutputStream(tempFile).use { _ ->
                 throw IOException("Simulated disk full")
@@ -45,46 +29,32 @@ class ChunkUploadTest {
         } catch (_: IOException) {
             tempFile.delete()
         }
-
         assertFalse(tempFile.exists())
         assertFalse(chunkFile.exists())
     }
-
     @Test
     fun `atomic rename overwrites existing chunk`() {
         val chunkDir = tmp.newFolder("upload_tmp", "file789")
-
-        
         val chunkFile = File(chunkDir, "chunk_0")
         chunkFile.writeBytes(ByteArray(100) { 0xFF.toByte() })
         assertEquals(100L, chunkFile.length())
-
-        
         val newBytes = ByteArray(5000) { (it % 256).toByte() }
         val tempFile = File(chunkDir, ".tmp_chunk_0_${System.nanoTime()}")
         FileOutputStream(tempFile).use { fos ->
             fos.write(newBytes)
             fos.fd.sync()
         }
-
-        
         chunkFile.delete()
         assertTrue(tempFile.renameTo(chunkFile))
         assertEquals(5000L, chunkFile.length())
     }
-
-    
-
     @Test
     fun `chunk listing returns correct index and size`() {
         val chunkDir = tmp.newFolder("upload_tmp", "fileabc")
-
-        
         val sizes = longArrayOf(5242880, 5242880, 2097152) 
         for (i in sizes.indices) {
             File(chunkDir, "chunk_$i").writeBytes(ByteArray(sizes[i].toInt()))
         }
-
         val result = chunkDir.listFiles()
             ?.filter { it.name.startsWith("chunk_") }
             ?.mapNotNull { file ->
@@ -93,20 +63,16 @@ class ChunkUploadTest {
             }
             ?.sortedBy { it.substringBefore(':').toInt() }
             ?: emptyList()
-
         assertEquals(3, result.size)
         assertEquals("0:5242880", result[0])
         assertEquals("1:5242880", result[1])
         assertEquals("2:2097152", result[2])
     }
-
     @Test
     fun `chunk listing excludes temp files`() {
         val chunkDir = tmp.newFolder("upload_tmp", "filedef")
-
         File(chunkDir, "chunk_0").writeBytes(ByteArray(5242880))
         File(chunkDir, ".tmp_chunk_1_12345").writeBytes(ByteArray(1000)) 
-
         val result = chunkDir.listFiles()
             ?.filter { it.name.startsWith("chunk_") }
             ?.mapNotNull { file ->
@@ -114,15 +80,12 @@ class ChunkUploadTest {
                 if (index != null) "${index}:${file.length()}" else null
             }
             ?: emptyList()
-
         assertEquals(1, result.size)
         assertEquals("0:5242880", result[0])
     }
-
     @Test
     fun `chunk listing handles empty directory`() {
         val chunkDir = tmp.newFolder("upload_tmp", "emptyfolder")
-
         val result = chunkDir.listFiles()
             ?.filter { it.name.startsWith("chunk_") }
             ?.mapNotNull { file ->
@@ -130,14 +93,11 @@ class ChunkUploadTest {
                 if (index != null) "${index}:${file.length()}" else null
             }
             ?: emptyList()
-
         assertEquals(0, result.size)
     }
-
     @Test
     fun `chunk listing handles non-existent directory`() {
         val chunkDir = File(tmp.root, "upload_tmp/nonexistent")
-
         val result = if (!chunkDir.exists()) {
             emptyList()
         } else {
@@ -149,18 +109,12 @@ class ChunkUploadTest {
                 }
                 ?: emptyList()
         }
-
         assertEquals(0, result.size)
     }
-
-    
-
     @Test
     fun `merge produces correct file from chunks`() {
         val chunkDir = tmp.newFolder("upload_tmp", "merge1")
         val totalChunks = 3
-
-        
         val chunkContents = arrayOf(
             ByteArray(5242880) { 0xAA.toByte() },
             ByteArray(5242880) { 0xBB.toByte() },
@@ -169,18 +123,13 @@ class ChunkUploadTest {
         for (i in 0 until totalChunks) {
             File(chunkDir, "chunk_$i").writeBytes(chunkContents[i])
         }
-
-        
         var expectedSize = 0L
         for (i in 0 until totalChunks) {
             expectedSize += File(chunkDir, "chunk_$i").length()
         }
         assertEquals(12582912L, expectedSize) 
-
-        
         val outputFile = File(tmp.root, "output.bin")
         val tempMergeFile = File(tmp.root, ".merge_tmp_${System.currentTimeMillis()}")
-
         FileOutputStream(tempMergeFile).use { fos ->
             val outputChannel = fos.channel
             for (i in 0 until totalChunks) {
@@ -197,35 +146,22 @@ class ChunkUploadTest {
             }
             fos.fd.sync()
         }
-
         val mergedSize = tempMergeFile.length()
         assertEquals(expectedSize, mergedSize)
-
-        
         assertTrue(tempMergeFile.renameTo(outputFile))
         assertEquals(expectedSize, outputFile.length())
-
-        
         val merged = outputFile.readBytes()
         assertTrue(merged.slice(0 until 5242880).all { it == 0xAA.toByte() })
         assertTrue(merged.slice(5242880 until 10485760).all { it == 0xBB.toByte() })
         assertTrue(merged.slice(10485760 until 12582912).all { it == 0xCC.toByte() })
-
-        
         chunkDir.deleteRecursively()
     }
-
     @Test
     fun `merge detects size mismatch`() {
         val chunkDir = tmp.newFolder("upload_tmp", "merge2")
-
-        
         File(chunkDir, "chunk_0").writeBytes(ByteArray(5242880))
         File(chunkDir, "chunk_1").writeBytes(ByteArray(3000000))
-
         val expectedSize = File(chunkDir, "chunk_0").length() + File(chunkDir, "chunk_1").length()
-
-        
         val tempFile = File(tmp.root, ".merge_tmp")
         FileOutputStream(tempFile).use { fos ->
             for (i in 0 until 2) {
@@ -242,49 +178,34 @@ class ChunkUploadTest {
             }
             fos.fd.sync()
         }
-
         assertEquals(expectedSize, tempFile.length())
         tempFile.delete()
     }
-
     @Test
     fun `merge detects missing chunk`() {
         val chunkDir = tmp.newFolder("upload_tmp", "merge3")
-
         File(chunkDir, "chunk_0").writeBytes(ByteArray(5242880))
-        
-
         val missingChunk = File(chunkDir, "chunk_1")
         assertFalse(missingChunk.exists())
     }
-
-    
-
     @Test
     fun `channel position matches written bytes`() {
         val file = tmp.newFile("verify.bin")
         val data = ByteArray(1234567) { (it % 256).toByte() }
-
         var savedSize: Long
         FileOutputStream(file).use { fos ->
             fos.write(data)
             fos.fd.sync()
             savedSize = fos.channel.position()
         }
-
         assertEquals(data.size.toLong(), savedSize)
         assertEquals(data.size.toLong(), file.length())
     }
-
     @Test
     fun `size check catches truncated write`() {
-        
         val declaredSize = 5242880L
         val actualData = ByteArray(3000000)
-
         val savedSize: Long = actualData.size.toLong()
-
-        
         assertFalse(savedSize == declaredSize)
     }
 }

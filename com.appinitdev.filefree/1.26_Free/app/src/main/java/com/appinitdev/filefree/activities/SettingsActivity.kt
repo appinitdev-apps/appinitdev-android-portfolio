@@ -1,7 +1,5 @@
-
 class SettingsActivity : SimpleActivity() {
     private val binding by viewBinding(ActivitySettingsBinding::inflate)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         isMaterialActivity = true
         super.onCreate(savedInstanceState)
@@ -11,11 +9,9 @@ class SettingsActivity : SimpleActivity() {
             setupMaterialScrollListener(settingsNestedScrollview, settingsToolbar)
         }
     }
-
     override fun onResume() {
         super.onResume()
         setupToolbar(binding.settingsToolbar, NavigationIcon.Arrow)
-
         setupCustomizeColors()
         setupUseEnglish()
         setupLanguage()
@@ -33,7 +29,6 @@ class SettingsActivity : SimpleActivity() {
         setupDeleteConfirmation()
         setupEnableRootAccess()
         updateTextColors(binding.settingsNestedScrollview)
-
         binding.apply {
             arrayOf(
                 settingsColorCustomizationSectionLabel,
@@ -47,13 +42,11 @@ class SettingsActivity : SimpleActivity() {
             }
         }
     }
-
     private fun setupCustomizeColors() {
         binding.settingsColorCustomizationHolder.setOnClickListener {
             startCustomizationActivity()
         }
     }
-
     private fun setupUseEnglish() {
         binding.apply {
             settingsUseEnglishHolder.beVisibleIf((config.wasUseEnglishToggled || Locale.getDefault().language != "en") && !isTiramisuPlus())
@@ -65,7 +58,6 @@ class SettingsActivity : SimpleActivity() {
             }
         }
     }
-
     private fun setupLanguage() {
         binding.apply {
             settingsLanguage.text = Locale.getDefault().displayLanguage
@@ -75,25 +67,21 @@ class SettingsActivity : SimpleActivity() {
             }
         }
     }
-
     private fun setupManageFavorites() {
         binding.settingsManageFavoritesHolder.setOnClickListener {
             startActivity(Intent(this, FavoritesActivity::class.java))
         }
     }
-
     private fun setupManageShownTabs() {
         binding.settingsManageTabsHolder.setOnClickListener {
             ManageVisibleTabsDialog(this)
         }
     }
-
     private fun setupChangeDateTimeFormat() {
         binding.settingsChangeDateTimeFormatHolder.setOnClickListener {
             ChangeDateTimeFormatDialog(this) {}
         }
     }
-
     private fun setupFontSize() {
         binding.settingsFontSize.text = getFontSizeText()
         binding.settingsFontSizeHolder.setOnClickListener {
@@ -103,14 +91,12 @@ class SettingsActivity : SimpleActivity() {
                 RadioItem(FONT_SIZE_LARGE, getString(C.string.large)),
                 RadioItem(FONT_SIZE_EXTRA_LARGE, getString(C.string.extra_large))
             )
-
             RadioGroupDialog(this@SettingsActivity, items, config.fontSize) {
                 config.fontSize = it as Int
                 binding.settingsFontSize.text = getFontSizeText()
             }
         }
     }
-
     private fun setupShowHidden() {
         binding.settingsShowHidden.isChecked = config.showHidden
         binding.settingsShowHiddenHolder.setOnClickListener {
@@ -123,12 +109,10 @@ class SettingsActivity : SimpleActivity() {
             }
         }
     }
-
     private fun toggleShowHidden() {
         binding.settingsShowHidden.toggle()
         config.showHidden = binding.settingsShowHidden.isChecked
     }
-
     private fun setupEnablePullToRefresh() {
         binding.apply {
             settingsEnablePullToRefresh.isChecked = config.enablePullToRefresh
@@ -138,7 +122,6 @@ class SettingsActivity : SimpleActivity() {
             }
         }
     }
-
     private fun setupPressBackTwice() {
         binding.apply {
             settingsPressBackTwice.isChecked = config.pressBackTwice
@@ -148,7 +131,6 @@ class SettingsActivity : SimpleActivity() {
             }
         }
     }
-
     private fun setupHiddenItemPasswordProtection() {
         binding.settingsPasswordProtection.isChecked = config.isHiddenPasswordProtectionOn
         binding.settingsPasswordProtectionHolder.setOnClickListener {
@@ -160,7 +142,6 @@ class SettingsActivity : SimpleActivity() {
                     config.isHiddenPasswordProtectionOn = !hasPasswordProtection
                     config.hiddenPasswordHash = if (hasPasswordProtection) "" else hash
                     config.hiddenProtectionType = type
-
                     if (config.isHiddenPasswordProtectionOn) {
                         val confirmationTextId = if (config.hiddenProtectionType == PROTECTION_FINGERPRINT)
                             C.string.fingerprint_setup_successfully else C.string.protection_setup_successfully
@@ -170,7 +151,6 @@ class SettingsActivity : SimpleActivity() {
             }
         }
     }
-
     private fun setupAppPasswordProtection() {
         binding.settingsAppPasswordProtection.isChecked = config.isAppPasswordProtectionOn
         binding.settingsAppPasswordProtectionHolder.setOnClickListener {
@@ -182,7 +162,6 @@ class SettingsActivity : SimpleActivity() {
                     config.isAppPasswordProtectionOn = !hasPasswordProtection
                     config.appPasswordHash = if (hasPasswordProtection) "" else hash
                     config.appProtectionType = type
-
                     if (config.isAppPasswordProtectionOn) {
                         val confirmationTextId = if (config.appProtectionType == PROTECTION_FINGERPRINT)
                             C.string.fingerprint_setup_successfully else C.string.protection_setup_successfully
@@ -192,7 +171,6 @@ class SettingsActivity : SimpleActivity() {
             }
         }
     }
-
     private fun setupFileDeletionPasswordProtection() {
         binding.settingsFileDeletionPasswordProtection.isChecked = config.isDeletePasswordProtectionOn
         binding.settingsFileDeletionPasswordProtectionHolder.setOnClickListener {
@@ -204,7 +182,6 @@ class SettingsActivity : SimpleActivity() {
                     config.isDeletePasswordProtectionOn = !hasPasswordProtection
                     config.deletePasswordHash = if (hasPasswordProtection) "" else hash
                     config.deleteProtectionType = type
-
                     if (config.isDeletePasswordProtectionOn) {
                         val confirmationTextId = if (config.deleteProtectionType == PROTECTION_FINGERPRINT)
                             C.string.fingerprint_setup_successfully else C.string.protection_setup_successfully
@@ -214,7 +191,6 @@ class SettingsActivity : SimpleActivity() {
             }
         }
     }
-
     private fun setupKeepLastModified() {
         binding.apply {
             settingsKeepLastModified.isChecked = config.keepLastModified
@@ -224,7 +200,6 @@ class SettingsActivity : SimpleActivity() {
             }
         }
     }
-
     private fun setupDeleteConfirmation() {
         binding.apply {
             settingsSkipDeleteConfirmation.isChecked = config.skipDeleteConfirmation
@@ -234,7 +209,6 @@ class SettingsActivity : SimpleActivity() {
             }
         }
     }
-
     private fun setupEnableRootAccess() {
         binding.apply {
             settingsEnableRootAccessHolder.beVisibleIf(config.isRootAvailable)
@@ -250,7 +224,6 @@ class SettingsActivity : SimpleActivity() {
             }
         }
     }
-
     private fun toggleRootAccess(enable: Boolean) {
         binding.settingsEnableRootAccess.isChecked = enable
         config.enableRootAccess = enable

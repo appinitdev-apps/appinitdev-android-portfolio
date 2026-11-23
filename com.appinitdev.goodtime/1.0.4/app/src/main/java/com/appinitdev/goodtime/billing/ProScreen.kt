@@ -1,21 +1,3 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @Composable
 fun ProScreen(
     billing: GoogleBilling = koinInject<BillingAbstract>() as GoogleBilling,
@@ -23,16 +5,13 @@ fun ProScreen(
 ) {
     val activity = LocalActivity.current
     val productDetails by billing.productDetails.collectAsStateWithLifecycle()
-
     val isPro by billing.isPro.collectAsStateWithLifecycle(false)
     val isPending by billing.purchasePending.collectAsStateWithLifecycle(false)
-
     LaunchedEffect(isPending, isPro) {
         if (isPending || isPro) {
             onNavigateBack()
         }
     }
-
     productDetails.let {
         val offerDetails = it?.oneTimePurchaseOfferDetails
         if (it == null || activity == null || offerDetails == null) {
@@ -45,7 +24,6 @@ fun ProScreen(
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProScreenContent(
@@ -105,7 +83,6 @@ fun ProScreenContent(
                             stringResource(R.string.unlock_premium_desc3),
                     style = MaterialTheme.typography.bodyMedium.copy(fontStyle = FontStyle.Italic),
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
                 ProFeatureListItem(
                     title = stringResource(R.string.feature_labels_title),
@@ -117,7 +94,6 @@ fun ProScreenContent(
                     icon = Icons.AutoMirrored.Outlined.Label,
                     color = color,
                 )
-
                 ProFeatureListItem(
                     title = stringResource(R.string.feature_timer_customization_title),
                     subtitle =
@@ -128,7 +104,6 @@ fun ProScreenContent(
                     icon = EvaIcons.Outline.ColorPalette,
                     color = color,
                 )
-
                 ProFeatureListItem(
                     title = stringResource(R.string.feature_notifications_title),
                     subtitle =
@@ -138,7 +113,6 @@ fun ProScreenContent(
                     icon = EvaIcons.Outline.Bell,
                     color = color,
                 )
-
                 ProFeatureListItem(
                     title = stringResource(R.string.feature_stats_title),
                     subtitle =
@@ -150,7 +124,6 @@ fun ProScreenContent(
                     icon = EvaIcons.Outline.PieChart,
                     color = color,
                 )
-
                 ProFeatureListItem(
                     title = stringResource(R.string.feature_backup_title),
                     subtitle =
@@ -174,7 +147,6 @@ fun ProScreenContent(
         }
     }
 }
-
 @Composable
 fun ProFeatureListItem(
     title: String,
@@ -211,7 +183,6 @@ fun ProFeatureListItem(
         },
     )
 }
-
 @Preview
 @Composable
 fun ProScreenPreview() {

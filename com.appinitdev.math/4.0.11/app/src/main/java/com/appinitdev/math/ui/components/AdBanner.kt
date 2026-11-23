@@ -1,4 +1,3 @@
-
 @Composable
 fun AdBanner(
     modifier: Modifier = Modifier,
@@ -7,10 +6,7 @@ fun AdBanner(
 ) {
     val context = LocalContext.current
     val isDebug = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
-
-    
     if (isDebug || isPremium) return
-
     AndroidView(
         modifier = modifier.fillMaxWidth(),
         factory = { ctx ->

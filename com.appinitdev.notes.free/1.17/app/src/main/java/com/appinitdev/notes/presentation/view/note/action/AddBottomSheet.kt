@@ -1,11 +1,7 @@
-
- 
 class AddBottomSheet(callbacks: AddActions, @ColorInt color: Int?) :
     ActionBottomSheet(createActions(callbacks), color) {
-
     companion object {
         const val TAG = "AddBottomSheet"
-
         fun createActions(callbacks: AddActions) =
             listOf(
                 Action(R.string.add_images, R.drawable.add_images) { _ ->
@@ -27,11 +23,8 @@ class AddBottomSheet(callbacks: AddActions, @ColorInt color: Int?) :
                 else listOf()
     }
 }
-
 interface AddActions {
     fun addImages()
-
     fun attachFiles()
-
     fun recordAudio()
 }

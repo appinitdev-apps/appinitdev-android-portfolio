@@ -1,4 +1,3 @@
-
 @Composable
 fun PWaveCircleIconButton(
     icon: Painter,
@@ -41,7 +40,6 @@ fun PWaveCircleIconButton(
         ),
         label = "wave-3",
     )
-
     Box(
         modifier = modifier.size(buttonSize * maxScale),
         contentAlignment = Alignment.Center,
@@ -71,7 +69,6 @@ fun PWaveCircleIconButton(
         }
     }
 }
-
 @Composable
 private fun WaveLayer(size: Dp, color: Color, scale: Float, maxScale: Float) {
     val progress = ((scale - 1f) / (maxScale - 1f)).coerceIn(0f, 1f)

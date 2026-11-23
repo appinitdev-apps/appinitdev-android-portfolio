@@ -1,9 +1,7 @@
-
 @Serializable
 data class ContentItemInput(var value: String, var type: Int, var label: String)
 @Serializable
 data class OrganizationInput(var company: String, var title: String)
-
 @Serializable
 data class ContactInput(
     var prefix: String,

@@ -1,5 +1,3 @@
-
-
 @SuppressLint("UnsafeOptInUsageError")
 @Composable
 internal fun VideoPlayerSurface(
@@ -13,9 +11,7 @@ internal fun VideoPlayerSurface(
 ) {
     val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
     val context = LocalContext.current
-
     var isPendingPipMode by remember { mutableStateOf(false) }
-
     AndroidView(
         modifier = modifier,
         factory = {
@@ -37,18 +33,15 @@ internal fun VideoPlayerSurface(
                     }
                     if (videoState.enablePip && player.playWhenReady) {
                         isPendingPipMode = true
-
                         Handler(Looper.getMainLooper()).post {
                             videoState.enterPipMode(context)
                             onPipEntered()
-
                             Handler(Looper.getMainLooper()).postDelayed({
                                 isPendingPipMode = false
                             }, 500)
                         }
                     }
                 }
-
                 Lifecycle.Event.ON_RESUME -> {
                     videoState.enablePip = context.isActivityStatePipMode()
                     if (!videoState.enablePip) {
@@ -58,17 +51,13 @@ internal fun VideoPlayerSurface(
                         playerView.useController = usePlayerController
                     }
                 }
-
                 Lifecycle.Event.ON_STOP -> {
-                   
                 }
-
                 else -> {}
             }
         }
         val lifecycle = lifecycleOwner.value.lifecycle
         lifecycle.addObserver(observer)
-
         onDispose {
             if (autoDispose) {
                 player.release()

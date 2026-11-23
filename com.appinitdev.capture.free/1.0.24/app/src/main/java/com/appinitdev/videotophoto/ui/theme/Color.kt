@@ -1,4 +1,3 @@
-
 val CyberCyan = Color(0xFF00E5FF)
 val NeonPurple = Color(0xFF7C4DFF)
 val BrightAmber = Color(0xFFFF9100)

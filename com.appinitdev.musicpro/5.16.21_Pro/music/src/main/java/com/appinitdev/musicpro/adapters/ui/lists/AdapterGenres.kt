@@ -1,8 +1,5 @@
-
 class AdapterGenres(initial: List<Genre>) : FastScrollAdapter<VerticalListViewHolder>() {
-
     private var callbacks: GeneralAdapterCallbacks? = null
-
     private val listUpdateCallback = object : ListUpdateCallback {
         override fun onInserted(position: Int, count: Int) {
             if (count > 100) {
@@ -11,7 +8,6 @@ class AdapterGenres(initial: List<Genre>) : FastScrollAdapter<VerticalListViewHo
                 notifyItemRangeInserted(position, count)
             }
         }
-
         override fun onRemoved(position: Int, count: Int) {
             if (count > 100) {
                 notifyDataSetChanged()
@@ -19,33 +15,26 @@ class AdapterGenres(initial: List<Genre>) : FastScrollAdapter<VerticalListViewHo
                 notifyItemRangeRemoved(position, count)
             }
         }
-
         override fun onMoved(fromPosition: Int, toPosition: Int) {
             notifyItemMoved(fromPosition, toPosition)
         }
-
         override fun onChanged(position: Int, count: Int, payload: Any?) {
             notifyItemRangeChanged(position, count, payload)
         }
     }
-
     private val diffCallback = object : DiffUtil.ItemCallback<Genre>() {
         override fun areItemsTheSame(oldItem: Genre, newItem: Genre) = oldItem.id == newItem.id
         override fun areContentsTheSame(oldItem: Genre, newItem: Genre) = oldItem == newItem
     }
-
     private val differ = AsyncListDiffer(
             listUpdateCallback,
             AsyncDifferConfig.Builder(diffCallback).build()
     )
-
     private val list: List<Genre> get() = differ.currentList
-
     init {
         setHasStableIds(true)
         differ.submitList(initial.toList())
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         return when (viewType) {
             CommonPreferencesConstants.GRID_TYPE_GRID -> {
@@ -59,7 +48,6 @@ class AdapterGenres(initial: List<Genre>) : FastScrollAdapter<VerticalListViewHo
             }
         }
     }
-
     override fun onBind(holder: VerticalListViewHolder, position: Int, isLightBind: Boolean) {
         val genre = list[position]
         when (holder) {
@@ -68,7 +56,6 @@ class AdapterGenres(initial: List<Genre>) : FastScrollAdapter<VerticalListViewHo
             is LabelHolder -> holder.bind(genre, isLightBind)
         }
     }
-
     override fun getItemId(position: Int): Long = list[position].id
     override fun getItemCount(): Int = list.size
     override fun getItemViewType(position: Int): Int {
@@ -79,7 +66,6 @@ class AdapterGenres(initial: List<Genre>) : FastScrollAdapter<VerticalListViewHo
             else -> CommonPreferencesConstants.GRID_TYPE_LIST
         }
     }
-
     inner class GridHolder(private val binding: AdapterStyleGridBinding) : VerticalListViewHolder(binding.root) {
         fun bind(genre: Genre, isLightBind: Boolean) {
             binding.title.text = genre.name ?: context.getString(R.string.unknown)
@@ -90,7 +76,6 @@ class AdapterGenres(initial: List<Genre>) : FastScrollAdapter<VerticalListViewHo
             binding.container.setOnClickListener { callbacks?.onGenreClicked(genre, it) }
         }
     }
-
     inner class ListHolder(private val binding: AdapterStyleListBinding) : VerticalListViewHolder(binding.root) {
         fun bind(genre: Genre, isLightBind: Boolean) {
             binding.title.text = genre.name ?: context.getString(R.string.unknown)
@@ -101,7 +86,6 @@ class AdapterGenres(initial: List<Genre>) : FastScrollAdapter<VerticalListViewHo
             binding.container.setOnClickListener { callbacks?.onGenreClicked(genre, it) }
         }
     }
-
     inner class LabelHolder(private val binding: AdapterStyleLabelsBinding) : VerticalListViewHolder(binding.root) {
         fun bind(genre: Genre, isLightBind: Boolean) {
             binding.title.text = genre.name ?: context.getString(R.string.unknown)
@@ -111,11 +95,9 @@ class AdapterGenres(initial: List<Genre>) : FastScrollAdapter<VerticalListViewHo
             binding.container.setOnClickListener { callbacks?.onGenreClicked(genre, it) }
         }
     }
-
     fun setCallbackListener(listener: GeneralAdapterCallbacks) {
         this.callbacks = listener
     }
-
     fun updateList(newGenres: List<Genre>) {
         differ.submitList(newGenres.toList())
     }

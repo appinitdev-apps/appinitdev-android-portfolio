@@ -1,4 +1,3 @@
-
 class PeerGraphQL(val schema: Schema) {
     class Configuration : SchemaConfigurationDSL() {
         @SuppressLint("MissingPermission")
@@ -26,7 +25,6 @@ class PeerGraphQL(val schema: Schema) {
                         val fromChannelId = call.request.header("c-cid") ?: ""
                         val signature = call.attributes.getOrNull(SignatureAttrKey) ?: ""
                         val timestamp = call.attributes.getOrNull(TimestampAttrKey) ?: 0L
-
                         val item = try {
                             ChatMessageReceiver.receive(
                                 fromPeerId = fromPeerId,
@@ -46,22 +44,18 @@ class PeerGraphQL(val schema: Schema) {
                     deserialize = { value: String -> Instant.parse(value) }
                     serialize = Instant::toString
                 }
-
                 stringScalar<ID> {
                     deserialize = { it: String -> ID(it) }
                     serialize = { it: ID -> it.toString() }
                 }
             }
         }
-
         internal var schemaBlock: (SchemaBuilder.() -> Unit)? = null
     }
-
     companion object Feature : BaseApplicationPlugin<Application, Configuration, PeerGraphQL> {
         override val key = AttributeKey<PeerGraphQL>("PeerGraphQL")
         private val SignatureAttrKey = AttributeKey<String>("PeerGraphQL.Signature")
         private val TimestampAttrKey = AttributeKey<Long>("PeerGraphQL.Timestamp")
-
         private suspend fun executeGraphqlQL(
             schema: Schema,
             query: String,
@@ -72,7 +66,6 @@ class PeerGraphQL(val schema: Schema) {
                 +call
             })
         }
-
         override fun install(
             pipeline: Application,
             configure: Configuration.() -> Unit,
@@ -83,7 +76,6 @@ class PeerGraphQL(val schema: Schema) {
                     configuration = config
                     config.schemaBlock?.invoke(this)
                 }
-
             pipeline.routing {
                 route("/peer_graphql") {
                     post {
@@ -93,9 +85,6 @@ class PeerGraphQL(val schema: Schema) {
                         }
                         val clientId = call.request.header("c-id") ?: ""
                         val channelId = call.request.header("c-cid") ?: ""
-                        
-                        
-                        
                         val token = if (channelId.isNotEmpty()) {
                             ChatCacheManager.channelKeyCache[channelId]
                         } else {
@@ -111,10 +100,8 @@ class PeerGraphQL(val schema: Schema) {
                             call.respond(decryptResult.code)
                             return@post
                         }
-
                         call.attributes.put(SignatureAttrKey, decryptResult.signature)
                         call.attributes.put(TimestampAttrKey, decryptResult.timestamp)
-
                         val r = executeGraphqlQL(schema, decryptResult.content, call)
                         call.respondBytes(CryptoHelper.chaCha20Encrypt(token, r))
                     }

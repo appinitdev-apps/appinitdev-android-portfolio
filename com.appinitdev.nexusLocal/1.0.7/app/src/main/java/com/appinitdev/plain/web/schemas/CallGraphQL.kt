@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addCallSchema() {
     query("calls") {
         configure {

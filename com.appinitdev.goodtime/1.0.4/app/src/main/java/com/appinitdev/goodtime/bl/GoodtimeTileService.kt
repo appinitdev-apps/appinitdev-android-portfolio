@@ -1,15 +1,11 @@
-
 @RequiresApi(Build.VERSION_CODES.N)
 class GoodtimeTileService : TileService(), KoinComponent {
-
     private val timerManager: TimerManager by inject()
     private val timeProvider: TimeProvider by inject()
-
     override fun onStartListening() {
         super.onStartListening()
         updateTileState()
     }
-
     override fun onClick() {
         super.onClick()
         val data = timerManager.timerData.value
@@ -20,11 +16,9 @@ class GoodtimeTileService : TileService(), KoinComponent {
         }
         updateTileState()
     }
-
     private fun updateTileState() {
         val tile = qsTile ?: return
         val data = timerManager.timerData.value
-
         if (data.state == TimerState.RUNNING) {
             val remainingMs = data.getBaseTime(timeProvider)
             val remainingSec = (remainingMs / 1000).coerceAtLeast(0)
@@ -48,7 +42,6 @@ class GoodtimeTileService : TileService(), KoinComponent {
         }
         tile.updateTile()
     }
-
     private fun formatTime(seconds: Long): String {
         val mins = seconds / 60
         val secs = seconds % 60

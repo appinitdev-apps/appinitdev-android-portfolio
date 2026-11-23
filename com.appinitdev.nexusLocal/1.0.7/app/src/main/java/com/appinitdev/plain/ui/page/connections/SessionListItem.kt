@@ -1,4 +1,3 @@
-
 @Composable
 internal fun SessionListItem(
     m: VSession,
@@ -15,7 +14,6 @@ internal fun SessionListItem(
     val lastActiveText = if (showFullTime) m.lastActiveAt?.formatDateTime() else m.lastActiveAt?.timeAgo()
     val displayName = m.name.ifEmpty { stringResource(Res.string.unknown) }
     val title = if (m.isCustom) displayName else osDisplay
-
     if (showRenameDialog) {
         AlertDialog(
             onDismissRequest = { showRenameDialog = false },
@@ -44,11 +42,9 @@ internal fun SessionListItem(
             },
         )
     }
-
     if (showTokenTipsDialog) {
         ApiTokenTipsDialog(m = m, onDismiss = { showTokenTipsDialog = false })
     }
-
     PCard {
         Column {
             SessionMainListItem(
@@ -92,7 +88,6 @@ internal fun SessionListItem(
             )
         }
     }
-
     if (lastActiveText != null) {
         Row(
             modifier = Modifier
@@ -113,17 +108,14 @@ internal fun SessionListItem(
     }
     VerticalSpace(dp = 16.dp)
 }
-
 @Composable
 private fun ApiTokenTipsDialog(m: VSession, onDismiss: () -> Unit) {
     val context = LocalContext.current
     val hostname = remember { TempData.mdnsHostname }
     val httpsPort = remember { TempData.httpsPort }
-
     val curlReal = remember(m, hostname, httpsPort) {
         """curl -X POST "https://$hostname:$httpsPort/graphql" -H "c-id: ${m.clientId}" -H "Authorization: Bearer ${m.token}" -H "Content-Type: application/json" --data '{"query":"{ app { version } }"}'"""
     }
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -148,4 +140,3 @@ private fun ApiTokenTipsDialog(m: VSession, onDismiss: () -> Unit) {
         },
     )
 }
-

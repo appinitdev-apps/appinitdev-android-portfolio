@@ -1,4 +1,3 @@
-
 @Composable
 fun HomeChatWidget(
     navController: NavHostController,
@@ -12,7 +11,6 @@ fun HomeChatWidget(
         context.dataStore.dataFlow.map { HomeSectionCollapsedPreference.get(it, AppFeatureType.CHAT) }
     }.collectAsStateValue(initial = false)
     val channels = channelVM.channels.collectAsStateValue()
-
     val localChat = peerVM.getLatestChat("local")
     val onlineText = stringResource(Res.string.online)
     val channelsText = stringResource(Res.string.channels)
@@ -61,7 +59,6 @@ fun HomeChatWidget(
         .thenByDescending { it.createdAt }
     val rows = (listOf(localRow) + (peerRows + channelRows).sortedWith(rowComparator).take(4))
         .sortedWith(rowComparator)
-
     Surface(
         modifier = modifier
             .fillMaxWidth(),
@@ -74,7 +71,6 @@ fun HomeChatWidget(
                 onClick = { navController.navigate(Routing.ChatList) },
                 trailingContent = { HomeSectionCollapseButton(collapsed = collapsed, featureType = AppFeatureType.CHAT) },
             )
-
             if (!collapsed) {
                 rows.forEachIndexed { index, row ->
                     PeerListItem(

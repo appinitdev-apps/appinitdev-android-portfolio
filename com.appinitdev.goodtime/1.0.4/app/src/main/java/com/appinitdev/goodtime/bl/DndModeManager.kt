@@ -1,4 +1,3 @@
-
 class DndModeManager(
     private val notificationManager: NotificationArchManager,
     settingsRepository: SettingsRepository,
@@ -6,12 +5,9 @@ class DndModeManager(
 ) : EventListener {
     private val isDndDuringWorkFlow =
         settingsRepository.settings.map { it.uiSettings.dndDuringWork }
-
     private var job: Job? = null
-
     private var dndEnabledBeforeStart = false
     private var wasPaused = false
-
     override fun onEvent(event: Event) {
         when (event) {
             is Event.Start -> {
@@ -24,28 +20,23 @@ class DndModeManager(
                 }
                 wasPaused = false
             }
-
             is Event.Pause -> {
                 wasPaused = true
             }
-
             is Event.Reset, is Event.Finished -> {
                 maybeExitDndMode()
                 wasPaused = false
             }
-
             else -> { 
             }
         }
     }
-
     private fun maybeEnterDndMode() {
         job?.cancel()
         job =
             coroutineScope.launch {
                 val isDndDuringWork = isDndDuringWorkFlow.first()
                 if (!isDndDuringWork) return@launch
-
                 val wasDndEnabled = notificationManager.isDndModeEnabled()
                 dndEnabledBeforeStart = wasDndEnabled
                 if (!wasDndEnabled) {
@@ -56,14 +47,12 @@ class DndModeManager(
                 }
             }
     }
-
     private fun maybeExitDndMode() {
         job?.cancel()
         job =
             coroutineScope.launch {
                 val isDndDuringWork = isDndDuringWorkFlow.first()
                 if (!isDndDuringWork) return@launch
-
                 if (!dndEnabledBeforeStart && notificationManager.isDndModeEnabled()) {
                     withContext(Dispatchers.Main) {
                         notificationManager.toggleDndMode(false)

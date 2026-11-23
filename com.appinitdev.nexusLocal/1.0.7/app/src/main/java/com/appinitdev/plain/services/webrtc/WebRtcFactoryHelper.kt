@@ -1,6 +1,4 @@
-
 private var webrtcInitialized = false
-
 internal fun createWebRtcFactory(
     context: Context,
     eglBase: EglBase,
@@ -9,8 +7,6 @@ internal fun createWebRtcFactory(
     onAudioRecordStop: () -> Unit,
 ): Pair<PeerConnectionFactory, JavaAudioDeviceModule> {
     if (!webrtcInitialized) {
-        
-        
         PeerConnectionFactory.initialize(
             PeerConnectionFactory.InitializationOptions.builder(context.applicationContext)
                 .setEnableInternalTracer(false)
@@ -18,7 +14,6 @@ internal fun createWebRtcFactory(
         )
         webrtcInitialized = true
     }
-
     val adm = JavaAudioDeviceModule.builder(context)
         .setUseHardwareAcousticEchoCanceler(false)
         .setUseHardwareNoiseSuppressor(false)
@@ -27,18 +22,10 @@ internal fun createWebRtcFactory(
             override fun onWebRtcAudioRecordStop() = onAudioRecordStop()
         })
         .createAudioDeviceModule()
-
     val encoderFactory = DefaultVideoEncoderFactory(eglBase.eglBaseContext, true, true)
     val decoderFactory = DefaultVideoDecoderFactory(eglBase.eglBaseContext)
-    
-    
-    
     val options = PeerConnectionFactory.Options().apply {
         networkIgnoreMask = 1 shl 3
-        
-        
-        
-        
         disableNetworkMonitor = true
     }
     val factory = PeerConnectionFactory.builder()
@@ -47,6 +34,5 @@ internal fun createWebRtcFactory(
         .setVideoDecoderFactory(decoderFactory)
         .setAudioDeviceModule(adm)
         .createPeerConnectionFactory()
-
     return Pair(factory, adm)
 }

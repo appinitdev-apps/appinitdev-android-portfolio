@@ -1,6 +1,4 @@
-
 private const val GITHUB_RELEASES_URL = "https://github.com/plainhub/plain-app/releases/latest"
-
 @Composable
 fun UpdateBanner(updateVM: UpdateViewModel) {
     val newVersion = LocalNewVersion.current.toVersion()
@@ -13,9 +11,7 @@ fun UpdateBanner(updateVM: UpdateViewModel) {
     val downloadedFilePath = updateVM.downloadedFilePath.value
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-
     val needsUpdate = newVersion.whetherNeedUpdate(currentVersion, skipVersion)
-
     LaunchedEffect(Unit) {
         val path = withIO { UpdateInfoPreference.getValueAsync().downloadedApkPath }
         if (path.isNotEmpty()) {
@@ -28,7 +24,6 @@ fun UpdateBanner(updateVM: UpdateViewModel) {
             }
         }
     }
-
     when {
         isDownloading -> {
             DownloadProgressBanner(
@@ -41,7 +36,6 @@ fun UpdateBanner(updateVM: UpdateViewModel) {
             )
             VerticalSpace(dp = 12.dp)
         }
-
         isDownloadComplete -> {
             DownloadCompleteBanner(
                 onInstall = {
@@ -55,7 +49,6 @@ fun UpdateBanner(updateVM: UpdateViewModel) {
             )
             VerticalSpace(dp = 12.dp)
         }
-
         downloadFailed -> {
             DownloadFailedBanner(
                 onGitHub = { WebHelper.open(context, GITHUB_RELEASES_URL) },
@@ -67,7 +60,6 @@ fun UpdateBanner(updateVM: UpdateViewModel) {
             )
             VerticalSpace(dp = 12.dp)
         }
-
         needsUpdate -> {
             PBanner(
                 title = stringResource(Res.string.get_new_updates, newVersion.toString()),
@@ -78,7 +70,6 @@ fun UpdateBanner(updateVM: UpdateViewModel) {
         }
     }
 }
-
 @Composable
 private fun DownloadProgressBanner(
     newVersion: String,
@@ -87,7 +78,6 @@ private fun DownloadProgressBanner(
 ) {
     val backgroundColor = MaterialTheme.colorScheme.primaryContainer
     val contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -123,7 +113,6 @@ private fun DownloadProgressBanner(
         }
     }
 }
-
 @Composable
 private fun DownloadCompleteBanner(
     onInstall: () -> Unit,
@@ -142,7 +131,6 @@ private fun DownloadCompleteBanner(
         onClick = onDismiss,
     )
 }
-
 @Composable
 private fun DownloadFailedBanner(
     onGitHub: () -> Unit,

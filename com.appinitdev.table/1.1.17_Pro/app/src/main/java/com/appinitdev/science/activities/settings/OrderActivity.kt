@@ -1,6 +1,4 @@
-
 class OrderActivity : BaseActivity()  {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val themePreference = ThemePreference(this)
@@ -20,40 +18,25 @@ class OrderActivity : BaseActivity()  {
         mList.layoutManager = LinearLayoutManager(this)
         mList.adapter = mAdapter
         mList.dragListener = onItemDragListener
-
         findViewById<ConstraintLayout>(R.id.view_ord).systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
         findViewById<ImageButton>(R.id.back_btn_ord).setOnClickListener {
             this.onBackPressed()
         }
     }
-
     private val onItemDragListener = object : OnItemDragListener<String> {
         override fun onItemDragged(previousPosition: Int, newPosition: Int, item: String) {
-            
         }
-
         override fun onItemDropped(initialPosition: Int, finalPosition: Int, item: String) {
-
         }
     }
-
     override fun onApplySystemInsets(top: Int, bottom: Int, left: Int, right: Int) {
         findViewById<DragDropSwipeRecyclerView>(R.id.ord_recycler).setPadding(
             0,
             resources.getDimensionPixelSize(R.dimen.title_bar) + resources.getDimensionPixelSize(R.dimen.margin_space) + top,
             0,
             resources.getDimensionPixelSize(R.dimen.title_bar))
-
         val params2 = findViewById<FrameLayout>(R.id.common_title_back_ord).layoutParams as ViewGroup.LayoutParams
         params2.height = top + resources.getDimensionPixelSize(R.dimen.title_bar)
         findViewById<FrameLayout>(R.id.common_title_back_ord).layoutParams = params2
     }
-
-
-
-
-
 }
-
-
-

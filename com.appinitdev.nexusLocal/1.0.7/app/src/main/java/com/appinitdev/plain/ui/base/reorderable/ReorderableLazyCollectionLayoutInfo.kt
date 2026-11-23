@@ -1,23 +1,19 @@
-
 internal interface LazyCollectionLayoutInfo<out T> {
     val visibleItemsInfo: List<LazyCollectionItemInfo<T>>
     val viewportSize: IntSize
     val orientation: Orientation
     val reverseLayout: Boolean
     val beforeContentPadding: Int
-
     val mainAxisViewportSize: Int
         get() = when (orientation) {
             Orientation.Vertical -> viewportSize.height
             Orientation.Horizontal -> viewportSize.width
         }
-
     fun getScrollAreaOffsets(
         padding: AbsolutePixelPadding,
     ) = getScrollAreaOffsets(
         CollectionScrollPadding.fromAbsolutePixelPadding(orientation, padding, reverseLayout)
     )
-
     fun getScrollAreaOffsets(padding: CollectionScrollPadding): ScrollAreaOffsets {
         val (startPadding, endPadding) = padding
         val contentEndOffset = when (orientation) {
@@ -26,11 +22,9 @@ internal interface LazyCollectionLayoutInfo<out T> {
         } - endPadding
         return ScrollAreaOffsets(start = startPadding, end = contentEndOffset)
     }
-
     fun getItemsInContentArea(padding: AbsolutePixelPadding) = getItemsInContentArea(
         CollectionScrollPadding.fromAbsolutePixelPadding(orientation, padding, reverseLayout)
     )
-
     fun getItemsInContentArea(
         padding: CollectionScrollPadding = CollectionScrollPadding.Zero,
     ): List<LazyCollectionItemInfo<T>> {
@@ -45,20 +39,16 @@ internal interface LazyCollectionLayoutInfo<out T> {
         }
     }
 }
-
 internal interface LazyCollectionState<out T> {
     val firstVisibleItemIndex: Int
     val firstVisibleItemScrollOffset: Int
     val layoutInfo: LazyCollectionLayoutInfo<T>
-
     suspend fun animateScrollBy(
         value: Float,
         animationSpec: AnimationSpec<Float> = spring(),
     ): Float
-
     suspend fun requestScrollToItem(index: Int, scrollOffset: Int)
 }
-
 interface ReorderableLazyCollectionStateInterface {
     val isAnyItemDragging: Boolean
 }

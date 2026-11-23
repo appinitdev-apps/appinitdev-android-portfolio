@@ -1,4 +1,3 @@
-
 class DrawApplication : Application() {
     override fun onCreate() {
         super.onCreate()

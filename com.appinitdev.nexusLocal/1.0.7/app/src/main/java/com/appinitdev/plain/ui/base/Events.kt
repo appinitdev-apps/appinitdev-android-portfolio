@@ -1,4 +1,3 @@
-
 @Composable
 fun rememberLifecycleEvent(lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current): Lifecycle.Event {
     var state by remember { mutableStateOf(Lifecycle.Event.ON_ANY) }

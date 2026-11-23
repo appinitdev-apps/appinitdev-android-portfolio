@@ -1,6 +1,4 @@
-
 class MediaViewerActivity : ComponentActivity() {
-
     companion object {
         private const val TAG = "MediaViewerActivity"
         const val EXTRA_FILE_PATH = "FILE_PATH_EXTRA"
@@ -8,33 +6,27 @@ class MediaViewerActivity : ComponentActivity() {
         const val EXTRA_OPEN_AS_TYPE = "OPEN_AS_TYPE_EXTRA"
         const val EXTRA_MIME_TYPE = "MIME_TYPE_EXTRA"
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val filePath = intent.getStringExtra(EXTRA_FILE_PATH).orEmpty()
         val fileUri = getParcelableExtraCompat<Uri>(EXTRA_FILE_URI) ?: Uri.EMPTY
         val openAsType = intent.getIntExtra(EXTRA_OPEN_AS_TYPE, OPEN_AS_DEFAULT)
         val mimeTypeExtra = intent.getStringExtra(EXTRA_MIME_TYPE).orEmpty()
-
         val fileName = try {
             File(filePath).name
         } catch (e: Exception) {
             "Archivo Multimedia"
         }
-
         val finalMimeType = if (mimeTypeExtra.isEmpty() || mimeTypeExtra.contains("*")) {
             getMimeTypeFromUri(fileUri)
         } else {
             mimeTypeExtra
         }
-
         val onPlaybackError = {
             Log.e(TAG, "Formato no soportado internamente ($finalMimeType). Redirigiendo a app externa.")
             openPath(filePath, forceChooser = true, openAsType = openAsType)
             finish()
         }
-
         setContent {
             MediaViewerScreen(
                 fileUri = fileUri,
@@ -46,7 +38,6 @@ class MediaViewerActivity : ComponentActivity() {
             )
         }
     }
-
     @Suppress("DEPRECATION")
     private inline fun <reified T : Parcelable> getParcelableExtraCompat(key: String): T? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -56,7 +47,6 @@ class MediaViewerActivity : ComponentActivity() {
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MediaViewerScreen(
@@ -69,17 +59,14 @@ fun MediaViewerScreen(
 ) {
     val mediaType = remember(mimeType) { mimeType.toMultimediaType() }
     val currentOnError = rememberUpdatedState(onError)
-
     var controlsVisible by remember { mutableStateOf(true) }
     var isPlaying by remember { mutableStateOf(false) }
-
     LaunchedEffect(controlsVisible, isPlaying) {
         if (controlsVisible && isPlaying) {
             delay(3500)
             controlsVisible = false
         }
     }
-
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         containerColor = Color.Black
@@ -111,8 +98,6 @@ fun MediaViewerScreen(
                     LaunchedEffect(Unit) { currentOnError.value() }
                 }
             }
-
-            
             AnimatedVisibility(
                 visible = controlsVisible,
                 enter = fadeIn(),
@@ -153,7 +138,6 @@ fun MediaViewerScreen(
         }
     }
 }
-
 @Composable
 fun ImageViewer(
     uri: Uri,
@@ -162,12 +146,10 @@ fun ImageViewer(
     var rotation by remember { mutableStateOf(0f) }
     var mirrored by remember { mutableStateOf(false) }
     val zoomState = rememberZoomState()
-
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-
         AsyncImage(
             model = uri,
             contentDescription = "Visualizador",
@@ -178,16 +160,10 @@ fun ImageViewer(
                     scaleX = if (mirrored) -1f else 1f
                 }
                 .zoomable(zoomState)
-
-
-
-
-
             ,onError = {
                 onError()
             }
         )
-
         FilledIconButton(
             onClick = {
                 rotation = (rotation + 90f) % 360f
@@ -216,7 +192,6 @@ fun ImageViewer(
         }
     }
 }
-
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(UnstableApi::class)
 @Composable
@@ -229,22 +204,15 @@ fun MediaPlayer(
 ) {
     val context = LocalContext.current
     val currentOnError = rememberUpdatedState(onError)
-
     var isPlaying by remember { mutableStateOf(false) }
     var currentPosition by remember { mutableStateOf(0L) }
     var duration by remember { mutableStateOf(0L) }
     var playbackState by remember { mutableStateOf(Player.STATE_IDLE) }
-
-    
     var isUserDraggingSlider by remember { mutableStateOf(false) }
     var sliderTransientValue by remember { mutableStateOf(0f) }
-
-    
     var scale by remember { mutableStateOf(1f) }
     var offsetX by remember { mutableStateOf(0f) }
     var offsetY by remember { mutableStateOf(0f) }
-
-    
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
             setMediaItem(MediaItem.fromUri(uri))
@@ -252,8 +220,6 @@ fun MediaPlayer(
             playWhenReady = true
         }
     }
-
-    
     DisposableEffect(exoPlayer) {
         val listener = object : Player.Listener {
             override fun onIsPlayingChanged(playing: Boolean) {
@@ -276,18 +242,14 @@ fun MediaPlayer(
             exoPlayer.release()
         }
     }
-
-    
     LaunchedEffect(isPlaying) {
         while (isPlaying) {
-            
             if (!isUserDraggingSlider) {
                 currentPosition = exoPlayer.currentPosition
             }
             delay(200)
         }
     }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -306,7 +268,6 @@ fun MediaPlayer(
             },
         contentAlignment = Alignment.Center
     ) {
-        
         if (isAudioOnly) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -353,8 +314,6 @@ fun MediaPlayer(
                     }
             )
         }
-
-        
         if (playbackState == Player.STATE_BUFFERING) {
             CircularProgressIndicator(
                 color = MaterialTheme.colorScheme.primary,
@@ -362,15 +321,12 @@ fun MediaPlayer(
                 modifier = Modifier.size(56.dp)
             )
         }
-
-        
         AnimatedVisibility(
             visible = controlsVisible && playbackState != Player.STATE_BUFFERING,
             enter = fadeIn(),
             exit = fadeOut(),
             modifier = Modifier.fillMaxSize()
         ) {
-            
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -384,21 +340,16 @@ fun MediaPlayer(
                         )
                     )
             ) {
-                
                 Row(
                     modifier = Modifier.align(Alignment.Center),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    
                     CustomControlButton(
                         icon = Icons.Default.Replay10,
                         onClick = { exoPlayer.seekTo((exoPlayer.currentPosition - 10000).coerceAtLeast(0L)) }
                     )
-
                     Spacer(modifier = Modifier.width(36.dp))
-
-                    
                     Box(
                         modifier = Modifier
                             .size(64.dp)
@@ -433,27 +384,19 @@ fun MediaPlayer(
                             modifier = Modifier.size(40.dp)
                         )
                     }
-
                     Spacer(modifier = Modifier.width(36.dp))
-
-                    
                     CustomControlButton(
                         icon = Icons.Default.Forward10,
                         onClick = { exoPlayer.seekTo((exoPlayer.currentPosition + 10000).coerceAtMost(duration)) }
                     )
                 }
-
-                
-
                 Column(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp, vertical = 32.dp)
                 ) {
-                    
                     val activeSliderValue = if (isUserDraggingSlider) sliderTransientValue else currentPosition.toFloat()
-
                     Slider(
                         value = activeSliderValue,
                         onValueChange = { newValue ->
@@ -467,16 +410,13 @@ fun MediaPlayer(
                         },
                         valueRange = 0f..duration.toFloat().coerceAtLeast(1f),
                         modifier = Modifier.fillMaxWidth(),
-                        
                         thumb = {
                             SliderDefaults.Thumb(
                                 interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
                                 colors = SliderDefaults.colors(thumbColor = Color.White),
-                                
                                 modifier = Modifier.size(12.dp)
                             )
                         },
-                        
                         track = { sliderState ->
                             SliderDefaults.Track(
                                 sliderState = sliderState,
@@ -484,16 +424,13 @@ fun MediaPlayer(
                                     activeTrackColor = MaterialTheme.colorScheme.primary,
                                     inactiveTrackColor = Color.White.copy(alpha = 0.24f)
                                 ),
-                                
                                 modifier = Modifier.height(4.dp)
                             )
                         }
                     )
-
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
-                         
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
@@ -511,59 +448,10 @@ fun MediaPlayer(
                         )
                     }
                 }
-                 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             }
         }
     }
 }
-
 @Composable
 fun CustomControlButton(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
@@ -591,7 +479,6 @@ fun CustomControlButton(
         )
     }
 }
-
 @Composable
 fun VideoGestureHUD(icon: ImageVector, label: String) {
     Card(
@@ -610,7 +497,6 @@ fun VideoGestureHUD(icon: ImageVector, label: String) {
         }
     }
 }
-
 private fun formatTime(ms: Long): String {
     val totalSeconds = ms / 1000
     val seconds = totalSeconds % 60

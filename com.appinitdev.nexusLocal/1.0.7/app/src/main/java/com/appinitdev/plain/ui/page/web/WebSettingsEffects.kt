@@ -1,4 +1,3 @@
-
 @Composable
 internal fun WebSettingsEffects(
     permissionList: MutableState<List<PermissionItem>>,
@@ -8,7 +7,6 @@ internal fun WebSettingsEffects(
 ) {
     val context = LocalContext.current
     val sharedFlow = Channel.sharedFlow
-
     LaunchedEffect(sharedFlow) {
         sharedFlow.collect { event ->
             when (event) {
@@ -36,7 +34,6 @@ internal fun WebSettingsEffects(
         }
     }
 }
-
 internal fun togglePermission(scope: CoroutineScope, context: android.content.Context, m: PermissionItem, enable: Boolean) {
     scope.launch {
         withIO { ApiPermissionsPreference.putAsync(m.permission, enable) }

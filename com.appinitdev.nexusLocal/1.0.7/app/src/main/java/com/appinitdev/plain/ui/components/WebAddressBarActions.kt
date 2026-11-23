@@ -1,4 +1,3 @@
-
 fun persistMdnsHostname(
     context: Context,
     scope: CoroutineScope,
@@ -8,7 +7,6 @@ fun persistMdnsHostname(
         withIO { MdnsHostnamePreference.putAsync(hostname) }
     }
 }
-
 fun persistPort(
     context: Context,
     scope: CoroutineScope,
@@ -23,7 +21,6 @@ fun persistPort(
         }
     }
 }
-
 fun showRestartAppDialog(context: Context) {
     androidx.appcompat.app.AlertDialog.Builder(context)
         .setTitle(LocaleHelper.getString(Res.string.restart_app_title))

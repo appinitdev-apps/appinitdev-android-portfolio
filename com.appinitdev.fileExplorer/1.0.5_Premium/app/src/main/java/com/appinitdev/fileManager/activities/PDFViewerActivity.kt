@@ -1,41 +1,32 @@
-
 class PDFViewerActivity : SimpleActivity() {
     private val binding by viewBinding(ActivityPdfViewerBinding::inflate)
     private var realFilePath = ""
     private var isFullScreen = false
     private var passwordDialog: EnterPasswordDialog? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         showTransparentTop = true
-
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
         if (checkAppSideloading()) {
             return
         }
-
         checkNotchSupport()
         binding.pdfViewerToolbar.apply {
             setTitleTextColor(Color.WHITE)
             overflowIcon = resources.getColoredDrawableWithColor(R.drawable.ic_three_dots_vector, Color.WHITE)
             navigationIcon = resources.getColoredDrawableWithColor(R.drawable.ic_arrow_left_vector, Color.WHITE)
         }
-
         if (intent.extras?.containsKey(REAL_FILE_PATH) == true) {
             realFilePath = intent.extras?.get(REAL_FILE_PATH)?.toString() ?: ""
             binding.pdfViewerToolbar.title = realFilePath.getFilenameFromPath()
         }
-
         setupMenu()
         checkIntent()
     }
-
     override fun onResume() {
         super.onResume()
         window.navigationBarColor = Color.TRANSPARENT
     }
-
     private fun setupMenu() {
         (binding.pdfViewerAppbar.layoutParams as RelativeLayout.LayoutParams).topMargin = statusBarHeight
         binding.pdfViewerToolbar.menu.apply {
@@ -45,18 +36,15 @@ class PDFViewerActivity : SimpleActivity() {
                 true
             }
         }
-
         binding.pdfViewerToolbar.setNavigationOnClickListener {
             finish()
         }
-
         if (!portrait && navigationBarOnSide && navigationBarWidth > 0) {
             binding.pdfViewerAppbar.setPadding(0, 0, navigationBarWidth, 0)
         } else {
             binding.pdfViewerAppbar.setPadding(0, 0, 0, 0)
         }
     }
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         (binding.pdfViewerAppbar.layoutParams as RelativeLayout.LayoutParams).topMargin = statusBarHeight
@@ -66,19 +54,15 @@ class PDFViewerActivity : SimpleActivity() {
             binding.pdfViewerAppbar.setPadding(0, 0, 0, 0)
         }
     }
-
     private fun checkIntent() {
         val uri = intent.data
         if (uri == null) {
             finish()
             return
         }
-
         loadPdfViewer(uri)
     }
-
     private fun loadPdfViewer(uri: Uri, filePassword: String? = null) {
-
         binding.pdfViewer.setBackgroundColor(getProperBackgroundColor())
         binding.pdfViewer.fromUri(uri)
             .password(filePassword)
@@ -87,7 +71,6 @@ class PDFViewerActivity : SimpleActivity() {
             .onTap { toggleFullScreen() }
             .onError {
                 if (it is PdfPasswordException) {
-                    
                     if (filePassword != null) {
                         toast(getString(R.string.invalid_password))
                         passwordDialog?.clearPassword()
@@ -111,23 +94,18 @@ class PDFViewerActivity : SimpleActivity() {
                 passwordDialog?.dismiss(notify = false)
             }
             .load()
-
         showSystemUI(true)
-
         val filename = getFilenameFromUri(uri)
         if (filename.isNotEmpty()) {
             binding.pdfViewerToolbar.title = filename
         }
     }
-
     private fun printText() {
         val adapter = PdfDocumentAdapter(this, realFilePath)
-
         (getSystemService(Context.PRINT_SERVICE) as? PrintManager)?.apply {
             print(realFilePath.getFilenameFromPath(), adapter, PrintAttributes.Builder().build())
         }
     }
-
     private fun toggleFullScreen(): Boolean {
         isFullScreen = !isFullScreen
         val newAlpha: Float
@@ -138,7 +116,6 @@ class PDFViewerActivity : SimpleActivity() {
             newAlpha = 1f
             showSystemUI(true)
         }
-
         binding.topShadow.animate().alpha(newAlpha).start()
         binding.pdfViewerAppbar.animate().alpha(newAlpha).withStartAction {
             if (newAlpha == 1f) {
@@ -149,11 +126,8 @@ class PDFViewerActivity : SimpleActivity() {
                 binding.pdfViewerAppbar.beGone()
             }
         }.start()
-
-        
         return true
     }
-
     private fun checkNotchSupport() {
         if (isPiePlus()) {
             window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES

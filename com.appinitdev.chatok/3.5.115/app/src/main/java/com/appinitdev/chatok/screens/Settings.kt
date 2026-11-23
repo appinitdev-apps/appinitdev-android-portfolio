@@ -1,9 +1,7 @@
-
 @Composable
 fun Settings(navController: NavController, state: AppState, viewModel: ChatViewModel) {
     val context = LocalContext.current
     val privacyPrefs = remember { context.getSharedPreferences("privacy_prefs", Context.MODE_PRIVATE) }
-    
     var biometricLock by remember {
         mutableStateOf(privacyPrefs.getBoolean("biometric_lock", false))
     }
@@ -20,9 +18,7 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
         mutableStateOf(state.userData?.pref?.verificada ?: false)
     }
     var showVerificationDialog by remember { mutableStateOf(false) }
-
     val brush = Brush.linearGradient(listOf(Color(0xFF238CDD), Color(0xFF1952C4)))
-
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.blurry_gradient_haikei),
@@ -30,10 +26,7 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
-        
-        
         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)))
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -59,71 +52,57 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
                     color = Color.White
                 )
             }
-
             Spacer(modifier = Modifier.height(24.dp))
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp)
             ) {
-                
                 Text(
                     text = stringResource(R.string.apariencia),
                     style = MaterialTheme.typography.labelLarge,
                     color = Color(0xFF238CDD),
                     modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
                 )
-
                 SettingOption(
                     title = stringResource(R.string.tienda_monedas),
                     description = stringResource(R.string.tienda_monedas_desc),
                     onClick = { navController.navigate("store") },
                     painter = painterResource(R.drawable.correct) 
                 )
-                
                 SettingOption(
                     title = stringResource(R.string.personalizaci_n1),
                     description = stringResource(R.string.personaliza_tu_pantalla_de_chat),
                     onClick = { navController.navigate("cus") },
                     painter = painterResource(R.drawable.equalizer)
                 )
-
                 Spacer(modifier = Modifier.height(24.dp))
-
-                
                 Text(
                     text = stringResource(R.string.cuenta_seguridad),
                     style = MaterialTheme.typography.labelLarge,
                     color = Color(0xFF238CDD),
                     modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
                 )
-
                 SettingOption(
                     title = stringResource(R.string.usuarios_bloqueados),
                     description = stringResource(R.string.ver_y_administrar_usuarios_bloqueados),
                     onClick = { navController.navigate("blck") },
                     painter = painterResource(id = R.drawable.block_user_6380092)
                 )
-                
                 SettingOption(
                     title = stringResource(R.string.mensajes_programadosw),
                     description = stringResource(R.string.administrar_mensajes_programados),
                     onClick = { navController.navigate("scheduled") },
                     painter = painterResource(id = R.drawable.message_time)
                 )
-
                 Spacer(modifier = Modifier.height(24.dp))
-
-                
                 Text(
                     text = stringResource(R.string.privacidad),
                     style = MaterialTheme.typography.labelLarge,
                     color = Color(0xFF238CDD),
                     modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
                 )
-
                 SettingSwitch(
                     title = stringResource(R.string.confirmaciones_de_lectura),
                     description = stringResource(R.string.activar_o_desactivar_los_recibos_de_lectura),
@@ -136,7 +115,6 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
                     },
                     painter = painterResource(id = R.drawable.correct)
                 )
-
                 SettingSwitch(
                     title = stringResource(R.string.online_visibility),
                     description = stringResource(R.string.manage_online_visibility),
@@ -150,7 +128,6 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
                     },
                     painter = painterResource(id = R.drawable.eye)
                 )
-
                 SettingSwitch(
                     title = stringResource(R.string.traduccion_automatica),
                     description = stringResource(R.string.traduccion_automatica_desc),
@@ -161,7 +138,6 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
                     },
                     painter = painterResource(id = R.drawable.correct) 
                 )
-
                 SettingSwitch(
                     title = stringResource(id = R.string.eres_vendedora),
                     description = stringResource(R.string.vendedora_desc),
@@ -172,7 +148,6 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
                     },
                     painter = painterResource(id = R.drawable.correct)
                 )
-
                 if (BiometricHelper.isBiometricAvailable(context)) {
                     SettingSwitch(
                         title = stringResource(R.string.bloqueo_biometrico),
@@ -185,7 +160,6 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
                         painter = painterResource(id = R.drawable.block_user_6380092)
                     )
                 }
-
                 if (state.userData?.pref?.isVerified != true) {
                     SettingOption(
                         title = stringResource(R.string.verificar_cuenta),
@@ -194,7 +168,6 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
                         painter = painterResource(id = R.drawable.correct)
                     )
                 }
-                
                 if (state.userData?.isAdmin == true) {
                     SettingOption(
                         title = stringResource(R.string.panel_administracion),
@@ -203,13 +176,11 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
                         painter = painterResource(id = R.drawable.equalizer)
                     )
                 }
-
                 Spacer(modifier = Modifier.height(32.dp))
                 AdBanner()
                 Spacer(modifier = Modifier.height(32.dp))
             }
         }
-
         if (showVerificationDialog) {
             com.appinitdev.chatok.Dialogs.VerificationRequestDialog(
                 state = state,
@@ -223,7 +194,6 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
         }
     }
 }
-
 @Composable
 fun SettingOption(
     painter: Painter,
@@ -271,7 +241,6 @@ fun SettingOption(
         }
     }
 }
-
 @Composable
 fun SettingSwitch(
     painter: Painter,

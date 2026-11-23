@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopicDetailScreen(
@@ -11,14 +10,11 @@ fun TopicDetailScreen(
     val selectedTab by viewModel.selectedDetailTab.collectAsState()
     val currentLang by viewModel.currentLanguage.collectAsState()
     val isPremium by viewModel.isPremium.collectAsState()
-
     val currentTopic = topic ?: return
     var noteText by remember(currentTopic.id) {
         mutableStateOf(viewModel.getTopicNote(currentTopic.id))
     }
     var showNotesSheet by remember { mutableStateOf(false) }
-
-    
     val availableTabs = remember(currentTopic) {
         val list = mutableListOf(DetailTab.ALL, DetailTab.THEORY)
         if (currentTopic.hasExamples) {
@@ -28,8 +24,6 @@ fun TopicDetailScreen(
         list.add(DetailTab.CALCULATOR)
         list
     }
-
-    
     if (showNotesSheet) {
         AlertDialog(
             onDismissRequest = { showNotesSheet = false },
@@ -65,7 +59,6 @@ fun TopicDetailScreen(
             }
         )
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -157,7 +150,6 @@ fun TopicDetailScreen(
                         ) {
                             Text(stringResource(id = R.string.btn_previous))
                         }
-
                         OutlinedButton(
                             onClick = { viewModel.nextTopic() },
                             shape = RoundedCornerShape(12.dp)
@@ -204,7 +196,6 @@ fun TopicDetailScreen(
                     )
                 }
             }
-
             if (selectedTab == DetailTab.CALCULATOR) {
                 AdvancedScientificCalculator(
                     currentLang = currentLang,
@@ -224,7 +215,6 @@ fun TopicDetailScreen(
         }
     }
 }
-
 private fun shareTopic(context: Context, title: String, snippet: String) {
     val sendIntent = Intent().apply {
         action = Intent.ACTION_SEND

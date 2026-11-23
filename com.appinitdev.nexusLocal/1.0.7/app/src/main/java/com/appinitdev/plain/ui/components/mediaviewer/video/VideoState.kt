@@ -1,4 +1,3 @@
-
 class VideoState {
     var isPlaying by mutableStateOf(false)
     var isMuted by mutableStateOf(false)
@@ -12,7 +11,6 @@ class VideoState {
     var isSpeedBoostActive by mutableStateOf(false)
     var player: ExoPlayer? = null
     var isSeeking = false
-
     fun initData(player: ExoPlayer) {
         this.player = player
         if (isMuted) {
@@ -20,26 +18,22 @@ class VideoState {
         }
         player.setPlaybackSpeed(speed)
     }
-
     fun changeSpeed(speed: Float) {
         this.speed = speed
         player?.setPlaybackSpeed(speed)
     }
-
     fun startSpeedBoost() {
         if (!isSpeedBoostActive) {
             isSpeedBoostActive = true
             player?.setPlaybackSpeed(2f)
         }
     }
-
     fun stopSpeedBoost() {
         if (isSpeedBoostActive) {
             isSpeedBoostActive = false
             player?.setPlaybackSpeed(speed)
         }
     }
-
     fun seekTo(position: Long) {
         isSeeking = true
         currentTime = position
@@ -48,7 +42,6 @@ class VideoState {
             player?.play()
         }
     }
-
     fun togglePlay() {
         if (isPlaying) {
             player?.pause()
@@ -60,7 +53,6 @@ class VideoState {
             player?.play()
         }
     }
-
     fun toggleMute() {
         if (isMuted) {
             player?.volume = 1f
@@ -70,11 +62,9 @@ class VideoState {
             isMuted = true
         }
     }
-
     fun hasPipMode(context: Context): Boolean {
         return context.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
     }
-
     fun enterPipMode(context: Context) {
         if (hasPipMode(context)) {
             enablePip = true
@@ -85,11 +75,9 @@ class VideoState {
                     .setAspectRatio(Rational(16, 9))
                     .setSeamlessResizeEnabled(true)
             }
-
             context.findActivity().enterPictureInPictureMode(params.build())
         }
     }
-
     fun updateTime() {
         if (isSeeking) return
         isPlaying = player?.isPlaying ?: false 

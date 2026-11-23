@@ -1,4 +1,3 @@
-
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -28,12 +27,9 @@ fun MessageItem(search: String,
     val haptic = LocalHapticFeedback.current
     val privacyPrefs = remember { context.getSharedPreferences("privacy_prefs", Context.MODE_PRIVATE) }
     val isAutoTranslateEnabled = remember { privacyPrefs.getBoolean("auto_translate", false) }
-    
     var translatedText by remember { mutableStateOf<String?>(null) }
     var isTranslating by remember { mutableStateOf(false) }
     var linkMetadata by remember { mutableStateOf<LinkMetadata?>(null) }
-
-    
     LaunchedEffect(message.content, isAutoTranslateEnabled) {
         if (isAutoTranslateEnabled && !message.isDeleted && message.content != null && message.senderId != state.userData?.userId) {
             isTranslating = true
@@ -41,8 +37,6 @@ fun MessageItem(search: String,
             isTranslating = false
         }
     }
-
-    
     LaunchedEffect(message.content) {
         if (!message.isDeleted && message.content != null) {
             val url = LinkPreviewUtils.containsUrl(message.content)
@@ -51,7 +45,6 @@ fun MessageItem(search: String,
             }
         }
     }
-
     val centerX = LocalConfiguration.current.screenWidthDp.dp / 2
     val centerY = 64.dp / 2
     val scope = rememberCoroutineScope()
@@ -77,14 +70,11 @@ fun MessageItem(search: String,
         mutableStateOf(false)
     }
     var offset by remember { mutableStateOf(0.dp) }
-    
-    
     LaunchedEffect(offset) {
         if (offset > 70.dp && !released) {
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         }
     }
-
     val aoffset by animateDpAsState(targetValue = if (released) 0.dp else offset)
     val size by animateDpAsState(targetValue = if (offset > 70.dp) 30.dp else 20.dp)
     val brush = Brush.linearGradient(
@@ -129,10 +119,7 @@ fun MessageItem(search: String,
     var onClick by remember {
         mutableStateOf(false)
     }
-    
-    
     var showFloatingReactions by remember { mutableStateOf(false) }
-
     var showReactions by remember {
         mutableStateOf(false)
     }
@@ -225,9 +212,7 @@ fun MessageItem(search: String,
                         ) {
                             Icon(Icons.Default.AddCircle, contentDescription = null, tint = Color.Gray)
                         }
-                        
                         VerticalDivider(modifier = Modifier.height(20.dp), color = Color.White.copy(alpha = 0.1f))
-                        
                         IconButton(
                             onClick = { 
                                 selectionMode(message.msgId)
@@ -241,7 +226,6 @@ fun MessageItem(search: String,
                 }
             }
         }
-
         Icon(modifier = Modifier
             .size(size)
             .align(Alignment.CenterStart)
@@ -535,7 +519,6 @@ fun MessageItem(search: String,
                                 .background(Color.DarkGray.copy(alpha = 0.3f))
                                 .size(60.dp)
                         ) {
-
                         }
                         Text(text = stringResource(id = R.string.enviando_video),
                             modifier = Modifier.padding(top = if(message.forwarded && message.imgUrl=="") 0.dp else 5.dp, start = 10.dp, end = 10.dp),
@@ -551,7 +534,6 @@ fun MessageItem(search: String,
                     val isLocked = message.isEphemeral && message.senderId != state.userData?.userId && message.viewedAt == null
                     val senderIsVerified = if (isCurrentUser) state.userData?.pref?.isVerified == true else state.User2?.isVerified == true
                     val senderUsername = if (isCurrentUser) state.userData?.username else state.User2?.username
-                    
                     val imageModel = remember(message.imgUrl, message.imgUri, message.msgId) {
                         val directory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "ChatOk")
                         val localJpg = File(directory, "IMG_${message.msgId}.jpg")
@@ -571,9 +553,7 @@ fun MessageItem(search: String,
                             else -> message.imgUrl
                         }
                     }
-
                     if (isViewed) {
-                        
                         Row(
                             modifier = Modifier
                                 .padding(8.dp)
@@ -599,7 +579,6 @@ fun MessageItem(search: String,
                                     .clip(RoundedCornerShape(12.dp))
                                     .then(if (isLocked) Modifier.blur(20.dp) else Modifier)
                             )
-                            
                             if (senderIsVerified) {
                                 Text(
                                     text = stringResource(R.string.watermark_format, senderUsername ?: ""),
@@ -608,7 +587,6 @@ fun MessageItem(search: String,
                                     modifier = Modifier.align(Alignment.BottomEnd).padding(8.dp)
                                 )
                             }
-                            
                             if (isLocked) {
                                 Icon(Icons.Rounded.Visibility, contentDescription = null, tint = Color.White, modifier = Modifier.size(40.dp))
                             }
@@ -671,7 +649,6 @@ fun MessageItem(search: String,
                                 .background(Color.DarkGray.copy(alpha = 0.3f))
                                 .size(60.dp)
                         ) {
-
                         }
                         Text(text = stringResource(id = R.string.enviando_imagen),
                             modifier = Modifier.padding(top = if(message.forwarded && message.imgUrl=="") 0.dp else 5.dp, start = 10.dp, end = 10.dp),
@@ -747,7 +724,6 @@ fun MessageItem(search: String,
                         )
                     }
                 }
-                
                 if (linkMetadata != null && !message.isDeleted) {
                     Column(
                         modifier = Modifier
@@ -790,7 +766,6 @@ fun MessageItem(search: String,
                         }
                     }
                 }
-
     if (translatedText != null) {
         Text(
             text = stringResource(R.string.traducido),
@@ -799,7 +774,6 @@ fun MessageItem(search: String,
             modifier = Modifier.padding(horizontal = 10.dp)
         )
     }
-
     if (message.content?.startsWith("🎁") == true) {
         val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.animation3))
         LottieAnimation(
@@ -810,7 +784,6 @@ fun MessageItem(search: String,
                 .size(100.dp)
         )
     }
-
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp),
         modifier = Modifier.padding(end = 8.dp, bottom = if(message.reaction.isNotEmpty()) 10.dp else 5.dp, start = 8.dp, top = 2.dp)) {
         val time = message.time?.toDate()
@@ -883,7 +856,6 @@ fun MessageItem(search: String,
                                         .padding(end = 8.dp)
                                         .clip(CircleShape)
                                         .size(30.dp)
-
                                 )
                                 Text(
                                     text = it.username,

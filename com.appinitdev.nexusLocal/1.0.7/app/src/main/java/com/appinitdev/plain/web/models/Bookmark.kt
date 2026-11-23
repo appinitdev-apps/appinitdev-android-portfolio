@@ -1,4 +1,3 @@
-
 @Serializable
 data class Bookmark(
     val id: ID,
@@ -13,7 +12,6 @@ data class Bookmark(
     val createdAt: Instant,
     val updatedAt: Instant,
 )
-
 data class BookmarkGroup(
     val id: ID,
     val name: String,
@@ -22,7 +20,6 @@ data class BookmarkGroup(
     val createdAt: Instant,
     val updatedAt: Instant,
 )
-
 data class BookmarkInput(
     val url: String,
     val title: String,
@@ -30,7 +27,6 @@ data class BookmarkInput(
     val pinned: Boolean,
     val sortOrder: Int,
 )
-
 fun DBookmark.toModel(): Bookmark {
     return Bookmark(
         id = ID(id),
@@ -46,7 +42,6 @@ fun DBookmark.toModel(): Bookmark {
         updatedAt = updatedAt,
     )
 }
-
 fun DBookmarkGroup.toModel(): BookmarkGroup {
     return BookmarkGroup(
         id = ID(id),

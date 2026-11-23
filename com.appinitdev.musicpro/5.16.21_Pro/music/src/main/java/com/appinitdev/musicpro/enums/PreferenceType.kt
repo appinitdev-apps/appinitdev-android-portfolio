@@ -1,4 +1,3 @@
-
 enum class PreferenceType {
     HEADER,
     SUB_HEADER,

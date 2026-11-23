@@ -1,15 +1,12 @@
-
 object PeerStatusManager {
     private const val INITIAL_RECONNECT_DELAY_MS = 1000L
     private const val MAX_RECONNECT_DELAY_MS = 60000L
-
     private data class PeerState(
         var socket: WebSocket? = null,
         var reconnectJob: Job? = null,
         var reconnectAttempts: Int = 0,
         var online: Boolean = false,
     )
-
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val client: OkHttpClient by lazy {
         HttpClientManager.createUnsafeOkHttpClient()
@@ -19,9 +16,7 @@ object PeerStatusManager {
             .build()
     }
     private val states = ConcurrentHashMap<String, PeerState>()
-
     private var started = false
-
     @Synchronized
     fun start() {
         if (started) return
@@ -29,7 +24,6 @@ object PeerStatusManager {
         LogCat.d("peer status: start")
         scope.launch { reconnectAll() }
     }
-
     @Synchronized
     fun stop() {
         LogCat.d("peer status: stop")
@@ -44,32 +38,25 @@ object PeerStatusManager {
             setOnline(peerId, false)
         }
     }
-
     @Synchronized
     fun disconnected(peerId: String) {
         LogCat.d("peer status: incoming disconnected peer=$peerId")
         setOnline(peerId, false)
     }
-
     @Synchronized
     fun isOnline(peerId: String): Boolean = states[peerId]?.online == true
-
-     
     @Synchronized
     fun onlinePeers(): Set<String> = states.entries.filter { it.value.online }.map { it.key }.toSet()
-
     fun reconnectNow(reason: String) {
         scope.launch {
             LogCat.d("peer status: reconnect triggered reason=$reason")
             reconnectAll()
         }
     }
-
     private suspend fun reconnectAll() {
         if (!started) return
         loadConnectablePeers().forEach { forceReconnectPeer(it, reason = "reconnect_all") }
     }
-
     private suspend fun reconnectOfflinePeers(reason: String) {
         if (!started) return
         LogCat.d("peer status: reconnect triggered reason=$reason")
@@ -77,7 +64,6 @@ object PeerStatusManager {
             .filter { !isOnline(it.id) }
             .forEach { forceReconnectPeer(it, reason = reason) }
     }
-
     private suspend fun reconnectPeer(peerId: String, reason: String) {
         if (!started) return
         val state = state(peerId)
@@ -89,11 +75,9 @@ object PeerStatusManager {
         val peer = AppDatabase.instance.peerDao().getById(peerId) ?: return
         if (!shouldConnect(peer)) return
         val key = ChatCacheManager.peerKeyCache[peer.id] ?: return
-
         LogCat.d("peer status: reconnect peer=$peerId reason=$reason")
         NearbyDiscoverManager.discoverSpecificDevice(peer.id, key)
         delay(500)
-
         val refreshedPeer = AppDatabase.instance.peerDao().getById(peer.id) ?: peer
         if (refreshedPeer.ip.isEmpty() || refreshedPeer.port <= 0) {
             scheduleReconnect(peer.id)
@@ -101,7 +85,6 @@ object PeerStatusManager {
         }
         openSocket(refreshedPeer, key)
     }
-
     private suspend fun forceReconnectPeer(peer: DPeer, reason: String) {
         if (!started) return
         val state = state(peer.id)
@@ -115,23 +98,19 @@ object PeerStatusManager {
         LogCat.d("peer status: reconnect peer=$peer.Id reason=$reason")
         openSocket(peer, key)
     }
-
     private suspend fun openSocket(peer: DPeer, key: ByteArray) {
         val peerId = peer.id
         LogCat.d("peer status: open socket peer=$peerId url=${peer.getStatusWsUrl()}")
-
         val timestamp = System.currentTimeMillis().toString()
         val signature = SignatureHelper.signTextAsync("$timestamp${TempData.clientId}")
         val payload = CryptoHelper.chaCha20Encrypt(key, "$signature|$timestamp|${TempData.clientId}")
         val request = Request.Builder()
             .url("${peer.getStatusWsUrl()}?cid=${TempData.clientId}")
             .build()
-
         val listener = object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 webSocket.send(payload.toByteString())
             }
-
             override fun onMessage(webSocket: WebSocket, text: String) {
                 if (text != "ok") return
                 val s = state(peerId)
@@ -142,16 +121,13 @@ object PeerStatusManager {
                 setOnline(peerId, true)
                 LogCat.d("peer status: outgoing online peer=$peerId")
             }
-
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 handleClosed(webSocket)
             }
-
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 LogCat.e("peer status: outgoing failed peer=$peerId code=${response?.code} message=${t.message}")
                 handleClosed(webSocket)
             }
-
             private fun handleClosed(webSocket: WebSocket) {
                 val s = state(peerId)
                 val tracked = s.socket == null || s.socket == webSocket
@@ -164,7 +140,6 @@ object PeerStatusManager {
                 scheduleReconnect(peerId)
             }
         }
-
         val socket = client.newWebSocket(request, listener)
         val state = state(peerId)
         if (state.reconnectJob == null) {
@@ -173,7 +148,6 @@ object PeerStatusManager {
             socket.cancel()
         }
     }
-
     private fun disconnectOutgoing(peerId: String, reason: String) {
         val state = state(peerId)
         state.socket?.cancel()
@@ -183,7 +157,6 @@ object PeerStatusManager {
         }
         setOnline(peerId, false)
     }
-
     private fun scheduleReconnect(peerId: String) {
         if (!started) {
             LogCat.d("peer status: schedule reconnect skipped peer=$peerId stopped=true")
@@ -206,18 +179,15 @@ object PeerStatusManager {
             reconnectPeer(peerId, reason = "backoff")
         }
     }
-
     private suspend fun loadConnectablePeers(): List<DPeer> {
         val peers = AppDatabase.instance.peerDao().getAllPaired()
         val connectable = peers.filter { shouldConnect(it) }
         LogCat.d("peer status: peers total=${peers.size} connectable=${connectable.size}")
         return connectable
     }
-
     private fun shouldConnect(peer: DPeer): Boolean {
         return peer.status == "paired" && peer.key.isNotEmpty() && TempData.clientId < peer.id
     }
-
     @Synchronized
     fun setOnline(peerId: String, online: Boolean) {
         val state = state(peerId)
@@ -227,6 +197,5 @@ object PeerStatusManager {
         sendEvent(PeerOnlineStatusChangedEvent(peerId, online))
         sendEvent(WebSocketEvent(EventType.PEER_STATUS_UPDATED, JsonHelper.jsonEncode(PeerStatusData(peerId, online))))
     }
-
     private fun state(peerId: String): PeerState = states.getOrPut(peerId) { PeerState() }
 }

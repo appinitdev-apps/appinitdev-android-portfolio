@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BackupRestorePage(
@@ -23,7 +22,6 @@ fun BackupRestorePage(
             }
         }
     }
-
     PScaffold(
         topBar = {
             PTopAppBar(navController = navController, title = stringResource(Res.string.backup_restore))
@@ -46,17 +44,12 @@ fun BackupRestorePage(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 48.dp, bottom = 48.dp)
                     )
-
                     PCircularButton(
                         text = stringResource(Res.string.backup),
                         icon = Res.drawable.database_backup,
                         description = stringResource(Res.string.backup),
                         onClick = {
                             val fileName = "backup_" + Date().formatName() + ".zip"
-                            
-                            
-                            
-                            
                             if (isP()) {
                                 backupRestoreVM.backupToFile(context, fileName)
                             } else {
@@ -64,9 +57,7 @@ fun BackupRestorePage(
                             }
                         }
                     )
-
                     Spacer(modifier = Modifier.height(40.dp))
-
                     PCircularButton(
                         text = stringResource(Res.string.restore),
                         icon = Res.drawable.archive_restore,

@@ -1,4 +1,3 @@
-
 object FileHelper {
     fun fileFromAsset(
         context: Context,
@@ -8,7 +7,6 @@ object FileHelper {
             writeBytes(context.assets.open(name).readBytes())
         }
     }
-
     fun writeFile(
         context: Context,
         filename: String,
@@ -18,7 +16,6 @@ object FileHelper {
             it.write(content)
         }
     }
-
     fun hasStoragePermission(context: Context): Boolean {
         return if (isRPlus()) {
             Environment.isExternalStorageManager()
@@ -26,7 +23,6 @@ object FileHelper {
             context.hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
     }
-
     fun getFileId(path: String): String {
         if (path.isEmpty()) {
             return ""
@@ -39,14 +35,12 @@ object FileHelper {
             Base64.NO_WRAP
         )
     }
-
     fun rename(
         filePath: String,
         newName: String,
     ): File? {
         return rename(File(filePath), newName)
     }
-
     fun rename(
         file: File,
         newName: String,
@@ -61,7 +55,6 @@ object FileHelper {
         }
         return null
     }
-
     fun copyFile(
         context: Context,
         pathFrom: Uri,
@@ -74,11 +67,9 @@ object FileHelper {
             }
         }
     }
-
     fun copyFileToDownloads(path: String, newName: String = ""): String {
         return copyFileToPublicDir(path, Environment.DIRECTORY_DOWNLOADS, newName)
     }
-
     fun copyFileToPublicDir(path: String, dirName: String, newName: String = ""): String {
         try {
             val fileName = newName.ifEmpty { path.getFilenameFromPath() }
@@ -92,7 +83,6 @@ object FileHelper {
         }
         return ""
     }
-
     fun copyFileToDownloads(context: Context, uri: Uri): String {
         try {
             val fileName = uri.getFileName(context)
@@ -124,8 +114,6 @@ object FileHelper {
         }
         return ""
     }
-
-
     fun createPublicFile(fileName: String, dirName: String): File {
         val dir = PathHelper.getPlainPublicDir(dirName)
         if (!dir.exists()) {
@@ -137,6 +125,4 @@ object FileHelper {
         }
         return file
     }
-
-
 }

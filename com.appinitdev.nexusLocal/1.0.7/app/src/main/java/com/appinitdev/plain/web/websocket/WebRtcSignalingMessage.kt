@@ -1,4 +1,3 @@
-
 @Serializable
 data class WebRtcSignalingMessage(
     val type: String,

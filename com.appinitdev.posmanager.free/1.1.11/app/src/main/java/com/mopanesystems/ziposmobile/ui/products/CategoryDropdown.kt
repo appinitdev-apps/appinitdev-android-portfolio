@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryDropdown(
@@ -7,7 +6,6 @@ fun CategoryDropdown(
     onCategorySelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded }
@@ -18,10 +16,8 @@ fun CategoryDropdown(
             readOnly = true,
             label = { Text(stringResource(R.string.categor_ap)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            
             modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
         )
-
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }

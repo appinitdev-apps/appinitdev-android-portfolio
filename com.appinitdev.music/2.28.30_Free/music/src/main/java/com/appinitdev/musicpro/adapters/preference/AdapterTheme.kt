@@ -1,6 +1,4 @@
-
 class AdapterTheme : RecyclerView.Adapter<VerticalListViewHolder>() {
-
     private val list = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         arrayListOf(
                 -1, 
@@ -40,7 +38,6 @@ class AdapterTheme : RecyclerView.Adapter<VerticalListViewHolder>() {
                 ThemeConstants.DAY_NIGHT,
         )
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         return when (viewType) {
             RecyclerViewUtils.TYPE_HEADER -> {
@@ -58,25 +55,21 @@ class AdapterTheme : RecyclerView.Adapter<VerticalListViewHolder>() {
             else -> throw IllegalStateException("Unknown view type")
         }
     }
-
     override fun onBindViewHolder(holder: VerticalListViewHolder, position: Int) {
         if (holder is Holder) {
             val position = position - 1
             val theme = list[position]
             holder.binding.name.text = holder.itemView.context.getThemeName(theme)
-
             if (AppearancePreferences.getLastDarkTheme() == list[position] || AppearancePreferences.getLastLightTheme() == list[position]) {
                 holder.binding.name.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dot_12dp, 0, 0, 0)
             } else {
                 holder.binding.name.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             }
-
             if (AppearancePreferences.getTheme() == list[position]) {
                 holder.binding.ring.visible(false)
             } else {
                 holder.binding.ring.invisible(false)
             }
-
             holder.binding.name.setOnClickListener {
                 if (AppearancePreferences.setTheme(list[position])) {
                     when (list[position]) {
@@ -97,7 +90,6 @@ class AdapterTheme : RecyclerView.Adapter<VerticalListViewHolder>() {
                             AppearancePreferences.setLastDarkTheme(list[position])
                         }
                     }
-
                     notifyDataSetChanged()
                 }
             }
@@ -106,11 +98,9 @@ class AdapterTheme : RecyclerView.Adapter<VerticalListViewHolder>() {
             holder.binding.summary.setText(R.string.theme_summary)
         }
     }
-
     override fun getItemCount(): Int {
         return list.size.plus(1)
     }
-
     override fun getItemViewType(position: Int): Int {
         return when {
             position.isZero() -> {
@@ -124,13 +114,9 @@ class AdapterTheme : RecyclerView.Adapter<VerticalListViewHolder>() {
             }
         }
     }
-
     inner class Holder(val binding: AdapterThemeBinding) : VerticalListViewHolder(binding.root)
-
     inner class Header(val binding: AdapterPreferenceHeaderBinding) : VerticalListViewHolder(binding.root)
-
     inner class Divider(val binding: AdapterDividerBinding) : VerticalListViewHolder(binding.root)
-
     private fun Context.getThemeName(theme: Int): String {
         return when (theme) {
             ThemeConstants.LIGHT_THEME -> getString(R.string.light)

@@ -1,4 +1,3 @@
-
 class FeedEntryViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
     val showSelectTagsDialog = mutableStateOf(false)
     val item = mutableStateOf<DFeedEntry?>(null)

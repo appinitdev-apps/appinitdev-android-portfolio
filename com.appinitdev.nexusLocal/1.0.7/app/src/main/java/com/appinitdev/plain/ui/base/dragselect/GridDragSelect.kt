@@ -1,4 +1,3 @@
-
 fun Modifier.gridDragSelect(
     items: List<IData>,
     state: DragSelectState,
@@ -11,25 +10,19 @@ fun Modifier.gridDragSelect(
     if (enableAutoScroll) {
         LaunchedEffect(state.autoScrollSpeed.floatValue) {
             if (state.autoScrollSpeed.floatValue == 0f) return@LaunchedEffect
-
             while (isActive) {
                 state.gridState()?.scrollBy(state.autoScrollSpeed.floatValue)
                 delay(10)
             }
         }
     }
-
     val haptics: HapticFeedback? =
         if (!enableHaptics) null
         else hapticFeedback ?: GridDragSelectDefaults.hapticsFeedback
-
     if (!state.selectMode) {
         return@composed this
     }
     pointerInput(Unit) {
-        
-        
-        
         fun findItemIndex(gridState: LazyGridState, position: Offset): Int? {
             val found = gridState.layoutInfo.visibleItemsInfo.find { itemInfo ->
                 itemInfo.size.toIntRect().contains(position.round() - itemInfo.offset)
@@ -39,7 +32,6 @@ fun Modifier.gridDragSelect(
                 val idx = items.indexOfFirst { it.id == key }
                 return if (idx >= 0) idx else null
             }
-            
             val lastItem = gridState.layoutInfo.visibleItemsInfo.lastOrNull()
                 ?.takeIf { it.index == gridState.layoutInfo.totalItemsCount - 1 }
             if (lastItem != null && position.y > lastItem.offset.y) {
@@ -47,7 +39,6 @@ fun Modifier.gridDragSelect(
             }
             return null
         }
-
         detectDragGestures(
             onDragStart = { offset ->
                 state.gridState()?.let { gridState ->
@@ -63,14 +54,11 @@ fun Modifier.gridDragSelect(
                 state.whenDragging { dragState ->
                     val gridState = gridState() ?: return@whenDragging
                     autoScrollSpeed.value = gridState.calculateScrollSpeed(change, scrollThreshold)
-
                     val itemPosition = findItemIndex(gridState, change.position)
                         ?: return@whenDragging
-
                     if (itemPosition == dragState.current) {
                         return@whenDragging
                     }
-
                     val inRangeIds = items.getWithinRangeIds(itemPosition, dragState)
                     val shouldSelect = state.isSelected(dragState.initialId)
                     inRangeIds.forEach {
@@ -86,21 +74,18 @@ fun Modifier.gridDragSelect(
         )
     }
 }
-
 private fun LazyGridState.calculateScrollSpeed(
     change: PointerInputChange,
     scrollThreshold: Float,
 ): Float {
     val distanceFromTop: Float = change.position.y
     val distanceFromBottom: Float = layoutInfo.viewportSize.height - distanceFromTop
-
     return when {
         distanceFromBottom < scrollThreshold -> scrollThreshold - distanceFromBottom
         distanceFromTop < scrollThreshold -> -(scrollThreshold - distanceFromTop)
         else -> 0f
     }
 }
-
 private fun List<IData>.getWithinRangeIds(
     itemPosition: Int,
     dragState: DragState,
@@ -110,4 +95,3 @@ private fun List<IData>.getWithinRangeIds(
         index in initial..itemPosition || index in itemPosition..initial
     }.map { it.id }
 }
-

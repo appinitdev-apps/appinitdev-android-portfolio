@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun <T : IData> SearchableTopBar(
@@ -15,7 +14,6 @@ fun <T : IData> SearchableTopBar(
     onSearchAction: (String) -> Unit
 ) {
     val scope = rememberCoroutineScope()
-
     if (viewModel.showSearchBar.value) {
         ListSearchBar(
             viewModel = viewModel,
@@ -28,7 +26,6 @@ fun <T : IData> SearchableTopBar(
         )
         return
     }
-    
     val topBarModifier = if (scrollToTop != null) {
         Modifier.combinedClickable(onClick = {}, onDoubleClick = {
             scope.launch {
@@ -38,7 +35,6 @@ fun <T : IData> SearchableTopBar(
     } else {
         Modifier
     }
-    
     PTopAppBar(
         modifier = topBarModifier,
         navController = navController,

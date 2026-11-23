@@ -1,4 +1,3 @@
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -9,28 +8,24 @@ class MainActivity : ComponentActivity() {
             val application = context.applicationContext as Application
             val viewModel: MathViewModel = remember { MathViewModel(application) }
             val themeMode by viewModel.themeMode.collectAsState()
-
             MathAppTheme(themeMode = themeMode) {
                 MainMathApp(viewModel = viewModel)
             }
         }
     }
 }
-
 @Composable
 fun MainMathApp(
     viewModel: MathViewModel
 ) {
     val context = LocalContext.current
     val currentScreen by viewModel.currentScreen.collectAsState()
-
     BackHandler(enabled = true) {
         val handled = viewModel.navigateBack()
         if ((!handled) && context is Activity) {
             context.finish()
         }
     }
-
     Crossfade(
         targetState = currentScreen,
         modifier = Modifier.fillMaxSize(),

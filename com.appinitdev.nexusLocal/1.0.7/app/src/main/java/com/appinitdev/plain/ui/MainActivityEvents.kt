@@ -1,10 +1,8 @@
-
 @SuppressLint("CheckResult")
 internal fun MainActivity.initEvents() {
     lifecycleScope.launch {
         Channel.sharedFlow.collect { event ->
             if (isDestroyed || isFinishing) return@collect
-
             when (event) {
                 is HttpServerStateChangedEvent -> {
                     mainVM.httpServerError = HttpServerManager.httpServerError
@@ -15,11 +13,8 @@ internal fun MainActivity.initEvents() {
                         }
                     }
                 }
-
                 is PermissionsResultEvent -> {
-                    
                 }
-
                 is HStartScreenMirrorEvent -> {
                     try {
                         if (event.audio && !Permission.RECORD_AUDIO.can(this@initEvents)) recordAudioForMirror.launch(android.Manifest.permission.RECORD_AUDIO)
@@ -28,7 +23,6 @@ internal fun MainActivity.initEvents() {
                         LogCat.e("Error launching screen capture: ${e.message}")
                     }
                 }
-
                 is HRequestScreenMirrorAudioEvent -> {
                     try {
                         if (Permission.RECORD_AUDIO.can(this@initEvents)) sendScreenMirrorAudioStatus(true)
@@ -37,7 +31,6 @@ internal fun MainActivity.initEvents() {
                         LogCat.e("Error requesting RECORD_AUDIO: ${e.message}")
                     }
                 }
-
                 is IgnoreBatteryOptimizationEvent -> {
                     try {
                         ignoreBatteryOptimizationActivityLauncher.launch(Intent().apply {
@@ -47,12 +40,10 @@ internal fun MainActivity.initEvents() {
                         LogCat.e("Error launching battery optimization: ${e.message}")
                     }
                 }
-
                 is RestartAppEvent -> {
                     startActivity(Intent(this@initEvents, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK })
                     Runtime.getRuntime().exit(0)
                 }
-
                 is HOpenAccessibilitySettingsEvent -> {
                     try {
                         val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
@@ -62,55 +53,26 @@ internal fun MainActivity.initEvents() {
                         LogCat.e("Error opening accessibility settings: ${e.message}")
                     }
                 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 is HOpenWebSettingsEvent -> {
                     try {
                         val nav = navControllerState.value
                         val alreadyThere = nav?.currentBackStackEntry?.destination?.hasRoute<Routing.WebSettings>() == true
-
                         if (AppHelper.foregrounded()) {
                             if (!alreadyThere) nav?.navigate(Routing.WebSettings)
                         } else {
-                            
-                            
                             val context = this@initEvents 
-
                             val intent = Intent(context, MainActivity::class.java).apply {
                                 addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                                 putExtra("navigate_to_web_settings", true)
                             }
-
-                            
                             val pendingIntent = android.app.PendingIntent.getActivity(
                                 context,
                                 1001,
                                 intent,
                                 android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
                             )
-
-                            
-                            
                             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
                             val channelId = "web_access_channel" 
-
                             val notification = androidx.core.app.NotificationCompat.Builder(context, channelId)
                                 .setContentTitle(getString(Res.string.permission_required))
                                 .setContentText(getString(Res.string.web_settings))
@@ -119,7 +81,6 @@ internal fun MainActivity.initEvents() {
                                 .setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)
                                 .setContentIntent(pendingIntent)
                                 .build()
-
                             notificationManager.notify(999, notification)
                             LogCat.d("App en background: Se envió notificación para abrir WebSettings de forma segura.")
                         }
@@ -127,24 +88,20 @@ internal fun MainActivity.initEvents() {
                         LogCat.e("Error navigating to WebSettings: ${e.message}")
                     }
                 }
-
                 is PickFileEvent -> handlePickFileEvent(event)
                 is ExportFileEvent -> handleExportFileEvent(event)
                 is ConfirmToAcceptLoginEvent -> {
                     pendingLoginEvent = event
                     openNew()
                 }
-
                 is PairingRequestReceivedEvent -> {
                     pendingPairingEvent = event
                     openNew()
                 }
-
                 is ChannelInviteReceivedEvent -> {
                     pendingChannelInviteEvent = event
                     openNew()
                 }
-
                 is PairingCanceledEvent -> {
                     pendingPairingEvent = null
                 }
@@ -157,7 +114,6 @@ internal fun MainActivity.initEvents() {
         }
     }
 }
-
 internal suspend fun MainActivity.doWhenReadyAsync() {
     val webEnabled = WebPreference.getAsync()
     val permEnabled = Permission.NOTIFICATION_LISTENER.isEnabledAsync(this)

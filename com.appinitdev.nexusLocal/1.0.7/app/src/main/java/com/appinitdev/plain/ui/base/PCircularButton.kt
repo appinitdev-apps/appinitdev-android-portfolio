@@ -1,4 +1,3 @@
-
 @Composable
 fun PCircularButton(
     text: String,
@@ -25,9 +24,7 @@ fun PCircularButton(
                 modifier = Modifier.size(48.dp),
             )
         }
-
         VerticalSpace(12.dp)
-
         Text(
             text = text,
             style = MaterialTheme.typography.titleMedium,

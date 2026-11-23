@@ -1,40 +1,19 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
 class PageSortDialog : ScopedBottomSheetFragment() {
-
     private lateinit var binding: DialogSortPageBinding
-
     private val pageType: String by lazy {
         requireArguments().getString(PageSort.PAGE_TYPE, PageSort.PAGE_TYPE_ALBUM)
     }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DialogSortPageBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         if (pageType == PageSort.PAGE_TYPE_ALBUM) {
             binding.trackNumber.visibility = View.VISIBLE
         }
-
         val currentSort = getCurrentSort()
         val currentOrder = getCurrentOrder()
-
         when (currentSort) {
             CommonPreferencesConstants.BY_TITLE -> binding.title.isChecked = true
             CommonPreferencesConstants.BY_ARTIST -> binding.artist.isChecked = true
@@ -50,10 +29,8 @@ class PageSortDialog : ScopedBottomSheetFragment() {
             }
             CommonPreferencesConstants.BY_COMPOSER -> binding.composer.isChecked = true
         }
-
         binding.normal.isChecked = currentOrder == CommonPreferencesConstants.ASCENDING
         binding.reversed.isChecked = currentOrder == CommonPreferencesConstants.DESCENDING
-
         binding.sortByChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             when (checkedIds.firstOrNull()) {
                 binding.title.id -> setSort(CommonPreferencesConstants.BY_TITLE)
@@ -68,7 +45,6 @@ class PageSortDialog : ScopedBottomSheetFragment() {
                 binding.composer.id -> setSort(CommonPreferencesConstants.BY_COMPOSER)
             }
         }
-
         binding.sortingStyleChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             when (checkedIds.firstOrNull()) {
                 binding.normal.id -> setOrder(CommonPreferencesConstants.ASCENDING)
@@ -76,7 +52,6 @@ class PageSortDialog : ScopedBottomSheetFragment() {
             }
         }
     }
-
     private fun getCurrentSort(): Int {
         return when (pageType) {
             PageSort.PAGE_TYPE_ALBUM -> PagePreferences.getAlbumSort()
@@ -89,7 +64,6 @@ class PageSortDialog : ScopedBottomSheetFragment() {
             else -> CommonPreferencesConstants.BY_TITLE
         }
     }
-
     private fun getCurrentOrder(): Int {
         return when (pageType) {
             PageSort.PAGE_TYPE_ALBUM -> PagePreferences.getAlbumOrder()
@@ -102,7 +76,6 @@ class PageSortDialog : ScopedBottomSheetFragment() {
             else -> CommonPreferencesConstants.ASCENDING
         }
     }
-
     private fun setSort(value: Int) {
         when (pageType) {
             PageSort.PAGE_TYPE_ALBUM -> PagePreferences.setAlbumSort(value)
@@ -114,7 +87,6 @@ class PageSortDialog : ScopedBottomSheetFragment() {
             PageSort.PAGE_TYPE_COMPOSER -> PagePreferences.setComposerSort(value)
         }
     }
-
     private fun setOrder(value: Int) {
         when (pageType) {
             PageSort.PAGE_TYPE_ALBUM -> PagePreferences.setAlbumOrder(value)
@@ -126,10 +98,8 @@ class PageSortDialog : ScopedBottomSheetFragment() {
             PageSort.PAGE_TYPE_COMPOSER -> PagePreferences.setComposerOrder(value)
         }
     }
-
     companion object {
         private const val TAG = "PageSortDialog"
-
         fun newInstance(pageType: String): PageSortDialog {
             val args = Bundle()
             args.putString(PageSort.PAGE_TYPE, pageType)
@@ -137,13 +107,6 @@ class PageSortDialog : ScopedBottomSheetFragment() {
             fragment.arguments = args
             return fragment
         }
-
-         
-
-
-
-
-
         fun FragmentManager.showPageSortDialog(pageType: String): PageSortDialog {
             val dialog = newInstance(pageType)
             dialog.show(this, TAG)

@@ -1,27 +1,21 @@
-
 object PackageHelper {
     private val appLabelCache: MutableMap<String, String> = HashMap()
     private val appTypeCache: MutableMap<String, String> = HashMap()
     private val appCertsCache: MutableMap<String, List<DCertificate>> = HashMap()
-
     fun getPackageInfoMap(ids: List<String>): Map<String, PackageInfo?> {
         val packages = packageManager.getInstalledPackages(0).associateBy { it.packageName }
         val map = mutableMapOf<String, PackageInfo?>()
         ids.forEach { id ->
             map[id] = packages[id]
         }
-
         return map
     }
-
     fun isInstalled(packageName: String): Boolean {
         return getPackageInfoMap(listOf(packageName))[packageName] != null
     }
-
     fun isUninstalled(packageName: String): Boolean {
         return !isInstalled(packageName)
     }
-
     suspend fun searchAsync(query: String, limit: Int, offset: Int, sortBy: FileSortBy): List<DPackage> {
         try {
             var type = ""
@@ -42,14 +36,12 @@ object PackageHelper {
                     ids = t.value.split(",").toSet()
                 }
             }
-
             val apps = mutableListOf<DPackageStub>()
             val appInfos = packageManager.getInstalledApplications(0)
             appInfos.forEach { appInfo ->
                 if (ids.isNotEmpty() && !ids.contains(appInfo.packageName)) {
                     return@forEach
                 }
-
                 if (type.isNotEmpty()) {
                     val appType = getAppType(appInfo)
                     if (appType != type) {
@@ -58,7 +50,6 @@ object PackageHelper {
                 }
                 apps.add(DPackageStub(appInfo, appInfo.packageName, getLabel(appInfo)))
             }
-
             if (query.isEmpty() || text.isEmpty()) {
                 return apps.map {
                     try {
@@ -71,7 +62,6 @@ object PackageHelper {
                     }
                 }.sorted(sortBy).drop(offset).take(limit)
             }
-
             return apps.map {
                 try {
                     getPackage(it.appInfo, packageManager.getPackageInfo(it.id, PackageManager.GET_SIGNING_CERTIFICATES))
@@ -95,20 +85,16 @@ object PackageHelper {
             return emptyList()
         }
     }
-
     private fun getAppType(appInfo: ApplicationInfo): String {
         var appType = appTypeCache[appInfo.packageName]
         if (appType == null) {
             appType = if (appInfo.isSystemApp()) "system" else "user"
             appTypeCache[appInfo.packageName] = appType
         }
-
         return appType
     }
-
     fun getCerts(packageInfo: PackageInfo): List<DCertificate> {
         val packageName = packageInfo.packageName
-        
         if (packageName.isNullOrBlank()) {
             return emptyList()
         }
@@ -129,17 +115,14 @@ object PackageHelper {
             }
             appCertsCache[packageName] = certs
         }
-
         return certs
     }
-
     fun getPackage(packageName: String): DPackage {
         val flags = PackageManager.GET_SIGNING_CERTIFICATES
         val packageInfo = packageManager.getPackageInfo(packageName, flags)
         val appInfo = packageManager.getApplicationInfo(packageName, 0)
         return getPackage(appInfo, packageInfo)
     }
-
     private fun getPackage(appInfo: ApplicationInfo, packageInfo: PackageInfo): DPackage {
         return DPackage(
             appInfo,
@@ -154,7 +137,6 @@ object PackageHelper {
             Instant.fromEpochMilliseconds(packageInfo.lastUpdateTime),
         )
     }
-
     fun getPackageDetail(packageName: String): DPackageDetail {
         try {
             val flags = PackageManager.GET_SIGNING_CERTIFICATES
@@ -180,7 +162,6 @@ object PackageHelper {
             }, packageName, "", "", "", "", 0, emptyList(), Instant.DISTANT_PAST, Instant.DISTANT_PAST)
         }
     }
-
     fun cacheAppLabels() {
         try {
             val appInfos = packageManager.getInstalledApplications(0)
@@ -195,7 +176,6 @@ object PackageHelper {
             LogCat.d(ex.toString())
         }
     }
-
     suspend fun count(query: String): Int {
         if (query.isEmpty()) {
             return packageManager.getInstalledApplications(0).count()
@@ -213,7 +193,6 @@ object PackageHelper {
         }
         return searchAsync(query, Int.MAX_VALUE, 0, FileSortBy.SIZE_ASC).count()
     }
-
     private fun getLabel(packageInfo: ApplicationInfo): String {
         val key = packageInfo.packageName
         if (!appLabelCache.containsKey(key)) {
@@ -224,10 +203,8 @@ object PackageHelper {
                 LogCat.d(ex.toString())
             }
         }
-
         return appLabelCache[key] ?: ""
     }
-
     fun getLabel(packageName: String): String {
         try {
             val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
@@ -235,10 +212,8 @@ object PackageHelper {
         } catch (ex: Exception) {
             LogCat.d(ex.toString())
         }
-
         return ""
     }
-
     private fun drawableToBitmap(drawable: Drawable): Bitmap {
         val res = if (drawable.intrinsicWidth > 128 || drawable.intrinsicHeight > 128) {
             Bitmap.createBitmap(96, 96, Bitmap.Config.ARGB_8888)
@@ -252,13 +227,11 @@ object PackageHelper {
         drawable.draw(canvas)
         return res
     }
-
     fun getIcon(packageName: String): Bitmap {
         val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
         val iconDrawable = packageManager.getApplicationIcon(applicationInfo)
         return drawableToBitmap(iconDrawable)
     }
-
     private fun signatures(packageInfo: PackageInfo): MutableSet<Signature> {
         val signatures: MutableSet<Signature> = mutableSetOf()
         val signingInfo = packageInfo.signingInfo
@@ -270,23 +243,19 @@ object PackageHelper {
         packageInfo.signatures?.let { signatures.addAll(it) }
         return signatures
     }
-
     fun uninstall(context: Context, packageName: String) {
         context.startActivity(Intent(Intent.ACTION_DELETE, Uri.parse("package:$packageName")).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         })
     }
-
     fun canLaunch(packageName: String): Boolean {
         return packageManager.getLaunchIntentForPackage(packageName) != null
     }
-
     fun launch(context: Context, packageName: String) {
         context.startActivity(packageManager.getLaunchIntentForPackage(packageName)?.apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         })
     }
-
     fun viewInSettings(context: Context, packageName: String) {
         context.startActivity(Intent().apply {
             action = android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
@@ -294,20 +263,17 @@ object PackageHelper {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         })
     }
-
     fun install(context: Context, file: File) {
         try {
             if (!file.name.lowercase().endsWith(".apk")) {
                 LogCat.e("Invalid file extension: ${file.name}")
                 throw IllegalArgumentException("Invalid file extension: ${file.name}")
             }
-
             val uri = androidx.core.content.FileProvider.getUriForFile(
                 context,
                 com.appinitdev.nexusLocal.Constants.AUTHORITY,
                 file
             )
-
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(uri, "application/vnd.android.package-archive")
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -316,7 +282,6 @@ object PackageHelper {
                 putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true)
                 putExtra(Intent.EXTRA_INSTALLER_PACKAGE_NAME, context.applicationInfo.packageName)
             }
-
             context.startActivity(intent)
             LogCat.d("APK installation intent started for ${file.name}")
         } catch (e: Exception) {
@@ -324,7 +289,6 @@ object PackageHelper {
             throw e
         }
     }
-
     private fun List<DPackage>.sorted(sortBy: FileSortBy): List<DPackage> {
         return when (sortBy) {
             FileSortBy.NAME_ASC -> this.sortedBy { Pinyin.toPinyin(it.name).lowercase() }

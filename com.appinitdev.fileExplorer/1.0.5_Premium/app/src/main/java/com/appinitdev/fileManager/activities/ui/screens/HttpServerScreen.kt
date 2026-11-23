@@ -1,15 +1,10 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HttpServerScreen(onBack: () -> Unit) {
     val context = LocalContext.current
-
-    
     var isServerRunning by remember { mutableStateOf(HttpService.isRunning) }
     var ipAddress by remember { mutableStateOf(HttpService.obtenerIpLocal(context)) }
     var currentPort by remember { mutableStateOf(HttpService.puertoActual) }
-
-    
     var hasStoragePermission by remember {
         mutableStateOf(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -19,7 +14,6 @@ fun HttpServerScreen(onBack: () -> Unit) {
             }
         )
     }
-
     var hasNotificationPermission by remember {
         mutableStateOf(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -29,13 +23,11 @@ fun HttpServerScreen(onBack: () -> Unit) {
             }
         )
     }
-
     val notificationLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         hasNotificationPermission = isGranted
     }
-
     val storageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
@@ -43,8 +35,6 @@ fun HttpServerScreen(onBack: () -> Unit) {
             hasStoragePermission = Environment.isExternalStorageManager()
         }
     }
-
-    
     val statusColor by animateColorAsState(
         targetValue = when {
             !hasStoragePermission || !hasNotificationPermission -> MaterialTheme.colorScheme.tertiary
@@ -53,14 +43,10 @@ fun HttpServerScreen(onBack: () -> Unit) {
         },
         label = "SecurityColorAnimation"
     )
-
     val scaleFactor by animateFloatAsState(
         targetValue = if (isServerRunning) 1.02f else 1f,
         label = "SecurityButtonScale"
     )
-
-
-    
     val infiniteTransition = rememberInfiniteTransition(label = "IconAnimation")
     val iconScale by infiniteTransition.animateFloat(
         initialValue = 1f,
@@ -71,8 +57,6 @@ fun HttpServerScreen(onBack: () -> Unit) {
         ),
         label = "IconScale"
     )
-
-
     val iconAlpha by infiniteTransition.animateFloat(
         initialValue = 0.6f,
         targetValue = if (isServerRunning) 1f else 1f,
@@ -82,7 +66,6 @@ fun HttpServerScreen(onBack: () -> Unit) {
         ),
         label = "IconAlpha"
     )
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -108,8 +91,6 @@ fun HttpServerScreen(onBack: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-
-            
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(1f),
@@ -138,7 +119,6 @@ fun HttpServerScreen(onBack: () -> Unit) {
                             contentDescription = null,
                             tint = statusColor,
                             modifier = Modifier.size(56.dp).graphicsLayer {
-                                
                                 if (isServerRunning) {
                                     scaleX = iconScale
                                     scaleY = iconScale
@@ -148,9 +128,7 @@ fun HttpServerScreen(onBack: () -> Unit) {
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.height(24.dp))
-
                 InputChip(
                     selected = isServerRunning,
                     onClick = {},
@@ -171,8 +149,6 @@ fun HttpServerScreen(onBack: () -> Unit) {
                     }
                 )
             }
-
-            
             if (isServerRunning) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -204,19 +180,14 @@ fun HttpServerScreen(onBack: () -> Unit) {
                                 Icon(Icons.Default.ContentCopy, contentDescription = null, modifier = Modifier.size(16.dp))
                             }
                         }
-
                         HorizontalDivider(
                             modifier = Modifier.padding(vertical = 16.dp),
                             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
                         )
-
-
                     }
                 }
                 Spacer(modifier = Modifier.height(28.dp))
             }
-
-            
             Button(
                 onClick = {
                     if (!hasNotificationPermission && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -230,13 +201,9 @@ fun HttpServerScreen(onBack: () -> Unit) {
                         storageLauncher.launch(intent)
                         return@Button
                     }
-
                     val intent = Intent(context, HttpService::class.java)
                     if (!isServerRunning) {
-                        
                         context.startForegroundService(intent)
-
-                        
                         isServerRunning = true
                         currentPort = HttpService.puertoActual
                         ipAddress = HttpService.obtenerIpLocal(context)

@@ -1,4 +1,3 @@
-
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun MathMarkdownViewer(
@@ -9,7 +8,6 @@ fun MathMarkdownViewer(
     val isDarkTheme = isSystemInDarkTheme()
     var webViewRef by remember { mutableStateOf<WebView?>(null) }
     var isPageLoaded by remember { mutableStateOf(false) }
-
     fun sendData(webView: WebView?) {
         if (webView == null || markdownContent.isBlank()) return
         val mode = when (filterTab) {
@@ -25,7 +23,6 @@ fun MathMarkdownViewer(
             webView.evaluateJavascript(jsCode, null)
         }
     }
-
     AndroidView(
         modifier = modifier,
         factory = { context ->
@@ -37,14 +34,12 @@ fun MathMarkdownViewer(
                 settings.allowContentAccess = true
                 settings.builtInZoomControls = true
                 settings.displayZoomControls = false
-
                 webViewClient = object : WebViewClient() {
                     override fun onPageFinished(view: WebView?, url: String?) {
                         super.onPageFinished(view, url)
                         isPageLoaded = true
                         sendData(view)
                     }
-
                     override fun shouldInterceptRequest(
                         view: WebView?,
                         request: WebResourceRequest?
@@ -70,7 +65,6 @@ fun MathMarkdownViewer(
                         return super.shouldInterceptRequest(view, request)
                     }
                 }
-
                 loadUrl("file:///android_asset/katex/template.html")
                 webViewRef = this
             }
@@ -82,14 +76,12 @@ fun MathMarkdownViewer(
             }
         }
     )
-
     LaunchedEffect(markdownContent, filterTab, isDarkTheme) {
         if (isPageLoaded && webViewRef != null) {
             sendData(webViewRef)
         }
     }
 }
-
 private fun openImageAsset(context: android.content.Context, rawFileName: String): InputStream? {
     val fileName = rawFileName.substringAfterLast("/")
     return try {

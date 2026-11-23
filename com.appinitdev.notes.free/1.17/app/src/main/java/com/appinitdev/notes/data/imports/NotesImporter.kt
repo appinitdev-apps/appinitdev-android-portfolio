@@ -1,6 +1,4 @@
-
 class NotesImporter(private val app: Application, private val database: NotallyDatabase) {
-
     suspend fun import(
         uri: Uri,
         importSource: ImportSource,
@@ -45,7 +43,6 @@ class NotesImporter(private val app: Application, private val database: NotallyD
             tempDir.deleteRecursively()
         }
     }
-
     private suspend fun importFiles(
         files: List<FileAttachment>,
         sourceFolder: File,
@@ -74,7 +71,6 @@ class NotesImporter(private val app: Application, private val database: NotallyD
             )
         }
     }
-
     private suspend fun importAudios(
         audios: List<Audio>,
         sourceFolder: File,
@@ -97,13 +93,11 @@ class NotesImporter(private val app: Application, private val database: NotallyD
             )
         }
     }
-
     companion object {
         private const val TAG = "NotesImporter"
         const val IMPORT_CACHE_FOLDER = "imports"
     }
 }
-
 enum class ImportSource(
     val displayNameResId: Int,
     val mimeType: String,
@@ -140,5 +134,4 @@ enum class ImportSource(
         R.drawable.file_json,
     ),
 }
-
 const val FOLDER_OR_FILE_MIMETYPE = "FOLDER_OR_FILE"

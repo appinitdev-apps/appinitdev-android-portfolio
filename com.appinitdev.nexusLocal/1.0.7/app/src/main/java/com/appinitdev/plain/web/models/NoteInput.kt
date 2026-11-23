@@ -1,4 +1,3 @@
-
 @Serializable
 data class NoteInput(
     var title: String,

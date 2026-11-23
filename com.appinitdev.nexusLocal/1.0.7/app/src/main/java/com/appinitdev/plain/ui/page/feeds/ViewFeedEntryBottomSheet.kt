@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ViewFeedEntryBottomSheet(
@@ -13,7 +12,6 @@ fun ViewFeedEntryBottomSheet(
     val onDismiss = {
         feedEntriesVM.selectedItem.value = null
     }
-
     PModalBottomSheet(
         onDismissRequest = {
             onDismiss()
@@ -67,5 +65,3 @@ fun ViewFeedEntryBottomSheet(
         }
     }
 }
-
-

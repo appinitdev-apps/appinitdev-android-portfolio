@@ -1,9 +1,6 @@
-
 object VideoMediaStoreHelper : BaseMediaContentHelper() {
-    
     override val uriExternal: Uri = if (isQPlus()) MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL) else MediaStore.Video.Media.EXTERNAL_CONTENT_URI
     override val mediaType: MediaType = MediaType.VIDEO
-
     override fun getProjection(): Array<String> {
         val projection = mutableListOf(
            MediaStore.Video.Media._ID,
@@ -22,13 +19,10 @@ object VideoMediaStoreHelper : BaseMediaContentHelper() {
             projection.add(MediaStore.Video.Media.ORIENTATION)
             projection.add(MediaStore.Video.Media.IS_FAVORITE)
         }
-
         return projection.toTypedArray()
     }
-
     override fun buildBaseWhere(filterFields: List<FilterField>): ContentWhere {
         val where = ContentWhere()
-        
         filterFields.forEach {
             if (it.name == "text") {
                 where.add("${MediaStore.Video.Media.TITLE} LIKE ?", "%${it.value}%")
@@ -42,7 +36,6 @@ object VideoMediaStoreHelper : BaseMediaContentHelper() {
         }
         return where
     }
-
     suspend fun searchAsync(
         context: Context,
         query: String,
@@ -68,7 +61,6 @@ object VideoMediaStoreHelper : BaseMediaContentHelper() {
             DVideo(id, title, path, duration, size, width, height, rotation, bucketId, createdAt, updatedAt, takenAt, isFavorite)
         } ?: emptyList()
     }
-
     suspend fun getTagRelationStubsAsync(
         context: Context,
         query: String,

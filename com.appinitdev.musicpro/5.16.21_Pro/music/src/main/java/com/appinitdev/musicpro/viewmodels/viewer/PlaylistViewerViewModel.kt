@@ -1,42 +1,18 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
 @HiltViewModel(assistedFactory = PlaylistViewerViewModel.Factory::class)
 class PlaylistViewerViewModel @AssistedInject constructor(
         @Assisted val playlist: Playlist,
         private val playlistRepository: PlaylistRepository
 ) : ViewModel() {
-
     private val _data = MutableStateFlow<PageData?>(null)
-
-     
     val data: StateFlow<PageData?> = _data.asStateFlow()
-
     private val _currentPlaylist = MutableStateFlow(playlist)
-
-     
     val currentPlaylist: StateFlow<Playlist> = _currentPlaylist.asStateFlow()
-
     init {
         loadPlaylistData()
     }
-
     private fun loadPlaylistData() {
         viewModelScope.launch {
             val startTime = System.currentTimeMillis()
-
             combine(
                     playlistRepository.getPlaylistByIdFlow(playlist.id),
                     playlistRepository.getPlaylistPageData(playlist)
@@ -49,18 +25,11 @@ class PlaylistViewerViewModel @AssistedInject constructor(
                     val loadTime = System.currentTimeMillis() - startTime
                     Log.d(TAG, "loadPlaylistData: '${currentPlaylist.name}', sort=${currentPlaylist.sortOrder}")
                     Log.d(TAG, "  - Songs: ${pageData.songs.size}, load time: $loadTime ms")
-
                     _currentPlaylist.value = currentPlaylist
                     _data.value = pageData.copy(songs = pageData.songs.sortedByPlaylist(currentPlaylist))
                 }
         }
     }
-
-     
-
-
-
-
     private fun List<Audio>.sortedByPlaylist(playlist: Playlist): List<Audio> {
         if (playlist.sortOrder == -1) return this
         val asc = playlist.sortStyle == CommonPreferencesConstants.ASCENDING
@@ -78,24 +47,11 @@ class PlaylistViewerViewModel @AssistedInject constructor(
             else -> this
         }
     }
-
-     
-
-
-
     fun resort() = Unit
-
-     
     @AssistedFactory
     interface Factory {
-         
-
-
-
-
         fun create(playlist: Playlist): PlaylistViewerViewModel
     }
-
     companion object {
         private const val TAG = "PlaylistViewerViewModel"
     }

@@ -1,4 +1,3 @@
-
 @Composable
 fun NotificationAppListItem(
     app: DPackage,

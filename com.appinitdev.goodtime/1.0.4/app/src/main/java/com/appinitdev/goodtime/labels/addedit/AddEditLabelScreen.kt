@@ -1,21 +1,3 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditLabelScreen(
@@ -25,25 +7,18 @@ fun AddEditLabelScreen(
     onNavigateBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
     val isEditMode = labelName.isNotEmpty()
     val context = LocalContext.current
-
     val listState = rememberScrollState()
-
     LaunchedEffect(labelName) {
         val defaultLabelDisplayName = context.getString(R.string.labels_default_label_name)
         viewModel.init(labelName, defaultLabelDisplayName)
     }
-
     if (uiState.isLoading) return
-
     val label = uiState.tmpLabel
     val labelNameToDisplay = label.name
-
     val followDefault = label.useDefaultTimeProfile
     var showBreakBudgetInfoDialog by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             TopBar(
@@ -166,7 +141,6 @@ fun AddEditLabelScreen(
         }
     }
 }
-
 @Composable
 private fun LabelNameRow(
     isAddingNewLabel: Boolean,
@@ -175,7 +149,6 @@ private fun LabelNameRow(
     showError: Boolean,
 ) {
     val focusRequester = remember { FocusRequester() }
-
     Column(
         modifier =
             Modifier
@@ -187,7 +160,6 @@ private fun LabelNameRow(
             } else {
                 Modifier
             }
-
         Box {
             BasicTextField(
                 modifier =
@@ -226,7 +198,6 @@ private fun LabelNameRow(
                 color = MaterialTheme.colorScheme.error,
             )
         }
-
         LaunchedEffect(labelName) {
             if (isAddingNewLabel) focusRequester.requestFocus()
         }

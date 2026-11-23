@@ -1,4 +1,3 @@
-
 @SuppressLint("MissingPermission")
 open class BTDevice(val device: BluetoothDevice, var rssi: Int = 0) {
     val mac: String = device.address
@@ -11,11 +10,9 @@ open class BTDevice(val device: BluetoothDevice, var rssi: Int = 0) {
         )
     var bluetoothGatt: BluetoothGatt? = null
         private set
-
     fun isConnected(): Boolean {
         return bluetoothGatt != null
     }
-
     private val gattCallback =
         object : BluetoothGattCallback() {
             override fun onCharacteristicRead(
@@ -41,12 +38,10 @@ open class BTDevice(val device: BluetoothDevice, var rssi: Int = 0) {
                         }
                     }
                 }
-
                 if (BluetoothUtil.pendingOperation is BTOperationCharacteristicRead) {
                     BluetoothUtil.signalEndOfOperation()
                 }
             }
-
             override fun onCharacteristicWrite(
                 gatt: BluetoothGatt,
                 characteristic: BluetoothGattCharacteristic,
@@ -63,12 +58,10 @@ open class BTDevice(val device: BluetoothDevice, var rssi: Int = 0) {
                         }
                     }
                 }
-
                 if (BluetoothUtil.pendingOperation is BTOperationCharacteristicWrite) {
                     BluetoothUtil.signalEndOfOperation()
                 }
             }
-
             override fun onDescriptorWrite(
                 gatt: BluetoothGatt,
                 descriptor: BluetoothGattDescriptor,
@@ -91,12 +84,10 @@ open class BTDevice(val device: BluetoothDevice, var rssi: Int = 0) {
                         }
                     }
                 }
-
                 if (BluetoothUtil.pendingOperation is BTOperationEnableNotifications) {
                     BluetoothUtil.signalEndOfOperation()
                 }
             }
-
             override fun onCharacteristicChanged(
                 gatt: BluetoothGatt,
                 characteristic: BluetoothGattCharacteristic,
@@ -107,7 +98,6 @@ open class BTDevice(val device: BluetoothDevice, var rssi: Int = 0) {
                     notificationCache[uuid]?.add(strValue)
                 }
             }
-
             override fun onConnectionStateChange(
                 gatt: BluetoothGatt,
                 status: Int,
@@ -142,7 +132,6 @@ open class BTDevice(val device: BluetoothDevice, var rssi: Int = 0) {
                     }
                 }
             }
-
             override fun onServicesDiscovered(
                 gatt: BluetoothGatt,
                 status: Int,
@@ -165,12 +154,10 @@ open class BTDevice(val device: BluetoothDevice, var rssi: Int = 0) {
                         BluetoothUtil.teardownConnection(this@BTDevice)
                     }
                 }
-
                 if (BluetoothUtil.pendingOperation is BTOperationConnect) {
                     BluetoothUtil.signalEndOfOperation()
                 }
             }
-
             override fun onMtuChanged(
                 gatt: BluetoothGatt,
                 mtu: Int,
@@ -183,24 +170,20 @@ open class BTDevice(val device: BluetoothDevice, var rssi: Int = 0) {
                 }
             }
         }
-
     fun disconnect() {
         LogCat.d("Disconnect ${device.address}")
         bluetoothGatt?.close()
         bluetoothGatt = null
     }
-
     fun connect() {
         LogCat.d("connecting ${device.address}")
         device.connectGatt(MainApp.instance, false, this.gattCallback, BluetoothDevice.TRANSPORT_LE)
     }
-
     fun readCharacteristic(api: BluetoothApi): Boolean {
         val char = getChar(api) ?: return false
         bluetoothGatt?.readCharacteristic(char)
         return true
     }
-
     fun writeCharacteristic(
         api: BluetoothApi,
         value: String,
@@ -211,7 +194,6 @@ open class BTDevice(val device: BluetoothDevice, var rssi: Int = 0) {
         bluetoothGatt?.writeCharacteristic(char)
         return true
     }
-
     fun enableNotification(
         api: BluetoothApi,
         enable: Boolean,
@@ -220,22 +202,17 @@ open class BTDevice(val device: BluetoothDevice, var rssi: Int = 0) {
         if (bluetoothGatt?.setCharacteristicNotification(char, enable) == false) {
             return false
         }
-
         val descriptor = char.descriptors[0]
         descriptor.value = if (enable) BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE else BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
         bluetoothGatt?.writeDescriptor(descriptor)
-
         return true
     }
-
     fun getChannel(type: BluetoothActionType): Channel<BluetoothResult> {
         return channels.getOrPut(type, { Channel() })
     }
-
     private fun getChar(api: BluetoothApi): BluetoothGattCharacteristic? {
         return bluetoothGatt?.getService(api.serviceUUID)?.getCharacteristic(api.charUUID)
     }
-
     private fun publish(
         type: BluetoothActionType,
         result: BluetoothResult,
@@ -243,21 +220,17 @@ open class BTDevice(val device: BluetoothDevice, var rssi: Int = 0) {
         getChannel(type).trySend(result)
         LogCat.d("Adding result to channel $type $result")
     }
-
     companion object {
         val SERVICE_UUID: UUID = UUID.fromString("47fb7d7c-24fb-4660-8293-6cab94ba0cfe")
         private val GRAPHQL_CHAR_UUID = UUID.fromString("93169e97-e00d-470c-9413-013077fcdb98")
         private val AUTH_CHAR_UUID = UUID.fromString("2ee565e3-ac94-476b-8503-c1f2606f9310")
         private val PRE_AUTH_CHAR_UUID = UUID.fromString("b0f304dd-f102-445d-bca1-7b48a4aa4e42")
-
         val graphqlService = BluetoothApi("graphqlService", SERVICE_UUID, GRAPHQL_CHAR_UUID)
         val preAuthService = BluetoothApi("preAuthService", SERVICE_UUID, PRE_AUTH_CHAR_UUID)
         val authService = BluetoothApi("authService", SERVICE_UUID, AUTH_CHAR_UUID)
     }
 }
-
 data class BluetoothApi(val name: String, val serviceUUID: UUID, val charUUID: UUID)
-
 data class BluetoothResult(val uuid: UUID?, val value: Any?, val status: BluetoothActionResult) {
     fun isSuccess(): Boolean {
         return status == BluetoothActionResult.SUCCESS

@@ -1,5 +1,3 @@
-
-
 @Composable
 fun OnlineSessionsIndicator(count: Int, onClick: () -> Unit) {
     val infiniteTransition = rememberInfiniteTransition(label = "ripple")
@@ -16,7 +14,6 @@ fun OnlineSessionsIndicator(count: Int, onClick: () -> Unit) {
         ),
         label = "ring2",
     )
-
     Surface(
         modifier = Modifier
             .clip(RoundedCornerShape(12.dp))

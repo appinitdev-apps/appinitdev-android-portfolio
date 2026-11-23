@@ -1,17 +1,12 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FtpServerScreen(onBack: () -> Unit) {
     val context = LocalContext.current
-
-    
     var isServerRunning by remember { mutableStateOf(FtpService.isRunning) }
     var ipAddress by remember { mutableStateOf(FtpService.obtenerIpLocal(context)) }
     var currentUsername by remember { mutableStateOf(FtpService.usuarioActual) }
     var currentPassword by remember { mutableStateOf(FtpService.contrasenaActual) }
     var currentPort by remember { mutableStateOf(FtpService.puertoActual) }
-
-    
     var hasStoragePermission by remember {
         mutableStateOf(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -21,7 +16,6 @@ fun FtpServerScreen(onBack: () -> Unit) {
             }
         )
     }
-
     var hasNotificationPermission by remember {
         mutableStateOf(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -31,13 +25,11 @@ fun FtpServerScreen(onBack: () -> Unit) {
             }
         )
     }
-
     val notificationLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         hasNotificationPermission = isGranted
     }
-
     val storageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
@@ -45,8 +37,6 @@ fun FtpServerScreen(onBack: () -> Unit) {
             hasStoragePermission = Environment.isExternalStorageManager()
         }
     }
-
-    
     val statusColor by animateColorAsState(
         targetValue = when {
             !hasStoragePermission || !hasNotificationPermission -> MaterialTheme.colorScheme.tertiary
@@ -55,16 +45,10 @@ fun FtpServerScreen(onBack: () -> Unit) {
         },
         label = "SecurityColorAnimation"
     )
-
-
-
     val scaleFactor by animateFloatAsState(
         targetValue = if (isServerRunning) 1.02f else 1f,
         label = "SecurityButtonScale"
     )
-
-
-    
     val infiniteTransition = rememberInfiniteTransition(label = "IconAnimation")
     val iconScale by infiniteTransition.animateFloat(
         initialValue = 1f,
@@ -75,7 +59,6 @@ fun FtpServerScreen(onBack: () -> Unit) {
         ),
         label = "IconScale"
     )
-    
     val iconAlpha by infiniteTransition.animateFloat(
         initialValue = 0.6f,
         targetValue = if (isServerRunning) 1f else 1f,
@@ -85,7 +68,6 @@ fun FtpServerScreen(onBack: () -> Unit) {
         ),
         label = "IconAlpha"
     )
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -111,8 +93,6 @@ fun FtpServerScreen(onBack: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-
-            
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(1f),
@@ -141,7 +121,6 @@ fun FtpServerScreen(onBack: () -> Unit) {
                             contentDescription = null,
                             tint = statusColor,
                             modifier = Modifier.size(56.dp).graphicsLayer {
-                                
                                 if (isServerRunning) {
                                     scaleX = iconScale
                                     scaleY = iconScale
@@ -151,9 +130,7 @@ fun FtpServerScreen(onBack: () -> Unit) {
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.height(24.dp))
-
                 InputChip(
                     selected = isServerRunning,
                     onClick = {},
@@ -174,8 +151,6 @@ fun FtpServerScreen(onBack: () -> Unit) {
                     }
                 )
             }
-
-            
             if (isServerRunning) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -207,12 +182,10 @@ fun FtpServerScreen(onBack: () -> Unit) {
                                 Icon(Icons.Default.ContentCopy, contentDescription = null, modifier = Modifier.size(16.dp))
                             }
                         }
-
                         HorizontalDivider(
                             modifier = Modifier.padding(vertical = 16.dp),
                             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
                         )
-
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -223,9 +196,7 @@ fun FtpServerScreen(onBack: () -> Unit) {
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(currentUsername, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
                             }
-
                             Box(modifier = Modifier.size(1.dp, 18.dp).background(MaterialTheme.colorScheme.outlineVariant))
-
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.secondary)
                                 Spacer(modifier = Modifier.width(8.dp))
@@ -236,8 +207,6 @@ fun FtpServerScreen(onBack: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.height(28.dp))
             }
-
-            
             Button(
                 onClick = {
                     if (!hasNotificationPermission && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -251,16 +220,10 @@ fun FtpServerScreen(onBack: () -> Unit) {
                         storageLauncher.launch(intent)
                         return@Button
                     }
-
                     val intent = Intent(context, FtpService::class.java)
                     if (!isServerRunning) {
-                        
                         FtpService.prepararCredenciales()
-
-                        
                         context.startForegroundService(intent)
-
-                        
                         isServerRunning = true
                         currentUsername = FtpService.usuarioActual
                         currentPassword = FtpService.contrasenaActual

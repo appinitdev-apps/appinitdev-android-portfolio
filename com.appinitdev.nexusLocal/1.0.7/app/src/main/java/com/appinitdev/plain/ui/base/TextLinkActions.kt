@@ -1,4 +1,3 @@
-
 fun AnnotatedString.urlAt(
     context: Context,
     position: Int,
@@ -10,7 +9,6 @@ fun AnnotatedString.urlAt(
                 WebHelper.open(context, it.item)
                 return true
             }
-
             "EMAIL" -> {
                 val emailIntent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:${it.item}"))
                 if (emailIntent.resolveActivity(packageManager) != null) {
@@ -20,7 +18,6 @@ fun AnnotatedString.urlAt(
                 }
                 return true
             }
-
             "PHONE" -> {
                 val phoneIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it.item}"))
                 if (phoneIntent.resolveActivity(packageManager) != null) {
@@ -32,10 +29,8 @@ fun AnnotatedString.urlAt(
             }
         }
     }
-
     return false
 }
-
 @Composable
 fun String.linkify(
     clickTexts: List<VClickText>,
@@ -56,20 +51,16 @@ fun String.linkify(
                 }
             }
         }
-
         return r
     }
-
     var raw = this@linkify
     var m = parse(raw)
     while (m != null) {
         val start = m.start
         val end = m.end
-
         if (start > 0) {
             append(raw.subSequence(0, start))
         }
-
         withStyle(linkStyle) {
             addStringAnnotation(
                 tag = m!!.tag,
@@ -79,14 +70,11 @@ fun String.linkify(
             )
             append(m!!.text)
         }
-
         raw = raw.substring(end)
         m = parse(raw)
     }
-
     append(raw)
 }
-
 fun AnnotatedString.clickAt(
     position: Int,
     clickTexts: List<VClickText>,

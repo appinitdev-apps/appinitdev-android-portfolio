@@ -1,4 +1,3 @@
-
 @Composable
 fun TransformImageView(
     modifier: Modifier = Modifier,
@@ -22,13 +21,11 @@ fun TransformImageView(
         }
     }
 }
-
 @Composable
 fun TransformImageView(
     modifier: Modifier = Modifier, key: Any, itemState: TransformItemState = rememberTransformItemState(),
     previewerState: MediaPreviewerState, content: @Composable (Any) -> Unit,
 ) = TransformImageView(modifier, key, itemState, previewerState.transformState, content)
-
 @Composable
 fun TransformImageView(
     modifier: Modifier = Modifier, key: Any, itemState: TransformItemState = rememberTransformItemState(),
@@ -36,7 +33,6 @@ fun TransformImageView(
 ) {
     TransformItemView(modifier = modifier, key = key, itemState = itemState, contentState = contentState) { content(key) }
 }
-
 @Composable
 fun TransformItemView(
     modifier: Modifier = Modifier, key: Any, itemState: TransformItemState = rememberTransformItemState(),
@@ -52,7 +48,6 @@ fun TransformItemView(
         if (contentState?.itemState != itemState || !contentState.onAction) { itemState.blockCompose(key) }
     }
 }
-
 @Composable
 fun TransformContentView(transformContentState: TransformContentState = rememberTransformContentState()) {
     Box(modifier = Modifier.fillMaxSize().onGloballyPositioned {

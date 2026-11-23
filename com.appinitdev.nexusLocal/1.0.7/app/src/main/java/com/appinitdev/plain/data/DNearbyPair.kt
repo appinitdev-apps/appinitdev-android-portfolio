@@ -1,4 +1,3 @@
-
 @Serializable
 data class DPairingRequest(
     val fromId: String,
@@ -16,13 +15,11 @@ data class DPairingRequest(
         return "$fromId|$fromName|$port|${deviceType.value}|$ecdhPublicKey|$signaturePublicKey|$timestamp|${ips.joinToString(",")}"
     }
 }
-
 @Serializable
 data class DPairingResult(
     val deviceId: String,
     val error: String = "",
 )
-
 @Serializable
 data class DPairingResponse(
     val fromId: String,
@@ -40,13 +37,11 @@ data class DPairingResponse(
         return "$fromId|$toId|$port|${deviceType.value}|$ecdhPublicKey|$signaturePublicKey|$accepted|$timestamp|${ips.joinToString(",")}"
     }
 }
-
 @Serializable
 data class DPairingCancel(
     val fromId: String,
     val toId: String,
 )
-
 data class DPairingSession(
     val deviceId: String,
     val deviceName: String,

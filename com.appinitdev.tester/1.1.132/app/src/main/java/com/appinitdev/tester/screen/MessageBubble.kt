@@ -1,4 +1,3 @@
-
 @Composable
 fun MessageBubble(
     message: Message,
@@ -10,7 +9,6 @@ fun MessageBubble(
             .padding(horizontal = 8.dp, vertical = 4.dp),
         horizontalAlignment = if (isMe) Alignment.End else Alignment.Start
     ) {
-
         Surface(
             color = if (isMe)
                 MaterialTheme.colorScheme.primary
@@ -26,7 +24,6 @@ fun MessageBubble(
             modifier = Modifier.widthIn(max = 280.dp)
         ) {
             Column(modifier = Modifier.padding(12.dp)) {
-
                 if (!isMe) {
                     Text(
                         text = message.nameDev,
@@ -35,7 +32,6 @@ fun MessageBubble(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                 }
-
                 SmartChatText(
                     text = message.text,
                     isMe = isMe
@@ -44,50 +40,34 @@ fun MessageBubble(
         }
     }
 }
-
 @Composable
 fun SmartChatText(text: String, isMe: Boolean) {
     val uriHandler = LocalUriHandler.current
-
-    
     val textColor = if (isMe) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
     val linkColor = if (isMe) Color(0xFF80D8FF) else Color(0xFF007BFF) 
-
     val annotatedString = remember(text) {
         buildAnnotatedString {
-            
             append(text)
-
             val boldRegex = Regex("\\*(.*?)\\*")
             val italicRegex = Regex("_(.*?)_")
             val strikeRegex = Regex("~(.*?)~")
             val codeRegex = Regex("```(.*?)```")
             val mentionRegex = Regex("@(\\w+)")
-
-            
             boldRegex.findAll(text).forEach { addStyle(SpanStyle(fontWeight = FontWeight.Bold), it.range.first, it.range.last + 1) }
-            
             italicRegex.findAll(text).forEach { addStyle(SpanStyle(fontStyle = FontStyle.Italic), it.range.first, it.range.last + 1) }
-            
             strikeRegex.findAll(text).forEach { addStyle(SpanStyle(textDecoration = TextDecoration.LineThrough), it.range.first, it.range.last + 1) }
-            
             codeRegex.findAll(text).forEach {
                 addStyle(SpanStyle(fontFamily = FontFamily.Monospace, background = Color.Black.copy(alpha = 0.1f)), it.range.first, it.range.last + 1)
             }
-            
             mentionRegex.findAll(text).forEach {
                 addStyle(SpanStyle(fontWeight = FontWeight.Bold, color = if(isMe) Color.Yellow else Color(0xFF25D366)), it.range.first, it.range.last + 1)
             }
-
-            
             val spannable = android.text.SpannableString(text)
             LinkifyCompat.addLinks(spannable, Linkify.ALL)
             val spans = spannable.getSpans(0, text.length, android.text.style.URLSpan::class.java)
-
             for (span in spans) {
                 val start = spannable.getSpanStart(span)
                 val end = spannable.getSpanEnd(span)
-
                 addStyle(
                     style = SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline),
                     start = start,
@@ -97,8 +77,6 @@ fun SmartChatText(text: String, isMe: Boolean) {
             }
         }
     }
-
-    
     SelectionContainer {
         ClickableText(
             text = annotatedString,
@@ -106,15 +84,12 @@ fun SmartChatText(text: String, isMe: Boolean) {
             onClick = { offset ->
                 annotatedString.getStringAnnotations(tag = "URL", start = offset, end = offset)
                     .firstOrNull()?.let { annotation ->
-                        
                         uriHandler.openUri(annotation.item)
                     }
             }
         )
     }
 }
-
-
 @Composable
 fun InfoBlockExpandable(
     title: String,
@@ -124,15 +99,12 @@ fun InfoBlockExpandable(
     var isExpanded by remember { mutableStateOf(initialExpanded) }
     val uriHandler = LocalUriHandler.current
     val linkColor = MaterialTheme.colorScheme.primary
-
-    
     val annotatedString = remember(content) {
         buildAnnotatedString {
             append(content)
             val spannable = android.text.SpannableString(content)
             android.text.util.Linkify.addLinks(spannable, android.text.util.Linkify.ALL)
             val spans = spannable.getSpans(0, content.length, android.text.style.URLSpan::class.java)
-
             for (span in spans) {
                 val start = spannable.getSpanStart(span)
                 val end = spannable.getSpanEnd(span)
@@ -148,9 +120,7 @@ fun InfoBlockExpandable(
             }
         }
     }
-
     Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-        
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -165,7 +135,6 @@ fun InfoBlockExpandable(
                 color = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.weight(1f)
             )
-
             IconButton(onClick = { isExpanded = !isExpanded }) {
                 Icon(
                     imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
@@ -174,8 +143,6 @@ fun InfoBlockExpandable(
                 )
             }
         }
-
-        
         AnimatedVisibility(
             visible = isExpanded,
             enter = fadeIn() + expandVertically(),
@@ -208,27 +175,20 @@ fun InfoBlockExpandable(
         }
     }
 }
-
 @Composable
 fun InfoBlock(title: String, content: String) {
     val uriHandler = LocalUriHandler.current
     val linkColor = MaterialTheme.colorScheme.primary
-
-    
     val annotatedString = remember(content) {
         buildAnnotatedString {
             val text = content.take(300)
             append(text)
-
-            
             val spannable = android.text.SpannableString(text)
             android.text.util.Linkify.addLinks(spannable, android.text.util.Linkify.ALL)
             val spans = spannable.getSpans(0, text.length, android.text.style.URLSpan::class.java)
-
             for (span in spans) {
                 val start = spannable.getSpanStart(span)
                 val end = spannable.getSpanEnd(span)
-
                 addStyle(
                     style = SpanStyle(
                         color = linkColor,
@@ -247,7 +207,6 @@ fun InfoBlock(title: String, content: String) {
             }
         }
     }
-
     Spacer(Modifier.height(12.dp))
     Text(
         text = title,
@@ -255,8 +214,6 @@ fun InfoBlock(title: String, content: String) {
         fontWeight = FontWeight.SemiBold,
         color = MaterialTheme.colorScheme.secondary
     )
-
-    
     SelectionContainer {
         ClickableText(
             text = annotatedString,
@@ -269,7 +226,6 @@ fun InfoBlock(title: String, content: String) {
                         try {
                             uriHandler.openUri(annotation.item)
                         } catch (e: Exception) {
-                            
                         }
                     }
             }

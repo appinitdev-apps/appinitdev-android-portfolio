@@ -1,4 +1,3 @@
-
 class TimerServiceStarter(
     private val context: Context,
 ) : EventListener {
@@ -10,7 +9,6 @@ class TimerServiceStarter(
             else -> {}
         }
     }
-
     private fun startService(action: Action = Action.StartOrUpdate) {
         context.startService(
             TimerService.createIntentWithAction(
@@ -19,7 +17,6 @@ class TimerServiceStarter(
             ),
         )
     }
-
     private fun startServiceWithFinished(autoStart: Boolean) {
         context.startService(
             TimerService.createFinishEvent(

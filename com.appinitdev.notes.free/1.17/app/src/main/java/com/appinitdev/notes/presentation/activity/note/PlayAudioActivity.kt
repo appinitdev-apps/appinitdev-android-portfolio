@@ -1,12 +1,8 @@
-
 class PlayAudioActivity : LockedActivity<ActivityPlayAudioBinding>() {
-
     private var service: AudioPlayService? = null
     private lateinit var connection: ServiceConnection
     private lateinit var exportFileActivityResultLauncher: ActivityResultLauncher<Intent>
-
     private lateinit var audio: Audio
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayAudioBinding.inflate(layoutInflater)
@@ -17,13 +13,10 @@ class PlayAudioActivity : LockedActivity<ActivityPlayAudioBinding>() {
                 intent?.let { IntentCompat.getParcelableExtra(it, EXTRA_AUDIO, Audio::class.java) }
             )
         binding.AudioControlView.setDuration(audio.duration)
-
         val intent = Intent(this, AudioPlayService::class.java)
         startService(intent)
-
         connection =
             object : ServiceConnection {
-
                 override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
                     val service = (binder as LocalBinder<AudioPlayService>).getService()
                     service.initialise(audio)
@@ -31,22 +24,16 @@ class PlayAudioActivity : LockedActivity<ActivityPlayAudioBinding>() {
                     this@PlayAudioActivity.service = service
                     updateUI(service)
                 }
-
                 override fun onServiceDisconnected(name: ComponentName?) {}
             }
-
         bindService(intent, connection, BIND_AUTO_CREATE)
-
         binding.Play.setOnClickListener { service?.play() }
-
         audio.duration?.let {
             binding.AudioControlView.onSeekComplete = { milliseconds ->
                 service?.seek(milliseconds)
             }
         }
-
         setupToolbar(binding)
-
         exportFileActivityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == RESULT_OK) {
@@ -54,69 +41,31 @@ class PlayAudioActivity : LockedActivity<ActivityPlayAudioBinding>() {
                 }
             }
     }
-
-     
-
-
-
     private fun configureEdgeToEdgeInsets() {
-        
-        
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        
-        
-        
-        
         ViewCompat.setOnApplyWindowInsetsListener(binding.rootLayout) { view, insets ->
-            
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
-
-            
-            
             binding.Toolbar.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
                 requestLayout() 
             }
-
-            
-            
-
-            
             val originalPlayButtonBottomMarginPx = 32.dp
             val originalAudioControlViewBottomMarginPx = 32.dp
-
-            
             val totalBottomInset = systemBarsInsets.bottom + imeInsets.bottom
-
-            
             binding.Play.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin =
                     originalPlayButtonBottomMarginPx + totalBottomInset
                 requestLayout() 
             }
-
-            
-            
-            
             binding.AudioControlView.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin =
                     originalAudioControlViewBottomMarginPx + totalBottomInset
                 requestLayout() 
             }
-
-            
-            
-            
-            
-
-            
             insets
         }
     }
-
     override fun onDestroy() {
         super.onDestroy()
         if (service != null) {
@@ -129,17 +78,14 @@ class PlayAudioActivity : LockedActivity<ActivityPlayAudioBinding>() {
             stopService(intent)
         }
     }
-
     private fun setupToolbar(binding: ActivityPlayAudioBinding) {
         binding.Toolbar.setNavigationOnClickListener { onBackPressed() }
-
         binding.Toolbar.menu.apply {
             add(R.string.share, R.drawable.share) { share() }
             add(R.string.save_to_device, R.drawable.save) { saveToDevice() }
             add(R.string.delete, R.drawable.delete) { delete() }
         }
     }
-
     private fun share() {
         val audioRoot = application.getExternalAudioDirectory()
         val file = if (audioRoot != null) File(audioRoot, audio.name) else null
@@ -155,7 +101,6 @@ class PlayAudioActivity : LockedActivity<ActivityPlayAudioBinding>() {
             startActivity(intent)
         }
     }
-
     private fun delete() {
         MaterialAlertDialogBuilder(this)
             .setMessage(R.string.delete_audio_recording_forever)
@@ -168,7 +113,6 @@ class PlayAudioActivity : LockedActivity<ActivityPlayAudioBinding>() {
             }
             .show()
     }
-
     private fun saveToDevice() {
         val audioRoot = application.getExternalAudioDirectory()
         val file = if (audioRoot != null) File(audioRoot, audio.name) else null
@@ -180,15 +124,12 @@ class PlayAudioActivity : LockedActivity<ActivityPlayAudioBinding>() {
                         addCategory(Intent.CATEGORY_OPENABLE)
                     }
                     .wrapWithChooser(this)
-
             val formatter = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.SHORT)
             val title = formatter.format(audio.timestamp)
-
             intent.putExtra(Intent.EXTRA_TITLE, title)
             exportFileActivityResultLauncher.launch(intent)
         }
     }
-
     private fun writeAudioToUri(uri: Uri) {
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
@@ -207,7 +148,6 @@ class PlayAudioActivity : LockedActivity<ActivityPlayAudioBinding>() {
                 .show()
         }
     }
-
     private fun updateUI(service: AudioPlayService) {
         binding.AudioControlView.setCurrentPosition(service.getCurrentPosition())
         when (service.getState()) {
@@ -231,7 +171,6 @@ class PlayAudioActivity : LockedActivity<ActivityPlayAudioBinding>() {
             }
         }
     }
-
     companion object {
         const val EXTRA_AUDIO = "notes.intent.extra.AUDIO"
     }

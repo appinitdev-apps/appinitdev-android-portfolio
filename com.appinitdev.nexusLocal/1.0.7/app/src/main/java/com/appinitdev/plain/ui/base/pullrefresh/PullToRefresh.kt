@@ -1,4 +1,3 @@
-
 @Composable
 fun PullToRefresh(
     refreshLayoutState: RefreshLayoutState,

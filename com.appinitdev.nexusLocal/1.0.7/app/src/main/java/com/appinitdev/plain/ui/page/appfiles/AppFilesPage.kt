@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppFilesPage(
@@ -11,18 +10,15 @@ fun AppFilesPage(
     val files by appFilesVM.itemsFlow.collectAsState()
     val isLoading = appFilesVM.showLoading.value
     val noMore = appFilesVM.noMore.value
-
     val refreshState = rememberRefreshLayoutState {
         scope.launch {
             withIO { appFilesVM.loadAsync() }
             setRefreshState(RefreshContentState.Finished)
         }
     }
-
     LaunchedEffect(Unit) {
         withIO { appFilesVM.loadAsync() }
     }
-
     PScaffold(
         topBar = {
             PTopAppBar(
@@ -66,6 +62,5 @@ fun AppFilesPage(
             }
         },
     )
-
     MediaPreviewer(state = previewerState)
 }

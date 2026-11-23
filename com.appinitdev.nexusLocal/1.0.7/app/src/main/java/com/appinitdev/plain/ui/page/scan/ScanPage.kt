@@ -1,4 +1,3 @@
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -12,13 +11,11 @@ fun ScanPage(navController: NavHostController) {
     var showScanResultSheet by remember { mutableStateOf(false) }
     var scanResult by remember { mutableStateOf("") }
     var pendingPairData by remember { mutableStateOf<DQrPairData?>(null) }
-
     fun handleScanResult(text: String) {
         scanResult = text; addScanResult(context, scope, text)
         val pairData = DQrPairData.fromQrContent(text)
         if (pairData != null) pendingPairData = pairData else showScanResultSheet = true
     }
-
     LaunchedEffect(Channel.sharedFlow) {
         Channel.sharedFlow.collect { event ->
             when (event) {
@@ -48,7 +45,6 @@ fun ScanPage(navController: NavHostController) {
             confirmButton = { Button(onClick = { navController.navigate(Routing.Nearby(JsonHelper.jsonEncode(pairData))) { popUpTo(Routing.Scan) { inclusive = true } }; pendingPairData = null }) { Text(stringResource(Res.string.pair)) } },
             dismissButton = { TextButton(onClick = { pendingPairData = null; cameraDetecting.value = true }) { Text(stringResource(Res.string.cancel)) } })
     }
-
     PScaffold(topBar = {
         PTopAppBar(navController = navController, title = stringResource(Res.string.scan_qrcode), actions = {
             PIconButton(icon = Res.drawable.history, contentDescription = stringResource(Res.string.scan_history), tint = MaterialTheme.colorScheme.onSurface) { navController.navigate(Routing.ScanHistory) }
@@ -65,7 +61,6 @@ fun ScanPage(navController: NavHostController) {
         }
     })
 }
-
 private fun addScanResult(context: Context, scope: CoroutineScope, value: String) {
     scope.launch {
         val results = withIO { ScanHistoryPreference.getValueAsync().toMutableList() }
@@ -73,7 +68,6 @@ private fun addScanResult(context: Context, scope: CoroutineScope, value: String
         withIO { ScanHistoryPreference.putAsync(results) }
     }
 }
-
 @Composable
 private fun ScanOverlay(modifier: Modifier = Modifier) {
     val infiniteTransition = rememberInfiniteTransition(label = "scan")
@@ -90,31 +84,21 @@ private fun ScanOverlay(modifier: Modifier = Modifier) {
         val boxSize = minOf(size.width, size.height) * 0.65f
         val left = (size.width - boxSize) / 2f
         val top = (size.height - boxSize) / 2f
-
-        
         drawRect(color = Color.Black.copy(alpha = 0.5f), topLeft = Offset(0f, 0f), size = Size(size.width, top))
         drawRect(color = Color.Black.copy(alpha = 0.5f), topLeft = Offset(0f, top + boxSize), size = Size(size.width, size.height - top - boxSize))
         drawRect(color = Color.Black.copy(alpha = 0.5f), topLeft = Offset(0f, top), size = Size(left, boxSize))
         drawRect(color = Color.Black.copy(alpha = 0.5f), topLeft = Offset(left + boxSize, top), size = Size(size.width - left - boxSize, boxSize))
-
-        
         val cornerLen = 40.dp.toPx()
         val cornerStroke = 3.dp.toPx()
         val white = Color.White
-        
         drawLine(white, Offset(left, top), Offset(left + cornerLen, top), cornerStroke)
         drawLine(white, Offset(left, top), Offset(left, top + cornerLen), cornerStroke)
-        
         drawLine(white, Offset(left + boxSize, top), Offset(left + boxSize - cornerLen, top), cornerStroke)
         drawLine(white, Offset(left + boxSize, top), Offset(left + boxSize, top + cornerLen), cornerStroke)
-        
         drawLine(white, Offset(left, top + boxSize), Offset(left + cornerLen, top + boxSize), cornerStroke)
         drawLine(white, Offset(left, top + boxSize), Offset(left, top + boxSize - cornerLen), cornerStroke)
-        
         drawLine(white, Offset(left + boxSize, top + boxSize), Offset(left + boxSize - cornerLen, top + boxSize), cornerStroke)
         drawLine(white, Offset(left + boxSize, top + boxSize), Offset(left + boxSize, top + boxSize - cornerLen), cornerStroke)
-
-        
         val lineY = top + boxSize * scanProgress
         drawRect(
             brush = Brush.horizontalGradient(

@@ -1,4 +1,3 @@
-
 @Composable
 fun ChatFileItem(
     context: Context,
@@ -21,25 +20,20 @@ fun ChatFileItem(
     val currentPlayingPath = audioPlaylistVM.selectedPath
     val isCurrentlyPlaying = currentPlayingPath.value == path && isAudio
     val isPlaying by AudioPlayer.isPlayingFlow.collectAsState()
-
     val showContextMenu = remember { mutableStateOf(false) }
-
     val downloadTask = downloadProgressMap[item.id]
     val taskActive = downloadTask?.isActive() == true
     val downloadProgress = downloadTask?.let {
         if (it.messageFile.size > 0) it.downloadedSize.toFloat() / it.messageFile.size.toFloat() else 0f
     } ?: 0f
-
     LaunchedEffect(item.uri) {
         if (item.isRemoteFile() && downloadTask == null && peer != null) {
             DownloadQueue.addDownloadTask(item, peer, m.id)
         }
     }
-
     var progress by remember(item.id) { mutableFloatStateOf(0f) }
     var duration by remember(item.id) { mutableFloatStateOf(item.duration.toFloat()) }
     var isDraggingProgress by remember(item.id) { mutableStateOf(false) }
-
     LaunchedEffect(path, isAudio, isCurrentlyPlaying) {
         if (isAudio && isCurrentlyPlaying && duration <= 0f) {
             val loadedDuration = withIO {
@@ -52,7 +46,6 @@ fun ChatFileItem(
             }
         }
     }
-
     LaunchedEffect(isCurrentlyPlaying, isPlaying, isDraggingProgress) {
         if (isCurrentlyPlaying) {
             while (isActive) {
@@ -63,7 +56,6 @@ fun ChatFileItem(
             }
         }
     }
-
     Column {
         ChatFileItemContent(
             context = context,
@@ -82,7 +74,6 @@ fun ChatFileItem(
             showContextMenu = showContextMenu,
             index = index,
         )
-
         if (isCurrentlyPlaying) {
             ChatAudioInlineControls(
                 progress = progress,

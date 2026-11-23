@@ -1,26 +1,7 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 data class VibrationData(
     val strength: Int,
     val loop: Boolean,
 )
-
 class VibrationPlayer(
     context: Context,
     private val settingsRepo: SettingsRepository,
@@ -29,7 +10,6 @@ class VibrationPlayer(
 ) {
     private var data: VibrationData = VibrationData(3, false)
     private var job: Job? = null
-
     init {
         ioScope.launch {
             settingsRepo.settings
@@ -43,7 +23,6 @@ class VibrationPlayer(
                 }
         }
     }
-
     private val vibrator =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val vibratorManager =
@@ -53,11 +32,9 @@ class VibrationPlayer(
             @Suppress("DEPRECATION")
             context.getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
-
     fun start() {
         start(data)
     }
-
     fun stop() {
         playerScope.launch {
             job?.cancelAndJoin()
@@ -67,11 +44,9 @@ class VibrationPlayer(
                 }
         }
     }
-
     fun start(strength: Int) {
         start(VibrationData(strength, false))
     }
-
     private fun start(data: VibrationData) {
         playerScope.launch {
             job?.cancelAndJoin()
@@ -88,28 +63,21 @@ class VibrationPlayer(
                             1 -> {
                                 longArrayOf(0, 100, 2000)
                             }
-
                             2 -> {
                                 longArrayOf(0, 100, 50, 100, 1000)
                             }
-
                             3 -> {
                                 longArrayOf(0, 200, 50, 200, 1000)
                             }
-
                             4 -> {
                                 longArrayOf(0, 400, 100, 400, 1000)
                             }
-
                             5 -> {
                                 longArrayOf(0, 400, 100, 400, 100, 400, 1000)
                             }
-
                             else -> longArrayOf()
                         }
-                    
                     delay(100)
-
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         val vibrationAttributes =
                             VibrationAttributes

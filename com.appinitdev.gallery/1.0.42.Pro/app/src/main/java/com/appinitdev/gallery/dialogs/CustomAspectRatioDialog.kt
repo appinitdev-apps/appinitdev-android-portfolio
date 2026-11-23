@@ -1,4 +1,3 @@
-
 class CustomAspectRatioDialog(
     val activity: BaseSimpleActivity, val defaultCustomAspectRatio: Pair<Float, Float>?, val callback: (aspectRatio: Pair<Float, Float>) -> Unit
 ) {
@@ -7,7 +6,6 @@ class CustomAspectRatioDialog(
             aspectRatioWidth.setText(defaultCustomAspectRatio?.first?.toInt()?.toString() ?: "")
             aspectRatioHeight.setText(defaultCustomAspectRatio?.second?.toInt()?.toString() ?: "")
         }
-
         activity.getAlertDialogBuilder()
             .setPositiveButton(org.appinitdev.commons.R.string.ok, null)
             .setNegativeButton(org.appinitdev.commons.R.string.cancel, null)
@@ -23,7 +21,6 @@ class CustomAspectRatioDialog(
                 }
             }
     }
-
     private fun getViewValue(view: EditText): Float {
         val textValue = view.value
         return if (textValue.isEmpty()) 0f else textValue.toFloat()

@@ -1,25 +1,15 @@
-
- 
-
-
-
-
-
 internal class HsvBitmapDrawable constructor(
   resources: Resources,
   bitmap: Bitmap,
 ) : BitmapDrawable(resources, bitmap) {
-
   private val huePaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
   private val saturationPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
-
   override fun draw(canvas: Canvas) {
     val width = bounds.width()
     val height = bounds.height()
     val centerX = width * 0.5f
     val centerY = height * 0.5f
     val radius = min(width, height) * 0.5f
-
     val sweepShader = SweepGradient(
       centerX,
       centerY,
@@ -35,7 +25,6 @@ internal class HsvBitmapDrawable constructor(
       floatArrayOf(0.000f, 0.166f, 0.333f, 0.499f, 0.666f, 0.833f, 0.999f),
     )
     huePaint.shader = sweepShader
-
     val saturationShader = RadialGradient(
       centerX,
       centerY,
@@ -45,19 +34,15 @@ internal class HsvBitmapDrawable constructor(
       Shader.TileMode.CLAMP,
     )
     saturationPaint.shader = saturationShader
-
     canvas.drawCircle(centerX, centerY, radius, huePaint)
     canvas.drawCircle(centerX, centerY, radius, saturationPaint)
   }
-
   override fun setAlpha(alpha: Int) {
     huePaint.alpha = alpha
   }
-
   override fun setColorFilter(colorFilter: ColorFilter?) {
     huePaint.colorFilter = colorFilter
   }
-
   @Deprecated(
     message = "This method will be deprecated on the future Android SDK",
     replaceWith = ReplaceWith(expression = "getOpacity"),

@@ -1,28 +1,7 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
 class EqualizerPresetsViewModel(application: Application) : WrappedViewModel(application) {
-
     private val db: EqualizerDatabase by lazy {
         EqualizerDatabase.getInstance(getApplication())
     }
-
-     
-
-
-
     val presets: StateFlow<List<EqualizerPreset>> = db.equalizerPresetDao()
         .getAllPresetsFlow()
         .stateIn(
@@ -30,10 +9,7 @@ class EqualizerPresetsViewModel(application: Application) : WrappedViewModel(app
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = emptyList()
         )
-
     init {
-        
-        
         viewModelScope.launch(Dispatchers.IO) {
             val builtInCount = db.equalizerPresetDao().getBuiltInPresetCount()
             if (builtInCount == 0) {
@@ -41,15 +17,6 @@ class EqualizerPresetsViewModel(application: Application) : WrappedViewModel(app
             }
         }
     }
-
-     
-
-
-
-
-
-
-
     fun savePreset(name: String, gains: FloatArray, preampDb: Float) {
         viewModelScope.launch(Dispatchers.IO) {
             val preset = EqualizerPreset.fromGains(
@@ -61,14 +28,6 @@ class EqualizerPresetsViewModel(application: Application) : WrappedViewModel(app
             db.equalizerPresetDao().insertPreset(preset)
         }
     }
-
-     
-
-
-
-
-
-
     fun deletePreset(preset: EqualizerPreset) {
         if (preset.isBuiltIn) return     
         viewModelScope.launch(Dispatchers.IO) {
@@ -76,4 +35,3 @@ class EqualizerPresetsViewModel(application: Application) : WrappedViewModel(app
         }
     }
 }
-

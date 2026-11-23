@@ -1,26 +1,10 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
 @AndroidEntryPoint
 class ComposerPage : BasePageFragment() {
-
     private lateinit var binding: FragmentPageComposerBinding
-
     private val composer: Artist by lazy {
         requireArguments().parcelable(BundleConstants.COMPOSER)
             ?: throw IllegalArgumentException("Composer is required")
     }
-
     private val composerViewerViewModel: ComposerViewerViewModel by viewModels(
             ownerProducer = { this },
             extrasProducer = {
@@ -29,29 +13,17 @@ class ComposerPage : BasePageFragment() {
                 }
             }
     )
-
     override val pageRecyclerView: RecyclerView
         get() = binding.recyclerView
-
     override val pageType: PageAdapter.PageType by lazy { PageAdapter.PageType.ComposerPage(composer) }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentPageComposerBinding.inflate(inflater, container, false)
         return binding.root
     }
-
-     
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         collectPageData { composerViewerViewModel.data }
     }
-
-     
-
-
-
     override fun onPageAdapterCreated() {
         viewLifecycleOwner.lifecycleScope.launch {
             composerViewerViewModel.artistInfo.collect { info ->
@@ -59,23 +31,12 @@ class ComposerPage : BasePageFragment() {
             }
         }
     }
-
-     
-
-
     override fun resortPageData() {
         composerViewerViewModel.resort()
     }
-
-     
-
-
-
-
     override fun onMenuClicked(view: View) {
         viewLifecycleOwner.lifecycleScope.launch {
             val currentData = composerViewerViewModel.data.value ?: return@launch
-
             SharedScrollViewPopup(
                     container = requireContainerView(),
                     anchorView = view,
@@ -99,18 +60,8 @@ class ComposerPage : BasePageFragment() {
             ).show()
         }
     }
-
     companion object {
         const val TAG = "ComposerPage"
-
-         
-
-
-
-
-
-
-
         fun newInstance(composer: Artist): ComposerPage {
             val args = Bundle()
             args.putParcelable(BundleConstants.COMPOSER, composer.copy(songPaths = emptyList()))
@@ -120,6 +71,3 @@ class ComposerPage : BasePageFragment() {
         }
     }
 }
-
-
-

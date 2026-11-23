@@ -1,4 +1,3 @@
-
 @Composable
 internal fun SleepTimerSelectionContent(
     selectedTimeMinutes: Int,
@@ -18,7 +17,6 @@ internal fun SleepTimerSelectionContent(
         }
     }
 }
-
 @Composable
 private fun TimeOptionChip(minutes: Int, isSelected: Boolean, onClick: () -> Unit) {
     val scale by animateFloatAsState(

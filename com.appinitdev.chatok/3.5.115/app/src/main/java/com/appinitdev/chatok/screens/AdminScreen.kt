@@ -1,16 +1,13 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminScreen(navController: NavController, viewModel: ChatViewModel) {
     val verificationRequests = viewModel.verificationRequests
     val reportRequests = viewModel.reportRequests
     var selectedTab by remember { mutableIntStateOf(0) }
-
     LaunchedEffect(Unit) {
         viewModel.observeVerificationRequests()
         viewModel.observeReports()
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -34,7 +31,6 @@ fun AdminScreen(navController: NavController, viewModel: ChatViewModel) {
                 Tab(selected = selectedTab == 0, onClick = { selectedTab = 0 }, text = { Text("${stringResource(R.string.verificaciones)} (${verificationRequests.size})") })
                 Tab(selected = selectedTab == 1, onClick = { selectedTab = 1 }, text = { Text("${stringResource(R.string.reportes)} (${reportRequests.size})") })
             }
-
             when (selectedTab) {
                 0 -> VerificationsList(verificationRequests, viewModel)
                 1 -> ReportsList(reportRequests, viewModel)
@@ -42,7 +38,6 @@ fun AdminScreen(navController: NavController, viewModel: ChatViewModel) {
         }
     }
 }
-
 @Composable
 fun VerificationsList(requests: List<VerificationRequest>, viewModel: ChatViewModel) {
     if (requests.isEmpty()) {
@@ -63,7 +58,6 @@ fun VerificationsList(requests: List<VerificationRequest>, viewModel: ChatViewMo
         }
     }
 }
-
 @Composable
 fun ReportsList(reports: List<ReportRequest>, viewModel: ChatViewModel) {
     if (reports.isEmpty()) {
@@ -84,7 +78,6 @@ fun ReportsList(reports: List<ReportRequest>, viewModel: ChatViewModel) {
         }
     }
 }
-
 @Composable
 fun ReportRequestItem(report: ReportRequest, onDismiss: (Boolean) -> Unit) {
     Card(
@@ -95,15 +88,11 @@ fun ReportRequestItem(report: ReportRequest, onDismiss: (Boolean) -> Unit) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = stringResource(R.string.reportado_formato, report.reportedUsername), style = MaterialTheme.typography.titleMedium, color = Color.White, fontWeight = FontWeight.Bold)
             Text(text = stringResource(R.string.motivo_formato, report.reason), color = Color(0xFFFF5252), style = MaterialTheme.typography.bodyMedium)
-            
             Spacer(modifier = Modifier.height(8.dp))
-            
             if (report.details.isNotEmpty()) {
                 Text(text = report.details, color = Color.LightGray, style = MaterialTheme.typography.bodySmall)
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-            
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 MainGradientButton(
                     text = stringResource(R.string.descartar),
@@ -114,11 +103,9 @@ fun ReportRequestItem(report: ReportRequest, onDismiss: (Boolean) -> Unit) {
         }
     }
 }
-
 @Composable
 fun VerificationRequestItem(request: VerificationRequest, onAction: (Boolean) -> Unit) {
     val formatter = remember { SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()) }
-    
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
@@ -137,9 +124,7 @@ fun VerificationRequestItem(request: VerificationRequest, onAction: (Boolean) ->
                     color = Color.Gray
                 )
             }
-
             Spacer(modifier = Modifier.height(12.dp))
-
             if (request.message.isNotEmpty()) {
                 Text(
                     text = request.message,
@@ -152,7 +137,6 @@ fun VerificationRequestItem(request: VerificationRequest, onAction: (Boolean) ->
                 )
                 Spacer(modifier = Modifier.height(12.dp))
             }
-
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -171,7 +155,6 @@ fun VerificationRequestItem(request: VerificationRequest, onAction: (Boolean) ->
                             contentScale = ContentScale.Crop
                         )
                     }
-                    
                     if (showFullImage) {
                         Dialog(onDismissRequest = { showFullImage = false }) {
                             Box(modifier = Modifier.fillMaxSize().clickable { showFullImage = false }) {
@@ -186,9 +169,7 @@ fun VerificationRequestItem(request: VerificationRequest, onAction: (Boolean) ->
                     }
                 }
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 SecondaryButton(
                     text = stringResource(R.string.rechazar),
@@ -196,7 +177,6 @@ fun VerificationRequestItem(request: VerificationRequest, onAction: (Boolean) ->
                     modifier = Modifier.weight(1f),
                     contentColor = Color(0xFFFF5252)
                 )
-
                 MainGradientButton(
                     text = stringResource(R.string.aprobar),
                     onClick = { onAction(true) },

@@ -1,4 +1,3 @@
-
 data class SpanRepresentation(
     var start: Int,
     var end: Int,
@@ -9,11 +8,9 @@ data class SpanRepresentation(
     var monospace: Boolean = false,
     var strikethrough: Boolean = false,
 ) {
-
     fun isNotUseless(): Boolean {
         return bold || link || italic || monospace || strikethrough
     }
-
     fun isEqualInSize(representation: SpanRepresentation): Boolean {
         return start == representation.start && end == representation.end
     }

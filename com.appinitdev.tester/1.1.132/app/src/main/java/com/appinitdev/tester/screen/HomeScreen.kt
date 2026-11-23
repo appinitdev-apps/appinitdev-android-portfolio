@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
@@ -11,14 +10,11 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
     var appToEdit by remember { mutableStateOf<AppModel?>(null) }
     val coroutineScope = rememberCoroutineScope()
     var isRefreshing by remember { mutableStateOf(false) }
-
     var isTimeOut by remember { mutableStateOf(false) }
-
     LaunchedEffect(Unit) {
         kotlinx.coroutines.delay(5000) 
         isTimeOut = true
     }
-
     LaunchedEffect(isTimeOut, profile) {
         if (isTimeOut) {
             val currentProfile = profile
@@ -33,16 +29,13 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
             }
         }
     }
-
     val listState = rememberLazyListState()
     var showReputationInfo by remember { mutableStateOf(false) }
     val context = LocalContext.current
-
     val communityApps by viewModel.communityApps.collectAsState()
     val activeAppsInTest = remember(userApps) { userApps.filter { it.status == "test" } }
     var showRecommendationsPopup by rememberSaveable { mutableStateOf(false) }
     var hasCheckedPopup by rememberSaveable { mutableStateOf(false) }
-
     LaunchedEffect(Unit) {
         viewModel.fetchUserProfile()
         viewModel.loadAndVerifyApps()
@@ -53,7 +46,6 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
         viewModel.loadCommunityApps(context)
         viewModel.debugCheckTestAppsMovedToProductionToday(context)
     }
-
     LaunchedEffect(activeAppsInTest) {
         if (activeAppsInTest.isNotEmpty() && !hasCheckedPopup) {
             hasCheckedPopup = true
@@ -64,7 +56,6 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
             }
         }
     }
-
     val currentUserId = remember { FirebaseAuth.getInstance().currentUser?.uid ?: "" }
     val recommendedApps = remember(communityApps, currentUserId) {
         communityApps.filter { app ->
@@ -78,7 +69,6 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
                 .thenByDescending { it.fechaCreacion }
         ).take(5)
     }
-
     if (showRecommendationsPopup && activeAppsInTest.isNotEmpty()) {
         ActiveAppsRecommendationsDialog(
             activeAppsCount = activeAppsInTest.size,
@@ -96,10 +86,8 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
             }
         )
     }
-
     val app20DaysPrompt by viewModel.app20DaysPrompt.collectAsState()
     val app28DaysAlert by viewModel.app28DaysAlert.collectAsState()
-
     app20DaysPrompt?.let { app ->
         App20DaysPromptDialog(
             app = app,
@@ -109,14 +97,12 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
             onCancel = { viewModel.dismiss20DaysPrompt(app.id) }
         )
     }
-
     app28DaysAlert?.let { app ->
         App28DaysAlertDialog(
             app = app,
             onDismiss = { viewModel.dismiss28DaysAlert() }
         )
     }
-
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         val permissionState = rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
         val isGranted = permissionState.status.isGranted
@@ -127,21 +113,18 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
             }
         }
     }
-
     LaunchedEffect(uiState) {
         if (uiState is AuthUiState.AppActionSuccess) {
             mostrarIntersticial(context)
             viewModel.clearState()
         }
     }
-
     if (showAddSheet) {
         AddAppBottomSheet(
             viewModel = viewModel,
             onDismiss = { showAddSheet = false }
         )
     }
-
     if (appToManage != null) {
         ManageAppBottomSheet(
             app = appToManage!!,
@@ -150,7 +133,6 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
             onEdit = { appToEdit = appToManage }
         )
     }
-
     if (appToEdit != null) {
         AddAppBottomSheet(
             viewModel = viewModel,
@@ -158,7 +140,6 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
             onDismiss = { appToEdit = null }
         )
     }
-
     val isExpanded by remember {
         derivedStateOf {
             listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0
@@ -167,12 +148,6 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         topBar = {
-            
-
-
-
-
-
         },
         floatingActionButton = {
             if (selectedTab != 2)
@@ -210,7 +185,6 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
                             Triple(2, R.string.comunidades, Icons.Default.Group),
                             Triple(3, R.string.rese_as, Icons.Default.Stars)
                         )
-
                         items.forEach { (index, labelRes, icon) ->
                             NavigationBarItem(
                                 selected = selectedTab == index,
@@ -255,7 +229,6 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
                     }
                 }
             }
-
             when (selectedTab) {
                 0 -> {
                     profile?.let {
@@ -316,7 +289,6 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
             }
         }
     }
-
     if (showReputationInfo) {
         ReputationExplanationDialog(
             profile = profile,
@@ -324,7 +296,6 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
         )
     }
 }
-
 @Composable
 fun AppItemCard(
     app: AppModel,
@@ -451,7 +422,6 @@ fun AppItemCard(
         }
     }
 }
-
 @Composable
 fun PendingRequestsBadge(count: Int) {
     val infiniteTransition = rememberInfiniteTransition(label = "badge_pulse")
@@ -466,7 +436,6 @@ fun PendingRequestsBadge(count: Int) {
         }
     }
 }
-
 @Composable
 fun StatusBadge(status: String) {
     val isProduccion = status == "produccion"
@@ -476,7 +445,6 @@ fun StatusBadge(status: String) {
         Text(text = status.uppercase(), modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp), fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp)
     }
 }
-
 @Composable
 fun ReputationBadge(reputacion: Double) {
     Surface(color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f), contentColor = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp), border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))) {
@@ -487,12 +455,10 @@ fun ReputationBadge(reputacion: Double) {
         }
     }
 }
-
 fun triggerActiveAppNotification(context: Context, activeCount: Int) {
     try {
         val channelId = "active_app_testing_channel"
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = android.app.NotificationChannel(
                 channelId,
@@ -501,7 +467,6 @@ fun triggerActiveAppNotification(context: Context, activeCount: Int) {
             )
             notificationManager.createNotificationChannel(channel)
         }
-
         val intent = Intent(context, com.appinitdev.tester.MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
@@ -511,7 +476,6 @@ fun triggerActiveAppNotification(context: Context, activeCount: Int) {
             intent,
             android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
         )
-
         val largeIcon = android.graphics.BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher)
         val notification = androidx.core.app.NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.mipmap.ic_launcher)
@@ -522,11 +486,9 @@ fun triggerActiveAppNotification(context: Context, activeCount: Int) {
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .build()
-
         notificationManager.notify(1001, notification)
     } catch (_: Exception) {}
 }
-
 @Composable
 fun ActiveAppsRecommendationsDialog(
     activeAppsCount: Int,
@@ -592,7 +554,6 @@ fun ActiveAppsRecommendationsDialog(
                         lineHeight = 18.sp
                     )
                 }
-
                 if (recommendedApps.isNotEmpty()) {
                     Text(
                         text = stringResource(R.string.apps_recomendadas_acceso_inmediato),
@@ -600,7 +561,6 @@ fun ActiveAppsRecommendationsDialog(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
-
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         recommendedApps.forEach { app ->
                             Surface(
@@ -663,7 +623,6 @@ fun ActiveAppsRecommendationsDialog(
                         }
                     }
                 }
-
                 OutlinedButton(
                     onClick = onGoToReviewsClick,
                     modifier = Modifier.fillMaxWidth(),
@@ -692,7 +651,6 @@ fun ActiveAppsRecommendationsDialog(
         }
     )
 }
-
 @Composable
 fun App20DaysPromptDialog(
     app: AppModel,
@@ -760,7 +718,6 @@ fun App20DaysPromptDialog(
                 ) {
                     Text(stringResource(R.string.seguir_en_prueba), fontWeight = FontWeight.Bold)
                 }
-
                 Button(
                     onClick = onMarkProduction,
                     modifier = Modifier.fillMaxWidth(),
@@ -772,7 +729,6 @@ fun App20DaysPromptDialog(
                 ) {
                     Text(stringResource(R.string.ya_paso_a_produccion), fontWeight = FontWeight.Bold)
                 }
-
                 OutlinedButton(
                     onClick = onHide,
                     modifier = Modifier.fillMaxWidth(),
@@ -784,7 +740,6 @@ fun App20DaysPromptDialog(
                 ) {
                     Text(stringResource(R.string.ocultar_app), fontWeight = FontWeight.Bold)
                 }
-
                 TextButton(
                     onClick = onCancel,
                     modifier = Modifier.fillMaxWidth()
@@ -796,7 +751,6 @@ fun App20DaysPromptDialog(
         dismissButton = null
     )
 }
-
 @Composable
 fun App28DaysAlertDialog(
     app: AppModel,

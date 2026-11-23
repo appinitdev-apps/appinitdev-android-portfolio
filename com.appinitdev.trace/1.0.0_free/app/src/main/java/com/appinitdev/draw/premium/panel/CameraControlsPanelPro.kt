@@ -1,4 +1,3 @@
-
 @Composable
 fun CameraControlsPanelPro(
     showCamera: Boolean,
@@ -53,17 +52,12 @@ fun CameraControlsPanelPro(
 ) {
     var showAnimeDialog by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableStateOf(initialTab) }
-
-    
     var sketchLineSize by remember { mutableFloatStateOf(1.0f) }
     var sketchThreshold by remember { mutableFloatStateOf(0.70f) }
-
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val activeColor = Color(0xFFFF4081)
-
     Box(modifier = Modifier.fillMaxSize()) {
-        
         if (selectedTab != -1) {
             Box(
                 modifier = Modifier
@@ -77,7 +71,6 @@ fun CameraControlsPanelPro(
                     }
             )
         }
-
         Row(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
@@ -86,7 +79,6 @@ fun CameraControlsPanelPro(
                 .padding(vertical = 24.dp, horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            
             AnimatedVisibility(
                 visible = selectedTab != -1,
                 enter = expandHorizontally(expandFrom = Alignment.End),
@@ -128,13 +120,9 @@ fun CameraControlsPanelPro(
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF333333)
                         )
-
                         Spacer(modifier = Modifier.height(12.dp))
-
                         HorizontalDivider(color = Color(0xFFEEEEEE))
-
                         Spacer(modifier = Modifier.height(12.dp))
-
                         Box(modifier = Modifier.wrapContentHeight()) {
                             when (selectedTab) {
                                 0 -> { 
@@ -164,7 +152,6 @@ fun CameraControlsPanelPro(
                                                     .rotate(-90f)
                                             )
                                         }
-
                                         Spacer(modifier = Modifier.height(12.dp))
                                         Text(
                                             "${(imageAlpha * 100).toInt()}%",
@@ -173,7 +160,6 @@ fun CameraControlsPanelPro(
                                         )
                                     }
                                 }
-
                                 1 -> { 
                                     Column(
                                         modifier = Modifier.verticalScroll(rememberScrollState()),
@@ -192,10 +178,7 @@ fun CameraControlsPanelPro(
                                             activeColor = activeColor,
                                             onClick = { showAnimeDialog = true }
                                         )
-
                                         HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-
-                                        
                                         Row(
                                             modifier = Modifier.fillMaxWidth(),
                                             horizontalArrangement = Arrangement.SpaceEvenly
@@ -215,17 +198,13 @@ fun CameraControlsPanelPro(
                                                 rotate = 90f
                                             )
                                         }
-
                                         HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-
-                                        
                                         Text(
                                             text = stringResource(R.string.malla_de_referencia),
                                             fontSize = 13.sp,
                                             fontWeight = FontWeight.Bold,
                                             color = activeColor
                                         )
-
                                         Row(
                                             modifier = Modifier.fillMaxWidth(),
                                             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -256,7 +235,6 @@ fun CameraControlsPanelPro(
                                             )
                                         }
                                         Spacer(modifier = Modifier.padding(8.dp))
-
                                         if (gridType != "NONE") {
                                             Column {
                                                 Text(
@@ -276,7 +254,6 @@ fun CameraControlsPanelPro(
                                         }
                                     }
                                 }
-
                                 2 -> { 
                                     Column(
                                         modifier = Modifier.verticalScroll(rememberScrollState()),
@@ -287,12 +264,10 @@ fun CameraControlsPanelPro(
                                             verticalArrangement = Arrangement.spacedBy(20.dp),
                                             horizontalAlignment = Alignment.CenterHorizontally
                                         ) {
-                                            
                                             Row(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 horizontalArrangement = Arrangement.SpaceEvenly
                                             ) {
-                                                
                                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                                     IconButton(
                                                         onClick = onToggleCamera,
@@ -324,8 +299,6 @@ fun CameraControlsPanelPro(
                                                         textAlign = TextAlign.Center
                                                     )
                                                 }
-
-                                                
                                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                                     FilledTonalIconButton(
                                                         onClick = onToggleFlash,
@@ -350,13 +323,10 @@ fun CameraControlsPanelPro(
                                                     )
                                                 }
                                             }
-
-                                            
                                             Row(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 horizontalArrangement = Arrangement.SpaceEvenly
                                             ) {
-                                                
                                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                                     FilledTonalIconButton(
                                                         onClick = onCapture,
@@ -371,8 +341,6 @@ fun CameraControlsPanelPro(
                                                     Spacer(modifier = Modifier.height(4.dp))
                                                     Text(stringResource(R.string.capturar), fontSize = 11.sp)
                                                 }
-
-                                                
                                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                                     FilledTonalIconButton(
                                                         onClick = onChangeMode,
@@ -387,8 +355,6 @@ fun CameraControlsPanelPro(
                                                     Spacer(modifier = Modifier.height(4.dp))
                                                     Text(stringResource(R.string.modo), fontSize = 11.sp)
                                                 }
-
-                                                
                                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                                     FilledTonalIconButton(
                                                         onClick = onToggleTimeLapse,
@@ -404,13 +370,10 @@ fun CameraControlsPanelPro(
                                                     Text(stringResource(R.string.time_lapse), fontSize = 11.sp)
                                                 }
                                             }
-
-                                            
                                             Row(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 horizontalArrangement = Arrangement.SpaceEvenly
                                             ) {
-                                                
                                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                                     FilledTonalIconButton(
                                                         onClick = onTogglePip,
@@ -425,8 +388,6 @@ fun CameraControlsPanelPro(
                                                     Spacer(modifier = Modifier.height(4.dp))
                                                     Text(stringResource(R.string.pip), fontSize = 11.sp)
                                                 }
-
-                                                
                                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                                     FilledTonalIconButton(
                                                         onClick = onToggleWorldLock,
@@ -441,8 +402,6 @@ fun CameraControlsPanelPro(
                                                     Spacer(modifier = Modifier.height(4.dp))
                                                     Text(stringResource(R.string.ar_lock), fontSize = 11.sp)
                                                 }
-
-                                                
                                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                                     Box(contentAlignment = Alignment.TopEnd) {
                                                         FilledTonalIconButton(
@@ -502,8 +461,6 @@ fun CameraControlsPanelPro(
                                                     }
                                                 }
                                             }
-                                            
-                                            
                                             Row(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 horizontalArrangement = Arrangement.Center
@@ -523,13 +480,11 @@ fun CameraControlsPanelPro(
                                         }
                                     }
                                 }
-
                                 4 -> { 
                                     Column(
                                         modifier = Modifier.verticalScroll(rememberScrollState()),
                                         verticalArrangement = Arrangement.spacedBy(10.dp)
                                     ) {
-                                        
                                         if (currentFilter != "NONE") {
                                             Button(
                                                 onClick = {
@@ -547,8 +502,6 @@ fun CameraControlsPanelPro(
                                                 Text(stringResource(R.string.restaurar_foto), fontSize = 11.sp, fontWeight = FontWeight.Bold)
                                             }
                                         }
-
-                                        
                                         FilterModernCard(
                                             title = stringResource(R.string.boceto),
                                             subtitle = "Convierte a boceto lineal",
@@ -564,7 +517,6 @@ fun CameraControlsPanelPro(
                                                 }
                                             }
                                         )
-
                                         AnimatedVisibility(visible = currentFilter == "SKETCH") {
                                             Column(
                                                 modifier = Modifier
@@ -582,9 +534,7 @@ fun CameraControlsPanelPro(
                                                     fontWeight = FontWeight.Bold,
                                                     color = activeColor
                                                 )
-                                                
                                                 Spacer(modifier = Modifier.height(8.dp))
-
                                                 Text(
                                                     "${stringResource(R.string.grosor)}: ${"%.1f".format(sketchLineSize)}",
                                                     fontSize = 10.sp,
@@ -597,7 +547,6 @@ fun CameraControlsPanelPro(
                                                     valueRange = 0f..4f,
                                                     colors = SliderDefaults.colors(thumbColor = activeColor, activeTrackColor = activeColor)
                                                 )
-
                                                 Text(
                                                     "${stringResource(R.string.detalle)}: ${"%.2f".format(sketchThreshold)}",
                                                     fontSize = 10.sp,
@@ -612,8 +561,6 @@ fun CameraControlsPanelPro(
                                                 )
                                             }
                                         }
-
-                                        
                                         if (currentFilter != "SKETCH") {
                                             FilterModernCard(
                                                 title = stringResource(R.string.quitar_fondo),
@@ -626,8 +573,6 @@ fun CameraControlsPanelPro(
                                                 }
                                             )
                                         }
-
-                                        
                                         FilterModernCard(
                                             title = stringResource(R.string.pencil_color),
                                             subtitle = "Trazo en Azul, Rojo o Verde",
@@ -637,7 +582,6 @@ fun CameraControlsPanelPro(
                                                 onFilterChange(if (currentFilter == "BLUE_PENCIL") "NONE" else "BLUE_PENCIL")
                                             }
                                         )
-
                                         AnimatedVisibility(visible = currentFilter == "BLUE_PENCIL") {
                                             Column(
                                                 modifier = Modifier
@@ -681,8 +625,6 @@ fun CameraControlsPanelPro(
                                                 }
                                             }
                                         }
-
-                                        
                                         FilterModernCard(
                                             title = stringResource(R.string.posterizacion),
                                             subtitle = "Reduce gama de colores",
@@ -692,7 +634,6 @@ fun CameraControlsPanelPro(
                                                 onFilterChange(if (currentFilter == "POSTERIZE") "NONE" else "POSTERIZE")
                                             }
                                         )
-
                                         AnimatedVisibility(visible = currentFilter == "POSTERIZE") {
                                             Column(
                                                 modifier = Modifier
@@ -743,8 +684,6 @@ fun CameraControlsPanelPro(
                                                 }
                                             }
                                         }
-
-                                        
                                         FilterModernCard(
                                             title = stringResource(R.string.ajuste_de_gamma),
                                             subtitle = "Modifica curva de brillo",
@@ -754,7 +693,6 @@ fun CameraControlsPanelPro(
                                                 onFilterChange(if (currentFilter == "GAMMA") "NONE" else "GAMMA")
                                             }
                                         )
-
                                         AnimatedVisibility(visible = currentFilter == "GAMMA") {
                                             Column(
                                                 modifier = Modifier
@@ -805,8 +743,6 @@ fun CameraControlsPanelPro(
                                                 }
                                             }
                                         }
-
-                                        
                                         FilterModernCard(
                                             title = stringResource(R.string.sharpen),
                                             subtitle = "Resalta nitidez y bordes",
@@ -816,7 +752,6 @@ fun CameraControlsPanelPro(
                                                 onFilterChange(if (currentFilter == "SHARPEN") "NONE" else "SHARPEN")
                                             }
                                         )
-
                                         AnimatedVisibility(visible = currentFilter == "SHARPEN") {
                                             Column(
                                                 modifier = Modifier
@@ -867,8 +802,6 @@ fun CameraControlsPanelPro(
                                                 }
                                             }
                                         }
-
-                                        
                                         FilterModernCard(
                                             title = stringResource(R.string.escala_de_grises),
                                             subtitle = "Efecto blanco y negro ajustable",
@@ -876,7 +809,6 @@ fun CameraControlsPanelPro(
                                             isSelected = currentFilter == "GRAYSCALE",
                                             onClick = { onFilterChange(if (currentFilter == "GRAYSCALE") "NONE" else "GRAYSCALE") }
                                         )
-
                                         AnimatedVisibility(visible = currentFilter == "GRAYSCALE") {
                                             Column(
                                                 modifier = Modifier
@@ -927,7 +859,6 @@ fun CameraControlsPanelPro(
                                                 }
                                             }
                                         }
-
                                         FilterModernCard(
                                             title = stringResource(R.string.invertir),
                                             subtitle = "Invierte tonos de la imagen",
@@ -935,7 +866,6 @@ fun CameraControlsPanelPro(
                                             isSelected = currentFilter == "INVERT",
                                             onClick = { onFilterChange(if (currentFilter == "INVERT") "NONE" else "INVERT") }
                                         )
-
                                         FilterModernCard(
                                             title = stringResource(R.string.sepia),
                                             subtitle = "Tono vintage cálido",
@@ -950,8 +880,6 @@ fun CameraControlsPanelPro(
                     }
                 }
             }
-
-            
             Surface(
                 modifier = Modifier
                     .width(64.dp)
@@ -971,7 +899,6 @@ fun CameraControlsPanelPro(
                         Icons.Filled.CameraAlt to 2,
                         Icons.Filled.FilterList to 4
                     )
-
                     menuItems.forEach { (icon, index) ->
                         val isSelected = selectedTab == index
                         IconButton(
@@ -997,7 +924,6 @@ fun CameraControlsPanelPro(
                 }
             }
         }
-
         if (showAnimeDialog) {
             AnimeImageApp(
                 onImageSelected = { url ->
@@ -1020,7 +946,6 @@ fun CameraControlsPanelPro(
         }
     }
 }
-
 @Composable
 fun VerticalActionButton(
     icon: ImageVector,
@@ -1049,7 +974,6 @@ fun VerticalActionButton(
         }
     }
 }
-
 @Composable
 fun FilterModernCard(
     title: String,
@@ -1120,7 +1044,6 @@ fun FilterModernCard(
         }
     }
 }
-
 @Composable
 fun ColorPencilOption(
     label: String,
@@ -1158,7 +1081,6 @@ fun ColorPencilOption(
         }
     }
 }
-
 @Composable
 fun FilterPresetChip(
     label: String,
@@ -1186,7 +1108,6 @@ fun FilterPresetChip(
         )
     }
 }
-
 @Composable
 fun TransformIconButton(icon: ImageVector, onClick: () -> Unit, rotate: Float = 0f) {
     IconButton(
@@ -1205,7 +1126,6 @@ fun TransformIconButton(icon: ImageVector, onClick: () -> Unit, rotate: Float = 
         )
     }
 }
-
 @Composable
 fun GridTypeButton(
     icon: ImageVector,
@@ -1236,7 +1156,6 @@ fun GridTypeButton(
         )
     }
 }
-
 @Composable
 fun GalleryPickerPro(onImageSelected: (Uri) -> Unit) {
     val context = LocalContext.current

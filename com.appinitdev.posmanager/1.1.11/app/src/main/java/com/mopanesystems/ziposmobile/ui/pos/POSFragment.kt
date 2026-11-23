@@ -1,12 +1,9 @@
-
 @AndroidEntryPoint
 class POSFragment : Fragment() {
     private val viewModel: POSViewModel by viewModels()
     private val customerViewModel: CustomerViewModel by viewModels()
     private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
     private lateinit var receiptService: ReceiptService
-
-    
     private val barcodeScannerLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -15,7 +12,6 @@ class POSFragment : Fragment() {
             barcode?.let { handleScannedBarcode(it) }
         }
     }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,23 +39,15 @@ class POSFragment : Fragment() {
             }
         }
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        
         receiptService = ReceiptService(requireContext())
     }
-
-
     private fun startBarcodeScanner() {
         val intent = Intent(requireContext(), BarcodeScannerActivity::class.java)
         barcodeScannerLauncher.launch(intent)
     }
-
     private fun handleScannedBarcode(barcode: String) {
-        
-
         viewModel.findProductByBarcode(barcode)
     }
 }

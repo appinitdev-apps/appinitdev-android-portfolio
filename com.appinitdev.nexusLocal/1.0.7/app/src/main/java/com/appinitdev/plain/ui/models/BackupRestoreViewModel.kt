@@ -1,11 +1,5 @@
-
 class BackupRestoreViewModel : ViewModel() {
     data class ExportItem(val dir: String, val file: File)
-
-     
-
-
-
     fun backupToFile(context: Context, fileName: String) {
         viewModelScope.launch(Dispatchers.IO) {
             DialogHelper.showLoading()
@@ -26,7 +20,6 @@ class BackupRestoreViewModel : ViewModel() {
             }
         }
     }
-
     fun backup(context: Context, uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             DialogHelper.showLoading()
@@ -46,7 +39,6 @@ class BackupRestoreViewModel : ViewModel() {
             }
         }
     }
-
     fun restore(context: Context, uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             DialogHelper.showLoading()
@@ -66,7 +58,6 @@ class BackupRestoreViewModel : ViewModel() {
                     if (!success) {
                         throw IllegalStateException("Failed to unzip backup file")
                     }
-
                     File(destFile.path + "/databases").let {
                         if (it.exists()) it.copyRecursively(File(context.dataDir.path + "/databases"), true)
                     }
@@ -89,7 +80,6 @@ class BackupRestoreViewModel : ViewModel() {
             }
         }
     }
-
     private fun writeBackupContent(out: ZipOutputStream, context: Context) {
         val items = listOf(
             ExportItem("/", File(context.dataDir.path + "/databases")),
@@ -100,7 +90,6 @@ class BackupRestoreViewModel : ViewModel() {
             appendFile(out, item.dir, item.file)
         }
     }
-
     private fun appendFile(out: ZipOutputStream, dir: String, file: File) {
         if (file.isDirectory) {
             file.listFiles()?.forEach {
@@ -108,8 +97,6 @@ class BackupRestoreViewModel : ViewModel() {
             }
             return
         }
-        
-        
         if (!file.isFile) return
         try {
             val entry = ZipEntry(dir + file.name)

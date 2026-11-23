@@ -1,4 +1,3 @@
-
 val mdAccessoryItems = listOf(
     MdAccessoryItem("*", "*"),
     MdAccessoryItem("_", "_"),
@@ -18,7 +17,6 @@ val mdAccessoryItems = listOf(
     MdAccessoryItem("$", "$"),
     MdAccessoryItem("\"", "\""),
 )
-
 val mdAccessoryItems2 =
     listOf(
         MdAccessoryItem2(Res.drawable.bold, click = {

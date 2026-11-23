@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun FeedsPage(navController: NavHostController, feedsVM: FeedsViewModel = viewModel()) {
@@ -13,7 +12,6 @@ fun FeedsPage(navController: NavHostController, feedsVM: FeedsViewModel = viewMo
     AddFeedDialog(feedsVM); EditFeedDialog(feedsVM); ViewFeedBottomSheet(feedsVM)
     val pageTitle = if (feedsVM.selectMode.value) LocaleHelper.getStringF(Res.string.x_selected, "count", feedsVM.selectedIds.size)
     else LocaleHelper.getStringF(Res.string.subscriptions_title, "count", itemsState.size)
-
     PScaffold(
         topBar = {
             PTopAppBar(navController = navController, navigationIcon = {

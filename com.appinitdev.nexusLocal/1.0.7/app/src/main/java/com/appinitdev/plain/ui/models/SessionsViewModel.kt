@@ -1,4 +1,3 @@
-
 data class VSession(
     val clientId: String,
     val name: String,
@@ -15,7 +14,6 @@ data class VSession(
 ) {
     val isCustom: Boolean
         get() = type == DSession.TYPE_CUSTOM
-
     companion object {
         fun from(data: DSession): VSession {
             return VSession(
@@ -35,17 +33,14 @@ data class VSession(
         }
     }
 }
-
 class SessionsViewModel : ViewModel() {
     private val _itemsFlow = MutableStateFlow(mutableStateListOf<VSession>())
     val itemsFlow: StateFlow<List<VSession>> get() = _itemsFlow
-
     fun fetch() {
         viewModelScope.launch(Dispatchers.IO) {
             _itemsFlow.value = SessionList.getItemsAsync().map { VSession.from(it) }.toMutableStateList()
         }
     }
-
     fun delete(clientId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             SessionList.deleteAsync(clientId)
@@ -53,7 +48,6 @@ class SessionsViewModel : ViewModel() {
             HttpServerManager.loadTokenCache()
         }
     }
-
     fun createCustomToken(name: String) {
         viewModelScope.launch(Dispatchers.IO) {
             SessionList.createCustomTokenAsync(name)
@@ -61,7 +55,6 @@ class SessionsViewModel : ViewModel() {
             HttpServerManager.loadTokenCache()
         }
     }
-
     fun rename(clientId: String, name: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val changed = SessionList.renameAsync(clientId, name)

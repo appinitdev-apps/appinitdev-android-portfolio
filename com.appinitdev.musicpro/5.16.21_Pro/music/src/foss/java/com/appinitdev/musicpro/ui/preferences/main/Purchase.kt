@@ -1,16 +1,11 @@
-
 class Purchase : PreferenceFragment() {
-
     private lateinit var binding: FragmentPreferenceAppearanceBinding
     private lateinit var headerBinding: HeaderPreferencesGenericBinding
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentPreferenceAppearanceBinding.inflate(inflater, container, false)
         headerBinding = HeaderPreferencesGenericBinding.inflate(inflater, container, false)
-
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         headerBinding.title.text = getString(R.string.purchase)
@@ -20,36 +15,29 @@ class Purchase : PreferenceFragment() {
         binding.recyclerView.adapter = GenericPreferencesAdapter(createPurchasePanel())
         binding.header.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
     }
-
     override val wantsMiniPlayerVisible: Boolean
         get() = false
-
     private fun createPurchasePanel(): MutableList<Preference> {
         val preferences = mutableListOf<Preference>()
-
         val trialHeader = Preference(
                 title = R.string.trial,
                 type = PreferenceType.SUB_HEADER
         )
-
         val trialIcon = if (TrialPreferences.isWithinTrialPeriod()) {
             R.drawable.ic_hourglass_top
         } else {
             R.drawable.ic_hourglass_bottom
         }
-
         val trialPeriod = Preference(
                 title = R.string.trial_period,
                 summary = getString(R.string.trial_period_summary, TrialPreferences.getDaysLeft()),
                 icon = trialIcon,
                 type = PreferenceType.NORMAL
         )
-
         val gumroadHeader = Preference(
                 title = R.string.gumroad,
                 type = PreferenceType.SUB_HEADER
         )
-
         val purchaseHeader = Preference(
                 title = R.string.gumroad,
                 summary = R.string.support_development_summary,
@@ -60,7 +48,6 @@ class Purchase : PreferenceFragment() {
                     startActivity(intent)
                 }
         )
-
         val purchase = Preference(
                 title = R.string.enter_license_key,
                 summary = R.string.enter_license_key_summary,
@@ -70,17 +57,14 @@ class Purchase : PreferenceFragment() {
                     childFragmentManager.showGumroadLicenseKey()
                 }
         )
-
         val playstoreHeader = Preference(
                 title = R.string.play_store,
                 type = PreferenceType.SUB_HEADER
         )
-
         val playStoreInfo = Preference(
                 title = R.string.play_store_foss_purchase_info,
                 type = PreferenceType.WARN
         )
-
         val playStoreLink = Preference(
                 title = R.string.playstore_link,
                 summary = R.string.playstore_link_summary,
@@ -91,7 +75,6 @@ class Purchase : PreferenceFragment() {
                     startActivity(intent)
                 }
         )
-
         preferences.add(trialHeader)
         preferences.add(trialPeriod)
         preferences.add(gumroadHeader)
@@ -100,10 +83,8 @@ class Purchase : PreferenceFragment() {
         preferences.add(playstoreHeader)
         preferences.add(playStoreInfo)
         preferences.add(playStoreLink)
-
         return preferences
     }
-
     companion object {
         fun newInstance(): Purchase {
             val args = Bundle()
@@ -111,7 +92,6 @@ class Purchase : PreferenceFragment() {
             fragment.arguments = args
             return fragment
         }
-
         const val TAG = "Purchase"
     }
 }

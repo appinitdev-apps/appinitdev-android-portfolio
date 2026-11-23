@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addTagSchema() {
     query("tags") {
         resolver { type: DataType ->
@@ -47,42 +46,32 @@ fun SchemaBuilder.addTagSchema() {
                 DataType.AUDIO -> {
                     items = AudioMediaStoreHelper.getTagRelationStubsAsync(context, query)
                 }
-
                 DataType.VIDEO -> {
                     items = VideoMediaStoreHelper.getTagRelationStubsAsync(context, query)
                 }
-
                 DataType.IMAGE -> {
                     items = ImageMediaStoreHelper.getTagRelationStubsAsync(context, query)
                 }
-
                 DataType.SMS -> {
                     items = SmsHelper.getIdsAsync(context, query).map { TagRelationStub(it) }
                 }
-
                 DataType.CONTACT -> {
                     items = ContactMediaStoreHelper.getIdsAsync(context, query).map { TagRelationStub(it) }
                 }
-
                 DataType.NOTE -> {
                     items = NoteHelper.getIdsAsync(query).map { TagRelationStub(it) }
                 }
-
                 DataType.FEED_ENTRY -> {
                     items = FeedEntryHelper.getIdsAsync(query).map { TagRelationStub(it) }
                 }
-
                 DataType.CALL -> {
                     items = CallMediaStoreHelper.getIdsAsync(context, query).map { TagRelationStub(it) }
                 }
-
                 DataType.DOC -> {
                     items = DocMediaStoreHelper.getTagRelationStubsAsync(context, query)
                 }
-
                 else -> {}
             }
-
             tagIds.forEach { tagId ->
                 val existingKeys = withIO { TagHelper.getKeysByTagId(tagId.value) }
                 val newItems = items.filter { !existingKeys.contains(it.key) }
@@ -120,42 +109,32 @@ fun SchemaBuilder.addTagSchema() {
                 DataType.AUDIO -> {
                     ids = AudioMediaStoreHelper.getIdsAsync(context, query)
                 }
-
                 DataType.VIDEO -> {
                     ids = VideoMediaStoreHelper.getIdsAsync(context, query)
                 }
-
                 DataType.IMAGE -> {
                     ids = ImageMediaStoreHelper.getIdsAsync(context, query)
                 }
-
                 DataType.SMS -> {
                     ids = SmsHelper.getIdsAsync(context, query)
                 }
-
                 DataType.CONTACT -> {
                     ids = ContactMediaStoreHelper.getIdsAsync(context, query)
                 }
-
                 DataType.NOTE -> {
                     ids = NoteHelper.getIdsAsync(query)
                 }
-
                 DataType.FEED_ENTRY -> {
                     ids = FeedEntryHelper.getIdsAsync(query)
                 }
-
                 DataType.CALL -> {
                     ids = CallMediaStoreHelper.getIdsAsync(context, query)
                 }
-
                 DataType.DOC -> {
                     ids = DocMediaStoreHelper.getIdsAsync(context, query)
                 }
-
                 else -> {}
             }
-
             TagHelper.deleteTagRelationByKeysTagIds(ids, tagIds.map { it.value }.toSet())
             true
         }

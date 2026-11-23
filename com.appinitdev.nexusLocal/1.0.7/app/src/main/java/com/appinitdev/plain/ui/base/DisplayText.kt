@@ -1,4 +1,3 @@
-
 @Composable
 fun DisplayText(
     modifier: Modifier = Modifier,

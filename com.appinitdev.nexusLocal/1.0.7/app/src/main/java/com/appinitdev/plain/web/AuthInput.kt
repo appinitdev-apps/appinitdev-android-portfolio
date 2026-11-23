@@ -1,4 +1,3 @@
-
 @Serializable
 data class AuthRequest(
     val password: String,
@@ -8,10 +7,8 @@ data class AuthRequest(
     val osVersion: String,
     val isMobile: Boolean,
 )
-
 @Serializable
 data class AuthResponse(val clientId: String, val status: AuthStatus, val token: String = "")
-
 enum class AuthStatus {
     PENDING,
     COMPLETED,

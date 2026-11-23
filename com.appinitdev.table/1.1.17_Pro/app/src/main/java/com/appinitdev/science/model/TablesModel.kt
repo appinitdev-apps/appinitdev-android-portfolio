@@ -1,4 +1,3 @@
-
 object TablesModel {
     fun getList(tables: ArrayList<Tables>) {
         tables.add(Tables(2, R.string.table_ph.toString(), R.string.table_ph_text.toString(), 0, 0, "phActivity"))
@@ -10,4 +9,3 @@ object TablesModel {
         tables.add(Tables(8, R.string.table_nuclide.toString(), R.string.table_nuclide_text.toString(), 0, 1, "NuclideActivity"))
     }
 }
-

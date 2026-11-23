@@ -1,4 +1,3 @@
-
 data class Element(
     val element: String,      
     val short: String,        
@@ -7,4 +6,3 @@ data class Element(
     val isotopes: Int,        
     val elementKey: String = element.lowercase()  
 )
-

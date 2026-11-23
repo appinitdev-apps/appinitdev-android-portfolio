@@ -1,8 +1,6 @@
-
 class AnimatedEffectView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : View(context, attrs) {
-
     data class Shape(
         var x: Float,
         var y: Float,
@@ -22,23 +20,18 @@ class AnimatedEffectView @JvmOverloads constructor(
         val stroke: Float,
         var animatedRadius: Float = 0f
     )
-
     private val shapes = mutableListOf<Shape>()
     private val cornerOutlines = mutableListOf<CornerOutline>()
     private val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL }
     private val outlinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private var fadeAlpha: Float = 0f
-
     fun startAnimation(colors: List<Int>, shapeCount: Int = 12, onAnimationEnd: (() -> Unit)? = null) {
         shapes.clear()
         cornerOutlines.clear()
-
         val palette = if (colors.isNotEmpty()) colors else listOf(Color.GRAY)
         val outlinePalette = palette.shuffled()
-
         val w = width.toFloat().coerceAtLeast(1f)
         val h = height.toFloat().coerceAtLeast(1f)
-
         for (i in 0 until shapeCount) {
             val fillColor = palette[i % palette.size]
             val startRadius = Random.nextInt(30, 100).toFloat()
@@ -58,7 +51,6 @@ class AnimatedEffectView @JvmOverloads constructor(
                 )
             )
         }
-
         fun randomEdgeCenter(w: Float, h: Float, margin: Float, radius: Float): Pair<Float, Float> {
             return when (Random.nextInt(4)) {
                 0 -> Pair(
@@ -79,12 +71,10 @@ class AnimatedEffectView @JvmOverloads constructor(
                 )
             }
         }
-
         val margin = min(w, h) * 0.06f
         val maxR = min(w, h) * 0.5f
         val minR = min(w, h) * 0.15f
         val strokeWidth = min(w, h) * 0.08f
-
         for (i in 0 until 4) {
             val color = outlinePalette[i % outlinePalette.size]
             val thisMaxR = Random.nextFloat() * (maxR - minR) + minR
@@ -102,14 +92,11 @@ class AnimatedEffectView @JvmOverloads constructor(
                 )
             )
         }
-
         visibility = View.VISIBLE
         fadeAlpha = 0f
-
         val totalDuration = 2000L
         val fadeDuration = 300L
         val moveDuration = totalDuration - 2 * fadeDuration
-
         val fadeInAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
             duration = fadeDuration
             addUpdateListener { va ->
@@ -158,16 +145,13 @@ class AnimatedEffectView @JvmOverloads constructor(
                 fadeOutAnimator.start()
             }
         })
-
         fadeInAnimator.start()
     }
-
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val alpha = (fadeAlpha * 255).toInt().coerceIn(0, 255)
         fillPaint.alpha = alpha
         outlinePaint.alpha = alpha
-
         for (shape in shapes) {
             fillPaint.color = shape.fillColor
             canvas.drawCircle(shape.x, shape.y, shape.currentRadius, fillPaint)

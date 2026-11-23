@@ -1,6 +1,4 @@
-
 class TesterWidgetProvider : AppWidgetProvider() {
-
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -10,7 +8,6 @@ class TesterWidgetProvider : AppWidgetProvider() {
             updateAppWidget(context, appWidgetManager, appWidgetId)
         }
     }
-
     companion object {
         fun updateAppWidget(
             context: Context,
@@ -26,13 +23,11 @@ class TesterWidgetProvider : AppWidgetProvider() {
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
-
             val views = RemoteViews(context.packageName, R.layout.widget_tester_progress).apply {
                 setOnClickPendingIntent(R.id.widget_container, pendingIntent)
                 setTextViewText(R.id.widget_title, context.getString(R.string.widget_titulo))
                 setTextViewText(R.id.widget_status_text, context.getString(R.string.widget_subtitulo))
             }
-
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }

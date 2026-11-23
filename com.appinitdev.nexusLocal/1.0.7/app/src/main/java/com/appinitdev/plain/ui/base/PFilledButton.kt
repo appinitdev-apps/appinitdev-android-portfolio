@@ -1,4 +1,3 @@
-
 @Composable
 fun PFilledButton(
     text: String,
@@ -21,7 +20,6 @@ fun PFilledButton(
         ButtonType.TERTIARY -> MaterialTheme.colorScheme.onTertiary
     }
     val padding = if (buttonSize == ButtonSize.SMALL) PaddingValues(horizontal = 12.dp) else ButtonDefaults.ContentPadding
-
     Button(
         onClick = onClick,
         modifier = modifier

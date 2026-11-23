@@ -1,4 +1,3 @@
-
 data class DownloadTask(
     val id: String,
     val messageFile: DMessageFile,
@@ -16,8 +15,6 @@ data class DownloadTask(
     fun isDownloading(): Boolean {
         return status == DownloadStatus.PENDING || status == DownloadStatus.DOWNLOADING
     }
-
-     
     fun isActive(): Boolean {
         return setOf(DownloadStatus.PENDING, DownloadStatus.DOWNLOADING, DownloadStatus.PAUSED, DownloadStatus.FAILED).contains(status)
     }

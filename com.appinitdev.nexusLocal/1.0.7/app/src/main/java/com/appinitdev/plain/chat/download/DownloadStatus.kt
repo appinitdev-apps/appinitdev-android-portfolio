@@ -1,4 +1,3 @@
-
 enum class DownloadStatus {
     PENDING,
     DOWNLOADING,

@@ -1,4 +1,3 @@
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen(
@@ -11,34 +10,24 @@ fun MainScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle(TimerMainUiState())
     val mainUiState by mainViewModel.uiState.collectAsStateWithLifecycle(MainUiState())
-
     val updateAvailable = mainUiState.isUpdateAvailable
     val wasNotificationPermissionDenied = mainUiState.wasNotificationPermissionDenied
-
     var chosenColor by remember { mutableStateOf(Color.Gray) } 
     var showDialog by remember { mutableStateOf(false) }
-
     if (uiState.isLoading) return
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-
     InitTimerStyle(viewModel)
-
     LifecycleResumeEffect(Unit) {
         viewModel.refreshStartOfToday()
         onPauseOrDispose {
-            
         }
     }
-
     val timerUiState by viewModel.timerUiState.collectAsStateWithLifecycle(TimerUiState())
-
     val timerStyle = uiState.timerStyle
     val label = timerUiState.label
-
     val configuration = LocalConfiguration.current
     val haptic = LocalHapticFeedback.current
-
     val dialControlState =
         rememberCustomDialControlState(
             config = DialConfig(),
@@ -47,7 +36,6 @@ fun MainScreen(
             onRight = viewModel::skip,
             onBottom = viewModel::resetTimer,
         )
-
     dialControlState.updateEnabledOptions(timerUiState)
     val gestureModifier =
         dialControlState.let {
@@ -73,7 +61,6 @@ fun MainScreen(
                     }
                 }
         }
-
     val yOffset = remember { Animatable(0f) }
     ScreensaverMode(
         screensaverMode = uiState.screensaverMode,
@@ -81,8 +68,6 @@ fun MainScreen(
         screenWidth = configuration.screenWidth,
         yOffset = yOffset,
     )
-
-
     val isDarkTheme = uiState.darkThemePreference.isDarkTheme(isSystemInDarkTheme())
     val backgroundColor by animateColorAsState(
         if (isDarkTheme &&
@@ -95,7 +80,6 @@ fun MainScreen(
         },
         label = "main background color",
     )
-
     val flashScreenBackgroundColor by
     if (timerUiState.isFinished && uiState.flashScreen) {
         val infiniteTransition = rememberInfiniteTransition(label = "flash")
@@ -112,20 +96,14 @@ fun MainScreen(
     } else {
         rememberUpdatedState(backgroundColor)
     }
-
     val permissionState = getPermissionsState()
     val actionBadgeItemCount = permissionState.count() + if (updateAvailable) 1 else 0
     val interactionSource = remember { MutableInteractionSource() }
-
     var showNavigationSheet by rememberSaveable { mutableStateOf(false) }
     var showSelectLabelDialog by rememberSaveable { mutableStateOf(false) }
-
     val showTutorial = uiState.showTutorial
-
-
     val imagePath by BackgroundPrefs.getImagePath(context).collectAsState(initial = null)
     val savedColor by BackgroundPrefs.getColor(context).collectAsState(initial = Color.Gray)
-
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
@@ -135,8 +113,6 @@ fun MainScreen(
             }
         }
     }
-
-
     AnimatedVisibility(
         timerUiState.isReady,
         enter = fadeIn(),
@@ -162,7 +138,6 @@ fun MainScreen(
                             .windowInsetsPadding(WindowInsets.safeDrawing),
                     contentAlignment = Alignment.Center,
                 ) {
-
                     if (imagePath != null) {
                         Image(
                             painter = rememberAsyncImagePainter(
@@ -186,9 +161,7 @@ fun MainScreen(
                                     .background(it.copy(alpha = 0.6f)) 
                             )
                         }
-
                     }
-
                     if (!hideBottomBar)
                         Row(
                             modifier = Modifier
@@ -230,14 +203,11 @@ fun MainScreen(
                                     Icon(
                                         imageVector = Icons.Filled.Delete,
                                         contentDescription = "Eliminar fondo",
-
                                         modifier = Modifier.size(32.dp)
                                     )
                                 }
                             }
                         }
-
-
                     val tutorialModifier =
                         if (showTutorial) Modifier.blur(radius = 4.dp) else Modifier
                     val modifier =
@@ -251,7 +221,6 @@ fun MainScreen(
                                 IntOffset(yOffset.value.roundToInt(), 0)
                             }
                         }
-
                     val alphaModifier =
                         Modifier.graphicsLayer {
                             alpha = if (dialControlState.isDragging) 0.38f else 1f
@@ -316,7 +285,6 @@ fun MainScreen(
             }
         }
     }
-
     if (showDialog) {
         androidx.compose.material3.AlertDialog(
             onDismissRequest = { showDialog = false },
@@ -335,7 +303,6 @@ fun MainScreen(
             }
         )
     }
-
     if (showNavigationSheet) {
         MainNavigationSheet(
             onHideSheet = { showNavigationSheet = false },
@@ -350,18 +317,15 @@ fun MainScreen(
             },
         )
     }
-
     var showFinishedSessionSheet by remember(timerUiState.isFinished) {
         mutableStateOf(timerUiState.isFinished)
     }
-
     if (showFinishedSessionSheet) {
         FinishedSessionSheet(
             timerUiState = timerUiState,
             onHideSheet = { showFinishedSessionSheet = false },
             onNext = { updateWorkTime ->
                 viewModel.next(updateWorkTime)
-                
                 if (context.installIsOlderThan10Days() && !timerUiState.isBreak) {
                     viewModel.setShouldAskForReview()
                 }
@@ -376,7 +340,6 @@ fun MainScreen(
             onUpdateNotes = viewModel::updateNotesForLastCompletedSession,
         )
     }
-
     if (showSelectLabelDialog) {
         SelectActiveLabelDialog(
             initialSelectedLabel = timerUiState.label.label.name,
@@ -409,7 +372,6 @@ fun MainScreen(
         )
     }
 }
-
 private suspend fun showAlarmPermissionSnackbar(context: Context) {
     SnackbarController.sendEvent(
         event =

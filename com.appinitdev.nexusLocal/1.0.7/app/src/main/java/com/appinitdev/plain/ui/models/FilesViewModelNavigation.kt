@@ -1,4 +1,3 @@
-
 internal fun FilesViewModel.navigateToDirectoryInternal(context: Context, newPath: String) {
     if (selectedPath != newPath) {
         navigationHistoryInternal.add(selectedPath)
@@ -11,7 +10,6 @@ internal fun FilesViewModel.navigateToDirectoryInternal(context: Context, newPat
         }
     }
 }
-
 internal fun FilesViewModel.navigateBackInternal(): Boolean {
     return if (navigationHistoryInternal.isNotEmpty()) {
         selectedPath = navigationHistoryInternal.removeLastOrNull() ?: selectedPath
@@ -19,7 +17,6 @@ internal fun FilesViewModel.navigateBackInternal(): Boolean {
         true
     } else false
 }
-
 internal suspend fun FilesViewModel.loadLastPathAsyncInternal(context: Context) {
     val data = LastFilePathPreference.getValueAsync()
     if (data.selectedPath.isNotEmpty() && File(data.selectedPath).exists()) {
@@ -30,7 +27,6 @@ internal suspend fun FilesViewModel.loadLastPathAsyncInternal(context: Context) 
         updateRootBreadcrumb()
     }
 }
-
 internal fun FilesViewModel.inferFileTypeFromRootInternal(context: Context, rootPath: String): FilesType {
     val internalStoragePath = FileSystemHelper.getInternalStoragePath()
     val appDataPath = context.appDir()
@@ -44,7 +40,6 @@ internal fun FilesViewModel.inferFileTypeFromRootInternal(context: Context, root
         else -> FilesType.INTERNAL_STORAGE
     }
 }
-
 internal fun FilesViewModel.rebuildBreadcrumbsInternal(targetPath: String) {
     breadcrumbs.clear()
     breadcrumbs.add(BreadcrumbItem(getRootDisplayName(), rootPath))
@@ -53,7 +48,6 @@ internal fun FilesViewModel.rebuildBreadcrumbsInternal(targetPath: String) {
         return
     }
     if (ZipBrowserHelper.isZipPath(targetPath)) {
-        
         val zipFilePath = ZipBrowserHelper.getZipFilePath(targetPath)
         val relativeToRoot = zipFilePath.removePrefix(rootPath).trimStart('/')
         if (relativeToRoot.isNotEmpty()) {
@@ -61,7 +55,6 @@ internal fun FilesViewModel.rebuildBreadcrumbsInternal(targetPath: String) {
             relativeToRoot.split("/").forEach { segment ->
                 if (segment.isNotEmpty()) {
                     currentPath += "/$segment"
-                    
                     val bcPath = if (currentPath == zipFilePath) {
                         ZipBrowserHelper.joinPath(zipFilePath, "")
                     } else {
@@ -71,7 +64,6 @@ internal fun FilesViewModel.rebuildBreadcrumbsInternal(targetPath: String) {
                 }
             }
         }
-        
         val internalPath = ZipBrowserHelper.getInternalPath(targetPath)
         val segments = internalPath.trimEnd('/').split("/").filter { it.isNotEmpty() }
         var currentInternalPath = ZipBrowserHelper.joinPath(zipFilePath, "")
@@ -95,7 +87,6 @@ internal fun FilesViewModel.rebuildBreadcrumbsInternal(targetPath: String) {
     }
     selectedBreadcrumbIndex.value = breadcrumbs.size - 1
 }
-
 internal fun FilesViewModel.initSelectedPathInternal(rootPath: String, type: FilesType, fullPath: String, selectedPath: String) {
     this.rootPath = rootPath
     this.type = type
@@ -105,7 +96,6 @@ internal fun FilesViewModel.initSelectedPathInternal(rootPath: String, type: Fil
     if (selectedBreadcrumbIndex.value == -1) selectedBreadcrumbIndex.value = breadcrumbs.size - 1
     navigationHistoryInternal.clear()
 }
-
 internal fun FilesViewModel.getAndUpdateSelectedIndexInternal(): Int {
     var index = breadcrumbs.indexOfFirst { it.path == selectedPath }
     if (index == -1) {

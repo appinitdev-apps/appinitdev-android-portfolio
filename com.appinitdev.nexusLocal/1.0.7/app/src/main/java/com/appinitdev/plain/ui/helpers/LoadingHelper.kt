@@ -1,4 +1,3 @@
-
 object LoadingHelper {
     fun ensureMinimumLoadingTime(
         viewModel: ViewModel,

@@ -1,29 +1,22 @@
-
 class DlnaReceiverViewModel : ViewModel() {
-
     val isRetrying = MutableStateFlow(false)
-
     private var commandJob: Job? = null
     private var positionJob: Job? = null
     private var ruleCheckJob: Job? = null
-
     init {
         startCommandProcessing()
     }
-
     fun startReceiver(context: Context) {
         DlnaRenderer.start(context)
         startCommandProcessing()
         startRuleCheck(context)
     }
-
     fun stopReceiver(context: Context) {
         commandJob?.cancel()
         positionJob?.cancel()
         ruleCheckJob?.cancel()
         DlnaRenderer.stop()
     }
-
     fun retryReceiver(context: Context) {
         viewModelScope.launch {
             isRetrying.value = true
@@ -35,7 +28,6 @@ class DlnaReceiverViewModel : ViewModel() {
             isRetrying.value = false
         }
     }
-
     private fun startRuleCheck(context: Context) {
         ruleCheckJob?.cancel()
         ruleCheckJob = viewModelScope.launch(Dispatchers.IO) {
@@ -44,7 +36,6 @@ class DlnaReceiverViewModel : ViewModel() {
                 val denied = DlnaDeniedSendersPreference.getAsync()
                 when {
                     DlnaAllowedSendersPreference.containsIp(allowed, pending.senderIp) -> {
-                        
                         DlnaRendererState.pendingCastRequest.value = null
                         DlnaRendererState.rawPendingCastRequest.value = null
                         val playQueued = DlnaRendererState.pendingPlayQueued.value
@@ -53,12 +44,10 @@ class DlnaReceiverViewModel : ViewModel() {
                         if (playQueued) DlnaRendererState.commandChannel.trySend(DlnaCommand.Play)
                     }
                     DlnaDeniedSendersPreference.containsIp(denied, pending.senderIp) -> {
-                        
                         DlnaRendererState.rawPendingCastRequest.value = null
                         DlnaRendererState.pendingPlayQueued.value = false
                     }
                     else -> {
-                        
                         DlnaRendererState.pendingCastRequest.value = pending
                         DlnaRendererState.rawPendingCastRequest.value = null
                     }
@@ -66,7 +55,6 @@ class DlnaReceiverViewModel : ViewModel() {
             }
         }
     }
-
     fun acceptCastRequest(context: Context, rememberChoice: Boolean) {
         val pending = DlnaRendererState.pendingCastRequest.value ?: return
         val playQueued = DlnaRendererState.pendingPlayQueued.value
@@ -83,7 +71,6 @@ class DlnaReceiverViewModel : ViewModel() {
             }
         }
     }
-
     fun rejectCastRequest(context: Context, rememberChoice: Boolean) {
         val pending = DlnaRendererState.pendingCastRequest.value ?: return
         DlnaRendererState.pendingCastRequest.value = null
@@ -95,7 +82,6 @@ class DlnaReceiverViewModel : ViewModel() {
             }
         }
     }
-
     fun startCommandProcessing() {
         commandJob?.cancel()
         commandJob = viewModelScope.launch {
@@ -119,7 +105,6 @@ class DlnaReceiverViewModel : ViewModel() {
             }
         }
     }
-
     fun startPositionSync(player: ExoPlayer) {
         positionJob?.cancel()
         positionJob = viewModelScope.launch {
@@ -131,6 +116,3 @@ class DlnaReceiverViewModel : ViewModel() {
         }
     }
 }
-
-
-

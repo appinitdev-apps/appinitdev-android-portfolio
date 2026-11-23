@@ -1,4 +1,3 @@
-
 @Composable
 fun HomeWebAddressSection(
     context: Context,
@@ -13,11 +12,9 @@ fun HomeWebAddressSection(
         pageCount = { 2 },
     )
     var showStayOnlineOverlay by remember { mutableStateOf(false) }
-
     if (showStayOnlineOverlay) {
         StayOnlineModeOverlay(onExit = { showStayOnlineOverlay = false })
     }
-
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
             val https = page == 1
@@ -26,7 +23,6 @@ fun HomeWebAddressSection(
             }
         }
     }
-
     Column {
         Text(
             text = stringResource(Res.string.web_address_hint),

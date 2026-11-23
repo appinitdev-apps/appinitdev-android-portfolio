@@ -1,4 +1,3 @@
-
 @SuppressLint("MissingPermission")
 internal fun swapToPlaybackCapture(
     context: Context,
@@ -32,16 +31,13 @@ internal fun swapToPlaybackCapture(
             LogCat.e("webrtc: audioRecord is null or not AudioRecord")
             return false
         }
-
         val sampleRate = oldRecord.sampleRate
         val channelCount = oldRecord.channelCount
         val channelConfig = if (channelCount == 1) AudioFormat.CHANNEL_IN_MONO else AudioFormat.CHANNEL_IN_STEREO
         val encoding = oldRecord.audioFormat
         LogCat.d("webrtc: audio swap - old record: rate=$sampleRate ch=$channelCount encoding=$encoding")
-
         try { oldRecord.stop() } catch (_: Exception) {}
         oldRecord.release()
-
         val playbackConfig = AudioPlaybackCaptureConfiguration.Builder(projection)
             .addMatchingUsage(AudioAttributes.USAGE_MEDIA)
             .addMatchingUsage(AudioAttributes.USAGE_GAME)
@@ -59,13 +55,11 @@ internal fun swapToPlaybackCapture(
             )
             .setBufferSizeInBytes(bufferSize)
             .build()
-
         if (newRecord.state != AudioRecord.STATE_INITIALIZED) {
             LogCat.e("webrtc: Playback-capture AudioRecord failed to initialise (state=${newRecord.state})")
             newRecord.release()
             return false
         }
-
         audioRecordField.set(audioInput, newRecord)
         newRecord.startRecording()
         LogCat.d("webrtc: audio swap DONE - system audio capture active (rate=$sampleRate ch=$channelCount)")

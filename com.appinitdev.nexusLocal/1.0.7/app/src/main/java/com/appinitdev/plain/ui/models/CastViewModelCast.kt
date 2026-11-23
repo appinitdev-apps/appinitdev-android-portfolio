@@ -1,4 +1,3 @@
-
 internal fun CastViewModel.castPath(path: String) {
     val device = CastPlayer.currentDevice ?: return
     viewModelScope.launch(Dispatchers.IO) {
@@ -21,7 +20,6 @@ internal fun CastViewModel.castPath(path: String) {
         }
     }
 }
-
 internal fun CastViewModel.castItem(item: IMedia) {
     val device = CastPlayer.currentDevice ?: return
     viewModelScope.launch(Dispatchers.IO) {
@@ -50,7 +48,6 @@ internal fun CastViewModel.castItem(item: IMedia) {
         }
     }
 }
-
 internal suspend fun CastViewModel.trySubscribeEvent() {
     val device = CastPlayer.currentDevice ?: return
     try {
@@ -66,13 +63,10 @@ internal suspend fun CastViewModel.trySubscribeEvent() {
         CastPlayer.supportsCallback.value = false
     }
 }
-
 internal fun CastViewModel.startPositionUpdater() {
     val device = CastPlayer.currentDevice ?: return
     if (!CastPlayer.supportsCallback.value) return
-
     positionUpdateJob?.cancel()
-
     positionUpdateJob = viewModelScope.launch(Dispatchers.IO) {
         while (CastPlayer.currentUri.value.isNotEmpty() && CastPlayer.supportsCallback.value) {
             try {

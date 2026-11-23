@@ -1,4 +1,3 @@
-
 fun File.getDirectChildrenCount(countHiddenItems: Boolean): Int {
     if (countHiddenItems) {
         return list()?.size ?: 0
@@ -7,7 +6,6 @@ fun File.getDirectChildrenCount(countHiddenItems: Boolean): Int {
         !it.startsWith('.')
     }?.size ?: 0
 }
-
 fun File.newName(): String {
     var index = 1
     var candidate: String
@@ -25,15 +23,12 @@ fun File.newName(): String {
         index++
     }
 }
-
 fun File.newPath(): String {
     return "$parent/" + newName()
 }
-
 fun File.newFile(): File {
     return File(newPath())
 }
-
 fun File.getDuration(context: Context): Long {
     val retriever = MediaMetadataRetriever()
     return try {

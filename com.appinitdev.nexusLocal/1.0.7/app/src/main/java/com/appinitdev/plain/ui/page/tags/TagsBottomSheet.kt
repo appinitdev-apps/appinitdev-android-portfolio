@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun TagsBottomSheet(
@@ -10,7 +9,6 @@ fun TagsBottomSheet(
         skipPartiallyExpanded = true
     )
     val scope = rememberCoroutineScope()
-
     PModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
@@ -31,7 +29,6 @@ fun TagsBottomSheet(
                     ActionButtonAdd { tagsVM.showAddDialog() }
                 }
             )
-
             if (itemsState.isNotEmpty()) {
                 LazyColumn(
                     Modifier.fillMaxSize()
@@ -68,6 +65,5 @@ fun TagsBottomSheet(
             }
         }
     }
-
     TagNameDialog(tagsVM)
 } 

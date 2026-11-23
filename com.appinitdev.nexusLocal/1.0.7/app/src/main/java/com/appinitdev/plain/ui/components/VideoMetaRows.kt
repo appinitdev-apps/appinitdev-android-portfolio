@@ -1,19 +1,14 @@
-
 @Composable
 fun VideoMetaRows(path: String) {
-
     var meta by remember {
         mutableStateOf<DVideoMeta?>(null)
     }
-
     val scope = rememberCoroutineScope()
-
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
             meta = VideoHelper.getMeta(path)
         }
     }
-
     meta?.let { mt ->
         mt.takenAt?.let { takenAt ->
             PListItem(title = stringResource(Res.string.taken_at), value = takenAt.formatDateTime())

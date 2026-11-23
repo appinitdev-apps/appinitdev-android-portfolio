@@ -1,9 +1,4 @@
-
 object HttpModule {
-    
-    
-
-
     @SuppressLint("SuspiciousIndentation")
     val module: Application.() -> Unit = {
         install(CachingHeaders) {
@@ -13,12 +8,10 @@ object HttpModule {
                         CachingOptions(
                             CacheControl.MaxAge(maxAgeSeconds = 3600 * 24 * 30),
                         )
-
                     else -> null
                 }
             }
         }
-
         install(CORS) {
             if (BuildConfig.DEBUG) {
                 allowHost("*")
@@ -28,10 +21,8 @@ object HttpModule {
             }
             allowHeadersPrefixed("c-")
         }
-
         install(ConditionalHeaders)
         install(WebSockets)
-
         install(ForwardedHeaders)
         install(PartialContent)
         install(AutoHeadResponse)
@@ -43,7 +34,6 @@ object HttpModule {
                 },
             )
         }
-
         intercept(ApplicationCallPipeline.Plugins) {
             if (call.request.path() == "/health") {
                 return@intercept
@@ -54,10 +44,7 @@ object HttpModule {
             }
             call.response.headers.append("X-Server-Time", System.currentTimeMillis().toString())
         }
-
         routing {
-            
-            
             staticResources("/", "web", index = null) {
                 cacheControl {
                     arrayListOf(
@@ -67,10 +54,8 @@ object HttpModule {
                 }
                 fallback { requestedPath, call ->
                     if (requestedPath.contains('.')) {
-                        
                         call.respond(HttpStatusCode.NotFound)
                     } else {
-                        
                         val classLoader = call.application.environment.classLoader
                         val html = classLoader.getResourceAsStream("web/index.html")
                             ?.bufferedReader()?.readText() ?: ""
@@ -82,17 +67,14 @@ object HttpModule {
                     }
                 }
             }
-
             post("/api/wake-app") {
                 val action = call.request.queryParameters["action"]
                 HttpServerManager.handleWakeAppRequest(action)
                 call.respond(HttpStatusCode.OK, "Dispositivo despertado")
             }
-
             get("/health") {
                 call.respond(HttpStatusCode.OK, BuildConfig.APPLICATION_ID)
             }
-
             get("/shutdown") {
                 val ip = call.request.origin.remoteHost
                 LogCat.d("$ip is shutting down the server")
@@ -100,7 +82,6 @@ object HttpModule {
                     call.respond(HttpStatusCode.Forbidden)
                     return@get
                 }
-
                 HttpServerManager.wsSessions.forEach {
                     it.session.close()
                 }
@@ -114,20 +95,16 @@ object HttpModule {
                     application.monitor.raise(ApplicationStopPreparing, environment)
                     application.dispose()
                 }
-
                 try {
                     call.respond(HttpStatusCode.Gone)
                 } finally {
                     latch.cancel()
                 }
             }
-
             addDLNA()
             addZip()
             addFiles()
             addUploads()
-
-            
             post("/init") {
                 val clientId = call.request.headers["c-id"] ?: ""
                 if (clientId.isEmpty()) {
@@ -139,8 +116,6 @@ object HttpModule {
                     return@post
                 }
                 HttpServerManager.clientIpCache[clientId] = call.request.origin.remoteAddress
-                
-                
                 val bodyBytes = runCatching { call.receive<ByteArray>() }.getOrNull()
                 if (bodyBytes != null && bodyBytes.isNotEmpty()) {
                     val token = HttpServerManager.tokenCache[clientId]
@@ -152,14 +127,12 @@ object HttpModule {
                         }
                     }
                 }
-
                 if (PasswordTypePreference.getValueAsync() == PasswordType.NONE) {
                     call.respondText(HttpServerManager.resetPasswordAsync())
                 } else {
                     call.respond(HttpStatusCode.NoContent)
                 }
             }
-
             addWebSocket()
         }
         install(MainGraphQL) {
@@ -169,5 +142,4 @@ object HttpModule {
             init()
         }
     }
-
 }

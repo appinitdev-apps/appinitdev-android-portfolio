@@ -1,4 +1,3 @@
-
 @Composable
 fun AppFileListContent(
     navController: NavHostController,
@@ -10,14 +9,12 @@ fun AppFileListContent(
     onLoadMore: () -> Unit,
 ) {
     val context = LocalContext.current
-
     if (isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
         return
     }
-
     if (files.isEmpty()) {
         NoDataView(
             icon = Res.drawable.package_open,
@@ -27,7 +24,6 @@ fun AppFileListContent(
         )
         return
     }
-
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 8.dp),

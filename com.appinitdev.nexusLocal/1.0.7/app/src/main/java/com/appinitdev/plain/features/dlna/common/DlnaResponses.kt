@@ -1,10 +1,8 @@
-
 class DlnaTransportInfoResponse {
     @SerializedName("CurrentTransportState") val state: String = ""
     @SerializedName("CurrentTransportStatus") val status: String = ""
     @SerializedName("CurrentSpeed") val speed: Int = 0
 }
-
 class DlnaPositionInfoResponse {
     @SerializedName("Track") val track: String = ""
     @SerializedName("TrackDuration") val trackDuration: String = ""
@@ -15,5 +13,4 @@ class DlnaPositionInfoResponse {
     @SerializedName("RelCount") val relCount: String = ""
     @SerializedName("AbsCount") val absCount: String = ""
 }
-
 class DlnaSetUriResponse

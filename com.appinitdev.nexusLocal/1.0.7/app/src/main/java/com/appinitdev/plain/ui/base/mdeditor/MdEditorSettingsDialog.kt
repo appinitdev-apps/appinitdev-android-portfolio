@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun MdEditorSettingsDialog(
@@ -51,18 +50,6 @@ fun MdEditorSettingsDialog(
                         }
                     }
                 }
-
-
-
-
-
-
-
-
-
-
-
-
             }
         })
 }

@@ -1,4 +1,3 @@
-
 @Composable
 fun ChatFileInfo(
     modifier: Modifier = Modifier,
@@ -17,7 +16,6 @@ fun ChatFileInfo(
             style = MaterialTheme.typography.listItemTitle(),
             color = if (isCurrentlyPlaying) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
         )
-
         Text(
             modifier = Modifier
                 .fillMaxWidth()
@@ -25,7 +23,6 @@ fun ChatFileInfo(
             text = size.formatBytes() + if (duration > 0) " / ${duration.formatDuration()}" else "",
             style = MaterialTheme.typography.listItemSubtitle(),
         )
-
         if (fileName.isTextFile() && summary.isNotEmpty()) {
             Text(
                 modifier = Modifier

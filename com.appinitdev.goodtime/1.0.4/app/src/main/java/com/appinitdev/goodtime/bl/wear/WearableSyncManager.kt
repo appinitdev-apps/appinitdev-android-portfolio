@@ -1,12 +1,9 @@
-
 object WearableSyncManager {
-
     const val ACTION_WEAR_TIMER_UPDATE = "com.apps.adrcotfas.goodtime.WEAR_TIMER_UPDATE"
     const val EXTRA_STATE = "extra_state"
     const val EXTRA_LABEL = "extra_label"
     const val EXTRA_REMAINING_SEC = "extra_remaining_sec"
     const val EXTRA_TIMER_TYPE = "extra_timer_type"
-
     fun broadcastTimerUpdate(
         context: Context,
         data: DomainTimerData,

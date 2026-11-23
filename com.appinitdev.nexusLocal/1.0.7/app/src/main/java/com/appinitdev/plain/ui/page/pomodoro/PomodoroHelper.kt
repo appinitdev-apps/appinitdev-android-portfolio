@@ -1,4 +1,3 @@
-
 object PomodoroHelper {
     @SuppressLint("MissingPermission")
     suspend fun showNotificationAsync(context: Context, state: PomodoroState) {
@@ -6,7 +5,6 @@ object PomodoroHelper {
         if (!settings.showNotification) {
             return
         }
-
         NotificationHelper.ensureDefaultChannel()
         val database = AppDatabase.Companion.instance
         val pomodoroDao = database.pomodoroItemDao()
@@ -14,8 +12,6 @@ object PomodoroHelper {
             .toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
         val todayRecord = CoroutinesHelper.withIO { pomodoroDao.getByDate(today) }
         val completedPomodoros = todayRecord?.completedCount ?: 0
-
-        
         val (title, message) = when (state) {
             PomodoroState.WORK -> {
                 val newCount = completedPomodoros + 1
@@ -26,16 +22,13 @@ object PomodoroHelper {
                     LocaleHelper.getStringAsync(messageRes)
                 )
             }
-
             PomodoroState.SHORT_BREAK -> {
                 Pair(LocaleHelper.getStringAsync(Res.string.break_complete), LocaleHelper.getStringAsync(Res.string.time_to_work))
             }
-
             PomodoroState.LONG_BREAK -> {
                 Pair(LocaleHelper.getStringAsync(Res.string.long_break_complete), LocaleHelper.getStringAsync(Res.string.ready_for_work))
             }
         }
-
         val intent = Intent(context, MainActivity::class.java).apply {
             `package` = context.packageName
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -46,7 +39,6 @@ object PomodoroHelper {
             intent,
             PendingIntent.FLAG_IMMUTABLE
         )
-
         val notificationId = NotificationHelper.generateId()
         val notification = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.notification)
@@ -56,7 +48,6 @@ object PomodoroHelper {
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .build()
-
         try {
             if (Permission.POST_NOTIFICATIONS.can(context)) {
                 NotificationManagerCompat.from(context).notify(notificationId, notification)
@@ -65,18 +56,14 @@ object PomodoroHelper {
             LogCat.e("Failed to show Pomodoro notification: ${e.message}")
         }
     }
-
     suspend fun playCompletionSound(context: Context, settings: DPomodoroSettings) {
-        
         if (!settings.playSoundOnComplete) {
             return
         }
-        
         if (settings.soundPath.isNotEmpty()) {
             try {
                 val actualPath = settings.soundPath.getFinalPath(context)
                 val file = File(actualPath)
-                
                 if (file.exists() && actualPath.isAudioFast()) {
                     playCustomSong(context, actualPath)
                     return
@@ -86,16 +73,12 @@ object PomodoroHelper {
                 }
             } catch (e: Exception) {
                 LogCat.e("Failed to play custom song, falling back to default sound: ${e.message}")
-                
             }
         }
-        
-        
         coIO {
             playNotificationSound()
         }
     }
-
     private suspend fun playCustomSong(context: Context, songPath: String) {
         try {
             val audio = DPlaylistAudio.fromPath(context, songPath)
@@ -104,10 +87,8 @@ object PomodoroHelper {
             }
         } catch (e: Exception) {
             LogCat.e("Failed to play custom song: ${e.message}")
-            
         }
     }
-
     fun playNotificationSound() {
         com.appinitdev.nexusLocal.ui.page.pomodoro.playNotificationSound()
     }

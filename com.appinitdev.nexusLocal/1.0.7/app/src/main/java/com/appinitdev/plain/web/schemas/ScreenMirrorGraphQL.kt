@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addScreenMirrorSchema() {
     query("screenMirrorState") {
         resolver { ->

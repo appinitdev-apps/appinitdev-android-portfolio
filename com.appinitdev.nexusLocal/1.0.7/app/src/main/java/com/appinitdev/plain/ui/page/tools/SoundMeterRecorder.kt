@@ -1,4 +1,3 @@
-
 @SuppressLint("MissingPermission")
 @Composable
 internal fun SoundMeterRecorder(
@@ -14,7 +13,6 @@ internal fun SoundMeterRecorder(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val sharedFlow = Channel.sharedFlow
-
     LaunchedEffect(sharedFlow) {
         sharedFlow.collect { event ->
             if (event is PermissionsResultEvent) {
@@ -22,7 +20,6 @@ internal fun SoundMeterRecorder(
             }
         }
     }
-
     LaunchedEffect(isRunning.value) {
         if (!isRunning.value) {
             if (audioRecord.value?.state == AudioRecord.STATE_INITIALIZED) {
@@ -53,7 +50,6 @@ internal fun SoundMeterRecorder(
             }
         }
     }
-
     DisposableEffect(Unit) {
         onDispose {
             if (audioRecord.value?.state == AudioRecord.STATE_INITIALIZED) {

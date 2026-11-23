@@ -1,11 +1,9 @@
-
 class DocsViewModel : BaseMediaViewModel<DDoc>() {
     override val dataType = DataType.DOC
     val scrollStateMap = mutableStateMapOf<Int, LazyListState>()
     val fileType = mutableStateOf("")
     var tabsShowTags = mutableStateOf(false)
     var tabs = mutableStateOf(listOf<VTabData>())
-
     override fun getQuery(): String {
         val query = super.getQuery()
         if (!tabsShowTags.value && fileType.value.isNotEmpty()) {
@@ -13,7 +11,6 @@ class DocsViewModel : BaseMediaViewModel<DDoc>() {
         }
         return query
     }
-
     override suspend fun loadAsync(context: Context, tagsVM: TagsViewModel) {
         offset.intValue = 0
         _itemsFlow.value = searchMediaAsync(context, getQuery()).toMutableStateList()
@@ -34,7 +31,6 @@ class DocsViewModel : BaseMediaViewModel<DDoc>() {
         }
         showLoading.value = false
     }
-
     fun delete(context: Context, tagsVM: TagsViewModel, ids: Set<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             DialogHelper.showLoading()

@@ -1,7 +1,5 @@
-
 class EditTextAutoClearFocus(context: Context, attributeSet: AttributeSet) :
     HighlightableEditText(context, attributeSet) {
-
     override fun onKeyPreIme(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
             this.clearFocus()

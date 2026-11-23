@@ -1,4 +1,3 @@
-
 @Composable
 internal fun FilesPageDialogs(
     filesVM: FilesViewModel, context: Context, scope: CoroutineScope,
@@ -8,7 +7,6 @@ internal fun FilesPageDialogs(
             scope.launch(Dispatchers.IO) { FileSortByPreference.putAsync(it); filesVM.sortBy.value = it; filesVM.loadAsync(context) }
         }, onDismiss = { filesVM.showSortDialog.value = false })
     }
-
     if (filesVM.showCreateFolderDialog.value) {
         val folderNameValue = remember { mutableStateOf("") }
         TextFieldDialog(
@@ -28,7 +26,6 @@ internal fun FilesPageDialogs(
             }
         )
     }
-
     if (filesVM.showCreateFileDialog.value) {
         val fileNameValue = remember { mutableStateOf("") }
         TextFieldDialog(
@@ -48,10 +45,8 @@ internal fun FilesPageDialogs(
             }
         )
     }
-
     if (filesVM.showFolderKanbanDialog.value) {
         FolderKanbanDialog(filesVM = filesVM, onDismiss = { filesVM.showFolderKanbanDialog.value = false })
     }
-
     FileInfoBottomSheet(filesVM = filesVM)
 }

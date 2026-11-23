@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 data class ImagesPageState(
     val pagerState: PagerState,
@@ -36,7 +35,6 @@ data class ImagesPageState(
             val tagsMapState by tagsVM.tagsMapFlow.collectAsState()
             val bucketsMap by imageFoldersVM.bucketsMapFlow.collectAsState()
             val cellsPerRow = remember { mutableIntStateOf(ImageGridCellsPerRowPreference.default) }
-
             return ImagesPageState(
                 pagerState = pagerState,
                 itemsState = itemsState,

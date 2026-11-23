@@ -1,4 +1,3 @@
-
 @Composable
 fun ForwardMsg(navController: NavController, viewModel: ChatViewModel, state: AppState) {
     val chats = viewModel.chats
@@ -13,7 +12,6 @@ fun ForwardMsg(navController: NavController, viewModel: ChatViewModel, state: Ap
             else{
                 it.user1?.username.toString().startsWith(searchText, ignoreCase = true)
             }
-
         }
     }
     var selectionMode by remember {
@@ -131,7 +129,6 @@ fun ForwardMsg(navController: NavController, viewModel: ChatViewModel, state: Ap
                                     IconButton(onClick = { searchText = ""}) {
                                         Icon(imageVector = Icons.Filled.Close, contentDescription = null)
                                     }
-
                             }
                         )
                     }
@@ -190,7 +187,6 @@ fun Item(state: AppState,
              chat: ChatData,
              selected:(String)->Unit,
              isSelected: Boolean,
-
 ) {
     val color = if(!isSelected) Color.Transparent else colorScheme.onPrimary
     Row(

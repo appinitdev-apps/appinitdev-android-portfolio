@@ -1,7 +1,3 @@
-
- 
-
-
 fun getOptionalCrossFadeTransition(duration: Int): DrawableTransitionOptions {
     return DrawableTransitionOptions.with(
         TransitionFactory { dataSource, isFirstResource ->
@@ -10,4 +6,3 @@ fun getOptionalCrossFadeTransition(duration: Int): DrawableTransitionOptions {
         }
     )
 }
-

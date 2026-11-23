@@ -1,11 +1,8 @@
-
 data class DContactSource(var name: String, var type: String)
-
 data class DGroup(
     var id: Long,
     var name: String,
 )
-
 data class DContact(
     override var id: String,
     var prefix: String,
@@ -38,7 +35,6 @@ data class DContact(
             } else {
                 setOf(givenName, middleName, familyName).filter { it.isNotEmpty() }.joinToString(" ")
             }
-
         val suffixComma = if (suffix.isEmpty()) "" else ", $suffix"
         val fullName = "$prefix $name $suffixComma".trim()
         return fullName.ifEmpty {

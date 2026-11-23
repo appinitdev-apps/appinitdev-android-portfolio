@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatEditTextPage(
@@ -11,7 +10,6 @@ fun ChatEditTextPage(
     var inputValue by remember { mutableStateOf(content) }
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
-
     PScaffold(
         topBar = {
             PTopAppBar(

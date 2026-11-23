@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MediaFolderGridItem(
@@ -12,7 +11,6 @@ fun MediaFolderGridItem(
     val bitmapResult = remember {
         mutableStateOf<Bitmap?>(null)
     }
-
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
             val bitmaps = mutableListOf<Bitmap>()
@@ -29,7 +27,6 @@ fun MediaFolderGridItem(
             try {
                 val softwareBitmaps = mutableListOf<Bitmap>()
                 for (bitmap in bitmaps) {
-                    
                     val softwareBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
                     softwareBitmaps.add(softwareBitmap)
                 }
@@ -43,7 +40,6 @@ fun MediaFolderGridItem(
             }
         }
     }
-
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -71,9 +67,7 @@ fun MediaFolderGridItem(
                     contentScale = ContentScale.Crop,
                 )
             }
-
             VerticalSpace(12.dp)
-
             Text(
                 text = m.name,
                 style = MaterialTheme.typography.listItemTitle(),
@@ -83,7 +77,6 @@ fun MediaFolderGridItem(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
-
             VerticalSpace(4.dp)
             var subtitle = pluralStringResource(Res.plurals.items, m.itemCount, m.itemCount)
             if (m.size > 0) {

@@ -1,9 +1,3 @@
-
- 
-
-
-
-
 class AutoBackupManager(
     context: Context,
     private val settingsRepository: SettingsRepository,
@@ -11,12 +5,10 @@ class AutoBackupManager(
 ) {
     private val workManager = WorkManager.getInstance(context)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-
     init {
         logger.i { "AutoBackupManager initialized" }
         observeBackupSettings()
     }
-
     private fun observeBackupSettings() {
         scope.launch {
             settingsRepository.settings
@@ -27,10 +19,8 @@ class AutoBackupManager(
                 }
         }
     }
-
     private fun handleBackupSettingsChange(backupSettings: BackupSettings) {
         logger.i { "Backup settings changed: autoBackupEnabled=${backupSettings.autoBackupEnabled}, path=${backupSettings.path}" }
-
         if (backupSettings.autoBackupEnabled && backupSettings.path.isNotBlank()) {
             scheduleBackup()
             logger.i { "Auto backup scheduled with path: ${backupSettings.path}" }
@@ -39,14 +29,12 @@ class AutoBackupManager(
             logger.i { "Auto backup canceled" }
         }
     }
-
     private fun scheduleBackup() {
         val constraints =
             Constraints
                 .Builder()
                 .setRequiresCharging(true)
                 .build()
-
         val backupWorkRequest =
             PeriodicWorkRequestBuilder<AutoBackupWorker>(
                 repeatInterval = 1,
@@ -55,14 +43,12 @@ class AutoBackupManager(
                 .setConstraints(constraints)
                 .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.HOURS)
                 .build()
-
         workManager.enqueueUniquePeriodicWork(
             AutoBackupWorker.WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
             backupWorkRequest,
         )
     }
-
     private fun cancelBackup() {
         logger.i { "Auto backup canceled" }
         workManager.cancelUniqueWork(AutoBackupWorker.WORK_NAME)

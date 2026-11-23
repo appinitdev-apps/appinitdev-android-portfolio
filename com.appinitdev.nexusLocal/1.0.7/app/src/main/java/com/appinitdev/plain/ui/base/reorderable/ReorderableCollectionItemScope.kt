@@ -1,4 +1,3 @@
-
 @Stable
 interface ReorderableCollectionItemScope {
     fun Modifier.draggableHandle(
@@ -7,7 +6,6 @@ interface ReorderableCollectionItemScope {
         onDragStarted: (startedPosition: Offset) -> Unit = {},
         onDragStopped: () -> Unit = {},
     ): Modifier
-
     fun Modifier.longPressDraggableHandle(
         enabled: Boolean = true,
         interactionSource: MutableInteractionSource? = null,
@@ -15,7 +13,6 @@ interface ReorderableCollectionItemScope {
         onDragStopped: () -> Unit = {},
     ): Modifier
 }
-
 internal class ReorderableCollectionItemScopeImpl(
     private val reorderableLazyCollectionState: ReorderableLazyCollectionState<*>,
     private val key: Any,
@@ -48,7 +45,6 @@ internal class ReorderableCollectionItemScopeImpl(
             onDrag = { change, dragAmount -> change.consume(); reorderableLazyCollectionState.onDrag(dragAmount) },
         )
     }
-
     override fun Modifier.longPressDraggableHandle(
         enabled: Boolean,
         interactionSource: MutableInteractionSource?,

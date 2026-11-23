@@ -1,7 +1,5 @@
-
 object FileMediaStoreHelper : BaseContentHelper() {
     override val uriExternal: Uri = MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-
     override fun getProjection(): Array<String> {
         return arrayOf(
             MediaStore.Files.FileColumns._ID,
@@ -14,7 +12,6 @@ object FileMediaStoreHelper : BaseContentHelper() {
             MediaStore.Files.FileColumns.MEDIA_TYPE,
         )
     }
-
     override suspend fun buildWhereAsync(query: String): ContentWhere {
         val where = ContentWhere()
         if (query.isNotEmpty()) {
@@ -47,14 +44,12 @@ object FileMediaStoreHelper : BaseContentHelper() {
                     }
                 }
             }
-
             if (!showHidden) {
                 where.addNotStartsWith(MediaStore.Files.FileColumns.DISPLAY_NAME, ".")
             }
         }
         return where
     }
-
     suspend fun searchAsync(
         context: Context,
         query: String,
@@ -74,14 +69,12 @@ object FileMediaStoreHelper : BaseContentHelper() {
             it.copy(children = counts[it.mediaId] ?: 0)
         }
     }
-
     fun getByIdAsync(context: Context, id: String): DFile? {
         return context.contentResolver
             .queryCursor(uriExternal, getProjection(), "${MediaStore.Files.FileColumns._ID} = ?", arrayOf(id))?.find { cursor, cache ->
                 cursor.toFile(cache)
             }
     }
-
     private fun getChildrenCountAsync(context: Context, folderIds: List<String>): Map<String, Int> {
         val counts = mutableMapOf<String, Int>()
         if (folderIds.isEmpty()) {
@@ -94,18 +87,14 @@ object FileMediaStoreHelper : BaseContentHelper() {
                 val parentId = cursor.getStringValue(MediaStore.Files.FileColumns.PARENT, cache)
                 counts[parentId] = counts.getOrDefault(parentId, 0) + 1
             }
-
         return counts
     }
-
     private fun getIdByPathAsync(context: Context, path: String): String? {
         return context.contentResolver
             .queryCursor(uriExternal, arrayOf(MediaStore.Files.FileColumns._ID), "${MediaStore.Files.FileColumns.DATA} = ?", arrayOf(path))?.find { cursor, cache ->
                 cursor.getStringValue(MediaStore.Files.FileColumns._ID, cache)
             }
     }
-
-
     suspend fun getRecentFilesAsync(context: Context): List<DFile> {
         val where = ContentWhere()
         where.addNotEqual(MediaStore.Files.FileColumns.MIME_TYPE,  "vnd.android.document/directory")

@@ -1,4 +1,3 @@
-
 @Composable
 internal fun <IndicatorValue> ElementScrollbar(
     stateController: StateController<IndicatorValue>,
@@ -17,10 +16,8 @@ internal fun <IndicatorValue> ElementScrollbar(
             durationAnimationMillis = settings.durationAnimationMillis,
         )
     }
-
     BoxWithConstraints(modifier) {
         val maxLengthPixels = constraints.maxHeight.toFloat()
-
         VerticalScrollbarLayout(
             thumbOffsetNormalized = stateController.thumbOffsetNormalized.value,
             thumbIsInAction = stateController.thumbIsInAction.value,

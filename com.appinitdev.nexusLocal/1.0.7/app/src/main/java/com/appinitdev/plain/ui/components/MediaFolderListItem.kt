@@ -1,4 +1,3 @@
-
 @Composable
 fun MediaFolderListItem(
     folder: DMediaBucket,
@@ -29,9 +28,7 @@ fun MediaFolderListItem(
                 modifier = Modifier.size(24.dp),
                 tint = MaterialTheme.colorScheme.primary
             )
-
             HorizontalSpace(16.dp)
-
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = folder.name,
@@ -39,9 +36,7 @@ fun MediaFolderListItem(
                     color = if (isSelected) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.onSurface
                 )
-
                 VerticalSpace(8.dp)
-
                 var subtitle = pluralStringResource(
                     Res.plurals.items,
                     folder.itemCount,
@@ -50,7 +45,6 @@ fun MediaFolderListItem(
                 if (folder.size > 0) {
                     subtitle += " • " + folder.size.formatBytes()
                 }
-
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.listItemSubtitle()

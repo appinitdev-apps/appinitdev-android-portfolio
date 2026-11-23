@@ -1,8 +1,6 @@
-
 enum class ThemeMode {
     SYSTEM, LIGHT, DARK
 }
-
 enum class ThemePreset(
     val title: String,
     val primaryColorHex: Long,
@@ -14,12 +12,9 @@ enum class ThemePreset(
     ROYAL_PURPLE("🟣 Violeta Real", 0xFF8B5CF6, 0xFFF3E8FF),
     SUNSET_ORANGE("🔥 Naranja Atardecer", 0xFFFF6D00, 0xFFFFE0B2)
 }
-
 class ThemeManager(context: Context) {
-
     private val prefs: SharedPreferences =
         context.getSharedPreferences("app_theme_prefs", Context.MODE_PRIVATE)
-
     fun getThemeMode(): ThemeMode {
         val name = prefs.getString("theme_mode", ThemeMode.SYSTEM.name) ?: ThemeMode.SYSTEM.name
         return try {
@@ -28,11 +23,9 @@ class ThemeManager(context: Context) {
             ThemeMode.SYSTEM
         }
     }
-
     fun setThemeMode(mode: ThemeMode) {
         prefs.edit().putString("theme_mode", mode.name).apply()
     }
-
     fun getThemePreset(): ThemePreset {
         val name = prefs.getString("theme_preset", ThemePreset.EMERALD_MINT.name) ?: ThemePreset.EMERALD_MINT.name
         return try {
@@ -41,7 +34,6 @@ class ThemeManager(context: Context) {
             ThemePreset.EMERALD_MINT
         }
     }
-
     fun setThemePreset(preset: ThemePreset) {
         prefs.edit().putString("theme_preset", preset.name).apply()
     }

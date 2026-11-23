@@ -1,4 +1,3 @@
-
 data class Package(
     val id: ID,
     val name: String,
@@ -10,9 +9,7 @@ data class Package(
     val installedAt: Instant,
     val updatedAt: Instant,
 )
-
 data class Certificate(val issuer: String, val subject: String, val serialNumber: String, val validFrom: Instant, val validTo: Instant)
-
 fun DPackage.toModel(): Package {
     return Package(
         ID(id), name, type, version, path, size,
@@ -20,5 +17,4 @@ fun DPackage.toModel(): Package {
         installedAt, updatedAt,
     )
 }
-
 data class PackageStatus(val id: ID, val exist: Boolean, val updatedAt: Instant?)

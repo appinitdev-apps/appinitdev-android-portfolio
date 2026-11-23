@@ -1,9 +1,7 @@
-
 class ChangeViewTypeDialog(val activity: BaseSimpleActivity, val fromFoldersView: Boolean, val path: String = "", val callback: () -> Unit) {
     private val binding = DialogChangeViewTypeBinding.inflate(activity.layoutInflater)
     private var config = activity.config
     private var pathToUse = if (path.isEmpty()) SHOW_ALL else path
-
     init {
         binding.apply {
             val viewToCheck = if (fromFoldersView) {
@@ -20,19 +18,16 @@ class ChangeViewTypeDialog(val activity: BaseSimpleActivity, val fromFoldersView
                     changeViewTypeDialogRadioList.id
                 }
             }
-
             changeViewTypeDialogRadio.check(viewToCheck)
             changeViewTypeDialogGroupDirectSubfolders.apply {
                 beVisibleIf(fromFoldersView)
                 isChecked = config.groupDirectSubfolders
             }
-
             changeViewTypeDialogUseForThisFolder.apply {
                 beVisibleIf(!fromFoldersView)
                 isChecked = config.hasCustomViewType(pathToUse)
             }
         }
-
         activity.getAlertDialogBuilder()
             .setPositiveButton(org.appinitdev.commons.R.string.ok) { dialog, which -> dialogConfirmed() }
             .setNegativeButton(org.appinitdev.commons.R.string.cancel, null)
@@ -40,14 +35,12 @@ class ChangeViewTypeDialog(val activity: BaseSimpleActivity, val fromFoldersView
                 activity.setupDialogStuff(binding.root, this)
             }
     }
-
     private fun dialogConfirmed() {
         val viewType = if (binding.changeViewTypeDialogRadio.checkedRadioButtonId == binding.changeViewTypeDialogRadioGrid.id) {
             VIEW_TYPE_GRID
         } else {
             VIEW_TYPE_LIST
         }
-
         if (fromFoldersView) {
             config.viewTypeFolders = viewType
             config.groupDirectSubfolders = binding.changeViewTypeDialogGroupDirectSubfolders.isChecked
@@ -59,8 +52,6 @@ class ChangeViewTypeDialog(val activity: BaseSimpleActivity, val fromFoldersView
                 config.viewTypeFiles = viewType
             }
         }
-
-
         callback()
     }
 }

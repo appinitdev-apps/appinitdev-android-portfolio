@@ -1,20 +1,14 @@
-
 abstract class NotallyFragment : Fragment(), ItemListener {
-
     private var notesAdapter: BaseNoteAdapter? = null
     private lateinit var openNoteActivityResultLauncher: ActivityResultLauncher<Intent>
     private var lastSelectedNotePosition = -1
-
     internal var binding: FragmentNotesBinding? = null
-
     internal val model: BaseNoteModel by activityViewModels()
-
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
         notesAdapter = null
     }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val layoutManager = binding?.MainListView?.layoutManager as? LinearLayoutManager
@@ -28,17 +22,12 @@ abstract class NotallyFragment : Fragment(), ItemListener {
             }
         }
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-       
-
         setupAdapter()
         setupRecyclerView()
         setupObserver()
         setupSearch()
-
         setupActivityResultLaunchers()
-
         savedInstanceState?.let { bundle ->
             val scrollPosition = bundle.getInt(EXTRA_SCROLL_POS, -1)
             val scrollOffset = bundle.getInt(EXTRA_SCROLL_OFFSET, 0)
@@ -50,13 +39,10 @@ abstract class NotallyFragment : Fragment(), ItemListener {
             }
         }
     }
-
     private fun setupActivityResultLaunchers() {
         openNoteActivityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == RESULT_OK) {
-                    
-                    
                     val data = result.data
                     val id = data?.getLongExtra(EXTRA_NOTE_ID, -1)
                     if (id != null) {
@@ -77,7 +63,6 @@ abstract class NotallyFragment : Fragment(), ItemListener {
                 }
             }
     }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -87,8 +72,6 @@ abstract class NotallyFragment : Fragment(), ItemListener {
         binding = FragmentNotesBinding.inflate(inflater)
         return binding?.root
     }
-
-    
     override fun onClick(position: Int) {
         if (position != -1) {
             notesAdapter?.getItem(position)?.let { item ->
@@ -105,7 +88,6 @@ abstract class NotallyFragment : Fragment(), ItemListener {
             }
         }
     }
-
     override fun onLongClick(position: Int) {
         if (position != -1) {
             if (model.actionMode.selectedNotes.isNotEmpty()) {
@@ -132,19 +114,16 @@ abstract class NotallyFragment : Fragment(), ItemListener {
             }
         }
     }
-
     private fun setupSearch() {
         binding?.EnterSearchKeyword?.apply {
             setText(model.keyword)
             val navController = findNavController()
             navController.addOnDestinationChangedListener { controller, destination, arguments ->
                 if (destination.id == R.id.Search) {
-                    
                     visibility = View.VISIBLE
                     requestFocus()
                     activity?.showKeyboard(this)
                 } else {
-                    
                     setText("")
                     clearFocus()
                     activity?.hideKeyboard(this)
@@ -169,7 +148,6 @@ abstract class NotallyFragment : Fragment(), ItemListener {
             }
         }
     }
-
     private fun handleNoteSelection(id: Long, position: Int, baseNote: BaseNote) {
         if (model.actionMode.selectedNotes.contains(id)) {
             model.actionMode.remove(id)
@@ -179,7 +157,6 @@ abstract class NotallyFragment : Fragment(), ItemListener {
         }
         notesAdapter?.notifyItemChanged(position, 0)
     }
-
     private fun setupAdapter() {
         notesAdapter =
             with(model.preferences) {
@@ -199,7 +176,6 @@ abstract class NotallyFragment : Fragment(), ItemListener {
                     this@NotallyFragment,
                 )
             }
-
         notesAdapter?.registerAdapterDataObserver(
             object : RecyclerView.AdapterDataObserver() {
                 override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
@@ -220,17 +196,14 @@ abstract class NotallyFragment : Fragment(), ItemListener {
             }
         }
     }
-
     private fun setupObserver() {
         getObservable().observe(viewLifecycleOwner) { list ->
             notesAdapter?.submitList(list)
             binding?.ImageView?.isVisible = list.isEmpty()
         }
-
         model.preferences.notesSorting.observe(viewLifecycleOwner) { notesSort ->
             notesAdapter?.setNotesSort(notesSort)
         }
-
         model.actionMode.closeListener.observe(viewLifecycleOwner) { event ->
             event.handle { ids ->
                 notesAdapter?.currentList?.forEachIndexed { index, item ->
@@ -241,28 +214,22 @@ abstract class NotallyFragment : Fragment(), ItemListener {
             }
         }
     }
-
     private fun setupRecyclerView() {
         binding?.MainListView?.layoutManager =
             if (model.preferences.notesView.value == NotesView.GRID) {
                 StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
             } else LinearLayoutManager(requireContext())
     }
-
     private fun goToActivity(activity: Class<*>, baseNote: BaseNote) {
         val intent = Intent(requireContext(), activity)
         intent.putExtra(EXTRA_SELECTED_BASE_NOTE, baseNote.id)
         openNoteActivityResultLauncher.launch(intent)
     }
-
     abstract fun getBackground(): Int
-
     abstract fun getObservable(): LiveData<List<Item>>
-
     open fun prepareNewNoteIntent(intent: Intent): Intent {
         return intent
     }
-
     companion object {
         private const val EXTRA_SCROLL_POS = "notes.intent.extra.SCROLL_POS"
         private const val EXTRA_SCROLL_OFFSET = "notes.intent.extra.SCROLL_OFFSET"

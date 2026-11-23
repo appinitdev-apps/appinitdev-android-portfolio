@@ -1,4 +1,3 @@
-
 object ResourceUtils {
     @JvmStatic
     fun getString(resource: StringResource): String = runBlocking {

@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun ChatFileItemContent(
@@ -19,7 +18,6 @@ internal fun ChatFileItemContent(
     index: Int,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -85,7 +83,6 @@ internal fun ChatFileItemContent(
                 summary = item.summary,
                 isCurrentlyPlaying = isCurrentlyPlaying,
             )
-
             ChatFileThumbnail(
                 context = context,
                 fileName = fileName,

@@ -1,8 +1,6 @@
-
 @Composable
 fun ScheduledMsgs(navController: NavController, viewModel: ChatViewModel, state: AppState, scheduler: AndroidAlarmSch) {
     val scheduledMsgs = state.userData?.scheduledMsgs ?: emptyList()
-
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.blurry_gradient_haikei),
@@ -10,12 +8,9 @@ fun ScheduledMsgs(navController: NavController, viewModel: ChatViewModel, state:
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
-        
         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
-
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(40.dp))
-            
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -36,9 +31,7 @@ fun ScheduledMsgs(navController: NavController, viewModel: ChatViewModel, state:
                     fontWeight = FontWeight.Bold
                 )
             }
-
             Spacer(modifier = Modifier.height(24.dp))
-
             if (scheduledMsgs.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(
@@ -98,14 +91,12 @@ fun ScheduledMsgs(navController: NavController, viewModel: ChatViewModel, state:
         }
     }
 }
-
 @Composable
 fun ScheduledMsgItem(scheduledMsg: ScheduledMsg, cancel:(ScheduledMsg)->Unit) {
     val formatter = remember {
         SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault())
     }
     var expanded by remember { mutableStateOf(false) }
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -125,9 +116,7 @@ fun ScheduledMsgItem(scheduledMsg: ScheduledMsg, cancel:(ScheduledMsg)->Unit) {
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
-            
             Spacer(modifier = Modifier.width(12.dp))
-            
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(R.string.to_user_format, scheduledMsg.username),
@@ -140,9 +129,7 @@ fun ScheduledMsgItem(scheduledMsg: ScheduledMsg, cancel:(ScheduledMsg)->Unit) {
                     style = MaterialTheme.typography.bodySmall,
                     color = Color(0xFF238CDD)
                 )
-                
                 Spacer(modifier = Modifier.height(8.dp))
-                
                 Text(
                     text = scheduledMsg.content,
                     style = MaterialTheme.typography.bodyMedium,
@@ -151,7 +138,6 @@ fun ScheduledMsgItem(scheduledMsg: ScheduledMsg, cancel:(ScheduledMsg)->Unit) {
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.animateContentSize()
                 )
-                
                 if (expanded) {
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(

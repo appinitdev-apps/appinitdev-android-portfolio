@@ -1,4 +1,3 @@
-
 data class Peer(
     val id: String,
     val name: String,
@@ -10,7 +9,6 @@ data class Peer(
     val updatedAt: Instant,
     val online: Boolean,
 )
-
 fun DPeer.toModel(): Peer {
     return Peer(id, name, getBestIp(), status, port, deviceType, createdAt, updatedAt, PeerStatusManager.isOnline(id))
 }

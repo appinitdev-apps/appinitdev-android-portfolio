@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GlossaryScreen(
@@ -7,16 +6,11 @@ fun GlossaryScreen(
 ) {
     val context = LocalContext.current
     val db = remember { MathUserDatabase(context) }
-
     var query by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("ALL") }
     var showOnlyFavs by remember { mutableStateOf(false) }
-
     var showCreateDialog by remember { mutableStateOf(false) }
-
-    
     val builtInItems = listOf(
-        
         SymbolItem(
             0L,
             "dy/dx",
@@ -337,8 +331,6 @@ fun GlossaryScreen(
             stringResource(R.string.glo_desc_40),
             "sup([0, 1)) = 1"
         ),
-
-        
         SymbolItem(
             0L,
             "Δ",
@@ -539,8 +531,6 @@ fun GlossaryScreen(
             stringResource(R.string.glo_desc_65),
             "A = Aᴴ"
         ),
-
-        
         SymbolItem(
             0L,
             "sin(x)",
@@ -653,8 +643,6 @@ fun GlossaryScreen(
             stringResource(R.string.glo_desc_79),
             "sec(x) = 1 / cos x"
         ),
-
-        
         SymbolItem(
             0L,
             "i",
@@ -695,8 +683,6 @@ fun GlossaryScreen(
             stringResource(R.string.glo_desc_84),
             "z = r e^(iθ)"
         ),
-
-        
         SymbolItem(
             0L,
             "π",
@@ -801,8 +787,6 @@ fun GlossaryScreen(
             stringResource(R.string.glo_desc_97),
             "P = σ A T⁴"
         ),
-
-        
         SymbolItem(
             0L,
             "∀",
@@ -924,27 +908,20 @@ fun GlossaryScreen(
             "P ⇒ Q"
         )
     )
-
     val userItems = remember { mutableStateListOf<SymbolItem>() }
-
     fun refreshUserItems() {
         userItems.clear()
         userItems.addAll(db.getUserGlossaryTerms())
     }
-
     LaunchedEffect(Unit) { refreshUserItems() }
-
     val isPremium by viewModel.isPremium.collectAsState()
     val activity = context as? Activity
-
     val activeBuiltInItems = remember(builtInItems, isPremium) {
         if (isPremium) builtInItems else builtInItems.take((builtInItems.size + 1) / 2)
     }
-
     val allItems = remember(activeBuiltInItems, userItems.toList()) {
         activeBuiltInItems + userItems
     }
-
     val filteredList = remember(allItems, selectedCategory, query, showOnlyFavs) {
         allItems.filter { item ->
             val matchQuery = query.isBlank() ||
@@ -956,15 +933,12 @@ fun GlossaryScreen(
             matchQuery && matchCat && matchFav
         }
     }
-
-    
     if (showCreateDialog) {
         var customSymbol by remember { mutableStateOf("") }
         var customName by remember { mutableStateOf("") }
         var customDesc by remember { mutableStateOf("") }
         var customExample by remember { mutableStateOf("") }
         var customCat by remember { mutableStateOf("SYMBOLS") }
-
         AlertDialog(
             onDismissRequest = { showCreateDialog = false },
             title = {
@@ -1025,7 +999,6 @@ fun GlossaryScreen(
             }
         )
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -1077,7 +1050,6 @@ fun GlossaryScreen(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            
             OutlinedTextField(
                 value = query,
                 onValueChange = { query = it },
@@ -1093,15 +1065,12 @@ fun GlossaryScreen(
                     }
                 }
             )
-
-            
             val allTabLabel = stringResource(id = R.string.tab_all)
             val constantsLabel = stringResource(id = R.string.glossary_constants)
             val symbolsLabel = stringResource(id = R.string.glossary_symbols)
             val calculusLabel = stringResource(id = R.string.glossary_calculus)
             val algebraLabel = stringResource(id = R.string.glossary_cat_algebra)
             val trigLabel = stringResource(id = R.string.glossary_cat_trig)
-
             val cats = listOf(
                 "ALL" to "✨ $allTabLabel",
                 "CALCULUS" to "📈 $calculusLabel",
@@ -1110,7 +1079,6 @@ fun GlossaryScreen(
                 "CONSTANTS" to "🧪 $constantsLabel",
                 "SYMBOLS" to "🔣 $symbolsLabel"
             )
-
             LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 items(cats) { (code, label) ->
                     FilterChip(
@@ -1120,8 +1088,6 @@ fun GlossaryScreen(
                     )
                 }
             }
-
-            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -1132,7 +1098,6 @@ fun GlossaryScreen(
                     onClick = { showOnlyFavs = !showOnlyFavs },
                     label = { Text("⭐ " + stringResource(id = R.string.nav_favorites)) }
                 )
-
                 Text(
                     text = stringResource(id = R.string.glossary_terms_count, filteredList.size),
                     style = MaterialTheme.typography.labelMedium,
@@ -1140,8 +1105,6 @@ fun GlossaryScreen(
                     color = MaterialTheme.colorScheme.primary
                 )
             }
-
-            
             LazyColumn(
                 contentPadding = PaddingValues(bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -1191,7 +1154,6 @@ fun GlossaryScreen(
                         }
                     }
                 }
-
                 items(filteredList) { item ->
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -1241,7 +1203,6 @@ fun GlossaryScreen(
                                         }
                                     }
                                 }
-
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
                                         text = item.name,
@@ -1261,15 +1222,12 @@ fun GlossaryScreen(
                                     }
                                 }
                             }
-
                             Spacer(modifier = Modifier.height(8.dp))
-
                             Text(
                                 text = item.description,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
-
                             if (item.example.isNotBlank()) {
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Text(

@@ -1,9 +1,7 @@
-
 class AlarmReceiver :
     BroadcastReceiver(),
     KoinComponent {
     private val timerManager: TimerManager by inject()
-
     @Suppress("DEPRECATION")
     override fun onReceive(
         context: Context,
@@ -23,7 +21,6 @@ class AlarmReceiver :
         if (isCountdown) {
             timerManager.finish()
         } else {
-            
             timerManager.reset()
         }
     }

@@ -1,26 +1,8 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
 class EqualizerPresets : MediaFragment() {
-
     private lateinit var binding: FragmentEqualizerPresetsBinding
     private lateinit var headerBinding: HeaderEqualizerPresetsBinding
-
     private val viewModel: EqualizerPresetsViewModel by viewModels()
     private var adapter: AdapterEqualizerPresets? = null
-
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -30,30 +12,19 @@ class EqualizerPresets : MediaFragment() {
         headerBinding = HeaderEqualizerPresetsBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireHiddenMiniPlayer()
-
-        
-        
         binding.appHeader.setContentView(headerBinding.root)
         binding.appHeader.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
         setupAdapter()
         observePresets()
     }
-
     override fun onDestroyView() {
         adapter = null
         super.onDestroyView()
     }
-
-     
-
-
-
     private fun setupAdapter() {
         adapter = AdapterEqualizerPresets(
                 onPresetClicked = ::applyPreset,
@@ -61,11 +32,6 @@ class EqualizerPresets : MediaFragment() {
         )
         binding.recyclerView.adapter = adapter
     }
-
-     
-
-
-
     private fun observePresets() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -75,36 +41,15 @@ class EqualizerPresets : MediaFragment() {
             }
         }
     }
-
-     
-
-
-
-
-
-
     private fun applyPreset(preset: EqualizerPreset) {
         val gains = preset.getBandGains()
-
-        
-        
         EqualizerPreferences.setAllBandGains(gains)
         for (i in gains.indices) {
             EqualizerManager.setBandGain(i, gains[i], persist = false)
         }
         EqualizerManager.setPreamp(preset.preampDb)
-
         goBack()
     }
-
-     
-
-
-
-
-
-
-
     private fun showPresetOptions(preset: EqualizerPreset, anchorView: View) {
         SharedScrollViewPopup(
                 container = requireContainerView(),
@@ -123,14 +68,6 @@ class EqualizerPresets : MediaFragment() {
                 onDismiss = {}
         ).show()
     }
-
-     
-
-
-
-
-
-
     private fun confirmAndDelete(preset: EqualizerPreset) {
         withSureDialog { confirmed ->
             if (confirmed) {
@@ -138,15 +75,8 @@ class EqualizerPresets : MediaFragment() {
             }
         }
     }
-
     companion object {
-
         const val TAG = "EqualizerPresets"
-
-         
-
-
-
         fun newInstance(): EqualizerPresets {
             return EqualizerPresets().apply {
                 arguments = Bundle()

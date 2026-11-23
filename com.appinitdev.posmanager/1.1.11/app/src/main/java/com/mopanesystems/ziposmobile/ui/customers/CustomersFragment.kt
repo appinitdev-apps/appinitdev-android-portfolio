@@ -1,8 +1,6 @@
-
 @AndroidEntryPoint
 class CustomersFragment : Fragment() {
     private val viewModel: CustomerViewModel by viewModels()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -21,5 +19,4 @@ class CustomersFragment : Fragment() {
             }
         }
     }
-
 }

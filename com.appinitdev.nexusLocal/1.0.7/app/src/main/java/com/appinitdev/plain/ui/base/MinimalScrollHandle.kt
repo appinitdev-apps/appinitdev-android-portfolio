@@ -1,4 +1,3 @@
-
 class MinimalScrollHandle(context: Context) : View(context), ScrollHandle {
     private val thumbPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val bubblePaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -13,14 +12,12 @@ class MinimalScrollHandle(context: Context) : View(context), ScrollHandle {
     private val gap = context.dp2px(8).toFloat()
     private val viewW = (bubbleW + gap + thumbW).toInt()
     private val viewH = context.dp2px(48)
-
     private var pdfView: PDFView? = null
     private val handler = Handler(Looper.getMainLooper())
     private val hideRunnable = Runnable { isDragging = false; hide() }
     private var currentPos = 0f
     private var isDragging = false
     private var pageText = ""
-
     init {
         visibility = INVISIBLE
         thumbPaint.color = ContextCompat.getColor(context, R.color.scrollbar_primary)
@@ -32,16 +29,13 @@ class MinimalScrollHandle(context: Context) : View(context), ScrollHandle {
             textAlign = Paint.Align.CENTER
         }
     }
-
     override fun setupLayout(pdfView: PDFView) {
         this.pdfView = pdfView
         val lp = RelativeLayout.LayoutParams(viewW, viewH)
         lp.addRule(RelativeLayout.ALIGN_PARENT_END)
         pdfView.addView(this, lp)
     }
-
     override fun destroyLayout() { pdfView?.removeView(this) }
-
     override fun setScroll(position: Float) {
         if (!shown()) show() else handler.removeCallbacks(hideRunnable)
         pdfView?.let { v ->
@@ -50,18 +44,14 @@ class MinimalScrollHandle(context: Context) : View(context), ScrollHandle {
             else x = (size * position - viewW / 2f).coerceIn(0f, size - viewW)
         }
     }
-
     override fun hideDelayed() { handler.postDelayed(hideRunnable, 1200) }
-
     override fun setPageNum(pageNum: Int) {
         val text = pageNum.toString()
         if (pageText != text) { pageText = text; invalidate() }
     }
-
     override fun shown() = visibility == VISIBLE
     override fun show() { visibility = VISIBLE }
     override fun hide() { visibility = INVISIBLE }
-
     override fun onDraw(canvas: Canvas) {
         val h = height.toFloat(); val w = width.toFloat()
         thumbRect.set(w - thumbW, 0f, w, h)
@@ -75,7 +65,6 @@ class MinimalScrollHandle(context: Context) : View(context), ScrollHandle {
             canvas.drawText(pageText, bubbleRect.centerX(), cy, textPaint)
         }
     }
-
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val v = pdfView ?: return super.onTouchEvent(event)
         if (v.pageCount == 0 || v.documentFitsView()) return super.onTouchEvent(event)
@@ -93,7 +82,6 @@ class MinimalScrollHandle(context: Context) : View(context), ScrollHandle {
         }
         return super.onTouchEvent(event)
     }
-
     private fun updatePosition(event: MotionEvent) {
         val v = pdfView ?: return
         if (v.isSwipeVertical) {
@@ -105,4 +93,3 @@ class MinimalScrollHandle(context: Context) : View(context), ScrollHandle {
         }
     }
 }
-

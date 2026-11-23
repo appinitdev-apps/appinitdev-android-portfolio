@@ -1,17 +1,9 @@
-
- 
-
-
-
 class ListItemParentSortCallback(adapter: RecyclerView.Adapter<*>?) :
     SortedListAdapterCallback<ListItem>(adapter) {
-
     private var items: SortedList<ListItem>? = null
-
     internal fun setItems(items: SortedList<ListItem>) {
         this.items = items
     }
-
     override fun compare(item1: ListItem?, item2: ListItem?): Int {
         return when {
             item1 == null && item2 == null -> 0
@@ -30,7 +22,6 @@ class ListItemParentSortCallback(adapter: RecyclerView.Adapter<*>?) :
                     else -> compare(item1, parent2)
                 }
             }
-
             item1.isChild && !item2.isChild -> {
                 val parent1 =
                     if (item2.children.containsId(item1.id)) {
@@ -48,24 +39,19 @@ class ListItemParentSortCallback(adapter: RecyclerView.Adapter<*>?) :
             }
         }
     }
-
     private fun compareOrder(item1: ListItem, item2: ListItem): Int {
         val orderCmp = item1.order!!.compareTo(item2.order!!)
         if (orderCmp == 0 && item1.isChildOf(item2)) {
             return -1 
-            
         }
         if (orderCmp == 0 && item2.isChildOf(item1)) {
             return 1 
-            
         }
         return orderCmp
     }
-
     override fun areContentsTheSame(oldItem: ListItem?, newItem: ListItem?): Boolean {
         return oldItem == newItem
     }
-
     override fun areItemsTheSame(item1: ListItem?, item2: ListItem?): Boolean {
         return item1?.id == item2?.id
     }

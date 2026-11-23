@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ViewDocBottomSheet(
@@ -13,7 +12,6 @@ fun ViewDocBottomSheet(
     val onDismiss = {
         docsVM.selectedItem.value = null
     }
-
     if (docsVM.showRenameDialog.value) {
         FileRenameDialog(path = m.path, onDismiss = {
             docsVM.showRenameDialog.value = false
@@ -22,7 +20,6 @@ fun ViewDocBottomSheet(
             m.title = it.getFilenameFromPath()
         })
     }
-
     PModalBottomSheet(
         onDismissRequest = {
             onDismiss()
@@ -117,5 +114,3 @@ fun ViewDocBottomSheet(
         }
     }
 }
-
-

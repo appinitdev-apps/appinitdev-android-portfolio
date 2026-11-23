@@ -1,12 +1,5 @@
-
 object SeriesModel {
-     
-
-
-
-
     fun getList(series: ArrayList<Series>, context: Context? = null) {
-        
         val seriesData = listOf(
             arrayOf("lithium", -3.04, "+", "Li"),
             arrayOf("potassium", -2.931, "+", "K"),
@@ -27,8 +20,6 @@ object SeriesModel {
             arrayOf("platinum", +1.188, "2+", "Pt"),
             arrayOf("gold", +1.52, "3+", "Au")
         )
-        
-        
         if (context != null) {
             for (data in seriesData) {
                 val elementKey = data[0] as String
@@ -43,7 +34,6 @@ object SeriesModel {
                 ))
             }
         } else {
-            
             for (data in seriesData) {
                 val elementKey = data[0] as String
                 series.add(Series(

@@ -1,4 +1,3 @@
-
 enum class NumberPuzzleMode(val displayName: String, val puzzleId: Int) {
     NORMAL("Normal", 1),
     REVERSE("Inverso", 2),
@@ -16,7 +15,6 @@ enum class NumberPuzzleMode(val displayName: String, val puzzleId: Int) {
     SIMETRIA("Simetría", 14),
     RANDOM_TARGET("Objetivo Loco", 15)
 }
-
 val displayNames = listOf(
     (R.string.normal),
     (R.string.inverso),
@@ -34,12 +32,10 @@ val displayNames = listOf(
     (R.string.simetr_a),
     (R.string.objetivo_loco)
 )
-
 fun getNumberTargetState(n: Int, mode: NumberPuzzleMode): List<Int> {
     val totalPieces = n * n
     val blankId = totalPieces - 1
     val numbers = (0 until blankId).toList()
-
     return when (mode) {
         NumberPuzzleMode.NORMAL -> numbers + blankId
         NumberPuzzleMode.REVERSE -> numbers.reversed() + blankId
@@ -132,10 +128,8 @@ fun getNumberTargetState(n: Int, mode: NumberPuzzleMode): List<Int> {
             for (i in 0 until n) path.add(i * n + 0)
             for (j in 1 until n) path.add((n - 1) * n + j)
             for (i in (n - 2) downTo 0) path.add(i * n + (n - 1))
-
             val remaining = (0 until totalPieces).filter { !path.contains(it) && it != blankId }
             val fullPath = path + remaining
-
             var current = 0
             fullPath.forEach { pos ->
                 if (current < numbers.size && pos < totalPieces) {
@@ -148,14 +142,12 @@ fun getNumberTargetState(n: Int, mode: NumberPuzzleMode): List<Int> {
             val result = IntArray(totalPieces) { blankId }
             val xPositions = mutableListOf<Int>()
             val others = mutableListOf<Int>()
-
             for (r in 0 until n) {
                 for (c in 0 until n) {
                     if (r == c || r + c == n - 1) xPositions.add(r * n + c)
                     else others.add(r * n + c)
                 }
             }
-
             val allPos = xPositions + others
             var current = 0
             allPos.forEach { pos ->
@@ -172,10 +164,8 @@ fun getNumberTargetState(n: Int, mode: NumberPuzzleMode): List<Int> {
             for (i in 1 until n) path.add(i * n + (n - 1))
             for (i in (n - 2) downTo 0) path.add((n - 1) * n + i)
             for (i in (n - 2) downTo 1) path.add(i * n + 0)
-
             val remaining = (0 until totalPieces).filter { !path.contains(it) }
             val fullPath = path + remaining
-
             var current = 0
             fullPath.forEach { pos ->
                 if (current < numbers.size && pos != totalPieces - 1) {
@@ -188,7 +178,6 @@ fun getNumberTargetState(n: Int, mode: NumberPuzzleMode): List<Int> {
             val result = IntArray(totalPieces) { blankId }
             val centerX = n / 2
             val centerY = n / 2
-
             val positions = mutableListOf<Pair<Int, Int>>()
             for (r in 0 until n) {
                 for (c in 0 until n) {
@@ -197,11 +186,9 @@ fun getNumberTargetState(n: Int, mode: NumberPuzzleMode): List<Int> {
                     }
                 }
             }
-
             val sortedPositions = positions.sortedBy { (r, c) ->
                 abs(r - centerX) + abs(c - centerY)
             }
-
             var current = 0
             sortedPositions.forEach { (r, c) ->
                 if (current < numbers.size) {
@@ -218,12 +205,10 @@ fun getNumberTargetState(n: Int, mode: NumberPuzzleMode): List<Int> {
             val result = IntArray(totalPieces) { blankId }
             val usedPos = BooleanArray(totalPieces)
             var current = 0
-
             for (i in 0 until totalPieces) {
                 if (!usedPos[i] && i != totalPieces - 1) {
                     result[i] = numbers[current++]
                     usedPos[i] = true
-
                     val opposite = (totalPieces - 1) - i
                     if (opposite in 0 until totalPieces && !usedPos[opposite] && opposite != totalPieces - 1) {
                         if (current < numbers.size) {
@@ -237,7 +222,6 @@ fun getNumberTargetState(n: Int, mode: NumberPuzzleMode): List<Int> {
         }
     }
 }
-
 fun checkNumberVictory(pieces: List<Piece>, targetState: List<Int>): Boolean {
     for (i in pieces.indices) {
         if (pieces[i].id != targetState[i]) {
@@ -246,7 +230,6 @@ fun checkNumberVictory(pieces: List<Piece>, targetState: List<Int>): Boolean {
     }
     return true
 }
-
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
@@ -254,12 +237,10 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
     val haptic = LocalHapticFeedback.current
     val appSettings = remember { loadAppSettings(context) }
     val skinStyle = remember(appSettings.boardSkin) { getBoardSkinStyle(appSettings.boardSkin) }
-
     var n by remember { mutableIntStateOf(3) }
     var currentMode by remember { mutableStateOf(NumberPuzzleMode.NORMAL) }
     val coroutineScope = rememberCoroutineScope()
     var wasStatSaved by remember { mutableStateOf(false) }
-
     var hasStarted by remember { mutableStateOf(false) }
     var hasStartedMSM by remember { mutableStateOf(false) }
     var isSolved by remember { mutableStateOf(false) }
@@ -276,23 +257,17 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
     var secretMessage by remember { mutableStateOf("") }
     var showSecretMessageInput by remember { mutableStateOf(false) }
     var showSecretMessageModal by remember { mutableStateOf(false) }
-
     val isTimeAttack = appSettings.isTimeAttackEnabled
     val timeLimit = appSettings.timeAttackLimitSeconds
     val displaySeconds = if (isTimeAttack) maxOf(0, timeLimit - timeSeconds) else timeSeconds
-
-    
     var moveHistory by remember { mutableStateOf(listOf<Int>()) }
     var initialPiecesState by remember { mutableStateOf<List<Piece>>(emptyList()) }
     var isReplaying by remember { mutableStateOf(false) }
-
     val targetState = remember(n, currentMode) { getNumberTargetState(n, currentMode) }
-
     var pieces by remember(n, currentMode) {
         val blankId = n * n - 1
         mutableStateOf(targetState.map { id -> Piece(id = id, isBlank = (id == blankId)) })
     }
-
     val triggerSmartHint: () -> Unit = {
         coroutineScope.launch {
             val solutionSteps = withContext(Dispatchers.Default) {
@@ -305,17 +280,13 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
             }
         }
     }
-
     val movePiece: (Int) -> Unit = { index ->
         val blankIndex = pieces.indexOfFirst { it.isBlank }
         val lineIndices = getLineToMoveIndices(index, blankIndex, n)
-
         if (lineIndices.isNotEmpty()) {
             if (!isActive) isActive = true
-
             SocialAndHaptics.triggerMoveHaptic(haptic, context)
             if (hintPieceId != null) hintPieceId = null
-
             val newList = pieces.toMutableList()
             for (stepIndex in lineIndices) {
                 val tempBlank = newList.indexOfFirst { it.isBlank }
@@ -326,7 +297,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                 moveCount++
             }
             pieces = newList
-
             isSolved = checkNumberVictory(pieces, targetState)
             if (isSolved) {
                 isActive = false
@@ -337,7 +307,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
             }
         }
     }
-
     val playReplay: () -> Unit = {
         coroutineScope.launch {
             if (moveHistory.isNotEmpty()) {
@@ -361,9 +330,7 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
             }
         }
     }
-
     var showBestRecordsDialog by remember { mutableStateOf(false) }
-
     val recordsByLevel = remember(statsHistory, n) {
         statsHistory.groupBy { it.n }.mapNotNull { (levelN, stats) ->
             val bestTime = stats.minByOrNull { it.time }
@@ -376,7 +343,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                 .thenBy { it.first }
         )
     }
-
     LaunchedEffect(isSolved) {
         if (isSolved && !wasStatSaved) {
             wasStatSaved = true
@@ -398,7 +364,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
             showHistoryDialog = true
         }
     }
-
     LaunchedEffect(isActive, isSolved, timeSeconds) {
         if (isActive && !isSolved) {
             if (isTimeAttack && displaySeconds <= 0) {
@@ -411,7 +376,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
             }
         }
     }
-
     Box(modifier = Modifier
         .fillMaxSize()
         .pointerInput(Unit) {
@@ -429,14 +393,12 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                     onDismiss = { showHistoryDialog = false }
                 )
         }
-
         if (showAchievementsDialog) {
             AchievementsDialog(
                 stats = statsHistory,
                 onDismiss = { showAchievementsDialog = false }
             )
         }
-
         if (showSecretMessageInput) {
             SecretMessageInputDialog(
                 initialMessage = secretMessage,
@@ -444,14 +406,12 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                 onMessageSaved = { secretMessage = it }
             )
         }
-
         if (showSecretMessageModal) {
             SecretMessageRevelationDialog(
                 message = secretMessage,
                 onDismiss = { showSecretMessageModal = false }
             )
         }
-
         if (showQRCodeDialog) {
             QRCodeDialog(
                 qrData = "PUZZLE_NUM_${currentMode.displayName}_${n}x${n}_MOVS_${moveCount}_TIME_${timeSeconds}s",
@@ -460,7 +420,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                 onDismiss = { showQRCodeDialog = false }
             )
         }
-
         if (showBestRecordsDialog && recordsByLevel.isNotEmpty()) {
             Dialog(
                 onDismissRequest = { showBestRecordsDialog = false },
@@ -491,17 +450,13 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                                 modifier = Modifier.size(36.dp)
                             )
                         }
-
                         Spacer(modifier = Modifier.height(12.dp))
-
                         Text(
                             text = stringResource(R.string.sal_n_de_la_fama),
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.ExtraBold
                         )
-
                         Spacer(modifier = Modifier.height(20.dp))
-
                         LazyColumn(
                             verticalArrangement = Arrangement.spacedBy(16.dp),
                             modifier = Modifier
@@ -512,7 +467,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                                 val levelN = recordPair.first
                                 val (bestTimeStat, bestMovesStat) = recordPair.second
                                 val isCurrentLevel = levelN == n
-
                                 Card(
                                     colors = CardDefaults.cardColors(
                                         containerColor = if (isCurrentLevel) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)
@@ -535,9 +489,7 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                                             )
                                         }
-
                                         Spacer(modifier = Modifier.height(12.dp))
-
                                         Row(modifier = Modifier.fillMaxWidth()) {
                                             RecordColumn(
                                                 title = stringResource(R.string.m_s_r_pido),
@@ -546,13 +498,11 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                                                 subValue = "${bestTimeStat.moves} movs",
                                                 modifier = Modifier.weight(1f)
                                             )
-
                                             Box(modifier = Modifier
                                                 .width(1.dp)
                                                 .height(40.dp)
                                                 .background(MaterialTheme.colorScheme.outlineVariant)
                                                 .align(Alignment.CenterVertically))
-
                                             RecordColumn(
                                                 title = stringResource(R.string.mejor_precisi_n),
                                                 icon = Icons.Default.Star,
@@ -566,9 +516,7 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                                 }
                             }
                         }
-
                         Spacer(modifier = Modifier.height(24.dp))
-
                         Button(
                             onClick = { showBestRecordsDialog = false },
                             shape = CircleShape
@@ -579,7 +527,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                 }
             }
         }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -607,11 +554,9 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                         fontWeight = FontWeight.Bold
                     )
                 }
-
                 val minutes = displaySeconds / 60
                 val seconds = displaySeconds % 60
                 val timeString = "%02d:%02d".format(minutes, seconds)
-
                 Column(
                     modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -628,7 +573,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                         color = if (isTimeAttack && displaySeconds <= 10) Color.Red else MaterialTheme.colorScheme.onSurface
                     )
                 }
-
                 Row(
                     modifier = Modifier.weight(1.2f),
                     horizontalArrangement = Arrangement.End,
@@ -640,9 +584,7 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                         icon = Icons.Default.MilitaryTech,
                         activeColor = MaterialTheme.colorScheme.tertiary
                     )
-
                     Spacer(modifier = Modifier.width(6.dp))
-
                     if (recordsByLevel.isNotEmpty()) {
                         ControlIconButton(
                             selected = showBestRecordsDialog,
@@ -651,7 +593,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                             activeColor = Color(0xFFFFD700)
                         )
                     }
-
                     val hasEnoughData = statsHistory.any { it.n == n }
                     if (hasEnoughData) {
                         Spacer(modifier = Modifier.width(6.dp))
@@ -664,7 +605,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                     }
                 }
             }
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -677,14 +617,12 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                     color = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(horizontal = 4.dp)
                 ) {
                     lazyListItems((3..8).toList()) { size ->
                         val isSelected = n == size
-
                         Surface(
                             modifier = Modifier
                                 .size(width = 70.dp, height = 45.dp)
@@ -724,7 +662,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                     }
                 }
             }
-
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
                 horizontalArrangement = Arrangement.Center
@@ -736,7 +673,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                     shape = RoundedCornerShape(12.dp)
                 )
             }
-
             DifficultySelect(
                 currentMode = currentMode,
                 onModeSelected = { newMode ->
@@ -749,13 +685,10 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                     moveHistory = emptyList()
                 }
             )
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Box(modifier = Modifier
                 .weight(1f)
                 .aspectRatio(1f)) {
-
                 LazyVerticalGrid(
                     userScrollEnabled = false,
                     columns = GridCells.Fixed(n),
@@ -767,15 +700,12 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                     itemsIndexed(pieces, key = { _, piece -> piece.id }) { index, piece ->
                         val isHintPiece = hintPieceId != null && piece.id == hintPieceId
                         val isPieceCorrect = !piece.isBlank && piece.id == targetState[index] && appSettings.isHighlightCorrectEnabled
-
                         val borderColor = when {
                             isHintPiece -> Color(0xFFFFC107)
                             isPieceCorrect -> Color(0xFF4CAF50)
                             else -> skinStyle.borderColor
                         }
-
                         val borderWidth = if (isHintPiece) 3.5.dp else if (isPieceCorrect) 2.dp else 0.dp
-
                         Box(
                             modifier = Modifier
                                 .animateItem(
@@ -804,7 +734,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                                         val isHorizontal = abs(dragAmount.x) > abs(dragAmount.y)
                                         val blankIndex = pieces.indexOfFirst { it.isBlank }
                                         var targetIndex = -1
-
                                         if (isHorizontal && abs(dragAmount.x) > threshold) {
                                             targetIndex =
                                                 if (dragAmount.x > 0) index + 1 else index - 1
@@ -812,7 +741,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                                             targetIndex =
                                                 if (dragAmount.y > 0) index + n else index - n
                                         }
-
                                         if (targetIndex == blankIndex && isAdjacent(
                                                 index,
                                                 blankIndex,
@@ -848,7 +776,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                         }
                     }
                 }
-
                 androidx.compose.animation.AnimatedVisibility(
                     visible = showPreview,
                     enter = fadeIn() + scaleIn(),
@@ -860,7 +787,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                 ) {
                     NumberPreview(n = n, targetState = targetState)
                 }
-
                 if (hasStartedMSM) {
                     Surface(
                         color = Color.Black.copy(alpha = 0.6f),
@@ -878,7 +804,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                     }
                 }
             }
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -924,7 +849,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                     Spacer(Modifier.width(8.dp))
                     Text(stringResource(R.string.mezclar), fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp)
                 }
-
                 OutlinedButton(
                     onClick = {
                         val blankId = n * n - 1
@@ -947,7 +871,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                 ) {
                     Text(stringResource(R.string.resetear), style = MaterialTheme.typography.labelLarge)
                 }
-
                 Surface(
                     onClick = { showPreview = !showPreview },
                     shape = RoundedCornerShape(16.dp),
@@ -962,7 +885,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                         )
                     }
                 }
-
                 Surface(
                     onClick = { showQRCodeDialog = true },
                     shape = RoundedCornerShape(16.dp),
@@ -979,7 +901,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                 }
             }
         }
-
         if (isTimeOut) {
             Dialog(
                 onDismissRequest = { isTimeOut = false },
@@ -1010,27 +931,21 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                                 modifier = Modifier.size(36.dp)
                             )
                         }
-
                         Spacer(modifier = Modifier.height(12.dp))
-
                         Text(
                             text = "¡Tiempo Agotado!",
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.error
                         )
-
                         Spacer(modifier = Modifier.height(8.dp))
-
                         Text(
                             text = "Se acabó el tiempo del modo Contrarreloj. ¡Inténtalo de nuevo!",
                             style = MaterialTheme.typography.bodyMedium,
                             textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-
                         Spacer(modifier = Modifier.height(20.dp))
-
                         Button(
                             onClick = {
                                 isTimeOut = false
@@ -1051,7 +966,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                 }
             }
         }
-
         if (isSolved) {
             Box(
                 modifier = Modifier
@@ -1081,15 +995,12 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                                     color = Color.White,
                                     style = MaterialTheme.typography.displaySmall
                                 )
-
                                 Text(
                                     stringResource(R.string.puzzle_finalizado),
                                     color = Color.Cyan,
                                     style = MaterialTheme.typography.titleMedium
                                 )
-
                                 Spacer(modifier = Modifier.height(20.dp))
-
                                 Row(
                                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                                     verticalAlignment = Alignment.CenterVertically
@@ -1110,7 +1021,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
                                         Spacer(Modifier.width(6.dp))
                                         Text("Compartir")
                                     }
-
                                     if (moveHistory.isNotEmpty()) {
                                         OutlinedButton(
                                             onClick = { playReplay() },
@@ -1138,7 +1048,6 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DifficultySelect(
@@ -1146,14 +1055,12 @@ fun DifficultySelect(
     onModeSelected: (NumberPuzzleMode) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
             text = stringResource(R.string.seleccionar_dificultad),
             style = MaterialTheme.typography.labelLarge,
             modifier = Modifier.padding(bottom = 4.dp)
         )
-
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
@@ -1169,7 +1076,6 @@ fun DifficultySelect(
                     .fillMaxWidth(),
                 shape = MaterialTheme.shapes.medium
             )
-
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
@@ -1196,7 +1102,6 @@ fun DifficultySelect(
         }
     }
 }
-
 @Composable
 fun NumberPreview(n: Int, targetState: List<Int>) {
     Card(

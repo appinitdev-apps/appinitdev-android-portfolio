@@ -1,16 +1,12 @@
-
 @HiltViewModel
 class StoreViewModel @Inject constructor(
     private val repository: StoreRepository
 ) : ViewModel() {
-
     private val _store = MutableStateFlow<Store?>(null)
     val store: StateFlow<Store?> = _store.asStateFlow()
-
     init {
         ensureStoreExists()
     }
-
     private fun ensureStoreExists() {
         viewModelScope.launch {
             repository.getStore().collect { currentStore ->
@@ -34,7 +30,6 @@ class StoreViewModel @Inject constructor(
                         createdAt = java.time.LocalDateTime.now(),
                         updatedAt = java.time.LocalDateTime.now()
                     )
-
                     repository.insertStore(defaultStore)
                 } else {
                     _store.value = currentStore
@@ -42,7 +37,6 @@ class StoreViewModel @Inject constructor(
             }
         }
     }
-
     fun updateStore(store: Store) {
         viewModelScope.launch {
             repository.updateStore(

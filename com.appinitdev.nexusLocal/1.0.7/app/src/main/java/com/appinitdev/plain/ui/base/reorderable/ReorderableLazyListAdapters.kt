@@ -1,4 +1,3 @@
-
 internal fun LazyListItemInfo.toLazyCollectionItemInfo(orientation: Orientation) =
     object : LazyCollectionItemInfo<LazyListItemInfo> {
         override val index: Int
@@ -12,7 +11,6 @@ internal fun LazyListItemInfo.toLazyCollectionItemInfo(orientation: Orientation)
         override val data: LazyListItemInfo
             get() = this@toLazyCollectionItemInfo
     }
-
 internal fun LazyListLayoutInfo.toLazyCollectionLayoutInfo() =
     object : LazyCollectionLayoutInfo<LazyListItemInfo> {
         override val visibleItemsInfo: List<LazyCollectionItemInfo<LazyListItemInfo>>
@@ -28,7 +26,6 @@ internal fun LazyListLayoutInfo.toLazyCollectionLayoutInfo() =
         override val beforeContentPadding: Int
             get() = this@toLazyCollectionLayoutInfo.beforeContentPadding
     }
-
 internal fun LazyListState.toLazyCollectionState() =
     object : LazyCollectionState<LazyListItemInfo> {
         override val firstVisibleItemIndex: Int
@@ -37,14 +34,11 @@ internal fun LazyListState.toLazyCollectionState() =
             get() = this@toLazyCollectionState.firstVisibleItemScrollOffset
         override val layoutInfo: LazyCollectionLayoutInfo<LazyListItemInfo>
             get() = this@toLazyCollectionState.layoutInfo.toLazyCollectionLayoutInfo()
-
         override suspend fun animateScrollBy(value: Float, animationSpec: AnimationSpec<Float>) =
             this@toLazyCollectionState.animateScrollBy(value, animationSpec)
-
         override suspend fun requestScrollToItem(index: Int, scrollOffset: Int) =
             this@toLazyCollectionState.requestScrollToItem(index, scrollOffset)
     }
-
 internal val LazyListLayoutInfo.mainAxisViewportSize: Int
     get() = when (orientation) {
         Orientation.Vertical -> viewportSize.height

@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addAppSchema() {
     query("deviceInfo") {
         resolver { ->

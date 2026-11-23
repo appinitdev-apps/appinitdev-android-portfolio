@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawingModeScreen(
@@ -8,8 +7,6 @@ fun DrawingModeScreen(
     var selectedModeIndex by remember { mutableIntStateOf(0) } 
     var modalData by remember { mutableStateOf<ModeModalData?>(null) }
     val activeColor = Color(0xFFFF4081)
-
-    
     modalData?.let { data ->
         AlertDialog(
             onDismissRequest = { modalData = null },
@@ -60,7 +57,6 @@ fun DrawingModeScreen(
             shape = RoundedCornerShape(28.dp)
         )
     }
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -93,7 +89,6 @@ fun DrawingModeScreen(
                 .padding(horizontal = 24.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            
             Text(
                 text = stringResource(R.string.seleccionar_el_modo_de_dibujo),
                 style = MaterialTheme.typography.headlineMedium,
@@ -101,10 +96,7 @@ fun DrawingModeScreen(
                 color = Color(0xFF1A1C1E),
                 textAlign = TextAlign.Center
             )
-
             Spacer(modifier = Modifier.height(24.dp))
-
-            
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -126,9 +118,6 @@ fun DrawingModeScreen(
                         )
                     }
                 )
-
-               
-
                 ModernModeCard(
                     title = stringResource(R.string.metodo_de_cuadricula),
                     description = stringResource(R.string.descripcion_cuadricula),
@@ -144,7 +133,6 @@ fun DrawingModeScreen(
                         )
                     }
                 )
-
                 ModernModeCard(
                     title = stringResource(R.string.dibujar_con_pantalla),
                     description = stringResource(R.string.coloca_un_papel_sobre_la_pantalla_de_tu_tel_fono_y_sigue_las_l_neas_para_trazar_tu_imagen_con_facilidad),
@@ -160,7 +148,6 @@ fun DrawingModeScreen(
                         )
                     }
                 )
-
                 ModernModeCard(
                     title = stringResource(R.string.modo_boceto),
                     description = stringResource(R.string.descripcion_boceto),
@@ -177,10 +164,7 @@ fun DrawingModeScreen(
                     }
                 )
             }
-
             Spacer(modifier = Modifier.height(24.dp))
-
-            
             Button(
                 onClick = { 
                     when(selectedModeIndex) {
@@ -208,13 +192,11 @@ fun DrawingModeScreen(
         }
     }
 }
-
 data class ModeModalData(
     val title: String,
     val description: String,
     val imageResId: Int
 )
-
 @Composable
 fun ModernModeCard(
     title: String,
@@ -226,7 +208,6 @@ fun ModernModeCard(
     onImageClick: (ModeModalData) -> Unit
 ) {
     val backgroundColor = if (isSelected) activeColor.copy(alpha = 0.04f) else Color.White
-
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -239,7 +220,6 @@ fun ModernModeCard(
             ),
         shape = RoundedCornerShape(24.dp),
         color = backgroundColor,
-      
     ) {
         Row(
             modifier = Modifier
@@ -247,7 +227,6 @@ fun ModernModeCard(
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            
             Box(
                 modifier = Modifier
                     .size(130.dp)
@@ -263,7 +242,6 @@ fun ModernModeCard(
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
-                
                 if (isSelected) {
                     Box(
                         modifier = Modifier
@@ -272,10 +250,7 @@ fun ModernModeCard(
                     )
                 }
             }
-
             Spacer(modifier = Modifier.width(16.dp))
-
-            
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.Center
@@ -297,9 +272,7 @@ fun ModernModeCard(
                         )
                     }
                 }
-                
                 Spacer(modifier = Modifier.height(8.dp))
-                
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodySmall,

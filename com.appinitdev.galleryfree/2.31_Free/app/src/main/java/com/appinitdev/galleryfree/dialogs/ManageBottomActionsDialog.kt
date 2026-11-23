@@ -1,7 +1,5 @@
-
 class ManageBottomActionsDialog(val activity: BaseSimpleActivity, val callback: (result: Int) -> Unit) {
     private val binding = DialogManageBottomActionsBinding.inflate(activity.layoutInflater)
-
     init {
         val actions = activity.config.visibleBottomActions
         binding.apply {
@@ -21,7 +19,6 @@ class ManageBottomActionsDialog(val activity: BaseSimpleActivity, val callback: 
             manageBottomActionsMove.isChecked = actions and BOTTOM_ACTION_MOVE != 0
             manageBottomActionsResize.isChecked = actions and BOTTOM_ACTION_RESIZE != 0
         }
-
         activity.getAlertDialogBuilder()
             .setPositiveButton(org.appinitdev.commons.R.string.ok) { dialog, which -> dialogConfirmed() }
             .setNegativeButton(org.appinitdev.commons.R.string.cancel, null)
@@ -29,7 +26,6 @@ class ManageBottomActionsDialog(val activity: BaseSimpleActivity, val callback: 
                 activity.setupDialogStuff(binding.root, this)
             }
     }
-
     private fun dialogConfirmed() {
         var result = 0
         binding.apply {
@@ -64,7 +60,6 @@ class ManageBottomActionsDialog(val activity: BaseSimpleActivity, val callback: 
             if (manageBottomActionsResize.isChecked)
                 result += BOTTOM_ACTION_RESIZE
         }
-
         activity.config.visibleBottomActions = result
         callback(result)
     }

@@ -1,33 +1,25 @@
-
 @HiltViewModel(assistedFactory = AudioInformationViewModel.Factory::class)
 class AudioInformationViewModel @AssistedInject constructor(
         application: Application,
         @Assisted private val audio: Audio,
         private val lrcRepository: LrcRepository
 ) : AndroidViewModel(application) {
-
     private val _info = MutableStateFlow<List<Data>>(emptyList())
     val info: StateFlow<List<Data>> = _info.asStateFlow()
-
     init {
         loadInfo()
     }
-
     private fun loadInfo() {
         viewModelScope.launch(Dispatchers.IO) {
             val hasEmbeddedArt = checkEmbeddedArt(audio.uri)
             val hasLrc = lrcRepository.lrcFileExists(audio.uri)
-
             val list = buildList {
                 add(data(R.string.title, audio.title ?: audio.name ?: "–", fullSpan = true))
                 add(data(R.string.path, audio.path ?: "–", fullSpan = true))
-
                 if (BuildConfig.DEBUG) {
                     add(data(R.string.uri, audio.uri ?: "–", fullSpan = true))
                 }
-
                 add(data(R.string.album, audio.album ?: "–", fullSpan = true))
-
                 add(data(R.string.artist, audio.artist ?: "–"))
                 add(data(R.string.album_artist, audio.albumArtist ?: "–"))
                 add(data(R.string.duration, audio.duration.toDynamicTimeString()))
@@ -48,47 +40,30 @@ class AudioInformationViewModel @AssistedInject constructor(
                 add(data(R.string.writer, audio.writer ?: "–"))
                 add(data(R.string.compilation, audio.compilation ?: "–"))
                 add(data(R.string.date, audio.date ?: "–"))
-
-                
                 add(data(R.string.date_added,
                          if (audio.dateAdded > 0) audio.dateAdded.toDate() else "–"))
                 add(data(R.string.date_modified,
                          if (audio.dateModified > 0) audio.dateModified.toDate() else "–"))
                 add(data(R.string.date_taken,
                          if (audio.dateTaken > 0) audio.dateTaken.toDate() else "–"))
-
-                
                 add(data(R.string.has_embedded_art,
                          getApplication<Application>().getString(
                                  if (hasEmbeddedArt) R.string.yes else R.string.no)))
                 add(data(R.string.has_lrc_sidecar,
                          getApplication<Application>().getString(
                                  if (hasLrc) R.string.yes else R.string.no)))
-
-                
                 add(data(R.string.audio_id, audio.id.toString()))
-
-                
                 val replayGainValues = """
                             ${"Track Gain:".padEnd(13)} ${audio.replayGainTrackGain ?: "–"} dB
                             ${"Track Peak:".padEnd(13)} ${audio.replayGainTrackPeak ?: "–"}
                             ${"Album Gain:".padEnd(13)} ${audio.replayGainAlbumGain ?: "–"} dB
                             ${"Album Peak:".padEnd(13)} ${audio.replayGainAlbumPeak ?: "–"}
                         """.trimIndent()
-
                 add(data(R.string.replay_gain, replayGainValues, fullSpan = true))
             }
-
             _info.emit(list)
         }
     }
-
-     
-
-
-
-
-
     private fun checkEmbeddedArt(path: String?): Boolean {
         if (path == null) return false
         return try {
@@ -101,15 +76,12 @@ class AudioInformationViewModel @AssistedInject constructor(
             false
         }
     }
-
     private fun data(type: Int, value: String, fullSpan: Boolean = false) =
         Data(type = type, value = value, isFullSpan = fullSpan)
-
     @AssistedFactory
     interface Factory {
         fun create(audio: Audio): AudioInformationViewModel
     }
-
     companion object {
         private const val TAG = "AudioInformationViewModel"
     }

@@ -1,8 +1,5 @@
-
 const val DEFAULT_SCALE_TO_CLOSE_MIN_VALUE = 0.9F
-
 enum class VerticalDragType { None, Down, UpAndDown }
-
 @OptIn(ExperimentalFoundationApi::class)
 open class PreviewerVerticalDragState(
     scope: CoroutineScope = MainScope(),
@@ -10,10 +7,8 @@ open class PreviewerVerticalDragState(
     scaleToCloseMinValue: Float = DEFAULT_SCALE_TO_CLOSE_MIN_VALUE,
     pagerState: PagerState,
 ) : PreviewerTransformState(scope, pagerState) {
-
     var verticalDragType by mutableStateOf(verticalDragType)
     private var scaleToCloseMinValue by mutableFloatStateOf(scaleToCloseMinValue)
-
     suspend fun verticalDrag(pointerInputScope: PointerInputScope) {
         if (verticalDragType == VerticalDragType.None) return
         pointerInputScope.apply {
@@ -23,7 +18,6 @@ open class PreviewerVerticalDragState(
                 var vOrientationDown: Boolean? = null
                 var dragActivated = false
                 var directionLocked = false
-
                 if (mediaViewerState != null) {
                     var transformItemState: TransformItemState? = null
                     getKey?.apply { findTransformItem(invoke(pagerState.currentPage))?.apply { transformItemState = this } }
@@ -35,7 +29,6 @@ open class PreviewerVerticalDragState(
                         mediaViewerState?.allowGestureInput = false
                     }
                 }
-
                 do {
                     val event = awaitPointerEvent()
                     if (event.changes.size > 1) {

@@ -1,4 +1,3 @@
-
 @Composable
 fun ForwardTargetDialog(
     peerVM: PeerViewModel,
@@ -6,7 +5,6 @@ fun ForwardTargetDialog(
     onTargetSelected: (ChatTarget) -> Unit
 ) {
     val pairedPeers = peerVM.pairedPeers
-
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surface,
         modifier = Modifier.fillMaxWidth(),
@@ -30,7 +28,6 @@ fun ForwardTargetDialog(
                         showMore = true
                     )
                 }
-
                 if (pairedPeers.isNotEmpty()) {
                     items(pairedPeers, key = { it.id }) { peer ->
                         PDialogListItem(
@@ -53,4 +50,3 @@ fun ForwardTargetDialog(
         }
     )
 }
-

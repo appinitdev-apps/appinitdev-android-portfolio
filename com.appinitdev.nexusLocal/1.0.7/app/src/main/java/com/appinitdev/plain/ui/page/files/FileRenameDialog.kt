@@ -1,4 +1,3 @@
-
 @Composable
 internal fun FileRenameDialog(
     file: DFile,
@@ -7,7 +6,6 @@ internal fun FileRenameDialog(
 ) {
     val scope = rememberCoroutineScope()
     val name = remember { mutableStateOf(file.name) }
-
     TextFieldDialog(
         title = stringResource(Res.string.rename),
         value = name.value,
@@ -27,7 +25,6 @@ internal fun FileRenameDialog(
                         MainApp.instance.scanFileByConnection(dstFile)
                     }
                 }
-
                 file.name = newName
                 file.path = file.path.replace("/$oldName", "/$newName")
                 if (file.isDir) {
@@ -36,7 +33,6 @@ internal fun FileRenameDialog(
                         b.name = newName
                     }
                 }
-
                 DialogHelper.hideLoading()
                 filesVM.exitSelectMode()
                 showDialog.value = false

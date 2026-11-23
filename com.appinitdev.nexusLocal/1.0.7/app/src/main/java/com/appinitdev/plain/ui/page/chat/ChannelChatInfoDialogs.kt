@@ -1,4 +1,3 @@
-
 @Composable
 internal fun ChannelChatInfoDialogs(
     liveChannel: DChatChannel?,
@@ -16,7 +15,6 @@ internal fun ChannelChatInfoDialogs(
             onConfirm = { newName -> onDismissRename(); channelVM.renameChannel(liveChannel.id, newName) },
         )
     }
-
     selectedMemberPeer.value?.let { sp ->
         val isSelf = sp.id == liveChannel?.owner || sp.id == TempData.clientId
         MemberInfoDialog(
@@ -24,7 +22,6 @@ internal fun ChannelChatInfoDialogs(
             channelVM = channelVM, onDismiss = { selectedMemberPeer.value = null },
         )
     }
-
     selectedPendingMemberPeer.value?.let { sp ->
         if (liveChannel != null) {
             PendingMemberDialog(
@@ -34,7 +31,6 @@ internal fun ChannelChatInfoDialogs(
         }
     }
 }
-
 @Composable
 private fun MemberInfoDialog(
     peer: DPeer, isOwner: Boolean, isSelf: Boolean,
@@ -67,7 +63,6 @@ private fun MemberInfoDialog(
         },
     )
 }
-
 @Composable
 private fun PendingMemberDialog(
     peer: DPeer, liveChannel: DChatChannel, channelVM: ChannelViewModel, onDismiss: () -> Unit,

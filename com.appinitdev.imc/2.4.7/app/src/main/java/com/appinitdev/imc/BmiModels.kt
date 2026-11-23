@@ -1,13 +1,10 @@
-
 enum class Gender {
     FEMALE, MALE
 }
-
 enum class UnitSystem {
     METRIC, 
     IMPERIAL 
 }
-
 enum class BmiCategoryType(val labelResId: Int, val color: Color) {
     UNDERWEIGHT(R.string.riesgo_de_desnutrici_n, Color(0xFF0288D1)), 
     NORMAL(R.string.normal1, Color(0xFF10B981)),                      
@@ -16,7 +13,6 @@ enum class BmiCategoryType(val labelResId: Int, val color: Color) {
     OBESITY_2(R.string.obesidad_ii1, Color(0xFFEF4444)),                
     OBESITY_3(R.string.obesidad_iii1, Color(0xFF8B5CF6))                 
 }
-
 data class AgeCategory(
     val id: Int,
     val titleResId: Int,
@@ -24,7 +20,6 @@ data class AgeCategory(
     val ageRangeTextResId: Int,
     val descriptionResId: Int
 )
-
 data class HealthRecommendation(
     val hydrationTitle: String,
     val hydrationValue: String,
@@ -33,7 +28,6 @@ data class HealthRecommendation(
     val energyValue: String,
     val energyNote: String
 )
-
 data class BmiResult(
     val pesoFormatted: String,
     val estaturaFormatted: String,
@@ -50,7 +44,6 @@ data class BmiResult(
     val referenceTable: DoubleArray = doubleArrayOf(),
     val healthRecommendation: HealthRecommendation
 )
-
 data class BmiRecord(
     val id: Long = System.currentTimeMillis(),
     val timestamp: Long = System.currentTimeMillis(),

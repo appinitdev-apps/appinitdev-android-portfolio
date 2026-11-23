@@ -1,4 +1,3 @@
-
 @Composable
 fun AudioPlayerTrackInfo(title: String, artist: String) {
     Column(
@@ -7,7 +6,6 @@ fun AudioPlayerTrackInfo(title: String, artist: String) {
     ) {
         val titleScrollState = rememberScrollState()
         val isScrollingTitle = remember { mutableStateOf(false) }
-
         LaunchedEffect(title) {
             delay(1500)
             if (titleScrollState.maxValue > 0) {
@@ -20,7 +18,6 @@ fun AudioPlayerTrackInfo(title: String, artist: String) {
                 }
             }
         }
-
         Box(
             modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
             contentAlignment = Alignment.Center,
@@ -33,12 +30,9 @@ fun AudioPlayerTrackInfo(title: String, artist: String) {
                 modifier = Modifier.horizontalScroll(titleScrollState, reverseScrolling = false),
             )
         }
-
         VerticalSpace(8.dp)
-
         val artistScrollState = rememberScrollState()
         val isScrollingArtist = remember { mutableStateOf(false) }
-
         LaunchedEffect(artist) {
             delay(1500)
             if (artistScrollState.maxValue > 0) {
@@ -51,7 +45,6 @@ fun AudioPlayerTrackInfo(title: String, artist: String) {
                 }
             }
         }
-
         Box(
             modifier = Modifier.fillMaxWidth().heightIn(min = 36.dp),
             contentAlignment = Alignment.Center,

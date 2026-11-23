@@ -1,29 +1,20 @@
-
 class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
-
     private lateinit var selectedSpan: URLSpan
     private lateinit var pickNoteNewActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var pickNoteUpdateActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var textFormatMenu: View
-
     private var textFormattingAdapter: TextFormattingAdapter? = null
-
     private var searchResultIndices: List<Pair<Int, Int>>? = null
-
     override fun configureUI() {
         binding.EnterTitle.setOnNextAction { binding.EnterBody.requestFocus() }
-
         if (notallyModel.isNewNote) {
             binding.EnterBody.requestFocus()
         }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setupActivityResultLaunchers()
     }
-
     override fun toggleCanEdit(mode: NoteViewMode) {
         super.toggleCanEdit(mode)
         textFormatMenu.isVisible = mode == NoteViewMode.EDIT
@@ -34,7 +25,6 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
         binding.EnterBody.setCanEdit(mode == NoteViewMode.EDIT)
         setupEditor()
     }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.apply {
@@ -42,7 +32,6 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
             putInt(EXTRA_SELECTION_END, binding.EnterBody.selectionEnd)
         }
     }
-
     private fun setupActivityResultLaunchers() {
         pickNoteNewActivityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -76,7 +65,6 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
                 }
             }
     }
-
     override fun highlightSearchResults(search: String): Int {
         binding.EnterBody.clearHighlights()
         if (search.isEmpty()) {
@@ -88,7 +76,6 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
             }
         return searchResultIndices!!.size
     }
-
     override fun selectSearchResult(resultPos: Int) {
         if (resultPos < 0) {
             binding.EnterBody.unselectHighlight()
@@ -99,7 +86,6 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
             selectedLineTop?.let { binding.ScrollView.scrollTo(0, it) }
         }
     }
-
     override fun setupListeners() {
         super.setupListeners()
         binding.EnterBody.initHistory(changeHistory) { text ->
@@ -110,7 +96,6 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
             }
         }
     }
-
     override fun setStateFromModel(savedInstanceState: Bundle?) {
         super.setStateFromModel(savedInstanceState)
         updateEditText()
@@ -122,24 +107,18 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
             }
         }
     }
-
     private fun updateEditText() {
         binding.EnterBody.text = notallyModel.body
     }
-
     private fun setupEditor() {
         setupMovementMethod()
         binding.EnterBody.customSelectionActionModeCallback =
             if (canEdit) {
                 object : ActionMode.Callback {
                     override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?) = false
-
                     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?) = false
-
                     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
                         binding.EnterBody.isActionModeOn = true
-                        
-                        
                         try {
                             menu?.apply {
                                 add(
@@ -198,26 +177,19 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
                         }
                         return true
                     }
-
                     override fun onDestroyActionMode(mode: ActionMode?) {
                         binding.EnterBody.isActionModeOn = false
                     }
                 }
             } else null
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             binding.EnterBody.customInsertionActionModeCallback =
                 if (canEdit) {
                     object : ActionMode.Callback {
                         override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?) = false
-
                         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?) = false
-
                         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
                             binding.EnterBody.isActionModeOn = true
-                            
-                            
-                            
                             try {
                                 menu?.apply {
                                     add(
@@ -234,7 +206,6 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
                             }
                             return true
                         }
-
                         override fun onDestroyActionMode(mode: ActionMode?) {
                             binding.EnterBody.isActionModeOn = false
                         }
@@ -269,7 +240,6 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
             }
         }
     }
-
     override fun initBottomMenu() {
         super.initBottomMenu()
         binding.BottomAppBarCenter.visibility = VISIBLE
@@ -288,7 +258,6 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
         }
         setBottomAppBarColor(colorInt)
     }
-
     private fun initBottomTextFormattingMenu() {
         binding.BottomAppBarCenter.visibility = GONE
         val extractColor = colorInt
@@ -299,7 +268,6 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
                     setIconResource(R.drawable.close)
                     contentDescription = context.getString(R.string.cancel)
                     setOnClickListener { initBottomMenu() }
-
                     updateLayoutParams<LinearLayout.LayoutParams> {
                         marginEnd = 0
                         marginStart = 10.dp
@@ -325,11 +293,9 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
             addView(layout.root)
         }
     }
-
     override fun linkNote() {
         linkNote(pickNoteNewActivityResultLauncher)
     }
-
     fun linkNote(activityResultLauncher: ActivityResultLauncher<Intent>) {
         val intent =
             Intent(this, PickNoteActivity::class.java).apply {
@@ -337,7 +303,6 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
             }
         activityResultLauncher.launch(intent)
     }
-
     private fun setupMovementMethod() {
         val movementMethod = LinkMovementMethod { span ->
             val items =
@@ -386,7 +351,6 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
         }
         binding.EnterBody.movementMethod = movementMethod
     }
-
     private fun openLink(span: URLSpan) {
         span.url?.let {
             if (it.isNoteUrl()) {
@@ -396,28 +360,23 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
             }
         }
     }
-
     private fun editLink(span: URLSpan) {
         binding.EnterBody.showEditDialog(span)
     }
-
     private fun changeNoteLink(span: URLSpan) {
         selectedSpan = span
         linkNote(pickNoteUpdateActivityResultLauncher)
     }
-
     private fun copyLink(span: URLSpan) {
         copyToClipBoard(span.url)
         showToast(R.string.copied_link)
     }
-
     private fun removeLink(span: URLSpan) {
         binding.EnterBody.removeSpanWithHistory(
             span,
             span.url.isNoteUrl() || span.url == binding.EnterBody.getSpanText(span),
         )
     }
-
     private fun openLink(url: String) {
         val uri = Uri.parse(url)
         val intent = Intent(Intent.ACTION_VIEW, uri).wrapWithChooser(this)
@@ -427,7 +386,6 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
             showToast(R.string.cant_open_link)
         }
     }
-
     private fun URLSpan.navigateToNote() {
         val noteId = url.getNoteIdFromUrl()
         val noteType = url.getNoteTypeFromUrl()
@@ -436,13 +394,11 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
             Type.LIST -> goToActivity(EditListActivity::class.java, noteId)
         }
     }
-
     private fun goToActivity(activity: Class<out Activity>, noteId: Long) {
         val intent = Intent(this, activity)
         intent.putExtra(EXTRA_SELECTED_BASE_NOTE, noteId)
         startActivity(intent)
     }
-
     private fun Intent?.getPickedNoteData(): Triple<String, String, Boolean> {
         val noteId = this?.getLongExtra(EXTRA_PICKED_NOTE_ID, -1L)!!
         if (noteId == -1L) {
@@ -458,7 +414,6 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
         val noteUrl = noteId.createNoteUrl(noteType)
         return Triple(noteTitle, noteUrl, emptyTitle)
     }
-
     companion object {
         private const val EXTRA_SELECTION_START = "notes.intent.extra.EXTRA_SELECTION_START"
         private const val EXTRA_SELECTION_END = "notes.intent.extra.EXTRA_SELECTION_END"

@@ -1,28 +1,9 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 data class SoundPlayerData(
     val workSoundUri: String,
     val breakSoundUri: String,
     val loop: Boolean,
     val overrideSoundProfile: Boolean,
 )
-
 class SoundPlayer(
     private val context: Context,
     ioScope: CoroutineScope,
@@ -31,16 +12,13 @@ class SoundPlayer(
     private val logger: Logger,
 ) {
     private var job: Job? = null
-
     private var audioManager: AudioManager? = null
     private var ringtone: Ringtone? = null
     private lateinit var setLoopingMethod: Method
-
     private var workRingTone = SoundData()
     private var breakRingTone = SoundData()
     private var loop = false
     private var overrideSoundProfile = false
-
     init {
         try {
             setLoopingMethod =
@@ -68,7 +46,6 @@ class SoundPlayer(
                 }
         }
     }
-
     fun play(timerType: TimerType) {
         val soundData =
             when (timerType) {
@@ -77,7 +54,6 @@ class SoundPlayer(
             }
         play(soundData, loop)
     }
-
     fun play(
         soundData: SoundData,
         loop: Boolean = false,
@@ -92,7 +68,6 @@ class SoundPlayer(
                 }
         }
     }
-
     private fun playInternal(
         soundData: SoundData,
         loop: Boolean,
@@ -107,9 +82,7 @@ class SoundPlayer(
                     it.toUri()
                 }
             }
-
         audioManager = (context.getSystemService(Context.AUDIO_SERVICE) as AudioManager)
-
         val usage =
             if (areHeadphonesPluggedIn(audioManager!!)) {
                 AudioAttributes.USAGE_MEDIA
@@ -118,7 +91,6 @@ class SoundPlayer(
             } else {
                 AudioAttributes.USAGE_NOTIFICATION
             }
-
         ringtone =
             RingtoneManager.getRingtone(context, uri).apply {
                 audioAttributes =
@@ -141,7 +113,6 @@ class SoundPlayer(
             logger.e(e) { "Failed to play ringtone" }
         }
     }
-
     fun stop() {
         playerScope.launch {
             job?.cancelAndJoin()
@@ -151,7 +122,6 @@ class SoundPlayer(
                 }
         }
     }
-
     private fun stopInternal() {
         ringtone?.let {
             if (it.isPlaying) {
@@ -164,7 +134,6 @@ class SoundPlayer(
         }
         ringtone = null
     }
-
     private fun areHeadphonesPluggedIn(audioManager: AudioManager): Boolean {
         val audioDevices = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
         val list =

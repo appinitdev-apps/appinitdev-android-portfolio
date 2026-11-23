@@ -1,4 +1,3 @@
-
 internal fun createHsvBitmap(
     size: IntSize,
     context: android.content.Context,
@@ -8,7 +7,6 @@ internal fun createHsvBitmap(
     val drawable = HsvBitmapDrawable(context.resources, bitmap.asAndroidBitmap()).apply {
         setBounds(0, 0, size.width, size.height)
     }
-
     var dx = 0f
     var dy = 0f
     val scale: Float
@@ -16,7 +14,6 @@ internal fun createHsvBitmap(
     val mDrawableRect = RectF(0f, 0f, size.width.toFloat(), size.height.toFloat())
     val bitmapWidth: Int = bitmap.asAndroidBitmap().width
     val bitmapHeight: Int = bitmap.asAndroidBitmap().height
-
     if (bitmapWidth * mDrawableRect.height() > mDrawableRect.width() * bitmapHeight) {
         scale = mDrawableRect.height() / bitmapHeight.toFloat()
         dx = (mDrawableRect.width() - bitmapWidth * scale) * 0.5f
@@ -30,10 +27,8 @@ internal fun createHsvBitmap(
         (dy + 0.5f) + mDrawableRect.top,
     )
     controller.imageBitmapMatrix.value = shaderMatrix
-
     return Pair(bitmap, drawable)
 }
-
 internal fun drawInitialColor(
     initialColor: androidx.compose.ui.graphics.Color,
     controller: ColorPickerController,
@@ -44,7 +39,6 @@ internal fun drawInitialColor(
     val palette = controller.paletteBitmap ?: return
     val pickerRadius: Float = palette.width.coerceAtMost(palette.height) * 0.5f
     if (pickerRadius <= 0) return
-
     onInitialized()
     val hsv = FloatArray(3)
     android.graphics.Color.RGBToHSV(

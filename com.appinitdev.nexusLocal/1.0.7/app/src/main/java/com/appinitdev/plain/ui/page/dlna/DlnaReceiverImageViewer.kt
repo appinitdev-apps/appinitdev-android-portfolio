@@ -1,19 +1,15 @@
-
 @Composable
 fun DlnaReceiverImageViewer(onExit: () -> Unit) {
     val context = LocalContext.current
     val mediaUri by DlnaRendererState.mediaUri.collectAsState()
     val mediaTitle by DlnaRendererState.mediaTitle.collectAsState()
-
     var showControls by remember { mutableStateOf(true) }
     var isLoading by remember(mediaUri) { mutableStateOf(true) }
     val interactionSource = remember { MutableInteractionSource() }
-
     DisposableEffect(Unit) {
         context.findActivity().setFullScreen(true)
         onDispose { context.findActivity().setFullScreen(false) }
     }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -32,14 +28,12 @@ fun DlnaReceiverImageViewer(onExit: () -> Unit) {
             onSuccess = { isLoading = false },
             onError = { isLoading = false },
         )
-
         if (isLoading) {
             CircularProgressIndicator(
                 color = Color.White,
                 modifier = Modifier.size(48.dp),
             )
         }
-
         AnimatedVisibility(
             visible = showControls,
             enter = fadeIn(),
@@ -75,4 +69,3 @@ fun DlnaReceiverImageViewer(onExit: () -> Unit) {
         }
     }
 }
-

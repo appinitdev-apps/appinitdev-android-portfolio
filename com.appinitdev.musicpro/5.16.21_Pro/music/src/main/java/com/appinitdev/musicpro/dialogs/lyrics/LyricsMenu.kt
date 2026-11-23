@@ -1,28 +1,19 @@
-
 class LyricsMenu : MediaBottomDialogFragment() {
-
     private lateinit var binding: DialogLyricsMenuBinding
-
     private var menuListener: LyricsMenuListener? = null
     private var audio: Audio? = null
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DialogLyricsMenuBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         updateLyricsAlignmentState()
         audio = MediaPlaybackManager.getCurrentSong()
-
-        
         binding.autoDownloadToggle.isChecked = LyricsPreferences.isAutoDownloadLyrics()
         binding.autoDownloadToggle.setOnCheckedChangeListener { _, isChecked ->
             LyricsPreferences.setAutoDownloadLyrics(isChecked)
         }
-
         binding.textSizeSeekbar.setProgress(LyricsPreferences.getLrcTextSize())
         binding.textSizeSeekbar.setOnSeekChangeListener(object : FelicitySeekbar.OnSeekChangeListener {
             override fun onProgressChanged(seekbar: FelicitySeekbar, progress: Float, fromUser: Boolean) {
@@ -31,11 +22,9 @@ class LyricsMenu : MediaBottomDialogFragment() {
                 }
             }
         })
-
         binding.textSizeSeekbar.setRightLabelProvider { progress, f1, f2 ->
             String.format(Locale.getDefault(), "%.1f px", progress)
         }
-
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
             val hasLrc = audio?.hasLrc(requireContext()) ?: false
             launch(Dispatchers.Main) {
@@ -43,23 +32,18 @@ class LyricsMenu : MediaBottomDialogFragment() {
                     binding.edit.visible()
                     binding.delete.visible()
                     binding.syncAdjustLayout.visible()
-
                     binding.addLyrics.gone()
-
                     binding.delete.setOnClickListener {
                         menuListener?.onLyricsDelete()
                         dismiss()
                     }
-
                     binding.edit.setOnClickListener {
                         menuListener?.onLrcEdit()
                         dismiss()
                     }
-
                     binding.minus.setOnClickListener {
                         menuListener?.onTimeMinusClicked()
                     }
-
                     binding.plus.setOnClickListener {
                         menuListener?.onTimePlusClicked()
                     }
@@ -68,7 +52,6 @@ class LyricsMenu : MediaBottomDialogFragment() {
                     binding.delete.gone()
                     binding.syncAdjustLayout.gone()
                     binding.addLyrics.visible()
-
                     binding.addLyrics.setOnClickListener {
                         menuListener?.onAddLyrics()
                         dismiss()
@@ -77,7 +60,6 @@ class LyricsMenu : MediaBottomDialogFragment() {
             }
         }
     }
-
     fun updateLyricsAlignmentState() {
         binding.lyricsAlignmentGroup.iconSize = 14F
         binding.lyricsAlignmentGroup.setButtons(
@@ -87,13 +69,11 @@ class LyricsMenu : MediaBottomDialogFragment() {
                         Button(iconResId = R.drawable.ic_align_right_12dp)
                 )
         )
-
         when (LyricsPreferences.getLrcAlignment()) {
             LyricsPreferences.LEFT -> binding.lyricsAlignmentGroup.setSelectedIndex(0)
             LyricsPreferences.CENTER -> binding.lyricsAlignmentGroup.setSelectedIndex(1)
             LyricsPreferences.RIGHT -> binding.lyricsAlignmentGroup.setSelectedIndex(2)
         }
-
         binding.lyricsAlignmentGroup.setOnButtonSelectedListener {
             when (it) {
                 0 -> LyricsPreferences.setLrcAlignment(LyricsPreferences.LEFT)
@@ -102,12 +82,10 @@ class LyricsMenu : MediaBottomDialogFragment() {
             }
         }
     }
-
     fun setOnMenuListener(listener: LyricsMenuListener): LyricsMenu {
         menuListener = listener
         return this
     }
-
     companion object {
         fun newInstance(): LyricsMenu {
             val args = Bundle()
@@ -115,15 +93,12 @@ class LyricsMenu : MediaBottomDialogFragment() {
             fragment.arguments = args
             return fragment
         }
-
         fun FragmentManager.showLyricsMenu(): LyricsMenu {
             val dialog = newInstance()
             dialog.show(this, TAG)
             return dialog
         }
-
         private const val TAG = "LyricsMenu"
-
         interface LyricsMenuListener {
             fun onTimeMinusClicked()
             fun onTimePlusClicked()
@@ -133,4 +108,3 @@ class LyricsMenu : MediaBottomDialogFragment() {
         }
     }
 }
-

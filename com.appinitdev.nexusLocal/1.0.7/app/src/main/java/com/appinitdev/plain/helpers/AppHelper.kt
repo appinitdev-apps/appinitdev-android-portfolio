@@ -1,7 +1,5 @@
-
 object AppHelper {
     private val fileIcons = mutableSetOf<String>()
-
     fun relaunch(context: Context) {
         val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
         val componentName = intent!!.component
@@ -9,15 +7,11 @@ object AppHelper {
         context.startActivity(mainIntent)
         Runtime.getRuntime().exit(0)
     }
-
     fun foregrounded(): Boolean {
         val appProcessInfo = ActivityManager.RunningAppProcessInfo()
         ActivityManager.getMyMemoryState(appProcessInfo)
         return (appProcessInfo.importance == IMPORTANCE_FOREGROUND || appProcessInfo.importance == IMPORTANCE_VISIBLE)
     }
-
-
-
     fun getCacheSize(context: Context): Long {
         return calculateDirectorySize(context.cacheDir) + calculateDirectorySize(
             context.filesDir.resolve(
@@ -25,7 +19,6 @@ object AppHelper {
             )
         )
     }
-
     private fun calculateDirectorySize(directory: File): Long {
         var totalSize: Long = 0
         val files = directory.listFiles() ?: return 0L
@@ -36,10 +29,8 @@ object AppHelper {
                 file.length()
             }
         }
-
         return totalSize
     }
-
     fun clearCacheAsync(context: Context) {
         context.cacheDir.listFiles()?.forEach {
             it.deleteRecursively()
@@ -51,7 +42,6 @@ object AppHelper {
             it.deleteRecursively()
         }
     }
-
     fun getFileIconPath(extension: String): String {
         if (fileIcons.isEmpty()) {
             cacheIconKeys(MainApp.instance)
@@ -59,10 +49,8 @@ object AppHelper {
         if (!fileIcons.contains(extension)) {
             return "file:///android_asset/ficons/default.svg"
         }
-
         return "file:///android_asset/ficons/$extension.svg"
     }
-
     private fun cacheIconKeys(context: Context) {
         context.assets.list("ficons")?.forEach {
             fileIcons.add(it.substringBefore("."))

@@ -1,4 +1,3 @@
-
 @SuppressLint("MissingPermission")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
@@ -18,14 +17,11 @@ fun NotePage(
     val shouldRequestFocus = remember { mutableStateOf(true) }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(canScroll = { !noteVM.editMode })
     val tagIds = tagsMapState[id.value]?.map { it.tagId } ?: emptyList()
-
     NotePageEffects(id, tagId, noteVM, notesVM, tagsVM, mdEditorVM, previewerState)
-
     if (noteVM.showSelectTagsDialog.value) {
         val m = noteVM.item.value
         if (m != null) SelectTagsDialog(tagsVM, tagsState, tagsMapState, data = m) { noteVM.showSelectTagsDialog.value = false }
     }
-
     PScaffold(topBar = {
         PTopAppBar(navController = navController, title = "", scrollBehavior = scrollBehavior, actions = {
             if (noteVM.editMode) {

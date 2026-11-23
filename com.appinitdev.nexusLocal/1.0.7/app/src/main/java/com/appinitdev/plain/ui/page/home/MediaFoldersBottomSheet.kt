@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun <T : IData> MediaFoldersBottomSheet(
@@ -9,7 +8,6 @@ fun <T : IData> MediaFoldersBottomSheet(
     if (!mediaVM.showFoldersDialog.value) {
         return
     }
-
     val itemsState by mediaFoldersVM.itemsFlow.collectAsState()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -19,13 +17,11 @@ fun <T : IData> MediaFoldersBottomSheet(
         skipPartiallyExpanded = true
     )
     val showAsList = mediaVM is AudioViewModel
-
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
             mediaFoldersVM.loadAsync(context)
         }
     }
-
     fun onSelect(id: String) {
         mediaVM.showFoldersDialog.value = false
         mediaVM.bucketId.value = id
@@ -33,7 +29,6 @@ fun <T : IData> MediaFoldersBottomSheet(
             mediaVM.loadAsync(context, tagsVM)
         }
     }
-
     PModalBottomSheet(
         onDismissRequest = {
             mediaVM.showFoldersDialog.value = false

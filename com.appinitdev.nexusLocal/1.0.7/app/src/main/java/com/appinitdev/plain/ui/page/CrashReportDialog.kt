@@ -1,9 +1,7 @@
-
 @Composable
 fun CrashReportDialog(crashReport: String, onDismiss: () -> Unit) {
     val context = LocalContext.current
     var includeAppLogs by remember { mutableStateOf(false) }
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(Res.string.crash_report_title)) },
@@ -46,19 +44,15 @@ fun CrashReportDialog(crashReport: String, onDismiss: () -> Unit) {
                         }
                     }
                 }
-
-                
                 val crashFile = File(context.cacheDir, "crash_report.txt")
                 try {
                     crashFile.writeText(bodyText)
                 } catch (_: Exception) {}
-
                 val attachmentUri: Uri? = try {
                     FileProvider.getUriForFile(context, Constants.AUTHORITY, crashFile)
                 } catch (_: Exception) {
                     null
                 }
-
                 val intent = if (attachmentUri != null) {
                     Intent(Intent.ACTION_SEND).apply {
                         type = "message/rfc822"
@@ -87,4 +81,3 @@ fun CrashReportDialog(crashReport: String, onDismiss: () -> Unit) {
         },
     )
 }
-

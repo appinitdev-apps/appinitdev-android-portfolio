@@ -1,4 +1,3 @@
-
 @Composable
 fun MainGradientButton(
     text: String,
@@ -9,11 +8,9 @@ fun MainGradientButton(
     enabled: Boolean = true
 ) {
     val brush = Brush.linearGradient(listOf(Color(0xFF238CDD), Color(0xFF1952C4)))
-    
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(if (isPressed) 0.95f else 1f, label = "scale")
-
     Surface(
         onClick = onClick,
         modifier = modifier
@@ -67,7 +64,6 @@ fun MainGradientButton(
         }
     }
 }
-
 @Composable
 fun SecondaryButton(
     text: String,
@@ -79,7 +75,6 @@ fun SecondaryButton(
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(if (isPressed) 0.95f else 1f, label = "scale")
-
     OutlinedButton(
         onClick = onClick,
         modifier = modifier
@@ -101,7 +96,6 @@ fun SecondaryButton(
         )
     }
 }
-
 @Composable
 fun MainFAB(
     icon: ImageVector,
@@ -116,7 +110,6 @@ fun MainFAB(
         elevation = 16.dp
     )
 }
-
 @Composable
 fun SmallGradientIconButton(
     icon: ImageVector,
@@ -131,7 +124,6 @@ fun SmallGradientIconButton(
         elevation = 8.dp
     )
 }
-
 @Composable
 private fun GradientIconButton(
     icon: ImageVector,
@@ -144,7 +136,6 @@ private fun GradientIconButton(
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(if (isPressed) 0.9f else 1f, label = "scale")
-
     Surface(
         onClick = onClick,
         modifier = modifier

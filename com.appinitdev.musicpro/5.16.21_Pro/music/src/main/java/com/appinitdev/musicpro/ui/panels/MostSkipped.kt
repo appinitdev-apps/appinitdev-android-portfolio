@@ -1,67 +1,44 @@
-
- 
-
-
-
-
-
-
 @AndroidEntryPoint
 class MostSkipped : BasePanelFragment() {
-
     private lateinit var binding: FragmentMostSkippedBinding
     private lateinit var headerBinding: HeaderMostSkippedBinding
-
     private var adapterSongs: AdapterMostSkipped? = null
-
     private val mostSkippedViewModel: MostSkippedViewModel by viewModels({ requireActivity() })
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMostSkippedBinding.inflate(inflater, container, false)
         headerBinding = HeaderMostSkippedBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.recyclerView.requireAttachedMiniPlayer()
         binding.recyclerView.attachSlideFastScroller()
         binding.appHeader.setContentView(headerBinding.root)
         binding.appHeader.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
-
         binding.recyclerView.setupGridLayoutManager(MostSkippedPreferences.getGridSize().spanCount)
-
         setupClickListeners()
-
         mostSkippedViewModel.songs.collectListWhenStarted({ adapterSongs != null }) { songs ->
             updateSongsList(songs)
         }
     }
-
     override fun onDestroyView() {
         adapterSongs = null
         super.onDestroyView()
     }
-
     override fun getShuffleButton(): HighlightTextView {
         return headerBinding.shuffle
     }
-
     private fun setupClickListeners() {
         headerBinding.search.setOnClickListener {
             openSearch()
         }
-
         headerBinding.menu.setOnClickListener {
             openPreferencesPanel()
         }
-
         headerBinding.listStyle.setOnClickListener {
             childFragmentManager.showListStyleDialog(GenericListStyleDialog.Companion.PANEL.MOST_SKIPPED)
         }
     }
-
     private fun updateSongsList(songs: List<AudioWithStat>) {
         if (adapterSongs == null) {
             adapterSongs = AdapterMostSkipped(initial = songs)
@@ -70,7 +47,6 @@ class MostSkipped : BasePanelFragment() {
                 override fun onSongClicked(songs: MutableList<Audio>, position: Int, view: View) {
                     setMediaItems(songs, position)
                 }
-
                 override fun onSongLongClicked(audios: MutableList<Audio>, position: Int, imageView: ImageView?) {
                     openSongsMenu(audios, position, imageView)
                 }
@@ -82,10 +58,8 @@ class MostSkipped : BasePanelFragment() {
                 binding.recyclerView.adapter = adapterSongs
             }
         }
-
         headerBinding.count.text = getString(R.string.x_songs, songs.size)
         headerBinding.hours.text = songs.sumOf { it.audio.duration }.toDynamicTimeString()
-
         headerBinding.hours.setOnClickListener {
             childFragmentManager.showTotalTime(
                     totalTime = songs.sumOf { it.audio.duration },
@@ -93,7 +67,6 @@ class MostSkipped : BasePanelFragment() {
             )
         }
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -104,7 +77,6 @@ class MostSkipped : BasePanelFragment() {
             }
         }
     }
-
     companion object {
         fun newInstance(): MostSkipped {
             val args = Bundle()
@@ -112,7 +84,6 @@ class MostSkipped : BasePanelFragment() {
             fragment.arguments = args
             return fragment
         }
-
         const val TAG = "MostSkipped"
     }
 }

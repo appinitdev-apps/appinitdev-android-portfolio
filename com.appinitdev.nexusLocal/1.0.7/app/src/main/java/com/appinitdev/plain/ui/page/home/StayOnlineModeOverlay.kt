@@ -1,14 +1,10 @@
-
 @Composable
 fun StayOnlineModeOverlay(onExit: () -> Unit) {
     val context = LocalContext.current
     val activity = context as? Activity
     val scope = rememberCoroutineScope()
-
-    
     var sleeping by remember { mutableStateOf(false) }
     var sleepJob by remember { mutableStateOf<Job?>(null) }
-
     fun scheduleSleep(delayMs: Long) {
         sleepJob?.cancel()
         sleepJob = scope.launch {
@@ -16,23 +12,18 @@ fun StayOnlineModeOverlay(onExit: () -> Unit) {
             sleeping = true
         }
     }
-
     DisposableEffect(Unit) {
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         onDispose {
             activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
-
-    
     LaunchedEffect(Unit) { scheduleSleep(3_000) }
-
     val textAlpha by animateFloatAsState(
         targetValue = if (sleeping) 0f else 1f,
         animationSpec = tween(durationMillis = 1500),
         label = "textAlpha",
     )
-
     Dialog(
         onDismissRequest = onExit,
         properties = DialogProperties(
@@ -56,7 +47,6 @@ fun StayOnlineModeOverlay(onExit: () -> Unit) {
                 }
             }
         }
-
         Box(
             modifier = Modifier
                 .fillMaxSize()

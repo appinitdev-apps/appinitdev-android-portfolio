@@ -1,4 +1,3 @@
-
 @Deprecated("Usa PixabaySearchDialog en su lugar")
 @Composable
 fun UnsplashSearchDialog(

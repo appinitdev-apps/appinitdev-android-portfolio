@@ -1,4 +1,3 @@
-
 @Composable
 fun PlayerProfileDialog(
     stats: List<PuzzleStatEntity>,
@@ -7,7 +6,6 @@ fun PlayerProfileDialog(
     val context = LocalContext.current
     val profile = remember(stats) { PlayerProfileManager.getProfile(context) }
     val totalWins = stats.size
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -37,17 +35,13 @@ fun PlayerProfileDialog(
                         modifier = Modifier.size(44.dp)
                     )
                 }
-
                 Spacer(modifier = Modifier.height(12.dp))
-
                 Text(
                     text = stringResource(R.string.perfil_del_jugador),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.ExtraBold
                 )
-
                 Spacer(modifier = Modifier.height(4.dp))
-
                 Surface(
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
                     shape = CircleShape
@@ -60,9 +54,7 @@ fun PlayerProfileDialog(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
                     )
                 }
-
                 Spacer(modifier = Modifier.height(20.dp))
-
                 Card(
                     shape = RoundedCornerShape(18.dp),
                     colors = CardDefaults.cardColors(
@@ -88,9 +80,7 @@ fun PlayerProfileDialog(
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
-
                         Spacer(modifier = Modifier.height(8.dp))
-
                         LinearProgressIndicator(
                             progress = { profile.progressRatio },
                             modifier = Modifier
@@ -100,9 +90,7 @@ fun PlayerProfileDialog(
                             color = MaterialTheme.colorScheme.primary,
                             trackColor = MaterialTheme.colorScheme.surfaceVariant
                         )
-
                         Spacer(modifier = Modifier.height(6.dp))
-
                         Text(
                             text = "XP Total Acumulado: ${profile.xp} XP",
                             style = MaterialTheme.typography.bodySmall,
@@ -110,9 +98,7 @@ fun PlayerProfileDialog(
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -134,7 +120,6 @@ fun PlayerProfileDialog(
                             Text(stringResource(R.string.victorias), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
-
                     Card(
                         shape = RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(
@@ -153,9 +138,7 @@ fun PlayerProfileDialog(
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.height(24.dp))
-
                 Button(
                     onClick = onDismiss,
                     shape = CircleShape,

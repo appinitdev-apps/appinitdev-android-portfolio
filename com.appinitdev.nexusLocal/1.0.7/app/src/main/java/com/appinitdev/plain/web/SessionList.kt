@@ -1,13 +1,10 @@
-
 object SessionList {
     fun getItemsAsync(): List<DSession> {
         return AppDatabase.instance.sessionDao().getAll()
     }
-
     fun getByClientIdAsync(clientId: String): DSession? {
         return AppDatabase.instance.sessionDao().getByClientId(clientId)
     }
-
     fun addOrUpdateAsync(
         clientId: String,
         updateItem: (DSession) -> Unit,
@@ -22,20 +19,16 @@ object SessionList {
         } else {
             item.updatedAt = TimeHelper.now()
         }
-
         updateItem(item)
-
         if (isInsert) {
             AppDatabase.instance.sessionDao().insert(item)
         } else {
             AppDatabase.instance.sessionDao().update(item)
         }
     }
-
     fun deleteAsync(clientId: String) {
         AppDatabase.instance.sessionDao().delete(clientId)
     }
-
     fun createCustomTokenAsync(name: String): DSession {
         val item = DSession()
         item.clientId = StringHelper.shortUUID()
@@ -45,7 +38,6 @@ object SessionList {
         AppDatabase.instance.sessionDao().insert(item)
         return item
     }
-
     fun renameAsync(clientId: String, name: String): Boolean {
         val item = AppDatabase.instance.sessionDao().getByClientId(clientId) ?: return false
         item.name = name

@@ -1,4 +1,3 @@
-
 internal fun <T : IData> BaseMediaViewModel<T>.trashItems(
     context: Context, tagsVM: TagsViewModel, ids: Set<String>,
 ) {
@@ -19,7 +18,6 @@ internal fun <T : IData> BaseMediaViewModel<T>.trashItems(
         }
     }
 }
-
 internal fun <T : IData> BaseMediaViewModel<T>.restoreItems(
     context: Context, tagsVM: TagsViewModel, ids: Set<String>,
 ) {
@@ -39,7 +37,6 @@ internal fun <T : IData> BaseMediaViewModel<T>.restoreItems(
         }
     }
 }
-
 internal suspend fun <T : IData> BaseMediaViewModel<T>.countMediaAsync(
     context: Context, query: String,
 ): Int {
@@ -51,7 +48,6 @@ internal suspend fun <T : IData> BaseMediaViewModel<T>.countMediaAsync(
         else -> 0
     }
 }
-
 @Suppress("UNCHECKED_CAST")
 internal suspend fun <T : IData> BaseMediaViewModel<T>.searchMediaAsync(
     context: Context, query: String,

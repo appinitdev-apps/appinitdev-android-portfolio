@@ -1,11 +1,9 @@
-
 @Composable
 fun DeleteProductButton(
     confirmationMessage: String,
     onDelete: () -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
-
     FilledTonalButton(
         onClick = { showDialog = true },
         modifier = Modifier.size(42.dp),
@@ -22,7 +20,6 @@ fun DeleteProductButton(
             tint = MaterialTheme.colorScheme.onErrorContainer
         )
     }
-
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },

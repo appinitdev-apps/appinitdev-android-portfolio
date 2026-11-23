@@ -1,13 +1,7 @@
-
 object HealthConnectManager {
-
-     
-
-
     fun createMindfulnessIntent(session: Session): Intent {
         val startMs = session.timestamp
         val endMs = startMs + (session.duration * 60 * 1000)
-
         return Intent("androidx.health.ACTION_INSERT_MINDFULNESS_SESSION").apply {
             putExtra("EXTRA_START_TIME", startMs)
             putExtra("EXTRA_END_TIME", endMs)
@@ -16,7 +10,6 @@ object HealthConnectManager {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
     }
-
     fun recordMindfulnessSession(context: Context, session: Session): Boolean {
         try {
             val intent = createMindfulnessIntent(session)

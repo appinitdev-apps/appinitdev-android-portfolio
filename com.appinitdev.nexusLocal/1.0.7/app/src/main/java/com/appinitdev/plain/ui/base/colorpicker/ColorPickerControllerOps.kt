@@ -1,4 +1,3 @@
-
 internal fun ColorPickerController.doSelectByCoordinate(x: Float, y: Float, fromUser: Boolean) {
     val snapPoint = PointMapper.getColorPoint(this, PointF(x, y))
     val extractedColor = if (isHsvColorPalette) {
@@ -17,7 +16,6 @@ internal fun ColorPickerController.doSelectByCoordinate(x: Float, y: Float, from
         }
     }
 }
-
 internal fun ColorPickerController.applyHSVFactors(color: Color): Color {
     val hsv = FloatArray(3)
     android.graphics.Color.colorToHSV(color.toArgb(), hsv)
@@ -28,7 +26,6 @@ internal fun ColorPickerController.applyHSVFactors(color: Color): Color {
         Color(android.graphics.Color.HSVToColor(hsv))
     }
 }
-
 internal fun ColorPickerController.extractPixelColor(x: Float, y: Float): Color {
     val invertMatrix = Matrix()
     imageBitmapMatrix.value.invert(invertMatrix)
@@ -46,7 +43,6 @@ internal fun ColorPickerController.extractPixelColor(x: Float, y: Float): Color 
     }
     return Color.Transparent
 }
-
 internal fun ColorPickerController.extractPixelHsvColor(x: Float, y: Float): Color {
     val invertMatrix = Matrix()
     imageBitmapMatrix.value.invert(invertMatrix)
@@ -67,12 +63,10 @@ internal fun ColorPickerController.extractPixelHsvColor(x: Float, y: Float): Col
     }
     return Color.Transparent
 }
-
 internal fun ColorPickerController.notifyColorChanged(fromUser: Boolean) {
     val color = _selectedColor.value
     colorChangedTick.value = ColorEnvelope(color, color.hexCode, fromUser)
 }
-
 internal fun ColorPickerController.notifyColorChangedWithDebounce(fromUser: Boolean) {
     val runnable = { notifyColorChanged(fromUser) }
     debounceHandler.removeCallbacksAndMessages(null)

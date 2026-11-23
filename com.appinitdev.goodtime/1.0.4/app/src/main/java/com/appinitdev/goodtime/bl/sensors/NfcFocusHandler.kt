@@ -1,6 +1,4 @@
-
 object NfcFocusHandler {
-
     fun handleNfcIntent(intent: Intent?, timerManager: TimerManager): Boolean {
         if (intent == null) return false
         val action = intent.action

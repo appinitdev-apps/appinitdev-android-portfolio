@@ -1,11 +1,8 @@
-
 class VoiceRecorder(private val context: Context) {
     private var mediaRecorder: MediaRecorder? = null
     private var audioFile: File? = null
-
     fun startRecording() {
         audioFile = File(context.cacheDir, "voice_note_${System.currentTimeMillis()}.m4a")
-        
         mediaRecorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             MediaRecorder(context)
         } else {
@@ -15,7 +12,6 @@ class VoiceRecorder(private val context: Context) {
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             setOutputFile(audioFile?.absolutePath)
-            
             try {
                 prepare()
                 start()
@@ -24,7 +20,6 @@ class VoiceRecorder(private val context: Context) {
             }
         }
     }
-
     fun stopRecording(): File? {
         return try {
             mediaRecorder?.apply {

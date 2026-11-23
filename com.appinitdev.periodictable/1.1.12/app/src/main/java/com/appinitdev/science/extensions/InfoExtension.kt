@@ -1,53 +1,32 @@
-
- 
-
-
 abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener {
     companion object {
         private const val TAG = "BaseActivity"
     }
-
     private var systemUiConfigured = false
     private val mainScope = MainScope()
     private var notesTextWatcher: TextWatcher? = null 
     private var currentElementCode: String? = null 
     private var notesEditText: EditText? = null 
     private var notesSyncStatusView: TextView? = null 
-
-    
-    
     private var currentElementKeyPref: String? = null
-
     override fun onDestroy() {
         super.onDestroy()
-        
         saveCurrentNotes()
-        
         NotesSyncManager.cancelPendingSync()
         mainScope.cancel()
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-
     override fun onStart() {
         super.onStart()
         val content = findViewById<View>(android.R.id.content)
         content.setOnApplyWindowInsetsListener(this)
-
         if (!systemUiConfigured) {
             systemUiConfigured = true
         }
     }
-
-     
-
-
     override fun onApplySystemInsets(top: Int, bottom: Int, left: Int, right: Int) = Unit
-     
-
-
     override fun onApplyWindowInsets(v: View, insets: WindowInsets): WindowInsets {
         Pasteur.info(TAG, "height: ${insets.systemWindowInsetBottom}")
         onApplySystemInsets(
@@ -58,36 +37,25 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
         )
         return insets.consumeSystemWindowInsets()
     }
-
-     
-
-
     fun readJson() {
         findViewById<FrameLayout>(R.id.ox_view).refreshDrawableState()
         updateAchievementProgress(1)
         updateStats()
-
         mainScope.launch {
             try {
                 val (elementKey, jsonObject, englishName) = withContext(Dispatchers.IO) {
                     val pref = ElementSendAndLoad(this@InfoExtension)
                     val value = pref.getValue()
                     val jsonObject = ElementDataLoader.loadElementData(this@InfoExtension, value ?: "hydrogen")
-                    
                     val englishJsonObject = ElementDataLoader.loadElementData(this@InfoExtension, value ?: "hydrogen", "en")
                     val englishName = englishJsonObject?.optString("element", "---") ?: "---"
                     Triple(value, jsonObject, englishName)
                 }
-
-                
                 currentElementKeyPref = elementKey
-
-                
                 findViewById<ImageButton>(R.id.previous_btn).visibility =
                     if (elementKey == "hydrogen") View.GONE else View.VISIBLE
                 findViewById<ImageButton>(R.id.next_btn).visibility =
                     if (elementKey == "oganesson") View.GONE else View.VISIBLE
-
                 if (jsonObject != null) {
                     updateElementUI(jsonObject, englishName)
                 } else {
@@ -102,10 +70,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
             }
         }
     }
-
-     
-
-
     private fun updateElementUI(jsonObject: JSONObject, englishName: String = "---") {
         val elementCode = jsonObject.optString("element_code", "---")
         val elementEnglishName = englishName
@@ -177,8 +141,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
         val specificHazard = jsonObject.optString("special", "---")
         val casNumber = jsonObject.optString("cas_number", "---")
         val egNumber = jsonObject.optString("eg_number", "---")
-        
-        
         val thermalConductivity = jsonObject.optString("thermal_conductivity", "---")
         val electronAffinity = jsonObject.optString("electron_affinity", "---")
         val molarHeatCapacity = jsonObject.optString("molar_heat_capacity", "---")
@@ -193,9 +155,7 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
         val neelPoint = jsonObject.optString("neel_point", "---")
         val abundanceMeteorites = jsonObject.optString("meteorites", "N/A") + " mg/kg"
         val abundanceHumanBody = jsonObject.optString("human_body", "N/A")
-
         findViewById<TextView>(R.id.element_resistivity).text = resistivity
-
         findViewById<TextView>(R.id.description_name).setOnClickListener {
             it as TextView
             it.maxLines = 100
@@ -215,8 +175,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
                 btn.text = "..more"
             }
         }
-
-        
         findViewById<TextView>(R.id.element_title).text = nameElement
         findViewById<TextView>(R.id.description_name).text = description
         findViewById<TextView>(R.id.element_name).text = elementEnglishName
@@ -241,13 +199,7 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
         findViewById<TextView>(R.id.element_density).text = formatSuperscript(elementDensity)
         findViewById<TextView>(R.id.element_block).text = elementBlock
         findViewById<TextView>(R.id.element_appearance).text = elementAppearance
-
-        
         notesSyncStatusView = findViewById(R.id.notes_sync_status)
-
-        
-        
-        
         notesSyncStatusView?.let { v ->
             if (NotesSyncManager.canSyncNotes(this)) {
                 v.visibility = View.INVISIBLE
@@ -256,8 +208,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
                 v.visibility = View.VISIBLE
             }
         }
-
-        
         val eText = findViewById<EditText>(R.id.notes_edit_text)
         val notesPref = NotesPreference(this)
         val notesPrefValue = notesPref.getValue()
@@ -269,13 +219,10 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
         } else {
             handleNotes(elementCode, eText)
         }
-
-        
         findViewById<TextView>(R.id.radioactive_text).text = isRadioactive
         findViewById<TextView>(R.id.neutron_cross_sectional_text).text = neutronCrossSection
         findViewById<FrameLayout>(R.id.isotopes_frame).setOnClickListener {
             val isoPreference = ElementSendAndLoad(this)
-
             isoPreference.setValue(currentElementKeyPref ?: nameElement.lowercase())
             val isoSend = sendIso(this)
             isoSend.setValue("true")
@@ -284,14 +231,12 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
         }
         findViewById<ImageButton>(R.id.isotopes_icon).setOnClickListener {
             val isoPreference = ElementSendAndLoad(this)
-
             isoPreference.setValue(currentElementKeyPref ?: nameElement.lowercase())
             val isoSend = sendIso(this)
             isoSend.setValue("true")
             val intent = Intent(this, IsotopesActivityExperimental::class.java)
             startActivity(intent)
         }
-
         findViewById<TextView>(R.id.phase_text).text = phaseText
         findViewById<TextView>(R.id.fusion_heat_text).text = fusionHeat
         findViewById<TextView>(R.id.specific_heat_text).text = specificHeatCapacity
@@ -300,7 +245,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
         findViewById<TextView>(R.id.thermal_expansion_text).text = thermalExpansion
         findViewById<TextView>(R.id.molar_heat_capacity_text).text = molarHeatCapacity
         findViewById<TextView>(R.id.molar_volume_text).text = molarVolume
-
         findViewById<TextView>(R.id.electron_config_text).text = formatSuperscript(electronConfig)
         findViewById<TextView>(R.id.ion_charge_text).text = formatSuperscript(ionCharge)
         findViewById<TextView>(R.id.ionization_energies_text).text = ionizationEnergies
@@ -308,8 +252,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
         findViewById<TextView>(R.id.atomic_radius_e_text).text = atomicRadiusE
         findViewById<TextView>(R.id.covalent_radius_text).text = covalentRadius
         findViewById<TextView>(R.id.van_der_waals_radius_text).text = vanDerWaalsRadius
-
-        
         findViewById<TextView>(R.id.ion_charge_view_all_text).setOnClickListener {
             val intent = Intent(this@InfoExtension, IonActivity::class.java)
             this@InfoExtension.startActivity(intent)
@@ -318,8 +260,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
             val intent = Intent(this@InfoExtension, IonActivity::class.java)
             this@InfoExtension.startActivity(intent)
         }
-
-        
         val proPref = ProVersion(this)
         val proPrefValue = proPref.getValue()
         if (proPrefValue == 100) {
@@ -339,7 +279,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
             findViewById<TextView>(R.id.space_group_name_text).text = spaceGroupName
             findViewById<TextView>(R.id.space_group_number_text).text = spaceGroupNumber
             findViewById<TextView>(R.id.refractive_index_text).text = refractiveIndex
-
             findViewById<TextView>(R.id.speed_sound_solid_text).visibility =
                 if (soundOfSpeedSolid == "---") View.GONE else View.VISIBLE
             findViewById<TextView>(R.id.speed_sound_gas_text).visibility =
@@ -347,7 +286,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
             findViewById<TextView>(R.id.speed_sound_liquid_text).visibility =
                 if (soundOfSpeedLiquid == "---") View.GONE else View.VISIBLE
         } else {
-            
             findViewById<TextView>(R.id.speed_sound_gas_text).visibility = View.GONE
             findViewById<TextView>(R.id.speed_sound_liquid_text).visibility = View.GONE
             val proTextRes = R.string.get_pro_element_text
@@ -366,50 +304,36 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
                 R.id.space_group_name_text,
                 R.id.space_group_number_text,
                 R.id.refractive_index_text
-
             )
-
             proClickableIds.forEach { id ->
                 findViewById<TextView>(id)?.setLockedText(proTextRes)
                 findViewById<TextView>(id).apply {
                     isClickable = true
                     isFocusable = true
                     setOnClickListener {
-                        
                         val intent = Intent(this@InfoExtension, ProActivity::class.java)
                         this@InfoExtension.startActivity(intent)
                     }
                 }
             }
         }
-
-
-        
         findViewById<TextView>(R.id.config_data).text = elementShellElectrons
         findViewById<TextView>(R.id.e_config_data).text = formatSuperscript(electronConfig)
-
-        
         findViewById<TextView>(R.id.element_electrical_type).text = electricalType
         findViewById<TextView>(R.id.element_magnetic_type).text = magneticType
         findViewById<TextView>(R.id.element_work_function).text = workFunction
         findViewById<TextView>(R.id.element_superconducting_point).text = "$superconductingPoint (K)"
-
         val phaseIconView = findViewById<ImageView>(R.id.phase_icon)
         when (phaseText) {
             "Solid" -> phaseIconView.setImageDrawable(getDrawable(R.drawable.solid))
             "Gas" -> phaseIconView.setImageDrawable(getDrawable(R.drawable.gas))
             "Liquid" -> phaseIconView.setImageDrawable(getDrawable(R.drawable.liquid))
         }
-
-        
         setOxidationStates(oxidationNeg1, oxidationPos1)
-
-        
         findViewById<TextView>(R.id.molar_mass_f).text = elementAtomicWeight
         findViewById<TextView>(R.id.phase_f).text = phaseText
         findViewById<TextView>(R.id.electronegativity_f).text = elementElectronegativity
         findViewById<TextView>(R.id.density_f).text = formatSuperscript(elementDensity)
-
         val degreePreference = DegreePreference(this)
         when (degreePreference.getValue()) {
             0 -> {
@@ -441,8 +365,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
         findViewById<TextView>(R.id.a_calculated_f).text = atomicRadius
         findViewById<TextView>(R.id.covalent_f).text = covalentRadius
         findViewById<TextView>(R.id.van_f).text = vanDerWaalsRadius
-
-        
         findViewById<TextView>(R.id.abundance_earth_crust_text).text = formatSuperscript(abundanceEarthCrust)
         findViewById<TextView>(R.id.abundance_earth_soil_text).text = formatSuperscript(abundanceEarthSoil)
         findViewById<TextView>(R.id.abundance_urban_soil_text).text = formatSuperscript(abundanceUrbanSoil)
@@ -452,8 +374,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
         findViewById<TextView>(R.id.abundance_solar_system_text).text = formatSuperscript(abundanceSolarSystem)
         findViewById<TextView>(R.id.abundance_meteorites_text).text = formatSuperscript(abundanceMeteorites)
         findViewById<TextView>(R.id.abundance_human_body_text).text = formatSuperscript(abundanceHumanBody)
-
-        
         val crystalStructure = jsonObject.optString("crystal_structure", "null")
         val crystalView = findViewById<CrystalStructureView>(R.id.crystal_view)
         findViewById<TextView>(R.id.crystal_structure_text).text = crystalStructure
@@ -461,8 +381,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
             crystalView.visibility = View.GONE
         }
         crystalView.crystalSystem = crystalStructure 
-
-        
         val latticeConstants = jsonObject.optJSONObject("lattice_constants")
         val latticeString = buildString {
             latticeConstants?.let {
@@ -475,8 +393,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
             }
         }.trim()
         findViewById<TextView>(R.id.grid_parameters_text).text = if (latticeString.isNotEmpty()) latticeString else "---"
-
-        
         val debye = jsonObject.opt("debye_temperature")
         val debyeLowTextView = findViewById<TextView>(R.id.debye_low_text)
         val debyeRoomTextView = findViewById<TextView>(R.id.debye_room_text)
@@ -495,14 +411,9 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
                 debyeRoomTextView.text = "---"
             }
         }
-        
         setHazards(fireHazard, healthHazard, reactivityHazard, specificHazard, proPrefValue)
-
-        
         findViewById<TextView>(R.id.cas_text).text = casNumber
         findViewById<TextView>(R.id.eg_text).text = egNumber
-
-        
         val offlinePreferences = offlinePreference(this)
         if (offlinePreferences.getValue() == 0) {
             loadImage(url)
@@ -511,10 +422,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
         }
         wikiListener(wikipedia)
     }
-
-     
-
-
     private fun setOxidationStates(oxidationNeg1: String, oxidationPos1: String) {
         val negIds = listOf(R.id.ox0, R.id.m1ox, R.id.m2ox, R.id.m3ox, R.id.m4ox, R.id.m5ox)
         val posIds = listOf(
@@ -525,7 +432,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
         val negColor = getColor(R.color.noble_gas)
         val posColor = getColor(R.color.alkali_metals)
         val zeroColor = getColor(R.color.non_metals)
-
         negVals.forEachIndexed { idx, value ->
             if (oxidationNeg1.contains(value)) {
                 val tv = findViewById<TextView>(negIds[idx])
@@ -541,10 +447,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
             }
         }
     }
-
-     
-
-
     private fun setHazards(
         fireHazard: String,
         healthHazard: String,
@@ -610,27 +512,21 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
                 R.id.reactivity_hazard_text,
                 R.id.specific_hazard_text,
             )
-
             proClickableHazardIds.forEach { id ->
                 findViewById<TextView>(id)?.setLockedText(proTextRes)
                 findViewById<TextView>(id).apply {
                     isClickable = true
                     isFocusable = true
                     setOnClickListener {
-                        
                         val intent = Intent(this@InfoExtension, ProActivity::class.java)
                         this@InfoExtension.startActivity(intent)
                     }
                 }
             }
-
             findViewById<TextView>(R.id.fire_hazard_txt).text = getString(R.string.get_pro_short)
             findViewById<TextView>(R.id.health_hazard_txt).text = getString(R.string.get_pro_short)
             findViewById<TextView>(R.id.reactivity_hazard_txt).text = getString(R.string.get_pro_short)
             findViewById<TextView>(R.id.specific_hazard_txt).text = getString(R.string.get_pro_short)
-
-            
-            
             val proClickableIds = listOf(
                 R.id.fire_hazard_text,
                 R.id.health_hazard_text,
@@ -641,13 +537,11 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
                 R.id.reactivity_hazard_txt,
                 R.id.specific_hazard_txt
             )
-
             for (id in proClickableIds) {
                 findViewById<TextView>(id).apply {
                     isClickable = true
                     isFocusable = true
                     setOnClickListener {
-                        
                         val intent = Intent(this@InfoExtension, ProActivity::class.java)
                         this@InfoExtension.startActivity(intent)
                     }
@@ -655,23 +549,15 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
             }
         }
     }
-
-
-     
-
-
-
     private fun saveCurrentNotes() {
         val eText = notesEditText ?: return
         val elementCode = currentElementCode ?: return
         val notesPref = NotesPreference(this)
         val firstDelim = "<$elementCode>"
         val lastDelim = "</$elementCode>"
-
         val currentNotes = notesPref.getValue()
         val start = currentNotes.indexOf(firstDelim)
         val end = currentNotes.indexOf(lastDelim, start)
-
         if (start != -1 && end != -1) {
             val newNotes = currentNotes.substring(0, start + firstDelim.length) +
                     eText.text.toString() +
@@ -679,27 +565,14 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
             notesPref.setValue(newNotes)
         }
     }
-
-     
-
-
-
-
     private fun handleNotes(elementCode: String, eText: EditText) {
-        
         saveCurrentNotes()
-
-        
         currentElementCode = elementCode
         notesEditText = eText
-
         val notesPref = NotesPreference(this)
         val firstDelim = "<$elementCode>"
         val lastDelim = "</$elementCode>"
-
-        
         notesTextWatcher?.let { eText.removeTextChangedListener(it) }
-
         val notesPrefValue = notesPref.getValue()
         val p1 = notesPrefValue.indexOf(firstDelim)
         val p2 = notesPrefValue.indexOf(lastDelim, p1)
@@ -708,12 +581,9 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
         } else {
             getString(R.string.notes_placeholder)
         }
-
         eText.setText(note)
-
         notesTextWatcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                
                 val currentNotes = notesPref.getValue()
                 val start = currentNotes.indexOf(firstDelim)
                 val end = currentNotes.indexOf(lastDelim, start)
@@ -722,8 +592,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
                             (s ?: "") +
                             currentNotes.substring(end)
                     notesPref.setValue(newNotes)
-
-                    
                     NotesSyncManager.requestSync(this@InfoExtension) { status ->
                         updateSyncStatusUI(status)
                     }
@@ -734,15 +602,9 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
         }
         eText.addTextChangedListener(notesTextWatcher)
     }
-
-     
-
-
     private fun updateSyncStatusUI(status: NotesSyncManager.SyncStatus) {
-        
         mainScope.launch(Dispatchers.Main) {
             val view = notesSyncStatusView ?: run {
-                
                 val v = try {
                     findViewById<TextView>(R.id.notes_sync_status)
                 } catch (e: Exception) {
@@ -751,49 +613,34 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
                 notesSyncStatusView = v
                 v
             } ?: return@launch
-
             when (status) {
                 NotesSyncManager.SyncStatus.NOT_ELIGIBLE -> {
-                    
                     view.setBackgroundResource(R.drawable.ic_no_sync)
                     view.visibility = View.VISIBLE
                 }
                 NotesSyncManager.SyncStatus.SYNCING -> {
-                    
                     view.setBackgroundResource(R.drawable.ic_cloud_sync)
                     view.visibility = View.VISIBLE
                 }
                 NotesSyncManager.SyncStatus.SYNCED -> {
-                    
                     view.setBackgroundResource(R.drawable.ic_cloud_done)
                     view.visibility = View.VISIBLE
                 }
                 NotesSyncManager.SyncStatus.ERROR -> {
-                    
                     view.setBackgroundResource(R.drawable.ic_no_sync)
                     view.visibility = View.VISIBLE
                 }
             }
         }
     }
-
-     
-
-
     private fun loadImage(url: String?) {
         try {
-            
-            
             Glide.with(this).load(url.toString()).into(findViewById<ImageView>(R.id.element_image));
         } catch (e: ConnectException) {
             findViewById<Space>(R.id.offline_div).visibility = View.VISIBLE
             findViewById<FrameLayout>(R.id.frame).visibility = View.GONE
         }
     }
-
-     
-
-
     private fun loadSp(url: String?) {
         val hUrl = "https://appinitdev-android.web.app/PeriodicTable/"
         val ext = ".gif"
@@ -807,27 +654,11 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
             findViewById<TextView>(R.id.sp_offline).visibility = View.VISIBLE
         }
     }
-
-     
-
-
     fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
-     
-
-
     private fun loadModelView(url: String?) {
-        
-        
-
-        
         Glide.with(this).load(url.toString()).into(findViewById<ImageView>(R.id.model_view));
         Glide.with(this).load(url.toString()).into(findViewById<ImageView>(R.id.card_model_view));
-
     }
-
-     
-
-
     fun wikiListener(url: String?) {
         findViewById<ImageButton>(R.id.wikipedia_btn).setOnClickListener {
             val PACKAGE_NAME = "com.android.chrome"
@@ -835,11 +666,9 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
             customTabBuilder.setToolbarColor(ContextCompat.getColor(this, R.color.colorLightPrimary))
             customTabBuilder.setSecondaryToolbarColor(ContextCompat.getColor(this, R.color.colorLightPrimary))
             customTabBuilder.setShowTitle(true)
-
             val CustomTab = customTabBuilder.build()
             val intent = CustomTab.intent
             intent.data = Uri.parse(url)
-
             val packageManager = packageManager
             val resolveInfoList = packageManager.queryIntentActivities(
                 CustomTab.intent,
@@ -857,85 +686,64 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
             }
         }
     }
-
-     
-
-
     fun favoriteBarSetup() {
         val molarPreference = FavoriteBarPreferences(this)
         val molarPrefValue = molarPreference.getValue()
         findViewById<LinearLayout>(R.id.molar_mass_lay).visibility =
             if (molarPrefValue == 1) View.VISIBLE else View.GONE
-
         val phasePreferences = FavoritePhase(this)
         val phasePrefValue = phasePreferences.getValue()
         findViewById<LinearLayout>(R.id.phase_lay).visibility =
             if (phasePrefValue == 1) View.VISIBLE else View.GONE
-
         val electronegativityPreferences = ElectronegativityPreference(this)
         val electronegativityPrefValue = electronegativityPreferences.getValue()
         findViewById<LinearLayout>(R.id.electronegativity_lay).visibility =
             if (electronegativityPrefValue == 1) View.VISIBLE else View.GONE
-
         val densityPreference = DensityPreference(this)
         val densityPrefValue = densityPreference.getValue()
         findViewById<LinearLayout>(R.id.density_lay).visibility =
             if (densityPrefValue == 1) View.VISIBLE else View.GONE
-
         val boilingPreference = BoilingPreference(this)
         val boilingPrefValue = boilingPreference.getValue()
         findViewById<LinearLayout>(R.id.boiling_lay).visibility =
             if (boilingPrefValue == 1) View.VISIBLE else View.GONE
-
         val meltingPreference = MeltingPreference(this)
         val meltingPrefValue = meltingPreference.getValue()
         findViewById<LinearLayout>(R.id.melting_lay).visibility =
             if (meltingPrefValue == 1) View.VISIBLE else View.GONE
-
         val empiricalPreference = AtomicRadiusEmpPreference(this)
         val empiricalPrefValue = empiricalPreference.getValue()
         findViewById<LinearLayout>(R.id.a_empirical_lay).visibility =
             if (empiricalPrefValue == 1) View.VISIBLE else View.GONE
-
         val calculatedPreference = AtomicRadiusCalPreference(this)
         val calculatedPrefValue = calculatedPreference.getValue()
         findViewById<LinearLayout>(R.id.a_calculated_lay).visibility =
             if (calculatedPrefValue == 1) View.VISIBLE else View.GONE
-
         val covalentPreference = AtomicCovalentPreference(this)
         val covalentPrefValue = covalentPreference.getValue()
         findViewById<LinearLayout>(R.id.covalent_lay).visibility =
             if (covalentPrefValue == 1) View.VISIBLE else View.GONE
-
         val vanPreference = AtomicVanPreference(this)
         val vanPrefValue = vanPreference.getValue()
         findViewById<LinearLayout>(R.id.van_lay).visibility =
             if (vanPrefValue == 1) View.VISIBLE else View.GONE
-
         val fusionHeatPreference = FusionHeatPreference(this)
         val fusionHeatValue = fusionHeatPreference.getValue()
         findViewById<LinearLayout>(R.id.fusion_heat_lay).visibility =
             if (fusionHeatValue == 1) View.VISIBLE else View.GONE
-
         val specificHeatPreference = SpecificHeatPreference(this)
         val specificHeatValue = specificHeatPreference.getValue()
         findViewById<LinearLayout>(R.id.specific_heat_lay).visibility =
             if (specificHeatValue == 1) View.VISIBLE else View.GONE
-
         val vaporizationHeatPreference = VaporizationHeatPreference(this)
         val vaporizationHeatValue = vaporizationHeatPreference.getValue()
         findViewById<LinearLayout>(R.id.vaporization_heat_lay).visibility =
             if (vaporizationHeatValue == 1) View.VISIBLE else View.GONE
-
         val radioactivePreference = RadioactivePreference(this)
         val radioactiveValue = radioactivePreference.getValue()
         findViewById<LinearLayout>(R.id.phase_lay).visibility =
             if (radioactiveValue == 1) View.VISIBLE else View.GONE
     }
-
-     
-
-
     private fun formatSuperscript(text: String): String {
         val superscriptMap = mapOf(
             '0' to '\u2070',
@@ -961,8 +769,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
             superscriptNumber + superscriptSign
         }
     }
-
-    
     private fun resolveAttrColor(context: Context, @AttrRes attr: Int): Int {
         val tv = TypedValue()
         return if (context.theme.resolveAttribute(attr, tv, true)) {
@@ -971,7 +777,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
             Color.TRANSPARENT 
         }
     }
-
     fun TextView.setLockedText(
         @StringRes textRes: Int,
         @DrawableRes lockDrawableRes: Int = R.drawable.ic_lock,
@@ -979,23 +784,14 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
         @AttrRes colorAttr: Int = R.attr.colorError
     ) {
         text = context.getString(textRes)
-
-        
         val color = resolveAttrColor(context, colorAttr)
         val drawable = ContextCompat.getDrawable(context, lockDrawableRes)
             ?.mutate()
             ?.let { DrawableCompat.wrap(it) }
             ?.also { DrawableCompat.setTint(it, color) }
-
-        
         setCompoundDrawablesRelativeWithIntrinsicBounds(drawable, null, null, null)
-
         compoundDrawablePadding = context.resources.getDimensionPixelSize(paddingRes)
     }
-
-     
-
-
     private fun updateAchievementProgress(increment: Int) {
         val achievements = ArrayList<Achievement>()
         AchievementModel.getList(this, achievements)
@@ -1004,10 +800,6 @@ abstract class InfoExtension : BaseActivity(), View.OnApplyWindowInsetsListener 
             achievements.find { it.id == id }?.incrementProgress(this, increment)
         }
     }
-
-     
-
-
     private fun updateStats() {
         val statistics = java.util.ArrayList<Statistics>()
         StatisticsModel.getList(this, statistics)

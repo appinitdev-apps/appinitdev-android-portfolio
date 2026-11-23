@@ -1,10 +1,8 @@
-
 @Serializable
 data class ChatChannelMember(
     val id: String,
     val status: String,
 )
-
 @Serializable
 data class ChatChannel(
     val id: String,
@@ -16,11 +14,9 @@ data class ChatChannel(
     val createdAt: Instant,
     val updatedAt: Instant,
 )
-
 fun ChannelMember.toModel(): ChatChannelMember {
     return ChatChannelMember(id, status)
 }
-
 fun DChatChannel.toModel(): ChatChannel {
     return ChatChannel(
         id = id,

@@ -1,10 +1,7 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OfflineStatusScreenCompose(
-    
 ) {
-    
     val connectionStatus by remember { mutableStateOf(true) } 
     val syncStatus by remember { mutableStateOf("Idle") }
     val lastSyncTime by remember { mutableStateOf("Never") }
@@ -12,22 +9,17 @@ fun OfflineStatusScreenCompose(
     val isSyncing by remember { mutableStateOf(false) }
     val syncProgress by remember { mutableStateOf(0f) }
     val errorMessage by remember { mutableStateOf<String?>(null) }
-    
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        
         Text(
             text = "Offline Status",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )
-        
         Spacer(modifier = Modifier.height(24.dp))
-        
-        
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
@@ -52,9 +44,7 @@ fun OfflineStatusScreenCompose(
                         MaterialTheme.colorScheme.error,
                     modifier = Modifier.size(24.dp)
                 )
-                
                 Spacer(modifier = Modifier.width(12.dp))
-                
                 Text(
                     text = if (connectionStatus) "Online" else "Offline",
                     style = MaterialTheme.typography.bodyLarge,
@@ -66,10 +56,7 @@ fun OfflineStatusScreenCompose(
                 )
             }
         }
-        
         Spacer(modifier = Modifier.height(16.dp))
-        
-        
         Card(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -81,24 +68,18 @@ fun OfflineStatusScreenCompose(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
-                
                 Spacer(modifier = Modifier.height(8.dp))
-                
                 Text(
                     text = syncStatus,
                     style = MaterialTheme.typography.bodyMedium
                 )
-                
                 Spacer(modifier = Modifier.height(8.dp))
-                
                 Text(
                     text = "Last Sync: $lastSyncTime",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                
                 Spacer(modifier = Modifier.height(8.dp))
-                
                 Text(
                     text = "Queued Items: $queuedItemsCount",
                     style = MaterialTheme.typography.bodySmall,
@@ -106,10 +87,7 @@ fun OfflineStatusScreenCompose(
                 )
             }
         }
-        
         Spacer(modifier = Modifier.height(16.dp))
-        
-        
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -123,7 +101,6 @@ fun OfflineStatusScreenCompose(
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Sync Now")
             }
-            
             OutlinedButton(
                 onClick = {   },
                 modifier = Modifier.weight(1f)
@@ -133,10 +110,7 @@ fun OfflineStatusScreenCompose(
                 Text("View Queue")
             }
         }
-        
         Spacer(modifier = Modifier.height(16.dp))
-        
-        
         if (isSyncing) {
             Card(
                 modifier = Modifier.fillMaxWidth()
@@ -149,16 +123,12 @@ fun OfflineStatusScreenCompose(
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
-                    
                     Spacer(modifier = Modifier.height(8.dp))
-                    
                     LinearProgressIndicator(
                         progress = syncProgress,
                         modifier = Modifier.fillMaxWidth()
                     )
-                    
                     Spacer(modifier = Modifier.height(8.dp))
-                    
                     Text(
                         text = "${(syncProgress * 100).toInt()}%",
                         style = MaterialTheme.typography.bodySmall,
@@ -167,8 +137,6 @@ fun OfflineStatusScreenCompose(
                 }
             }
         }
-        
-        
         errorMessage?.let { message ->
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -188,9 +156,7 @@ fun OfflineStatusScreenCompose(
                         tint = MaterialTheme.colorScheme.error,
                         modifier = Modifier.size(20.dp)
                     )
-                    
                     Spacer(modifier = Modifier.width(8.dp))
-                    
                     Text(
                         text = message,
                         style = MaterialTheme.typography.bodyMedium,

@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChannelChatInfoPage(
@@ -9,17 +8,14 @@ fun ChannelChatInfoPage(
     val channels = channelVM.channels.collectAsStateValue()
     val liveChannel = channels.find { it.id == chatState.value.target.toId }
     val ownedByMe = liveChannel?.isOwnedByMe() == true
-
     val showRenameDialog = remember { mutableStateOf(false) }
     val selectedMemberPeer = remember { mutableStateOf<DPeer?>(null) }
     val selectedPendingMemberPeer = remember { mutableStateOf<DPeer?>(null) }
-
     val memberPeers = produceState(initialValue = emptyList<DPeer>(), key1 = liveChannel?.members) {
         value = withContext(Dispatchers.IO) { liveChannel?.getPeersAsync() ?: return@withContext emptyList() }
     }
     val joinedMemberPeers = memberPeers.value.filter { peer -> liveChannel?.findMember(peer.id)?.isJoined() != false }
     val pendingMemberPeers = memberPeers.value.filter { peer -> liveChannel?.findMember(peer.id)?.isPending() == true }
-
     val meLabel = stringResource(Res.string.me)
     val ownerDisplayName: String = liveChannel?.owner?.let { ownerId ->
         if (ownerId == "me" || ownerId == TempData.clientId) {
@@ -31,12 +27,9 @@ fun ChannelChatInfoPage(
                 ?: ownerId
         }
     } ?: ""
-
-    
     val ownerPeerId: String? = liveChannel?.let { c ->
         if (c.owner == "me" || c.owner == TempData.clientId) TempData.clientId else c.owner
     }
-    
     val displayMembers: List<DPeer> = buildList {
         val ownerPeer = ownerPeerId?.let { id -> joinedMemberPeers.find { it.id == id } }
         if (ownerPeer != null) {
@@ -50,7 +43,6 @@ fun ChannelChatInfoPage(
             addAll(joinedMemberPeers.sortedBy { it.name.ifBlank { it.getBestIp() } })
         }
     }
-    
     val addablePeers: List<DPeer> = if (ownedByMe) {
         val presentIds = (liveChannel?.members?.map { it.id } ?: emptyList()).toMutableSet().apply {
             ownerPeerId?.let { add(it) }
@@ -59,7 +51,6 @@ fun ChannelChatInfoPage(
             .filter { it.id !in presentIds }
             .sortedBy { it.name.ifBlank { it.getBestIp() } }
     } else emptyList()
-
     PScaffold(topBar = {
         PTopAppBar(navController = navController, navigationIcon = { NavigationBackIcon { navController.navigateUp() } }, title = stringResource(Res.string.channel_info))
     }) { paddingValues ->
@@ -82,7 +73,6 @@ fun ChannelChatInfoPage(
                         )
                     }
                 }
-
                 item { VerticalSpace(dp = 16.dp) }
                 item { Subtitle(text = "${stringResource(Res.string.members)} (${displayMembers.size})") }
                 item {
@@ -97,7 +87,6 @@ fun ChannelChatInfoPage(
                         }
                     }
                 }
-
                 if (ownedByMe && addablePeers.isNotEmpty()) {
                     item { VerticalSpace(dp = 16.dp) }
                     item { Subtitle(text = "${stringResource(Res.string.add_member)} (${addablePeers.size})") }
@@ -114,7 +103,6 @@ fun ChannelChatInfoPage(
                         }
                     }
                 }
-
                 if (ownedByMe && pendingMemberPeers.isNotEmpty()) {
                     item { VerticalSpace(dp = 16.dp) }
                     item { Subtitle(text = "${stringResource(Res.string.pending_members)} (${pendingMemberPeers.size})") }
@@ -207,7 +195,6 @@ fun ChannelChatInfoPage(
             item { BottomSpace(paddingValues) }
         }
     }
-
     ChannelChatInfoDialogs(
         liveChannel = liveChannel, isOwner = ownedByMe,
         showRenameDialog = showRenameDialog.value, onDismissRename = { showRenameDialog.value = false },

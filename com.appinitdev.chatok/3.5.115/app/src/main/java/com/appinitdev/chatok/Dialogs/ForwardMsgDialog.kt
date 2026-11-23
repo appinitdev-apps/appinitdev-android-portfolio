@@ -1,4 +1,3 @@
-
 @Composable
 fun ForwardMsgDialog(hideDialog: () -> Unit, ForwardMsg: () -> Unit, number: Int, viewModel: ChatViewModel) {
     Dialog(
@@ -27,18 +26,14 @@ fun ForwardMsgDialog(hideDialog: () -> Unit, ForwardMsg: () -> Unit, number: Int
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
-                
                 Spacer(modifier = Modifier.height(16.dp))
-                
                 Text(
                     text = stringResource(R.string.reenviar_a_chats),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray,
                     textAlign = TextAlign.Center
                 )
-                
                 Spacer(modifier = Modifier.height(32.dp))
-                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -54,7 +49,6 @@ fun ForwardMsgDialog(hideDialog: () -> Unit, ForwardMsg: () -> Unit, number: Int
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    
                     Button(
                         onClick = ForwardMsg,
                         modifier = Modifier.weight(1f),

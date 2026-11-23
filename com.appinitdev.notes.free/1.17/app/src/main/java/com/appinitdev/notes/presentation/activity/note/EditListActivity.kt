@@ -1,24 +1,18 @@
-
 class EditListActivity : EditActivity(Type.LIST), MoreListActions {
-
     private var adapter: ListItemAdapter? = null
     private var adapterChecked: CheckedListItemAdapter? = null
     private val items: MutableList<ListItem>
         get() = adapter!!.items
-
     private var itemsChecked: SortedItemsList? = null
     private lateinit var listManager: ListManager
-
     override fun finish() {
         notallyModel.setItems(items.toMutableList() + (itemsChecked?.toMutableList() ?: listOf()))
         super.finish()
     }
-
     override fun updateModel() {
         super.updateModel()
         notallyModel.setItems(items.toMutableList() + (itemsChecked?.toMutableList() ?: listOf()))
     }
-
     override fun onSaveInstanceState(outState: Bundle) {
         updateModel()
         binding.MainListView.focusedChild?.let { focusedChild ->
@@ -35,10 +29,8 @@ class EditListActivity : EditActivity(Type.LIST), MoreListActions {
                 }
             }
         }
-
         super.onSaveInstanceState(outState)
     }
-
     override fun toggleCanEdit(mode: NoteViewMode) {
         super.toggleCanEdit(mode)
         when (mode) {
@@ -53,19 +45,15 @@ class EditListActivity : EditActivity(Type.LIST), MoreListActions {
                 else -> View.GONE
             }
     }
-
     override fun deleteChecked() {
         listManager.deleteCheckedItems()
     }
-
     override fun checkAll() {
         listManager.changeCheckedForAll(true)
     }
-
     override fun uncheckAll() {
         listManager.changeCheckedForAll(false)
     }
-
     override fun initBottomMenu() {
         super.initBottomMenu()
         binding.BottomAppBarRight.apply {
@@ -82,7 +70,6 @@ class EditListActivity : EditActivity(Type.LIST), MoreListActions {
         }
         setBottomAppBarColor(colorInt)
     }
-
     private fun SortedList<ListItem>.highlightSearch(
         search: String,
         adapter: HighlightText?,
@@ -109,7 +96,6 @@ class EditListActivity : EditActivity(Type.LIST), MoreListActions {
             }
             .sum()
     }
-
     private fun List<ListItem>.highlightSearch(
         search: String,
         adapter: ListItemAdapter?,
@@ -136,7 +122,6 @@ class EditListActivity : EditActivity(Type.LIST), MoreListActions {
             }
             .sum()
     }
-
     override fun highlightSearchResults(search: String): Int {
         val resultPosCounter = AtomicInteger(0)
         val alreadyNotifiedItemPos = mutableSetOf<Int>()
@@ -159,7 +144,6 @@ class EditListActivity : EditActivity(Type.LIST), MoreListActions {
             ?.forEach { adapter?.notifyItemChanged(it) }
         return amount
     }
-
     override fun selectSearchResult(resultPos: Int) {
         var selectedItemPos = adapter!!.selectHighlight(resultPos)
         if (selectedItemPos == -1 && adapterChecked != null) {
@@ -171,7 +155,6 @@ class EditListActivity : EditActivity(Type.LIST), MoreListActions {
             binding.MainListView.scrollToItemPosition(selectedItemPos)
         }
     }
-
     private fun RecyclerView.scrollToItemPosition(position: Int) {
         post {
             findViewHolderForAdapterPosition(position)?.itemView?.let {
@@ -179,20 +162,16 @@ class EditListActivity : EditActivity(Type.LIST), MoreListActions {
             }
         }
     }
-
     override fun configureUI() {
         binding.EnterTitle.setOnNextAction { listManager.moveFocusToNext(-1) }
-
         if (notallyModel.isNewNote || notallyModel.items.isEmpty()) {
             listManager.add(pushChange = false)
         }
     }
-
     override fun setupListeners() {
         super.setupListeners()
         binding.AddItem.setOnClickListener { listManager.add() }
     }
-
     override fun setStateFromModel(savedInstanceState: Bundle?) {
         super.setStateFromModel(savedInstanceState)
         val elevation = resources.displayMetrics.density * 2
@@ -247,7 +226,6 @@ class EditListActivity : EditActivity(Type.LIST), MoreListActions {
         }
         listManager.init(adapter!!, itemsChecked, adapterChecked)
         binding.MainListView.adapter = adapter
-
         savedInstanceState?.let {
             val itemPos = it.getInt(EXTRA_ITEM_POS, -1)
             if (itemPos > -1) {
@@ -269,13 +247,11 @@ class EditListActivity : EditActivity(Type.LIST), MoreListActions {
             }
         }
     }
-
     override fun setColor() {
         super.setColor()
         adapter?.setBackgroundColor(colorInt)
         adapterChecked?.setBackgroundColor(colorInt)
     }
-
     companion object {
         private const val EXTRA_ITEM_POS = "notes.intent.extra.ITEM_POS"
         private const val EXTRA_SELECTION_START = "notes.intent.extra.EXTRA_SELECTION_START"

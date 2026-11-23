@@ -1,4 +1,3 @@
-
 @OptIn(androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi::class)
 class TagsViewModel : ViewModel() {
     private val _itemsFlow = MutableStateFlow(mutableStateListOf<DTag>())
@@ -10,11 +9,9 @@ class TagsViewModel : ViewModel() {
     var editItem = mutableStateOf<DTag?>(null)
     var editTagName = mutableStateOf("")
     var dataType = mutableStateOf(DataType.DEFAULT)
-
     internal fun updateTagsMap(map: Map<String, List<DTagRelation>>) {
         _tagsMapFlow.value = map.toMutableMap()
     }
-
     fun loadAsync(keys: Set<String> = emptySet()) {
         val startTime = System.currentTimeMillis()
         val tagCountMap = TagHelper.count(dataType.value).associate { it.id to it.count }
@@ -31,13 +28,11 @@ class TagsViewModel : ViewModel() {
             updateLoadingState = { isLoading -> showLoading.value = isLoading }
         )
     }
-
     fun loadMoreAsync(keys: Set<String>) {
         if (keys.isNotEmpty()) {
             _tagsMapFlow.value += TagHelper.getTagRelationsByKeysMap(keys, dataType.value)
         }
     }
-
     suspend fun addTagAsync(name: String) {
         val id = TagHelper.addOrUpdate("") {
             this.name = name
@@ -53,7 +48,6 @@ class TagsViewModel : ViewModel() {
         }
         tagNameDialogVisible.value = false
     }
-
     suspend fun editTagAsync(name: String) {
         val id = TagHelper.addOrUpdate(editItem.value!!.id) {
             this.name = name
@@ -65,7 +59,6 @@ class TagsViewModel : ViewModel() {
         }
         tagNameDialogVisible.value = false
     }
-
     fun deleteTag(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             TagHelper.deleteTagRelationsByTagId(id)
@@ -80,13 +73,11 @@ class TagsViewModel : ViewModel() {
             }
         }
     }
-
     fun showAddDialog() {
         editTagName.value = ""
         editItem.value = null
         tagNameDialogVisible.value = true
     }
-
     fun showEditDialog(tag: DTag) {
         editTagName.value = tag.name
         editItem.value = tag

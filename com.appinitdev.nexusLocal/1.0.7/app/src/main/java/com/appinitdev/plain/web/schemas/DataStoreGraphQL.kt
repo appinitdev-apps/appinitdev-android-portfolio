@@ -1,11 +1,9 @@
-
 fun SchemaBuilder.addDataStoreSchema() {
     query("dataStorePath") {
         resolver { ->
             MainApp.instance.filesDir.absolutePath + "/datastore/settings.preferences_pb"
         }
     }
-
     query("dataStoreEntries") {
         resolver { ->
             val prefs = getPreferencesAsync()
@@ -14,7 +12,6 @@ fun SchemaBuilder.addDataStoreSchema() {
             }.sortedBy { it.key }
         }
     }
-
     mutation("deleteDataStoreEntry") {
         resolver { key: String ->
             appDataStore.edit { prefs ->

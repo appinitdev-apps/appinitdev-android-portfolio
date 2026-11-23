@@ -1,33 +1,25 @@
-
 @RequiresApi(24)
 class RecordAudioActivity : LockedActivity<ActivityRecordAudioBinding>() {
-
     private var service: AudioRecordService? = null
     private lateinit var connection: ServiceConnection
     private lateinit var serviceStatusObserver: Observer<Status>
     private lateinit var cancelRecordCallback: OnBackPressedCallback
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRecordAudioBinding.inflate(layoutInflater)
         setContentView(binding.root)
         configureEdgeToEdgeInsets()
-
         val intent = Intent(this, AudioRecordService::class.java)
         startService(intent)
-
         connection =
             object : ServiceConnection {
                 override fun onServiceConnected(name: ComponentName, binder: IBinder) {
                     service = (binder as LocalBinder<AudioRecordService>).getService()
                     service?.status?.observe(this@RecordAudioActivity, serviceStatusObserver)
                 }
-
                 override fun onServiceDisconnected(name: ComponentName?) {}
             }
-
         bindService(intent, connection, BIND_AUTO_CREATE)
-
         binding.Main.setOnClickListener {
             val service = this.service
             if (service != null) {
@@ -38,16 +30,13 @@ class RecordAudioActivity : LockedActivity<ActivityRecordAudioBinding>() {
                 }
             }
         }
-
         binding.Stop.setOnClickListener {
             val service = this.service
             if (service != null) {
                 stopRecording(service)
             }
         }
-
         binding.Toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
-
         cancelRecordCallback =
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
@@ -64,39 +53,24 @@ class RecordAudioActivity : LockedActivity<ActivityRecordAudioBinding>() {
             cancelRecordCallback.isEnabled = status != Status.READY
         }
     }
-
     private fun configureEdgeToEdgeInsets() {
-        
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
-
             binding.Toolbar.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
                 requestLayout() 
             }
-            
             val originalButtonBarBottomMargin = 32.dp
-
-            
-            
             binding.ButtonBar.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin =
                     originalButtonBarBottomMargin + systemBarsInsets.bottom + imeInsets.bottom
                 requestLayout() 
             }
-            
-            
-            
-            
-
             insets
         }
     }
-
     override fun onDestroy() {
         super.onDestroy()
         service?.let {
@@ -109,19 +83,16 @@ class RecordAudioActivity : LockedActivity<ActivityRecordAudioBinding>() {
             stopService(intent)
         }
     }
-
     private fun discard(service: AudioRecordService) {
         service.stop()
         getTempAudioFile().delete()
         finish()
     }
-
     private fun stopRecording(service: AudioRecordService) {
         service.stop()
         setResult(RESULT_OK)
         finish()
     }
-
     private fun updateUI(binding: ActivityRecordAudioBinding, service: AudioRecordService) {
         binding.Timer.base = service.getBase()
         when (service.status.value) {

@@ -1,4 +1,3 @@
-
 @OptIn(FlowPreview::class)
 @Composable
 internal fun NotePageEffects(
@@ -13,7 +12,6 @@ internal fun NotePageEffects(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val insetsController = WindowCompat.getInsetsController(window, view)
-
     LaunchedEffect(Unit) {
         tagsVM.dataType.value = DataType.NOTE
         noteVM.editMode = id.value.isEmpty()
@@ -43,15 +41,12 @@ internal fun NotePageEffects(
             }
         }
     }
-
     DisposableEffect(Unit) { onDispose { insetsController.show(WindowInsetsCompat.Type.navigationBars()) } }
     BackHandler(previewerState.visible) { scope.launch { previewerState.close() } }
-
     LaunchedEffect(noteVM.editMode) {
         if (noteVM.editMode) keyboardController?.show()
         else { keyboardController?.hide(); focusManager.clearFocus() }
     }
-
     SideEffect {
         if (noteVM.editMode && context.isGestureInteractionMode()) insetsController.hide(WindowInsetsCompat.Type.navigationBars())
         else insetsController.show(WindowInsetsCompat.Type.navigationBars())

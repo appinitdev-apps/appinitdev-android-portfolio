@@ -1,16 +1,12 @@
-
 enum class BatteryHealth {
     UNKNOWN, GOOD, OVERHEAT, DEAD, OVER_VOLTAGE, UNSPECIFIED_FAILURE, COLD
 }
-
 enum class BatteryStatus {
     UNKNOWN, CHARGING, DISCHARGING, NOT_CHARGING, FULL
 }
-
 enum class BatteryPlugged {
     UNPLUGGED, AC, USB, WIRELESS
 }
-
 class Battery {
     var level: Int = -1
     var voltage: Int = 0
@@ -21,7 +17,6 @@ class Battery {
     var technology: String = ""
     var capacity: Int = 0
 }
-
 fun DBattery.toModel(): Battery {
     val model = Battery()
     model.level = this.level

@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun StoryDialog(appState: AppState,
@@ -120,15 +119,9 @@ fun StoryDialog(appState: AppState,
             HorizontalPager(state = pagerState) { index ->
                 val image = story.images[index]
                 val isOwnStory = story.userId == appState.userData?.userId
-                
-                
-                
-                
                 val isStoryUnlocked = appState.userData?.unlockedStories?.contains(story.id) ?: false
                 val isUnlocked = index == 0 || isOwnStory || isStoryUnlocked
-                
                 val unlockCost = 15 
-
                 Box(modifier = Modifier.fillMaxSize()) {
                     AsyncImage(
                         model = image.imgUrl,
@@ -138,7 +131,6 @@ fun StoryDialog(appState: AppState,
                             .fillMaxSize()
                             .then(if (!isUnlocked) Modifier.blur(25.dp) else Modifier)
                     )
-                    
                     if (!isUnlocked) {
                         Column(
                             modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)),
@@ -237,7 +229,6 @@ fun StoryDialog(appState: AppState,
                                                 imageVector = Icons.Filled.AddCircle,
                                                 contentDescription = null)
                                         }
-
                                     }
                                 }
                             }
@@ -279,14 +270,10 @@ fun StoryDialog(appState: AppState,
                                     .background(brush, CircleShape) ,
                                     onClick = {
                                         Log.d("STORY_REPLY", "Iniciando respuesta para el usuario: ${story.userId}")
-
-                                        
                                         viewModel.findChatIdPro(story.userId) { chatId ->
                                             Log.d("STORY_REPLY", "Resultado de findChatId: $chatId")
-
                                             if (chatId != "null" && chatId.isNotEmpty()) {
                                                 Log.d("STORY_REPLY", "Chat existente encontrado. Enviando respuesta normal...")
-
                                                 viewModel.sendReply(
                                                     chatId = chatId,
                                                     replyMsg = Message().copy(
@@ -297,8 +284,6 @@ fun StoryDialog(appState: AppState,
                                                 )
                                             } else {
                                                 Log.d("STORY_REPLY", "No se encontró chat previo. Creando nuevo chat con ${story.username}...")
-
-                                                
                                                 val storyAuthor = UserData(
                                                     userId = story.userId,
                                                     username = story.username,
@@ -309,17 +294,12 @@ fun StoryDialog(appState: AppState,
                                                     senderId = currentUserId,
                                                     imgUrl = story.images[pagerState.currentPage].imgUrl,
                                                     content = context.getString(R.string.respondio_a_la_historia), 
-
                                                 )
-                                                
                                                 viewModel.createChat(storyAuthor)
                                                 viewModel.createChatAndReply(storyAuthor, replyMessage, reply)
                                                 Log.d("STORY_REPLY", "Llamada a createChat enviada. Re-buscando nuevo ID...")
-
-                                                
                                                 viewModel.findChatId(story.userId) { newChatId ->
                                                     Log.d("STORY_REPLY", "Segundo intento findChatId: $newChatId")
-
                                                     if (newChatId != "null" && newChatId.isNotEmpty()) {
                                                         Log.d("STORY_REPLY", "Nuevo chat creado con éxito. Enviando mensaje...")
                                                         viewModel.sendReply(
@@ -335,8 +315,6 @@ fun StoryDialog(appState: AppState,
                                                     }
                                                 }
                                             }
-
-                                            
                                             viewModel.sendNotification(context.getString(R.string.respondio_a_la_historia), story.userId)
                                             reply = ""
                                             Toast.makeText(context, context.getString(R.string.mensaje_enviado_a, story.username ?: ""), Toast.LENGTH_SHORT).show()
@@ -345,7 +323,6 @@ fun StoryDialog(appState: AppState,
                                     Icon(imageVector = Icons.Filled.Send, contentDescription = null)
                                 }
                             }
-
                         }
                     }
                     if (story.userId == appState.userData?.userId) {

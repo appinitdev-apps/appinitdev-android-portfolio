@@ -1,10 +1,7 @@
-
 class MyPagerAdapter(val activity: ViewPagerActivity, fm: FragmentManager, val media: MutableList<Medium>) : FragmentStatePagerAdapter(fm) {
     private val fragments = HashMap<Int, ViewPagerFragment>()
     var shouldInitFragment = true
-
     override fun getCount() = media.size
-
     override fun getItem(position: Int): Fragment {
         val medium = media[position]
         val bundle = Bundle()
@@ -15,37 +12,26 @@ class MyPagerAdapter(val activity: ViewPagerActivity, fm: FragmentManager, val m
         } else {
             PhotoFragment()
         }
-
         fragment.arguments = bundle
         return fragment
     }
-
     override fun getItemPosition(item: Any) = PagerAdapter.POSITION_NONE
-
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val fragment = super.instantiateItem(container, position) as ViewPagerFragment
-
-        
         fragment.listener = activity
-
         fragments[position] = fragment
         return fragment
     }
-
     override fun destroyItem(container: ViewGroup, position: Int, any: Any) {
         fragments.remove(position)
         super.destroyItem(container, position, any)
     }
-
     fun getCurrentFragment(position: Int) = fragments[position]
-
     fun toggleFullscreen(isFullscreen: Boolean) {
         for ((pos, fragment) in fragments) {
             fragment.fullscreenToggled(isFullscreen)
         }
     }
-
-    
     override fun saveState(): Parcelable? {
         val bundle = super.saveState() as Bundle?
         bundle?.putParcelableArray("states", null)

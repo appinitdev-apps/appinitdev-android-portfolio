@@ -1,6 +1,4 @@
-
 data class BreadcrumbItem(var name: String, var path: String)
-
 class FilesViewModel : ISearchableViewModel<DFile>, ISelectableViewModel<DFile>, ViewModel() {
     var rootPath = FileSystemHelper.getInternalStoragePath()
     private var _selectedPath = rootPath
@@ -17,7 +15,6 @@ class FilesViewModel : ISearchableViewModel<DFile>, ISelectableViewModel<DFile>,
                 }
             }
         }
-
     val breadcrumbs = mutableStateListOf<BreadcrumbItem>()
     val selectedBreadcrumbIndex = mutableIntStateOf(0)
     var cutFiles = mutableListOf<DFile>()
@@ -27,9 +24,7 @@ class FilesViewModel : ISearchableViewModel<DFile>, ISelectableViewModel<DFile>,
     var limit: Int = 1000
     var total: Int = 0
     internal val navigationHistoryInternal = mutableStateListOf<String>()
-
     init { breadcrumbs.add(BreadcrumbItem(getRootDisplayName(), rootPath)) }
-
     val selectedFile = mutableStateOf<DFile?>(null)
     val showRenameDialog = mutableStateOf(false)
     override val showSearchBar = mutableStateOf(false)
@@ -47,15 +42,12 @@ class FilesViewModel : ISearchableViewModel<DFile>, ISelectableViewModel<DFile>,
     val showCreateFileDialog = mutableStateOf(false)
     val showFolderKanbanDialog = mutableStateOf(false)
     val isDeleting = mutableStateOf(false)
-
     internal fun updateItemsInternal(items: List<DFile>) { _itemsFlow.value = items }
-
     fun navigateToDirectory(context: Context, newPath: String) = navigateToDirectoryInternal(context, newPath)
     fun navigateBack(): Boolean = navigateBackInternal()
     suspend fun loadLastPathAsync(context: Context) = loadLastPathAsyncInternal(context)
     fun canNavigateBack(): Boolean = navigationHistoryInternal.isNotEmpty()
     fun initSelectedPath(rootPath: String, type: FilesType, fullPath: String, selectedPath: String) = initSelectedPathInternal(rootPath, type, fullPath, selectedPath)
-
     fun getRootDisplayName(): String = when (type) {
         FilesType.INTERNAL_STORAGE -> FileSystemHelper.getInternalStorageName()
         FilesType.APP -> LocaleHelper.getString(Res.string.app_data)
@@ -63,10 +55,8 @@ class FilesViewModel : ISearchableViewModel<DFile>, ISelectableViewModel<DFile>,
         FilesType.USB_STORAGE -> LocaleHelper.getString(Res.string.usb_storage)
         FilesType.RECENTS -> LocaleHelper.getString(Res.string.recents)
     }
-
     fun updateRootBreadcrumb() { if (breadcrumbs.isNotEmpty()) breadcrumbs[0] = BreadcrumbItem(getRootDisplayName(), rootPath) }
     fun getQuery(): String = queryText.value.trim()
-
     suspend fun loadAsync(context: Context) {
         isLoading.value = true
         val showHiddenFiles = ShowHiddenFilesPreference.getAsync()
@@ -80,7 +70,6 @@ class FilesViewModel : ISearchableViewModel<DFile>, ISelectableViewModel<DFile>,
         _itemsFlow.value = files
         isLoading.value = false
     }
-
     fun deleteFiles(paths: Set<String>) {
         viewModelScope.launch {
             DialogHelper.showLoading()

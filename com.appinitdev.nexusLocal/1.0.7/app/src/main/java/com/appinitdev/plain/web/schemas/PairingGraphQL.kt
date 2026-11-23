@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addPairingSchema() {
     mutation("respondToPairing") {
         resolver { input: PairingRequestInput, accepted: Boolean ->

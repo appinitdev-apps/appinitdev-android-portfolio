@@ -1,42 +1,33 @@
-
 fun programarNotificacionDiaria(context: Context) {
-
     val constraints = Constraints.Builder()
         .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
         .setRequiresCharging(false)
         .setRequiresBatteryNotLow(false)
         .build()
-
     val workRequest = PeriodicWorkRequestBuilder<DailyNotificationWorker>(24, TimeUnit.HOURS)
         .setConstraints(constraints)
         .addTag("daily_notification_tag")
         .build()
-
     WorkManager.getInstance(context).enqueueUniquePeriodicWork(
         "daily_notification_work",
         ExistingPeriodicWorkPolicy.KEEP,
         workRequest
     )
-
-    
     val verificationConstraints = Constraints.Builder()
         .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
         .setRequiresCharging(false)
         .setRequiresBatteryNotLow(false)
         .build()
-
     val verificationRequest = PeriodicWorkRequestBuilder<AppVerificationWorker>(24, TimeUnit.HOURS)
         .setConstraints(verificationConstraints)
         .addTag("app_verification_tag")
         .build()
-
     WorkManager.getInstance(context).enqueueUniquePeriodicWork(
         "app_verification_work",
         ExistingPeriodicWorkPolicy.KEEP,
         verificationRequest
     )
 }
-
 fun delayHastaHora(hora: Int): Long {
     val ahora = Calendar.getInstance()
     val objetivo = Calendar.getInstance().apply {
@@ -47,7 +38,6 @@ fun delayHastaHora(hora: Int): Long {
     }
     return objetivo.timeInMillis - ahora.timeInMillis
 }
-
 fun solicitarPermisoNotificaciones(activity: Activity) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         if (ActivityCompat.checkSelfPermission(
@@ -63,5 +53,3 @@ fun solicitarPermisoNotificaciones(activity: Activity) {
         }
     }
 }
-
-

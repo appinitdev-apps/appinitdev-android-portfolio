@@ -1,7 +1,5 @@
-
 class ColorVH(private val binding: RecyclerColorBinding, listener: ItemListener) :
     RecyclerView.ViewHolder(binding.root) {
-
     init {
         binding.CardView.setOnClickListener { listener.onClick(absoluteAdapterPosition) }
         binding.CardView.setOnLongClickListener {
@@ -9,7 +7,6 @@ class ColorVH(private val binding: RecyclerColorBinding, listener: ItemListener)
             true
         }
     }
-
     fun bind(color: String, isSelected: Boolean) {
         val showAddIcon = color == BaseNote.COLOR_NEW
         val context = binding.root.context

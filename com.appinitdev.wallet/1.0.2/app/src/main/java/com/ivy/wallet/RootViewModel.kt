@@ -1,4 +1,3 @@
-
 @HiltViewModel
 @Suppress("LongParameterList", "TooManyFunctions")
 class RootViewModel @Inject constructor(
@@ -10,41 +9,29 @@ class RootViewModel @Inject constructor(
     private val migrationsManager: MigrationsManager,
     private val legalRepo: LegalRepository,
 ) : ViewModel() {
-
     companion object {
         const val EXTRA_ADD_TRANSACTION_TYPE = "add_transaction_type_extra"
-
         const val USER_INACTIVITY_TIME_LIMIT = 60 
     }
-
     private var appLockEnabled = false
-
     private val _appLocked = MutableStateFlow<Boolean?>(null)
     val appLocked = _appLocked.readOnly()
-
     fun start(systemDarkMode: Boolean, intent: Intent) {
         viewModelScope.launch {
             TestIdlingResource.increment()
-
             ioThread {
                 val theme = settingsDao.findAll().firstOrNull()?.theme
                     ?: if (systemDarkMode) Theme.DARK else Theme.LIGHT
                 ivyContext.switchTheme(theme)
-
                 ivyContext.initStartDayOfMonthInMemory(sharedPrefs = sharedPrefs)
             }
-
             TestIdlingResource.decrement()
         }
-
         viewModelScope.launch {
             TestIdlingResource.increment()
-
             ioThread {
                 appLockEnabled = sharedPrefs.getBoolean(SharedPrefs.APP_LOCK_ENABLED, false)
-                
                 _appLocked.value = appLockEnabled
-
                 if (isOnboardingCompleted()) {
                     navigateOnboardedUser(intent)
                 } else {
@@ -54,22 +41,18 @@ class RootViewModel @Inject constructor(
                     nav.navigateTo(DisclaimerScreen)
                 }
             }
-
             TestIdlingResource.decrement()
         }
-
         viewModelScope.launch {
             migrationsManager.executeMigrations()
         }
     }
-
     private fun navigateOnboardedUser(intent: Intent) {
         if (!handleSpecialStart(intent)) {
             nav.navigateTo(MainScreen)
             transactionReminderLogic.scheduleReminder()
         }
     }
-
     @Suppress("SwallowedException")
     private fun handleSpecialStart(intent: Intent): Boolean {
         val addTrnType: TransactionType? = try {
@@ -78,7 +61,6 @@ class RootViewModel @Inject constructor(
         } catch (e: IllegalArgumentException) {
             null
         }
-
         if (addTrnType != null) {
             nav.navigateTo(
                 EditTransactionScreen(
@@ -86,13 +68,10 @@ class RootViewModel @Inject constructor(
                     type = addTrnType
                 )
             )
-
             return true
         }
-
         return false
     }
-
     @Suppress("EmptyFunctionBlock")
     fun handleBiometricAuthResult(
         onAuthSuccess: () -> Unit = {}
@@ -103,45 +82,33 @@ class RootViewModel @Inject constructor(
                 unlockApp()
                 onAuthSuccess()
             }
-
             override fun onAuthenticationFailed() {
                 Timber.d(stringRes(R.string.authentication_failed))
             }
-
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
             }
         }
     }
-
     private fun isOnboardingCompleted(): Boolean {
         return sharedPrefs.getBoolean(SharedPrefs.ONBOARDING_COMPLETED, false)
     }
-
-    
     fun isAppLockEnabled(): Boolean {
         return appLockEnabled
     }
-
     fun isAppLocked(): Boolean {
-        
         return appLocked.value ?: true
     }
-
     fun lockApp() {
         _appLocked.value = true
     }
-
     fun unlockApp() {
         _appLocked.value = false
     }
-
     private val userInactiveTime = AtomicLong(0)
     private var userInactiveJob: Job? = null
-
     @Suppress("MagicNumber")
     fun startUserInactiveTimeCounter() {
         if (userInactiveJob != null && userInactiveJob!!.isActive) return
-
         userInactiveJob = viewModelScope.launch(Dispatchers.IO) {
             while (userInactiveTime.get() < USER_INACTIVITY_TIME_LIMIT &&
                 userInactiveJob != null && !userInactiveJob?.isCancelled!!
@@ -149,15 +116,12 @@ class RootViewModel @Inject constructor(
                 delay(1000)
                 userInactiveTime.incrementAndGet()
             }
-
             if (!isAppLocked()) {
                 lockApp()
             }
-
             cancel()
         }
     }
-
     fun checkUserInactiveTimeStatus() {
         if (userInactiveTime.get() < USER_INACTIVITY_TIME_LIMIT) {
             if (userInactiveJob != null && userInactiveJob?.isCancelled == false) {
@@ -166,7 +130,6 @@ class RootViewModel @Inject constructor(
             }
         }
     }
-
     fun resetUserInactiveTimer() {
         userInactiveTime.set(0)
     }

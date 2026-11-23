@@ -1,11 +1,9 @@
-
 @Composable
 public fun rememberDragSelectState(
     lazyGridState: LazyGridState = rememberLazyGridState(),
     initialSelection: List<String> = emptyList(),
 ): DragSelectState {
     val dragState = rememberSaveable(saver = DragState.Saver) { DragState() }
-
     return remember(lazyGridState) {
         DragSelectState(
             initialSelection = initialSelection,
@@ -15,14 +13,12 @@ public fun rememberDragSelectState(
         )
     }
 }
-
 @Composable
 public fun rememberDragSelectState(
     lazyGridState: () -> LazyGridState?,
     initialSelection: List<String> = emptyList(),
 ): DragSelectState {
     val dragState = rememberSaveable(saver = DragState.Saver) { DragState() }
-
     return remember(lazyGridState) {
         DragSelectState(
             initialSelection = initialSelection,
@@ -32,14 +28,12 @@ public fun rememberDragSelectState(
         )
     }
 }
-
 @Composable
 public fun rememberListDragSelectState(
     lazyListState: LazyListState = rememberLazyListState(),
     initialSelection: List<String> = emptyList(),
 ): DragSelectState {
     val dragState = rememberSaveable(saver = DragState.Saver) { DragState() }
-
     return remember(lazyListState) {
         DragSelectState(
             initialSelection = initialSelection,
@@ -49,14 +43,12 @@ public fun rememberListDragSelectState(
         )
     }
 }
-
 @Composable
 public fun rememberListDragSelectState(
     lazyListState: () -> LazyListState?,
     initialSelection: List<String> = emptyList(),
 ): DragSelectState {
     val dragState = rememberSaveable(saver = DragState.Saver) { DragState() }
-
     return remember(lazyListState) {
         DragSelectState(
             initialSelection = initialSelection,

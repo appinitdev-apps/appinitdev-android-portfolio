@@ -1,26 +1,14 @@
-
 object ImageHelper {
-     
-
-
-
-    
     private const val GIF_HEADER_87A = "GIF87a"
     private const val GIF_HEADER_89A = "GIF89a"
-
-    
     private const val WEBP_HEADER_RIFF = "RIFF"
     private const val WEBP_HEADER_WEBP = "WEBP"
     private const val WEBP_HEADER_VPX8 = "VP8X"
-
-    
     private const val HEIF_HEADER_FTYP = "ftyp"
     private const val HEIF_HEADER_MSF1 = "msf1"
     private const val HEIF_HEADER_HEVC = "hevc"
     private const val HEIF_HEADER_HEVX = "hevx"
-
     private const val SVG_TAG = "<svg"
-
     fun getImageType(path: String, fileName: String): ImageType {
         val extension = fileName.getFilenameExtension()
         if (extension == "svg") {
@@ -30,62 +18,46 @@ object ImageHelper {
         } else if (extension == "jpg" || extension == "jpeg") {
             return ImageType.JPG
         }
-
         val file = File(path)
         if (!file.exists()) {
             return ImageType.UNKNOWN
         }
-
         try {
             file.inputStream().use {
                 val totalBytes = it.available()
                 val bytes = ByteArray(256)
                 it.read(bytes)
-
                 if (bytes[0].toInt() == -1 && bytes[1].toInt() == -40) {
-                    
                     return ImageType.JPG
                 }
-
                 if (bytes[0].toInt() == -119 && bytes[1].toInt() == 80) {
-                    
                     return ImageType.PNG
                 }
-
                 val info = bytes.decodeToString()
                 if (info.substring(0, 4) == WEBP_HEADER_RIFF && info.substring(8, 12) == WEBP_HEADER_WEBP) {
-                    
                     if (info.substring(12, 16) == WEBP_HEADER_VPX8 &&
                         totalBytes > 17 &&
                         (bytes[16] and 0b00000010) > 0
                     ) {
-                        
                         return ImageType.WEBP_ANIMATE
                     }
                     return ImageType.WEBP
                 }
-
                 val gifInfo = info.substring(0, 6)
                 if (gifInfo == GIF_HEADER_89A || gifInfo == GIF_HEADER_87A) {
-                    
                     return ImageType.GIF
                 }
-
                 if (info.substring(4, 8) == HEIF_HEADER_FTYP) {
-                    
                     val heifAnimateInfo = info.substring(8, 12)
                     if (heifAnimateInfo == HEIF_HEADER_MSF1 ||
                         heifAnimateInfo == HEIF_HEADER_HEVC ||
                         heifAnimateInfo == HEIF_HEADER_HEVX
                     ) {
-                        
                         return ImageType.HEIF_ANIMATED
                     }
                     return ImageType.HEIF
                 }
-
                 if (info.contains(SVG_TAG)) {
-                    
                     return ImageType.SVG
                 }
             }
@@ -93,20 +65,16 @@ object ImageHelper {
             LogCat.e(e.toString())
             return ImageType.UNKNOWN
         }
-
         return ImageType.UNKNOWN
     }
-
     fun getRotation(path: String): Int {
         if (path.endsWith(".svg", true)) {
             return 0
         }
-        
         val file = File(path)
         if (!file.exists()) {
             return 0
         }
-        
         try {
             val exif = ExifInterface(path)
             val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
@@ -121,13 +89,11 @@ object ImageHelper {
         }
         return 0
     }
-
     fun getIntrinsicSize(path: String, rotation: Int): IntSize {
         val file = File(path)
         if (!file.exists()) {
             return IntSize.Zero
         }
-        
         val size = if (path.endsWith(".svg", true)) {
             SvgHelper.getSize(path)
         } else {
@@ -141,20 +107,16 @@ object ImageHelper {
                 IntSize.Zero
             }
         }
-
         if (rotation == 90 || rotation == 270) {
             return IntSize(size.height, size.width)
         }
-
         return size
     }
-
     fun getMeta(path: String): DImageMeta? {
         val file = File(path)
         if (!file.exists()) {
             return null
         }
-
         try {
             val exif = ExifInterface(path)
             val takenAt = exif.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL) ?: return null
@@ -183,7 +145,6 @@ object ImageHelper {
             val resolutionX = exif.getAttributeInt(ExifInterface.TAG_X_RESOLUTION, 0)
             val resolutionY = exif.getAttributeInt(ExifInterface.TAG_Y_RESOLUTION, 0)
             val description = exif.getAttribute(ExifInterface.TAG_IMAGE_DESCRIPTION) ?: ""
-
             return DImageMeta(
                 make,
                 model,
@@ -210,10 +171,8 @@ object ImageHelper {
             e.printStackTrace()
             LogCat.e(e.toString())
         }
-
         return null
     }
-
     private fun exposureTimeToString(exposureInSeconds: Double): String {
         val numerator = (1 / exposureInSeconds).toInt()
         if (numerator == Int.MAX_VALUE) {
@@ -221,37 +180,30 @@ object ImageHelper {
         }
         return "1/$numerator"
     }
-
     private fun colorSpaceToString(colorSpace: Int): String {
         return when (colorSpace) {
             ExifInterface.COLOR_SPACE_S_RGB -> {
                 "sRGB"
             }
-
             else -> {
                 "RGB"
             }
         }
     }
-
     private fun convertExifDateTimeToInstant(dateTime: String?): Instant? {
         if (dateTime == null) {
             return null
         }
-
         try {
             val formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd HH:mm:ss")
             val localDateTime = LocalDateTime.parse(dateTime, formatter)
             val javaInstant = ZonedDateTime.of(localDateTime, ZoneOffset.UTC).toInstant()
-
             return Instant.fromEpochMilliseconds(javaInstant.toEpochMilli())
         } catch (ex: Exception) {
             LogCat.e(ex.toString())
         }
-
         return null
     }
-
     fun getExposureProgramText(exposureProgram: Int): String {
         return when (exposureProgram.toShort()) {
             ExifInterface.EXPOSURE_PROGRAM_MANUAL -> LocaleHelper.getString(Res.string.exposure_program_manual)
@@ -265,7 +217,6 @@ object ImageHelper {
             else -> ""
         }
     }
-
     fun getMeteringModeText(meteringMode: Int): String {
         return when (meteringMode.toShort()) {
             ExifInterface.METERING_MODE_AVERAGE -> LocaleHelper.getString(Res.string.metering_mode_average)
@@ -278,7 +229,6 @@ object ImageHelper {
             else -> ""
         }
     }
-
     fun getWhiteBalanceText(whiteBalance: Int): String {
         return when (whiteBalance.toShort()) {
             ExifInterface.WHITE_BALANCE_AUTO -> LocaleHelper.getString(Res.string.white_balance_auto)
@@ -286,7 +236,6 @@ object ImageHelper {
             else -> ""
         }
     }
-
     fun getFlashText(flash: Int): String {
         return when (flash.toShort()) {
             ExifInterface.FLAG_FLASH_FIRED -> LocaleHelper.getString(Res.string.flash_fired)
@@ -301,4 +250,3 @@ object ImageHelper {
         }
     }
 }
-

@@ -1,9 +1,7 @@
-
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
     private val repository: ProductRepository
 ) : ViewModel() {
-
     init {
         viewModelScope.launch {
             val existingCategories = repository.getAllCategories().first()
@@ -12,7 +10,6 @@ class CategoryViewModel @Inject constructor(
             }
         }
     }
-
     private suspend fun insertDefaultCategories() {
         val defaultCategories = listOf(
             Category(id = "Default1", name = "All"),
@@ -33,27 +30,22 @@ class CategoryViewModel @Inject constructor(
         )
         repository.insertCategories(defaultCategories)
     }
-
     val allCategories: StateFlow<List<Category>> =
         repository.getAllCategories()
             .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-
     val activeCategories: StateFlow<List<Category>> =
         repository.getActiveCategories()
             .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-
     fun insertCategory(category: Category) {
         viewModelScope.launch {
             repository.insertCategory(category)
         }
     }
-
     fun updateCategory(category: Category) {
         viewModelScope.launch {
             repository.updateCategory(category)
         }
     }
-
     fun deleteCategory(category: Category) {
         viewModelScope.launch {
             repository.deleteCategory(category)

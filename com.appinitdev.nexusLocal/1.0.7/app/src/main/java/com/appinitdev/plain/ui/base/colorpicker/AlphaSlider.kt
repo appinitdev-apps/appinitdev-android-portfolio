@@ -1,4 +1,3 @@
-
 @Composable
 public fun AlphaSlider(
     modifier: Modifier = Modifier,
@@ -31,11 +30,9 @@ public fun AlphaSlider(
         color = controller.pureSelectedColor.value
     }
     var isInitialized by remember { mutableStateOf(false) }
-
     SideEffect {
         controller.isAttachedAlphaSlider = true
     }
-
     Canvas(
         modifier = modifier
             .fillMaxWidth()

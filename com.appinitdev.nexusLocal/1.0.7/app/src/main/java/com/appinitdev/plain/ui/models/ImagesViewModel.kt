@@ -1,9 +1,7 @@
-
 class ImagesViewModel : BaseMediaViewModel<DImage>() {
     override val dataType = DataType.IMAGE
     val scrollStateMap = mutableStateMapOf<Int, LazyGridState>()
     val useAiSearch = mutableStateOf(false)
-
     suspend fun loadWithAiSearchAsync(context: Context, tagsVM: TagsViewModel) {
         val query = queryText.value.trim()
         val combined = com.appinitdev.nexusLocal.features.media.ImageSearchHelper.searchCombinedAsync(
@@ -27,7 +25,6 @@ class ImagesViewModel : BaseMediaViewModel<DImage>() {
             loadAsync(context, tagsVM)
         }
     }
-
     fun delete(context: Context, tagsVM: TagsViewModel, ids: Set<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             DialogHelper.showLoading()

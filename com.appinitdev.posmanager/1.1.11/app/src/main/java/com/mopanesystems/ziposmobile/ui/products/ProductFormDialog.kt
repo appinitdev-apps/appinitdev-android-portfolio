@@ -1,5 +1,3 @@
-
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ProductFormDialog(
@@ -10,9 +8,7 @@ fun ProductFormDialog(
     categories: List<String> = listOf("All", "Electronics", "Clothing", "Books", "Food"),
 ) {
     if (!showDialog) return
-
     val context = LocalContext.current
-
     var name by remember { mutableStateOf(initialProduct?.name ?: "") }
     var sku by remember { mutableStateOf(initialProduct?.sku ?: "") }
     var price by remember { mutableStateOf(initialProduct?.price?.toPlainString() ?: "") }
@@ -33,7 +29,6 @@ fun ProductFormDialog(
     var isTaxable by remember { mutableStateOf(initialProduct?.isTaxable ?: true) }
     var taxRate by remember { mutableStateOf(initialProduct?.taxRate?.toPlainString() ?: "0") }
     var showCategoryDialog by remember { mutableStateOf(false) }
-
     val barcodeScannerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -43,17 +38,11 @@ fun ProductFormDialog(
             }
         }
     }
-
-
-
     Dialog(
         onDismissRequest = { onDismiss() },
         properties = DialogProperties(
-            
-
             decorFitsSystemWindows = false
         ),
-
         ){
     Box(
         modifier = Modifier
@@ -61,7 +50,6 @@ fun ProductFormDialog(
             .padding(top = 6.dp, bottom = 6.dp), 
         contentAlignment = Alignment.Center 
     ) {
-
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()        
@@ -71,7 +59,6 @@ fun ProductFormDialog(
                 tonalElevation = 8.dp
             ) {
                 val scrollState = rememberScrollState()
-
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -87,8 +74,6 @@ fun ProductFormDialog(
                         ),
                         style = MaterialTheme.typography.headlineSmall
                     )
-
-                    
                     listOf(
                         Triple(stringResource(R.string.nombrep), name) { value: String -> name = value },
                         Triple(stringResource(R.string.sku), sku) { value: String -> sku = value },
@@ -107,15 +92,11 @@ fun ProductFormDialog(
                             else KeyboardOptions.Default
                         )
                     }
-
-
                     CategoryDropdown(
                         categories = categories,
                         selectedCategory = categoryId,
                         onCategorySelected = { categoryId = it }
                     )
-
-                    
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         OutlinedTextField(
                             value = barcode,
@@ -135,8 +116,6 @@ fun ProductFormDialog(
                             Icon(Icons.Default.QrCodeScanner, contentDescription = "Escanear")
                         }
                     }
-
-                    
                     listOf(
                         Triple(stringResource(R.string.descripci_np), description) { value: String -> description = value },
                         Triple(stringResource(R.string.costop), cost) { value: String ->
@@ -160,12 +139,10 @@ fun ProductFormDialog(
                             else KeyboardOptions.Default
                         )
                     }
-
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(checked = isTaxable, onCheckedChange = { isTaxable = it })
                         Text(stringResource(R.string.aplica_impuestos))
                     }
-
                     if (isTaxable) {
                         OutlinedTextField(
                             value = taxRate,
@@ -178,8 +155,6 @@ fun ProductFormDialog(
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
-
-                    
                     Row(
                         horizontalArrangement = Arrangement.End,
                         modifier = Modifier.fillMaxWidth()
@@ -203,17 +178,10 @@ fun ProductFormDialog(
                         }) { Text(stringResource(R.string.guardar_producto)) }
                     }
                 }
-
             }
-
-
-
     }
     }
-
-
 }
-
 fun createNewProductOrUpdate(
     name: String,
     sku: String,
@@ -262,6 +230,4 @@ fun createNewProductOrUpdate(
             updatedAt = LocalDateTime.now()
         )
     }
-
-
 }

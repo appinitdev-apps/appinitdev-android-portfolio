@@ -1,31 +1,14 @@
-
- 
-
-
-
-
-
-
-
-
-
 @HiltViewModel
 class AlwaysSkippedViewModel @Inject constructor(
         application: Application,
         private val audioRepository: AudioRepository
 ) : WrappedViewModel(application) {
-
     private val _skippedSongs = MutableStateFlow<List<Audio>>(emptyList())
-
-     
     val skippedSongs: StateFlow<List<Audio>> = _skippedSongs.asStateFlow()
-
     private var loadJob: Job? = null
-
     init {
         loadSkippedSongs()
     }
-
     private fun loadSkippedSongs() {
         loadJob?.cancel()
         loadJob = viewModelScope.launch {
@@ -41,9 +24,7 @@ class AlwaysSkippedViewModel @Inject constructor(
                 }
         }
     }
-
     companion object {
         private const val TAG = "AlwaysSkippedViewModel"
     }
 }
-

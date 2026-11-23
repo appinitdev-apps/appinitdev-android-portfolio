@@ -1,4 +1,3 @@
-
 fun Route.addWebSocket() {
     webSocket("/status") {
         val peerId = call.request.queryParameters["cid"] ?: ""
@@ -11,7 +10,6 @@ fun Route.addWebSocket() {
             for (frame in incoming) {
                 if (frame !is Frame.Binary) continue
                 if (authenticated) continue
-
                 val token = ChatCacheManager.peerKeyCache[peerId]
                 val publicKey = ChatCacheManager.peerPublicKeyCache[peerId]
                 if (token == null || publicKey == null) {
@@ -35,7 +33,6 @@ fun Route.addWebSocket() {
             }
         }
     }
-
     webSocket("/") {
         val q = call.request.queryParameters
         val clientId = q["cid"] ?: ""
@@ -44,7 +41,6 @@ fun Route.addWebSocket() {
             close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, "`cid` is missing"))
             return@webSocket
         }
-
         val session = WebSocketSession(System.currentTimeMillis(), clientId, this)
         try {
             for (frame in incoming) {
@@ -66,7 +62,6 @@ fun Route.addWebSocket() {
                                 )
                                 return@webSocket
                             }
-
                             var r: AuthRequest? = null
                             val hash = CryptoHelper.sha512(
                                 PasswordPreference.getAsync().toByteArray()
@@ -131,7 +126,6 @@ fun Route.addWebSocket() {
                             }
                         }
                     }
-
                     else -> {}
                 }
             }

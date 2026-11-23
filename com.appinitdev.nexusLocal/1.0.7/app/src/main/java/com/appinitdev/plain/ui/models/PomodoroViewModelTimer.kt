@@ -1,4 +1,3 @@
-
 internal fun PomodoroViewModel.startCountdownTimer() {
     cancelTimer()
     timerJob = viewModelScope.launch(Dispatchers.IO) {
@@ -8,7 +7,6 @@ internal fun PomodoroViewModel.startCountdownTimer() {
                 timeLeft.intValue--
             }
         }
-
         if (isRunning.value && !isPaused.value && timeLeft.intValue <= 0) {
             val context = MainApp.instance
             if (settings.value.showNotification) {
@@ -27,7 +25,6 @@ internal fun PomodoroViewModel.startCountdownTimer() {
         }
     }
 }
-
 internal suspend fun PomodoroViewModel.updateDailyRecord(completedPomodoros: Int, workSeconds: Int) {
     val pomodoroDao = AppDatabase.instance.pomodoroItemDao()
     val today = getCurrentDateString()
@@ -40,7 +37,6 @@ internal suspend fun PomodoroViewModel.updateDailyRecord(completedPomodoros: Int
         pomodoroDao.insert(r)
         r
     }
-
     record.apply {
         this.completedCount = completedPomodoros
         this.totalWorkSeconds += workSeconds

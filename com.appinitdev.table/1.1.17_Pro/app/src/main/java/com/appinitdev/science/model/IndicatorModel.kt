@@ -1,4 +1,3 @@
-
 object IndicatorModel {
     fun getList(indicator: ArrayList<Indicator>) {
         indicator.add(Indicator("bromothymol_blue", "6.0", "yellow", "6.0-7.6", "green", "7.6", "blue"))

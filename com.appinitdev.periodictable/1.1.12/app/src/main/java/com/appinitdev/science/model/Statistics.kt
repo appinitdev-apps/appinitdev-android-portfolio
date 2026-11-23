@@ -1,4 +1,3 @@
-
 data class Statistics(
     val id: Int,
     val title: String,
@@ -8,8 +7,6 @@ data class Statistics(
         progress += increment
         saveProgress(context)
     }
-
-
     private fun saveProgress(context: Context) {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences("statistics", Context.MODE_PRIVATE)
@@ -18,7 +15,6 @@ data class Statistics(
             apply()
         }
     }
-
     fun loadProgress(context: Context) {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences("statistics", Context.MODE_PRIVATE)

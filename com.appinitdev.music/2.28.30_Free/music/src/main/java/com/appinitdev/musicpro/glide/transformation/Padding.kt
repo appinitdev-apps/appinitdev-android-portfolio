@@ -1,9 +1,3 @@
-
- 
-
-
-
-
 @Suppress("unused")
 class Padding : BitmapTransformation {
     private var paddingLeft: Int
@@ -12,25 +6,18 @@ class Padding : BitmapTransformation {
     private var paddingBottom: Int
     private var colour: Int = Color.argb(0, 0, 0, 0)
     private var paddingRatio: Float? = null
-
     constructor(padding: Int) {
         paddingLeft = padding
         paddingRight = padding
         paddingTop = padding
         paddingBottom = padding
     }
-
     constructor() {
         paddingLeft = 0
         paddingRight = 0
         paddingTop = 0
         paddingBottom = 0
     }
-
-     
-
-
-
     constructor(paddingRatio: Float) {
         this.paddingRatio = paddingRatio
         paddingLeft = 0
@@ -38,7 +25,6 @@ class Padding : BitmapTransformation {
         paddingTop = 0
         paddingBottom = 0
     }
-
     fun setPadding(left: Int, right: Int, top: Int, bottom: Int): Padding {
         paddingLeft = left
         paddingRight = right
@@ -46,17 +32,14 @@ class Padding : BitmapTransformation {
         paddingBottom = bottom
         return this
     }
-
     fun setColour(@ColorInt colour: Int): Padding {
         this.colour = colour
         return this
     }
-
     fun setColourRes(@ColorRes res: Int, context: Context): Padding {
         colour = context.resources.getColor(res, null)
         return this
     }
-
     override fun transform(pool: BitmapPool, source: Bitmap, outWidth: Int, outHeight: Int): Bitmap {
         if (paddingRatio != null) {
             paddingLeft = (source.width * paddingRatio!!).toInt()
@@ -64,30 +47,25 @@ class Padding : BitmapTransformation {
             paddingTop = (source.height * paddingRatio!!).toInt()
             paddingBottom = paddingTop
         }
-
         val paddedWidth = 0.coerceAtLeast(source.width - (paddingLeft + paddingRight))
         val paddedHeight = 0.coerceAtLeast(source.height - (paddingTop + paddingBottom))
         val bitmap = Bitmap.createBitmap(source.width, source.height, Bitmap.Config.ARGB_8888)
         val bitmapBounds = Rect(paddingLeft, paddingTop, paddedWidth + paddingLeft, paddedHeight + paddingTop)
-
         val paint = Paint()
         paint.isAntiAlias = true
         paint.isFilterBitmap = true
         paint.isDither = true
-
         val canvas = Canvas(bitmap)
         canvas.drawColor(colour)
         canvas.drawBitmap(source, null, bitmapBounds, paint)
         return bitmap
     }
-
     override fun equals(other: Any?): Boolean {
         if (other is Padding) {
             return paddingLeft == other.paddingLeft && paddingRight == other.paddingRight && paddingTop == other.paddingTop && paddingBottom == other.paddingBottom && colour == other.colour
         }
         return false
     }
-
     override fun hashCode(): Int {
         return Util.hashCode(ID.hashCode(),
                              Util.hashCode(paddingLeft,
@@ -96,7 +74,6 @@ class Padding : BitmapTransformation {
                                                                        Util.hashCode(paddingBottom,
                                                                                      Util.hashCode(colour))))))
     }
-
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {
         val messages: ArrayList<ByteArray> = ArrayList()
         messages.add(ID_BYTES)
@@ -109,7 +86,6 @@ class Padding : BitmapTransformation {
             messageDigest.update(messages[c])
         }
     }
-
     companion object {
         private const val ID = "app.simple.inure.glide.transformations.Padding"
         private val ID_BYTES = ID.toByteArray()

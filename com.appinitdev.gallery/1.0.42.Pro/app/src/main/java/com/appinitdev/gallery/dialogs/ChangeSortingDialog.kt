@@ -1,4 +1,3 @@
-
 class ChangeSortingDialog(
     val activity: BaseSimpleActivity,
     val isDirectorySorting: Boolean,
@@ -11,66 +10,54 @@ class ChangeSortingDialog(
     private var config = activity.config
     private var pathToUse = if (!isDirectorySorting && path.isEmpty()) SHOW_ALL else path
     private val binding: DialogChangeSortingBinding
-
     init {
         currSorting = if (isDirectorySorting) {
             config.directorySorting
         } else {
             config.getFolderSorting(pathToUse)
         }
-
         binding = DialogChangeSortingBinding.inflate(activity.layoutInflater).apply {
             sortingDialogRadioNumberOfItems.beVisibleIf(isDirectorySorting)
             sortingDialogOrderDivider.beVisibleIf(
                 beVisible = showFolderCheckbox
                         || (currSorting and SORT_BY_NAME != 0 || currSorting and SORT_BY_PATH != 0)
             )
-
             sortingDialogNumericSorting.beVisibleIf(
                 beVisible = showFolderCheckbox
                         && (currSorting and SORT_BY_NAME != 0 || currSorting and SORT_BY_PATH != 0)
             )
-
             sortingDialogNumericSorting.isChecked = currSorting and SORT_USE_NUMERIC_VALUE != 0
-
             sortingDialogUseForThisFolder.beVisibleIf(showFolderCheckbox)
             sortingDialogUseForThisFolder.isChecked = config.hasCustomSorting(pathToUse)
             sortingDialogBottomNote.beVisibleIf(!isDirectorySorting)
             sortingDialogRadioCustom.beVisibleIf(isDirectorySorting)
         }
-
         activity.getAlertDialogBuilder()
             .setPositiveButton(org.appinitdev.commons.R.string.ok, this)
             .setNegativeButton(org.appinitdev.commons.R.string.cancel, null)
             .apply {
                 activity.setupDialogStuff(binding.root, this, org.appinitdev.commons.R.string.sort_by)
             }
-
         setupSortRadio()
         setupOrderRadio()
     }
-
     private fun setupSortRadio() {
         val sortingRadio = binding.sortingDialogRadioSorting
         sortingRadio.setOnCheckedChangeListener { _, checkedId ->
             val isSortingByNameOrPath =
                 checkedId == binding.sortingDialogRadioName.id
                         || checkedId == binding.sortingDialogRadioPath.id
-
             binding.sortingDialogNumericSorting.beVisibleIf(isSortingByNameOrPath)
             binding.sortingDialogOrderDivider.beVisibleIf(
                 binding.sortingDialogNumericSorting.isVisible()
                         || binding.sortingDialogUseForThisFolder.isVisible()
             )
-
             val hideSortOrder =
                 checkedId == binding.sortingDialogRadioCustom.id
                         || checkedId == binding.sortingDialogRadioRandom.id
-
             binding.sortingDialogRadioOrder.beGoneIf(hideSortOrder)
             binding.sortingDialogSortingDivider.beGoneIf(hideSortOrder)
         }
-
         val sortBtn = when {
             currSorting and SORT_BY_PATH != 0 -> binding.sortingDialogRadioPath
             currSorting and SORT_BY_SIZE != 0 -> binding.sortingDialogRadioSize
@@ -83,16 +70,13 @@ class ChangeSortingDialog(
         }
         sortBtn.isChecked = true
     }
-
     private fun setupOrderRadio() {
         var orderBtn = binding.sortingDialogRadioAscending
-
         if (currSorting and SORT_DESCENDING != 0) {
             orderBtn = binding.sortingDialogRadioDescending
         }
         orderBtn.isChecked = true
     }
-
     override fun onClick(dialog: DialogInterface, which: Int) {
         val sortingRadio = binding.sortingDialogRadioSorting
         var sorting = when (sortingRadio.checkedRadioButtonId) {
@@ -105,15 +89,12 @@ class ChangeSortingDialog(
             R.id.sorting_dialog_radio_custom -> SORT_BY_CUSTOM
             else -> SORT_BY_DATE_TAKEN
         }
-
         if (binding.sortingDialogRadioOrder.checkedRadioButtonId == R.id.sorting_dialog_radio_descending) {
             sorting = sorting or SORT_DESCENDING
         }
-
         if (binding.sortingDialogNumericSorting.isChecked) {
             sorting = sorting or SORT_USE_NUMERIC_VALUE
         }
-
         if (isDirectorySorting) {
             config.directorySorting = sorting
         } else {
@@ -124,7 +105,6 @@ class ChangeSortingDialog(
                 config.sorting = sorting
             }
         }
-
         if (currSorting != sorting) {
             callback()
         }

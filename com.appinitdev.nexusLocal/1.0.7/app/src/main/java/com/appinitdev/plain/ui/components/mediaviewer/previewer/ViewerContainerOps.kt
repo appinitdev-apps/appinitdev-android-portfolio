@@ -1,4 +1,3 @@
-
 internal suspend fun ViewerContainerState.doAwaitOpenTransform() {
     openTransformJob = scope.async {
         doAwaitViewerLoading()
@@ -7,13 +6,11 @@ internal suspend fun ViewerContainerState.doAwaitOpenTransform() {
     openTransformJob?.await()
     openTransformJob = null
 }
-
 internal suspend fun ViewerContainerState.doAwaitViewerLoading() {
     viewerState.mountedFlow.apply {
         withContext(Dispatchers.Default) { takeWhile { !it }.collect() }
     }
 }
-
 internal suspend fun ViewerContainerState.doCopyViewerContainerStateToTransformState() {
     transformState.apply {
         val targetScale = scale.value * fitScale
@@ -25,7 +22,6 @@ internal suspend fun ViewerContainerState.doCopyViewerContainerStateToTransformS
         offsetX.snapTo(centerOffsetX + this@doCopyViewerContainerStateToTransformState.offsetX.value)
     }
 }
-
 internal suspend fun ViewerContainerState.doCopyViewerPosToContent(itemState: TransformItemState) {
     transformState.apply {
         this@apply.itemState = itemState

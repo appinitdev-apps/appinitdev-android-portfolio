@@ -1,4 +1,3 @@
-
 @Composable
 fun HomeSectionCollapseButton(
     collapsed: Boolean,

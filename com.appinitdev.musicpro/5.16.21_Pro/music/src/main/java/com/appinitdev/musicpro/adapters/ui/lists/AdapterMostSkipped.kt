@@ -1,39 +1,24 @@
-
- 
-
-
-
-
-
-
 class AdapterMostSkipped(initial: List<AudioWithStat>) : FastScrollAdapter<VerticalListViewHolder>() {
-
     private var generalAdapterCallbacks: GeneralAdapterCallbacks? = null
-
     private val listUpdateCallback = object : ListUpdateCallback {
         @SuppressLint("NotifyDataSetChanged")
         override fun onInserted(position: Int, count: Int) {
             if (count > 100) notifyDataSetChanged() else notifyItemRangeInserted(position, count)
         }
-
         @SuppressLint("NotifyDataSetChanged")
         override fun onRemoved(position: Int, count: Int) {
             if (count > 100) notifyDataSetChanged() else notifyItemRangeRemoved(position, count)
         }
-
         override fun onMoved(fromPosition: Int, toPosition: Int) {
             notifyItemMoved(fromPosition, toPosition)
         }
-
         override fun onChanged(position: Int, count: Int, payload: Any?) {
             notifyItemRangeChanged(position, count, payload)
         }
     }
-
     private val diffCallback = object : DiffUtil.ItemCallback<AudioWithStat>() {
         override fun areItemsTheSame(oldItem: AudioWithStat, newItem: AudioWithStat) =
             oldItem.audio.id == newItem.audio.id
-
         override fun areContentsTheSame(oldItem: AudioWithStat, newItem: AudioWithStat): Boolean {
             return oldItem.audio.title == newItem.audio.title &&
                     oldItem.audio.artist == newItem.audio.artist &&
@@ -42,33 +27,23 @@ class AdapterMostSkipped(initial: List<AudioWithStat>) : FastScrollAdapter<Verti
                     oldItem.skipCount == newItem.skipCount
         }
     }
-
     private val differ = AsyncListDiffer(
             listUpdateCallback,
             AsyncDifferConfig.Builder(diffCallback).build()
     )
-
     private val songs: List<AudioWithStat> get() = differ.currentList
-
-     
     private val audioList: List<Audio> get() = songs.map { it.audio }
-
-     
     var layoutMode: CommonPreferencesConstants.LayoutMode = MostSkippedPreferences.getGridSize()
-
     init {
         setHasStableIds(true)
         differ.submitList(initial.toList())
     }
-
     override fun getItemId(position: Int): Long = songs[position].audio.id
-
     override fun getItemViewType(position: Int): Int = when {
         layoutMode.isLabel -> CommonPreferencesConstants.GRID_TYPE_LABEL
         layoutMode.isGrid -> CommonPreferencesConstants.GRID_TYPE_GRID
         else -> CommonPreferencesConstants.GRID_TYPE_LIST
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         return when (viewType) {
             CommonPreferencesConstants.GRID_TYPE_GRID ->
@@ -79,7 +54,6 @@ class AdapterMostSkipped(initial: List<AudioWithStat>) : FastScrollAdapter<Verti
                 ListHolder(AdapterStyleListBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
-
     override fun onBind(holder: VerticalListViewHolder, position: Int, isLightBind: Boolean) {
         val item = songs[position]
         when (holder) {
@@ -88,9 +62,7 @@ class AdapterMostSkipped(initial: List<AudioWithStat>) : FastScrollAdapter<Verti
             is LabelHolder -> holder.bind(item, isLightBind)
         }
     }
-
     override fun getItemCount(): Int = songs.size
-
     override fun onViewRecycled(holder: VerticalListViewHolder) {
         holder.itemView.clearAnimation()
         super.onViewRecycled(holder)
@@ -100,29 +72,17 @@ class AdapterMostSkipped(initial: List<AudioWithStat>) : FastScrollAdapter<Verti
             is LabelHolder -> Unit
         }
     }
-
-     
     fun setGeneralAdapterCallbacks(callbacks: GeneralAdapterCallbacks) {
         this.generalAdapterCallbacks = callbacks
     }
-
-     
     fun updateSongs(newSongs: List<AudioWithStat>) {
         differ.submitList(newSongs.toList())
     }
-
-     
-
-
-
-
-
     private fun Context.buildTertiaryText(item: AudioWithStat): String {
         val album = item.audio.getProperAlbum().takeIf { it.isNotEmpty() }
         val stat = resources.getQuantityString(R.plurals.total_times, item.skipCount, item.skipCount)
         return if (album != null) "$stat \u2022 $album" else stat
     }
-
     inner class ListHolder(val binding: AdapterStyleListBinding) : VerticalListViewHolder(binding.root) {
         fun bind(item: AudioWithStat, isLightBind: Boolean) {
             val audio = item.audio
@@ -142,7 +102,6 @@ class AdapterMostSkipped(initial: List<AudioWithStat>) : FastScrollAdapter<Verti
             }
         }
     }
-
     inner class GridHolder(val binding: AdapterStyleGridBinding) : VerticalListViewHolder(binding.root) {
         fun bind(item: AudioWithStat, isLightBind: Boolean) {
             val audio = item.audio
@@ -162,7 +121,6 @@ class AdapterMostSkipped(initial: List<AudioWithStat>) : FastScrollAdapter<Verti
             }
         }
     }
-
     inner class LabelHolder(val binding: AdapterStyleLabelsBinding) : VerticalListViewHolder(binding.root) {
         fun bind(item: AudioWithStat, isLightBind: Boolean) {
             val audio = item.audio
@@ -182,4 +140,3 @@ class AdapterMostSkipped(initial: List<AudioWithStat>) : FastScrollAdapter<Verti
         }
     }
 }
-

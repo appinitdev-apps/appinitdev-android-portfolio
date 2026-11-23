@@ -1,4 +1,3 @@
-
 @Composable
 fun TesterProfileModal(
     testerData: TesterData,
@@ -6,12 +5,9 @@ fun TesterProfileModal(
     onDismiss: () -> Unit
 ) {
     var fullProfile by remember { mutableStateOf<UserProfile?>(null) }
-
-    
     LaunchedEffect(testerData.idUser) {
         fullProfile = viewModel.getProfileById(testerData.idUser)
     }
-
     AlertDialog(
         onDismissRequest = onDismiss,
         properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
@@ -30,7 +26,6 @@ fun TesterProfileModal(
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    
                     Surface(color = MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(8.dp)) {
                         Text(
                             text = "${stringResource(R.string.d_as_en_la_app)} ${testerData.dias}",
@@ -39,9 +34,7 @@ fun TesterProfileModal(
                             fontWeight = FontWeight.Bold
                         )
                     }
-
                     androidx.compose.material3.HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(20.dp))
                         Spacer(Modifier.width(8.dp))
@@ -51,7 +44,6 @@ fun TesterProfileModal(
                             fontWeight = FontWeight.Bold
                         )
                     }
-
                     Text(stringResource(R.string.calificar_este_tester), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
                     Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
                         (1..5).forEach { star ->
@@ -86,4 +78,3 @@ fun TesterProfileModal(
         }
     )
 }
-

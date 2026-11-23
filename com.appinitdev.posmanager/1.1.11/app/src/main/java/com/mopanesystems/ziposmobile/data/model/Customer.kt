@@ -1,4 +1,3 @@
-
 @Entity(tableName = "customers")
 data class Customer(
     @PrimaryKey
@@ -24,30 +23,22 @@ data class Customer(
     override val updatedAt: LocalDateTime = LocalDateTime.now(),
     override val storeId: String? = null
 ) : Identifiable, Auditable, StoreScoped {
-
     val fullName: String
         get() = "$firstName $lastName".replace(Regex("\\s{2,}"), " ")
-
     val hasCreditLimit: Boolean
         get() = creditLimit != null && creditLimit > BigDecimal.ZERO
-
     val availableCredit: BigDecimal
         get() = (creditLimit ?: BigDecimal.ZERO) - balance
-
     val isHighRisk: Boolean
         get() = riskScore >= 7
-
     val hasPositiveBalance: Boolean
         get() = balance > BigDecimal.ZERO
-
     val hasDebt: Boolean
         get() = balance < BigDecimal.ZERO
-
     fun canAffordCreditSale(amount: BigDecimal): Boolean {
         if (!hasCreditLimit) return true 
         return availableCredit >= amount
     }
-
     fun calculateLoyaltyTier(): String {
         return when {
             loyaltyPoints >= 1000 -> "Gold"

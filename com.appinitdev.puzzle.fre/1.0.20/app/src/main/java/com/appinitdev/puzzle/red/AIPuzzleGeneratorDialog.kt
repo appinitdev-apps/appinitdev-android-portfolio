@@ -1,4 +1,3 @@
-
 @Composable
 fun AIPuzzleGeneratorDialog(
     onDismiss: () -> Unit,
@@ -10,7 +9,6 @@ fun AIPuzzleGeneratorDialog(
     var errorMessage by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-
     val presetPrompts = listOf(
         "Gato astronauta en el espacio 🐱🚀",
         "Castillo de cristal al atardecer 🏰✨",
@@ -18,7 +16,6 @@ fun AIPuzzleGeneratorDialog(
         "Dragón neón mágico 🐉🔥",
         "Bosque encantado de hadas 🌲🧚"
     )
-
     val artStyles = listOf(
         "Ninguno",
         "Realista 📸",
@@ -29,7 +26,6 @@ fun AIPuzzleGeneratorDialog(
         "Render 3D 🧊",
         "Fantasía Neón 🌌"
     )
-
     val generateAIImage: () -> Unit = {
         scope.launch {
             if (prompt.isBlank()) return@launch
@@ -44,7 +40,6 @@ fun AIPuzzleGeneratorDialog(
                 val encodedPrompt = URLEncoder.encode(fullPrompt, StandardCharsets.UTF_8.toString())
                 val seed = (1..999999).random()
                 val imageUrl = "https://image.pollinations.ai/prompt/$encodedPrompt?width=800&height=800&nologo=true&seed=$seed"
-
                 val bitmap = downloadUnsplashImage(context, imageUrl)
                 if (bitmap != null) {
                     onImageGenerated(bitmap)
@@ -60,7 +55,6 @@ fun AIPuzzleGeneratorDialog(
             }
         }
     }
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -90,26 +84,20 @@ fun AIPuzzleGeneratorDialog(
                         modifier = Modifier.size(32.dp)
                     )
                 }
-
                 Spacer(modifier = Modifier.height(10.dp))
-
                 Text(
                     text = stringResource(R.string.generador_de_puzzle_ia),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.ExtraBold
                 )
-
                 Spacer(modifier = Modifier.height(4.dp))
-
                 Text(
                     text = "Escribe cualquier idea y la Inteligencia Artificial creará una imagen única para tu rompecabezas.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 OutlinedTextField(
                     value = prompt,
                     onValueChange = { prompt = it },
@@ -118,9 +106,7 @@ fun AIPuzzleGeneratorDialog(
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !isLoading
                 )
-
                 Spacer(modifier = Modifier.height(10.dp))
-
                 Text(
                     text = stringResource(R.string.estilo_artistico),
                     style = MaterialTheme.typography.labelSmall,
@@ -128,9 +114,7 @@ fun AIPuzzleGeneratorDialog(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.align(Alignment.Start)
                 )
-
                 Spacer(modifier = Modifier.height(6.dp))
-
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(vertical = 4.dp)
@@ -145,9 +129,7 @@ fun AIPuzzleGeneratorDialog(
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.height(10.dp))
-
                 Text(
                     text = stringResource(R.string.ideas_rapidas),
                     style = MaterialTheme.typography.labelSmall,
@@ -155,9 +137,7 @@ fun AIPuzzleGeneratorDialog(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.align(Alignment.Start)
                 )
-
                 Spacer(modifier = Modifier.height(6.dp))
-
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(vertical = 4.dp)
@@ -171,9 +151,7 @@ fun AIPuzzleGeneratorDialog(
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 if (isLoading) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
@@ -193,9 +171,7 @@ fun AIPuzzleGeneratorDialog(
                         textAlign = TextAlign.Center
                     )
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -208,7 +184,6 @@ fun AIPuzzleGeneratorDialog(
                     ) {
                         Text(stringResource(R.string.cerrar))
                     }
-
                     Button(
                         onClick = { generateAIImage() },
                         shape = CircleShape,

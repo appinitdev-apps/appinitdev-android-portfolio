@@ -1,4 +1,3 @@
-
 data class Video(
     var id: ID,
     var title: String,
@@ -11,7 +10,6 @@ data class Video(
     val takenAt: Instant?,
     val isFavorite: Boolean,
 )
-
 fun DVideo.toModel(): Video {
     return Video(ID(id), title, path, duration, size, bucketId, createdAt, updatedAt, takenAt, isFavorite)
 }

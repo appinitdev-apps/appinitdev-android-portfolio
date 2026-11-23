@@ -1,8 +1,5 @@
-
 object PoissonModel {
     fun getList(poisson: ArrayList<Poisson>) {
-
-        
         poisson.add(Poisson("Andesite", 0.20, 0.35, "rock"))
         poisson.add(Poisson("Basalt", 0.10, 0.35, "rock"))
         poisson.add(Poisson("Claystone", 0.25, 0.40, "rock"))
@@ -25,16 +22,12 @@ object PoissonModel {
         poisson.add(Poisson("Shale", 0.05, 0.32, "rock"))
         poisson.add(Poisson("Silstone", 0.13, 0.35, "rock"))
         poisson.add(Poisson("Tuff", 0.10, 0.28, "rock"))
-
-        
         poisson.add(Poisson("Loose Sand", 0.20, 0.40, "soil"))
         poisson.add(Poisson("Medium dense Sand", 0.25, 0.40, "soil"))
         poisson.add(Poisson("Dense Sand", 0.30, 0.45, "soil"))
         poisson.add(Poisson("Silty Sand", 0.20, 0.40, "soil"))
         poisson.add(Poisson("Sand and Gravel", 0.15, 0.35, "soil"))
         poisson.add(Poisson("Saturated cohesive Soil", 0.50, 0.50, "soil"))
-
-        
         poisson.add(Poisson("α-Cristobalite (SiO2)", -0.164, -0.164, "mineral"))
         poisson.add(Poisson("Diamond (C)", 0.069, 0.069, "mineral"))
         poisson.add(Poisson("α-Quartz (SiO2)", 0.079, 0.079, "mineral"))

@@ -1,7 +1,5 @@
-
 object DelegateHelper {
     private val models = mutableListOf<CompiledModel>()
-
     fun createModel(modelFile: File): CompiledModel {
         tryAccelerator(modelFile, Accelerator.NPU, "NPU")?.let { return it }
         tryAccelerator(modelFile, Accelerator.GPU, "GPU")?.let { return it }
@@ -17,12 +15,10 @@ object DelegateHelper {
             throw RuntimeException("LiteRT native library unavailable on this device: ${e.message}", e)
         }
     }
-
     fun closeAll() {
         models.forEach { it.close() }
         models.clear()
     }
-
     private fun tryAccelerator(
         modelFile: File, accelerator: Accelerator, name: String,
     ): CompiledModel? {

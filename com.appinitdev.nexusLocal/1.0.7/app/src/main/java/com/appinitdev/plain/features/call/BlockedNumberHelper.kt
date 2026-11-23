@@ -1,4 +1,3 @@
-
 object BlockedNumberHelper {
     fun getAll(): List<BlockedNumber> {
         val uri = BlockedNumberContract.BlockedNumbers.CONTENT_URI
@@ -8,7 +7,6 @@ object BlockedNumberHelper {
                 BlockedNumberContract.BlockedNumbers.COLUMN_ORIGINAL_NUMBER,
                 BlockedNumberContract.BlockedNumbers.COLUMN_E164_NUMBER,
             )
-
         return contentResolver.queryCursor(uri, projection)?.map { cursor, cache ->
             val id = cursor.getStringValue(BlockedNumberContract.BlockedNumbers.COLUMN_ID, cache)
             val number = cursor.getStringValue(BlockedNumberContract.BlockedNumbers.COLUMN_ORIGINAL_NUMBER, cache)
@@ -17,7 +15,6 @@ object BlockedNumberHelper {
             BlockedNumber(id, number, normalizedNumber, comparableNumber)
         } ?: emptyList()
     }
-
     fun add(number: String) {
         ContentValues().apply {
             put(BlockedNumberContract.BlockedNumbers.COLUMN_ORIGINAL_NUMBER, number)
@@ -25,13 +22,11 @@ object BlockedNumberHelper {
             contentResolver.insert(BlockedNumberContract.BlockedNumbers.CONTENT_URI, this)
         }
     }
-
     fun delete(number: String) {
         val selection = "${BlockedNumberContract.BlockedNumbers.COLUMN_ORIGINAL_NUMBER} = ?"
         val selectionArgs = arrayOf(number)
         contentResolver.delete(BlockedNumberContract.BlockedNumbers.CONTENT_URI, selection, selectionArgs)
     }
-
     fun isBlocked(
         number: String,
         blockedNumbers: List<BlockedNumber> = getAll(),

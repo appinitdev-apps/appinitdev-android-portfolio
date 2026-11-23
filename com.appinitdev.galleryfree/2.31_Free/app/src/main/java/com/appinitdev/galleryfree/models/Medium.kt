@@ -1,4 +1,3 @@
-
 @Entity(tableName = "media", indices = [(Index(value = ["full_path"], unique = true))])
 data class Medium(
     @PrimaryKey(autoGenerate = true) var id: Long?,
@@ -13,38 +12,23 @@ data class Medium(
     @ColumnInfo(name = "is_favorite") var isFavorite: Boolean,
     @ColumnInfo(name = "deleted_ts") var deletedTS: Long,
     @ColumnInfo(name = "media_store_id") var mediaStoreId: Long,
-
     @Ignore var gridPosition: Int = 0   
 ) : Serializable, ThumbnailItem() {
-
     constructor() : this(null, "", "", "", 0L, 0L, 0L, 0, 0, false, 0L, 0L, 0)
-
     companion object {
         private const val serialVersionUID = -6553149366975655L
     }
-
     fun isWebP() = name.isWebP()
-
     fun isGIF() = type == TYPE_GIFS
-
     fun isImage() = type == TYPE_IMAGES
-
     fun isVideo() = type == TYPE_VIDEOS
-
     fun isRaw() = type == TYPE_RAWS
-
     fun isSVG() = type == TYPE_SVGS
-
     fun isPortrait() = type == TYPE_PORTRAITS
-
     fun isApng() = name.isApng()
-
     fun isAvif() = name.endsWith(".avif", true) 
-
     fun isHidden() = name.startsWith('.')
-
     fun isHeic() = name.lowercase(Locale.getDefault()).endsWith(".heic") || name.lowercase(Locale.getDefault()).endsWith(".heif")
-
     fun getBubbleText(sorting: Int, context: Context, dateFormat: String, timeFormat: String) = when {
         sorting and SORT_BY_NAME != 0 -> name
         sorting and SORT_BY_PATH != 0 -> path
@@ -53,7 +37,6 @@ data class Medium(
         sorting and SORT_BY_RANDOM != 0 -> name
         else -> taken.formatDate(context)
     }
-
     fun getGroupingKey(groupBy: Int): String {
         return when {
             groupBy and GROUP_BY_LAST_MODIFIED_DAILY != 0 -> getDayStartTS(modified, false)
@@ -66,9 +49,7 @@ data class Medium(
             else -> ""
         }
     }
-
     fun getIsInRecycleBin() = deletedTS != 0L
-
     private fun getDayStartTS(ts: Long, resetDays: Boolean): String {
         val calendar = Calendar.getInstance(Locale.ENGLISH).apply {
             timeInMillis = ts
@@ -76,26 +57,20 @@ data class Medium(
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
-
             if (resetDays) {
                 set(Calendar.DAY_OF_MONTH, 1)
             }
         }
-
         return calendar.timeInMillis.toString()
     }
-
     fun getSignature(): String {
         val lastModified = if (modified > 1) {
             modified
         } else {
             File(path).lastModified()
         }
-
         return "$path-$lastModified-$size"
     }
-
     fun getKey() = ObjectKey(getSignature())
-
     fun toFileDirItem() = FileDirItem(path, name, false, 0, size, modified, mediaStoreId)
 }

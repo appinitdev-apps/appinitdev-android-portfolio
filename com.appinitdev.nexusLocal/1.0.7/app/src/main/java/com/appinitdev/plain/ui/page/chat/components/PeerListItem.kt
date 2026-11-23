@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PeerListItem(
@@ -17,7 +16,6 @@ fun PeerListItem(
     val deleteText = stringResource(Res.string.delete)
     val deleteWarningText = stringResource(Res.string.delete_peer_warning)
     val cancelText = stringResource(Res.string.cancel)
-
     Box {
         PListItem(
             modifier = modifier.combinedClickable(
@@ -41,7 +39,6 @@ fun PeerListItem(
                 }
             },
         )
-
         if (peerId != null && onDelete != null) {
             PeerContextMenu(
                 peerId = peerId,
@@ -55,4 +52,3 @@ fun PeerListItem(
         }
     }
 }
-

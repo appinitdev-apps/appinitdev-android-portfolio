@@ -1,4 +1,3 @@
-
 @Composable
 fun TimePickerDialog(
     onCancel: () -> Unit,
@@ -45,7 +44,6 @@ fun TimePickerDialog(
                     }
                 }
             }
-
         }
     }
 }

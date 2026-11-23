@@ -1,4 +1,3 @@
-
 @Composable
 internal fun ScanCameraView(
     lifecycleOwner: LifecycleOwner,
@@ -10,11 +9,9 @@ internal fun ScanCameraView(
     val executor = remember { Executors.newSingleThreadExecutor() }
     val mainExecutor = remember { ContextCompat.getMainExecutor(context) }
     val reader = remember { QrCodeScanHelper.createReader() }
-
     DisposableEffect(Unit) {
         onDispose { executor.shutdown() }
     }
-
     AndroidView(factory = { ctx ->
         val previewView = PreviewView(ctx)
         val preview = Preview.Builder().build()
@@ -60,9 +57,7 @@ internal fun ScanCameraView(
         previewView
     }, modifier = Modifier.fillMaxSize())
 }
-
 internal fun decode(reader: MultiFormatReader, imageProxy: ImageProxy, data: ByteArray): Result {
     val source = PlanarYUVLuminanceSource(data, imageProxy.planes[0].rowStride, imageProxy.height, 0, 0, imageProxy.width, imageProxy.height, false)
     return reader.decodeWithState(BinaryBitmap(HybridBinarizer(source)))
 }
-

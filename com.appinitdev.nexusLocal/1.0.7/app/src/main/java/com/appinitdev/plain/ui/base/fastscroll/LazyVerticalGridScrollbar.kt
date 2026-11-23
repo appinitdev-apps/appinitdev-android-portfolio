@@ -1,4 +1,3 @@
-
 @Composable
 fun LazyVerticalGridScrollbar(
     state: LazyGridState,
@@ -16,7 +15,6 @@ fun LazyVerticalGridScrollbar(
             alwaysShowScrollBar = settings.alwaysShowScrollbar,
             selectionMode = settings.selectionMode,
         )
-
         ElementScrollbar(
             stateController = controller,
             modifier = modifier,
@@ -25,4 +23,3 @@ fun LazyVerticalGridScrollbar(
         )
     }
 }
-

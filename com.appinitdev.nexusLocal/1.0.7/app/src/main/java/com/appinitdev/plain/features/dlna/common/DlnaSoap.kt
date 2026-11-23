@@ -1,10 +1,7 @@
-
- 
 object DlnaSoap {
     const val ENVELOPE_NS = "http://schemas.xmlsoap.org/soap/envelope/"
     const val ENCODING_NS = "http://schemas.xmlsoap.org/soap/encoding/"
     const val AVT_SERVICE_TYPE = "urn:schemas-upnp-org:service:AVTransport:1"
-
     fun requestEnvelope(body: String): String =
         """<?xml version="1.0" encoding="UTF-8"?>
 <s:Envelope s:encodingStyle="$ENCODING_NS" xmlns:s="$ENVELOPE_NS">
@@ -12,7 +9,6 @@ object DlnaSoap {
         $body
     </s:Body>
 </s:Envelope>""".trimIndent()
-
     fun responseEnvelope(action: String, elements: String = ""): String =
         """<?xml version="1.0" encoding="utf-8"?>
 <s:Envelope xmlns:s="$ENVELOPE_NS" s:encodingStyle="$ENCODING_NS">

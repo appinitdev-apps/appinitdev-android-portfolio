@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun AppsPage(navController: NavHostController, appsVM: AppsViewModel = viewModel()) {

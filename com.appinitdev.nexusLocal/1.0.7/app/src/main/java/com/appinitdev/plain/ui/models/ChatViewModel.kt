@@ -1,22 +1,17 @@
-
 data class ChatState(
     val target: ChatTarget = ChatTarget("local", ChatTargetType.PEER),
     val toName: String = "",
 )
-
 class ChatViewModel : ISelectableViewModel<VChat>, ViewModel() {
     internal val _itemsFlow = MutableStateFlow(mutableStateListOf<VChat>())
     override val itemsFlow: StateFlow<List<VChat>> get() = _itemsFlow
     val selectedItem = mutableStateOf<VChat?>(null)
     override var selectMode = mutableStateOf(false)
     override val selectedIds = mutableStateListOf<String>()
-
     private val _chatState = MutableStateFlow(ChatState())
     val chatState: StateFlow<ChatState> get() = _chatState
-
     private val _onlinePeerIds = MutableStateFlow<Set<String>>(emptySet())
     val onlinePeerIds: StateFlow<Set<String>> get() = _onlinePeerIds
-
     init {
         viewModelScope.launch {
             Channel.sharedFlow.collect { event ->
@@ -27,14 +22,12 @@ class ChatViewModel : ISelectableViewModel<VChat>, ViewModel() {
                             else current - event.peerId
                         }
                     }
-
                     is PeerUpdatedEvent -> {
                         ChatCacheManager.updatePeer(event.peer)
                         if (_chatState.value.target.type == ChatTargetType.PEER && _chatState.value.target.toId == event.peer.id) {
                             _chatState.value = _chatState.value.copy(toName = event.peer.name)
                         }
                     }
-
                     is ChannelUpdatedEvent -> {
                         if (_chatState.value.target.type != ChatTargetType.CHANNEL) return@collect
                         val channelId = _chatState.value.target.toId
@@ -47,7 +40,6 @@ class ChatViewModel : ISelectableViewModel<VChat>, ViewModel() {
             }
         }
     }
-
     suspend fun initializeChatStateAsync(chatId: String) {
         val target = ChatTarget.parseId(chatId)
         if (target.isLocal()) {
@@ -59,14 +51,12 @@ class ChatViewModel : ISelectableViewModel<VChat>, ViewModel() {
                 val peer = AppDatabase.instance.peerDao().getById(target.toId)
                 _chatState.value = _chatState.value.copy(target = target, toName = peer?.name ?: "")
             }
-
             ChatTargetType.CHANNEL -> {
                 val channel = AppDatabase.instance.chatChannelDao().getById(target.toId)
                 _chatState.value = _chatState.value.copy(target = target, toName = channel?.name ?: "")
             }
         }
     }
-
     suspend fun fetchAsync(toId: String) {
         val state = _chatState.value
         val dao = AppDatabase.instance.chatDao()
@@ -79,11 +69,9 @@ class ChatViewModel : ISelectableViewModel<VChat>, ViewModel() {
             VChat.from(chat, fromName)
         }.toMutableStateList()
     }
-
     fun addAll(items: List<DChat>) {
         _itemsFlow.value.addAll(0, items.map { VChat.from(it) })
     }
-
     fun update(item: DChat) {
         _itemsFlow.update { currentList ->
             val mutableList = currentList.toMutableStateList()
@@ -92,11 +80,9 @@ class ChatViewModel : ISelectableViewModel<VChat>, ViewModel() {
             mutableList
         }
     }
-
     fun remove(id: String) {
         _itemsFlow.value.removeIf { it.id == id }
     }
-
     fun removeIds(ids: Set<String>) {
         if (ids.isEmpty()) return
         _itemsFlow.value.removeIf { ids.contains(it.id) }

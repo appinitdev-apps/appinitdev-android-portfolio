@@ -1,10 +1,7 @@
-
 private val ALLOWED_NAME_REGEX = Regex("^[a-zA-Z_][a-zA-Z0-9_]*$")
-
 private fun requireSafeName(name: String) {
     require(ALLOWED_NAME_REGEX.matches(name)) { "Invalid identifier: $name" }
 }
-
 private fun getValidatedTableName(table: String): String {
     requireSafeName(table)
     val db = AppDatabase.instance.openHelper.readableDatabase
@@ -13,7 +10,6 @@ private fun getValidatedTableName(table: String): String {
     require(exists) { "Table not found: $table" }
     return table
 }
-
 private fun dbTableNames(): List<String> {
     val db = AppDatabase.instance.openHelper.readableDatabase
     val cursor = db.query(
@@ -30,14 +26,12 @@ private fun dbTableNames(): List<String> {
     }
     return names
 }
-
 private fun dbTableRowCount(table: String): Long {
     val safeName = getValidatedTableName(table)
     val db = AppDatabase.instance.openHelper.readableDatabase
     val cursor = db.query("SELECT COUNT(*) FROM `$safeName`", emptyArray())
     return cursor.use { c -> if (c.moveToFirst()) c.getLong(0) else 0L }
 }
-
 private fun dbTableRows(table: String, offset: Int, limit: Int): List<String> {
     val safeName = getValidatedTableName(table)
     val db = AppDatabase.instance.openHelper.readableDatabase
@@ -58,26 +52,21 @@ private fun dbTableRows(table: String, offset: Int, limit: Int): List<String> {
     }
     return rows
 }
-
 fun SchemaBuilder.addDbSchema() {
     query("dbPath") {
         resolver { ->
             AppDatabase.instance.openHelper.readableDatabase.path ?: ""
         }
     }
-
     query("dbTables") {
         resolver { -> dbTableNames() }
     }
-
     query("dbTableRowCount") {
         resolver { table: String -> dbTableRowCount(table) }
     }
-
     query("dbTableRows") {
         resolver { table: String, offset: Int, limit: Int -> dbTableRows(table, offset, limit) }
     }
-
     mutation("createDbTableRow") {
         resolver { table: String, row: String ->
             val safeName = getValidatedTableName(table)
@@ -93,7 +82,6 @@ fun SchemaBuilder.addDbSchema() {
             true
         }
     }
-
     mutation("deleteDbTableRows") {
         resolver { table: String, ids: List<String> ->
             require(ids.isNotEmpty()) { "ids must not be empty" }

@@ -1,18 +1,12 @@
- 
-
 internal fun registerSecurityProviders() {
     initBouncyCastle()
-
     HashingType.registerSecurityMessageDigests(
         Security.getAlgorithms("MessageDigest").filterNotNull()
     )
-
     val finder = DefaultAlgorithmNameFinder()
-
     CipherType.registerSecurityCiphers(
         Security.getAlgorithms("Cipher").filterNotNull().mapNotNull { cipher ->
             if (CipherType.BROKEN.any { cipher.contains(it, true) }) return@mapNotNull null
-
             val oid = cipher.removePrefix("OID.")
             if (oid.all { it.isDigit() || it.isWhitespace() || it == '.' }) {
                 CipherType.getInstance(
@@ -31,28 +25,22 @@ internal fun registerSecurityProviders() {
                         || it.name == "THREEFISH-512"
                         || it.name == "THREEFISH-1024"
                         || it.name == "CCM"
-
                 if (extraExclude) return@mapNotNull null
             }
         }
     )
 }
-
 private fun initBouncyCastle() {
     if (Security.getProvider(WORKAROUND_NAME) != null) return
-
     try {
         logProviders("OLD")
-
         Security.addProvider(BouncyCastleWorkaroundProvider())
-
         logProviders("NEW")
     } catch (e: Throwable) {
         e.makeLog()
         "Failed to register BouncyCastleWorkaroundProvider".makeLog()
     }
 }
-
 private fun logProviders(tag: String): Int {
     val providers = Security.getProviders()
     providers.forEachIndexed { index, provider ->
@@ -60,7 +48,6 @@ private fun logProviders(tag: String): Int {
     }
     return providers.size
 }
-
 private class BouncyCastleWorkaroundProvider(
     bouncyCastleProvider: Provider = BouncyCastleProvider()
 ) : Provider(
@@ -74,5 +61,4 @@ private class BouncyCastleWorkaroundProvider(
         }
     }
 }
-
 private const val WORKAROUND_NAME = "BC_WORKAROUND"

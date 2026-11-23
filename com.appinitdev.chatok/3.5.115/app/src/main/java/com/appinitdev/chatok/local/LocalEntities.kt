@@ -1,4 +1,3 @@
-
 @Entity(tableName = "chats")
 data class ChatEntity(
     @PrimaryKey val chatId: String,
@@ -21,7 +20,6 @@ data class ChatEntity(
     val user2Unread: Int = 0,
     val accepted: Boolean = false
 )
-
 @Entity(
     tableName = "messages",
     indices = [Index(value = ["chatId"]), Index(value = ["time"])]
@@ -71,7 +69,6 @@ data class MessageEntity(
         )
     }
 }
-
 @Entity(tableName = "users")
 data class UserEntity(
     @PrimaryKey val userId: String,
@@ -96,7 +93,6 @@ data class UserEntity(
     val unlockedChatsJson: String = "[]",
     val unlockedStoriesJson: String = "[]"
 )
-
 @Entity(tableName = "stories")
 data class StoryEntity(
     @PrimaryKey val id: String,
@@ -106,7 +102,6 @@ data class StoryEntity(
     val time: Long?,
     val imagesJson: String
 )
-
 @Entity(tableName = "notifications")
 data class NotificationEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -115,7 +110,6 @@ data class NotificationEntity(
     val time: Long,
     val userId: String 
 )
-
 fun Story.toEntity(): StoryEntity {
     val gson = Gson()
     return StoryEntity(
@@ -127,7 +121,6 @@ fun Story.toEntity(): StoryEntity {
         imagesJson = gson.toJson(images)
     )
 }
-
 fun StoryEntity.toStory(): Story {
     val gson = Gson()
     val type = object : TypeToken<List<com.appinitdev.chatok.Firebase.Image>>() {}.type
@@ -141,7 +134,6 @@ fun StoryEntity.toStory(): Story {
         images = images
     )
 }
-
 fun UserData.toEntity(): UserEntity {
     val gson = Gson()
     return UserEntity(
@@ -168,13 +160,11 @@ fun UserData.toEntity(): UserEntity {
         unlockedStoriesJson = gson.toJson(unlockedStories)
     )
 }
-
 fun UserEntity.toUserData(): UserData {
     val gson = Gson()
     val type = object : TypeToken<List<String>>() {}.type
     val unlockedChats: List<String> = gson.fromJson(unlockedChatsJson, type) ?: emptyList()
     val unlockedStories: List<String> = gson.fromJson(unlockedStoriesJson, type) ?: emptyList()
-    
     return UserData(
         userId = userId,
         username = username,
@@ -201,7 +191,6 @@ fun UserEntity.toUserData(): UserData {
         unlockedStories = unlockedStories
     )
 }
-
 fun ChatData.toEntity(): ChatEntity {
     return ChatEntity(
         chatId = chatId,
@@ -225,7 +214,6 @@ fun ChatData.toEntity(): ChatEntity {
         accepted = accepted
     )
 }
-
 fun Message.toEntity(chatId: String): MessageEntity {
     val gson = Gson()
     return MessageEntity(
@@ -250,7 +238,6 @@ fun Message.toEntity(chatId: String): MessageEntity {
         viewedAt = viewedAt?.toDate()?.time
     )
 }
-
 fun ChatEntity.toChatData(): ChatData {
     return ChatData(
         chatId = chatId,
@@ -282,7 +269,6 @@ fun ChatEntity.toChatData(): ChatData {
         accepted = accepted
     )
 }
-
 fun MessageEntity.toMessage(repliedMsg: Message? = null): Message {
     val gson = Gson()
     val reactionList: List<Reaction> = if (!reactionsJson.isNullOrEmpty()) {
@@ -291,7 +277,6 @@ fun MessageEntity.toMessage(repliedMsg: Message? = null): Message {
     } else {
         emptyList()
     }
-    
     return Message(
         msgId = msgId,
         senderId = senderId,

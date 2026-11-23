@@ -1,12 +1,7 @@
-
 object Converters {
-
     @TypeConverter fun labelsToJson(labels: List<String>) = JSONArray(labels).toString()
-
     @TypeConverter fun jsonToLabels(json: String) = jsonToLabels(JSONArray(json))
-
     fun jsonToLabels(jsonArray: JSONArray) = jsonArray.iterable<String>().toList()
-
     @TypeConverter
     fun filesToJson(files: List<FileAttachment>): String {
         val objects =
@@ -18,9 +13,7 @@ object Converters {
             }
         return JSONArray(objects).toString()
     }
-
     @TypeConverter fun jsonToFiles(json: String) = jsonToFiles(JSONArray(json))
-
     fun jsonToFiles(jsonArray: JSONArray): List<FileAttachment> {
         return jsonArray.iterable<JSONObject>().map { jsonObject ->
             val localName = getSafeLocalName(jsonObject)
@@ -29,7 +22,6 @@ object Converters {
             FileAttachment(localName, originalName, mimeType)
         }
     }
-
     @TypeConverter
     fun audiosToJson(audios: List<Audio>): String {
         val objects =
@@ -41,9 +33,7 @@ object Converters {
             }
         return JSONArray(objects).toString()
     }
-
     @TypeConverter fun jsonToAudios(json: String) = jsonToAudios(JSONArray(json))
-
     fun jsonToAudios(json: JSONArray): List<Audio> {
         return json.iterable<JSONObject>().map { jsonObject ->
             val name = jsonObject.getString("name")
@@ -52,9 +42,7 @@ object Converters {
             Audio(name, duration, timestamp)
         }
     }
-
     @TypeConverter fun jsonToSpans(json: String) = jsonToSpans(JSONArray(json))
-
     fun jsonToSpans(jsonArray: JSONArray): List<SpanRepresentation> {
         return jsonArray
             .iterable<JSONObject>()
@@ -84,10 +72,8 @@ object Converters {
             }
             .filterNotNull()
     }
-
     @TypeConverter
     fun spansToJson(list: List<SpanRepresentation>) = spansToJSONArray(list).toString()
-
     fun spansToJSONArray(list: List<SpanRepresentation>): JSONArray {
         val objects =
             list.map { representation ->
@@ -103,9 +89,7 @@ object Converters {
             }
         return JSONArray(objects)
     }
-
     @TypeConverter fun jsonToItems(json: String) = jsonToItems(JSONArray(json))
-
     fun jsonToItems(json: JSONArray): List<ListItem> {
         return json.iterable<JSONObject>().map { jsonObject ->
             val body = jsonObject.getSafeString("body") ?: ""
@@ -115,9 +99,7 @@ object Converters {
             ListItem(body, checked, isChild, order, mutableListOf())
         }
     }
-
     @TypeConverter fun itemsToJson(list: List<ListItem>) = itemsToJSONArray(list).toString()
-
     fun itemsToJSONArray(list: List<ListItem>): JSONArray {
         val objects =
             list.map { item ->
@@ -129,10 +111,8 @@ object Converters {
             }
         return JSONArray(objects)
     }
-
     @TypeConverter
     fun remindersToJson(reminders: List<Reminder>) = remindersToJSONArray(reminders).toString()
-
     fun remindersToJSONArray(reminders: List<Reminder>): JSONArray {
         val objects =
             reminders.map { reminder ->
@@ -144,9 +124,7 @@ object Converters {
             }
         return JSONArray(objects)
     }
-
     @TypeConverter fun jsonToReminders(json: String) = jsonToReminders(JSONArray(json))
-
     fun jsonToReminders(jsonArray: JSONArray): List<Reminder> {
         return jsonArray.iterable<JSONObject>().map { jsonObject ->
             val id = jsonObject.getLong("id")
@@ -155,19 +133,16 @@ object Converters {
             Reminder(id, dateTime, repetition)
         }
     }
-
     @TypeConverter
     fun repetitionToJson(repetition: Repetition): String {
         return repetitionToJsonObject(repetition).toString()
     }
-
     fun repetitionToJsonObject(repetition: Repetition): JSONObject {
         val jsonObject = JSONObject()
         jsonObject.put("value", repetition.value)
         jsonObject.put("unit", repetition.unit.name) 
         return jsonObject
     }
-
     @TypeConverter
     fun jsonToRepetition(json: String): Repetition {
         val jsonObject = JSONObject(json)
@@ -178,7 +153,6 @@ object Converters {
             ) 
         return Repetition(value, unit)
     }
-
     private fun getSafeLocalName(jsonObject: JSONObject): String {
         return try {
             jsonObject.getString("localName")
@@ -186,7 +160,6 @@ object Converters {
             jsonObject.getString("name")
         }
     }
-
     private fun getSafeOriginalName(jsonObject: JSONObject): String {
         return try {
             jsonObject.getString("originalName")
@@ -194,7 +167,6 @@ object Converters {
             getSafeLocalName(jsonObject).substringAfterLast("/")
         }
     }
-
     private fun JSONObject.getSafeBoolean(name: String): Boolean {
         return try {
             getBoolean(name)
@@ -202,7 +174,6 @@ object Converters {
             false
         }
     }
-
     private fun JSONObject.getSafeString(name: String): String? {
         return try {
             getString(name)
@@ -210,7 +181,6 @@ object Converters {
             null
         }
     }
-
     private fun JSONObject.getSafeInt(name: String): Int? {
         return try {
             getInt(name)
@@ -218,7 +188,6 @@ object Converters {
             null
         }
     }
-
     private fun JSONObject.getSafeLong(name: String): Long? {
         return try {
             getLong(name)
@@ -226,17 +195,14 @@ object Converters {
             null
         }
     }
-
     private fun <T> JSONArray.iterable() = Iterable {
         object : Iterator<T> {
             var index = 0
-
             override fun next(): T {
                 val element = get(index)
                 index++
                 return element as T
             }
-
             override fun hasNext(): Boolean {
                 return index < length()
             }

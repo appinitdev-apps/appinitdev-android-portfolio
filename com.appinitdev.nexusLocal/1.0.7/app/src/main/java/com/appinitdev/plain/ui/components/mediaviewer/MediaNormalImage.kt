@@ -1,4 +1,3 @@
-
 @OptIn(UnstableApi::class)
 @Composable
 fun MediaNormalImage(
@@ -33,7 +32,6 @@ fun MediaNormalImage(
         }
     }
     val rSize by remember { derivedStateOf { IntSize((uSize.width * scale).toInt(), (uSize.height * scale).toInt()) } }
-
     LaunchedEffect(key1 = oSize, key2 = bSize, key3 = rSize) {
         val maxScale = when {
             superSize -> oSize.width.toFloat() / uSize.width.toFloat()
@@ -42,13 +40,11 @@ fun MediaNormalImage(
         }
         onSizeChange(SizeChangeContent(defaultSize = uSize, containerSize = bSize, maxScale = maxScale))
     }
-
     var imageSpecified by remember { mutableStateOf(false) }
     val viewerAlpha = remember { Animatable(0F) }
     fun goMounted() {
         scope.launch { viewerAlpha.animateTo(1F, DEFAULT_CROSS_FADE_ANIMATE_SPEC); onMounted() }
     }
-
     var painter by remember { mutableStateOf<Painter?>(null) }
     if (model.path.isUrl()) {
         painter = rememberCoilImagePainter(model.path)
@@ -68,7 +64,6 @@ fun MediaNormalImage(
         oSize = model.intrinsicSize
         goMounted()
     }
-
     Box(
         modifier = modifier.fillMaxSize()
             .graphicsLayer { clip = boundClip; alpha = viewerAlpha.value }

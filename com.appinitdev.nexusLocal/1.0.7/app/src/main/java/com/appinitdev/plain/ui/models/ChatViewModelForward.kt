@@ -1,4 +1,3 @@
-
 fun ChatViewModel.resendMessage(messageId: String) {
     viewModelScope.launch(Dispatchers.IO) {
         val item = ChatDbHelper.getChatItem(messageId) ?: return@launch
@@ -8,7 +7,6 @@ fun ChatViewModel.resendMessage(messageId: String) {
         ChatSender.resend(item)
     }
 }
-
 fun ChatViewModel.resendToMembers(messageId: String, peerIds: List<String>) {
     viewModelScope.launch(Dispatchers.IO) {
         val state = chatState.value
@@ -20,7 +18,6 @@ fun ChatViewModel.resendToMembers(messageId: String, peerIds: List<String>) {
         update(item)
     }
 }
-
 fun ChatViewModel.forwardMessage(messageId: String, target: ChatTarget, onResult: (Boolean) -> Unit = {}) {
     viewModelScope.launch(Dispatchers.IO) {
         val item = ChatDbHelper.getChatItem(messageId) ?: return@launch
@@ -32,7 +29,6 @@ fun ChatViewModel.forwardMessage(messageId: String, target: ChatTarget, onResult
         onResult(newItem.status == "sent")
     }
 }
-
 fun ChatViewModel.delete(context: Context, ids: Set<String>) {
     viewModelScope.launch(Dispatchers.IO) {
         val items = itemsFlow.value.filter { ids.contains(it.id) }
@@ -47,7 +43,6 @@ fun ChatViewModel.delete(context: Context, ids: Set<String>) {
         sendEvent(WebSocketEvent(EventType.MESSAGE_DELETED, JsonHelper.jsonEncode("ids=${ids.joinToString(",")}")))
     }
 }
-
 fun ChatViewModel.clearAllMessages(context: Context) {
     viewModelScope.launch(Dispatchers.IO) {
         val state = chatState.value

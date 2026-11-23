@@ -1,14 +1,10 @@
-
- 
 class MoreListBottomSheet(
     callbacks: MoreListActions,
     additionalActions: Collection<Action> = listOf(),
     @ColorInt color: Int?,
 ) : ActionBottomSheet(createActions(callbacks, additionalActions), color) {
-
     companion object {
         const val TAG = "MoreListBottomSheet"
-
         private fun createActions(callbacks: MoreListActions, actions: Collection<Action>) =
             MoreNoteBottomSheet.createActions(callbacks, actions) +
                 listOf(
@@ -31,11 +27,8 @@ class MoreListBottomSheet(
                 )
     }
 }
-
 interface MoreListActions : MoreActions {
     fun deleteChecked()
-
     fun checkAll()
-
     fun uncheckAll()
 }

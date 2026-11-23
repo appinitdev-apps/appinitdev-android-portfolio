@@ -1,4 +1,3 @@
-
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun ImageViewer(userData: ChatUserData, hideDialog:()->Unit, message: Message) {
@@ -99,18 +98,14 @@ fun ImageViewer(userData: ChatUserData, hideDialog:()->Unit, message: Message) {
                         )
                         Text(
                             text =if(message.time != null) {
-                                
                                 formatter.format(message.time.toDate())
                             } else "",
                             color = Color.LightGray,
                             style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Light)
                         )
                     }
-
                 }
             }
-
         }
-
     }
 }

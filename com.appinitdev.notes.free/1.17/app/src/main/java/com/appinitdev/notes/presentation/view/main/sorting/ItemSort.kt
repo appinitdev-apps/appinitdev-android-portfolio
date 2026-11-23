@@ -1,11 +1,8 @@
-
 abstract class ItemSort(
     adapter: RecyclerView.Adapter<*>?,
     private val sortDirection: SortDirection,
 ) : SortedListAdapterCallback<Item>(adapter) {
-
     abstract fun compare(note1: BaseNote, note2: BaseNote, sortDirection: SortDirection): Int
-
     override fun compare(item1: Item?, item2: Item?): Int {
         return when {
             item1 == null && item2 == null -> 0
@@ -20,11 +17,9 @@ abstract class ItemSort(
             else -> 0
         }
     }
-
     override fun areContentsTheSame(oldItem: Item?, newItem: Item?): Boolean {
         return oldItem == newItem
     }
-
     override fun areItemsTheSame(item1: Item?, item2: Item?): Boolean {
         return when {
             item1 is BaseNote && item2 is BaseNote -> item1.id == item2.id

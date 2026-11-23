@@ -1,4 +1,3 @@
-
 @Composable
 internal fun SleepTimerActiveContent(
     remainingTimeMs: Long,
@@ -12,9 +11,7 @@ internal fun SleepTimerActiveContent(
         val totalDurationMs = selectedTimeMinutes * 60f * 1000f
         val elapsedTimeMs = totalDurationMs - remainingTimeMs
         val progress = (elapsedTimeMs / totalDurationMs).coerceIn(0f, 1f)
-
         CircularTimer(progress = progress)
-
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = String.format("%02d:%02d:%02d", hours, minutes, seconds),

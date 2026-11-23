@@ -1,4 +1,3 @@
-
 data class VChat(
     override var id: String,
     val fromId: String,

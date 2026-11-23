@@ -1,11 +1,8 @@
-
 object MetadataHelper {
-
     fun getAudioMetadata(context: Context, songUri: Uri): AudioMetaData {
         runCatching {
             val audioMetadata = AudioMetaData()
             val mediaMetadataRetriever = MediaMetadataRetriever()
-
             if (URLUtil.isValidUrl(songUri.toString()) &&
                     (songUri.toString().startsWith("http")
                             || songUri.toString().startsWith("https")
@@ -15,7 +12,6 @@ object MetadataHelper {
             } else {
                 mediaMetadataRetriever.setDataSource(context, songUri)
             }
-
             audioMetadata.title = getSongTitleMeta(context, songUri, mediaMetadataRetriever)
             audioMetadata.artists = getSongArtistMeta(context, mediaMetadataRetriever)
             audioMetadata.album = getSongAlbumMeta(context, mediaMetadataRetriever)
@@ -23,23 +19,12 @@ object MetadataHelper {
             audioMetadata.bitrate = getBitrate(mediaMetadataRetriever)
             audioMetadata.sampling = AudioUtils.getSampling(context, songUri)
             audioMetadata.art = getOriginalAlbumArt(mediaMetadataRetriever)
-
             mediaMetadataRetriever.close()
-
             return audioMetadata
         }.getOrElse {
             throw IOException("Failed to get audio metadata")
         }
     }
-
-     
-
-
-
-
-
-
-
     private fun getSongTitleMeta(
             context: Context,
             songUri: Uri,
@@ -52,15 +37,6 @@ object MetadataHelper {
                 ?: context.getString(R.string.unknown)
         }
     }
-
-     
-
-
-
-
-
-
-
     private fun getSongArtistMeta(
             context: Context,
             mediaMetadataRetriever: MediaMetadataRetriever
@@ -71,15 +47,6 @@ object MetadataHelper {
             context.getString(R.string.unknown)
         }
     }
-
-     
-
-
-
-
-
-
-
     private fun getSongAlbumMeta(
             context: Context,
             mediaMetadataRetriever: MediaMetadataRetriever
@@ -90,24 +57,10 @@ object MetadataHelper {
             context.getString(R.string.unknown)
         }
     }
-
-     
-
-
-
-
-
-
-
-
     private fun getBitrate(mediaMetadataRetriever: MediaMetadataRetriever): String {
         return mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)!!
             .toInt().toBitrate()
     }
-
-     
-
-
     private fun getFileExtension(context: Context, uri: Uri?): String {
         val e = "." + MimeTypeMap.getSingleton()
             .getExtensionFromMimeType(context.contentResolver.getType(uri!!))
@@ -117,7 +70,6 @@ object MetadataHelper {
             e
         }
     }
-
     private fun getOriginalAlbumArt(mediaMetadataRetriever: MediaMetadataRetriever): Bitmap? {
         var inputStream: InputStream? = null
         if (mediaMetadataRetriever.embeddedPicture != null) {

@@ -1,10 +1,8 @@
-
 private val THUMB_WIDTH = 4.dp
 private val THUMB_HEIGHT = 40.dp
 private val TRACK_WIDTH = 4.dp
 private val TOUCH_AREA_WIDTH = 20.dp
 private val CORNER_RADIUS = 2.dp
-
 @Composable
 internal fun VerticalScrollbarLayout(
     thumbOffsetNormalized: Float,
@@ -19,16 +17,13 @@ internal fun VerticalScrollbarLayout(
         thumbIsSelected = thumbIsSelected,
         settings = settings,
     )
-
     val trackAlpha by animateFloatAsState(
         targetValue = if (thumbIsSelected) 1f else 0f,
         animationSpec = tween(durationMillis = if (thumbIsSelected) 100 else 250),
         label = "track alpha",
     )
-
     Layout(
         content = {
-            
             Box(
                 modifier = Modifier
                     .alpha(trackAlpha)
@@ -39,8 +34,6 @@ internal fun VerticalScrollbarLayout(
                         shape = RoundedCornerShape(CORNER_RADIUS),
                     ),
             )
-
-            
             Box(
                 modifier = Modifier
                     .alpha(state.hideAlpha.value)
@@ -52,14 +45,10 @@ internal fun VerticalScrollbarLayout(
                     )
                     .run { if (state.activeDraggableModifier.value) then(draggableModifier) else this },
             )
-
-            
             when (indicator) {
                 null -> Box(Modifier)
                 else -> Box(Modifier.alpha(state.hideAlpha.value)) { indicator() }
             }
-
-            
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -69,26 +58,20 @@ internal fun VerticalScrollbarLayout(
         },
         measurePolicy = { measurables, constraints ->
             val placeables = measurables.map { it.measure(constraints) }
-
             layout(constraints.maxWidth, constraints.maxHeight) {
                 val placeableTrack = placeables[0]
                 val placeableThumb = placeables[1]
                 val placeableIndicator = placeables[2]
                 val placeableScrollbarArea = placeables[3]
-
                 val offset = (constraints.maxHeight.toFloat() * thumbOffsetNormalized).toInt()
                 val hideDisplacementPx = state.hideDisplacement.value.roundToPx()
                 val rightX = constraints.maxWidth - THUMB_WIDTH.roundToPx() + hideDisplacementPx
-
                 placeableTrack.placeRelative(x = rightX, y = 0)
-
                 placeableThumb.placeRelative(x = rightX, y = offset)
-
                 placeableIndicator.placeRelative(
                     x = rightX - placeableIndicator.width,
                     y = offset + placeableThumb.height / 2 - placeableIndicator.height / 2,
                 )
-
                 placeableScrollbarArea.placeRelative(
                     x = constraints.maxWidth - placeableScrollbarArea.width,
                     y = 0,

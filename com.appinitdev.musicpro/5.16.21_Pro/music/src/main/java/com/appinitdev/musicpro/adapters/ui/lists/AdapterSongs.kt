@@ -1,8 +1,5 @@
-
 class AdapterSongs(initial: List<Audio>) : FastScrollAdapter<VerticalListViewHolder>() {
-
     private var generalAdapterCallbacks: GeneralAdapterCallbacks? = null
-
     private val listUpdateCallback = object : ListUpdateCallback {
         @SuppressLint("NotifyDataSetChanged")
         override fun onInserted(position: Int, count: Int) {
@@ -12,7 +9,6 @@ class AdapterSongs(initial: List<Audio>) : FastScrollAdapter<VerticalListViewHol
                 notifyItemRangeInserted(position, count)
             }
         }
-
         @SuppressLint("NotifyDataSetChanged")
         override fun onRemoved(position: Int, count: Int) {
             if (count > 100) {
@@ -21,16 +17,13 @@ class AdapterSongs(initial: List<Audio>) : FastScrollAdapter<VerticalListViewHol
                 notifyItemRangeRemoved(position, count)
             }
         }
-
         override fun onMoved(fromPosition: Int, toPosition: Int) {
             notifyItemMoved(fromPosition, toPosition)
         }
-
         override fun onChanged(position: Int, count: Int, payload: Any?) {
             notifyItemRangeChanged(position, count, payload)
         }
     }
-
     private val diffCallback = object : DiffUtil.ItemCallback<Audio>() {
         override fun areItemsTheSame(oldItem: Audio, newItem: Audio) = oldItem.id == newItem.id
         override fun areContentsTheSame(oldItem: Audio, newItem: Audio): Boolean {
@@ -41,25 +34,17 @@ class AdapterSongs(initial: List<Audio>) : FastScrollAdapter<VerticalListViewHol
                     oldItem.uri == newItem.uri
         }
     }
-
     private val differ = AsyncListDiffer(
             listUpdateCallback,
             AsyncDifferConfig.Builder(diffCallback).build()
     )
-
     private val songs: List<Audio> get() = differ.currentList
-
     var layoutMode: CommonPreferencesConstants.LayoutMode = SongsPreferences.getGridSize()
-
     init {
         setHasStableIds(true)
-        
-        
         differ.submitList(initial.toList())
     }
-
     override fun getItemId(position: Int): Long = songs[position].id
-
     override fun getItemViewType(position: Int): Int {
         return when {
             layoutMode.isLabel -> CommonPreferencesConstants.GRID_TYPE_LABEL
@@ -67,7 +52,6 @@ class AdapterSongs(initial: List<Audio>) : FastScrollAdapter<VerticalListViewHol
             else -> CommonPreferencesConstants.GRID_TYPE_LIST
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         return when (viewType) {
             CommonPreferencesConstants.GRID_TYPE_GRID -> GridHolder(AdapterStyleGridBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -75,7 +59,6 @@ class AdapterSongs(initial: List<Audio>) : FastScrollAdapter<VerticalListViewHol
             else -> ListHolder(AdapterStyleListBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
-
     override fun onBind(holder: VerticalListViewHolder, position: Int, isLightBind: Boolean) {
         val song = songs[position]
         when (holder) {
@@ -84,9 +67,7 @@ class AdapterSongs(initial: List<Audio>) : FastScrollAdapter<VerticalListViewHol
             is LabelHolder -> holder.bind(song, isLightBind)
         }
     }
-
     override fun getItemCount(): Int = songs.size
-
     override fun onViewRecycled(holder: VerticalListViewHolder) {
         holder.itemView.clearAnimation()
         super.onViewRecycled(holder)
@@ -96,20 +77,16 @@ class AdapterSongs(initial: List<Audio>) : FastScrollAdapter<VerticalListViewHol
             is LabelHolder -> Unit
         }
     }
-
     fun setGeneralAdapterCallbacks(callbacks: GeneralAdapterCallbacks) {
         this.generalAdapterCallbacks = callbacks
     }
-
     fun updateSongs(newSongs: List<Audio>) {
         differ.submitList(newSongs.toList())
     }
-
     inner class ListHolder(val binding: AdapterStyleListBinding) : VerticalListViewHolder(binding.root) {
         fun bindSelectionState(song: Audio) {
             binding.container.setAudioID(song.id)
         }
-
         fun bind(audio: Audio, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(audio.getProperTitle())
             binding.secondaryDetail.setTextOrUnknown(audio.getProperArtists())
@@ -127,12 +104,10 @@ class AdapterSongs(initial: List<Audio>) : FastScrollAdapter<VerticalListViewHol
             }
         }
     }
-
     inner class GridHolder(val binding: AdapterStyleGridBinding) : VerticalListViewHolder(binding.root) {
         fun bindSelectionState(song: Audio) {
             binding.container.setAudioID(song.id)
         }
-
         fun bind(audio: Audio, isLightBind: Boolean) {
             binding.container.enableGridMode = true
             binding.title.setTextOrUnknown(audio.getProperTitle())
@@ -141,7 +116,6 @@ class AdapterSongs(initial: List<Audio>) : FastScrollAdapter<VerticalListViewHol
             bindSelectionState(audio)
             if (isLightBind) return
             binding.albumArt.loadArtCoverWithPayload(audio)
-
             binding.container.setOnLongClickListener {
                 generalAdapterCallbacks?.onSongLongClicked(songs, bindingAdapterPosition, binding.albumArt)
                 true
@@ -151,7 +125,6 @@ class AdapterSongs(initial: List<Audio>) : FastScrollAdapter<VerticalListViewHol
             }
         }
     }
-
     inner class LabelHolder(val binding: AdapterStyleLabelsBinding) : VerticalListViewHolder(binding.root) {
         fun bind(audio: Audio, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(audio.getProperTitle())

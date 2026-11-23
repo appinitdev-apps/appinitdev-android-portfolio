@@ -1,5 +1,3 @@
-
-
 class UnitActivity : BaseActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -13,38 +11,13 @@ class UnitActivity : BaseActivity()  {
         }
         if (themePrefValue == 0) { setTheme(R.style.AppTheme) }
         if (themePrefValue == 1) { setTheme(R.style.AppThemeDark) }
-
         setContentView(R.layout.activity_unit) 
         findViewById<FrameLayout>(R.id.view_unit).systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-
-        
-         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 tempUnits()
         findViewById<ImageButton>(R.id.back_btn_unit).setOnClickListener {
             this.onBackPressed()
         }
     }
-
     private fun tempUnits() {
         val tempPreference = TemperatureUnits(this)
         val tempPrefValue = tempPreference.getValue()
@@ -82,17 +55,12 @@ tempUnits()
             findViewById<Button>(R.id.fahrenheit_btn).background = ContextCompat.getDrawable(this, R.drawable.chip_active)
         }
     }
-
     override fun onApplySystemInsets(top: Int, bottom: Int, left: Int, right: Int) {
         val paramsTitle = findViewById<FrameLayout>(R.id.common_title_back_unit).layoutParams as ViewGroup.LayoutParams
         paramsTitle.height = top + resources.getDimensionPixelSize(R.dimen.title_bar)
         findViewById<FrameLayout>(R.id.common_title_back_unit).layoutParams = paramsTitle
-
         val paramsLin = findViewById<TextView>(R.id.unit_title_downstate).layoutParams as ViewGroup.MarginLayoutParams
         paramsLin.topMargin = top
         findViewById<TextView>(R.id.unit_title_downstate).layoutParams = paramsLin
     }
 }
-
-
-

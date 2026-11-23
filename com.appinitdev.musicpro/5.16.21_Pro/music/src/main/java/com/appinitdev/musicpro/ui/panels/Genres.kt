@@ -1,67 +1,45 @@
-
- 
-
-
-
-
 @AndroidEntryPoint
 class Genres : BasePanelFragment() {
-
     private val genresViewModel: GenresViewModel by viewModels({ requireActivity() })
-
     private lateinit var binding: FragmentGenresBinding
     private lateinit var headerBinding: HeaderGenresBinding
-
     private var adapterGenres: AdapterGenres? = null
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentGenresBinding.inflate(inflater, container, false)
         headerBinding = HeaderGenresBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.header.setContentView(headerBinding.root)
         binding.header.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
         binding.recyclerView.attachSlideFastScroller()
         binding.recyclerView.requireAttachedMiniPlayer()
-
         binding.recyclerView.setupGridLayoutManager(GenresPreferences.getGridSize().spanCount)
-
         adapterGenres?.let { binding.recyclerView.adapter = it }
-
         setupClickListeners()
-
         genresViewModel.genres.collectListWhenStarted({ adapterGenres != null }) { genres ->
             updateGenresList(genres)
         }
     }
-
     override fun onDestroyView() {
         adapterGenres = null
         super.onDestroyView()
     }
-
     private fun setupClickListeners() {
         headerBinding.menu.setOnClickListener {
             openPreferencesPanel()
         }
-
         headerBinding.listStyle.setOnClickListener {
             childFragmentManager.showListStyleDialog(GenericListStyleDialog.Companion.PANEL.GENRES)
         }
-
         headerBinding.sortStyle.setOnClickListener {
             childFragmentManager.showGenresSortDialog()
         }
-
         headerBinding.search.setOnClickListener {
             openSearch()
         }
     }
-
     private fun updateGenresList(genres: List<Genre>) {
         if (adapterGenres == null) {
             adapterGenres = AdapterGenres(genres)
@@ -70,7 +48,6 @@ class Genres : BasePanelFragment() {
                 override fun onMenuClicked(view: View) {
                     childFragmentManager.showListStyleDialog(GenericListStyleDialog.Companion.PANEL.GENRES)
                 }
-
                 override fun onGenreClicked(genre: Genre, view: View) {
                     openFragment(GenrePage.newInstance(genre), GenrePage.TAG)
                 }
@@ -82,16 +59,13 @@ class Genres : BasePanelFragment() {
                 binding.recyclerView.adapter = adapterGenres
             }
         }
-
         headerBinding.count.text = getString(R.string.x_genres, genres.size)
         binding.recyclerView.requireAttachedSectionScroller(
                 sections = provideScrollPositionDataBasedOnSortStyle(genres),
                 header = binding.header,
                 view = headerBinding.scroll)
-
         headerBinding.sortStyle.setCurrentSortStyle()
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -100,7 +74,6 @@ class Genres : BasePanelFragment() {
             }
         }
     }
-
     private fun provideScrollPositionDataBasedOnSortStyle(genres: List<Genre>): List<SectionedFastScroller.Position> {
         return when (GenresPreferences.getSortStyle()) {
             CommonPreferencesConstants.BY_NAME -> {
@@ -115,10 +88,8 @@ class Genres : BasePanelFragment() {
             else -> listOf()
         }
     }
-
     companion object {
         const val TAG = "GenresFragment"
-
         fun newInstance(): Genres {
             val args = Bundle()
             val fragment = Genres()

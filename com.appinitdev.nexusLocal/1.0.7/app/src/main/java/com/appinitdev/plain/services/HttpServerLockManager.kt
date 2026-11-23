@@ -1,35 +1,14 @@
-
 private const val CHECK_INTERVAL_MS = 60_000L
 private const val INACTIVITY_TIMEOUT_MS = 30 * 60_000L
-
- 
-
-
-
-
-
-
-
-
-
-
 internal class HttpServerLockManager(private val context: Context) {
-
     private val wakeLock: PowerManager.WakeLock = powerManager.newWakeLock(
         PowerManager.PARTIAL_WAKE_LOCK,
         "${BuildConfig.APPLICATION_ID}:http_server",
     )
-
-
-
-
-
     @Volatile private var lastActivityMs: Long = System.currentTimeMillis()
     @Volatile private var keepAwake: Boolean = true
-
     private var inactivityJob: Job? = null
     private var eventJob: Job? = null
-
     fun start() {
         acquireLocksOnly()
         eventJob = coIO {
@@ -65,7 +44,6 @@ internal class HttpServerLockManager(private val context: Context) {
             }
         }
     }
-
     fun stop() {
         eventJob?.cancel()
         eventJob = null
@@ -73,34 +51,20 @@ internal class HttpServerLockManager(private val context: Context) {
         inactivityJob = null
         releaseLocks()
     }
-
     private fun acquireLocksOnly() {
         runCatching {
             if (!wakeLock.isHeld) { wakeLock.acquire(); LogCat.d("WakeLock acquired") }
         }.onFailure { LogCat.e("WakeLock acquire failed: ${it.message}") }
-
-
-
     }
-
     private fun acquireLocks() {
         acquireLocksOnly()
         scheduleInactivityTimer()
     }
-
     fun releaseLocks() {
         inactivityJob?.cancel()
         inactivityJob = null
         if (wakeLock.isHeld) { wakeLock.release(); LogCat.d("WakeLock released") }
-
     }
-
-     
-
-
-
-
-
     private fun scheduleInactivityTimer() {
         if (keepAwake || PlugInControlReceiver.isUSBConnected(context)) {
             inactivityJob?.cancel()

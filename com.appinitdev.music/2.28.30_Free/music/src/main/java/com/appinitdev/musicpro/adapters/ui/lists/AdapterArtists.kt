@@ -1,8 +1,5 @@
-
 class AdapterArtists(initial: List<Artist>) : FastScrollAdapter<VerticalListViewHolder>() {
-
     private var generalAdapterCallbacks: GeneralAdapterCallbacks? = null
-
     private val listUpdateCallback = object : ListUpdateCallback {
         override fun onInserted(position: Int, count: Int) {
             if (count > 100) {
@@ -11,7 +8,6 @@ class AdapterArtists(initial: List<Artist>) : FastScrollAdapter<VerticalListView
                 notifyItemRangeInserted(position, count)
             }
         }
-
         override fun onRemoved(position: Int, count: Int) {
             if (count > 100) {
                 notifyDataSetChanged()
@@ -19,35 +15,27 @@ class AdapterArtists(initial: List<Artist>) : FastScrollAdapter<VerticalListView
                 notifyItemRangeRemoved(position, count)
             }
         }
-
         override fun onMoved(fromPosition: Int, toPosition: Int) {
             notifyItemMoved(fromPosition, toPosition)
         }
-
         override fun onChanged(position: Int, count: Int, payload: Any?) {
             notifyItemRangeChanged(position, count, payload)
         }
     }
-
     private val diffCallback = object : DiffUtil.ItemCallback<Artist>() {
         override fun areItemsTheSame(oldItem: Artist, newItem: Artist) = oldItem.id == newItem.id
         override fun areContentsTheSame(oldItem: Artist, newItem: Artist) = oldItem == newItem
     }
-
     private val differ = AsyncListDiffer(
             listUpdateCallback,
             AsyncDifferConfig.Builder(diffCallback).build()
     )
-
     private val artists: List<Artist> get() = differ.currentList
-
     init {
         setHasStableIds(true)
         differ.submitList(initial.toList())
     }
-
     override fun getItemId(position: Int): Long = artists[position].id
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         return when (viewType) {
             CommonPreferencesConstants.GRID_TYPE_GRID -> {
@@ -61,7 +49,6 @@ class AdapterArtists(initial: List<Artist>) : FastScrollAdapter<VerticalListView
             }
         }
     }
-
     override fun onBind(holder: VerticalListViewHolder, position: Int, isLightBind: Boolean) {
         val artist = artists[position]
         when (holder) {
@@ -70,7 +57,6 @@ class AdapterArtists(initial: List<Artist>) : FastScrollAdapter<VerticalListView
             is LabelHolder -> holder.bind(artist, isLightBind)
         }
     }
-
     override fun getItemCount(): Int = artists.size
     override fun getItemViewType(position: Int): Int {
         val mode = ArtistPreferences.getGridSize()
@@ -80,20 +66,16 @@ class AdapterArtists(initial: List<Artist>) : FastScrollAdapter<VerticalListView
             else -> CommonPreferencesConstants.GRID_TYPE_LIST
         }
     }
-
     override fun onViewRecycled(holder: VerticalListViewHolder) {
         holder.itemView.clearAnimation()
         super.onViewRecycled(holder)
     }
-
     fun setGeneralAdapterCallbacks(callbacks: GeneralAdapterCallbacks) {
         this.generalAdapterCallbacks = callbacks
     }
-
     fun updateList(newArtists: List<Artist>) {
         differ.submitList(newArtists.toList())
     }
-
     inner class ListHolder(val binding: AdapterStyleListBinding) : VerticalListViewHolder(binding.root) {
         fun bind(artist: Artist, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(artist.name)
@@ -110,7 +92,6 @@ class AdapterArtists(initial: List<Artist>) : FastScrollAdapter<VerticalListView
             }
         }
     }
-
     inner class GridHolder(val binding: AdapterStyleGridBinding) : VerticalListViewHolder(binding.root) {
         fun bind(artist: Artist, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(artist.name)
@@ -118,7 +99,6 @@ class AdapterArtists(initial: List<Artist>) : FastScrollAdapter<VerticalListView
             binding.secondaryDetail.setTextOrUnknown(context.resources.getQuantityString(R.plurals.number_of_songs, artist.trackCount, artist.trackCount))
             if (isLightBind) return
             binding.albumArt.loadArtCoverWithPayload(item = artist)
-
             binding.container.setOnLongClickListener {
                 generalAdapterCallbacks?.onArtistLongClicked(artists, bindingAdapterPosition, binding.albumArt)
                 true
@@ -128,7 +108,6 @@ class AdapterArtists(initial: List<Artist>) : FastScrollAdapter<VerticalListView
             }
         }
     }
-
     inner class LabelHolder(val binding: AdapterStyleLabelsBinding) : VerticalListViewHolder(binding.root) {
         fun bind(artist: Artist, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(artist.name)

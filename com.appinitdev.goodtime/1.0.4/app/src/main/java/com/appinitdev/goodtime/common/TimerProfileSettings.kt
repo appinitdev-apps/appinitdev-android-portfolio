@@ -1,29 +1,3 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
 @Composable
 fun TimerProfileSettings(
     timerProfile: TimerProfile,
@@ -33,7 +7,6 @@ fun TimerProfileSettings(
     onEditProfiles: (() -> Unit)? = null,
     onBreakBudgetInfo: () -> Unit,
 ) {
-    
     AnimatedVisibility(timerProfiles.isNotEmpty(), enter = expandVertically() + fadeIn(), exit = shrinkVertically() + fadeOut()) {
         Row(
             modifier =
@@ -67,16 +40,12 @@ fun TimerProfileSettings(
             }
         }
     }
-
-    
     TimerTypeRow(
         isCountDown = timerProfile.isCountdown,
         onCountDownEnabled = {
             onTimerProfileChange(timerProfile.copy(isCountdown = it))
         },
     )
-
-    
     AnimatedVisibility(timerProfile.isCountdown, enter = expandVertically() + fadeIn(), exit = shrinkVertically() + fadeOut()) {
         Column {
             EditableNumberListItem(
@@ -129,8 +98,6 @@ fun TimerProfileSettings(
             )
         }
     }
-
-    
     AnimatedVisibility(!timerProfile.isCountdown, enter = expandVertically() + fadeIn(), exit = shrinkVertically() + fadeOut()) {
         Column {
             val toggleBreak = {
@@ -177,12 +144,6 @@ fun TimerProfileSettings(
         }
     }
 }
-
- 
-
-
-
-
 @Composable
 fun BreakBudgetInfoDialog(onDismiss: () -> Unit) {
     InfoDialog(

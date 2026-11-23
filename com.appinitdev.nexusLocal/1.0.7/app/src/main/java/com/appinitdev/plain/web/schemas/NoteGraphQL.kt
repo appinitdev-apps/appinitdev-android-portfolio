@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addNoteSchema() {
     query("notes") {
         configure {

@@ -1,21 +1,10 @@
-
- 
-
-
 object ModelDownloader {
     @Volatile private var cancelled = false
     @Volatile private var activeConn: HttpURLConnection? = null
-
     fun cancel() {
         cancelled = true
         activeConn?.disconnect()
     }
-
-     
-
-
-
-
     suspend fun download(
         files: List<ModelFile>,
         destDir: File,
@@ -48,7 +37,6 @@ object ModelDownloader {
             return false
         }
     }
-
     private fun downloadFile(
         url: String,
         dest: File,
@@ -85,5 +73,4 @@ object ModelDownloader {
         return downloaded
     }
 }
-
 data class ModelFile(val url: String, val filename: String, val size: Long)

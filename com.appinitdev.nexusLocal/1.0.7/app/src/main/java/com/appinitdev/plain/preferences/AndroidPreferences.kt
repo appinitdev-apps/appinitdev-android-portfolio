@@ -1,4 +1,3 @@
-
 fun DarkThemePreference.setDarkMode(theme: DarkTheme) {
     when (theme) {
         DarkTheme.ON -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -6,27 +5,21 @@ fun DarkThemePreference.setDarkMode(theme: DarkTheme) {
         else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
 }
-
 suspend fun DarkThemePreference.putAsync(value: DarkTheme) {
     putAsync(value.value)   
     setDarkMode(value)
 }
-
 fun LanguagePreference.getLocale(preferences: Preferences): Locale? {
     return parseLocale(get(preferences))
 }
-
 suspend fun LanguagePreference.getLocaleAsync(): Locale? {
     return parseLocale(getAsync())
 }
-
 private fun parseLocale(value: String): Locale? {
     if (value.isEmpty()) return null
     val s = value.split("-")
     return if (s.size > 1) Locale(s[0], s[1]) else Locale(value)
 }
-
-
 suspend fun LanguagePreference.putAsync(locale: Locale?) {
     var value = ""
     if (locale != null) {
@@ -36,17 +29,13 @@ suspend fun LanguagePreference.putAsync(locale: Locale?) {
     putAsync(value)   
     Language.setLocale(MainApp.instance, locale ?: LocaleList.getDefault().get(0))
 }
-
-
 suspend fun AudioPlayModePreference.getValueAsync(): MediaPlayMode =
     MediaPlayMode.entries.getOrElse(getAsync()) { MediaPlayMode.REPEAT }
-
 suspend fun ApiPermissionsPreference.putAsync(permission: Permission, enable: Boolean) {
     val permissions = getAsync().toMutableSet()
     if (enable) permissions.add(permission.name) else permissions.remove(permission.name)
     putAsync(permissions)   
 }
-
 suspend fun AdbTokenPreference.ensureValueAsync(preferences: Preferences) {
     TempData.adbToken = get(preferences)
     if (TempData.adbToken.isEmpty()) {
@@ -54,14 +43,10 @@ suspend fun AdbTokenPreference.ensureValueAsync(preferences: Preferences) {
         putAsync(TempData.adbToken)
     }
 }
-
 suspend fun AdbTokenPreference.resetAsync() {
     TempData.adbToken = CryptoHelper.randomPassword(32)
     putAsync(TempData.adbToken)
 }
-
-
-
 suspend fun UrlTokenPreference.ensureValueAsync(preferences: Preferences) {
     val rotateOnRestart = RotateUrlTokenOnRestartPreference.get(preferences)
     if (rotateOnRestart) {
@@ -79,15 +64,11 @@ suspend fun UrlTokenPreference.ensureValueAsync(preferences: Preferences) {
         TempData.urlToken = Base64.decode(keyStr, Base64.NO_WRAP)
     }
 }
-
 suspend fun UrlTokenPreference.resetAsync() {
     val keyStr = CryptoHelper.generateChaCha20Key()
     TempData.urlToken = Base64.decode(keyStr, Base64.NO_WRAP)
     putAsync(keyStr)
 }
-
-
-
 suspend fun ClientIdPreference.ensureValueAsync(preferences: Preferences) {
     TempData.clientId = get(preferences)
     if (TempData.clientId.isEmpty()) {
@@ -95,9 +76,6 @@ suspend fun ClientIdPreference.ensureValueAsync(preferences: Preferences) {
         putAsync(TempData.clientId)
     }
 }
-
-
-
 suspend fun KeyStorePasswordPreference.ensureValueAsync(preferences: Preferences) {
     var password = get(preferences)
     if (password.isEmpty()) {
@@ -105,11 +83,9 @@ suspend fun KeyStorePasswordPreference.ensureValueAsync(preferences: Preferences
         putAsync(password)
     }
 }
-
 suspend fun KeyStorePasswordPreference.resetAsync() {
     putAsync(StringHelper.shortUUID())
 }
-
 suspend fun MdnsHostnamePreference.ensureValueAsync(preferences: Preferences) {
     val stored = preferences[key]
     if (stored.isNullOrEmpty()) {

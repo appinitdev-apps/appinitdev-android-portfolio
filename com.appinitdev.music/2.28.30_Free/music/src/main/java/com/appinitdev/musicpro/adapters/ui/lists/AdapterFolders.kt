@@ -1,8 +1,5 @@
-
 class AdapterFolders(initial: List<Folder>) : FastScrollAdapter<VerticalListViewHolder>() {
-
     private var callbacks: GeneralAdapterCallbacks? = null
-
     private val listUpdateCallback = object : ListUpdateCallback {
         override fun onInserted(position: Int, count: Int) {
             if (count > 100) {
@@ -11,7 +8,6 @@ class AdapterFolders(initial: List<Folder>) : FastScrollAdapter<VerticalListView
                 notifyItemRangeInserted(position, count)
             }
         }
-
         override fun onRemoved(position: Int, count: Int) {
             if (count > 100) {
                 notifyDataSetChanged()
@@ -19,33 +15,26 @@ class AdapterFolders(initial: List<Folder>) : FastScrollAdapter<VerticalListView
                 notifyItemRangeRemoved(position, count)
             }
         }
-
         override fun onMoved(fromPosition: Int, toPosition: Int) {
             notifyItemMoved(fromPosition, toPosition)
         }
-
         override fun onChanged(position: Int, count: Int, payload: Any?) {
             notifyItemRangeChanged(position, count, payload)
         }
     }
-
     private val diffCallback = object : DiffUtil.ItemCallback<Folder>() {
         override fun areItemsTheSame(oldItem: Folder, newItem: Folder) = oldItem.id == newItem.id
         override fun areContentsTheSame(oldItem: Folder, newItem: Folder) = oldItem == newItem
     }
-
     private val differ = AsyncListDiffer(
             listUpdateCallback,
             AsyncDifferConfig.Builder(diffCallback).build()
     )
-
     private val list: List<Folder> get() = differ.currentList
-
     init {
         setHasStableIds(true)
         differ.submitList(initial.toList())
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         return when (viewType) {
             CommonPreferencesConstants.GRID_TYPE_GRID -> {
@@ -59,7 +48,6 @@ class AdapterFolders(initial: List<Folder>) : FastScrollAdapter<VerticalListView
             }
         }
     }
-
     override fun onBind(holder: VerticalListViewHolder, position: Int, isLightBind: Boolean) {
         val folder = list[position]
         when (holder) {
@@ -68,7 +56,6 @@ class AdapterFolders(initial: List<Folder>) : FastScrollAdapter<VerticalListView
             is LabelHolder -> holder.bind(folder, isLightBind)
         }
     }
-
     override fun getItemId(position: Int): Long = list[position].id
     override fun getItemCount(): Int = list.size
     override fun getItemViewType(position: Int): Int {
@@ -79,7 +66,6 @@ class AdapterFolders(initial: List<Folder>) : FastScrollAdapter<VerticalListView
             else -> CommonPreferencesConstants.GRID_TYPE_LIST
         }
     }
-
     inner class GridHolder(private val binding: AdapterStyleGridBinding) : VerticalListViewHolder(binding.root) {
         fun bind(folder: Folder, isLightBind: Boolean) {
             binding.container.enableGridMode = true
@@ -91,7 +77,6 @@ class AdapterFolders(initial: List<Folder>) : FastScrollAdapter<VerticalListView
             binding.container.setOnClickListener { callbacks?.onFolderClicked(folder, it) }
         }
     }
-
     inner class ListHolder(private val binding: AdapterFoldersListBinding) : VerticalListViewHolder(binding.root) {
         fun bind(folder: Folder, isLightBind: Boolean) {
             binding.name.text = folder.name
@@ -101,7 +86,6 @@ class AdapterFolders(initial: List<Folder>) : FastScrollAdapter<VerticalListView
             binding.container.setOnClickListener { callbacks?.onFolderClicked(folder, it) }
         }
     }
-
     inner class LabelHolder(private val binding: AdapterStyleLabelsBinding) : VerticalListViewHolder(binding.root) {
         fun bind(folder: Folder, isLightBind: Boolean) {
             binding.title.text = folder.name
@@ -111,11 +95,9 @@ class AdapterFolders(initial: List<Folder>) : FastScrollAdapter<VerticalListView
             binding.container.setOnClickListener { callbacks?.onFolderClicked(folder, it) }
         }
     }
-
     fun setCallbackListener(listener: GeneralAdapterCallbacks) {
         this.callbacks = listener
     }
-
     fun updateList(newFolders: List<Folder>) {
         differ.submitList(newFolders.toList())
     }

@@ -1,4 +1,3 @@
-
 @Composable
 fun ChatText(
     context: Context,
@@ -10,7 +9,6 @@ fun ChatText(
 ) {
     val messageText = m.value as DMessageText
     val text = messageText.text.linkify()
-
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -31,7 +29,6 @@ fun ChatText(
             onDoubleClick = onDoubleClick,
             onLongClick = onLongClick
         )
-
         if (messageText.linkPreviews.isNotEmpty()) {
             messageText.linkPreviews.forEach { linkPreview ->
                 ChatLinkPreview(

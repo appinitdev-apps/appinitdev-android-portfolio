@@ -1,4 +1,3 @@
-
 @SuppressLint("SourceLockedOrientationActivity", "UnsafeOptInUsageError")
 @Composable
 fun VideoPlayer(
@@ -14,8 +13,6 @@ fun VideoPlayer(
         videoState = videoState,
         usePlayerController = false,
     )
-
-    
     if (videoState.isFullscreenMode && videoState.player == player) {
         VideoPlayerFullScreenDialog(
             player = player,
@@ -24,13 +21,11 @@ fun VideoPlayer(
         )
     }
 }
-
 @OptIn(UnstableApi::class)
 @Composable
 fun rememberVideoPlayer(context: Context, playerInstance: ExoPlayer.() -> Unit = {}): ExoPlayer {
     return remember {
         val httpDataSourceFactory = DefaultHttpDataSource.Factory()
-
         ExoPlayer.Builder(context)
             .setSeekBackIncrementMs(10000L)
             .setSeekForwardIncrementMs(10000L)

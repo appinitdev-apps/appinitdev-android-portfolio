@@ -1,13 +1,7 @@
-
 object SmsConversationHelper {
     private val conversationsUri = "content://mms-sms/conversations?simple=true".toUri()
     private val smsUri = Telephony.Sms.CONTENT_URI
     private val mmsUri = Telephony.Mms.CONTENT_URI
-
-     
-
-
-
     private suspend fun getActiveArchivedIds(context: Context): Set<String> {
         val archivedRecords = AppDatabase.instance.archivedConversationDao().getAll()
         if (archivedRecords.isEmpty()) return emptySet()
@@ -17,10 +11,6 @@ object SmsConversationHelper {
             conv == null || conv.date.toEpochMilliseconds() <= archived.conversationDate
         }.map { it.conversationId }.toSet()
     }
-
-     
-
-
     private fun getSnippetBeforeDate(context: Context, threadId: String, beforeDate: Long): String? {
         return context.contentResolver.queryCursor(
             smsUri,
@@ -32,11 +22,6 @@ object SmsConversationHelper {
             cursor.getStringValue(Telephony.Sms.BODY, cache)
         }
     }
-
-     
-
-
-
     suspend fun getArchivedConversations(context: Context): List<DMessageConversation> {
         val archivedRecords = AppDatabase.instance.archivedConversationDao().getAll()
             .sortedByDescending { it.conversationDate }
@@ -52,7 +37,6 @@ object SmsConversationHelper {
             )
         }
     }
-
     private fun getConversationsProjection(): Array<String> {
         return arrayOf(
             BaseColumns._ID,
@@ -62,16 +46,13 @@ object SmsConversationHelper {
             Telephony.Threads.READ,
         )
     }
-
     private fun queryConversationsByThreadIds(context: Context, threadIds: List<String>): Map<String, DMessageConversation> {
         if (threadIds.isEmpty()) {
             return emptyMap()
         }
-
         val where = ContentWhere().apply {
             addIn(BaseColumns._ID, threadIds)
         }
-
         return context.contentResolver.queryCursor(
             conversationsUri,
             getConversationsProjection(),
@@ -89,15 +70,11 @@ object SmsConversationHelper {
             )
         }?.associateBy { it.id } ?: emptyMap()
     }
-
     private val canonicalAddressesUri = "content://mms-sms/canonical-addresses".toUri()
-
     private fun batchGetCanonicalAddresses(context: Context, recipientIds: Set<String>): Map<String, String> {
         if (recipientIds.isEmpty()) return emptyMap()
-
         val where = ContentWhere().apply { addIn(BaseColumns._ID, recipientIds.toList()) }
         val result = mutableMapOf<String, String>()
-
         context.contentResolver.queryCursor(
             canonicalAddressesUri,
             arrayOf(BaseColumns._ID, "address"),
@@ -112,17 +89,13 @@ object SmsConversationHelper {
                 if (address.isNotEmpty()) result[id] = address
             }
         }
-
         return result
     }
-
     private fun queryConversationsWithAddresses(context: Context, threadIds: List<String>): Map<String, DMessageConversation> {
         if (threadIds.isEmpty()) return emptyMap()
-
         val where = ContentWhere().apply { addIn(BaseColumns._ID, threadIds) }
         val threadRecipientMap = mutableMapOf<String, String>()
         val conversationMap = mutableMapOf<String, DMessageConversation>()
-
         context.contentResolver.queryCursor(
             conversationsUri,
             arrayOf(
@@ -150,7 +123,6 @@ object SmsConversationHelper {
                 }
             }
         }
-
         val addressMap = batchGetCanonicalAddresses(context, threadRecipientMap.values.toSet())
         threadRecipientMap.forEach { (threadId, recipientId) ->
             val address = addressMap[recipientId]
@@ -158,10 +130,8 @@ object SmsConversationHelper {
                 conversationMap[threadId] = conversationMap[threadId]!!.copy(address = address)
             }
         }
-
         return conversationMap
     }
-
     private suspend fun buildWhereAsync(query: String): ContentWhere {
         val where = ContentWhere()
         if (query.isNotEmpty()) {
@@ -170,35 +140,27 @@ object SmsConversationHelper {
                     "text" -> {
                         where.add("${Telephony.Sms.BODY} LIKE ?", "%${it.value}%")
                     }
-
                     "ids" -> {
                         where.addIn(BaseColumns._ID, it.value.split(","))
                     }
-
                     "type" -> {
                         where.add("${Telephony.Sms.TYPE} = ?", it.value)
                     }
-
                     "thread_id" -> {
                         where.add("${Telephony.Sms.THREAD_ID} = ?", it.value)
                     }
                 }
             }
         }
-
         return where
     }
-
     private suspend fun getMatchedThreadIdsAsync(context: Context, query: String): List<String> {
         if (query.isEmpty()) {
             return emptyList()
         }
-
         val conditions = QueryHelper.parseAsync(query)
         val where = buildWhereAsync(query)
         val ids = linkedSetOf<String>()
-
-        
         context.contentResolver.queryCursor(
             smsUri,
             arrayOf(Telephony.Sms.THREAD_ID),
@@ -211,8 +173,6 @@ object SmsConversationHelper {
                 ids.add(cursor.getStringValue(Telephony.Sms.THREAD_ID, cache))
             }
         }
-
-        
         val hasTextOrIdsFilter = conditions.any { it.name == "text" || it.name == "ids" }
         if (!hasTextOrIdsFilter) {
             val mmsWhere = ContentWhere()
@@ -225,7 +185,6 @@ object SmsConversationHelper {
                 mmsWhere.add("${Telephony.Mms.THREAD_ID} = ?", threadIdCondition.value)
             }
             mmsWhere.add("m_type IN (128, 130)")
-
             context.contentResolver.queryCursor(
                 mmsUri,
                 arrayOf(Telephony.Mms.THREAD_ID),
@@ -239,16 +198,13 @@ object SmsConversationHelper {
                 }
             }
         }
-
         return ids.toList()
     }
-
     suspend fun getConversationsByIds(context: Context, ids: List<String>): List<DMessageConversation> {
         if (ids.isEmpty()) return emptyList()
         val conversationMap = queryConversationsWithAddresses(context, ids)
         return ids.mapNotNull { conversationMap[it] }
     }
-
     suspend fun searchConversationsAsync(
         context: Context,
         query: String,
@@ -264,25 +220,18 @@ object SmsConversationHelper {
             val conversationMap = queryConversationsWithAddresses(context, threadIds)
             return threadIds.mapNotNull { conversationMap[it] }
         }
-
-        
         val archivedRecords = AppDatabase.instance.archivedConversationDao().getAll()
         val archivedMap = archivedRecords.associateBy { it.conversationId }
-
         val conversations = mutableListOf<DMessageConversation>()
         val recipientMap = mutableMapOf<String, String>() 
         var skip = 0
-
-        
         val sortOrder = if (archivedMap.isEmpty() && offset == 0) {
             "${Telephony.Threads.DATE} DESC LIMIT $limit"
         } else if (archivedMap.isEmpty()) {
             "${Telephony.Threads.DATE} DESC LIMIT ${offset + limit}"
         } else {
-            
             "${Telephony.Threads.DATE} DESC LIMIT ${offset + limit + archivedMap.size}"
         }
-
         context.contentResolver.queryCursor(
             conversationsUri,
             arrayOf(
@@ -296,7 +245,6 @@ object SmsConversationHelper {
             while (cursor.moveToNext() && conversations.size < limit) {
                 val id = cursor.getStringValue(BaseColumns._ID, cache)
                 val date = cursor.getTimeValue(Telephony.Threads.DATE, cache)
-                
                 val archived = archivedMap[id]
                 if (archived != null && date.toEpochMilliseconds() <= archived.conversationDate) continue
                 if (skip < offset) { skip++; continue }
@@ -314,10 +262,7 @@ object SmsConversationHelper {
                 }
             }
         }
-
         if (conversations.isEmpty()) return emptyList()
-
-        
         val addressMap = batchGetCanonicalAddresses(context, recipientMap.values.toSet())
         return conversations.map { conv ->
             val recipientId = recipientMap[conv.id]
@@ -327,20 +272,11 @@ object SmsConversationHelper {
             } else conv
         }
     }
-
     suspend fun conversationCountAsync(context: Context, query: String): Int {
         val activeArchivedIds = getActiveArchivedIds(context)
-
         if (query.isNotEmpty()) {
             return getMatchedThreadIdsAsync(context, query).count { !activeArchivedIds.contains(it) }
         }
-
-        
-        
-        
-        
-        
-        
         var count = 0
         context.contentResolver.queryCursor(
             conversationsUri,
@@ -351,7 +287,6 @@ object SmsConversationHelper {
         )?.use { cursor ->
             count = cursor.count
         }
-
         return count - activeArchivedIds.size
     }
 }

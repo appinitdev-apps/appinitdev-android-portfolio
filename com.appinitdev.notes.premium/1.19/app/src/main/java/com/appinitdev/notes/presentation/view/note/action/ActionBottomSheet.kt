@@ -1,13 +1,9 @@
-
- 
 open class ActionBottomSheet(
     private val actions: Collection<Action>,
     @ColorInt private val color: Int? = null,
 ) : BottomSheetDialogFragment() {
-
     lateinit var layout: LinearLayout
     lateinit var inflater: LayoutInflater
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -66,7 +62,6 @@ open class ActionBottomSheet(
                 }
             layout.addView(textView)
         }
-
         color?.let {
             layout.apply {
                 setBackgroundColor(it)
@@ -75,7 +70,6 @@ open class ActionBottomSheet(
         }
         return scrollView
     }
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog =
             BottomSheetDialog(
@@ -94,7 +88,6 @@ open class ActionBottomSheet(
                 BottomSheetBehavior.from(bottomSheet).apply {
                     state = BottomSheetBehavior.STATE_EXPANDED
                     isHideable = false
-                    
                     setBottomSheetCallback(
                         object : BottomSheetCallback() {
                             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -102,7 +95,6 @@ open class ActionBottomSheet(
                                     dismiss()
                                 }
                             }
-
                             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                                 state = BottomSheetBehavior.STATE_EXPANDED
                             }
@@ -113,20 +105,13 @@ open class ActionBottomSheet(
         }
         return dialog
     }
-
     fun hide() {
         (dialog as? BottomSheetDialog)?.behavior?.state = STATE_HIDDEN
     }
 }
-
 data class Action(
     val labelResId: Int,
     val drawableResId: Int,
     val showDividerAbove: Boolean = false,
-     
-
-
-
-
     val callback: (actionBottomSheet: ActionBottomSheet) -> Boolean,
 )

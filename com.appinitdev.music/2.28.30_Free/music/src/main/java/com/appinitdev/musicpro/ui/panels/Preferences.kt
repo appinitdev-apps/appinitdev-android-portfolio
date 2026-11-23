@@ -1,35 +1,24 @@
-
 class Preferences : MediaFragment() {
-
     private lateinit var binding: FragmentPreferencesBinding
     private lateinit var headerBinding: HeaderPreferencesBinding
-
     private var adapter: AdapterPreference? = null
-
     private val preferencesViewModel: PreferencesViewModel by viewModels({ this })
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-
         binding = FragmentPreferencesBinding.inflate(inflater, container, false)
         headerBinding = HeaderPreferencesBinding.inflate(inflater, container, false)
-
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireHiddenMiniPlayer()
         binding.header.setContentView(headerBinding.root)
         binding.header.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
-
         headerBinding.search.setOnClickListener {
             openFragment(PreferenceSearch.newInstance(), PreferenceSearch.TAG)
         }
-
         preferencesViewModel.getPreferences().observe(viewLifecycleOwner) { preferences ->
             adapter = AdapterPreference(preferences)
             binding.recyclerView.adapter = adapter
-
             adapter?.setAdapterPreferenceCallbacks(object : AdapterPreference.Companion.AdapterPreferenceCallbacks {
                 override fun onPreferenceClicked(preference: PreferencesViewModel.Companion.Preference, position: Int, view: View) {
                     when (preference.title) {
@@ -65,10 +54,8 @@ class Preferences : MediaFragment() {
             })
         }
     }
-
     override val wantsMiniPlayerVisible: Boolean
         get() = false
-
     companion object {
         fun newInstance(): Preferences {
             val args = Bundle()
@@ -76,7 +63,6 @@ class Preferences : MediaFragment() {
             fragment.arguments = args
             return fragment
         }
-
         const val TAG = "Preferences"
     }
 }

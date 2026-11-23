@@ -1,4 +1,3 @@
-
 @Composable
 fun VideoPreviewActions(context: Context, castViewModel: CastViewModel, m: PreviewItem, state: MediaPreviewerState) {
     val videoState = state.videoState
@@ -6,7 +5,6 @@ fun VideoPreviewActions(context: Context, castViewModel: CastViewModel, m: Previ
     val scope = rememberCoroutineScope()
     CastDialog(castViewModel)
     LaunchedEffect(Unit) { while (true) { scope.launch { state.videoState.updateTime() }; delay(1.seconds) } }
-
     Box(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 32.dp).navigationBarsPadding().alpha(state.uiAlpha.value)) {
         Column(modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp), horizontalAlignment = Alignment.End) {
             VideoButtons1(context, videoState)
@@ -44,7 +42,6 @@ fun VideoPreviewActions(context: Context, castViewModel: CastViewModel, m: Previ
         }
     }
 }
-
 @Composable
 fun VideoButtons2(videoState: VideoState, scope: CoroutineScope) {
     val sliderProgress = if (videoState.totalTime <= 0L) 0f else (videoState.currentTime.toFloat() / videoState.totalTime.toFloat()).coerceIn(0f, 1f)

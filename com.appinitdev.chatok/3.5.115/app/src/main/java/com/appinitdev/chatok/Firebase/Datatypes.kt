@@ -1,10 +1,8 @@
-
 @Keep
 data class SignInResult (
     val data: UserData?,
     val errmsg: String?
 )
-
 @Keep
 data class UserData (
     var userId: String = "",
@@ -36,7 +34,6 @@ data class UserData (
     val boostedUntil: Timestamp? = null, 
     val interests: List<String> = emptyList()
 )
-
 @Keep
 data class Pref (
     var verificada: Boolean = false, 
@@ -51,7 +48,6 @@ data class Pref (
     val anim: Int = 3,
     val customImg: String = ""
 )
-
 @Keep
 data class ScheduledMsg (
     val username: String = "",
@@ -61,7 +57,6 @@ data class ScheduledMsg (
     val senderId: String = "",
     val time: Timestamp? = Timestamp.now()
 )
-
 @Keep
 data class ChatData (
     val chatId: String = "",
@@ -70,7 +65,6 @@ data class ChatData (
     val user2: ChatUserData? = null,
     val accepted: Boolean = false 
 )
-
 @Keep
 @Immutable
 data class Message (
@@ -97,7 +91,6 @@ data class Message (
     val viewedAt: Timestamp? = null,
     var localTime: Long = System.currentTimeMillis()
 )
-
 @Keep
 @Immutable
 data class Reaction (
@@ -106,7 +99,6 @@ data class Reaction (
     val userId: String = "",
     val reaction: String = ""
 )
-
 @Keep
 data class ChatUserData (
     val userId: String = "",
@@ -127,7 +119,6 @@ data class ChatUserData (
     val unread: Int = 0,
     @get:PropertyName("isVerified") @set:PropertyName("isVerified") var isVerified: Boolean = false
 )
-
 @Keep
 data class Story (
     val id: String = "",
@@ -138,7 +129,6 @@ data class Story (
     @ServerTimestamp 
     val time: Timestamp? = null
 )
-
 @Keep
 data class Image (
     val imgUrl: String = "",
@@ -148,7 +138,6 @@ data class Image (
     val price: Int = 0,
     val unlockedBy: List<String> = emptyList() 
 )
-
 @Keep
 data class StoryViewer (
     val ppurl: String = "",
@@ -157,17 +146,12 @@ data class StoryViewer (
     val reaction: String = "",
     val time: Timestamp? = Timestamp.now()
 )
-
-
-
 @Keep
 data class GroupMember(
     val userId: String = "",
     val username: String = "",
     val ppurl: String = "",
-   
 )
-
 @Keep
 data class GroupChatData(
     val groupId: String = "",
@@ -181,7 +165,6 @@ data class GroupChatData(
     val membersInfo: List<GroupMember> = emptyList(), 
     val lastMessage: Message? = null
 )
-
 @Keep
 data class VerificationRequest(
     val requestId: String = "",
@@ -194,7 +177,6 @@ data class VerificationRequest(
     @ServerTimestamp
     val timestamp: Timestamp? = null
 )
-
 @Keep
 data class ReportRequest(
     val reportId: String = "",

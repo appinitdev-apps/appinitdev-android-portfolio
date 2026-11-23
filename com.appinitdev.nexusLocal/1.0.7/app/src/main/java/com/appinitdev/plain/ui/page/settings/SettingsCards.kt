@@ -1,10 +1,8 @@
-
 @Composable
 internal fun SettingsCardItems(navController: NavHostController) {
     val darkTheme = LocalDarkTheme.current
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-
     PCard {
         PListItem(
             modifier = Modifier.clickable {
@@ -51,7 +49,6 @@ internal fun SettingsCardItems(navController: NavHostController) {
         )
     }
 }
-
 @Composable
 internal fun DeveloperSettingsCard(navController: NavHostController) {
     PCard {

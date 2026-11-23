@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomerSelectionDialog(
@@ -8,12 +7,8 @@ fun CustomerSelectionDialog(
     onSelect: (Customer?) -> Unit,
 ) {
     if (!showDialog) return
-
-    
     val customers by viewModel.filteredCustomers.collectAsStateWithLifecycle()
     var searchQuery by remember { mutableStateOf("") }
-
-    
     val filteredCustomers = remember(searchQuery, customers) {
         customers.filter {
             it.fullName.contains(searchQuery, ignoreCase = true) ||
@@ -21,11 +16,8 @@ fun CustomerSelectionDialog(
                     (it.phone?.contains(searchQuery, ignoreCase = true) ?: false)
         }
     }
-
     Dialog(
         onDismissRequest = onDismiss, properties = DialogProperties(
-            
-
             decorFitsSystemWindows = false
         )
     ) {
@@ -43,9 +35,7 @@ fun CustomerSelectionDialog(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
-
                 Spacer(modifier = Modifier.height(8.dp))
-
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
@@ -54,12 +44,9 @@ fun CustomerSelectionDialog(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
-
                 Spacer(modifier = Modifier.height(8.dp))
-
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     items(filteredCustomers) { customer ->
-
                         CustomerCardCompose(
                             customer = customer,
                             onSelect = {
@@ -69,9 +56,7 @@ fun CustomerSelectionDialog(
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.height(8.dp))
-
                 Button(
                     onClick = {
                         onDismiss()
@@ -84,8 +69,6 @@ fun CustomerSelectionDialog(
         }
     }
 }
-
-
 @Composable
 fun CustomerCardCompose(
     customer: Customer,
@@ -108,7 +91,6 @@ fun CustomerCardCompose(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                
                 Text(
                     text = customer.fullName,
                     style = MaterialTheme.typography.titleMedium,
@@ -121,10 +103,7 @@ fun CustomerCardCompose(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-
                 Spacer(modifier = Modifier.height(4.dp))
-
-                
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
@@ -139,18 +118,13 @@ fun CustomerCardCompose(
                         color = if (customer.balance > BigDecimal.ZERO) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-
                 Spacer(modifier = Modifier.height(4.dp))
-
-                
                 Text(
                     text = "⭐ " + stringResource(R.string.pointss) + " ${customer.loyaltyPoints}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.secondary
                 )
             }
-
-            
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -161,7 +135,6 @@ fun CustomerCardCompose(
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
-
             }
         }
     }

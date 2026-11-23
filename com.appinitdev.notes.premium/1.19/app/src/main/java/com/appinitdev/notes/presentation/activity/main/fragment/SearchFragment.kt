@@ -1,8 +1,5 @@
-
 class SearchFragment : NotallyFragment() {
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        
         val initialFolder =
             arguments?.let {
                 BundleCompat.getSerializable(it, EXTRA_INITIAL_FOLDER, Folder::class.java)
@@ -12,7 +9,6 @@ class SearchFragment : NotallyFragment() {
             binding?.MainListView?.scrollIndicators = View.SCROLL_INDICATOR_TOP
         }
         super.onViewCreated(view, savedInstanceState)
-
         val initialLabel = arguments?.getString(EXTRA_INITIAL_LABEL)
         model.currentLabel = initialLabel
         if (initialLabel?.isEmpty() == true) {
@@ -22,7 +18,6 @@ class SearchFragment : NotallyFragment() {
                     Folder.DELETED -> R.id.Deleted
                     Folder.ARCHIVED -> R.id.Archived
                 }
-
             binding?.FilterChipGroup?.apply {
                 setOnCheckedStateChangeListener { _, checkedId ->
                     when (checkedId.firstOrNull()) {
@@ -39,11 +34,8 @@ class SearchFragment : NotallyFragment() {
             model.actionMode.updateSelected(items?.filterIsInstance<BaseNote>()?.map { it.id })
         }
     }
-
     override fun getBackground() = R.drawable.search
-
     override fun getObservable() = model.searchResults!!
-
     companion object {
         const val EXTRA_INITIAL_FOLDER = "notes.intent.extra.INITIAL_FOLDER"
         const val EXTRA_INITIAL_LABEL = "notes.intent.extra.INITIAL_LABEL"

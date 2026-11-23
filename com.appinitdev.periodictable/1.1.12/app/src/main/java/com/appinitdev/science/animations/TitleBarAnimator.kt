@@ -1,6 +1,4 @@
-
 object TitleBarAnimator {
-
     @JvmStatic
     fun animateVisibility(
         view: View,
@@ -8,9 +6,7 @@ object TitleBarAnimator {
         duration: Long = 200,
         visibleAlpha: Float = 1.0f
     ) {
-        
         view.animate().cancel()
-
         if (setVisible) {
             if (view.visibility != View.VISIBLE || view.alpha < visibleAlpha) {
                 view.alpha = 0f

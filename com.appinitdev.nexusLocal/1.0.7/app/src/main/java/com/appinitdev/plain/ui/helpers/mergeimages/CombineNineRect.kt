@@ -1,4 +1,3 @@
-
 object CombineNineRect {
     fun generateCombineBitmapEntity(
         combineWidth: Int,
@@ -48,25 +47,20 @@ object CombineNineRect {
         }
         return mList
     }
-
     private fun modifyListWhenCountThree(list: List<CombineBitmapEntity>) {
         list[0].x = (list[1].x + list[2].x) / 2
     }
-
     private fun modifyListWhenCountFive(list: List<CombineBitmapEntity>) {
         list[0].x = (list[3].x + list[2].x) / 2
         list[1].x = (list[1].x + list[3].x) / 2
     }
-
     private fun modifyListWhenCountSeven(list: List<CombineBitmapEntity>) {
         list[0].x = (list[1].x + list[2].x + list[3].x) / 3
     }
-
     private fun modifyListWhenCountEight(list: List<CombineBitmapEntity>) {
         list[0].x = (list[2].x + list[3].x) / 2
         list[1].x = (list[3].x + list[4].x) / 2
     }
-
     private fun generateColumnRowCountByCount(count: Int): ColumnRowCount {
         return when (count) {
             2 -> ColumnRowCount(1, 2, count)
@@ -76,7 +70,6 @@ object CombineNineRect {
             else -> ColumnRowCount(1, 1, count)
         }
     }
-
     private class ColumnRowCount(var rows: Int, var columns: Int, var count: Int) {
         override fun toString(): String {
             return (

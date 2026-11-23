@@ -1,19 +1,14 @@
-
 abstract class LockedActivity<T : ViewBinding> : AppCompatActivity() {
-
     private lateinit var notallyXApplication: NotallyXApplication
     private lateinit var biometricAuthenticationActivityResultLauncher:
         ActivityResultLauncher<Intent>
-
     protected lateinit var binding: T
     protected lateinit var preferences: NotallyXPreferences
     val baseModel: BaseNoteModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         notallyXApplication = (application as NotallyXApplication)
         preferences = NotallyXPreferences.getInstance(application)
-
         biometricAuthenticationActivityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
@@ -23,7 +18,6 @@ abstract class LockedActivity<T : ViewBinding> : AppCompatActivity() {
                 }
             }
     }
-
     override fun onResume() {
         if (preferences.biometricLock.value == BiometricLock.ENABLED) {
             if (hasToAuthenticateWithBiometric()) {
@@ -35,7 +29,6 @@ abstract class LockedActivity<T : ViewBinding> : AppCompatActivity() {
         }
         super.onResume()
     }
-
     override fun onPause() {
         super.onPause()
         if (
@@ -45,7 +38,6 @@ abstract class LockedActivity<T : ViewBinding> : AppCompatActivity() {
             hide()
         }
     }
-
     open fun showLockScreen() {
         showBiometricOrPinPrompt(
             true,
@@ -77,7 +69,6 @@ abstract class LockedActivity<T : ViewBinding> : AppCompatActivity() {
                         }
                         .show()
                 }
-
                 BIOMETRIC_ERROR_HW_NOT_PRESENT -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         baseModel.disableBiometricLock()
@@ -85,25 +76,20 @@ abstract class LockedActivity<T : ViewBinding> : AppCompatActivity() {
                     }
                     show()
                 }
-
                 else -> finish()
             }
         }
     }
-
     private fun unlock() {
         notallyXApplication.locked.value = false
         show()
     }
-
     protected fun show() {
         binding.root.visibility = VISIBLE
     }
-
     protected fun hide() {
         binding.root.visibility = INVISIBLE
     }
-
     private fun hasToAuthenticateWithBiometric(): Boolean {
         return ContextCompat.getSystemService(this, KeyguardManager::class.java)?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {

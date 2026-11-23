@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun FeedEntryListItem(
@@ -18,7 +17,6 @@ fun FeedEntryListItem(
                 feedEntriesVM.select(m.id)
             })
         }
-
         Surface(
             modifier =
             PlainTheme

@@ -1,4 +1,3 @@
-
 @Composable
 fun AceEditor(
     textFileVM: TextFileViewModel,
@@ -11,7 +10,6 @@ fun AceEditor(
             textFileVM.webView.value = null
         }
     }
-
     AndroidView(factory = {
         WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG)
         val webView = WebView(it)

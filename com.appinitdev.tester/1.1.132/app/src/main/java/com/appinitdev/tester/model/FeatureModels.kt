@@ -1,4 +1,3 @@
-
 @Keep
 data class BugReport(
     val id: String = "",
@@ -12,7 +11,6 @@ data class BugReport(
     val status: String = "Open", 
     val timestamp: Long = System.currentTimeMillis()
 )
-
 @Keep
 data class Survey(
     val id: String = "",
@@ -21,7 +19,6 @@ data class Survey(
     val questions: List<String> = emptyList(),
     val isActive: Boolean = true
 )
-
 @Keep
 data class SurveyResponse(
     val id: String = "",
@@ -30,7 +27,6 @@ data class SurveyResponse(
     val answers: Map<Int, String> = emptyMap(),
     val timestamp: Long = System.currentTimeMillis()
 )
-
 @Keep
 data class Achievement(
     val id: String = "",
@@ -39,7 +35,6 @@ data class Achievement(
     val iconResId: Int = 0,
     val pointsReward: Int = 0
 )
-
 @Keep
 data class UserNotification(
     val id: String = "",
@@ -52,7 +47,6 @@ data class UserNotification(
     val data: Map<String, String> = emptyMap(),
     val appId: String? = null
 )
-
 @Keep
 data class FeedbackReport14Days(
     val id: String = "",
@@ -67,14 +61,12 @@ data class FeedbackReport14Days(
     val sugerencias: String = "",
     val timestamp: Long = System.currentTimeMillis()
 )
-
 @Keep
 data class ChecklistItem(
     val id: String = "",
     val task: String = "",
     val isCompleted: Boolean = false
 )
-
 @Keep
 data class PointsTransaction(
     val id: String = "",
@@ -83,7 +75,6 @@ data class PointsTransaction(
     val reason: String = "", 
     val timestamp: Long = System.currentTimeMillis()
 )
-
 @Keep
 data class UserReport(
     val id: String = "",

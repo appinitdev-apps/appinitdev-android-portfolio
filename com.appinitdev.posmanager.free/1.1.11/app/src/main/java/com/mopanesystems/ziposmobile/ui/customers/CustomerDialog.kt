@@ -1,4 +1,3 @@
-
 @Composable
 fun CustomerDialog(
     customer: Customer,
@@ -8,9 +7,7 @@ fun CustomerDialog(
     var isEditing by remember { mutableStateOf(false) }
     var riskScore by remember { mutableStateOf(customer.riskScore) }
     var balanceText by remember { mutableStateOf(customer.balance.toPlainString()) }
-
     val balance = balanceText.toBigDecimalOrNull() ?: BigDecimal.ZERO
-
     AlertDialog(
         onDismissRequest = { onDismiss() },
         confirmButton = {
@@ -34,7 +31,6 @@ fun CustomerDialog(
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     customer.email?.let { InfoField(stringResource(R.string.email), it) }
                     customer.phone?.let { InfoField(stringResource(R.string.phone), it) }
@@ -46,16 +42,11 @@ fun CustomerDialog(
                     customer.notes?.let { InfoField(stringResource(R.string.notes), it) }
                     customer.notes?.let { InfoField(stringResource(R.string.points), customer.loyaltyPoints.toString()) }
                 }
-
                 HorizontalDivider(thickness = 1.dp, color = DividerDefaults.color)
-
-                
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = isEditing, onCheckedChange = { isEditing = it })
                     Text(stringResource(R.string.habilitar_edici_n), style = MaterialTheme.typography.bodyLarge)
                 }
-
-                
                 Column {
                     Text(text = stringResource(R.string.risk_score), style = MaterialTheme.typography.titleSmall)
                     Spacer(Modifier.size(4.dp))
@@ -64,13 +55,11 @@ fun CustomerDialog(
                             onClick = { if (riskScore > 0) riskScore-- },
                             enabled = isEditing && riskScore > 0
                         ) { Icon(Icons.Default.Remove, contentDescription = "Disminuir") }
-
                         val (emoji, color) = when {
                             riskScore == 0 -> "😊" to MaterialTheme.colorScheme.primary
                             riskScore in 1..3 -> "😐" to MaterialTheme.colorScheme.secondary
                             else -> "😡" to MaterialTheme.colorScheme.error
                         }
-
                         Text(
                             text = "$emoji $riskScore",
                             fontWeight = FontWeight.Bold,
@@ -78,15 +67,12 @@ fun CustomerDialog(
                             style = MaterialTheme.typography.titleMedium,
                             modifier = Modifier.padding(horizontal = 12.dp)
                         )
-
                         IconButton(
                             onClick = { if (riskScore < 10) riskScore++ },
                             enabled = isEditing && riskScore < 10
                         ) { Icon(Icons.Default.Add, contentDescription = "Aumentar") }
                     }
                 }
-
-                
                 Column {
                     Text(stringResource(R.string.balance), style = MaterialTheme.typography.titleSmall)
                     Spacer(Modifier.size(4.dp))
@@ -108,7 +94,6 @@ fun CustomerDialog(
                                 R.string.saldo_a_favor)
                             else -> MaterialTheme.colorScheme.primary to ""
                         }
-
                         Surface(
                             shape = MaterialTheme.shapes.medium,
                             color = color,
@@ -135,8 +120,6 @@ fun CustomerDialog(
         }
     )
 }
-
-
 @Composable
 private fun InfoRow(icon: String, text: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -145,7 +128,6 @@ private fun InfoRow(icon: String, text: String) {
         Text(text, style = MaterialTheme.typography.bodyLarge)
     }
 }
-
 @Composable
 private fun InfoField(label: String, value: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -161,189 +143,3 @@ private fun InfoField(label: String, value: String) {
         )
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

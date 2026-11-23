@@ -1,4 +1,3 @@
-
 @Composable
 fun SearchingScreenAnimation(modifier: Modifier = Modifier) {
     val infinite = rememberInfiniteTransition(label = "cast_search")
@@ -21,11 +20,9 @@ fun SearchingScreenAnimation(modifier: Modifier = Modifier) {
         ),
         label = "dot2",
     )
-
     Canvas(modifier = modifier) {
         val w = size.width
         val h = size.height
-
         val monH = h * 0.55f
         val monW = monH * 1.6f
         val phoneH = h * 0.50f
@@ -33,20 +30,16 @@ fun SearchingScreenAnimation(modifier: Modifier = Modifier) {
         val gap = w * 0.12f
         val totalW = monW + gap + phoneW
         val startX = ((w - totalW) / 2f).coerceAtLeast(0f)
-
         val monLeft = startX
         val monTop = (h - monH) / 2f - h * 0.04f
         drawMonitor(monLeft, monTop, monW, monH)
-
         val phoneLeft = startX + monW + gap
         val phoneTop = (h - phoneH) / 2f
         drawPhone(phoneLeft, phoneTop, phoneW, phoneH)
-
         val dotStartX = phoneLeft
         val dotStartY = phoneTop + phoneH * 0.38f
         val dotEndX = monLeft + monW
         val dotEndY = monTop + monH * 0.50f
-
         for ((progress, baseAlpha) in listOf(dot1 to 1f, dot2 to 0.6f)) {
             val x = lerp(dotStartX, dotEndX, progress)
             val y = lerp(dotStartY, dotEndY, progress)
@@ -63,5 +56,3 @@ fun SearchingScreenAnimation(modifier: Modifier = Modifier) {
         }
     }
 }
-
-

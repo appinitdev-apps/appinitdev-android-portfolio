@@ -1,7 +1,3 @@
-
- 
-
-
 data class MediaVideoSizing(
     val containerSize: IntSize,
     val videoIntrinsicSize: IntSize,
@@ -10,7 +6,6 @@ data class MediaVideoSizing(
     val videoRatio get() = if (videoIntrinsicSize.height == 0) 1f else videoIntrinsicSize.width.toFloat() / videoIntrinsicSize.height.toFloat()
     val widthFixed get() = videoRatio > containerRatio
     val superSize get() = videoIntrinsicSize.height > containerSize.height && videoIntrinsicSize.width > containerSize.width
-
     val displaySize: IntSize
         get() {
             if (videoIntrinsicSize == IntSize.Zero || containerSize == IntSize.Zero) return containerSize
@@ -22,12 +17,10 @@ data class MediaVideoSizing(
                 IntSize((h * videoRatio).toInt(), h)
             }
         }
-
     fun renderedSize(scale: Float) = IntSize(
         (displaySize.width * scale).toInt(),
         (displaySize.height * scale).toInt()
     )
-
     val maxScale: Float
         get() = when {
             superSize -> videoIntrinsicSize.width.toFloat() / displaySize.width.toFloat()

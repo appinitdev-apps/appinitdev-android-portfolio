@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarChat(
@@ -7,7 +6,6 @@ fun TopBarChat(
     onNavigateBack: () -> Unit,
 ) {
     val showMenu = remember { mutableStateOf(false) }
-
     PTopAppBar(
         navController = navController,
         navigationIcon = {

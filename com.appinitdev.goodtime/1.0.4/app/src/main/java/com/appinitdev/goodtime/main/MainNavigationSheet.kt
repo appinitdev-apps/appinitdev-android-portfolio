@@ -1,6 +1,4 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
-
 @Composable
 fun MainNavigationSheet(
     navController: NavController,
@@ -13,7 +11,6 @@ fun MainNavigationSheet(
     onNotificationPermissionGranted: (Boolean) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
     ModalBottomSheet(
         onDismissRequest = onHideSheet,
         sheetState = sheetState,
@@ -51,11 +48,9 @@ fun MainNavigationSheet(
                 onHideSheet()
             },
             onHideSheet = onHideSheet
-
         )
     }
 }
-
 @Composable
 fun MainNavigationSheetContent(
     settingsBadgeItemCount: Int,
@@ -83,7 +78,6 @@ fun MainNavigationSheetContent(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top,
     ) {
-
         if (showPro) {
             Spacer(Modifier.height(12.dp))
             ProListItem { navigateToPro() }
@@ -98,7 +92,6 @@ fun MainNavigationSheetContent(
             },
             onClick = navigateToLabels,
         )
-
         IconTextButton(
             title = stringResource(R.string.stats_title),
             icon = {
@@ -109,7 +102,6 @@ fun MainNavigationSheetContent(
             },
             onClick = navigateToStats,
         )
-
         if (settingsBadgeItemCount != 0) {
             ActionSection(
                 wasNotificationPermissionDenied = wasNotificationPermissionDenied,
@@ -118,7 +110,6 @@ fun MainNavigationSheetContent(
                 onUpdateClicked = onUpdateClicked,
             )
         } else {
-
         }
         IconTextButton(
             title = stringResource(R.string.settings_title),
@@ -130,8 +121,6 @@ fun MainNavigationSheetContent(
             },
             onClick = navigateToSettings,
         )
-
-
         IconTextButton(
             title = stringResource(R.string.backup_and_restore_title),
             icon = {
@@ -144,8 +133,6 @@ fun MainNavigationSheetContent(
                 navigateToBackup()
             },
         )
-
-
         IconTextButton(
             title =  stringResource(R.string.tutorial_title),
             icon = {
@@ -157,11 +144,8 @@ fun MainNavigationSheetContent(
             onClick = {
                 mainViewModel.setShowTutorial(true)
                 onHideSheet()
-
             },
-
         )
-
         IconTextButton(
             title = stringResource(R.string.about_app_intro),
             icon = {
@@ -173,9 +157,7 @@ fun MainNavigationSheetContent(
             onClick = {
                 mainViewModel.setShowOnboarding(true)
                 onHideSheet()
-
             },
-
             )
         Row(
             modifier = Modifier
@@ -191,8 +173,5 @@ fun MainNavigationSheetContent(
                 )
             )
         }
-
-
-
     }
 }

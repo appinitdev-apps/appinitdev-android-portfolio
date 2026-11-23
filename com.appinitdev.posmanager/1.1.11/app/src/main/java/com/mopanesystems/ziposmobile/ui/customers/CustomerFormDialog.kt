@@ -1,5 +1,3 @@
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomerFormDialog(
@@ -9,7 +7,6 @@ fun CustomerFormDialog(
     initialCustomer: Customer? = null
 ) {
     if (!showDialog) return
-
     var firstName by remember { mutableStateOf(initialCustomer?.firstName ?: "") }
     var lastName by remember { mutableStateOf(initialCustomer?.lastName ?: "") }
     var email by remember { mutableStateOf(initialCustomer?.email ?: "") }
@@ -21,7 +18,6 @@ fun CustomerFormDialog(
     var country by remember { mutableStateOf(initialCustomer?.country ?: "") }
     var notes by remember { mutableStateOf(initialCustomer?.notes ?: "") }
     var creditLimit by remember { mutableStateOf(initialCustomer?.creditLimit?.toPlainString() ?: "1000") }
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(decorFitsSystemWindows = false)
@@ -41,7 +37,6 @@ fun CustomerFormDialog(
                 tonalElevation = 8.dp
             ) {
                 val scrollState = rememberScrollState()
-
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -54,8 +49,6 @@ fun CustomerFormDialog(
                         text = if (initialCustomer == null) stringResource(R.string.nuevo_cliente) else stringResource(R.string.editar_cliente),
                         style = MaterialTheme.typography.headlineSmall
                     )
-
-                    
                     data class FieldConfig(val label: String, val value: String, val isNumeric: Boolean = false, val onChange: (String) -> Unit)
                     listOf(
                         FieldConfig(stringResource(R.string.nombre), firstName) { firstName = it },
@@ -80,8 +73,6 @@ fun CustomerFormDialog(
                             else KeyboardOptions.Default
                         )
                     }
-
-                    
                     OutlinedTextField(
                         value = creditLimit,
                         onValueChange = {
@@ -92,8 +83,6 @@ fun CustomerFormDialog(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth()
                     )
-
-                    
                     Row(
                         horizontalArrangement = Arrangement.End,
                         modifier = Modifier.fillMaxWidth()
@@ -119,7 +108,6 @@ fun CustomerFormDialog(
         }
     }
 }
-
 fun createNewCustomerOrUpdate(
     firstName: String,
     lastName: String,

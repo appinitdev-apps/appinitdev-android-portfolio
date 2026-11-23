@@ -1,4 +1,3 @@
-
 class TextFileViewModel : ViewModel() {
     val isDataLoading = mutableStateOf(true)
     val isEditorReady = mutableStateOf(false)
@@ -10,29 +9,21 @@ class TextFileViewModel : ViewModel() {
     val content = mutableStateOf("")
     val oldContent = mutableStateOf<String?>(null)
     val isExternalFile = mutableStateOf(false)
-
     suspend fun loadConfigAsync(context: Context) {
         wrapContent.value = EditorWrapContentPreference.getAsync()
     }
-
     fun loadFileAsync(context: Context, path: String, mediaId: String) {
         try {
             if (mediaId.isNotEmpty()) {
                 file.value = FileMediaStoreHelper.getByIdAsync(context, mediaId)
             }
-            
-            
             isExternalFile.value = path.startsWith("content://")
-            
-            
             content.value = if (path.startsWith("content://")) {
-                
                 val uri = Uri.parse(path)
                 context.contentResolver.openInputStream(uri)?.use { inputStream ->
                     inputStream.bufferedReader().readText()
                 } ?: ""
             } else {
-                
                 File(path).readText()
             }
         } catch (e: Exception) {
@@ -41,7 +32,6 @@ class TextFileViewModel : ViewModel() {
             e.printStackTrace()
         }
     }
-
     fun toggleWrapContent(context: Context) {
         wrapContent.value = !wrapContent.value
         viewModelScope.launch(Dispatchers.IO) {
@@ -49,21 +39,17 @@ class TextFileViewModel : ViewModel() {
         }
         webView.value?.evaluateJavascript("editor.session.setUseWrapMode(${wrapContent.value.toJsValue()})") {}
     }
-
     fun gotoTop() {
         webView.value?.evaluateJavascript("editor.gotoLine(1)") {}
     }
-
     fun gotoEnd() {
         webView.value?.evaluateJavascript("editor.gotoLine(editor.session.getLength())") {}
     }
-
     fun enterEditMode() {
         readOnly.value = false
         oldContent.value = content.value
         webView.value?.evaluateJavascript("editor.setReadOnly(false)") {}
     }
-
     fun exitEditMode() {
         readOnly.value = true
         if (oldContent.value != null) {

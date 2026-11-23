@@ -1,4 +1,3 @@
-
 fun openFile(
     context: Context,
     files: List<DFile>,
@@ -8,7 +7,6 @@ fun openFile(
     itemState: TransformItemState,
     audioPlaylistVM: AudioPlaylistViewModel? = null,
 ) {
-    
     if (ZipBrowserHelper.isZipPath(file.path)) {
         coMain {
             DialogHelper.showLoading()
@@ -22,8 +20,6 @@ fun openFile(
             val extracted = file.copy(path = tempPath)
             when {
                 tempPath.isImageFast() || tempPath.isVideoFast() -> {
-                    
-                    
                     withIO {
                         MediaPreviewData.setDataAsync(
                             context, itemState,
@@ -37,16 +33,13 @@ fun openFile(
                     )
                 }
                 else -> {
-                    
                     openFile(context, listOf(extracted), extracted, navController, previewerState, itemState, audioPlaylistVM)
                 }
             }
         }
         return
     }
-
     val path = file.path
-
     when {
         path.isImageFast() || path.isVideoFast() -> {
             coMain {
@@ -63,7 +56,6 @@ fun openFile(
                 )
             }
         }
-
         path.isAudioFast() -> {
             try {
                 Permissions.checkNotification(context, Res.string.audio_notification_prompt) {
@@ -82,7 +74,6 @@ fun openFile(
                 DialogHelper.showMessage(Res.string.audio_play_error)
             }
         }
-
         path.isTextFile() -> {
             if (file.size <= Constants.MAX_READABLE_TEXT_FILE_SIZE) {
                 navController.navigateTextFile(path)
@@ -90,7 +81,6 @@ fun openFile(
                 DialogHelper.showMessage(Res.string.text_file_size_limit)
             }
         }
-
         path.isPdfFile() -> {
             try {
                 navController.navigatePdf(File(path).toUri())
@@ -98,7 +88,6 @@ fun openFile(
                 DialogHelper.showMessage(Res.string.pdf_open_error)
             }
         }
-
         else -> {
             ShareHelper.openPathWith(context, path)
         }

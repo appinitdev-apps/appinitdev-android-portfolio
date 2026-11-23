@@ -1,12 +1,9 @@
-
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun SalesTrendChart(lineData: LineData) {
     val primaryColor = MaterialTheme.colorScheme.primary.toArgb()
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface.toArgb()
     val softBgColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.15f).toArgb()
-
-        
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -22,12 +19,7 @@ fun SalesTrendChart(lineData: LineData) {
                     .height(300.dp),
                 factory = { context ->
                     com.github.mikephil.charting.charts.LineChart(context).apply {
-                        
                         setBackgroundColor(softBgColor)
-
-                        
-                        
-
                         description.isEnabled = false
                         setTouchEnabled(true)
                         setPinchZoom(true)
@@ -48,8 +40,6 @@ fun SalesTrendChart(lineData: LineData) {
                     chart.data = lineData
                     chart.invalidate()
                 }
-
             )
         }
-
 }

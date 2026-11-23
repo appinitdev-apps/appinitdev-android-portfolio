@@ -1,114 +1,75 @@
-
 data class NearbyDeviceFoundEvent(val device: DNearbyDevice) : ChannelEvent()
-
-
 data class PairingRequestReceivedEvent(val request: DPairingRequest) : ChannelEvent()
 data class PairingSuccessEvent(val deviceId: String, val deviceName: String, val deviceIp: String, val key: String) : ChannelEvent()
 data class PairingFailedEvent(val deviceId: String, val reason: String) : ChannelEvent()
 data class PairingCanceledEvent(val fromId: String) : ChannelEvent()
-
 class FolderKanbanSelectEvent(val data: FolderOption) : ChannelEvent()
-
-
 class StartHttpServerEvent : ChannelEvent()
-
 class HttpServerStateChangedEvent(val state: HttpServerState) : ChannelEvent()
-
 class RestartAppEvent : ChannelEvent()
-
 class FetchLinkPreviewsEvent(val chat: DChat) : ChannelEvent()
-
 class FetchBookmarkMetadataEvent(val bookmarkId: String, val url: String) : ChannelEvent()
-
 class ConfirmDialogEvent(
     val title: String,
     val message: String,
     val confirmButton: Pair<String, () -> Unit>,
     val dismissButton: Pair<String, () -> Unit>?
 ) : ChannelEvent()
-
 class LoadingDialogEvent(
     val show: Boolean,
     val message: String = ""
 ) : ChannelEvent()
-
 class WindowFocusChangedEvent(val hasFocus: Boolean) : ChannelEvent()
-
 class DeleteChatItemViewEvent(val id: String) : ChannelEvent()
-
-
 data class PeerUpdatedEvent(val peer: DPeer) : ChannelEvent()
-
 data class PeerOnlineStatusChangedEvent(val peerId: String, val online: Boolean) : ChannelEvent()
-
- 
 data class ChannelInviteReceivedEvent(
     val channelId: String,
     val channelName: String,
     val ownerPeerId: String,
     val ownerPeerName: String,
 ) : ChannelEvent()
-
- 
 class ChannelUpdatedEvent : ChannelEvent()
-
 class ConfirmToAcceptLoginEvent(
     val session: DefaultWebSocketServerSession,
     val clientId: String,
     val request: AuthRequest,
 ) : ChannelEvent()
-
 class RequestPermissionsEvent(vararg val permissions: Permission) : ChannelEvent()
 class PermissionsResultEvent(val map: Map<String, Boolean>) : ChannelEvent() {
     fun has(permission: Permission): Boolean {
         return map.containsKey(permission.toSysPermission())
     }
 }
-
 class PickFileEvent(val tag: PickFileTag, val type: PickFileType, val multiple: Boolean) : ChannelEvent()
-
 class PickFileResultEvent(val tag: PickFileTag, val type: PickFileType, val uris: Set<Uri>) : ChannelEvent()
-
 class ExportFileEvent(val type: ExportFileType, val fileName: String) : ChannelEvent()
-
 class ExportFileResultEvent(val type: ExportFileType, val uri: Uri) : ChannelEvent()
-
 class ActionEvent(val source: ActionSourceType, val action: ActionType, val ids: Set<String>, val extra: Any? = null) : ChannelEvent()
-
 class AudioActionEvent(val action: AudioAction) : ChannelEvent()
-
 class IgnoreBatteryOptimizationEvent : ChannelEvent()
 class PowerConnectedEvent : ChannelEvent()
 class PowerDisconnectedEvent : ChannelEvent()
 class WebRequestReceivedEvent : ChannelEvent()
 data class KeepAwakeChangedEvent(val enabled: Boolean) : ChannelEvent()
-
 class IgnoreBatteryOptimizationResultEvent : ChannelEvent()
-
 class ClearAudioPlaylistEvent : ChannelEvent()
-
 class DownloadUpdateEvent : ChannelEvent()
 class CancelUpdateDownloadEvent : ChannelEvent()
 class UpdateDownloadProgressEvent(val progress: Int) : ChannelEvent()
 class UpdateDownloadCompleteEvent(val filePath: String) : ChannelEvent()
 class UpdateDownloadFailedEvent : ChannelEvent()
-
 class FeedStatusEvent(val feedId: String, val status: FeedWorkerStatus) : ChannelEvent()
-
 class SleepTimerEvent(val durationMs: Long) : ChannelEvent()
-
 class CancelSleepTimerEvent : ChannelEvent()
-
 class StartNearbyServiceEvent : ChannelEvent()
 class StartNearbyDiscoveryEvent : ChannelEvent()
 class StopNearbyDiscoveryEvent : ChannelEvent()
-
 object AppEvents {
     private lateinit var mediaPlayer: MediaPlayer
     private var sleepTimerJob: Job? = null
     private var downloadJob: Job? = null
     private val downloadHttpClient by lazy { HttpClientManager.downloadClient() }
-
     fun register() {
         mediaPlayer = MediaPlayer()
         val sharedFlow = Channel.sharedFlow
@@ -118,7 +79,6 @@ object AppEvents {
                     is BluetoothPermissionResultEvent -> {
                         BluetoothUtil.canContinue = true
                     }
-
                     is BluetoothFindOneEvent -> {
                         if (BluetoothUtil.isScanning) {
                             return@collect
@@ -128,10 +88,8 @@ object AppEvents {
                                 BluetoothUtil.currentBTDevice = BluetoothUtil.findOneAsync(event.mac)
                             }
                         }
-
                         BluetoothUtil.stopScan()
                     }
-
                     is SleepTimerEvent -> {
                         sleepTimerJob?.cancel()
                         sleepTimerJob = coIO {
@@ -139,12 +97,10 @@ object AppEvents {
                             AudioPlayer.pause()
                         }
                     }
-
                     is CancelSleepTimerEvent -> {
                         sleepTimerJob?.cancel()
                         sleepTimerJob = null
                     }
-
                     is FetchBookmarkMetadataEvent -> {
                         coIO {
                             val updated = BookmarkHelper.fetchAndUpdateSingle(MainApp.instance, event.bookmarkId)
@@ -158,7 +114,6 @@ object AppEvents {
                             }
                         }
                     }
-
                     is ChannelUpdatedEvent -> {
                         coIO {
                             val channels = com.appinitdev.nexusLocal.db.AppDatabase.instance.chatChannelDao().getAll()
@@ -172,13 +127,11 @@ object AppEvents {
                             )
                         }
                     }
-
                     is WebSocketEvent -> {
                         coIO {
                             WebSocketHelper.sendEventAsync(event)
                         }
                     }
-
                     is PermissionsResultEvent -> {
                         coMain {
                             if (event.map.containsKey(Permission.POST_NOTIFICATIONS.toSysPermission())) {
@@ -189,7 +142,6 @@ object AppEvents {
                             }
                         }
                     }
-
                     is StartHttpServerEvent -> {
                         var retry = 3
                         val context = MainApp.instance
@@ -209,19 +161,15 @@ object AppEvents {
                             }
                         }
                     }
-
                     is StartNearbyServiceEvent -> {
                         NearbyDiscoverManager.start()
                     }
-
                     is StartNearbyDiscoveryEvent -> {
                         NearbyDiscoverManager.startPeriodicDiscovery()
                     }
-
                     is StopNearbyDiscoveryEvent -> {
                         NearbyDiscoverManager.stopPeriodicDiscovery()
                     }
-
                     is ImageSearchStatusChangedEvent -> {
                         sendEvent(
                             WebSocketEvent(
@@ -230,7 +178,6 @@ object AppEvents {
                             )
                         )
                     }
-
                     is ImageIndexProgressEvent -> {
                         sendEvent(
                             WebSocketEvent(
@@ -239,19 +186,15 @@ object AppEvents {
                             )
                         )
                     }
-
                     is HEnableImageSearchEvent -> {
                         coIO { ImageSearchManager.enableAsync() }
                     }
-
                     is HDisableImageSearchEvent -> {
                         coIO { ImageSearchManager.disableAsync() }
                     }
-
                     is HCancelImageModelDownloadEvent -> {
                         ImageSearchManager.cancelDownload()
                     }
-
                     is HStartMmsPollingEvent -> {
                         coIO {
                             val context = MainApp.instance
@@ -278,7 +221,6 @@ object AppEvents {
                             }
                         }
                     }
-
                     is DownloadUpdateEvent -> {
                         downloadJob?.cancel()
                         downloadJob = coIO {
@@ -325,13 +267,11 @@ object AppEvents {
                             }
                         }
                     }
-
                     is CancelUpdateDownloadEvent -> {
                         downloadJob?.cancel()
                         downloadJob = null
                         coIO { UpdateInfoPreference.updateAsync { it.copy(downloadedApkPath = "") } }
                     }
-
                     is HRetryChatItemEvent -> {
                         coIO {
                             ChatSender.resend(event.item)

@@ -1,13 +1,10 @@
-
 class DiaPlazaAdapter(
     private var list: List<DiaPlaza>
 ) : RecyclerView.Adapter<DiaPlazaAdapter.DiaPlazaViewHolder>() {
-
     fun updateData(newList: List<DiaPlaza>) {
         list = newList
         notifyDataSetChanged()
     }
-
     class DiaPlazaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val diaBadge: TextView = view.findViewById(R.id.tvPlazaDiaBadge)
         val hoyTag: TextView = view.findViewById(R.id.tvPlazaHoyTag)
@@ -17,17 +14,13 @@ class DiaPlazaAdapter(
         val descripcion: TextView = view.findViewById(R.id.tvPlazaDescripcion)
         val btnMapa: MaterialButton = view.findViewById(R.id.btnPlazaMapa)
         val btnCotizar: MaterialButton = view.findViewById(R.id.btnPlazaCotizar)
-
         fun bind(item: DiaPlaza) {
             diaBadge.text = item.diaNombre.uppercase()
             distancia.text = "⏱️ ${item.distanciaAprox}"
             municipio.text = item.municipio
             destacado.text = "🍲 ${item.platillosArtesanias}"
             descripcion.text = item.descripcion
-
-            
             val cal = Calendar.getInstance()
-            
             val currentDayOfWeek = when (cal.get(Calendar.DAY_OF_WEEK)) {
                 Calendar.MONDAY -> 1
                 Calendar.TUESDAY -> 2
@@ -38,13 +31,11 @@ class DiaPlazaAdapter(
                 Calendar.SUNDAY -> 7
                 else -> 0
             }
-
             if (currentDayOfWeek == item.diaSemanaNum) {
                 hoyTag.visibility = View.VISIBLE
             } else {
                 hoyTag.visibility = View.GONE
             }
-
             btnMapa.setOnClickListener {
                 val context = itemView.context
                 val gmmIntentUri = Uri.parse("geo:${item.latitud},${item.longitud}?q=${Uri.encode("Mercado de " + item.municipio + " Oaxaca")}")
@@ -57,14 +48,12 @@ class DiaPlazaAdapter(
                     context.startActivity(browserIntent)
                 }
             }
-
             btnCotizar.setOnClickListener {
                 val context = itemView.context
                 val intent = Intent(context, CotizacionActivity::class.java)
                 intent.putExtra("tour", "Día de Plaza en ${item.municipio} (${item.diaNombre})")
                 context.startActivity(intent)
             }
-
             itemView.setOnClickListener {
                 val context = itemView.context
                 MaterialAlertDialogBuilder(context)
@@ -80,15 +69,12 @@ class DiaPlazaAdapter(
             }
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiaPlazaViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_dia_plaza, parent, false)
         return DiaPlazaViewHolder(view)
     }
-
     override fun onBindViewHolder(holder: DiaPlazaViewHolder, position: Int) {
         holder.bind(list[position])
     }
-
     override fun getItemCount() = list.size
 }

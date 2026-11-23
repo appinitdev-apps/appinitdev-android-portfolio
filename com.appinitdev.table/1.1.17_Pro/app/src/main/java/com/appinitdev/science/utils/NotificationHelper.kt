@@ -1,9 +1,7 @@
-
 object NotificationHelper {
     private const val CHANNEL_ID = "lives_refill_channel"
     private const val CHANNEL_NAME = "Lives"
     private const val NOTIF_ID = 0xA1
-
     private fun ensureChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -12,7 +10,6 @@ object NotificationHelper {
             nm.createNotificationChannel(channel)
         }
     }
-
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     fun sendLivesRefilledNotification(context: Context) {
         try {
@@ -26,13 +23,11 @@ object NotificationHelper {
                 PendingIntent.FLAG_UPDATE_CURRENT
             }
             val pendingIntent = PendingIntent.getActivity(context, 0, intent, flags)
-
             val smallIconRes = if (hasResource(context, "icon_notification")) {
                 context.resources.getIdentifier("icon_notification", "drawable", context.packageName)
             } else {
                 android.R.drawable.ic_dialog_info
             }
-
             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(smallIconRes)
                 .setContentTitle(context.getString(R.string.app_name))
@@ -40,13 +35,11 @@ object NotificationHelper {
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
             NotificationManagerCompat.from(context).notify(NOTIF_ID, builder.build())
         } catch (t: Throwable) {
             t.printStackTrace()
         }
     }
-
     private fun hasResource(context: Context, name: String): Boolean {
         val id = context.resources.getIdentifier(name, "drawable", context.packageName)
         return id != 0

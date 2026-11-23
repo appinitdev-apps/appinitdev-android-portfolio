@@ -1,4 +1,3 @@
-
 @Composable
 fun rememberReorderableLazyGridState(
     lazyGridState: LazyGridState,
@@ -12,7 +11,6 @@ fun rememberReorderableLazyGridState(
 ): ReorderableLazyGridState {
     val density = LocalDensity.current
     val scrollThresholdPx = with(density) { scrollThreshold.toPx() }
-
     val scope = rememberCoroutineScope()
     val onMoveState = rememberUpdatedState(onMove)
     val layoutDirection = LocalLayoutDirection.current
@@ -39,7 +37,6 @@ fun rememberReorderableLazyGridState(
     }
     return state
 }
-
 @Stable
 class ReorderableLazyGridState internal constructor(
     state: LazyGridState,
@@ -58,7 +55,6 @@ class ReorderableLazyGridState internal constructor(
     scroller,
     layoutDirection,
 )
-
 @Composable
 fun LazyGridItemScope.ReorderableItem(
     state: ReorderableLazyGridState,
@@ -86,7 +82,6 @@ fun LazyGridItemScope.ReorderableItem(
     } else {
         animateItemModifier
     }
-
     ReorderableCollectionItem(
         state = state,
         key = key,

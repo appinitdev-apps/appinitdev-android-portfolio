@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -98,7 +97,6 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -157,8 +155,6 @@ fun HomeScreen(
                                     )
                                 }
                             }
-
-                            
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -180,7 +176,6 @@ fun HomeScreen(
                                         )
                                     }
                                 }
-
                                 Surface(
                                     shape = RoundedCornerShape(20.dp),
                                     color = Color.White.copy(alpha = 0.25f),
@@ -200,8 +195,6 @@ fun HomeScreen(
                                 }
                             }
                         }
-
-                        
                         Button(
                             onClick = onCalculateForActiveProfile,
                             modifier = Modifier.fillMaxWidth().height(48.dp),
@@ -225,8 +218,6 @@ fun HomeScreen(
                     }
                 }
             }
-
-            
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -281,7 +272,6 @@ fun HomeScreen(
                         }
                     }
                 }
-
                 Card(
                     modifier = Modifier
                         .weight(1f)
@@ -331,7 +321,6 @@ fun HomeScreen(
                     }
                 }
             }
-
             Text(
                 text = stringResource(id = R.string.explora_manualmente_rango_edad),
                 fontSize = 13.sp,
@@ -339,7 +328,6 @@ fun HomeScreen(
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                 modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 4.dp)
             )
-
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
@@ -357,7 +345,6 @@ fun HomeScreen(
         }
     }
 }
-
 @Composable
 fun CategoryCard(
     category: AgeCategory,
@@ -371,7 +358,6 @@ fun CategoryCard(
         5 -> Color(0xFF00A88F)
         else -> Color(0xFFFFC400)
     }
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -399,7 +385,6 @@ fun CategoryCard(
                     .size(96.dp)
                     .padding(2.dp)
             )
-
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     text = stringResource(id = category.titleResId),
@@ -423,7 +408,6 @@ fun CategoryCard(
                     )
                 }
             }
-
             Surface(
                 shape = RoundedCornerShape(12.dp),
                 color = categoryBadgeColor,

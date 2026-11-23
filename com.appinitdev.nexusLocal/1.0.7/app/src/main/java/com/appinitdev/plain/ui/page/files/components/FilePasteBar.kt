@@ -1,4 +1,3 @@
-
 @Composable
 fun FilePasteBar(
     filesVM: FilesViewModel,
@@ -18,7 +17,6 @@ fun FilePasteBar(
             }) {
                 Icon(painter = painterResource(Res.drawable.x), contentDescription = "Cancel")
             }
-
             Text(
                 text = if (filesVM.cutFiles.isNotEmpty())
                     pluralStringResource(Res.plurals.moving_items, filesVM.cutFiles.size, filesVM.cutFiles.size)
@@ -27,7 +25,6 @@ fun FilePasteBar(
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-
             Button(onClick = {
                 coroutineScope.launch {
                     if (filesVM.cutFiles.isNotEmpty()) {

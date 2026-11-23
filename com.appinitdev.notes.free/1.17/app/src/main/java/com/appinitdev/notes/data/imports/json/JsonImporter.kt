@@ -1,6 +1,4 @@
-
 class JsonImporter : ExternalImporter {
-
     override fun import(
         app: Application,
         source: Uri,

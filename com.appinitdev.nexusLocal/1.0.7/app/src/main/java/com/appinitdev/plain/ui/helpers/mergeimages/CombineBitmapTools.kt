@@ -1,4 +1,3 @@
-
 object CombineBitmapTools {
     fun combineBitmap(
         combineWidth: Int,
@@ -17,7 +16,6 @@ object CombineBitmapTools {
                 ),
             )
         }
-
         return getCombineBitmaps(
             combineBitmapEntities,
             thumbnailBitmaps,
@@ -25,7 +23,6 @@ object CombineBitmapTools {
             combineHeight,
         )
     }
-
     private fun getCombineBitmaps(
         mEntityList: List<CombineBitmapEntity>,
         bitmaps: List<Bitmap>,
@@ -44,7 +41,6 @@ object CombineBitmapTools {
         }
         return newBitmap
     }
-
     private fun mixtureBitmap(
         first: Bitmap,
         second: Bitmap,
@@ -66,14 +62,12 @@ object CombineBitmapTools {
         return newBitmap
     }
 }
-
 class CombineBitmapEntity {
     var x = 0f
     var y = 0f
     var width = 0f
     var height = 0f
     var index = -1
-
     override fun toString(): String {
         return (
             "MyBitmap [x=" + x + ", y=" + y + ", width=" + width +
@@ -81,7 +75,6 @@ class CombineBitmapEntity {
                 index + "]"
         )
     }
-
     companion object {
         var devide = 1
     }

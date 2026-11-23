@@ -1,4 +1,3 @@
-
 enum class Status {
     READY,
     PAUSED,

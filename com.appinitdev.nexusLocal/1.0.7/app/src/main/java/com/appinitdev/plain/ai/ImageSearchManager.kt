@@ -1,13 +1,10 @@
-
 data class SemanticSearchResult(val imageId: String, val score: Float)
-
 object ImageSearchManager {
     private const val MODEL_DIR_NAME = "ai_models"
     private const val IMAGE_MODEL = "mobileclip_s2_image.tflite"
     private const val TEXT_MODEL = "mobileclip_s2_text.tflite"
     private const val TOKENIZER = ""
     private const val MIN_SCORE = 0.15f
-
     private const val HF_BASE =
         "https://huggingface.co/appinitdev/mobileclip-s2-tflite/resolve/main"
     private val MODEL_FILES = listOf(
@@ -15,29 +12,22 @@ object ImageSearchManager {
         ModelFile("$HF_BASE/$TEXT_MODEL", TEXT_MODEL, 253_874_828L),
         ModelFile("$HF_BASE/$TOKENIZER", TOKENIZER, 1_708_304L),
     )
-
     private val _status = MutableStateFlow(ImageSearchStatus.UNAVAILABLE)
     val status = _status.asStateFlow()
     private val _downloadProgress = MutableStateFlow(0)
     val downloadProgress = _downloadProgress.asStateFlow()
     private val _errorMessage = MutableStateFlow("")
     val errorMessage = _errorMessage.asStateFlow()
-
     private val modelsDir: File get() = File(MainApp.instance.filesDir, MODEL_DIR_NAME)
-
     fun getModelDir(): String = modelsDir.absolutePath
-
     fun isModelReady(): Boolean = _status.value == ImageSearchStatus.READY
-
     fun isModelAvailable(): Boolean {
         val dir = modelsDir
         return File(dir, IMAGE_MODEL).exists() &&
                 File(dir, TEXT_MODEL).exists() &&
                 File(dir, TOKENIZER).exists()
     }
-
     fun totalModelSize(): Long = MODEL_FILES.sumOf { it.size }
-
     suspend fun restoreIfEnabled() = withContext(Dispatchers.IO) {
         val enabled = AiImageSearchEnabledPreference.getAsync()
         if (enabled && isModelAvailable()) {
@@ -45,7 +35,6 @@ object ImageSearchManager {
             ImageIndexManager.startup()
         }
     }
-
     suspend fun enableAsync() {
         if (_status.value == ImageSearchStatus.DOWNLOADING ||
             _status.value == ImageSearchStatus.LOADING
@@ -60,7 +49,6 @@ object ImageSearchManager {
         AiImageSearchEnabledPreference.putAsync(true)
         ImageIndexManager.startup()
     }
-
     suspend fun disableAsync() {
         ImageIndexManager.shutdown()
         ImageEmbedHelper.close()
@@ -72,14 +60,12 @@ object ImageSearchManager {
         AiImageSearchEnabledPreference.putAsync(false)
         emitStatus()
     }
-
     fun cancelDownload() {
         ModelDownloader.cancel()
         _status.value = ImageSearchStatus.UNAVAILABLE
         _downloadProgress.value = 0
         emitStatus()
     }
-
     suspend fun search(query: String, limit: Int = 50): List<SemanticSearchResult> =
         withContext(Dispatchers.IO) {
             val textEmb = TextEmbedHelper.embed(query) ?: return@withContext emptyList()
@@ -92,7 +78,6 @@ object ImageSearchManager {
                 if (score >= MIN_SCORE) SemanticSearchResult(vec.id, score) else null
             }.sortedByDescending { it.score }.take(limit)
         }
-
     private suspend fun downloadModels() {
         _status.value = ImageSearchStatus.DOWNLOADING
         _downloadProgress.value = 0
@@ -114,7 +99,6 @@ object ImageSearchManager {
             emitStatus()
         }
     }
-
     private fun loadModels() {
         try {
             _status.value = ImageSearchStatus.LOADING
@@ -133,7 +117,6 @@ object ImageSearchManager {
             emitStatus()
         }
     }
-
     private fun emitStatus() {
         sendEvent(ImageSearchStatusChangedEvent(_status.value, _downloadProgress.value, _errorMessage.value))
     }

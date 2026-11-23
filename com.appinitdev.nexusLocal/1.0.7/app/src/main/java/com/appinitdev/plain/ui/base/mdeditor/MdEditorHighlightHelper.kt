@@ -1,4 +1,3 @@
-
 object MdEditorHighlightHelper {
     @Composable
     fun highlight(text: String, fileExtension: String, firstColoredIndex: Int): AnnotatedString {

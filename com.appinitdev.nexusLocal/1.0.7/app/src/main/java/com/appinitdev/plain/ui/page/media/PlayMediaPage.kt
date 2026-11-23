@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlayMediaPage(
@@ -8,7 +7,6 @@ fun PlayMediaPage(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-
     if (path.isAudioFast()) {
         LaunchedEffect(path) {
             Permissions.checkNotification(context, Res.string.audio_notification_prompt) {
@@ -28,16 +26,12 @@ fun PlayMediaPage(
         Box(modifier = Modifier.fillMaxSize().background(Color.Black))
         return
     }
-
     MediaPreviewData.items = listOf(PreviewItem(id = path, path = path))
-
     val previewerState = rememberPreviewerState(
         scope = scope,
         pageCount = { MediaPreviewData.items.size },
     )
-
     var hasOpened by remember { mutableStateOf(false) }
-
     LaunchedEffect(previewerState.visible) {
         if (previewerState.visible) {
             hasOpened = true
@@ -45,7 +39,6 @@ fun PlayMediaPage(
             navController.navigateUp()
         }
     }
-
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
         LaunchedEffect(Unit) {
             previewerState.open(0)

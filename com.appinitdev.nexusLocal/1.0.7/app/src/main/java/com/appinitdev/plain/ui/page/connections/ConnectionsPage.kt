@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ConnectionsPage(
@@ -12,16 +11,13 @@ fun ConnectionsPage(
     val sessions = remember(itemsState) { itemsState.filter { !it.isCustom } }
     val apiTokens = remember(itemsState) { itemsState.filter { it.isCustom } }
     val tabTitles = listOf(stringResource(Res.string.sessions), stringResource(Res.string.api_tokens))
-
     val refreshState = rememberRefreshLayoutState {
         sessionsVM.fetch()
         setRefreshState(RefreshContentState.Finished)
     }
-
     LaunchedEffect(Unit) {
         sessionsVM.fetch()
     }
-
     if (showCreateDialog) {
         CreateApiTokenDialog(
             onDismiss = { showCreateDialog = false },
@@ -31,7 +27,6 @@ fun ConnectionsPage(
             },
         )
     }
-
     PScaffold(
         topBar = {
             Column {
@@ -91,4 +86,3 @@ fun ConnectionsPage(
         },
     )
 }
-

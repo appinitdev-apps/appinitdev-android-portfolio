@@ -1,4 +1,3 @@
-
 class PlugInControlReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
@@ -10,7 +9,6 @@ class PlugInControlReceiver : BroadcastReceiver() {
             sendEvent(PowerDisconnectedEvent())
         }
     }
-
     companion object {
         private const val ACTION_USB_STATE = "android.hardware.usb.action.USB_STATE"
         fun isUSBConnected(context: Context): Boolean {

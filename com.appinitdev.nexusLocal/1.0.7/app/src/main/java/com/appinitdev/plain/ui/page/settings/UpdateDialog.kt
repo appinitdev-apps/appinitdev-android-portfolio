@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateDialog(updateVM: UpdateViewModel) {
@@ -8,7 +7,6 @@ fun UpdateDialog(updateVM: UpdateViewModel) {
     val newVersionLog = LocalNewVersionLog.current
     val newVersionSize = LocalNewVersionSize.current
     val scope = rememberCoroutineScope()
-
     if (updateVM.updateDialogVisible.value) {
         AlertDialog(
             containerColor = MaterialTheme.colorScheme.surface,

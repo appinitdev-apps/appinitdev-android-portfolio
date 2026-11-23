@@ -1,4 +1,3 @@
-
 @Composable
 fun OtherProfile(
     initialUser: ChatUserData, navController: NavController, viewModel: ChatViewModel
@@ -6,17 +5,14 @@ fun OtherProfile(
     var viewImage by remember { mutableStateOf(false) }
     var showReportDialog by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
-    
     val state by viewModel.state.collectAsState()
     val user = state.User2 ?: initialUser
-    
     val brush = Brush.linearGradient(
         listOf(
             Color(0xFF238CDD),
             Color(0xFF1952C4)
         )
     )
-
     BackHandler {
         if (viewImage) {
             viewImage = false
@@ -24,7 +20,6 @@ fun OtherProfile(
             navController.popBackStack()
         }
     }
-
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             modifier = Modifier.fillMaxSize(),
@@ -32,17 +27,13 @@ fun OtherProfile(
             contentDescription = null,
             contentScale = ContentScale.Crop,
         )
-        
-        
         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
             Spacer(modifier = Modifier.height(40.dp))
-            
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -63,9 +54,7 @@ fun OtherProfile(
                     Icon(imageVector = Icons.Default.Report, contentDescription = "Report", tint = Color(0xFFFF5252))
                 }
             }
-
             Spacer(modifier = Modifier.height(20.dp))
-
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -88,9 +77,7 @@ fun OtherProfile(
                             .clickable { viewImage = true }
                     )
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = user.username.orEmpty(),
@@ -108,15 +95,12 @@ fun OtherProfile(
                         )
                     }
                 }
-
                 Text(
                     text = user.email,
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.Gray
                 )
-
                 Spacer(modifier = Modifier.height(24.dp))
-
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -135,9 +119,7 @@ fun OtherProfile(
                     ) {
                         InfoRow(icon = Icons.Default.Cake, text = user.age ?: stringResource(R.string.na))
                         InfoRow(icon = Icons.Default.Person, text = user.gender ?: stringResource(R.string.na))
-                        
                         Spacer(modifier = Modifier.height(16.dp))
-                        
                         Text(
                             text = if (!user.bio.isNullOrEmpty()) user.bio else stringResource(R.string.sin_biografia),
                             style = MaterialTheme.typography.bodyLarge,
@@ -148,9 +130,7 @@ fun OtherProfile(
                                 .background(Color.White.copy(alpha = 0.05f), RoundedCornerShape(16.dp))
                                 .padding(16.dp)
                         )
-                        
                         Spacer(modifier = Modifier.height(16.dp))
-                        
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.Center,
@@ -195,17 +175,14 @@ fun OtherProfile(
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.height(32.dp))
                 AdBanner()
             }
         }
     }
-
     AnimatedVisibility(viewImage) {
         View(imageUrl = user.ppurl, hideDialog = { viewImage = false })
     }
-
     if (showReportDialog) {
         com.appinitdev.chatok.Dialogs.ReportDialog(
             reportedUsername = user.username ?: stringResource(R.string.usuario),

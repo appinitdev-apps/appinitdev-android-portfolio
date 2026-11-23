@@ -1,4 +1,3 @@
-
 @Root(name = "en-export", strict = false)
 data class EvernoteExport
 @JvmOverloads
@@ -6,17 +5,10 @@ constructor(
     @field:Attribute(name = "export-date", required = false)
     @param:Attribute(name = "export-date", required = false)
     val exportDate: String = "",
-    
-    
-    
-    
-    
-    
     @field:ElementList(name = "note", inline = true)
     @param:ElementList(name = "note", inline = true)
     val notes: List<EvernoteNote> = listOf(),
 )
-
 @Root(name = "note", strict = false)
 data class EvernoteNote
 @JvmOverloads
@@ -37,12 +29,10 @@ constructor(
     @param:ElementList(name = "task", inline = true, required = false, empty = false)
     val tasks: List<EvernoteTask> = listOf(),
 )
-
 @Root(name = "tag", strict = false)
 data class EvernoteTag
 @JvmOverloads
 constructor(@field:Text(required = false) @param:Text(required = false) val name: String = "")
-
 @Root(name = "resource", strict = false)
 data class EvernoteResource
 @JvmOverloads
@@ -63,7 +53,6 @@ constructor(
     @param:Element(name = "resource-attributes", required = false)
     val attributes: EvernoteResourceAttributes? = null,
 )
-
 @Root(name = "data", strict = false)
 data class EvernoteResourceData
 @JvmOverloads
@@ -73,7 +62,6 @@ constructor(
     val encoding: String = "base64",
     @field:Text(required = false) @param:Text(required = false) val content: String = "",
 )
-
 @Root(name = "resource-attributes", strict = false)
 data class EvernoteResourceAttributes
 @JvmOverloads
@@ -81,12 +69,7 @@ constructor(
     @field:Element(name = "file-name", required = false)
     @param:Element(name = "file-name", required = false)
     val fileName: String = ""
-
-    
-    
-    
 )
-
 @Root(name = "task", strict = false)
 data class EvernoteTask
 @JvmOverloads
@@ -94,63 +77,29 @@ constructor(
     @field:Element(name = "title", required = false)
     @param:Element(name = "title", required = false)
     val title: String = "",
-    
-    
-    
-    
-    
-    
-    
     @field:Element(name = "taskStatus", required = false)
     @param:Element(name = "taskStatus", required = false)
     @field:Convert(TaskStatusConverter::class)
     @param:Convert(TaskStatusConverter::class)
     val taskStatus: TaskStatus = TaskStatus.OPEN,
-    
-    
-    
-    
     @field:Element(name = "sortWeight", required = false)
     @param:Element(name = "sortWeight", required = false)
     val sortWeight: String = "",
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 )
-
 enum class TaskStatus(val status: String) {
     OPEN("open"),
     COMPLETED("completed");
-
     companion object {
         fun fromString(value: String): TaskStatus? {
             return entries.find { it.status == value }
         }
     }
 }
-
 class TaskStatusConverter : Converter<TaskStatus> {
     override fun read(node: InputNode): TaskStatus? {
         val value = node.value ?: return null
         return TaskStatus.fromString(value)
     }
-
     override fun write(node: OutputNode, value: TaskStatus?) {
         node.value = value?.status
     }

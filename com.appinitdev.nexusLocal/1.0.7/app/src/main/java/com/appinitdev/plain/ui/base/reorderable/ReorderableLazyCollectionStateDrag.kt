@@ -1,4 +1,3 @@
-
 internal fun <T> ReorderableLazyCollectionState<T>.onDragStop() {
     val previousDraggingItemInitialOffset = draggingItemLayoutInfo?.offset
     if (draggingItemIndex != null) {
@@ -20,7 +19,6 @@ internal fun <T> ReorderableLazyCollectionState<T>.onDragStop() {
     oldDraggingItemIndex = null
     predictedDraggingItemOffset = null
 }
-
 internal fun <T> ReorderableLazyCollectionState<T>.onDrag(offset: Offset) {
     draggingItemDraggedDelta += offset
     val draggingItem = draggingItemLayoutInfo ?: return
@@ -29,16 +27,13 @@ internal fun <T> ReorderableLazyCollectionState<T>.onDrag(offset: Offset) {
     val startOffset = draggingItem.offset.toOffset() + dragOffset
     val endOffset = startOffset + draggingItem.size.toSize()
     val (contentStartOffset, contentEndOffset) = state.layoutInfo.getScrollAreaOffsets(scrollThresholdPadding)
-
     val handleOffset = when (state.layoutInfo.reverseLayout ||
             (layoutDirection == androidx.compose.ui.unit.LayoutDirection.Rtl && orientation == Orientation.Horizontal)) {
         true -> endOffset - draggingItemHandleOffset
         false -> startOffset + draggingItemHandleOffset
     } + IntOffset.fromAxis(orientation, state.layoutInfo.beforeContentPadding).toOffset()
-
     val distanceFromStart = (handleOffset.getAxis(orientation) - contentStartOffset).coerceAtLeast(0f)
     val distanceFromEnd = (contentEndOffset - handleOffset.getAxis(orientation)).coerceAtLeast(0f)
-
     val isScrollingStarted = if (distanceFromStart < scrollThreshold) {
         scroller.start(Scroller.Direction.BACKWARD, getScrollSpeedMultiplier(distanceFromStart),
             maxScrollDistanceProvider = {
@@ -52,7 +47,6 @@ internal fun <T> ReorderableLazyCollectionState<T>.onDrag(offset: Offset) {
     } else {
         scroller.tryStop(); false
     }
-
     if (!onMoveStateMutex.tryLock()) return
     if (!scroller.isScrolling && !isScrollingStarted) {
         val draggingItemRect = Rect(startOffset, endOffset)
@@ -61,7 +55,6 @@ internal fun <T> ReorderableLazyCollectionState<T>.onDrag(offset: Offset) {
     }
     onMoveStateMutex.unlock()
 }
-
 internal fun <T> ReorderableLazyCollectionState<T>.getScrollSpeedMultiplier(distance: Float): Float {
     return (1 - ((distance + scrollThreshold) / (scrollThreshold * 2)).coerceIn(0f, 1f)) * 10
 }

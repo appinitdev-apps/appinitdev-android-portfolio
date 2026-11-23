@@ -1,4 +1,3 @@
-
 data class ChatRow(
     val sortAt: Instant,
     val title: String,

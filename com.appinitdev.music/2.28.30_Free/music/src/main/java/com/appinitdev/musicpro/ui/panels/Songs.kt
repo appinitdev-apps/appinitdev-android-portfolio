@@ -1,68 +1,47 @@
-
 class Songs : BasePanelFragment() {
-
     private lateinit var binding: FragmentSongsBinding
     private lateinit var headerBinding: HeaderSongsBinding
-
     private var adapterSongs: AdapterSongs? = null
-
     private val songsViewModel: SongsViewModel by viewModels({ requireActivity() })
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSongsBinding.inflate(inflater, container, false)
         headerBinding = HeaderSongsBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.recyclerView.requireAttachedMiniPlayer()
         binding.appHeader.setContentView(headerBinding.root)
         binding.appHeader.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
         binding.recyclerView.attachSlideFastScroller()
-
         binding.recyclerView.setupGridLayoutManager(SongsPreferences.getGridSize().spanCount)
-
         setupClickListeners()
-
         songsViewModel.songs.collectListWhenStarted({ adapterSongs != null }) { audios ->
             Log.d(TAG, "Received songs update: ${audios.size} songs")
             updateSongsList(audios)
         }
     }
-
     override fun onDestroyView() {
         adapterSongs = null
         super.onDestroyView()
     }
-
     private fun setupClickListeners() {
         headerBinding.menu.setOnClickListener {
             openPreferencesPanel()
         }
-
         headerBinding.sortStyle.setOnClickListener {
             childFragmentManager.showSongsSort()
         }
-
         headerBinding.search.setOnClickListener {
             openSearch()
         }
-
         headerBinding.artflow.setOnClickListener {
             openFragment(ArtFlow.newInstance(), ArtFlow.TAG)
         }
-
         headerBinding.listStyle.setOnClickListener {
             childFragmentManager.showListStyleDialog(GenericListStyleDialog.Companion.PANEL.SONGS)
         }
     }
-
-     
-
-
-
     private fun updateSongsList(songs: List<Audio>) {
         if (adapterSongs == null) {
             adapterSongs = AdapterSongs(songs)
@@ -71,7 +50,6 @@ class Songs : BasePanelFragment() {
                 override fun onSongClicked(songs: MutableList<Audio>, position: Int, view: View) {
                     setMediaItems(songs, position)
                 }
-
                 override fun onSongLongClicked(audios: MutableList<Audio>, position: Int, imageView: ImageView?) {
                     openSongsMenu(audios, position, imageView)
                 }
@@ -83,17 +61,14 @@ class Songs : BasePanelFragment() {
                 binding.recyclerView.adapter = adapterSongs
             }
         }
-
         binding.recyclerView.requireAttachedSectionScroller(
                 sections = provideScrollPositionDataBasedOnSortStyle(songs),
                 header = binding.appHeader,
                 view = headerBinding.scroll
         )
-
         headerBinding.count.text = songs.size.toString()
         headerBinding.hours.text = songs.sumOf { it.duration }.toDynamicTimeString()
         headerBinding.sortStyle.setSongSort()
-
         headerBinding.hours.setOnClickListener {
             childFragmentManager.showTotalTime(
                     totalTime = songs.sumOf { it.duration },
@@ -101,7 +76,6 @@ class Songs : BasePanelFragment() {
             )
         }
     }
-
     private fun provideScrollPositionDataBasedOnSortStyle(songs: List<Audio>): List<SectionedFastScroller.Position> {
         return when (SongsPreferences.getSongSort()) {
             CommonPreferencesConstants.BY_TITLE -> {
@@ -174,16 +148,13 @@ class Songs : BasePanelFragment() {
             }
         }
     }
-
     override fun getShuffleButton(): HighlightTextView {
         return headerBinding.shuffle
     }
-
     override fun onShuffleClicked() {
         super.onShuffleClicked()
         shuffleMediaItems(songsViewModel.songs.value)
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -194,10 +165,8 @@ class Songs : BasePanelFragment() {
             }
         }
     }
-
     companion object {
         const val TAG = "Songs"
-
         fun newInstance(): Songs {
             val args = Bundle()
             val fragment = Songs()

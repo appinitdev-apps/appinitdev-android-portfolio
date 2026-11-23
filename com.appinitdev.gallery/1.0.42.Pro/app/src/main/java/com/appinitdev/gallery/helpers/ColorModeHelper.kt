@@ -1,24 +1,15 @@
-
- 
-
-
 object ColorModeHelper {
-
     fun isGainmapSupported() = isUpsideDownCakePlus()
-
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     fun hasHdrContent(bitmap: Bitmap?): Boolean {
         return bitmap?.hasGainmap() == true
     }
-
     fun hasWideColorGamut(bitmap: Bitmap?): Boolean {
         return bitmap?.colorSpace?.isWideGamut == true
     }
-
     fun setColorMode(activity: Activity, colorMode: Int) {
         activity.window.setColorMode(colorMode)
     }
-
     fun setColorModeForImage(activity: Activity, bitmap: Bitmap?) {
         setColorMode(
             activity = activity,
@@ -29,7 +20,6 @@ object ColorModeHelper {
             }
         )
     }
-
     fun resetColorMode(activity: Activity?) {
         activity?.window?.setColorMode(ActivityInfo.COLOR_MODE_DEFAULT)
     }

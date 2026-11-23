@@ -1,10 +1,8 @@
-
 @Composable
 fun ImageGallery(navController: NavController, viewModel: ChatViewModel) {
     var mediaUrls by remember { mutableStateOf<List<String>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-
     LaunchedEffect(Unit) {
         viewModel.getAllMedia(
             onResult = { urls ->
@@ -17,7 +15,6 @@ fun ImageGallery(navController: NavController, viewModel: ChatViewModel) {
             }
         )
     }
-
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.blurry_gradient_haikei),
@@ -25,12 +22,9 @@ fun ImageGallery(navController: NavController, viewModel: ChatViewModel) {
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
-        
         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)))
-
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(40.dp))
-            
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -51,9 +45,7 @@ fun ImageGallery(navController: NavController, viewModel: ChatViewModel) {
                     fontWeight = FontWeight.Bold
                 )
             }
-
             Spacer(modifier = Modifier.height(24.dp))
-
             if (isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(color = Color(0xFF238CDD))
@@ -93,13 +85,11 @@ fun ImageGallery(navController: NavController, viewModel: ChatViewModel) {
         }
     }
 }
-
 fun isVideo(url: String): Boolean {
     return url.contains(".mp4", ignoreCase = true) || 
            url.contains(".mov", ignoreCase = true) || 
            url.contains("video", ignoreCase = true)
 }
-
 @Composable
 fun GalleryItem(url: String, onDelete: () -> Unit) {
     Card(
@@ -116,7 +106,6 @@ fun GalleryItem(url: String, onDelete: () -> Unit) {
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
-            
             if (isVideo(url)) {
                 Box(
                     modifier = Modifier
@@ -127,7 +116,6 @@ fun GalleryItem(url: String, onDelete: () -> Unit) {
                     Icon(imageVector = Icons.Default.PlayArrow, contentDescription = null, tint = Color.White, modifier = Modifier.size(48.dp))
                 }
             }
-
             IconButton(
                 onClick = onDelete,
                 modifier = Modifier

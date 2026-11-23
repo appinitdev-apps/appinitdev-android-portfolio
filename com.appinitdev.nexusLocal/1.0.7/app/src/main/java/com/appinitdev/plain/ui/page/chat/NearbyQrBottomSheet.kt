@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NearbyQrBottomSheet(
@@ -8,7 +7,6 @@ fun NearbyQrBottomSheet(
     PModalBottomSheet(onDismissRequest = onDismiss) {
         PBottomSheetTopAppBar(title = stringResource(Res.string.pair_via_qr_title))
         TopSpace()
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -39,7 +37,6 @@ fun NearbyQrBottomSheet(
                 )
             }
         }
-
         BottomSpace()
     }
 }

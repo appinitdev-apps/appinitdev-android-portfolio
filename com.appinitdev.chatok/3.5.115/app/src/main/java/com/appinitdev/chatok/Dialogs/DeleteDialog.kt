@@ -1,4 +1,3 @@
-
 @Composable
 fun DeleteDialog(hideDialog: () -> Unit, deleteChat: () -> Unit) {
     Dialog(
@@ -27,18 +26,14 @@ fun DeleteDialog(hideDialog: () -> Unit, deleteChat: () -> Unit) {
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
-                
                 Spacer(modifier = Modifier.height(16.dp))
-                
                 Text(
                     text = stringResource(R.string.esto_eliminar_todos_tus_chats),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray,
                     textAlign = TextAlign.Center
                 )
-                
                 Spacer(modifier = Modifier.height(32.dp))
-                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -54,7 +49,6 @@ fun DeleteDialog(hideDialog: () -> Unit, deleteChat: () -> Unit) {
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    
                     Button(
                         onClick = deleteChat,
                         modifier = Modifier.weight(1f),

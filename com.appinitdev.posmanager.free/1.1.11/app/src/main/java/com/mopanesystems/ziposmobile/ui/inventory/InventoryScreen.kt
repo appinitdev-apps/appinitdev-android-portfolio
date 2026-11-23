@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InventoryScreen(
@@ -6,7 +5,6 @@ fun InventoryScreen(
 ) {
     InventoryScreenCompose(viewModel = viewModel)
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InventoryScreenCompose(
@@ -31,8 +29,6 @@ fun InventoryScreenCompose(
             .fillMaxSize()
             .padding(12.dp)
     ) {
-        
-
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
@@ -60,9 +56,7 @@ fun InventoryScreenCompose(
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(8.dp))
-
         Card(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -74,9 +68,7 @@ fun InventoryScreenCompose(
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
-
                 Spacer(modifier = Modifier.height(8.dp))
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -94,7 +86,6 @@ fun InventoryScreenCompose(
                         modifier = Modifier.weight(1f)
                     )
                 }
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -114,16 +105,12 @@ fun InventoryScreenCompose(
                 }
             }
         }
-
-        
-
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.low_stock_alerts),
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(16.dp)
         )
-
         LazyColumn(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -135,100 +122,19 @@ fun InventoryScreenCompose(
                         showProductDialogUpdate = true
                         productToEdit = product
                     },
-
                 )
             }
         }
-
-        
-         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
         errorMessage?.let { message ->
             LaunchedEffect(message) {
-                
             }
-
     }
-        
-         
-
-
-
-
-
-
-
-
         if (showProductDialogUpdate && productToEdit != null) {
             ProductFormDialog(
                 showDialog = showProductDialogUpdate,
                 onDismiss = { showProductDialogUpdate = false },
                 onSave = { product ->
                     viewModel.updateProduct(product)
-                    
                     Log.d("Products", "Producto actualizado: $product")
                     showProductDialogUpdate = false
                 },
@@ -238,7 +144,6 @@ fun InventoryScreenCompose(
         }
     }
 }
-
 @Composable
 fun StatCard(
     title: String,
@@ -266,7 +171,6 @@ fun StatCard(
         }
     }
 }
-
 @Composable
 fun StockAlertCard(
     alert: StockAlert,
@@ -300,7 +204,6 @@ fun StockAlertCard(
                     color = MaterialTheme.colorScheme.error
                 )
             }
-            
             Button(
                 onClick = onAcknowledge,
                 colors = ButtonDefaults.buttonColors(
@@ -312,7 +215,6 @@ fun StockAlertCard(
         }
     }
 }
-
 @Composable
 fun AdjustmentCard(adjustment: InventoryAdjustment) {
     Card(
@@ -346,9 +248,6 @@ fun AdjustmentCard(adjustment: InventoryAdjustment) {
         }
     }
 }
-
-
-
 @Composable
 fun StockAlertCardCompose(
     alert: com.mopanesystems.ziposmobile.data.model.StockAlert,
@@ -382,7 +281,6 @@ fun StockAlertCardCompose(
                     color = MaterialTheme.colorScheme.error
                 )
             }
-            
             Button(
                 onClick = onAcknowledge,
                 colors = ButtonDefaults.buttonColors(
@@ -394,16 +292,11 @@ fun StockAlertCardCompose(
         }
     }
 }
-
-
-
 @Composable
 fun ModernProductCard(
     product: com.mopanesystems.ziposmobile.data.model.Product,
     onEdit: () -> Unit,
 ) {
-
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
@@ -419,7 +312,6 @@ fun ModernProductCard(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            
             Surface(
                 modifier = Modifier.size(64.dp),
                 shape = MaterialTheme.shapes.large,
@@ -434,8 +326,6 @@ fun ModernProductCard(
                     )
                 }
             }
-
-            
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -446,13 +336,11 @@ fun ModernProductCard(
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.SemiBold
                 )
-
                 Text(
                     text = product.categoryId ?: "Uncategorized",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -463,8 +351,6 @@ fun ModernProductCard(
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
-
-                    
                     Surface(
                         shape = MaterialTheme.shapes.small,
                         color = if (product.stockQuantity < product.minStockLevel) {
@@ -494,21 +380,14 @@ fun ModernProductCard(
                     }
                 }
             }
-
-            
-
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.End
             ) {
-                
-
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    
                     FilledTonalButton(
-
                         onClick = onEdit,
                         modifier = Modifier.size(42.dp),
                         shape = MaterialTheme.shapes.medium,
@@ -524,12 +403,8 @@ fun ModernProductCard(
                             tint = MaterialTheme.colorScheme.onTertiaryContainer
                         )
                     }
-
                 }
             }
         }
     }
-
 }
-
-

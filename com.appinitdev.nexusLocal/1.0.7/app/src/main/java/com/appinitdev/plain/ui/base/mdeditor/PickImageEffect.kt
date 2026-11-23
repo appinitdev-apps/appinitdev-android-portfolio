@@ -1,11 +1,9 @@
-
 @Composable
 internal fun PickImageEffect(
     context: Context,
     imageUrl: MutableState<String>,
 ) {
     val sharedFlow = Channel.sharedFlow
-
     LaunchedEffect(sharedFlow) {
         sharedFlow.collect { event ->
             when (event) {

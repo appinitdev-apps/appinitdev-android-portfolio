@@ -1,4 +1,3 @@
-
 object BitmapHelper {
     suspend fun decodeBitmapFromFileAsync(
         context: Context,

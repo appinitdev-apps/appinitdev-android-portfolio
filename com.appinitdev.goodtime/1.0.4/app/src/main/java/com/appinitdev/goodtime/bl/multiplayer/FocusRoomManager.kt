@@ -1,4 +1,3 @@
-
 data class RoomMember(
     val userId: String,
     val name: String,
@@ -6,19 +5,15 @@ data class RoomMember(
     val activeLabel: String,
     val currentSessionMinutes: Long
 )
-
 data class FocusRoom(
     val roomCode: String,
     val roomName: String,
     val hostUserId: String,
     val members: List<RoomMember>
 )
-
 class FocusRoomManager {
-
     private val _currentRoom = MutableStateFlow<FocusRoom?>(null)
     val currentRoom: StateFlow<FocusRoom?> = _currentRoom.asStateFlow()
-
     fun createRoom(roomName: String, hostName: String): FocusRoom {
         val code = (100000..999999).random().toString()
         val hostId = UUID.randomUUID().toString()
@@ -29,7 +24,6 @@ class FocusRoomManager {
             activeLabel = "General",
             currentSessionMinutes = 0L
         )
-
         val room = FocusRoom(
             roomCode = code,
             roomName = roomName,
@@ -39,7 +33,6 @@ class FocusRoomManager {
         _currentRoom.value = room
         return room
     }
-
     fun joinRoom(roomCode: String, userName: String): Boolean {
         val userId = UUID.randomUUID().toString()
         val newMember = RoomMember(
@@ -49,15 +42,12 @@ class FocusRoomManager {
             activeLabel = "General",
             currentSessionMinutes = 0L
         )
-
         val active = _currentRoom.value
         if (active != null && active.roomCode == roomCode) {
             val updatedMembers = active.members + newMember
             _currentRoom.value = active.copy(members = updatedMembers)
             return true
         }
-
-        
         _currentRoom.value = FocusRoom(
             roomCode = roomCode,
             roomName = "Focus Room #$roomCode",
@@ -66,7 +56,6 @@ class FocusRoomManager {
         )
         return true
     }
-
     fun updateMyState(isFocusing: Boolean, activeLabel: String, minutes: Long) {
         val room = _currentRoom.value ?: return
         val updatedMembers = room.members.map { member ->
@@ -82,7 +71,6 @@ class FocusRoomManager {
         }
         _currentRoom.value = room.copy(members = updatedMembers)
     }
-
     fun serializeRoomState(): String {
         val room = _currentRoom.value ?: return ""
         val json = JSONObject().apply {
@@ -104,7 +92,6 @@ class FocusRoomManager {
         }
         return json.toString()
     }
-
     fun leaveRoom() {
         _currentRoom.value = null
     }

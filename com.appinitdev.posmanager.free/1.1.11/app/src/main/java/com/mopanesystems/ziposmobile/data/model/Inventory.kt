@@ -1,4 +1,3 @@
-
 @Entity(tableName = "inventory_adjustments")
 data class InventoryAdjustment(
     @PrimaryKey
@@ -12,14 +11,11 @@ data class InventoryAdjustment(
     val createdAt: LocalDateTime = LocalDateTime.now(),
     override val isSynced: Boolean = false
 ) : Identifiable, Syncable {
-
     val isStockIncrease: Boolean
         get() = quantity > 0
-
     val isStockDecrease: Boolean
         get() = quantity < 0
 }
-
 @Entity(tableName = "stock_alerts")
 data class StockAlert(
     @PrimaryKey
@@ -34,14 +30,11 @@ data class StockAlert(
     val acknowledgedAt: LocalDateTime? = null,
     val storeId: String
 ) : Identifiable {
-
     val isOutOfStockAlert: Boolean
         get() = alertType == StockAlertType.OUT_OF_STOCK
-
     val isLowStockAlert: Boolean
         get() = alertType == StockAlertType.LOW_STOCK
 }
-
 @Entity(tableName = "suppliers")
 data class Supplier(
     @PrimaryKey
@@ -61,7 +54,6 @@ data class Supplier(
     override val updatedAt: LocalDateTime = LocalDateTime.now(),
     override val storeId: String? = null
 ) : Identifiable, Auditable, StoreScoped
-
 @Entity(tableName = "purchase_orders")
 data class PurchaseOrder(
     @PrimaryKey
@@ -78,14 +70,11 @@ data class PurchaseOrder(
     override val createdAt: LocalDateTime = LocalDateTime.now(),
     override val updatedAt: LocalDateTime = LocalDateTime.now()
 ) : Identifiable, Auditable, StoreScoped {
-
     val isFullyReceived: Boolean
         get() = status == OrderStatus.RECEIVED
-
     val canBeCancelled: Boolean
         get() = status == OrderStatus.DRAFT || status == OrderStatus.PENDING
 }
-
 @Entity(tableName = "purchase_order_items")
 data class PurchaseOrderItem(
     @PrimaryKey
@@ -97,14 +86,11 @@ data class PurchaseOrderItem(
     val totalCost: BigDecimal,
     val receivedQuantity: Int = 0
 ) : Identifiable {
-
     val remainingQuantity: Int
         get() = (quantity - receivedQuantity).coerceAtLeast(0)
-
     val isFullyReceived: Boolean
         get() = receivedQuantity >= quantity
 }
-
 enum class AdjustmentReason {
     STOCK_TAKE,
     DAMAGE,
@@ -114,21 +100,18 @@ enum class AdjustmentReason {
     CORRECTION,
     OTHER
 }
-
 enum class AlertType {
     LOW_STOCK,
     OUT_OF_STOCK,
     OVERSTOCK,
     EXPIRING_SOON
 }
-
 enum class StockAlertType {
     LOW_STOCK,
     OUT_OF_STOCK,
     OVERSTOCK,
     EXPIRING_SOON
 }
-
 enum class OrderStatus {
     DRAFT,
     PENDING,

@@ -1,4 +1,3 @@
-
 @Composable
 fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick: () -> Unit, onReputationClick: () -> Unit, navController: NavController) {
     var isExpanded by remember { mutableStateOf(false) }
@@ -8,22 +7,18 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
     var showTutorial by rememberSaveable {
         mutableStateOf(!prefs.getBoolean("tutorial_visto", false))
     }
-    
     if (showTutorial) {
         TesterAppTutorialDialog(
             onDismiss = {
                 prefs.edit().putBoolean("tutorial_visto", true).apply()
-                
                 showTutorial = false
             },
             onSkip = {
                 prefs.edit().putBoolean("tutorial_visto", true).apply()
-                
                 showTutorial = false
             }
         )
     }
-
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -37,7 +32,6 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                 .padding(20.dp)
                 .fillMaxWidth()
         ) {
-            
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -57,9 +51,7 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.width(16.dp))
-
                 Column(modifier = Modifier.weight(1f)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
@@ -70,7 +62,6 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                         )
                         Spacer(Modifier.width(8.dp))
                         com.appinitdev.tester.screen.StreakBadge(profile.streaks)
-                        
                         if (profile.achievements.isNotEmpty()) {
                             Spacer(Modifier.width(8.dp))
                             Row(
@@ -82,16 +73,12 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                                 }
                             }
                         }
-                        
                         Spacer(Modifier.weight(1f))
-                        
                         IconButton(onClick = { navController.navigate("points_history") }) {
                             Icon(Icons.Default.History, "Historial de Puntos", tint = MaterialTheme.colorScheme.primary)
                         }
                     }
-                    
                     Spacer(modifier = Modifier.height(4.dp))
-
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -114,7 +101,6 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                                 )
                             }
                         }
-
                         Surface(
                             color = MaterialTheme.colorScheme.tertiaryContainer,
                             shape = RoundedCornerShape(8.dp),
@@ -136,13 +122,9 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                     }
                 }
             }
-
-
-
             Spacer(modifier = Modifier.height(16.dp))
             HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
             Spacer(modifier = Modifier.height(8.dp))
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -154,7 +136,6 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                 ) {
                     val notifications by viewModel.notifications.collectAsState()
                     val unreadCount = notifications.count { !it.isRead }
-                    
                     BadgedBox(
                         badge = { if (unreadCount > 0) Badge { Text("$unreadCount") } }
                     ) {
@@ -165,25 +146,21 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                             Icon(Icons.Default.Notifications, stringResource(R.string.notificaciones), modifier = Modifier.size(20.dp))
                         }
                     }
-
                     FilledTonalIconButton(
                         onClick = { showTutorial = true },
                         modifier = Modifier.size(40.dp)
                     ) {
                         Icon(Icons.Default.AutoStories, "Tutorial", modifier = Modifier.size(20.dp))
                     }
-
                     FilledTonalIconButton(
                         onClick = onEditClick,
                         modifier = Modifier.size(40.dp)
                     ) {
                         Icon(Icons.Default.Edit, "Editar", modifier = Modifier.size(20.dp))
                     }
-
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         NotificationPermissionButton()
                     }
-
                     if (com.appinitdev.tester.BuildConfig.DEBUG) {
                         FilledTonalIconButton(
                             onClick = { viewModel.notifyNewAppToRandomTesters(context) },
@@ -199,7 +176,6 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                         LanguageSettingsButton()
                     }
                 }
-
                 IconButton(onClick = { isExpanded = !isExpanded }) {
                     Icon(
                         imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
@@ -213,20 +189,15 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
-
-
                 Column {
                     Column{
                         Spacer(modifier = Modifier.height(24.dp))
-
-                        
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             RatingBarDisplay(profile.promedioEstrellas, profile.calificaciones.size)
-
                             Surface(
                                 color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
                                 shape = RoundedCornerShape(16.dp),
@@ -263,9 +234,7 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                             }
                         }
                     }
-                    
                     Spacer(modifier = Modifier.height(8.dp))
-
                 InfoSection(
                     label = stringResource(R.string.codigo_referido),
                     value = profile.referralCode.ifEmpty { stringResource(R.string.generar_codigo) },
@@ -276,19 +245,13 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                         Text(stringResource(R.string.generar_mi_codigo))
                     }
                 }
-                
                 Spacer(modifier = Modifier.height(12.dp))
-
-                    
                     Text(
                         stringResource(R.string.contacto_y_enlaces),
                         style = MaterialTheme.typography.labelLarge,
                         color = Color.Gray
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-
-
-
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -304,7 +267,6 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                             fontSize = 12.sp
                         )
                     }
-
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -320,12 +282,9 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                             fontSize = 12.sp
                         )
                     }
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        
                         horizontalArrangement = Arrangement.End,
-                        
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
@@ -344,10 +303,8 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                     }
                 }
             }
-
         }
     }
-
     if (showAchievementsDialog) {
         AchievementsDetailsDialog(
             achievementIds = profile.achievements,
@@ -355,7 +312,6 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
         )
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AchievementsDetailsDialog(achievementIds: List<String>, onDismiss: () -> Unit) {
@@ -373,7 +329,6 @@ fun AchievementsDetailsDialog(achievementIds: List<String>, onDismiss: () -> Uni
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(16.dp))
-
             achievementIds.forEach { id ->
                 val (title, desc, icon, color) = when (id) {
                     "tester_pioneer" -> arrayOf(stringResource(R.string.pionero_titulo), stringResource(R.string.pionero_desc), Icons.Default.MilitaryTech, Color(0xFFFFD700))
@@ -382,7 +337,6 @@ fun AchievementsDetailsDialog(achievementIds: List<String>, onDismiss: () -> Uni
                     "top_reviewer" -> arrayOf(stringResource(R.string.reviewer_titulo), stringResource(R.string.reviewer_desc), Icons.Default.RateReview, Color(0xFF2196F3))
                     else -> arrayOf(stringResource(R.string.logro_comunidad_titulo), stringResource(R.string.logro_comunidad_desc), Icons.Default.EmojiEvents, Color.Gray)
                 }
-
                 ListItem(
                     leadingContent = {
                         Surface(
@@ -406,7 +360,6 @@ fun AchievementsDetailsDialog(achievementIds: List<String>, onDismiss: () -> Uni
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AchievementBadge(id: String) {
@@ -417,7 +370,6 @@ fun AchievementBadge(id: String) {
         "top_reviewer" -> Triple(Icons.Default.RateReview, Color(0xFF2196F3), "Reviewer")
         else -> Triple(Icons.Default.EmojiEvents, Color.Gray, "Logro")
     }
-
     Surface(
         color = color.copy(alpha = 0.15f),
         shape = CircleShape,
@@ -433,7 +385,6 @@ fun AchievementBadge(id: String) {
         )
     }
 }
-
 @Composable
 fun RatingBarDisplay(rating: Float, votes: Int) {
     Column {
@@ -461,7 +412,6 @@ fun RatingBarDisplay(rating: Float, votes: Int) {
         )
     }
 }
-
 @Composable
 fun InfoSection(label: String, value: String, icon: ImageVector) {
     Row(modifier = Modifier.fillMaxWidth()) {
@@ -476,7 +426,6 @@ fun InfoSection(label: String, value: String, icon: ImageVector) {
         }
     }
 }
-
 @Composable
 fun ContactChip(icon: ImageVector, label: String) {
     Surface(

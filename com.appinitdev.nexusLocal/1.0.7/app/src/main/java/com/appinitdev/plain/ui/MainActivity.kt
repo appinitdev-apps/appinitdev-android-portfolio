@@ -1,4 +1,3 @@
-
 class MainActivity : AppCompatActivity() {
     internal var pickFileType = PickFileType.IMAGE
     internal var pickFileTag = PickFileTag.SEND_MESSAGE
@@ -17,7 +16,6 @@ class MainActivity : AppCompatActivity() {
     internal var pendingFileUris by mutableStateOf<Set<Uri>?>(null)
     internal var pendingForwardText by mutableStateOf<String?>(null)
     internal var pendingCrashReport by mutableStateOf<String?>(null)
-
     internal val screenCapture = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK && result.data != null && ScreenMirrorService.instance == null) {
             ContextCompat.startForegroundService(
@@ -71,14 +69,11 @@ class MainActivity : AppCompatActivity() {
     internal val ignoreBatteryOptimizationActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         sendEvent(IgnoreBatteryOptimizationResultEvent())
     }
-
     private val plugInReceiver = PlugInControlReceiver()
     private val networkStateReceiver = NetworkStateReceiver()
-
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         sendEvent(WindowFocusChangedEvent(hasFocus))
     }
-
     @SuppressLint("ClickableViewAccessibility", "DiscouragedPrivateApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen(); super.onCreate(savedInstanceState)
@@ -197,14 +192,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
     override fun onDestroy() {
         super.onDestroy()
         Permissions.release()
         unregisterReceiver(plugInReceiver)
         unregisterReceiver(networkStateReceiver)
     }
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         PlainAccessibilityService.invalidateScreenSizeCache()
@@ -212,18 +205,12 @@ class MainActivity : AppCompatActivity() {
             Language.initLocaleAsync(this@MainActivity)
         }
     }
-
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent); handleIntent(intent)
     }
-
     fun openNew() {
         try {
-            
-            
-            
             if (foregrounded()) {
-                
                 val intent = Intent(this, MainActivity::class.java).apply {
                     addFlags(
                         Intent.FLAG_ACTIVITY_NEW_TASK or
@@ -233,26 +220,19 @@ class MainActivity : AppCompatActivity() {
                 }
                 startActivity(intent)
             } else {
-                
                 val context = this
                 val channelId = "app_foreground_channel" 
-
                 val intent = Intent(context, MainActivity::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    
                     putExtra("opened_from_notification", true)
                 }
-
                 val pendingIntent = android.app.PendingIntent.getActivity(
                     context,
                     1002, 
                     intent,
                     android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
                 )
-
                 val notificationManager = context.getSystemService(android.content.Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
-
-                
                 val notification = androidx.core.app.NotificationCompat.Builder(context, channelId)
                     .setContentTitle(LocaleHelper.getString(Res.string.app_name)) 
                     .setContentText(LocaleHelper.getString(Res.string.permission_required))
@@ -261,7 +241,6 @@ class MainActivity : AppCompatActivity() {
                     .setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)
                     .setContentIntent(pendingIntent)
                     .build()
-
                 notificationManager.notify(1002, notification)
                 LogCat.d("App en background: Se envió notificación para abrir MainActivity de forma segura.")
             }
@@ -269,7 +248,6 @@ class MainActivity : AppCompatActivity() {
             LogCat.e("Error bringing MainActivity to foreground: ${e.message}")
         }
     }
-
     companion object {
         lateinit var instance: WeakReference<MainActivity>
     }

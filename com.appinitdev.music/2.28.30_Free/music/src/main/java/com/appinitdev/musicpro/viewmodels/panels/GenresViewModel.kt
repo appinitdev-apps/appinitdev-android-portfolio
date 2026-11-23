@@ -1,17 +1,13 @@
-
 @HiltViewModel
 class GenresViewModel @Inject constructor(
         application: Application,
         private val audioRepository: AudioRepository
 ) : WrappedViewModel(application) {
-
     private val _genres = MutableStateFlow<List<Genre>>(emptyList())
     val genres: StateFlow<List<Genre>> = _genres.asStateFlow()
-
     init {
         loadData()
     }
-
     private fun loadData() {
         viewModelScope.launch {
             audioRepository.getAllGenresWithAggregation()
@@ -28,7 +24,6 @@ class GenresViewModel @Inject constructor(
                 }
         }
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -39,7 +34,6 @@ class GenresViewModel @Inject constructor(
             }
         }
     }
-
     companion object {
         private const val TAG = "GenresViewModel"
     }

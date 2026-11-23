@@ -1,35 +1,21 @@
-
- 
-
-
-
-
-
-
 class AdapterFavorites(initial: List<Audio>) : FastScrollAdapter<VerticalListViewHolder>() {
-
     private var generalAdapterCallbacks: GeneralAdapterCallbacks? = null
-
     private val listUpdateCallback = object : ListUpdateCallback {
         @SuppressLint("NotifyDataSetChanged")
         override fun onInserted(position: Int, count: Int) {
             if (count > 100) notifyDataSetChanged() else notifyItemRangeInserted(position, count)
         }
-
         @SuppressLint("NotifyDataSetChanged")
         override fun onRemoved(position: Int, count: Int) {
             if (count > 100) notifyDataSetChanged() else notifyItemRangeRemoved(position, count)
         }
-
         override fun onMoved(fromPosition: Int, toPosition: Int) {
             notifyItemMoved(fromPosition, toPosition)
         }
-
         override fun onChanged(position: Int, count: Int, payload: Any?) {
             notifyItemRangeChanged(position, count, payload)
         }
     }
-
     private val diffCallback = object : DiffUtil.ItemCallback<Audio>() {
         override fun areItemsTheSame(oldItem: Audio, newItem: Audio) = oldItem.id == newItem.id
         override fun areContentsTheSame(oldItem: Audio, newItem: Audio): Boolean {
@@ -40,30 +26,22 @@ class AdapterFavorites(initial: List<Audio>) : FastScrollAdapter<VerticalListVie
                     oldItem.uri == newItem.uri
         }
     }
-
     private val differ = AsyncListDiffer(
             listUpdateCallback,
             AsyncDifferConfig.Builder(diffCallback).build()
     )
-
     private val songs: List<Audio> get() = differ.currentList
-
-     
     var layoutMode: CommonPreferencesConstants.LayoutMode = FavoritesPreferences.getGridSize()
-
     init {
         setHasStableIds(true)
         differ.submitList(initial.toList())
     }
-
     override fun getItemId(position: Int): Long = songs[position].id
-
     override fun getItemViewType(position: Int): Int = when {
         layoutMode.isLabel -> VIEW_TYPE_LABEL
         layoutMode.isGrid -> VIEW_TYPE_GRID
         else -> VIEW_TYPE_LIST
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalListViewHolder {
         return when (viewType) {
             VIEW_TYPE_GRID -> GridHolder(AdapterStyleGridBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -71,7 +49,6 @@ class AdapterFavorites(initial: List<Audio>) : FastScrollAdapter<VerticalListVie
             else -> ListHolder(AdapterStyleListBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
-
     override fun onBind(holder: VerticalListViewHolder, position: Int, isLightBind: Boolean) {
         val song = songs[position]
         when (holder) {
@@ -80,9 +57,7 @@ class AdapterFavorites(initial: List<Audio>) : FastScrollAdapter<VerticalListVie
             is LabelHolder -> holder.bind(song, isLightBind)
         }
     }
-
     override fun getItemCount(): Int = songs.size
-
     override fun onViewRecycled(holder: VerticalListViewHolder) {
         holder.itemView.clearAnimation()
         super.onViewRecycled(holder)
@@ -92,17 +67,12 @@ class AdapterFavorites(initial: List<Audio>) : FastScrollAdapter<VerticalListVie
             is LabelHolder -> Unit
         }
     }
-
-     
     fun setGeneralAdapterCallbacks(callbacks: GeneralAdapterCallbacks) {
         this.generalAdapterCallbacks = callbacks
     }
-
-     
     fun updateSongs(newSongs: List<Audio>) {
         differ.submitList(newSongs.toList())
     }
-
     inner class ListHolder(val binding: AdapterStyleListBinding) : VerticalListViewHolder(binding.root) {
         fun bind(audio: Audio, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(audio.getProperTitle())
@@ -121,7 +91,6 @@ class AdapterFavorites(initial: List<Audio>) : FastScrollAdapter<VerticalListVie
             }
         }
     }
-
     inner class GridHolder(val binding: AdapterStyleGridBinding) : VerticalListViewHolder(binding.root) {
         fun bind(song: Audio, isLightBind: Boolean) {
             binding.container.enableGridMode = true
@@ -140,7 +109,6 @@ class AdapterFavorites(initial: List<Audio>) : FastScrollAdapter<VerticalListVie
             }
         }
     }
-
     inner class LabelHolder(val binding: AdapterStyleLabelsBinding) : VerticalListViewHolder(binding.root) {
         fun bind(audio: Audio, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(audio.getProperTitle())
@@ -158,16 +126,9 @@ class AdapterFavorites(initial: List<Audio>) : FastScrollAdapter<VerticalListVie
             }
         }
     }
-
     companion object {
-         
         const val VIEW_TYPE_LIST = CommonPreferencesConstants.GRID_TYPE_LIST
-
-         
         const val VIEW_TYPE_GRID = CommonPreferencesConstants.GRID_TYPE_GRID
-
-         
         const val VIEW_TYPE_LABEL = CommonPreferencesConstants.GRID_TYPE_LABEL
     }
 }
-

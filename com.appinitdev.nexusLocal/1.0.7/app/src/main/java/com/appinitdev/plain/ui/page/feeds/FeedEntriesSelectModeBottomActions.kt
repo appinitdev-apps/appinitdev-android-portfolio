@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun FeedEntriesSelectModeBottomActions(
@@ -12,14 +11,12 @@ fun FeedEntriesSelectModeBottomActions(
     var removeFromTags by remember {
         mutableStateOf(false)
     }
-
     if (showSelectTagsDialog) {
         BatchSelectTagsDialog(tagsVM, tagsState, feedEntriesVM.getSelectedItems(), removeFromTags) {
             showSelectTagsDialog = false
             feedEntriesVM.exitSelectMode()
         }
     }
-
     PBottomAppBar {
         BottomActionButtons {
             IconTextSmallButtonLabel {

@@ -1,4 +1,3 @@
-
 object IonModel {
     fun getList(ion: ArrayList<Ion>) {
         ion.add(Ion("hydrogen", "H", 1))

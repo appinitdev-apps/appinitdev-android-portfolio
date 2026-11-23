@@ -1,31 +1,11 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class GoodtimeApplication :
     Application(),
     KoinComponent,
     Configuration.Provider {
     private val applicationScope = MainScope()
-
     override fun onCreate() {
         super.onCreate()
         if (ACRA.isACRASenderServiceProcess()) return
-
         startKoin {
             modules(
                 module {
@@ -36,7 +16,6 @@ class GoodtimeApplication :
                             coroutineScope = get<CoroutineScope>(named(IO_SCOPE)),
                         )
                     }
-
                     single<BackupPrompter> {
                         AndroidBackupPrompter(get())
                     }
@@ -125,7 +104,6 @@ class GoodtimeApplication :
                     single<EventListener>(named(EventListener.SESSION_RESET_HANDLER)) {
                         SessionResetHandler(get(), getWith("SessionResetHandler"))
                     }
-
                     single<EventListener>(named(EventListener.DND_MODE_MANAGER)) {
                         DndModeManager(
                             notificationManager = get<NotificationArchManager>(),
@@ -162,7 +140,6 @@ class GoodtimeApplication :
             )
             workManagerFactory()
         }
-
         val reminderHelper = get<ReminderHelper>()
         applicationScope.launch {
             reminderHelper.init()
@@ -170,7 +147,6 @@ class GoodtimeApplication :
         val billing = get<BillingAbstract>()
         billing.init()
     }
-
     override fun attachBaseContext(context: Context) {
         super.attachBaseContext(context)
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
@@ -180,13 +156,9 @@ class GoodtimeApplication :
             alsoReportToAndroidFramework = true
             buildConfigClass = BuildConfig::class.java
             reportFormat = StringFormat.JSON
-
             notification {
-                
                 title = getString(R.string.main_crash_notification_title)
-                
                 text = getString(R.string.main_crash_notification_desc)
-                
                 channelName = getString(R.string.main_crash_channel_name)
                 resSendButtonIcon = null
                 resDiscardButtonIcon = null
@@ -198,7 +170,6 @@ class GoodtimeApplication :
             }
         }
     }
-
     override val workManagerConfiguration: Configuration
         get() =
             if (BuildConfig.DEBUG) {

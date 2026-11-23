@@ -1,28 +1,13 @@
-
- 
-
-
-
-
-
-
-
-
-
 object ChatFidUriMigration {
-
     fun run(context: Context) {
         val chatDao = AppDatabase.instance.chatDao()
         val fileDao = AppDatabase.instance.appFileDao()
         val renamedHashes = mutableSetOf<String>()
-
         val chats = chatDao.getAll()
         for (chat in chats) {
             val type = chat.content.type
             if (type != DMessageType.IMAGES.value && type != DMessageType.FILES.value) continue
-
             var changed = false
-
             when (type) {
                 DMessageType.IMAGES.value -> {
                     val imgs = chat.content.value as? DMessageImages ?: continue
@@ -46,7 +31,6 @@ object ChatFidUriMigration {
                         chat.content.value = DMessageImages(newItems)
                     }
                 }
-
                 DMessageType.FILES.value -> {
                     val files = chat.content.value as? DMessageFiles ?: continue
                     val newItems = files.items.map { item ->
@@ -70,16 +54,13 @@ object ChatFidUriMigration {
                     }
                 }
             }
-
             if (changed) {
                 chatDao.updateData(ChatItemDataUpdate(id = chat.id, content = chat.content))
                 LogCat.d("ChatFidUriMigration: updated chat ${chat.id}")
             }
         }
-
         LogCat.d("ChatFidUriMigration: done, processed ${chats.size} chats")
     }
-
     private fun renameLegacyFile(
         context: Context,
         hash: String,

@@ -1,4 +1,3 @@
-
 class SaveAsDialog(
     val activity: BaseSimpleActivity, val path: String, val appendFilename: Boolean, val cancelCallback: (() -> Unit)? = null,
     val callback: (savePath: String) -> Unit
@@ -8,24 +7,19 @@ class SaveAsDialog(
         if (activity.isRestrictedWithSAFSdk30(realPath) && !activity.isInDownloadDir(realPath)) {
             realPath = activity.getPicturesDirectoryPath(realPath)
         }
-
         val binding = DialogSaveAsBinding.inflate(activity.layoutInflater).apply {
             folderValue.setText("${activity.humanizePath(realPath).trimEnd('/')}/")
-
             val fullName = path.getFilenameFromPath()
             val dotAt = fullName.lastIndexOf(".")
             var name = fullName
-
             if (dotAt > 0) {
                 name = fullName.substring(0, dotAt)
                 val extension = fullName.substring(dotAt + 1)
                 extensionValue.setText(extension)
             }
-
             if (appendFilename) {
                 name += "_1"
             }
-
             filenameValue.setText(name)
             folderValue.setOnClickListener {
                 activity.hideKeyboard(folderValue)
@@ -35,7 +29,6 @@ class SaveAsDialog(
                 }
             }
         }
-
         activity.getAlertDialogBuilder()
             .setPositiveButton(org.appinitdev.commons.R.string.ok, null)
             .setNegativeButton(org.appinitdev.commons.R.string.cancel) { dialog, which -> cancelCallback?.invoke() }
@@ -46,24 +39,20 @@ class SaveAsDialog(
                     alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                         val filename = binding.filenameValue.value
                         val extension = binding.extensionValue.value
-
                         if (filename.isEmpty()) {
                             activity.toast(org.appinitdev.commons.R.string.filename_cannot_be_empty)
                             return@setOnClickListener
                         }
-
                         if (extension.isEmpty()) {
                             activity.toast(org.appinitdev.commons.R.string.extension_cannot_be_empty)
                             return@setOnClickListener
                         }
-
                         val newFilename = "$filename.$extension"
                         val newPath = "${realPath.trimEnd('/')}/$newFilename"
                         if (!newFilename.isAValidFilename()) {
                             activity.toast(org.appinitdev.commons.R.string.filename_invalid_characters)
                             return@setOnClickListener
                         }
-
                         if (activity.getDoesFilePathExist(newPath)) {
                             val title = String.format(activity.getString(org.appinitdev.commons.R.string.file_already_exists_overwrite), newFilename)
                             ConfirmationDialog(activity, title) {
@@ -86,7 +75,6 @@ class SaveAsDialog(
                 }
             }
     }
-
     private fun selectPath(alertDialog: AlertDialog, newPath: String) {
         activity.handleSAFDialogSdk30(newPath) {
             if (!it) {

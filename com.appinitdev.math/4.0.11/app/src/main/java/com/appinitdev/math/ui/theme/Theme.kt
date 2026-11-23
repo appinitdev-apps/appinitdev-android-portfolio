@@ -1,5 +1,3 @@
-
-
 private val OledColorScheme = darkColorScheme(
     primary = Color(0xFF60A5FA),
     onPrimary = Color(0xFF000000),
@@ -12,8 +10,6 @@ private val OledColorScheme = darkColorScheme(
     onBackground = Color(0xFFE6EDF3),
     onSurface = Color(0xFFE6EDF3)
 )
-
-
 private val ElectricBlueColorScheme = darkColorScheme(
     primary = Color(0xFF3B82F6),
     primaryContainer = Color(0xFF1E3A8A),
@@ -23,8 +19,6 @@ private val ElectricBlueColorScheme = darkColorScheme(
     surface = Color(0xFF1E293B),
     surfaceVariant = Color(0xFF334155)
 )
-
-
 private val EmeraldGreenColorScheme = darkColorScheme(
     primary = Color(0xFF10B981),
     primaryContainer = Color(0xFF064E3B),
@@ -34,8 +28,6 @@ private val EmeraldGreenColorScheme = darkColorScheme(
     surface = Color(0xFF064E3B),
     surfaceVariant = Color(0xFF047857)
 )
-
-
 private val DeepPurpleColorScheme = darkColorScheme(
     primary = Color(0xFF8B5CF6),
     primaryContainer = Color(0xFF4C1D95),
@@ -45,8 +37,6 @@ private val DeepPurpleColorScheme = darkColorScheme(
     surface = Color(0xFF3B0764),
     surfaceVariant = Color(0xFF581C87)
 )
-
-
 private val FlameOrangeColorScheme = darkColorScheme(
     primary = Color(0xFFF59E0B),
     primaryContainer = Color(0xFF78350F),
@@ -56,8 +46,6 @@ private val FlameOrangeColorScheme = darkColorScheme(
     surface = Color(0xFF292524),
     surfaceVariant = Color(0xFF44403C)
 )
-
-
 private val CrimsonRedColorScheme = darkColorScheme(
     primary = Color(0xFFEF4444),
     primaryContainer = Color(0xFF7F1D1D),
@@ -67,8 +55,6 @@ private val CrimsonRedColorScheme = darkColorScheme(
     surface = Color(0xFF2D0E0E),
     surfaceVariant = Color(0xFF450A0A)
 )
-
-
 private val CyberpunkPinkColorScheme = darkColorScheme(
     primary = Color(0xFFEC4899),
     primaryContainer = Color(0xFF831843),
@@ -78,8 +64,6 @@ private val CyberpunkPinkColorScheme = darkColorScheme(
     surface = Color(0xFF2D0E25),
     surfaceVariant = Color(0xFF500724)
 )
-
-
 private val CyanTealColorScheme = darkColorScheme(
     primary = Color(0xFF06B6D4),
     primaryContainer = Color(0xFF134E4A),
@@ -89,8 +73,6 @@ private val CyanTealColorScheme = darkColorScheme(
     surface = Color(0xFF082F32),
     surfaceVariant = Color(0xFF0E4A4E)
 )
-
-
 private val SolarGoldColorScheme = darkColorScheme(
     primary = Color(0xEAEAB308),
     primaryContainer = Color(0xFF713F12),
@@ -100,8 +82,6 @@ private val SolarGoldColorScheme = darkColorScheme(
     surface = Color(0xFF2A230E),
     surfaceVariant = Color(0xFF42320D)
 )
-
-
 private val ForestGreenColorScheme = darkColorScheme(
     primary = Color(0xFF22C55E),
     primaryContainer = Color(0xFF14532D),
@@ -111,8 +91,6 @@ private val ForestGreenColorScheme = darkColorScheme(
     surface = Color(0xFF0A2E16),
     surfaceVariant = Color(0xFF114723)
 )
-
-
 private val VintageSepiaColorScheme = lightColorScheme(
     primary = Color(0xFF8B4513),
     onPrimary = Color(0xFFFFFFFF),
@@ -125,19 +103,16 @@ private val VintageSepiaColorScheme = lightColorScheme(
     onBackground = Color(0xFF291800),
     onSurface = Color(0xFF291800)
 )
-
 private val StandardDarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
     tertiary = Pink80
 )
-
 private val StandardLightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
     tertiary = Pink40
 )
-
 @Composable
 fun MathAppTheme(
     themeMode: String = "SYSTEM",
@@ -166,7 +141,6 @@ fun MathAppTheme(
             }
         }
     }
-
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,

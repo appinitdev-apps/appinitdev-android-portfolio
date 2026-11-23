@@ -1,4 +1,3 @@
-
 @Composable
 fun ChatLinkPreview(linkPreview: DLinkPreview, modifier: Modifier = Modifier) {
     val context = LocalContext.current

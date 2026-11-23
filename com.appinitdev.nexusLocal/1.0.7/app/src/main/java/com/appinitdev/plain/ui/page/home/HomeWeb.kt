@@ -1,6 +1,4 @@
-
 enum class WebState { OFF, ERROR, ON }
-
 @Composable
 fun HomeWeb(
     context: Context,
@@ -10,18 +8,15 @@ fun HomeWeb(
 ) {
     val scope = rememberCoroutineScope()
     val state = mainVM.httpServerState
-
     LaunchedEffect(webEnabled) {
         if (webEnabled) {
             mainVM.syncHttpServerState(context)
         }
     }
-
     val showSuccess = webEnabled && state == HttpServerState.ON
     val showLoading = state.isProcessing() || (webEnabled && state == HttpServerState.OFF)
     val showError = state == HttpServerState.ERROR
     val errorMessage = buildHomeWebErrorMessage(mainVM)
-
     val onRestartFix: () -> Unit = {
         scope.launch {
             withIO {
@@ -39,13 +34,11 @@ fun HomeWeb(
             AppHelper.relaunch(context)
         }
     }
-
     val webState = when {
         showSuccess -> WebState.ON
         showError -> WebState.ERROR
         else -> WebState.OFF
     }
-
     AnimatedContent(
         targetState = webState,
         transitionSpec = {
@@ -70,7 +63,6 @@ fun HomeWeb(
         )
     }
 }
-
 private fun buildHomeWebErrorMessage(mainVM: MainViewModel): String {
     return if (HttpServerManager.portsInUse.isNotEmpty()) {
         LocaleHelper.getStringF(

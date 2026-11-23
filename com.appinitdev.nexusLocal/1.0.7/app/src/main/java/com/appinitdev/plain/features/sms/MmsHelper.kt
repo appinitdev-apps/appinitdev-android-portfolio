@@ -1,21 +1,4 @@
-
- 
-
-
-
-
-
-
 object MmsHelper {
-
-     
-
-
-
-
-
-
-
     fun launchDefaultSmsApp(
         to: String,
         body: String,
@@ -24,15 +7,11 @@ object MmsHelper {
         val context = MainApp.instance
         val activity = MainActivity.instance.get()
             ?: throw IllegalStateException("Activity not available")
-
         val defaultSmsPackage = Telephony.Sms.getDefaultSmsPackage(context)
-
         val attachmentUris = attachments.map { (filePath, _) ->
             FileProvider.getUriForFile(context, Constants.AUTHORITY, File(filePath))
         }
-
         val mimeType = attachments.firstOrNull()?.second ?: "*/*"
-
         val intent = if (attachmentUris.size == 1) {
             Intent(Intent.ACTION_SEND).apply {
                 type = mimeType
@@ -44,7 +23,6 @@ object MmsHelper {
                 putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(attachmentUris))
             }
         }
-
         intent.apply {
             `package` = defaultSmsPackage
             putExtra("address", to)
@@ -52,12 +30,9 @@ object MmsHelper {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-
-        
         for (uri in attachmentUris) {
             context.grantUriPermission(defaultSmsPackage, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-
         activity.startActivity(intent)
     }
 }

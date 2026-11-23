@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addMediaSchema() {
     query("mediaBuckets") {
         resolver { type: DataType ->
@@ -34,23 +33,19 @@ fun SchemaBuilder.addMediaSchema() {
                     ids = if (hasTrashFeature) AudioMediaStoreHelper.getTrashedIdsAsync(context, query) else AudioMediaStoreHelper.getIdsAsync(context, query)
                     AudioMediaStoreHelper.deleteRecordsAndFilesByIdsAsync(context, ids, true)
                 }
-
                 DataType.VIDEO -> {
                     ids = if (hasTrashFeature) VideoMediaStoreHelper.getTrashedIdsAsync(context, query) else VideoMediaStoreHelper.getIdsAsync(context, query)
                     VideoMediaStoreHelper.deleteRecordsAndFilesByIdsAsync(context, ids, true)
                 }
-
                 DataType.IMAGE -> {
                     ids = if (hasTrashFeature) ImageMediaStoreHelper.getTrashedIdsAsync(context, query) else ImageMediaStoreHelper.getIdsAsync(context, query)
                     ImageMediaStoreHelper.deleteRecordsAndFilesByIdsAsync(context, ids, true)
                     ImageIndexManager.enqueueRemove(ids)
                 }
-
                 DataType.DOC -> {
                     ids = if (hasTrashFeature) DocMediaStoreHelper.getTrashedIdsAsync(context, query) else DocMediaStoreHelper.getIdsAsync(context, query)
                     DocMediaStoreHelper.deleteRecordsAndFilesByIdsAsync(context, ids, true)
                 }
-
                 else -> {
                 }
             }
@@ -62,7 +57,6 @@ fun SchemaBuilder.addMediaSchema() {
             if (!isRPlus()) {
                 return@resolver ActionResult(type, query)
             }
-
             var ids = setOf<String>()
             val context = MainApp.instance
             when (type) {
@@ -72,25 +66,21 @@ fun SchemaBuilder.addMediaSchema() {
                     AudioMediaStoreHelper.trashByIdsAsync(context, ids)
                     AudioPlaylistPreference.deleteAsync(paths)
                 }
-
                 DataType.VIDEO -> {
                     ids = VideoMediaStoreHelper.getIdsAsync(context, query)
                     val paths = VideoMediaStoreHelper.getPathsByIdsAsync(context, ids)
                     VideoMediaStoreHelper.trashByIdsAsync(context, ids)
                     VideoPlaylistPreference.deleteAsync(paths)
                 }
-
                 DataType.IMAGE -> {
                     ids = ImageMediaStoreHelper.getIdsAsync(context, query)
                     ImageMediaStoreHelper.trashByIdsAsync(context, ids)
                     ImageIndexManager.enqueueRemove(ids)
                 }
-
                 DataType.DOC -> {
                     ids = DocMediaStoreHelper.getIdsAsync(context, query)
                     DocMediaStoreHelper.trashByIdsAsync(context, ids)
                 }
-
                 else -> {
                 }
             }
@@ -103,7 +93,6 @@ fun SchemaBuilder.addMediaSchema() {
             if (!isRPlus()) {
                 return@resolver ActionResult(type, query)
             }
-
             val ids: Set<String>
             val context = MainApp.instance
             when (type) {
@@ -111,23 +100,19 @@ fun SchemaBuilder.addMediaSchema() {
                     ids = AudioMediaStoreHelper.getTrashedIdsAsync(context, query)
                     AudioMediaStoreHelper.restoreByIdsAsync(context, ids)
                 }
-
                 DataType.VIDEO -> {
                     ids = VideoMediaStoreHelper.getTrashedIdsAsync(context, query)
                     VideoMediaStoreHelper.restoreByIdsAsync(context, ids)
                 }
-
                 DataType.IMAGE -> {
                     ids = ImageMediaStoreHelper.getTrashedIdsAsync(context, query)
                     ImageMediaStoreHelper.restoreByIdsAsync(context, ids)
                     ImageIndexManager.enqueueAdd(ids)
                 }
-
                 DataType.DOC -> {
                     ids = DocMediaStoreHelper.getTrashedIdsAsync(context, query)
                     DocMediaStoreHelper.restoreByIdsAsync(context, ids)
                 }
-
                 else -> {
                 }
             }

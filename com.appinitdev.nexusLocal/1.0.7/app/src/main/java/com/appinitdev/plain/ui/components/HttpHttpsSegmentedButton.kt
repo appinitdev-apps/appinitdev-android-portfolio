@@ -1,11 +1,9 @@
-
 @Composable
 fun HttpHttpsSegmentedButton(isHttps: Boolean, onSelect: (Boolean) -> Unit) {
     val trackColor = MaterialTheme.colorScheme.cardBackgroundNormal
     val selectedColor = MaterialTheme.colorScheme.primary
     val unselectedText = MaterialTheme.colorScheme.onSurfaceVariant
     val selectedText = MaterialTheme.colorScheme.onPrimary
-
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(50))

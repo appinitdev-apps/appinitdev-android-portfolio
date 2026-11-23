@@ -1,4 +1,3 @@
-
 fun GraphQLError.serialize(): String =
     buildJsonObject {
         put(
@@ -20,7 +19,6 @@ fun GraphQLError.serialize(): String =
                     put(
                         "path",
                         buildJsonArray {
-                            
                         },
                     )
                 }

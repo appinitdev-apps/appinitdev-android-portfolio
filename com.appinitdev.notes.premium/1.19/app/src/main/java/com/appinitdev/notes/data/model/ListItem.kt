@@ -1,4 +1,3 @@
-
 data class ListItem(
     var body: String,
     var checked: Boolean,
@@ -7,9 +6,7 @@ data class ListItem(
     var children: MutableList<ListItem>,
     var id: Int = -1,
 ) : Cloneable {
-
     public override fun clone(): Any {
-        
         return ListItem(
             body,
             checked,
@@ -19,7 +16,6 @@ data class ListItem(
             id,
         )
     }
-
     override fun equals(other: Any?): Boolean {
         if (this == null && other == null) {
             return true
@@ -38,14 +34,11 @@ data class ListItem(
             this.checked == other.checked &&
             this.isChild == other.isChild)
     }
-
     val itemCount: Int
         get() = children.size + 1
-
     fun isChildOf(other: ListItem): Boolean {
         return !other.isChild && other.children.contains(this)
     }
-
     override fun toString(): String {
         return "${if (isChild) " >" else ""}${if (checked) "x" else ""} ${body}${
             if (children.isNotEmpty()) "(${

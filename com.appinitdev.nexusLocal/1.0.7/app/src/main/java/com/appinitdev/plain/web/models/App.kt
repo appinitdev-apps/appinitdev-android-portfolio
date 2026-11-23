@@ -1,4 +1,3 @@
-
 data class App(
     val clientId: String,
     val usbConnected: Boolean,

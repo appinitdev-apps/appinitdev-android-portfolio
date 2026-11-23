@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -9,16 +8,13 @@ fun HomeScreen(
     val context = LocalContext.current
     val database = remember { GalleryDatabase.getDatabase(context) }
     val recentTemplates by database.galleryDao().getAllImages().collectAsState(initial = emptyList())
-
     val activeColor = Color(0xFFFF4081) 
     var showAnimeDialog by remember { mutableStateOf(false) }
-
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let { onImageSelected(it) }
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -66,10 +62,7 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
         ) {
-            
             WelcomeBanner(activeColor)
-
-            
             if (recentTemplates.size >= 3) {
                 Spacer(modifier = Modifier.height(24.dp))
                 RecentTemplatesSection(
@@ -78,10 +71,7 @@ fun HomeScreen(
                     activeColor = activeColor
                 )
             }
-
             Spacer(modifier = Modifier.height(24.dp))
-
-            
             Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                 Text(
                     text = stringResource(R.string.c_mo_deseas_cargar_tu_imagen),
@@ -89,9 +79,7 @@ fun HomeScreen(
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF1A1C1E)
                 )
-                
                 Spacer(modifier = Modifier.height(16.dp))
-
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(horizontal = 4.dp)
@@ -105,7 +93,6 @@ fun HomeScreen(
                             onClick = { galleryLauncher.launch("image/*") }
                         )
                     }
-
                     item {
                         MainActionCard(
                             title = stringResource(R.string.buscar_imagen_en_red),
@@ -115,7 +102,6 @@ fun HomeScreen(
                             onClick = { showAnimeDialog = true }
                         )
                     }
-
                     item {
                         MainActionCard(
                             title = stringResource(R.string.abrir_mi_galer_a_guardada),
@@ -126,17 +112,8 @@ fun HomeScreen(
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
-
-                
-
-
-
             }
-
-
-            
             Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                 Text(
                     text = stringResource(R.string.explorar_categor_as),
@@ -150,11 +127,9 @@ fun HomeScreen(
                     onImageSelected = onImageSelected
                 )
             }
-            
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
-
     if (showAnimeDialog) {
         AnimeImageApp(
             onImageSelected = { url ->
@@ -167,7 +142,6 @@ fun HomeScreen(
         )
     }
 }
-
 @Composable
 fun WelcomeBanner(activeColor: Color) {
     Surface(
@@ -187,7 +161,6 @@ fun WelcomeBanner(activeColor: Color) {
                     )
                 )
         ) {
-            
             Canvas(modifier = Modifier.matchParentSize()) {
                 drawCircle(
                     color = Color.White.copy(alpha = 0.1f),
@@ -200,7 +173,6 @@ fun WelcomeBanner(activeColor: Color) {
                     center = Offset(size.width * 0.1f, size.height * 0.8f)
                 )
             }
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -225,7 +197,6 @@ fun WelcomeBanner(activeColor: Color) {
         }
     }
 }
-
 @Composable
 fun RecentTemplatesSection(
     templates: List<com.appinitdev.draw.premium.BD.GalleryImage>,
@@ -253,9 +224,7 @@ fun RecentTemplatesSection(
                 fontWeight = FontWeight.Bold
             )
         }
-        
         Spacer(modifier = Modifier.height(16.dp))
-        
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -287,7 +256,6 @@ fun RecentTemplatesSection(
         }
     }
 }
-
 @Composable
 fun MainActionCard(
     title: String,

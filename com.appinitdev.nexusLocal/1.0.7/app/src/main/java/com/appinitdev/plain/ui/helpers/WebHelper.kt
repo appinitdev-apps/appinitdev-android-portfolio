@@ -1,4 +1,3 @@
-
 object WebHelper {
     fun open(
         context: Context,

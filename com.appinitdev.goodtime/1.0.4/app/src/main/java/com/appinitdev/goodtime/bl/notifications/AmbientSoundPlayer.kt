@@ -1,18 +1,14 @@
-
 enum class SoundType {
     NONE,
     WHITE_NOISE,
     BROWN_NOISE,
     PINK_NOISE
 }
-
 object AmbientSoundPlayer {
-
     @Volatile
     private var isPlaying = false
     private var audioTrack: AudioTrack? = null
     private var playThread: Thread? = null
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun startSound(soundType: SoundType) {
         if (soundType == SoundType.NONE) {
@@ -20,7 +16,6 @@ object AmbientSoundPlayer {
             return
         }
         stopSound()
-
         isPlaying = true
         playThread = thread(start = true) {
             val sampleRate = 44100
@@ -29,7 +24,6 @@ object AmbientSoundPlayer {
                 AudioFormat.CHANNEL_OUT_MONO,
                 AudioFormat.ENCODING_PCM_16BIT
             )
-
             audioTrack = AudioTrack.Builder()
                 .setAudioAttributes(
                     AudioAttributes.Builder()
@@ -46,13 +40,10 @@ object AmbientSoundPlayer {
                 )
                 .setBufferSizeInBytes(bufferSize)
                 .build()
-
             audioTrack?.play()
-
             val buffer = ShortArray(bufferSize)
             val random = Random()
             var lastBrownSample = 0.0
-
             while (isPlaying) {
                 for (i in buffer.indices) {
                     val sample: Double = when (soundType) {
@@ -78,7 +69,6 @@ object AmbientSoundPlayer {
             }
         }
     }
-
     fun stopSound() {
         isPlaying = false
         try {
@@ -89,6 +79,5 @@ object AmbientSoundPlayer {
         audioTrack = null
         playThread = null
     }
-
     fun isPlaying(): Boolean = isPlaying
 }

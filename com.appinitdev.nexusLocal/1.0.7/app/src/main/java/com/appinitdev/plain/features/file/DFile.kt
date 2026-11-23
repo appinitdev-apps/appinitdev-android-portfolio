@@ -1,4 +1,3 @@
-
 data class DFile(
     var name: String,
     var path: String,
@@ -14,6 +13,5 @@ data class DFile(
         get() = path
         set(value) {
         }
-
     val extension: String by lazy { path.getFilenameExtension() }
 }

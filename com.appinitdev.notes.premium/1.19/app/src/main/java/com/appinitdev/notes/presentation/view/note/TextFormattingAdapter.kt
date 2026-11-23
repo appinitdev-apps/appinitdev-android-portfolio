@@ -1,10 +1,8 @@
-
 class TextFormattingAdapter(
     context: Context,
     private val editText: StylableEditTextWithHistory,
     @ColorInt color: Int?,
 ) : ToggleAdapter(mutableListOf(), color) {
-
     private var link: Toggle =
         Toggle(R.string.link, R.drawable.link, false) {
             if (!it.checked) {
@@ -68,11 +66,9 @@ class TextFormattingAdapter(
             editText.clearFormatting()
             updateTextFormattingToggles()
         }
-
     init {
         toggles.addAll(listOf(link, bold, italic, strikethrough, monospace, clearFormat))
     }
-
     internal fun updateTextFormattingToggles(
         selStart: Int = editText.selectionStart,
         selEnd: Int = editText.selectionEnd,
@@ -90,7 +86,6 @@ class TextFormattingAdapter(
                         Typeface.ITALIC -> italicSpanFound = true
                     }
                 }
-
                 is URLSpan -> linkSpanFound = true
                 is TypefaceSpan -> if (span.family == "monospace") monospaceSpanFound = true
                 is StrikethroughSpan -> strikethroughSpanFound = true

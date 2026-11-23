@@ -1,7 +1,4 @@
-
-
 object FilePickHelper {
-
     fun getPickFileIntent(multiple: Boolean): Intent {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
@@ -9,10 +6,8 @@ object FilePickHelper {
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         intent.type = "*/*"
-
         return intent
     }
-
     fun getPickFolderIntent(): Intent {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -20,16 +15,13 @@ object FilePickHelper {
             .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
         return intent
     }
-
     fun getFallbackPickFileIntent(multiple: Boolean): Intent {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, multiple)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         intent.type = "*/*"
-
         return intent
     }
-
     fun getUris(intent: Intent): Set<Uri> {
         val uris = mutableSetOf<Uri>()
         if (intent.clipData != null) {
@@ -41,8 +33,6 @@ object FilePickHelper {
                 }
             }
         }
-        
-        
         if (uris.isEmpty() && intent.data != null) {
             uris.add(intent.data!!)
         }

@@ -1,4 +1,3 @@
-
 object QrCodeGenerateHelper {
     fun generate(text: String, width: Int, height: Int): Bitmap {
         val bitMatrix = MultiFormatWriter().encode(text, BarcodeFormat.QR_CODE, width, height)

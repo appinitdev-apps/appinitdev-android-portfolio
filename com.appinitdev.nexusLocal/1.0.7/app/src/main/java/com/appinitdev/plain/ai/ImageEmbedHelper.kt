@@ -1,38 +1,25 @@
-
 object ImageEmbedHelper {
     private var model: CompiledModel? = null
     private var inputBuffers: List<TensorBuffer>? = null
     private var outputBuffers: List<TensorBuffer>? = null
-
-    
-    
-
-    
     private var pixelsBuf: IntArray? = null
     private var chwBuf: FloatArray? = null
-
     fun init(modelFile: File, inputSize: Int = 256) {
         close()
         val m = DelegateHelper.createModel(modelFile)
         model = m
         inputBuffers = m.createInputBuffers()
         outputBuffers = m.createOutputBuffers()
-        
         pixelsBuf = IntArray(inputSize * inputSize)
         chwBuf = FloatArray(3 * inputSize * inputSize)
     }
-
     fun embed(imagePath: String, inputSize: Int = 256): FloatArray? {
         val bitmap = loadBitmap(imagePath, inputSize) ?: return null
         return embedBitmap(bitmap)
     }
-
-     
     fun loadBitmap(imagePath: String, inputSize: Int = 256): Bitmap? {
         return loadAndResize(imagePath, inputSize)
     }
-
-     
     fun embedBitmap(bitmap: Bitmap, inputSize: Int = 256): FloatArray? {
         val inBufs = inputBuffers ?: return null
         val outBufs = outputBuffers ?: return null
@@ -49,13 +36,11 @@ object ImageEmbedHelper {
             bitmap.recycle()
         }
     }
-
     fun close() {
         model?.close(); model = null
         inputBuffers = null; outputBuffers = null
         pixelsBuf = null; chwBuf = null
     }
-
     private fun bitmapToNCHW(bitmap: Bitmap, size: Int, pixels: IntArray, chw: FloatArray) {
         bitmap.getPixels(pixels, 0, size, 0, 0, size, size)
         val planeSize = size * size
@@ -66,7 +51,6 @@ object ImageEmbedHelper {
             chw[2 * planeSize + i] = (p and 0xFF) / 255f
         }
     }
-
     private fun loadAndResize(path: String, inputSize: Int): Bitmap? {
         val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
         BitmapFactory.decodeFile(path, opts)
@@ -86,7 +70,6 @@ object ImageEmbedHelper {
         if (scaled !== rotated) rotated.recycle()
         return centerCrop(scaled, inputSize)
     }
-
     private fun applyExifRotation(bitmap: Bitmap, path: String): Bitmap {
         val orient = try {
             ExifInterface(path).getAttributeInt(
@@ -104,7 +87,6 @@ object ImageEmbedHelper {
         if (r !== bitmap) bitmap.recycle()
         return r
     }
-
     private fun centerCrop(bitmap: Bitmap, size: Int): Bitmap {
         val x = ((bitmap.width - size) / 2).coerceAtLeast(0)
         val y = ((bitmap.height - size) / 2).coerceAtLeast(0)

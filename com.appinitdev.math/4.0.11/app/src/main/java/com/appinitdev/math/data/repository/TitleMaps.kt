@@ -1,4 +1,3 @@
-
 object TitleMaps {
     fun getTitleMap(lang: String): Map<String, String> {
         return when (lang) {
@@ -24,7 +23,6 @@ object TitleMaps {
             else -> SpanishTitles.map
         }
     }
-
     object SpanishTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades hiperbólicas",
         "homogeneous-trigonometric-equations" to "Ecuaciones trigonométricas homogéneas",
@@ -328,7 +326,6 @@ object TitleMaps {
         "algebra-of-limits" to "Álgebra de límites",
         "taylor-series" to "Series de Taylor"
     ) }
-
     object EnglishTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
         "homogeneous-trigonometric-equations" to "¿Qué son las ecuaciones trigonométricas homogéneas?",
@@ -632,7 +629,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object deTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -937,7 +933,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object frTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -1242,7 +1237,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object ptTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -1547,7 +1541,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object zhTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -1852,7 +1845,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object jaTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -2157,7 +2149,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object koTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -2462,7 +2453,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object ruTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -2767,7 +2757,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object hiTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -3072,7 +3061,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object idTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -3377,7 +3365,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object nlTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -3682,7 +3669,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object svTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -3987,7 +3973,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object noTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -4292,7 +4277,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object daTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -4597,7 +4581,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object plTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -4902,7 +4885,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object thTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -5207,7 +5189,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object trTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -5512,7 +5493,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object ukTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",
@@ -5817,7 +5797,6 @@ object TitleMaps {
         "algebra-of-limits" to "Límite de una suma",
         "taylor-series" to "Determinación de los coeficientes.",
     )
-
     }
     object viTitles { val map = mapOf(
         "hyperbolic-identities" to "Identidades fundamentales",

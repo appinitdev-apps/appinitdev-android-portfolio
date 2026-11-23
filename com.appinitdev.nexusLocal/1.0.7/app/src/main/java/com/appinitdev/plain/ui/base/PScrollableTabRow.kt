@@ -1,6 +1,4 @@
-
 internal val HorizontalTextPadding = 16.dp
-
 @Composable
 fun PScrollableTabRow(
     selectedTabIndex: Int,
@@ -16,7 +14,6 @@ fun PScrollableTabRow(
         scrollState = rememberScrollState(),
     )
 }
-
 @Composable
 private fun ScrollableTabRowImp(
     selectedTabIndex: Int,
@@ -36,11 +33,9 @@ private fun ScrollableTabRowImp(
         ) { constraints ->
             val padding = edgePadding.roundToPx()
             val tabMeasurables = subcompose(TabSlots.Tabs, tabs)
-
             val layoutHeight = tabMeasurables.fastFold(initial = 0) { curr, measurable ->
                 maxOf(curr, measurable.maxIntrinsicHeight(Constraints.Infinity))
             }
-
             val tabPlaceables = mutableListOf<Placeable>()
             val tabContentWidths = mutableListOf<Dp>()
             tabMeasurables.fastForEach {
@@ -50,11 +45,9 @@ private fun ScrollableTabRowImp(
                 tabPlaceables.add(placeable)
                 tabContentWidths.add(contentWidth)
             }
-
             val layoutWidth = tabPlaceables.fastFold(initial = padding * 2) { curr, measurable ->
                 curr + measurable.width
             }
-
             layout(layoutWidth, layoutHeight) {
                 val tabPositions = mutableListOf<TabPosition>()
                 var left = padding

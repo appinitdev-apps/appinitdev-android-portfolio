@@ -1,7 +1,4 @@
-
 const val MAX_COLUMN_COUNT = 15
-
-
 const val SHOW_HIDDEN = "show_hidden"
 const val PRESS_BACK_TWICE = "press_back_twice"
 const val HOME_FOLDER = "home_folder"
@@ -15,17 +12,13 @@ const val FILE_LANDSCAPE_COLUMN_CNT = "file_landscape_column_cnt"
 const val DISPLAY_FILE_NAMES = "display_file_names"
 const val SHOW_TABS = "show_tabs"
 const val WAS_STORAGE_ANALYSIS_TAB_ADDED = "was_storage_analysis_tab_added"
-
-
 const val OPEN_AS_DEFAULT = 0
 const val OPEN_AS_TEXT = 1
 const val OPEN_AS_IMAGE = 2
 const val OPEN_AS_AUDIO = 3
 const val OPEN_AS_VIDEO = 4
 const val OPEN_AS_OTHER = 5
-
 const val ALL_TABS_MASK = TAB_FILES or TAB_RECENT_FILES or TAB_STORAGE_ANALYSIS
-
 const val IMAGES = "images"
 const val VIDEOS = "videos"
 const val AUDIO = "audio"
@@ -33,11 +26,8 @@ const val DOCUMENTS = "documents"
 const val ARCHIVES = "archives"
 const val OTHERS = "others"
 const val SHOW_MIMETYPE = "show_mimetype"
-
 const val VOLUME_NAME = "volume_name"
 const val PRIMARY_VOLUME_NAME = "external_primary"
-
-
 val extraAudioMimeTypes = arrayListOf("application/ogg")
 val extraDocumentMimeTypes = arrayListOf(
     "application/pdf",
@@ -46,7 +36,6 @@ val extraDocumentMimeTypes = arrayListOf(
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     "application/javascript"
 )
-
 val archiveMimeTypes = arrayListOf(
     "application/zip",
     "application/octet-stream",
@@ -60,7 +49,6 @@ val archiveMimeTypes = arrayListOf(
     "application/java-archive",
     "multipart/x-zip"
 )
-
 fun getListItemsFromFileDirItems(fileDirItems: ArrayList<FileDirItem>): ArrayList<ListItem> {
     val listItems = ArrayList<ListItem>()
     fileDirItems.forEach {

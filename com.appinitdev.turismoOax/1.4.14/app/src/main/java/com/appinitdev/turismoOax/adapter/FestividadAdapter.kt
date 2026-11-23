@@ -1,13 +1,10 @@
-
 class FestividadAdapter(
     private var list: List<Festividad>
 ) : RecyclerView.Adapter<FestividadAdapter.FestividadViewHolder>() {
-
     fun updateData(newList: List<Festividad>) {
         list = newList
         notifyDataSetChanged()
     }
-
     class FestividadViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val emoji: TextView = view.findViewById(R.id.tvFestividadEmoji)
         val nombre: TextView = view.findViewById(R.id.tvFestividadNombre)
@@ -19,7 +16,6 @@ class FestividadAdapter(
         val btnAgendar: MaterialButton = view.findViewById(R.id.btnFestividadAgendar)
         val btnCompartir: MaterialButton = view.findViewById(R.id.btnFestividadCompartir)
         val btnCotizar: MaterialButton = view.findViewById(R.id.btnFestividadCotizar)
-
         fun bind(item: Festividad) {
             emoji.text = item.emoji
             nombre.text = item.nombre
@@ -27,14 +23,12 @@ class FestividadAdapter(
             fechaBadge.text = item.fecha
             descripcion.text = item.descripcion
             tip.text = "💡 Recomendación: ${item.recomendacion}"
-
             val currentMonth = java.util.Calendar.getInstance().get(java.util.Calendar.MONTH) + 1
             if (item.mesNum == currentMonth) {
                 hoyTag.visibility = View.VISIBLE
             } else {
                 hoyTag.visibility = View.GONE
             }
-
             btnAgendar.setOnClickListener {
                 val context = itemView.context
                 val intent = Intent(Intent.ACTION_INSERT).apply {
@@ -49,7 +43,6 @@ class FestividadAdapter(
                     context.startActivity(Intent.createChooser(intent, "Agendar Evento"))
                 }
             }
-
             btnCompartir.setOnClickListener {
                 val context = itemView.context
                 val text = "🎉 ¡Mira este evento cultural en Oaxaca!\n\n*${item.nombre}*\n📍 ${item.municipio}\n📅 ${item.fecha}\n\n${item.descripcion}\n\n¡Descubre más en la app Turismo Oaxaca! 🇲🇽"
@@ -60,14 +53,12 @@ class FestividadAdapter(
                 }
                 context.startActivity(Intent.createChooser(sendIntent, "Compartir Festividad"))
             }
-
             btnCotizar.setOnClickListener {
                 val context = itemView.context
                 val intent = Intent(context, CotizacionActivity::class.java)
                 intent.putExtra("tour", "Visita a Festividad: ${item.nombre}")
                 context.startActivity(intent)
             }
-
             itemView.setOnClickListener {
                 val context = itemView.context
                 MaterialAlertDialogBuilder(context)
@@ -83,15 +74,12 @@ class FestividadAdapter(
             }
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FestividadViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_festividad, parent, false)
         return FestividadViewHolder(view)
     }
-
     override fun onBindViewHolder(holder: FestividadViewHolder, position: Int) {
         holder.bind(list[position])
     }
-
     override fun getItemCount() = list.size
 }

@@ -1,4 +1,3 @@
-
 data class Doc(
     val id: ID,
     val title: String,
@@ -9,12 +8,10 @@ data class Doc(
     val createdAt: Instant,
     val updatedAt: Instant,
 )
-
 data class DocExtGroup(
     val ext: String,
     val count: Int,
 )
-
 fun DDoc.toDocModel(): Doc {
     return Doc(ID(id), title, path, extension, size, bucketId, createdAt, updatedAt)
 }

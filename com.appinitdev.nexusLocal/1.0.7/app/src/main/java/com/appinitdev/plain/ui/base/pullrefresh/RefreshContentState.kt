@@ -1,4 +1,3 @@
-
 enum class RefreshContentState {
     Failed,
     Finished,

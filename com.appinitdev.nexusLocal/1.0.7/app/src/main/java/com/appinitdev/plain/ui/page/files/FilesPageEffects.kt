@@ -1,4 +1,3 @@
-
 @Composable
 internal fun FilesPageEffects(
     filesVM: FilesViewModel, context: Context, scope: CoroutineScope,
@@ -20,7 +19,6 @@ internal fun FilesPageEffects(
             }
         }
     }
-
     LaunchedEffect(folderPath) {
         scope.launch(Dispatchers.IO) {
             if (folderPath.isNotEmpty()) {
@@ -40,7 +38,6 @@ internal fun FilesPageEffects(
             audioPlaylistVM.loadAsync(context)
         }
     }
-
     LaunchedEffect(Channel.sharedFlow) {
         Channel.sharedFlow.collect { event ->
             when (event) {

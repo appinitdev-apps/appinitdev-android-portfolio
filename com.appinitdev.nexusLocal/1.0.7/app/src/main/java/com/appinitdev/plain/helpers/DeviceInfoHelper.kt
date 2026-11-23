@@ -1,5 +1,3 @@
-
-
 object DeviceInfoHelper {
     @SuppressLint("HardwareIds")
     fun getDeviceInfo(context: Context): DDeviceInfo {
@@ -16,21 +14,17 @@ object DeviceInfoHelper {
         info.language = java.util.Locale.getDefault().language
         info.uptime = SystemClock.elapsedRealtime()
         info.cpuArch = Build.SUPPORTED_ABIS.firstOrNull() ?: ""
-
         val mi = ActivityManager.MemoryInfo()
         activityManager.getMemoryInfo(mi)
         info.totalMemory = mi.totalMem
-
         val stat = StatFs(Environment.getDataDirectory().path)
         info.totalStorage = stat.totalBytes
-
         val dm = context.resources.displayMetrics
         val displayInfo = DDisplayInfo()
         displayInfo.width = dm.widthPixels
         displayInfo.height = dm.heightPixels
         displayInfo.density = dm.density.toString()
         info.display = displayInfo
-
         val androidInfo = DAndroidDeviceInfo()
         androidInfo.sdkVersion = Build.VERSION.SDK_INT
         androidInfo.versionCodeName = Build.VERSION.CODENAME
@@ -51,16 +45,13 @@ object DeviceInfoHelper {
         androidInfo.serial = Build.SERIAL
         androidInfo.buildTime = Instant.fromEpochMilliseconds(Build.TIME)
         info.android = androidInfo
-
         return info
     }
-
     @SuppressLint("MissingPermission")
     fun getActiveSimCards(context: Context): List<SubscriptionInfo> {
         if (!Permission.READ_PHONE_STATE.can(context)) {
             return emptyList()
         }
-
         return subscriptionManager.activeSubscriptionInfoList ?: emptyList()
     }
 }

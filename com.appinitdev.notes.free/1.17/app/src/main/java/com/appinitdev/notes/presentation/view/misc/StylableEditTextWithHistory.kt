@@ -1,20 +1,8 @@
-
- 
-
-
-
 class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
     HighlightableEditText(context, attrs) {
-
     var isActionModeOn = false
     private var changeHistory: ChangeHistory? = null
     private var updateModel: ((text: Editable) -> Unit)? = null
-
-     
-
-
-
-
     fun initHistory(changeHistory: ChangeHistory, updateModel: (text: Editable) -> Unit) {
         this.textWatcher?.let { removeTextChangedListener(it) }
         this.changeHistory = changeHistory
@@ -42,30 +30,25 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
             }
         this.textWatcher?.let { addTextChangedListener(it) }
     }
-
     override fun onWindowFocusChanged(hasWindowFocus: Boolean) {
         if (!isActionModeOn) {
             super.onWindowFocusChanged(hasWindowFocus)
         }
     }
-
     fun getSpanText(span: CharacterStyle): String {
         val (spanStart, spanEnd) = getSpanRange(span)
         return super.getText()!!.substring(spanStart, spanEnd)
     }
-
     fun getSelectionText(): String? {
         if (selectionStart == -1 || selectionEnd == -1) {
             return null
         }
         return super.getText()!!.substring(selectionStart, selectionEnd)
     }
-
     fun getSpans(start: Int = selectionStart, end: Int = selectionEnd): Collection<CharacterStyle> {
         return super.getText()?.getSpans(start, end, CharacterStyle::class.java)?.toList()
             ?: listOf()
     }
-
     fun getSpans(
         start: Int = selectionStart,
         end: Int = selectionEnd,
@@ -78,14 +61,12 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
             TextStyleType.ITALIC -> spans.filter { it is StyleSpan && it.style == Typeface.ITALIC }
             TextStyleType.MONOSPACE ->
                 spans.filter { it is TypefaceSpan && it.family == "monospace" }
-
             TextStyleType.STRIKETHROUGH -> spans.filterIsInstance<StrikethroughSpan>()
             TextStyleType.UNDERLINE -> {
                 spans.filterIsInstance<UnderlineSpan>()
             }
         }
     }
-
     fun clearFormatting(
         start: Int = selectionStart,
         end: Int = selectionEnd,
@@ -100,7 +81,6 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
             }
         }
     }
-
     enum class TextStyleType {
         LINK,
         BOLD,
@@ -109,12 +89,6 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
         STRIKETHROUGH,
         UNDERLINE
     }
-
-     
-
-
-
-
     fun removeSpanWithHistory(
         span: CharacterStyle,
         removeText: Boolean = false,
@@ -133,7 +107,6 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
             changeText(callback)
         }
     }
-
     fun addSpan(spanText: String, span: CharacterStyle, position: Int = selectionStart) {
         changeTextWithHistory { text ->
             text.insert(position, spanText)
@@ -145,7 +118,6 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
             )
         }
     }
-
     fun addSpans(
         spanText: String,
         spans: Collection<CharacterStyle>,
@@ -160,7 +132,6 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
                     } else 0
                 } ?: 0
             } else position
-
         val callback: (text: Editable) -> Unit = { text ->
             text.insert(actualPosition, spanText)
             spans.forEach { span ->
@@ -178,12 +149,6 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
             changeText(callback)
         }
     }
-
-     
-
-
-
-
     fun updateSpan(oldSpan: CharacterStyle, newSpan: CharacterStyle, spanText: String?) {
         val (oldSpanStart, oldSpanEnd) = getSpanRange(oldSpan)
         changeTextWithHistory { text ->
@@ -201,7 +166,6 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
             }
         }
     }
-
     fun applySpan(
         span: CharacterStyle,
         start: Int = selectionStart,
@@ -216,11 +180,6 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
             changeText { text -> text.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE) }
         }
     }
-
-     
-
-
-
     fun changeTextWithHistory(callback: (text: Editable) -> Unit) {
         val cursorPosBefore = selectionStart
         val (textBefore, textAfter) = changeText(callback)
@@ -236,7 +195,6 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
             }
         )
     }
-
     internal fun showEditDialog(
         urlSpan: URLSpan,
         isNewUnnamedLink: Boolean = false,
@@ -262,7 +220,6 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
             }
         }
     }
-
     internal fun showAddLinkDialog(
         context: Context,
         isNewUnnamedLink: Boolean = false,
@@ -301,7 +258,6 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
             mode?.finish()
         }
     }
-
     private fun showLinkDialog(
         context: Context,
         urlBefore: String,
@@ -322,7 +278,6 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
                     InputTextLayout2.setHint(R.string.link)
                 }
             }
-
         MaterialAlertDialogBuilder(context)
             .setView(layout.root)
             .setTitle(R.string.edit_link)

@@ -1,15 +1,11 @@
-
 class PhotoFragment : ViewPagerFragment() {
     private val DEFAULT_DOUBLE_TAP_ZOOM = 2f
     private val ZOOMABLE_VIEW_LOAD_DELAY = 100L
     private val SAME_ASPECT_RATIO_THRESHOLD = 0.01
-
-    
     private val WEIRD_DEVICES = arrayListOf(
         "motorola xt1685",
         "google nexus 5x"
     )
-
     var mCurrentRotationDegrees = 0
     private var mIsFragmentVisible = false
     private var mIsFullscreen = false
@@ -26,31 +22,25 @@ class PhotoFragment : ViewPagerFragment() {
     private var mCurrentGestureViewZoom = 1f
     private var mIsTouched = false
     private var mInitialZoom = 1f
-
     private var mStoredShowExtendedDetails = false
     private var mStoredHideExtendedDetails = false
     private var mStoredAllowDeepZoomableImages = false
     private var mStoredShowHighestQuality = false
     private var mStoredExtendedDetails = 0
-
     private lateinit var mView: ViewGroup
     private lateinit var binding: PagerPhotoItemBinding
     private lateinit var mMedium: Medium
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val context = requireContext()
         val activity = requireActivity()
         val arguments = requireArguments()
-
         binding = PagerPhotoItemBinding.inflate(inflater, container, false)
         mView = binding.root
         if (!arguments.getBoolean(SHOULD_INIT_FRAGMENT, true)) {
             return mView
         }
-
         mMedium = arguments.getSerializable(MEDIUM) as Medium
         mOriginalPath = mMedium.path
-
         binding.apply {
             subsamplingView.setOnClickListener { photoClicked() }
             gesturesView.setOnClickListener { photoClicked() }
@@ -58,10 +48,8 @@ class PhotoFragment : ViewPagerFragment() {
             instantPrevItem.setOnClickListener { listener?.goToPrevItem() }
             instantNextItem.setOnClickListener { listener?.goToNextItem() }
             panoramaOutline.setOnClickListener { openPanorama() }
-
             instantPrevItem.parentView = container
             instantNextItem.parentView = container
-
             photoBrightnessController.initialize(activity, slideInfo, true, container, singleTap = { x, y ->
                 mView.apply {
                     if (subsamplingView.isVisible()) {
@@ -71,7 +59,6 @@ class PhotoFragment : ViewPagerFragment() {
                     }
                 }
             })
-
             if (context.config.allowDownGesture) {
                 gifView.setOnTouchListener { v, event ->
                     if (gifViewFrame.controller.state.zoom == 1f) {
@@ -79,7 +66,6 @@ class PhotoFragment : ViewPagerFragment() {
                     }
                     false
                 }
-
                 gesturesView.controller.addOnStateChangeListener(object : GestureController.OnStateChangeListener {
                     override fun onStateChanged(state: State) {
                         if (!mIsTouched) {
@@ -88,7 +74,6 @@ class PhotoFragment : ViewPagerFragment() {
                         mCurrentGestureViewZoom = state.zoom
                     }
                 })
-
                 gesturesView.setOnTouchListener { v, event ->
                     mIsTouched = true
                     if (Math.abs(mCurrentGestureViewZoom - mInitialZoom) < MAX_ZOOM_EQUALITY_TOLERANCE) {
@@ -96,7 +81,6 @@ class PhotoFragment : ViewPagerFragment() {
                     }
                     false
                 }
-
                 subsamplingView.setOnTouchListener { v, event ->
                     if (subsamplingView.isZoomedOut()) {
                         handleEvent(event)
@@ -105,19 +89,16 @@ class PhotoFragment : ViewPagerFragment() {
                 }
             }
         }
-
         checkScreenDimensions()
         storeStateVariables()
         if (!mIsFragmentVisible && activity is PhotoActivity) {
             mIsFragmentVisible = true
         }
-
         if (mMedium.path.startsWith("content://") && !mMedium.path.startsWith("content://mms/")) {
             mMedium.path = requireContext().getRealPathFromURI(Uri.parse(mOriginalPath)) ?: mMedium.path
             if (isRPlus() && !isExternalStorageManager() && mMedium.path.startsWith("/storage/") && mMedium.isHidden()) {
                 mMedium.path = mOriginalPath
             }
-
             if (mMedium.path.isEmpty()) {
                 var out: FileOutputStream? = null
                 try {
@@ -131,7 +112,6 @@ class PhotoFragment : ViewPagerFragment() {
                     val rotated = rotateViaMatrix(original, orientation)
                     exif.setTagValue(ExifInterface.TAG_ORIENTATION, 1)
                     exif.removeCompressedThumbnail()
-
                     val file = File(requireContext().externalCacheDir, Uri.parse(mOriginalPath).lastPathSegment)
                     out = FileOutputStream(file)
                     rotated.compress(Bitmap.CompressFormat.JPEG, 100, out)
@@ -144,34 +124,24 @@ class PhotoFragment : ViewPagerFragment() {
                 }
             }
         }
-
         mIsFullscreen = requireActivity().window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_FULLSCREEN == View.SYSTEM_UI_FLAG_FULLSCREEN
         loadImage()
         initExtendedDetails()
         mWasInit = true
         updateInstantSwitchWidths()
-
-        
-        
-        
-        
-
         return mView
     }
-
     override fun onPause() {
         super.onPause()
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         storeStateVariables()
     }
-
     override fun onResume() {
         super.onResume()
         val config = requireContext().config
         if (mWasInit && (config.showExtendedDetails != mStoredShowExtendedDetails || config.extendedDetails != mStoredExtendedDetails)) {
             initExtendedDetails()
         }
-
         if (mWasInit) {
             if (config.allowZoomingImages != mStoredAllowDeepZoomableImages || config.showHighestQuality != mStoredShowHighestQuality) {
                 mIsSubsamplingVisible = false
@@ -186,29 +156,23 @@ class PhotoFragment : ViewPagerFragment() {
             }
             mShouldResetImage = false
         }
-
         val keepScreenOn = config.keepScreenOn
         val allowPhotoGestures = config.allowPhotoGestures
         val allowInstantChange = config.allowInstantChange
-
         binding.apply {
             photoBrightnessController.beVisibleIf(allowPhotoGestures)
             instantPrevItem.beVisibleIf(allowInstantChange)
             instantNextItem.beVisibleIf(allowInstantChange)
         }
-
         if (keepScreenOn) {
             activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
-
         storeStateVariables()
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         if (activity?.isDestroyed == false) {
             binding.subsamplingView.recycle()
-
             try {
                 if (context != null) {
                     Glide.with(requireContext()).clear(binding.gesturesView)
@@ -216,17 +180,13 @@ class PhotoFragment : ViewPagerFragment() {
             } catch (ignored: Exception) {
             }
         }
-
         mLoadZoomableViewHandler.removeCallbacksAndMessages(null)
     }
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         if (!mWasInit) {
             return
         }
-
-        
         if (mMedium.isGIF()) {
             mView.onGlobalLayout {
                 if (activity != null) {
@@ -241,13 +201,11 @@ class PhotoFragment : ViewPagerFragment() {
             hideZoomableView()
             loadImage()
         }
-
         measureScreen()
         initExtendedDetails()
         updateInstantSwitchWidths()
         mShouldResetImage = true
     }
-
     override fun setMenuVisibility(menuVisible: Boolean) {
         super.setMenuVisibility(menuVisible)
         mIsFragmentVisible = menuVisible
@@ -259,7 +217,6 @@ class PhotoFragment : ViewPagerFragment() {
             }
         }
     }
-
     private fun storeStateVariables() {
         requireContext().config.apply {
             mStoredShowExtendedDetails = showExtendedDetails
@@ -269,20 +226,17 @@ class PhotoFragment : ViewPagerFragment() {
             mStoredExtendedDetails = extendedDetails
         }
     }
-
     private fun checkScreenDimensions() {
         if (mScreenWidth == 0 || mScreenHeight == 0) {
             measureScreen()
         }
     }
-
     private fun measureScreen() {
         val metrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getRealMetrics(metrics)
         mScreenWidth = metrics.widthPixels
         mScreenHeight = metrics.heightPixels
     }
-
     private fun photoFragmentVisibilityChanged(isVisible: Boolean) {
         if (isVisible) {
             applyProperColorMode(binding.gesturesView.drawable)
@@ -292,14 +246,12 @@ class PhotoFragment : ViewPagerFragment() {
             ColorModeHelper.resetColorMode(activity)
         }
     }
-
     private fun degreesForRotation(orientation: Int) = when (orientation) {
         ORIENTATION_ROTATE_270, ORIENTATION_TRANSPOSE -> 270
         ORIENTATION_ROTATE_180 -> 180
         ORIENTATION_ROTATE_90, ORIENTATION_TRANSVERSE -> 90
         else -> 0
     }
-
     private fun rotateViaMatrix(original: Bitmap, orientation: Int): Bitmap {
         val degrees = degreesForRotation(orientation).toFloat()
         return if (degrees == 0f) {
@@ -310,14 +262,11 @@ class PhotoFragment : ViewPagerFragment() {
             Bitmap.createBitmap(original, 0, 0, original.width, original.height, matrix, true)
         }
     }
-
     private fun loadImage() {
         checkScreenDimensions()
-
         if (mMedium.isPortrait() && context != null) {
             showPortraitStripe()
         }
-
         ensureBackgroundThread {
             mImageOrientation = getImageOrientation()
             activity?.runOnUiThread {
@@ -331,7 +280,6 @@ class PhotoFragment : ViewPagerFragment() {
             }
         }
     }
-
     private fun loadGif() {
         try {
             val pathToLoad = getPathToLoad(mMedium)
@@ -340,7 +288,6 @@ class PhotoFragment : ViewPagerFragment() {
             } else {
                 InputSource.FileSource(pathToLoad)
             }
-
             binding.apply {
                 gesturesView.beGone()
                 gifViewFrame.beVisible()
@@ -354,7 +301,6 @@ class PhotoFragment : ViewPagerFragment() {
             loadBitmap()
         }
     }
-
     private fun loadSVG() {
         if (context != null) {
             Glide.with(requireContext())
@@ -364,14 +310,12 @@ class PhotoFragment : ViewPagerFragment() {
                 .into(binding.gesturesView)
         }
     }
-
     private fun loadAPNG() {
         if (context != null) {
             val drawable = APNGDrawable.fromFile(mMedium.path)
             binding.gesturesView.setImageDrawable(drawable)
         }
     }
-
     private fun loadAVIF() {
         if (context != null) {
             val drawable = AVIFDrawable.fromFile(mMedium.path)
@@ -379,16 +323,13 @@ class PhotoFragment : ViewPagerFragment() {
                 loadBitmap()
                 return
             }
-
             binding.gesturesView.setImageDrawable(drawable)
         }
     }
-
     private fun loadBitmap(addZoomableView: Boolean = true) {
         if (context == null) {
             return
         }
-
         val path = getFilePathToShow()
         if (path.isWebP()) {
             val drawable = WebPDrawable.fromFile(path)
@@ -401,7 +342,6 @@ class PhotoFragment : ViewPagerFragment() {
             loadWithGlide(path, addZoomableView)
         }
     }
-
     private fun loadWithGlide(path: String, addZoomableView: Boolean) {
         val priority = if (mIsFragmentVisible) Priority.IMMEDIATE else Priority.NORMAL
         val options = RequestOptions()
@@ -418,7 +358,6 @@ class PhotoFragment : ViewPagerFragment() {
                     this
                 }
             }
-
         Glide.with(requireContext())
             .load(path)
             .apply(options)
@@ -430,7 +369,6 @@ class PhotoFragment : ViewPagerFragment() {
                     }
                     return false
                 }
-
                 override fun onResourceReady(
                     resource: Drawable,
                     model: Any,
@@ -448,24 +386,20 @@ class PhotoFragment : ViewPagerFragment() {
                 }
             }).into(binding.gesturesView)
     }
-
     private fun tryLoadingWithPicasso(addZoomableView: Boolean) {
         var pathToLoad = if (getFilePathToShow().startsWith("content://")) getFilePathToShow() else "file://${getFilePathToShow()}"
         pathToLoad = pathToLoad.replace("%", "%25").replace("#", "%23")
-
         try {
             val picasso = Picasso.get()
                 .load(pathToLoad)
                 .centerInside()
                 .stableKey(mMedium.getSignature())
                 .resize(mScreenWidth, mScreenHeight)
-
             if (mCurrentRotationDegrees != 0) {
                 picasso.rotate(mCurrentRotationDegrees.toFloat())
             } else {
                 degreesForRotation(mImageOrientation).toFloat()
             }
-
             picasso.into(binding.gesturesView, object : Callback {
                 override fun onSuccess() {
                     applyProperColorMode(binding.gesturesView.drawable)
@@ -475,14 +409,11 @@ class PhotoFragment : ViewPagerFragment() {
                         scheduleZoomableView()
                     }
                 }
-
                 override fun onError(e: Exception?) {
                     resetColorModeIfVisible()
                     if (mMedium.path != mOriginalPath) {
                         mMedium.path = mOriginalPath
                         loadImage()
-                        
-                        
                     } else {
                         binding.errorMessageHolder.errorMessage.apply {
                             setTextColor(if (context.config.blackBackground) Color.WHITE else context.getProperTextColor())
@@ -494,7 +425,6 @@ class PhotoFragment : ViewPagerFragment() {
         } catch (ignored: Exception) {
         }
     }
-
     private fun showPortraitStripe() {
         val files = File(mMedium.parentPath).listFiles()?.toMutableList() as? ArrayList<File>
         if (files != null) {
@@ -504,19 +434,16 @@ class PhotoFragment : ViewPagerFragment() {
                     .toInt()
             val sideWidth = screenWidth / 2 - itemWidth / 2
             val fakeItemsCnt = ceil(sideWidth / itemWidth.toDouble()).toInt()
-
             val paths = fillPhotoPaths(files, fakeItemsCnt)
             var curWidth = itemWidth
             while (curWidth < screenWidth) {
                 curWidth += itemWidth
             }
-
             val sideElementWidth = curWidth - screenWidth
             val adapter = PortraitPhotosAdapter(requireContext(), paths, sideElementWidth) { position, x ->
                 if (mIsFullscreen) {
                     return@PortraitPhotosAdapter
                 }
-
                 binding.photoPortraitStripe.smoothScrollBy((x + itemWidth / 2) - screenWidth / 2, 0)
                 if (paths[position] != mCurrentPortraitPhotoPath) {
                     mCurrentPortraitPhotoPath = paths[position]
@@ -524,15 +451,12 @@ class PhotoFragment : ViewPagerFragment() {
                     loadBitmap()
                 }
             }
-
             binding.photoPortraitStripe.adapter = adapter
             setupStripeBottomMargin()
-
             val coverIndex = getCoverImageIndex(paths)
             if (coverIndex != -1) {
                 mCurrentPortraitPhotoPath = paths[coverIndex]
                 setupStripeUpListener(adapter, screenWidth, itemWidth)
-
                 binding.photoPortraitStripe.onGlobalLayout {
                     binding.photoPortraitStripe.scrollBy((coverIndex - fakeItemsCnt) * itemWidth, 0)
                     adapter.setCurrentPhoto(coverIndex)
@@ -544,23 +468,19 @@ class PhotoFragment : ViewPagerFragment() {
             }
         }
     }
-
     private fun fillPhotoPaths(files: ArrayList<File>, fakeItemsCnt: Int): ArrayList<String> {
         val paths = ArrayList<String>()
         for (i in 0 until fakeItemsCnt) {
             paths.add("")
         }
-
         files.forEach {
             paths.add(it.absolutePath)
         }
-
         for (i in 0 until fakeItemsCnt) {
             paths.add("")
         }
         return paths
     }
-
     private fun setupStripeBottomMargin() {
         var bottomMargin = requireContext().navigationBarHeight + resources.getDimension(org.appinitdev.commons.R.dimen.normal_margin).toInt()
         if (requireContext().config.bottomActions) {
@@ -568,7 +488,6 @@ class PhotoFragment : ViewPagerFragment() {
         }
         (binding.photoPortraitStripeWrapper.layoutParams as RelativeLayout.LayoutParams).bottomMargin = bottomMargin
     }
-
     private fun getCoverImageIndex(paths: ArrayList<String>): Int {
         var coverIndex = -1
         paths.forEachIndexed { index, path ->
@@ -576,7 +495,6 @@ class PhotoFragment : ViewPagerFragment() {
                 coverIndex = index
             }
         }
-
         if (coverIndex == -1) {
             paths.forEachIndexed { index, path ->
                 if (path.isNotEmpty()) {
@@ -586,7 +504,6 @@ class PhotoFragment : ViewPagerFragment() {
         }
         return coverIndex
     }
-
     private fun setupStripeUpListener(adapter: PortraitPhotosAdapter, screenWidth: Int, itemWidth: Int) {
         binding.photoPortraitStripe.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
@@ -600,7 +517,6 @@ class PhotoFragment : ViewPagerFragment() {
                         closestIndex = key
                     }
                 }
-
                 Handler().postDelayed({
                     adapter.performClickOn(closestIndex)
                 }, 100)
@@ -608,13 +524,10 @@ class PhotoFragment : ViewPagerFragment() {
             false
         }
     }
-
     private fun getFilePathToShow() = if (mMedium.isPortrait()) mCurrentPortraitPhotoPath else getPathToLoad(mMedium)
-
     private fun openPanorama() {
         TODO("Panorama is not yet implemented.")
     }
-
     private fun scheduleZoomableView() {
         mLoadZoomableViewHandler.removeCallbacksAndMessages(null)
         mLoadZoomableViewHandler.postDelayed({
@@ -623,27 +536,22 @@ class PhotoFragment : ViewPagerFragment() {
             }
         }, ZOOMABLE_VIEW_LOAD_DELAY)
     }
-
     private fun addZoomableView() {
         val rotation = degreesForRotation(mImageOrientation)
         mIsSubsamplingVisible = true
         val config = requireContext().config
         val showHighestQuality = config.showHighestQuality
         val minTileDpi = if (showHighestQuality) -1 else getMinTileDpi()
-
         val bitmapDecoder = object : DecoderFactory<ImageDecoder> {
             override fun make() = MyGlideImageDecoder(rotation, mMedium.getKey())
         }
-
         val regionDecoder = object : DecoderFactory<ImageRegionDecoder> {
             override fun make() = PicassoRegionDecoder(showHighestQuality, mScreenWidth, mScreenHeight, minTileDpi)
         }
-
         var newOrientation = (rotation + mCurrentRotationDegrees) % 360
         if (newOrientation < 0) {
             newOrientation += 360
         }
-
         binding.subsamplingView.apply {
             setMaxTileSize(if (showHighestQuality) Integer.MAX_VALUE else 4096)
             setMinimumTileDpi(minTileDpi)
@@ -656,7 +564,6 @@ class PhotoFragment : ViewPagerFragment() {
             isOneToOneZoomEnabled = config.allowOneToOneZoom
             orientation = newOrientation
             setImage(getFilePathToShow())
-
             onImageEventListener = object : SubsamplingScaleImageView.OnImageEventListener {
                 override fun onReady() {
                     background = ColorDrawable(
@@ -666,19 +573,16 @@ class PhotoFragment : ViewPagerFragment() {
                             context.getProperBackgroundColor()
                         }
                     )
-
                     val useWidth = if (mImageOrientation == ORIENTATION_ROTATE_90 || mImageOrientation == ORIENTATION_ROTATE_270) sHeight else sWidth
                     val useHeight = if (mImageOrientation == ORIENTATION_ROTATE_90 || mImageOrientation == ORIENTATION_ROTATE_270) sWidth else sHeight
                     doubleTapZoomScale = getDoubleTapZoomScale(useWidth, useHeight)
                 }
-
                 override fun onImageLoadError(e: Exception) {
                     binding.gesturesView.controller.settings.isZoomEnabled = true
                     background = ColorDrawable(Color.TRANSPARENT)
                     mIsSubsamplingVisible = false
                     beGone()
                 }
-
                 override fun onImageRotation(degrees: Int) {
                     val fullRotation = (rotation + degrees) % 360
                     val useWidth = if (fullRotation == 90 || fullRotation == 270) sHeight else sWidth
@@ -686,19 +590,15 @@ class PhotoFragment : ViewPagerFragment() {
                     doubleTapZoomScale = getDoubleTapZoomScale(useWidth, useHeight)
                     mCurrentRotationDegrees = (mCurrentRotationDegrees + degrees) % 360
                     loadBitmap(false)
-
-                    
                     (activity as? ViewPagerActivity)?.refreshMenuItems()
                     (activity as? PhotoVideoActivity)?.refreshMenuItems()
                 }
-
                 override fun onUpEvent() {
                     mShouldResetImage = false
                 }
             }
         }
     }
-
     private fun getMinTileDpi(): Int {
         val metrics = resources.displayMetrics
         val averageDpi = (metrics.xdpi + metrics.ydpi) / 2
@@ -710,7 +610,6 @@ class PhotoFragment : ViewPagerFragment() {
             else -> LOW_TILE_DPI
         }
     }
-
     private fun checkIfPanorama() {
         mIsPanorama = try {
             if (mMedium.path.startsWith("content:/")) {
@@ -729,7 +628,6 @@ class PhotoFragment : ViewPagerFragment() {
         } catch (e: OutOfMemoryError) {
             false
         }
-
         activity?.runOnUiThread {
             binding.panoramaOutline.beVisibleIf(mIsPanorama)
             if (mIsFullscreen) {
@@ -737,11 +635,9 @@ class PhotoFragment : ViewPagerFragment() {
             }
         }
     }
-
     private fun getImageOrientation(): Int {
         val defaultOrientation = -1
         var orient = defaultOrientation
-
         try {
             val path = getFilePathToShow()
             orient = if (path.startsWith("content:/")) {
@@ -754,7 +650,6 @@ class PhotoFragment : ViewPagerFragment() {
                 val exif = androidx.exifinterface.media.ExifInterface(path)
                 exif.getAttributeInt(TAG_ORIENTATION, defaultOrientation)
             }
-
             if (orient == defaultOrientation || requireContext().isPathOnOTG(getFilePathToShow())) {
                 val uri = if (path.startsWith("content:/")) Uri.parse(path) else Uri.fromFile(File(path))
                 val inputStream = requireContext().contentResolver.openInputStream(uri)
@@ -767,11 +662,9 @@ class PhotoFragment : ViewPagerFragment() {
         }
         return orient
     }
-
     private fun getDoubleTapZoomScale(width: Int, height: Int): Float {
         val bitmapAspectRatio = height / width.toFloat()
         val screenAspectRatio = mScreenHeight / mScreenWidth.toFloat()
-
         return if (context == null || Math.abs(bitmapAspectRatio - screenAspectRatio) < SAME_ASPECT_RATIO_THRESHOLD) {
             DEFAULT_DOUBLE_TAP_ZOOM
         } else if (requireContext().portrait && bitmapAspectRatio <= screenAspectRatio) {
@@ -786,7 +679,6 @@ class PhotoFragment : ViewPagerFragment() {
             DEFAULT_DOUBLE_TAP_ZOOM
         }
     }
-
     fun rotateImageViewBy(degrees: Int) {
         if (mIsSubsamplingVisible) {
             binding.subsamplingView.rotateBy(degrees)
@@ -797,7 +689,6 @@ class PhotoFragment : ViewPagerFragment() {
             loadBitmap()
         }
     }
-
     private fun initExtendedDetails() {
         if (requireContext().config.showExtendedDetails) {
             binding.photoDetails.apply {
@@ -818,7 +709,6 @@ class PhotoFragment : ViewPagerFragment() {
             binding.photoDetails.beGone()
         }
     }
-
     private fun hideZoomableView() {
         if (context?.config?.allowZoomingImages == true) {
             mIsSubsamplingVisible = false
@@ -827,47 +717,39 @@ class PhotoFragment : ViewPagerFragment() {
             mLoadZoomableViewHandler.removeCallbacksAndMessages(null)
         }
     }
-
     private fun photoClicked() {
         listener?.fragmentClicked()
     }
-
     private fun updateInstantSwitchWidths() {
         binding.instantPrevItem.layoutParams.width = mScreenWidth / 7
         binding.instantNextItem.layoutParams.width = mScreenWidth / 7
     }
-
     override fun fullscreenToggled(isFullscreen: Boolean) {
         this.mIsFullscreen = isFullscreen
         binding.apply {
             photoDetails.apply {
                 if (mStoredShowExtendedDetails && isVisible() && context != null && resources != null) {
                     animate().y(getExtendedDetailsY(height))
-
                     if (mStoredHideExtendedDetails) {
                         animate().alpha(if (isFullscreen) 0f else 1f).start()
                     }
                 }
             }
-
             if (mIsPanorama) {
                 panoramaOutline.animate().alpha(if (isFullscreen) 0f else 1f).start()
                 panoramaOutline.isClickable = !isFullscreen
             }
-
             if (mWasInit && mMedium.isPortrait()) {
                 photoPortraitStripeWrapper.animate().alpha(if (isFullscreen) 0f else 1f).start()
             }
         }
     }
-
     private fun getExtendedDetailsY(height: Int): Float {
         val smallMargin = context?.resources?.getDimension(org.appinitdev.commons.R.dimen.small_margin) ?: return 0f
         val fullscreenOffset = smallMargin + if (mIsFullscreen) 0 else requireContext().navigationBarHeight
         val actionsHeight = if (requireContext().config.bottomActions && !mIsFullscreen) resources.getDimension(R.dimen.bottom_actions_height) else 0f
         return requireContext().realScreenSize.y - height - actionsHeight - fullscreenOffset
     }
-
     private fun applyProperColorMode(resource: Drawable?) {
         if (mIsFragmentVisible && activity != null) {
             ColorModeHelper.setColorModeForImage(
@@ -876,7 +758,6 @@ class PhotoFragment : ViewPagerFragment() {
             )
         }
     }
-
     private fun resetColorModeIfVisible() {
         if (mIsFragmentVisible) {
             ColorModeHelper.resetColorMode(activity)

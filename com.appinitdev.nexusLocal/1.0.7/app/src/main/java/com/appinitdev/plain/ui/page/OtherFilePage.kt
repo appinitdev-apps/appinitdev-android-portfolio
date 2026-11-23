@@ -1,4 +1,3 @@
-
 @SuppressLint("MissingPermission")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -10,11 +9,9 @@ fun OtherFilePage(
     val context = LocalContext.current
     val file = File(path)
     var displayTitle by remember(path, title) { mutableStateOf(title.ifEmpty { file.name }) }
-
     LaunchedEffect(path, title) {
         displayTitle = withIO { AppFileDisplayNameHelper.resolveDisplayNameByPath(path, title) }
     }
-
     PScaffold(
         topBar = {
             PTopAppBar(

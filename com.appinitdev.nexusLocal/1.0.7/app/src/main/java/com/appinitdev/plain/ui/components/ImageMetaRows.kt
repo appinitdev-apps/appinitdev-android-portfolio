@@ -1,17 +1,13 @@
-
 @Composable
 fun ImageMetaRows(path: String) {
     val extension = path.getFilenameExtension()
     if (setOf("gif", "svg").contains(extension)) {
         return
     }
-
     var meta by remember {
         mutableStateOf<DImageMeta?>(null)
     }
-
     val scope = rememberCoroutineScope()
-
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
             meta = ImageHelper.getMeta(path)

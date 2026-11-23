@@ -1,4 +1,3 @@
-
 class SplashActivity : BaseSplashActivity() {
     override fun initActivity() {
         if (intent.action == Intent.ACTION_VIEW && intent.data != null) {

@@ -1,30 +1,23 @@
-
 class HttpService : Service() {
-
     private var server: AndroidWebServer? = null
-
     companion object {
         private const val TAG = "HTTP_SERVICE_DEBUG"
         private const val CHANNEL_ID = "secure_http_network_channel"
         private const val NOTIFICATION_ID = 9027
-
         @Volatile var isRunning = false
             private set
         @Volatile var puertoActual = 8081
             internal set
-
         fun obtenerIpLocal(context: Context): String {
             val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
             val wifiInfo = wifiManager.connectionInfo
             val ipAddress = wifiInfo.ipAddress
             if (ipAddress == 0) return "0.0.0.0"
-
             val ip = if (ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN) {
                 Integer.reverseBytes(ipAddress)
             } else {
                 ipAddress
             }
-
             val ipByteArray = BigInteger.valueOf(ip.toLong()).toByteArray()
             return try {
                 InetAddress.getByAddress(ipByteArray).hostAddress ?: "0.0.0.0"
@@ -33,18 +26,14 @@ class HttpService : Service() {
             }
         }
     }
-
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
     }
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand: Iniciando Servidor HTTP con Carga de Archivos")
         isRunning = true
-
         startForeground(NOTIFICATION_ID, buildNotification())
-
         Thread {
             try {
                 server = AndroidWebServer(puertoActual)
@@ -55,14 +44,12 @@ class HttpService : Service() {
                 stopSelf()
             }
         }.start()
-
         return START_NOT_STICKY
     }
     private fun zipFolder(sourceFolder: File, zipFile: File) {
         java.util.zip.ZipOutputStream(zipFile.outputStream().buffered()).use { zos ->
             sourceFolder.walkTopDown().forEach { file ->
                 if (file.isFile) {
-                    
                     val relativePath = file.relativeTo(sourceFolder).path
                     val entry = java.util.zip.ZipEntry(relativePath)
                     zos.putNextEntry(entry)
@@ -74,64 +61,41 @@ class HttpService : Service() {
     }
     private inner class AndroidWebServer(port: Int) : NanoHTTPD(port) {
         private val rootDir = File("/storage/emulated/0")
-
         override fun serve(session: IHTTPSession): Response {
             try {
                 val uriDecodificada = URLDecoder.decode(session.uri, "UTF-8")
                 val targetFile = File(rootDir, uriDecodificada).canonicalFile
-
-                
                 if (!targetFile.path.startsWith(rootDir.canonicalPath)) {
                     return newFixedLengthResponse(Response.Status.FORBIDDEN, MIME_PLAINTEXT, "Acceso Denegado")
                 }
-
-                
                 if (session.method == Method.POST) {
                     val files = HashMap<String, String>()
-
-                    
                     session.parseBody(files)
-
-                    
                     val tempPath = files["archivoSubido"]
                     val nombreOriginal = session.parms["archivoSubido"]
-
                     if (tempPath != null && nombreOriginal != null) {
                         val ficheroTemporal = File(tempPath)
-                        
                         val ficheroDestino = File(targetFile, nombreOriginal)
-
-                        
                         ficheroTemporal.copyTo(ficheroDestino, overwrite = true)
-
-                        
                         val responseJson = newFixedLengthResponse(Response.Status.REDIRECT, MIME_HTML, "")
                         responseJson.addHeader("Location", session.uri)
                         return responseJson
                     }
                 }
-
-                
                 if (!targetFile.exists()) {
                     return newFixedLengthResponse(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "No encontrado")
                 }
-
                 if (targetFile.isDirectory) {
-                    
                     if (session.parms["download"] == "true") {
                         try {
-                            
                             val tempZip = File(cacheDir, "${targetFile.name}.zip")
                             zipFolder(targetFile, tempZip)
-
-                            
                             val fileInputStream = object : java.io.FileInputStream(tempZip) {
                                 override fun close() {
                                     super.close()
                                     tempZip.delete() 
                                 }
                             }
-
                             val response = newChunkedResponse(Response.Status.OK, "application/zip", fileInputStream)
                             response.addHeader("Content-Disposition", "attachment; filename=\"${targetFile.name}.zip\"")
                             response.addHeader("Content-Length", tempZip.length().toString())
@@ -141,7 +105,6 @@ class HttpService : Service() {
                             return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "Error al crear el archivo ZIP")
                         }
                     }
-
                     val htmlResponse = this.generarPaginaWeb(targetFile, uriDecodificada)
                     return newFixedLengthResponse(Response.Status.OK, "text/html; charset=UTF-8", htmlResponse)
                 } else if (targetFile.isFile) {
@@ -151,17 +114,14 @@ class HttpService : Service() {
                     response.addHeader("Content-Length", targetFile.length().toString())
                     return response
                 }
-
             } catch (e: Exception) {
                 Log.e(TAG, "Error procesando petición HTTP", e)
                 return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "Error Interno del Servidor")
             }
-
             return newFixedLengthResponse(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "Not Found")
         }
         private fun generarPaginaWeb(folder: File, relativePath: String): String {
             val normalPath = if (relativePath.endsWith("/")) relativePath else "$relativePath/"
-
             val botonRegresar = if (relativePath != "/" && relativePath.isNotEmpty()) {
                 val parentWebPath = File(relativePath).parent ?: "/"
                 "<a href=\"$parentWebPath\" class=\"inline-flex items-center text-sm font-medium text-teal-400 hover:underline mb-4\">🔙 Volver a la carpeta anterior</a>"
@@ -169,11 +129,7 @@ class HttpService : Service() {
             val pathSegments = normalPath.split("/").filter { it.isNotEmpty() }
             var currentPath = "/"
             val breadcrumbsBuilder = StringBuilder()
-
-            
             breadcrumbsBuilder.append("<a href=\"/\" class=\"text-teal-400 hover:text-teal-300 hover:underline transition-colors\">/</a>")
-
-            
             for (segment in pathSegments) {
                 currentPath += "$segment/"
                 breadcrumbsBuilder.append("<a href=\"$currentPath\" class=\"text-teal-400 hover:text-teal-300 hover:underline transition-colors\">$segment/</a>")
@@ -181,21 +137,17 @@ class HttpService : Service() {
             val breadcrumbsHtml = breadcrumbsBuilder.toString()
             val itemsBuilder = StringBuilder()
             val filesList = folder.listFiles()?.sortedWith(compareBy({ !it.isDirectory }, { it.name.lowercase() }))
-
             filesList?.forEach { file ->
                 val linkPath = if (normalPath == "/") "/${file.name}" else "$normalPath${file.name}"
-
                 val icono: String
                 val colorTexto: String
                 val detalles: String
                 val downloadLink: String
-
                 if (file.isDirectory) {
                     val cantidadElementos = file.listFiles()?.size ?: 0
                     icono = "📁"
                     colorTexto = "text-yellow-400 font-semibold"
                     detalles = if (cantidadElementos == 1) "1 elemento" else "$cantidadElementos elementos"
-                    
                     downloadLink = "$linkPath?download=true"
                 } else {
                     val sizeKb = file.length() / 1024
@@ -205,7 +157,6 @@ class HttpService : Service() {
                     detalles = sizeStr
                     downloadLink = linkPath
                 }
-
                 itemsBuilder.append("""
             <div class="flex items-center justify-between p-4 hover:bg-gray-700/40 transition-colors border-b border-gray-700/50">
                 <div class="flex items-center gap-3 overflow-hidden mr-4">
@@ -221,11 +172,9 @@ class HttpService : Service() {
             </div>
         """.trimIndent())
             }
-
             if (filesList.isNullOrEmpty()) {
                 itemsBuilder.append("<div class='p-8 text-center text-gray-500 text-sm'>Esta carpeta está vacía</div>")
             }
-
             return """
         <!DOCTYPE html>
         <html lang="en">
@@ -320,105 +269,7 @@ class HttpService : Service() {
         </html>
     """.trimIndent()
         }
-       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
-
     override fun onDestroy() {
         isRunning = false
         try {
@@ -428,13 +279,10 @@ class HttpService : Service() {
         }
         super.onDestroy()
     }
-
     override fun onBind(intent: Intent?): IBinder? = null
-
     private fun buildNotification(): Notification {
         val systemTitle = getString(android.R.string.dialog_alert_title)
         val urlStr = "http://${obtenerIpLocal(this)}:$puertoActual"
-
         val notificationIntent = Intent(this, HttpServerActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
             this,
@@ -442,7 +290,6 @@ class HttpService : Service() {
             notificationIntent,
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT else PendingIntent.FLAG_UPDATE_CURRENT
         )
-
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(systemTitle)
             .setContentText(urlStr)
@@ -453,7 +300,6 @@ class HttpService : Service() {
             .setContentIntent(pendingIntent)
             .build()
     }
-
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val manager = getSystemService(NotificationManager::class.java)

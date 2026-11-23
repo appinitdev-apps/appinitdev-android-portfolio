@@ -1,4 +1,3 @@
-
 data class DMessageConversation(
     override var id: String,
     val address: String,

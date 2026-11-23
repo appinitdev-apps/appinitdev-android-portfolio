@@ -1,4 +1,3 @@
-
 @Composable
 fun CircularTimer(
     progress: Float,
@@ -13,18 +12,13 @@ fun CircularTimer(
         val strokeWidthPx = strokeWidth.toPx()
         val radius = (size.minDimension - strokeWidthPx) / 2
         val centerOffset = Offset(size.width / 2f, size.height / 2f)
-
-        
         drawCircle(
             color = trackColor,
             radius = radius,
             center = centerOffset,
             style = Stroke(width = strokeWidthPx)
         )
-
-        
         val sweepAngle = 360f * progress.coerceIn(0f, 1f)
-
         if (sweepAngle > 0) {
             drawArc(
                 color = progressColor,

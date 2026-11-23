@@ -1,12 +1,5 @@
-
- 
-
-
-
-
 class VideoAudioFocusManager(private val audioManager: AudioManager) {
     private var focusRequest: AudioFocusRequest? = null
-
     fun requestFocus(player: ExoPlayer) {
         focusRequest?.let { audioManager.abandonAudioFocusRequest(it) }
         val req = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
@@ -28,7 +21,6 @@ class VideoAudioFocusManager(private val audioManager: AudioManager) {
         focusRequest = req
         audioManager.requestAudioFocus(req)
     }
-
     fun abandonFocus() {
         focusRequest?.let { audioManager.abandonAudioFocusRequest(it) }
         focusRequest = null

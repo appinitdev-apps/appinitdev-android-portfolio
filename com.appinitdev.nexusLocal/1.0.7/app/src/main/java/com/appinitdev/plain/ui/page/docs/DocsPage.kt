@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun DocsPage(
@@ -18,14 +17,12 @@ fun DocsPage(
     val tagsState = docsState.tagsState
     val tagsMapState = docsState.tagsMapState
     val scrollState = docsState.scrollState
-
     val topRefreshLayoutState = rememberRefreshLayoutState {
         scope.launch {
             withIO { docsVM.loadAsync(context, tagsVM); mediaFoldersVM.loadAsync(context) }
             setRefreshState(RefreshContentState.Finished)
         }
     }
-
     BackHandler(enabled = dragSelectState.selectMode || docsVM.showSearchBar.value) {
         if (dragSelectState.selectMode) {
             dragSelectState.exitSelectMode()
@@ -35,12 +32,9 @@ fun DocsPage(
             scope.launch(Dispatchers.IO) { docsVM.loadAsync(context, tagsVM) }
         }
     }
-
     DocsPageEffects(docsState, docsVM, tagsVM, mediaFoldersVM)
-
     var isFirstPageEffect by remember { mutableStateOf(true) }
     var isFirstTabsModeEffect by remember { mutableStateOf(true) }
-
     LaunchedEffect(pagerState.currentPage) {
         if (isFirstPageEffect) {
             isFirstPageEffect = false
@@ -53,12 +47,10 @@ fun DocsPage(
                     docsVM.trash.value = false
                     docsVM.tag.value = null
                 }
-
                 "trash" -> {
                     docsVM.trash.value = true
                     docsVM.tag.value = null
                 }
-
                 else -> {
                     docsVM.trash.value = false
                     docsVM.tag.value = tagsVM.itemsFlow.value.find { it.id == tab.value }
@@ -70,12 +62,10 @@ fun DocsPage(
                     docsVM.trash.value = false
                     docsVM.fileType.value = ""
                 }
-
                 "trash" -> {
                     docsVM.trash.value = true
                     docsVM.fileType.value = ""
                 }
-
                 else -> {
                     docsVM.trash.value = false
                     docsVM.fileType.value = tab.value
@@ -89,7 +79,6 @@ fun DocsPage(
         }
         scope.launch(Dispatchers.IO) { docsVM.loadAsync(context, tagsVM) }
     }
-
     LaunchedEffect(docsVM.tabsShowTags.value) {
         if (isFirstTabsModeEffect) {
             isFirstTabsModeEffect = false
@@ -99,19 +88,16 @@ fun DocsPage(
             pagerState.scrollToPage(0)
         }
     }
-
     val docsTagsMap = remember(tagsMapState, tagsState) {
         tagsMapState.mapValues { entry ->
             entry.value.mapNotNull { relation -> tagsState.find { it.id == relation.tagId } }
         }
     }
-
     ViewDocBottomSheet(docsVM = docsVM, tagsVM = tagsVM, tagsMapState = tagsMapState, tagsState = tagsState, dragSelectState = dragSelectState)
     DocFoldersBottomSheet(docsVM, mediaFoldersVM, tagsVM)
     if (docsVM.showTagsDialog.value) {
         TagsBottomSheet(tagsVM) { docsVM.showTagsDialog.value = false }
     }
-
     PScaffold(
         topBar = {
             MediaTopBar(

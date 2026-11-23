@@ -1,4 +1,3 @@
-
 enum class FileSortBy {
     DATE_ASC,
     DATE_DESC,
@@ -8,7 +7,6 @@ enum class FileSortBy {
     NAME_DESC,
     TAKEN_AT_DESC,
     ;
-
     fun getTextId(): StringResource {
         return when (this) {
             NAME_ASC -> {
@@ -34,7 +32,6 @@ enum class FileSortBy {
             }
         }
     }
-
     fun toSortBy(): SortBy {
         return when (this) {
             NAME_ASC -> {
@@ -60,7 +57,6 @@ enum class FileSortBy {
             }
         }
     }
-
     fun toFileSortBy(): SortBy {
         return when (this) {
             NAME_ASC -> {

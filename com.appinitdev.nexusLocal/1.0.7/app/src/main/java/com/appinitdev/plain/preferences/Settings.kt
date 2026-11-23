@@ -1,4 +1,3 @@
-
 data class Settings(
     val darkTheme: Int,
     val amoledDarkTheme: Boolean,
@@ -6,19 +5,15 @@ data class Settings(
     val web: Boolean,
     val updateInfo: DUpdateInfo,
 )
-
 val LocalLocale = compositionLocalOf<Locale?> { null }
 val LocalWeb = compositionLocalOf { WebPreference.default }
 val LocalUpdateInfo = compositionLocalOf { DUpdateInfo() }
-
-
 val LocalNewVersion = compositionLocalOf { "" }
 val LocalSkipVersion = compositionLocalOf { "" }
 val LocalNewVersionPublishDate = compositionLocalOf { "" }
 val LocalNewVersionLog = compositionLocalOf { "" }
 val LocalNewVersionSize = compositionLocalOf { 0L }
 val LocalAutoCheckUpdate = compositionLocalOf { true }
-
 @Composable
 fun SettingsProvider(content: @Composable () -> Unit) {
     val context = LocalContext.current
@@ -40,7 +35,6 @@ fun SettingsProvider(content: @Composable () -> Unit) {
             )
         }
     }.collectAsStateValue(initial = defaultSettings)
-
     CompositionLocalProvider(
         LocalDarkTheme provides settings.darkTheme,
         LocalAmoledDarkTheme provides settings.amoledDarkTheme,

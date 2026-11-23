@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationCenterScreen(
@@ -7,13 +6,11 @@ fun NotificationCenterScreen(
     onBack: () -> Unit
 ) {
     val notifications by viewModel.notifications.collectAsState()
-
     LaunchedEffect(notifications) {
         if (notifications.any { !it.isRead }) {
             viewModel.markAllNotificationsAsRead()
         }
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -52,7 +49,6 @@ fun NotificationCenterScreen(
         }
     }
 }
-
 @Composable
 fun NotificationItem(notification: UserNotification, onClick: () -> Unit = {}) {
     Card(
@@ -93,7 +89,6 @@ fun NotificationItem(notification: UserNotification, onClick: () -> Unit = {}) {
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PointsHistoryScreen(viewModel: AuthViewModel, onBack: () -> Unit) {
@@ -120,7 +115,6 @@ fun PointsHistoryScreen(viewModel: AuthViewModel, onBack: () -> Unit) {
         }
     }
 }
-
 @Composable
 fun PointsTransactionItem(transaction: PointsTransaction) {
     Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), shape = RoundedCornerShape(16.dp)) {
@@ -154,7 +148,6 @@ fun PointsTransactionItem(transaction: PointsTransaction) {
         }
     }
 }
-
 @Composable
 fun BugReportDialog(onDismiss: () -> Unit, onSubmit: (device: String, steps: String, desc: String) -> Unit) {
     val autoDevice = remember { 
@@ -193,7 +186,6 @@ fun BugReportDialog(onDismiss: () -> Unit, onSubmit: (device: String, steps: Str
         dismissButton = { TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.cancelar)) } }
     )
 }
-
 @Composable
 fun ReportDialog(onDismiss: () -> Unit, onSubmit: (reason: String) -> Unit) {
     var reason by remember { mutableStateOf("") }
@@ -226,7 +218,6 @@ fun ReportDialog(onDismiss: () -> Unit, onSubmit: (reason: String) -> Unit) {
         dismissButton = { TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.cancelar)) } }
     )
 }
-
 @Composable
 fun StreakBadge(streaks: Int) {
     if (streaks == 0) return
@@ -238,7 +229,6 @@ fun StreakBadge(streaks: Int) {
         }
     }
 }
-
 @Composable
 fun ASOSimulator(appName: String, developer: String, iconUrl: String?) {
     Column(modifier = Modifier.fillMaxWidth().padding(16.dp).background(Color.White, RoundedCornerShape(16.dp)).padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -261,7 +251,6 @@ fun ASOSimulator(appName: String, developer: String, iconUrl: String?) {
         }
     }
 }
-
 @Composable
 fun TestScenariosCard(tasks: List<String>) {
     ElevatedCard(modifier = Modifier.fillMaxWidth().padding(16.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f))) {

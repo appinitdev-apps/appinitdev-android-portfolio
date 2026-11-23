@@ -1,4 +1,3 @@
-
 class AlarmReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val chatId = intent?.getStringExtra("CHAT_ID") ?: return

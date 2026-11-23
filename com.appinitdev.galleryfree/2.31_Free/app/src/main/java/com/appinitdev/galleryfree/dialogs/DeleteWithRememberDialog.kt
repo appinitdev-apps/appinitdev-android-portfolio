@@ -1,14 +1,11 @@
-
 class DeleteWithRememberDialog(
     private val activity: Activity,
     private val message: String,
     private val showSkipRecycleBinOption: Boolean,
     private val callback: (remember: Boolean, skipRecycleBin: Boolean) -> Unit
 ) {
-
     private var dialog: AlertDialog? = null
     private val binding = DialogDeleteWithRememberBinding.inflate(activity.layoutInflater)
-
     init {
         binding.deleteRememberTitle.text = message
         binding.skipTheRecycleBinCheckbox.beGoneIf(!showSkipRecycleBinOption)
@@ -21,7 +18,6 @@ class DeleteWithRememberDialog(
                 }
             }
     }
-
     private fun dialogConfirmed() {
         dialog?.dismiss()
         callback(binding.deleteRememberCheckbox.isChecked, binding.skipTheRecycleBinCheckbox.isChecked)

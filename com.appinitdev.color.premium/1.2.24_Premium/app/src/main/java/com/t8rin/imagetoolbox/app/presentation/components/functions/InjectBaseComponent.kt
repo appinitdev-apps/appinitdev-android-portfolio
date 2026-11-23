@@ -1,3 +1,1 @@
- 
-
 internal fun ImageToolboxApplication.injectBaseComponent() = BaseComponent.inject(keepAliveService)

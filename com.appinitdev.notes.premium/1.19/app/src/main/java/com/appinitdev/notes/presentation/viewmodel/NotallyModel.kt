@@ -1,53 +1,35 @@
-
 typealias BackupFile = Pair<String?, File>
-
 class NotallyModel(private val app: Application) : AndroidViewModel(app) {
-
     private val database = NotallyDatabase.getDatabase(app)
     private lateinit var baseNoteDao: BaseNoteDao
-
     val preferences = NotallyXPreferences.getInstance(app)
     val textSize = preferences.textSize.value
-
     var isNewNote = true
-
     var type = Type.NOTE
-
     var id = 0L
     var folder = Folder.NOTES
     var color = BaseNote.COLOR_DEFAULT
-
     var title = String()
     var pinned = false
     var timestamp = System.currentTimeMillis()
     var modifiedTimestamp = System.currentTimeMillis()
-
     val labels = ArrayList<String>()
-
     var body: Editable = SpannableStringBuilder()
-
     val items = ArrayList<ListItem>()
-
     val images = NotNullLiveData<List<FileAttachment>>(emptyList())
     val files = NotNullLiveData<List<FileAttachment>>(emptyList())
     val audios = NotNullLiveData<List<Audio>>(emptyList())
-
     val reminders = NotNullLiveData<List<Reminder>>(emptyList())
     val viewMode = NotNullLiveData(NoteViewMode.EDIT)
-
     val addingFiles = MutableLiveData<Progress>()
     val eventBus = MutableLiveData<Event<List<FileError>>>()
-
     var imageRoot = app.getExternalImagesDirectory()
     var audioRoot = app.getExternalAudioDirectory()
     var filesRoot = app.getExternalFilesDirectory()
-
     var originalNote: BaseNote? = null
-
     init {
         database.observeForever { baseNoteDao = it.getBaseNoteDao() }
     }
-
     fun addAudio() {
         viewModelScope.launch {
             val audio = app.importAudio(app.getTempAudioFile(), true)
@@ -57,7 +39,6 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
             updateAudios()
         }
     }
-
     fun deleteAudio(audio: Audio) {
         viewModelScope.launch {
             val copy = ArrayList(audios.value)
@@ -67,27 +48,16 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
             withContext(Dispatchers.IO) { app.deleteAttachments(arrayListOf(audio)) }
         }
     }
-
     fun addImages(uris: Array<Uri>) {
-         
-
-
-
         imageRoot = app.getExternalImagesDirectory()
         requireNotNull(imageRoot) { "imageRoot is null" }
         addFiles(uris, imageRoot!!, FileType.IMAGE)
     }
-
     fun addFiles(uris: Array<Uri>) {
-         
-
-
-
         filesRoot = app.getExternalFilesDirectory()
         requireNotNull(filesRoot) { "filesRoot is null" }
         addFiles(uris, filesRoot!!, FileType.ANY)
     }
-
     private fun addFiles(uris: Array<Uri>, directory: File, fileType: FileType) {
         val errorWhileRenaming =
             if (fileType == FileType.IMAGE) {
@@ -97,10 +67,8 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
             }
         viewModelScope.launch {
             addingFiles.postValue(Progress(0, uris.size))
-
             val successes = ArrayList<FileAttachment>()
             val errors = ArrayList<FileError>()
-
             uris.forEachIndexed { index, uri ->
                 val (fileAttachment, error) =
                     app.importFile(uri, directory, fileType, errorWhileRenaming)
@@ -108,9 +76,7 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
                 error?.let { errors.add(it) }
                 addingFiles.postValue(Progress(index + 1, uris.size))
             }
-
             addingFiles.postValue(Progress(inProgress = false))
-
             if (successes.isNotEmpty()) {
                 val copy =
                     when (fileType) {
@@ -123,20 +89,17 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
                         images.value = copy
                         updateImages()
                     }
-
                     FileType.ANY -> {
                         files.value = copy
                         updateFiles()
                     }
                 }
             }
-
             if (errors.isNotEmpty()) {
                 eventBus.value = Event(errors)
             }
         }
     }
-
     fun deleteImages(list: ArrayList<FileAttachment>) {
         viewModelScope.launch {
             val copy = ArrayList(images.value)
@@ -146,7 +109,6 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
             withContext(Dispatchers.IO) { app.deleteAttachments(list) }
         }
     }
-
     fun deleteFiles(list: ArrayList<FileAttachment>) {
         viewModelScope.launch {
             val copy = ArrayList(files.value)
@@ -156,38 +118,28 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
             withContext(Dispatchers.IO) { app.deleteAttachments(list) }
         }
     }
-
     fun setLabels(list: List<String>) {
         labels.clear()
         labels.addAll(list)
     }
-
     suspend fun setState(id: Long) {
         if (id != 0L) {
             isNewNote = false
-
             val cachedNote = Cache.list.find { baseNote -> baseNote.id == id }
             val baseNote = cachedNote ?: withContext(Dispatchers.IO) { baseNoteDao.get(id) }
-
             if (baseNote != null) {
                 originalNote = baseNote.deepCopy()
-
                 this.id = id
                 folder = baseNote.folder
                 color = baseNote.color
-
                 title = baseNote.title
                 pinned = baseNote.pinned
                 timestamp = baseNote.timestamp
                 modifiedTimestamp = baseNote.modifiedTimestamp
-
                 setLabels(baseNote.labels)
-
                 body = baseNote.body.applySpans(baseNote.spans)
-
                 items.clear()
                 items.addAll(baseNote.items)
-
                 images.value = baseNote.images
                 files.value = baseNote.files
                 audios.value = baseNote.audios
@@ -199,13 +151,11 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
             }
         } else originalNote = createBaseNote()
     }
-
     private suspend fun createBaseNote(): BaseNote {
         val baseNote = getBaseNote()
         id = withContext(Dispatchers.IO) { baseNoteDao.insert(baseNote) }
         return baseNote.copy(id = id)
     }
-
     suspend fun deleteBaseNote(checkAutoSave: Boolean = true) {
         app.cancelNoteReminders(listOf(NoteIdReminder(id, reminders.value)))
         withContext(Dispatchers.IO) { baseNoteDao.delete(id) }
@@ -218,12 +168,10 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
             app.checkBackupOnSave(preferences, forceFullBackup = true)
         }
     }
-
     fun setItems(items: List<ListItem>) {
         this.items.clear()
         this.items.addAll(items)
     }
-
     suspend fun saveNote(checkBackupOnSave: Boolean = true): Long {
         return withContext(Dispatchers.IO) {
             val note = getBaseNote()
@@ -235,7 +183,6 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
             return@withContext id
         }
     }
-
     suspend fun checkBackupOnSave(note: BaseNote = getBaseNote()) {
         app.checkBackupOnSave(
             preferences,
@@ -243,7 +190,6 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
             forceFullBackup = originalNote?.attachmentsDifferFrom(note) == true,
         )
     }
-
     fun isEmpty(): Boolean {
         return title.isEmpty() &&
             body.isEmpty() &&
@@ -252,28 +198,22 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
             images.value.isEmpty() &&
             audios.value.isEmpty()
     }
-
     fun isModified(): Boolean {
         return getBaseNote() != originalNote
     }
-
     private suspend fun updateImages() {
         withContext(Dispatchers.IO) { baseNoteDao.updateImages(id, images.value) }
     }
-
     private suspend fun updateFiles() {
         withContext(Dispatchers.IO) { baseNoteDao.updateFiles(id, files.value) }
     }
-
     private suspend fun updateAudios() {
         withContext(Dispatchers.IO) { baseNoteDao.updateAudios(id, audios.value) }
     }
-
     fun getBaseNote(): BaseNote {
         val spans = getFilteredSpans(body)
         val body = this.body.toString()
         val nonEmptyItems = this.items.filter { item -> item.body.isNotEmpty() }
-        
             return BaseNote(
             id,
             type,
@@ -294,7 +234,6 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
             viewMode.value,
         )
     }
-
     private fun getFilteredSpans(spanned: Spanned): ArrayList<SpanRepresentation> {
         val representations = LinkedHashSet<SpanRepresentation>()
         spanned.getSpans<CharacterStyle>().forEach { span ->
@@ -302,13 +241,11 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
             val start = spanned.getSpanStart(span)
             val representation =
                 SpanRepresentation(start, end, false, false, null, false, false, false)
-
             when (span) {
                 is StyleSpan -> {
                     representation.bold = span.style == Typeface.BOLD
                     representation.italic = span.style == Typeface.ITALIC
                 }
-
                 is URLSpan -> {
                     representation.link = true
                     representation.linkData = span.url
@@ -316,14 +253,12 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
                 is TypefaceSpan -> representation.monospace = span.family == "monospace"
                 is StrikethroughSpan -> representation.strikethrough = true
             }
-
             if (representation.isNotUseless()) {
                 representations.add(representation)
             }
         }
         return getFilteredRepresentations(ArrayList(representations))
     }
-
     private fun getFilteredRepresentations(
         representations: ArrayList<SpanRepresentation>
     ): ArrayList<SpanRepresentation> {
@@ -357,13 +292,11 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
         }
         return representations
     }
-
     suspend fun removeReminder(reminder: Reminder) {
         app.cancelReminder(this.id, reminder.id)
         val updatedReminders = reminders.value.filter { it.id != reminder.id }
         updateReminders(updatedReminders)
     }
-
     suspend fun addReminder(reminder: Reminder) {
         val updatedReminders = ArrayList(reminders.value)
         val newReminder = reminder.copy(id = (updatedReminders.maxOfOrNull { it.id } ?: -1) + 1)
@@ -371,7 +304,6 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
         updateReminders(updatedReminders)
         app.scheduleReminder(id, newReminder)
     }
-
     suspend fun updateReminder(updatedReminder: Reminder) {
         if (updatedReminder.id != NEW_REMINDER_ID) {
             app.cancelReminder(id, updatedReminder.id)
@@ -384,12 +316,10 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
             app.scheduleReminder(id, updatedReminder)
         }
     }
-
     private suspend fun updateReminders(updatedReminders: List<Reminder>) {
         reminders.value = updatedReminders
         withContext(Dispatchers.IO) { baseNoteDao.updateReminders(id, updatedReminders) }
     }
-
     suspend fun convertTo(noteType: Type) {
         when (noteType) {
             Type.NOTE -> {
@@ -417,7 +347,6 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
         Cache.list = ArrayList()
         saveNote(checkBackupOnSave = false)
     }
-
     enum class FileType {
         IMAGE,
         ANY,

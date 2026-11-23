@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomEmojiPicker(
@@ -6,7 +5,6 @@ fun CustomEmojiPicker(
     onGifSelected: (String) -> Unit = {}
 ) {
     var selectedTab by remember { mutableIntStateOf(0) }
-    
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -29,9 +27,7 @@ fun CustomEmojiPicker(
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(16.dp))
-
         if (selectedTab == 0) {
             EmojiGrid(onEmojiSelected)
         } else {
@@ -39,7 +35,6 @@ fun CustomEmojiPicker(
         }
     }
 }
-
 @Composable
 fun EmojiGrid(onEmojiSelected: (String) -> Unit) {
     val emojis = remember {
@@ -56,7 +51,6 @@ fun EmojiGrid(onEmojiSelected: (String) -> Unit) {
             "🔥", "✨", "🌟", "⭐", "🌈", "☀️", "☁️", "❄️", "🌊", "👍"
         )
     }
-    
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 48.dp),
         modifier = Modifier.fillMaxSize()
@@ -73,7 +67,6 @@ fun EmojiGrid(onEmojiSelected: (String) -> Unit) {
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GifPicker(onGifSelected: (String) -> Unit) {
@@ -82,7 +75,6 @@ fun GifPicker(onGifSelected: (String) -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
     val client = remember { OkHttpClient() }
     val gson = remember { Gson() }
-
     LaunchedEffect(query) {
         isLoading = true
         if (query.length < 2 && query.isNotEmpty()) {
@@ -90,17 +82,14 @@ fun GifPicker(onGifSelected: (String) -> Unit) {
         } else {
             delay(500)
         }
-
         withContext(Dispatchers.IO) {
             try {
-                
                 val apiKey = ""
                 val url = if (query.isEmpty()) {
                     "https://api.giphy.com/v1/gifs/trending?api_key=$apiKey&limit=20"
                 } else {
                     "https://api.giphy.com/v1/gifs/search?api_key=$apiKey&q=$query&limit=20"
                 }
-
                 val request = Request.Builder().url(url).build()
                 client.newCall(request).execute().use { response ->
                     if (response.isSuccessful) {
@@ -116,7 +105,6 @@ fun GifPicker(onGifSelected: (String) -> Unit) {
             }
         }
     }
-
     Column {
         OutlinedTextField(
             value = query,
@@ -134,9 +122,7 @@ fun GifPicker(onGifSelected: (String) -> Unit) {
                 unfocusedTextColor = Color.White
             )
         )
-
         Spacer(modifier = Modifier.height(16.dp))
-
         if (isLoading && gifs.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(color = Color(0xFF238CDD))
@@ -164,8 +150,6 @@ fun GifPicker(onGifSelected: (String) -> Unit) {
         }
     }
 }
-
-
 data class GiphyResponse(val data: List<GiphyData>)
 data class GiphyData(val images: GiphyImages)
 data class GiphyImages(val fixed_height: GiphyImage)

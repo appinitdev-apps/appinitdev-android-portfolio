@@ -1,8 +1,3 @@
-
- 
-
-
-
 @Composable
 fun ChatInfoPage(
     navController: NavHostController,

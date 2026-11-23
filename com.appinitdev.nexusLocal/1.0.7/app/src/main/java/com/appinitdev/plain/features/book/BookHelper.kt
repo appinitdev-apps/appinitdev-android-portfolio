@@ -1,9 +1,7 @@
-
 object BookHelper {
     val bookDao: BookDao by lazy {
         AppDatabase.instance.bookDao()
     }
-
     suspend fun count(query: String): Int {
         var sql = "SELECT COUNT(id) FROM books"
         val where = ContentWhere()
@@ -11,10 +9,8 @@ object BookHelper {
             parseQuery(where, query)
             sql += " WHERE ${where.toSelection()}"
         }
-
         return bookDao.count(rawQuery(sql, where.args.toTypedArray()))
     }
-
     suspend fun search(
         query: String,
         limit: Int,
@@ -26,12 +22,9 @@ object BookHelper {
             parseQuery(where, query)
             sql += " WHERE ${where.toSelection()}"
         }
-
         sql += " LIMIT $limit OFFSET $offset"
-
         return bookDao.search(rawQuery(sql, where.args.toTypedArray()))
     }
-
     fun updateAsync(
         id: String,
         updateItem: DBook.() -> Unit,
@@ -40,10 +33,8 @@ object BookHelper {
         item.updatedAt = TimeHelper.now()
         updateItem(item)
         bookDao.update(item)
-
         return item.id
     }
-
     private suspend fun parseQuery(
         where: ContentWhere,
         query: String,

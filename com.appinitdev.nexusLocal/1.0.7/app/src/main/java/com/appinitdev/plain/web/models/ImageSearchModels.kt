@@ -1,4 +1,3 @@
-
 @Serializable
 data class ImageSearchStatus(
     val status: String,
@@ -10,7 +9,6 @@ data class ImageSearchStatus(
     val totalImages: Int,
     val indexedImages: Int,
 )
-
 fun buildImageSearchStatus(): ImageSearchStatus {
     val mgr = ImageSearchManager
     val indexer = ImageSearchIndexer

@@ -1,4 +1,3 @@
-
 object QrCodeScanHelper {
     fun tryDecode(source: Bitmap): Result? {
         val reader = createReader()
@@ -12,7 +11,6 @@ object QrCodeScanHelper {
         }
         return null
     }
-
     fun createReader(): MultiFormatReader {
         val reader = MultiFormatReader()
         val hintsMap: MutableMap<DecodeHintType, Any> = EnumMap(DecodeHintType::class.java)
@@ -20,15 +18,11 @@ object QrCodeScanHelper {
         reader.setHints(hintsMap)
         return reader
     }
-
-
     private fun getBinaryBitmap(source: Bitmap): BinaryBitmap {
         val width = source.width
         val height = source.height
         val size = width * height
-
         val bitmapBuffer = IntArray(size)
-
         source.getPixels(bitmapBuffer, 0, width, 0, 0, width, height)
         val luminanceSource = RGBLuminanceSource(width, height, bitmapBuffer)
         return BinaryBitmap(HybridBinarizer(luminanceSource))

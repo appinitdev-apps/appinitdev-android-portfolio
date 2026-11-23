@@ -1,4 +1,3 @@
-
 @Composable
 fun FileListContent(
     navController: NavHostController,
@@ -9,7 +8,6 @@ fun FileListContent(
     audioPlaylistVM: AudioPlaylistViewModel
 ) {
     val context = LocalContext.current
-
     if (filesVM.isLoading.value) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -46,7 +44,6 @@ fun FileListContent(
                             if (file.isDir) {
                                 filesVM.navigateToDirectory(context, file.path)
                             } else if (!ZipBrowserHelper.isZipPath(file.path) && file.extension.lowercase() == "zip") {
-                                
                                 filesVM.navigateToDirectory(context, ZipBrowserHelper.joinPath(file.path, ""))
                             } else {
                                 openFile(context, files, file, navController, previewerState, itemState, audioPlaylistVM)
@@ -54,7 +51,6 @@ fun FileListContent(
                         }
                     },
                     onLongClick = {
-                        
                         if (ZipBrowserHelper.isZipPath(file.path)) return@FileListItem
                         if (!filesVM.selectMode.value) {
                             filesVM.selectedFile.value = file

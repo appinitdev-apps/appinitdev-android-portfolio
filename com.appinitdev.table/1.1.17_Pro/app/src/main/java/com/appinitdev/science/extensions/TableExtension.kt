@@ -1,35 +1,26 @@
-
 abstract class TableExtension : BaseActivity(), View.OnApplyWindowInsetsListener {
     companion object { private const val TAG = "BaseActivity" }
-
     private var systemUiConfigured = false
-
     override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState) }
-
     override fun onStart() {
         super.onStart()
         val content = findViewById<View>(android.R.id.content)
         content.setOnApplyWindowInsetsListener(this)
-
         if (!systemUiConfigured) {
             systemUiConfigured = true
         }
     }
-
     override fun onApplySystemInsets(top: Int, bottom: Int, left: Int, right: Int) = Unit
-
     override fun onApplyWindowInsets(v: View, insets: WindowInsets): WindowInsets {
         Pasteur.info(TAG, "height: ${insets.systemWindowInsetBottom}")
         onApplySystemInsets(insets.systemWindowInsetTop, insets.systemWindowInsetBottom, insets.systemWindowInsetLeft, insets.systemWindowInsetRight)
         return insets.consumeSystemWindowInsets()
     }
     private var elementList = ArrayList<Element>()
-
     private fun closeHover() {
         Utils.fadeOutAnim(findViewById<TextView>(R.id.hover_background), 200)
         Utils.fadeOutAnim(findViewById<ConstraintLayout>(R.id.hover_menu_include), 300)
     }
-
     fun initName(list: ArrayList<Element>) {
         for (item in list) {
             val name = item.elementKey
@@ -40,7 +31,6 @@ abstract class TableExtension : BaseActivity(), View.OnApplyWindowInsetsListener
             val eViewBtn = "$name$extBtn"
             val resID = resources.getIdentifier(eView, "id", packageName)
             val resIDB = resources.getIdentifier(eViewBtn, "id", packageName)
-
             val text = findViewById<TextView>(resID)
             val jsonObject = ElementDataLoader.loadElementData(this, name)
             val elementGroup = jsonObject?.optString("element", "---") ?: "---"
@@ -48,7 +38,6 @@ abstract class TableExtension : BaseActivity(), View.OnApplyWindowInsetsListener
             val btn = findViewById<TextView>(resIDB)
             val themePreference = ThemePreference(this)
             val themePrefValue = themePreference.getValue()
-
             val params = text.layoutParams as ViewGroup.MarginLayoutParams
             params.leftMargin = resources.getDimensionPixelSize(R.dimen.padding_small)
             params.rightMargin = resources.getDimensionPixelSize(R.dimen.padding_small)
@@ -60,11 +49,8 @@ abstract class TableExtension : BaseActivity(), View.OnApplyWindowInsetsListener
             text.ellipsize = TextUtils.TruncateAt.END
             text.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
             text.textAlignment = View.TEXT_ALIGNMENT_CENTER
-
             findViewById<TextView>(R.id.lanthanoids_btn).elevation = (resources.getDimension(R.dimen.zero_elevation))
             findViewById<TextView>(R.id.actinoids_btn).elevation = (resources.getDimension(R.dimen.zero_elevation))
-
-
             if (themePrefValue == 100) {
                 when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {Configuration.UI_MODE_NIGHT_NO -> {
                         btn.background.setTint(resources.getColor(R.color.element_box_light))
@@ -87,7 +73,6 @@ abstract class TableExtension : BaseActivity(), View.OnApplyWindowInsetsListener
                     findViewById<TextView>(R.id.actinoids_btn).background.setTint(resources.getColor(R.color.element_box_dark)) }
         }
     }
-
     fun initBoiling(list: ArrayList<Element>) {
         val delay = Handler()
         initName(elementList)
@@ -107,7 +92,6 @@ abstract class TableExtension : BaseActivity(), View.OnApplyWindowInsetsListener
                 } catch(e: IOException) { }
             } },10)
     }
-
     fun initMelting(list: ArrayList<Element>) {
         val delay = Handler()
         initName(elementList)
@@ -127,7 +111,6 @@ abstract class TableExtension : BaseActivity(), View.OnApplyWindowInsetsListener
                 } catch(e: IOException) { }
             } },10)
     }
-
     fun initElectro(list: ArrayList<Element>) {
         val delay = Handler()
         initName(elementList)
@@ -159,14 +142,12 @@ abstract class TableExtension : BaseActivity(), View.OnApplyWindowInsetsListener
                         val btn = findViewById<TextView>(resIDB)
                         val themePreference = ThemePreference(this)
                         val themePrefValue = themePreference.getValue()
-
                     } else {
                         if (item.electro > 1) {
                             val btn = findViewById<TextView>(resIDB)
                             btn.background.setTint(Color.argb(255, 255, 225.div(item.electro).toInt(), 0))
                         } else {
                             val btn = findViewById<TextView>(resIDB)
-                            
                             btn.background.setTint(Color.argb(255, 212, 192, 55))
                         }
                     }
@@ -174,7 +155,6 @@ abstract class TableExtension : BaseActivity(), View.OnApplyWindowInsetsListener
             }
         }, 10)
     }
-
     fun initGroups(list: ArrayList<Element>) {
         val delay = Handler()
         initName(list)
@@ -188,7 +168,6 @@ abstract class TableExtension : BaseActivity(), View.OnApplyWindowInsetsListener
                 val eText = "$name$extText"
                 val resIDB = resources.getIdentifier(eViewBtn, "id", packageName)
                 val resID = resources.getIdentifier(eText, "id", packageName)
-
                 val iText = findViewById<TextView>(resID)
                 try {
                     val jsonObject = ElementDataLoader.loadElementData(this, name)
@@ -205,7 +184,6 @@ abstract class TableExtension : BaseActivity(), View.OnApplyWindowInsetsListener
                 catch(e: IOException) {
                     ToastUtil.showToast(this, "IOException")
                 }
-
                 val btn = findViewById<TextView>(resIDB)
                 if ((item.number == 3) or (item.number == 11) or (item.number == 19) or (item.number == 37) or (item.number == 55) or (item.number == 87)) {
                     btn.background.setTint(Color.argb(255, 255, 102, 102))
@@ -231,8 +209,6 @@ abstract class TableExtension : BaseActivity(), View.OnApplyWindowInsetsListener
             }
         }, 10)
     }
-
-    
     fun initTableChange(list: ArrayList<Element>, jsonName: String) {
         initName(list) 
         closeHover()
@@ -244,7 +220,6 @@ abstract class TableExtension : BaseActivity(), View.OnApplyWindowInsetsListener
                 val eView = "$name$extText"
                 val resID = resources.getIdentifier(eView, "id", packageName)
                 val iText = findViewById<TextView>(resID)
-
                 try {
                     val jsonObject = ElementDataLoader.loadElementData(this, name)
                     val outputText = jsonObject?.optString(jsonName, "---") ?: "---"
@@ -256,5 +231,4 @@ abstract class TableExtension : BaseActivity(), View.OnApplyWindowInsetsListener
             }
         }, 10)
     }
-
 }

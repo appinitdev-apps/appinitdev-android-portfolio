@@ -1,4 +1,3 @@
-
 @Composable
 fun MainDialogs(
     loadingEvent: LoadingDialogEvent?,

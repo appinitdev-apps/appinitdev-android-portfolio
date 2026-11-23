@@ -1,4 +1,3 @@
-
 data class Achievement(
     val id: String,
     val title: String,
@@ -9,7 +8,6 @@ data class Achievement(
     val progressText: String,
     val icon: ImageVector
 )
-
 fun calculateAchievements(stats: List<PuzzleStatEntity>): List<Achievement> {
     val totalWins = stats.size
     val minTime = stats.minOfOrNull { it.time } ?: Int.MAX_VALUE
@@ -17,7 +15,6 @@ fun calculateAchievements(stats: List<PuzzleStatEntity>): List<Achievement> {
     val maxGrid = stats.maxOfOrNull { it.n } ?: 0
     val uniquePuzzles = stats.map { it.puzzleId }.distinct().size
     val uniqueNumberModes = stats.filter { it.puzzleId in 1..15 }.map { it.puzzleId }.distinct().size
-
     return listOf(
         Achievement(
             id = "first_win",
@@ -141,7 +138,6 @@ fun calculateAchievements(stats: List<PuzzleStatEntity>): List<Achievement> {
         )
     )
 }
-
 @Composable
 fun AchievementsDialog(
     stats: List<PuzzleStatEntity>,
@@ -149,7 +145,6 @@ fun AchievementsDialog(
 ) {
     val achievements = remember(stats) { calculateAchievements(stats) }
     val unlockedCount = achievements.count { it.isUnlocked }
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -179,26 +174,20 @@ fun AchievementsDialog(
                         modifier = Modifier.size(32.dp)
                     )
                 }
-
                 Spacer(modifier = Modifier.height(10.dp))
-
                 Text(
                     text = stringResource(R.string.sal_n_de_la_fama),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.ExtraBold
                 )
-
                 Spacer(modifier = Modifier.height(2.dp))
-
                 Text(
                     text = "$unlockedCount de ${achievements.size} Logros Desbloqueados",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier.fillMaxHeight(0.65f)
@@ -207,9 +196,7 @@ fun AchievementsDialog(
                         AchievementCard(achievement)
                     }
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Button(
                     onClick = onDismiss,
                     shape = CircleShape,
@@ -221,7 +208,6 @@ fun AchievementsDialog(
         }
     }
 }
-
 @Composable
 fun AchievementCard(achievement: Achievement) {
     val containerColor = if (achievement.isUnlocked) {
@@ -229,17 +215,14 @@ fun AchievementCard(achievement: Achievement) {
     } else {
         MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f)
     }
-
     val iconTint = if (achievement.isUnlocked) {
         Color(0xFFFFD700)
     } else {
         MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
     }
-
     val border = if (achievement.isUnlocked) {
         BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
     } else null
-
     Card(
         colors = CardDefaults.cardColors(containerColor = containerColor),
         shape = RoundedCornerShape(18.dp),
@@ -267,9 +250,7 @@ fun AchievementCard(achievement: Achievement) {
                     modifier = Modifier.size(26.dp)
                 )
             }
-
             Spacer(modifier = Modifier.width(14.dp))
-
             Column(modifier = Modifier.weight(1f)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -282,7 +263,6 @@ fun AchievementCard(achievement: Achievement) {
                         fontWeight = FontWeight.Bold,
                         color = if (achievement.isUnlocked) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
                     )
-
                     if (achievement.isUnlocked) {
                         Icon(
                             imageVector = Icons.Default.CheckCircle,
@@ -292,17 +272,13 @@ fun AchievementCard(achievement: Achievement) {
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.height(2.dp))
-
                 Text(
                     text = achievement.description,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-
                 Spacer(modifier = Modifier.height(8.dp))
-
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -317,7 +293,6 @@ fun AchievementCard(achievement: Achievement) {
                         color = if (achievement.isUnlocked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
                         trackColor = MaterialTheme.colorScheme.surfaceVariant
                     )
-
                     Text(
                         text = achievement.progressText,
                         style = MaterialTheme.typography.labelSmall,

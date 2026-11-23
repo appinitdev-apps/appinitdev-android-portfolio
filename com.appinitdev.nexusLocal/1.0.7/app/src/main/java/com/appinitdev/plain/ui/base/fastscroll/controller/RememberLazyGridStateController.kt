@@ -1,4 +1,3 @@
-
 @Composable
 internal fun rememberLazyGridStateController(
     state: LazyGridState,
@@ -13,7 +12,6 @@ internal fun rememberLazyGridStateController(
     val reverseLayout = remember { derivedStateOf { state.layoutInfo.reverseLayout } }
     val isSelected = remember { mutableStateOf(false) }
     val dragOffset = remember { mutableFloatStateOf(0f) }
-
     val realFirstVisibleItem = remember {
         derivedStateOf {
             state.layoutInfo.visibleItemsInfo.firstOrNull {
@@ -21,7 +19,6 @@ internal fun rememberLazyGridStateController(
             }
         }
     }
-
     val nElementsMainAxis = remember {
         derivedStateOf {
             var count = 0
@@ -33,7 +30,6 @@ internal fun rememberLazyGridStateController(
             count.coerceAtLeast(1)
         }
     }
-
     val isStickyHeaderInAction = remember {
         derivedStateOf {
             val realIndex = realFirstVisibleItem.value?.index ?: return@derivedStateOf false
@@ -42,15 +38,12 @@ internal fun rememberLazyGridStateController(
             realIndex != firstVisibleIndex
         }
     }
-
     fun LazyGridItemInfo.fractionHiddenTop(firstItemOffset: Int): Float {
         return if (size.height == 0) 0f else firstItemOffset / size.width.toFloat()
     }
-
     fun LazyGridItemInfo.fractionVisibleBottom(viewportEndOffset: Int): Float {
         return if (size.height == 0) 0f else (viewportEndOffset - offset.y).toFloat() / size.height.toFloat()
     }
-
     val thumbSizeNormalizedReal = remember {
         derivedStateOf {
             state.layoutInfo.let {
@@ -64,13 +57,11 @@ internal fun rememberLazyGridStateController(
             }
         }
     }
-
     val thumbSizeNormalized = remember {
         derivedStateOf {
             thumbSizeNormalizedReal.value.coerceAtLeast(thumbMinLengthUpdated.value)
         }
     }
-
     fun offsetCorrection(top: Float): Float {
         val topRealMax = (1f - thumbSizeNormalizedReal.value).coerceIn(0f, 1f)
         if (thumbSizeNormalizedReal.value >= thumbMinLengthUpdated.value) {
@@ -79,7 +70,6 @@ internal fun rememberLazyGridStateController(
         val topMax = 1f - thumbMinLengthUpdated.value
         return when { reverseLayout.value -> (topRealMax - top) * topMax / topRealMax; else -> top * topMax / topRealMax }
     }
-
     val thumbOffsetNormalized = remember {
         derivedStateOf {
             state.layoutInfo.let {
@@ -92,13 +82,11 @@ internal fun rememberLazyGridStateController(
             }
         }
     }
-
     val thumbIsInAction = remember {
         derivedStateOf {
             state.isScrollInProgress || isSelected.value || alwaysShowScrollBarUpdated.value
         }
     }
-
     return remember {
         LazyGridStateController(
             thumbSizeNormalized = thumbSizeNormalized,

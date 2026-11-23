@@ -1,4 +1,3 @@
-
 @Serializable
 data class TagRelationStub(
     var key: String = "",
@@ -15,7 +14,6 @@ data class TagRelationStub(
             size = stub.size
         }
     }
-
     companion object {
         fun create(data: IData): TagRelationStub {
             return when (data) {

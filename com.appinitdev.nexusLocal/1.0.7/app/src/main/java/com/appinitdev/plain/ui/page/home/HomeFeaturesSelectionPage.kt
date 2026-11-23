@@ -1,28 +1,23 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeFeaturesSelectionPage(navController: NavHostController) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val allFeatureItems = remember { FeatureItem.getList(navController) }
-
     val featuresStr = remember {
         context.dataStore.dataFlow.map { HomeFeaturesPreference.get(it) }
     }.collectAsStateValue(initial = HomeFeaturesPreference.default)
-
     var enabledIds by remember(featuresStr) {
         mutableStateOf(
             HomeFeaturesPreference.parseList(featuresStr.ifEmpty { HomeFeaturesPreference.default })
         )
     }
-
     fun persist(newList: List<String>) {
         enabledIds = newList
         scope.launch(Dispatchers.IO) {
             HomeFeaturesPreference.putAsync(HomeFeaturesPreference.formatList(newList))
         }
     }
-
     val lazyListState = rememberLazyListState()
     val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
         val fromKey = from.key as? String ?: return@rememberReorderableLazyListState
@@ -33,14 +28,11 @@ fun HomeFeaturesSelectionPage(navController: NavHostController) {
             persist(enabledIds.toMutableList().apply { add(toIdx, removeAt(fromIdx)) })
         }
     }
-
     val disabledItems = remember(enabledIds) {
         allFeatureItems.filter { it.type.name !in enabledIds }
     }
-
     var animateItems by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { delay(300); animateItems = true }
-
     PScaffold(
         topBar = {
             PTopAppBar(navController = navController, title = stringResource(Res.string.customize_home_features))
@@ -87,4 +79,3 @@ fun HomeFeaturesSelectionPage(navController: NavHostController) {
         },
     )
 }
-

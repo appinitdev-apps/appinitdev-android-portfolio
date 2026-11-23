@@ -1,10 +1,4 @@
-
- 
-
-
-
 class ErrorActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityErrorBinding.inflate(layoutInflater)
@@ -16,7 +10,6 @@ class ErrorActivity : AppCompatActivity() {
                     CustomActivityOnCrash.getConfigFromIntent(intent)!!,
                 )
             }
-
             val stackTrace = CustomActivityOnCrash.getStackTraceFromIntent(intent)
             stackTrace?.let {
                 application.log(TAG, stackTrace = it)
@@ -25,7 +18,6 @@ class ErrorActivity : AppCompatActivity() {
             ReportButton.setOnClickListener { reportBug(stackTrace) }
         }
     }
-
     companion object {
         private const val TAG = "ErrorActivity"
     }

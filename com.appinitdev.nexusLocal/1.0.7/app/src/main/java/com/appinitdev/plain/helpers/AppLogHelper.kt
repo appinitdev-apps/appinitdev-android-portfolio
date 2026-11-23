@@ -1,31 +1,20 @@
-
 object AppLogHelper {
     private const val READ_BLOCK_SIZE = 65536  
-
-     
-
-
-
-
     fun getLogLines(file: File, offset: Int, limit: Int): List<String> {
         if (!file.exists() || file.length() == 0L || limit <= 0) return emptyList()
         val needed = offset + limit
         val collected = mutableListOf<String>()
-
         RandomAccessFile(file, "r").use { raf ->
             var readPos = raf.length()
             var tailBytes = ByteArray(0)
-
             while (readPos > 0 && collected.size < needed) {
                 val blockLen = minOf(READ_BLOCK_SIZE.toLong(), readPos).toInt()
                 readPos -= blockLen
                 raf.seek(readPos)
                 val block = ByteArray(blockLen)
                 raf.readFully(block)
-
                 val combined = block + tailBytes
                 var endIdx = combined.size
-
                 for (i in combined.size - 1 downTo 0) {
                     if (combined[i] == '\n'.code.toByte()) {
                         if (i + 1 < endIdx) {
@@ -38,25 +27,20 @@ object AppLogHelper {
                         endIdx = i
                     }
                 }
-
                 tailBytes = if (endIdx > 0) combined.copyOfRange(0, endIdx) else ByteArray(0)
             }
-
             if (collected.size < needed && tailBytes.isNotEmpty()) {
                 val line = String(tailBytes, Charsets.UTF_8).trimEnd('\r', '\n')
                 if (line.isNotEmpty()) collected.add(line)
             }
         }
-
         return collected.drop(offset).take(limit)
     }
-
     fun getFileSize(context: Context): Long {
         val dir = File(DiskLogFormatStrategy.getLogFolder(context))
         if (!dir.exists()) {
             return 0
         }
-
         var totalSize: Long = 0
         val files = dir.listFiles() ?: arrayOf()
         for (file in files) {
@@ -64,19 +48,16 @@ object AppLogHelper {
         }
         return totalSize
     }
-
     fun export(context: Context) {
         coMain {
             val logFolder = DiskLogFormatStrategy.getLogFolder(context)
             val logFolderFile = File(logFolder)
             val crashReportFile = File(context.filesDir, "crash_report.txt")
             val crashLogFile = File(context.filesDir, "crash_log.txt")
-
             if (!logFolderFile.exists() && !crashReportFile.exists() && !crashLogFile.exists()) {
                 DialogHelper.showMessage(Res.string.no_logs_error)
                 return@coMain
             }
-
             DialogHelper.showLoading()
             val zipFile = File(context.cacheDir.absolutePath + "/logs.zip")
             val sourcePaths = buildList {
@@ -95,7 +76,6 @@ object AppLogHelper {
             share(context, zipFile)
         }
     }
-
     private fun share(
         context: Context,
         file: File,
@@ -111,7 +91,6 @@ object AppLogHelper {
         chooserIntent.putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, ShareHelper.getExcludeComponentNames(context).toTypedArray())
         context.startActivity(chooserIntent)
     }
-
     fun buildDeviceInfoText(): String {
         val appVersion = MainApp.getAppVersion()
         return buildString {

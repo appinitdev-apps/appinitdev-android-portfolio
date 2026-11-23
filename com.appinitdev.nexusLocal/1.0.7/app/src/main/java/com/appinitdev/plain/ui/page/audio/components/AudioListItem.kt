@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AudioListItem(
@@ -15,18 +14,15 @@ fun AudioListItem(
     val castPlaying by CastPlayer.isPlaying.collectAsState()
     val isCurrentlyPlayingByCast = currentUri == item.path && castPlaying
     val isCurrentItemLoading = castVM.isLoading.value && currentUri == item.path
-
     val rotation by animateFloatAsState(
         targetValue = if (animatingButton) 90f else 0f,
         animationSpec = tween(durationMillis = 400), label = "icon_rotation"
     )
     val iconResource = if (isInPlaylist) Res.drawable.playlist_remove else Res.drawable.playlist_add
     val iconColor = if (isInPlaylist) MaterialTheme.colorScheme.red else MaterialTheme.colorScheme.primary
-
     val selected = remember(item.id, dragSelectState.selectedIds, audioVM.selectedItem.value) {
         dragSelectState.isSelected(item.id) || audioVM.selectedItem.value?.id == item.id
     }
-
     Surface(
         modifier = PlainTheme.getCardModifier(selected = selected)
             .combinedClickable(

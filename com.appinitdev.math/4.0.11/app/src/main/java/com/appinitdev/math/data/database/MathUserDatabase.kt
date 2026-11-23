@@ -1,14 +1,10 @@
-
 class MathUserDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-
     companion object {
         private const val DATABASE_NAME = "math_user_study.db"
         private const val DATABASE_VERSION = 2
-
         private const val TABLE_FLASHCARDS = "user_flashcards"
         private const val TABLE_GLOSSARY = "user_glossary"
     }
-
     override fun onCreate(db: SQLiteDatabase) {
         val createFlashcardsTable = """
             CREATE TABLE $TABLE_FLASHCARDS (
@@ -21,7 +17,6 @@ class MathUserDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
                 is_favorite INTEGER DEFAULT 0
             );
         """.trimIndent()
-
         val createGlossaryTable = """
             CREATE TABLE $TABLE_GLOSSARY (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,18 +28,14 @@ class MathUserDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
                 is_favorite INTEGER DEFAULT 0
             );
         """.trimIndent()
-
         db.execSQL(createFlashcardsTable)
         db.execSQL(createGlossaryTable)
     }
-
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS $TABLE_FLASHCARDS")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_GLOSSARY")
         onCreate(db)
     }
-
-    
     fun insertFlashcard(card: Flashcard): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
@@ -59,13 +50,11 @@ class MathUserDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         db.close()
         return id
     }
-
     fun deleteFlashcard(id: Long) {
         val db = writableDatabase
         db.delete(TABLE_FLASHCARDS, "id = ?", arrayOf(id.toString()))
         db.close()
     }
-
     fun toggleFlashcardFavorite(id: Long, currentFav: Boolean) {
         val db = writableDatabase
         val values = ContentValues().apply {
@@ -74,12 +63,10 @@ class MathUserDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         db.update(TABLE_FLASHCARDS, values, "id = ?", arrayOf(id.toString()))
         db.close()
     }
-
     fun getUserFlashcards(): List<Flashcard> {
         val list = mutableListOf<Flashcard>()
         val db = readableDatabase
         val cursor = db.rawQuery("SELECT * FROM $TABLE_FLASHCARDS ORDER BY id DESC", null)
-
         if (cursor.moveToFirst()) {
             do {
                 val id = cursor.getLong(cursor.getColumnIndexOrThrow("id"))
@@ -89,7 +76,6 @@ class MathUserDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
                 val formulaLatex = cursor.getString(cursor.getColumnIndexOrThrow("formula_latex"))
                 val explanation = cursor.getString(cursor.getColumnIndexOrThrow("explanation"))
                 val isFav = cursor.getInt(cursor.getColumnIndexOrThrow("is_favorite")) == 1
-
                 list.add(
                     Flashcard(
                         id = id,
@@ -107,8 +93,6 @@ class MathUserDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         db.close()
         return list
     }
-
-    
     fun insertGlossaryTerm(term: SymbolItem): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
@@ -123,13 +107,11 @@ class MathUserDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         db.close()
         return id
     }
-
     fun deleteGlossaryTerm(id: Long) {
         val db = writableDatabase
         db.delete(TABLE_GLOSSARY, "id = ?", arrayOf(id.toString()))
         db.close()
     }
-
     fun toggleGlossaryFavorite(id: Long, currentFav: Boolean) {
         val db = writableDatabase
         val values = ContentValues().apply {
@@ -138,12 +120,10 @@ class MathUserDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         db.update(TABLE_GLOSSARY, values, "id = ?", arrayOf(id.toString()))
         db.close()
     }
-
     fun getUserGlossaryTerms(): List<SymbolItem> {
         val list = mutableListOf<SymbolItem>()
         val db = readableDatabase
         val cursor = db.rawQuery("SELECT * FROM $TABLE_GLOSSARY ORDER BY id DESC", null)
-
         if (cursor.moveToFirst()) {
             do {
                 val id = cursor.getLong(cursor.getColumnIndexOrThrow("id"))
@@ -153,7 +133,6 @@ class MathUserDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
                 val description = cursor.getString(cursor.getColumnIndexOrThrow("description"))
                 val example = cursor.getString(cursor.getColumnIndexOrThrow("example"))
                 val isFav = cursor.getInt(cursor.getColumnIndexOrThrow("is_favorite")) == 1
-
                 list.add(
                     SymbolItem(
                         id = id,

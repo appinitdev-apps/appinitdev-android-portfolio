@@ -1,4 +1,3 @@
-
 @Composable
 internal fun ChatImageItem(
     context: Context,
@@ -17,13 +16,11 @@ internal fun ChatImageItem(
     val downloadProgress = downloadTask?.let {
         if (it.messageFile.size > 0) it.downloadedSize.toFloat() / it.messageFile.size.toFloat() else 0f
     } ?: 0f
-
     LaunchedEffect(item.uri) {
         if (isRemoteFile && downloadTask == null && peer != null) {
             DownloadQueue.addDownloadTask(item, peer, messageId)
         }
     }
-
     Box(
         modifier = Modifier.clickable {
             if (taskActive) return@clickable
@@ -46,7 +43,6 @@ internal fun ChatImageItem(
             widthPx = imageWidthPx,
             forceVideoDecoder = item.fileName.isVideoFast() && !item.isRemoteFile(),
         )
-
         if (taskActive) {
             DownloadProgressOverlay(
                 modifier = Modifier.size(imageWidthDp),
@@ -57,7 +53,6 @@ internal fun ChatImageItem(
                 onCancel = { DownloadQueue.removeDownload(item.id) },
             )
         }
-
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)

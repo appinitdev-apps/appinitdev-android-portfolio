@@ -1,4 +1,3 @@
-
 @Composable
 fun WebAddressBarQrDialog(
     url: String,

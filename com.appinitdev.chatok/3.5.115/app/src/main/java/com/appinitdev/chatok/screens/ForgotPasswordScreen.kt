@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForgotPasswordScreen(
@@ -9,16 +8,13 @@ fun ForgotPasswordScreen(
     var message by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    
     val brush = Brush.linearGradient(
         listOf(
             Color(0xFF238CDD),
             Color(0xFF1952C4)
         )
     )
-    
     val lottieComp by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.animation1))
-
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             modifier = Modifier.fillMaxSize(),
@@ -26,9 +22,7 @@ fun ForgotPasswordScreen(
             painter = painterResource(R.drawable.login_blur),
             contentDescription = null
         )
-        
         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)))
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -38,7 +32,6 @@ fun ForgotPasswordScreen(
             verticalArrangement = Arrangement.Top
         ) {
             Spacer(modifier = Modifier.height(40.dp))
-            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -47,17 +40,13 @@ fun ForgotPasswordScreen(
                     Icon(Icons.Default.ArrowBackIosNew, contentDescription = null, tint = Color.White)
                 }
             }
-
             Spacer(modifier = Modifier.height(20.dp))
-
             LottieAnimation(
                 composition = lottieComp,
                 iterations = LottieConstants.IterateForever,
                 modifier = Modifier.size(150.dp)
             )
-
             Spacer(modifier = Modifier.height(24.dp))
-
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -80,18 +69,14 @@ fun ForgotPasswordScreen(
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
-                    
                     Spacer(modifier = Modifier.height(16.dp))
-                    
                     Text(
                         text = stringResource(id = R.string.si_el_correo_es_v_lido_recibir_s_un_enlace_de_recuperaci_n),
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.Gray,
                         textAlign = TextAlign.Center
                     )
-
                     Spacer(modifier = Modifier.height(24.dp))
-
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
@@ -105,7 +90,6 @@ fun ForgotPasswordScreen(
                             unfocusedBorderColor = Color.Gray
                         )
                     )
-
                     if (message.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
@@ -115,9 +99,7 @@ fun ForgotPasswordScreen(
                             textAlign = TextAlign.Center
                         )
                     }
-
                     Spacer(modifier = Modifier.height(32.dp))
-
                     MainGradientButton(
                         text = stringResource(R.string.enviar_enlace_de_recuperaci_n),
                         onClick = {
@@ -137,9 +119,7 @@ fun ForgotPasswordScreen(
                     )
                 }
             }
-            
             Spacer(modifier = Modifier.height(24.dp))
-            
             TextButton(onClick = { navController.popBackStack() }) {
                 Text(
                     text = stringResource(R.string.volver_al_inicio_de_sesi_n),
@@ -147,7 +127,6 @@ fun ForgotPasswordScreen(
                     fontWeight = FontWeight.Bold
                 )
             }
-            
             Spacer(modifier = Modifier.weight(1f))
             AdBanner()
             Spacer(modifier = Modifier.height(16.dp))

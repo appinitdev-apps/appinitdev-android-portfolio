@@ -1,7 +1,5 @@
-
 class EvernoteImporter : ExternalImporter {
     private val serializer: Serializer = Persister(AnnotationStrategy())
-
     override fun import(
         app: Application,
         source: Uri,
@@ -17,7 +15,6 @@ class EvernoteImporter : ExternalImporter {
         }
         val evernoteExport: EvernoteExport =
             parseExport(app.contentResolver.openInputStream(source)!!)!!
-
         val total = evernoteExport.notes.size
         progress?.postValue(ImportProgress(total = total))
         var counter = 1
@@ -36,14 +33,12 @@ class EvernoteImporter : ExternalImporter {
             throw ImportException(R.string.invalid_evernote, e)
         }
     }
-
     fun parseExport(inputStream: InputStream): EvernoteExport? =
         try {
             serializer.read(EvernoteExport::class.java, inputStream)
         } catch (e: Exception) {
             throw ImportException(R.string.invalid_evernote, e)
         }
-
     private fun saveResourcesToFiles(
         app: Application,
         resources: Collection<EvernoteResource>,
@@ -70,10 +65,8 @@ class EvernoteImporter : ExternalImporter {
             )
         }
     }
-
     companion object {
         private const val TAG = "EvernoteImporter"
-
         fun parseTimestamp(timestamp: String): Long {
             val format = SimpleDateFormat(EVERNOTE_DATE_FORMAT, Locale.getDefault())
             format.timeZone = TimeZone.getTimeZone("UTC")
@@ -86,10 +79,8 @@ class EvernoteImporter : ExternalImporter {
         }
     }
 }
-
 private const val EVERNOTE_DATE_FORMAT = "yyyyMMdd'T'HHmmss'Z'"
 private const val EVERNOTE_NOTE_XML_TAG = "en-note"
-
 fun EvernoteNote.mapToBaseNote(): BaseNote {
     val (body, spans) =
         parseBodyAndSpansFromHtml(
@@ -104,12 +95,10 @@ fun EvernoteNote.mapToBaseNote(): BaseNote {
         resources.filterByMimeTypePrefix("audio").map {
             Audio(it.attributes!!.fileName, -1, System.currentTimeMillis())
         }
-
     return BaseNote(
         0L,
         type = if (tasks.isEmpty()) Type.NOTE else Type.LIST,
         folder = Folder.NOTES, 
-        
         color = BaseNote.COLOR_DEFAULT, 
         title = title,
         pinned = false, 
@@ -126,23 +115,19 @@ fun EvernoteNote.mapToBaseNote(): BaseNote {
         NoteViewMode.EDIT,
     )
 }
-
 fun Collection<EvernoteResource>.filterByMimeTypePrefix(
     mimeTypePrefix: String
 ): List<EvernoteResource> {
     return filter { it.mime.startsWith(mimeTypePrefix) }
 }
-
 fun Collection<EvernoteResource>.filterByExcludedMimeTypePrefixes(
     vararg mimeTypePrefix: String
 ): List<EvernoteResource> {
     return filter { !it.mime.startsWithAnyOf(*mimeTypePrefix) }
 }
-
 fun Collection<EvernoteResource>.toFileAttachments(): List<FileAttachment> {
     return map { FileAttachment(it.attributes!!.fileName, it.attributes.fileName, it.mime) }
 }
-
 fun Collection<EvernoteTask>.mapToListItem(): List<ListItem> {
     return sortedBy { it.sortWeight }
         .mapIndexed { index, evernoteTask ->

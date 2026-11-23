@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class, ExperimentalFoundationApi::class, FlowPreview::class)
 @Composable
 fun MdEditor(
@@ -11,7 +10,6 @@ fun MdEditor(
 ) {
     val lineNumberState = rememberScrollState()
     var lineCount by remember { mutableIntStateOf(0) }
-
     LaunchedEffect(Unit) {
         snapshotFlow { scrollState.value }
             .debounce(10)
@@ -19,14 +17,12 @@ fun MdEditor(
                 lineNumberState.scrollTo(value)
             }
     }
-
     LaunchedEffect(shouldRequestFocus) {
         if (shouldRequestFocus) {
             focusRequester.requestFocus()
             onFocusRequested()
         }
     }
-
     Box(
         modifier = modifier
             .fillMaxSize()

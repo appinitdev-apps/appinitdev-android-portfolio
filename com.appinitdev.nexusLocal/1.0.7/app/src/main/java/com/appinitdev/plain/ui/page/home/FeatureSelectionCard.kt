@@ -1,4 +1,3 @@
-
 @Composable
 internal fun ReorderableCollectionItemScope.EnabledFeatureCard(
     feature: FeatureItem,
@@ -50,7 +49,6 @@ internal fun ReorderableCollectionItemScope.EnabledFeatureCard(
         }
     }
 }
-
 @Composable
 internal fun DisabledFeatureCard(
     feature: FeatureItem,
@@ -101,4 +99,3 @@ internal fun DisabledFeatureCard(
         }
     }
 }
-

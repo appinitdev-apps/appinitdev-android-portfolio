@@ -1,4 +1,3 @@
-
 data class Achievement(
     val id: Int,
     val title: String,
@@ -15,7 +14,6 @@ data class Achievement(
             saveProgress(context)
         }
     }
-
     private fun saveProgress(context: Context) {
         val sharedPreferences: SharedPreferences = context.getSharedPreferences("achievements", Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
@@ -23,21 +21,17 @@ data class Achievement(
             apply()
         }
     }
-
     fun loadProgress(context: Context) {
         val sharedPreferences: SharedPreferences = context.getSharedPreferences("achievements", Context.MODE_PRIVATE)
         progress = sharedPreferences.getInt("achievement_$id", 0)
     }
-
     fun isMaxProgressReached(): Boolean {
         return progress >= maxProgress
     }
-
     fun isToastShown(context: Context): Boolean {
         val sharedPreferences: SharedPreferences = context.getSharedPreferences("achievements", Context.MODE_PRIVATE)
         return sharedPreferences.getBoolean("achievement_toast_shown_$id", false)
     }
-
     fun markToastShown(context: Context) {
         val sharedPreferences: SharedPreferences = context.getSharedPreferences("achievements", Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {

@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ViewVideoBottomSheet(
@@ -16,7 +15,6 @@ fun ViewVideoBottomSheet(
     val viewSize by remember {
         mutableStateOf(m.getRotatedSize())
     }
-
     if (videosVM.showRenameDialog.value) {
         FileRenameDialog(path = m.path, onDismiss = {
             videosVM.showRenameDialog.value = false
@@ -25,7 +23,6 @@ fun ViewVideoBottomSheet(
             onDismiss()
         })
     }
-
     PModalBottomSheet(onDismissRequest = { onDismiss() }) {
         LazyColumn {
             item {
@@ -68,4 +65,3 @@ fun ViewVideoBottomSheet(
         }
     }
 }
-

@@ -1,4 +1,3 @@
-
 fun TextView.markdown(content: String, previewerState: MediaPreviewerState) {
     this.movementMethod = LinkMovementMethod.getInstance()
     val markdown = Markwon.builder(context)
@@ -61,28 +60,18 @@ fun TextView.markdown(content: String, previewerState: MediaPreviewerState) {
             },
         )
         .build()
-
     markdown.setMarkdown(this, content)
 }
-
 fun extractImageLinksFromHtml(htmlContent: String): List<String> {
     val imageLinks = mutableListOf<String>()
-
-    
     val doc = Jsoup.parse(htmlContent)
-
-    
     val imgTags = doc.select("img")
-
-    
     for (imgTag in imgTags) {
         val imageUrl = imgTag.attr("src")
         imageLinks.add(imageUrl)
     }
-
     return imageLinks
 }
-
 fun convertMarkdownToHtml(markdownText: String): String {
     val parser = Parser.builder().build()
     val renderer = HtmlRenderer.builder().build()

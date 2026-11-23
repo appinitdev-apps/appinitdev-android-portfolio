@@ -1,25 +1,17 @@
-
- 
-
-
-
 class AnimatedGifEncoder {
     private var width = 0
     private var height = 0
     private var delay = 200 
     private var repeat = 0  
     private var out: OutputStream? = null
-
     fun setDelay(ms: Int) {
         delay = ms
     }
-
     fun setFrameRate(fps: Float) {
         if (fps > 0f) {
             delay = (1000f / fps).toInt()
         }
     }
-
     fun start(os: OutputStream): Boolean {
         out = os
         return try {
@@ -29,7 +21,6 @@ class AnimatedGifEncoder {
             false
         }
     }
-
     fun addFrame(bitmap: Bitmap): Boolean {
         if (out == null || bitmap.isRecycled || bitmap.width <= 0 || bitmap.height <= 0) return false
         try {
@@ -43,7 +34,6 @@ class AnimatedGifEncoder {
                 writePalette()
                 writeNetscapeExt()
             }
-
             writeGraphicCtrlExt()
             writeImageDesc()
             writeFrameData(resized)
@@ -53,7 +43,6 @@ class AnimatedGifEncoder {
             return false
         }
     }
-
     fun finish(): Boolean {
         if (out == null) return false
         return try {
@@ -65,18 +54,15 @@ class AnimatedGifEncoder {
             false
         }
     }
-
     private fun writeString(s: String) {
         for (i in s.indices) {
             out?.write(s[i].code)
         }
     }
-
     private fun writeShort(value: Int) {
         out?.write(value and 0xFF)
         out?.write((value shr 8) and 0xFF)
     }
-
     private fun writeLSD() {
         writeShort(width)
         writeShort(height)
@@ -84,9 +70,7 @@ class AnimatedGifEncoder {
         out?.write(0)    
         out?.write(0)    
     }
-
     private fun writePalette() {
-        
         for (r in 0..5) {
             for (g in 0..5) {
                 for (b in 0..5) {
@@ -103,7 +87,6 @@ class AnimatedGifEncoder {
             out?.write(gray)
         }
     }
-
     private fun writeNetscapeExt() {
         out?.write(0x21) 
         out?.write(0xFF) 
@@ -114,7 +97,6 @@ class AnimatedGifEncoder {
         writeShort(repeat)
         out?.write(0)    
     }
-
     private fun writeGraphicCtrlExt() {
         out?.write(0x21) 
         out?.write(0xF9) 
@@ -124,7 +106,6 @@ class AnimatedGifEncoder {
         out?.write(0)    
         out?.write(0)    
     }
-
     private fun writeImageDesc() {
         out?.write(0x2C) 
         writeShort(0)    
@@ -133,14 +114,11 @@ class AnimatedGifEncoder {
         writeShort(height)
         out?.write(0)    
     }
-
     private fun writeFrameData(bitmap: Bitmap) {
         val pixels = IntArray(width * height)
         bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
-
         out?.write(8) 
         val uncompressed = ByteArray(width * height)
-
         for (i in pixels.indices) {
             val p = pixels[i]
             val r = ((p shr 16) and 0xFF) / 51
@@ -149,8 +127,6 @@ class AnimatedGifEncoder {
             val idx = (r * 36 + g * 6 + b).coerceIn(0, 255)
             uncompressed[i] = idx.toByte()
         }
-
-        
         var position = 0
         val total = uncompressed.size
         while (position < total) {

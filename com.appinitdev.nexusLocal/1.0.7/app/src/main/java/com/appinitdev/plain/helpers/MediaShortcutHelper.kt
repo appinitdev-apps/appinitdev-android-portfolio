@@ -1,4 +1,3 @@
-
 object MediaShortcutHelper {
     fun addToDesktop(context: Context, path: String, label: String, iconRes: Int) {
         if (!ShortcutManagerCompat.isRequestPinShortcutSupported(context)) {
@@ -18,9 +17,6 @@ object MediaShortcutHelper {
             .setIcon(IconCompat.createWithResource(context, iconRes))
             .setIntent(launchIntent)
             .build()
-
-        
-        
         val callbackIntent = Intent(context, MainActivity::class.java).apply {
             action = "${context.packageName}.action.SHORTCUT_PINNED"
             `package` = context.packageName
@@ -32,10 +28,7 @@ object MediaShortcutHelper {
             callbackIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-
         ShortcutManagerCompat.requestPinShortcut(context, shortcut, successCallback.intentSender)
-        
-        
         DialogHelper.showMessage(Res.string.shortcut_added_to_home)
     }
 }

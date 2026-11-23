@@ -1,4 +1,3 @@
-
 fun SchemaBuilder.addFeedSchema() {
     query("feeds") {
         resolver { ->

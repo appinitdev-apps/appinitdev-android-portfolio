@@ -1,31 +1,23 @@
-
 class BarcodeScannerActivity : AppCompatActivity() {
-    
     private lateinit var barcodeView: DecoratedBarcodeView
     private var isScanning = false
-    
     companion object {
         const val EXTRA_BARCODE_RESULT = "barcode_result"
         const val CAMERA_PERMISSION_REQUEST = 1001
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_barcode_scanner)
-        
         barcodeView = findViewById(R.id.barcode_scanner)
-        
         setupToolbar()
         checkCameraPermission()
     }
-
     private fun setupToolbar() {
         supportActionBar?.apply {
             title = getString(R.string.scan_barcode)
             setDisplayHomeAsUpEnabled(true)
         }
     }
-
     private fun checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) 
             != PackageManager.PERMISSION_GRANTED) {
@@ -38,7 +30,6 @@ class BarcodeScannerActivity : AppCompatActivity() {
             startScanning()
         }
     }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -57,7 +48,6 @@ class BarcodeScannerActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun startScanning() {
         barcodeView.decodeContinuous(object : BarcodeCallback {
             override fun barcodeResult(result: BarcodeResult?) {
@@ -66,22 +56,17 @@ class BarcodeScannerActivity : AppCompatActivity() {
                     handleBarcodeResult(result.text)
                 }
             }
-
             override fun possibleResultPoints(resultPoints: MutableList<com.google.zxing.ResultPoint>?) {
-                
             }
         })
     }
-
     private fun handleBarcodeResult(barcode: String) {
-        
         val resultIntent = Intent().apply {
             putExtra(EXTRA_BARCODE_RESULT, barcode)
         }
         setResult(RESULT_OK, resultIntent)
         finish()
     }
-
     override fun onResume() {
         super.onResume()
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) 
@@ -89,12 +74,10 @@ class BarcodeScannerActivity : AppCompatActivity() {
             barcodeView.resume()
         }
     }
-
     override fun onPause() {
         super.onPause()
         barcodeView.pause()
     }
-
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true

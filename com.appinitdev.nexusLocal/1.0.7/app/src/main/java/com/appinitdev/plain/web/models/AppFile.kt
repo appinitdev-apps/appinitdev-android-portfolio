@@ -1,4 +1,3 @@
-
 data class AppFile(
     val id: ID,
     val size: Long,
@@ -8,7 +7,6 @@ data class AppFile(
     val createdAt: Instant,
     val updatedAt: Instant,
 )
-
 fun DAppFile.toModel(fileName: String): AppFile {
     return AppFile(ID(id), size, mimeType, realPath, fileName, createdAt, updatedAt)
 }

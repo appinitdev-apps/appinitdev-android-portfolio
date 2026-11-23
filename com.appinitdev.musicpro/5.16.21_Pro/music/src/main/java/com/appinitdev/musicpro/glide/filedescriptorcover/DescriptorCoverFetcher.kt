@@ -1,9 +1,7 @@
-
 class DescriptorCoverFetcher(private val descriptorCoverModel: DescriptorCoverModel) : DataFetcher<InputStream> {
     override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in InputStream>) {
         val mediaMetadataRetriever = MediaMetadataRetriever()
         var file: AssetFileDescriptor? = null
-
         try {
             if (URLUtil.isValidUrl(descriptorCoverModel.fileUri.toString()) &&
                 (descriptorCoverModel.fileUri.toString().startsWith("http")
@@ -14,7 +12,6 @@ class DescriptorCoverFetcher(private val descriptorCoverModel: DescriptorCoverMo
                 file = descriptorCoverModel.context.contentResolver.openAssetFileDescriptor(descriptorCoverModel.fileUri, "r")
                 mediaMetadataRetriever.setDataSource(file?.fileDescriptor)
             }
-
             callback.onDataReady(ByteArrayInputStream(mediaMetadataRetriever.embeddedPicture))
         } catch (e: IOException) {
             callback.onLoadFailed(e)
@@ -30,19 +27,13 @@ class DescriptorCoverFetcher(private val descriptorCoverModel: DescriptorCoverMo
             file?.close()
         }
     }
-
     override fun cleanup() {
-         
     }
-
     override fun cancel() {
-         
     }
-
     override fun getDataClass(): Class<InputStream> {
         return InputStream::class.java
     }
-
     override fun getDataSource(): DataSource {
         return DataSource.LOCAL
     }

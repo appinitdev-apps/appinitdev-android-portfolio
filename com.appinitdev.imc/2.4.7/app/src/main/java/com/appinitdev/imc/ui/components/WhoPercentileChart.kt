@@ -1,12 +1,9 @@
-
 @Composable
 fun WhoPercentileChart(
     records: List<GrowthRecord>,
     modifier: Modifier = Modifier,
 ) {
     var selectedIndex by remember(records) { mutableStateOf<Int?>(null) }
-
-    
     val infiniteTransition = rememberInfiniteTransition(label = "PulseTransitionWHO")
     val pulseScale by infiniteTransition.animateFloat(
         initialValue = 1f,
@@ -26,9 +23,7 @@ fun WhoPercentileChart(
         ),
         label = "PulseAlphaWHO",
     )
-
     val textMeasurer = rememberTextMeasurer()
-
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(22.dp),
@@ -59,7 +54,6 @@ fun WhoPercentileChart(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-
                 Surface(
                     shape = RoundedCornerShape(10.dp),
                     color = MaterialTheme.colorScheme.primaryContainer,
@@ -73,8 +67,6 @@ fun WhoPercentileChart(
                     )
                 }
             }
-
-            
             val activeIndex = selectedIndex
             if (activeIndex != null && (activeIndex in records.indices)) {
                 val selRecord = records[activeIndex]
@@ -106,7 +98,6 @@ fun WhoPercentileChart(
                     }
                 }
             }
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -129,39 +120,29 @@ fun WhoPercentileChart(
                 ) {
                     val width = size.width
                     val height = size.height
-
-                    
                     val p97Y = height * 0.10f
                     val p85Y = height * 0.28f
                     val p50Y = height * 0.50f 
                     val p15Y = height * 0.72f
                     val p3Y = height * 0.90f
-
-                    
                     drawLine(color = Color(0xFFEF4444).copy(alpha = 0.5f), start = Offset(0f, p97Y), end = Offset(width, p97Y), strokeWidth = 1.5.dp.toPx())
                     drawLine(color = Color(0xFFF59E0B).copy(alpha = 0.5f), start = Offset(0f, p85Y), end = Offset(width, p85Y), strokeWidth = 1.5.dp.toPx())
                     drawLine(color = Color(0xFF10B981), start = Offset(0f, p50Y), end = Offset(width, p50Y), strokeWidth = 2.5.dp.toPx()) 
                     drawLine(color = Color(0xFFF59E0B).copy(alpha = 0.5f), start = Offset(0f, p15Y), end = Offset(width, p15Y), strokeWidth = 1.5.dp.toPx())
                     drawLine(color = Color(0xFFEF4444).copy(alpha = 0.5f), start = Offset(0f, p3Y), end = Offset(width, p3Y), strokeWidth = 1.5.dp.toPx())
-
-                    
                     if (records.isNotEmpty()) {
                         val weights = records.map { it.weightKg.toFloat() }
                         val minW = weights.minOrNull() ?: 0f
                         val maxW = weights.maxOrNull() ?: 10f
                         val rangeW = (maxW - minW).coerceAtLeast(1f)
-
                         val childPoints = mutableListOf<Offset>()
                         val stepX = width / records.size.coerceAtLeast(1)
-
                         for (i in records.indices) {
                             val x = (i + 0.5f) * stepX
                             val normY = (records[i].weightKg.toFloat() - minW) / rangeW
                             val y = height - (normY * (height * 0.70f)) - (height * 0.15f)
                             childPoints.add(Offset(x, y))
                         }
-
-                        
                         val childPath = Path().apply {
                             if (childPoints.isNotEmpty()) {
                                 moveTo(childPoints.first().x, childPoints.first().y)
@@ -170,14 +151,11 @@ fun WhoPercentileChart(
                                 }
                             }
                         }
-
                         drawPath(
                             path = childPath,
                             color = Color(0xFF0288D1),
                             style = Stroke(width = 3.8.dp.toPx(), cap = StrokeCap.Round),
                         )
-
-                        
                         if (childPoints.isNotEmpty()) {
                             val lastPoint = childPoints.last()
                             drawCircle(
@@ -186,17 +164,14 @@ fun WhoPercentileChart(
                                 center = lastPoint,
                             )
                         }
-
                         val labelStyle = TextStyle(
                             fontSize = 9.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF0288D1),
                         )
-
                         for (i in childPoints.indices) {
                             val p = childPoints[i]
                             val isSelected = (i == activeIndex)
-
                             if (isSelected) {
                                 drawLine(
                                     color = Color(0xFF0288D1).copy(alpha = 0.4f),
@@ -210,10 +185,8 @@ fun WhoPercentileChart(
                                     center = p,
                                 )
                             }
-
                             drawCircle(color = Color.White, radius = if (isSelected) 8.dp.toPx() else 6.dp.toPx(), center = p)
                             drawCircle(color = if (isSelected) Color(0xFFFF9800) else Color(0xFF0288D1), radius = if (isSelected) 5.dp.toPx() else 4.dp.toPx(), center = p)
-
                             if (records.size <= 8 || isSelected || i == 0 || i == childPoints.lastIndex) {
                                 val valueText = String.format(Locale.US, "%.1f", records[i].weightKg)
                                 val textLayoutResult = textMeasurer.measure(
@@ -222,7 +195,6 @@ fun WhoPercentileChart(
                                 )
                                 val labelX = (p.x - textLayoutResult.size.width / 2f).coerceIn(0f, width - textLayoutResult.size.width)
                                 val labelY = (p.y - 18.dp.toPx()).coerceAtLeast(0f)
-
                                 drawText(
                                     textLayoutResult = textLayoutResult,
                                     topLeft = Offset(labelX, labelY),
@@ -231,8 +203,6 @@ fun WhoPercentileChart(
                         }
                     }
                 }
-
-                
                 Column(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)

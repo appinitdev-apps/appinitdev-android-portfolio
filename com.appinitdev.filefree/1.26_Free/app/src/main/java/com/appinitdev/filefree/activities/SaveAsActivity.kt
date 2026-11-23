@@ -1,13 +1,10 @@
-
 class SaveAsActivity : SimpleActivity() {
     private val binding by viewBinding(ActivitySaveAsBinding::inflate)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         tryInitFileManager()
     }
-
     private fun tryInitFileManager() {
         handleStoragePermission { granted ->
             if (granted) {
@@ -18,7 +15,6 @@ class SaveAsActivity : SimpleActivity() {
             }
         }
     }
-
     private fun saveAsDialog() {
         if (intent.action == Intent.ACTION_SEND && intent.extras?.containsKey(Intent.EXTRA_STREAM) == true) {
             FilePickerDialog(this, pickFile = false, showHidden = config.shouldShowHidden(), showFAB = true, showFavoritesButton = true) {
@@ -35,7 +31,6 @@ class SaveAsActivity : SimpleActivity() {
                                     File(destination).mkdirs()
                                 }
                             }
-
                             val source = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)!!
                             val originalFilename = getFilenameFromContentUri(source)
                                 ?: source.toString().getFilenameFromPath()
@@ -44,7 +39,6 @@ class SaveAsActivity : SimpleActivity() {
                                 ?: intent.type?.takeIf { it != "*/*" }
                                 ?: filename.getMimeType()
                             val inputStream = contentResolver.openInputStream(source)
-
                             val destinationPath = "$destination/$filename"
                             val outputStream = getFileOutputStreamSync(destinationPath, mimeType, null)!!
                             inputStream!!.copyTo(outputStream)
@@ -63,12 +57,10 @@ class SaveAsActivity : SimpleActivity() {
             finish()
         }
     }
-
     override fun onResume() {
         super.onResume()
         setupToolbar(binding.activitySaveAsToolbar, NavigationIcon.Arrow)
     }
-
     private fun sanitizeFilename(filename: String): String {
         return filename.replace("[/\\\\<>:\"|?*\u0000-\u001F]".toRegex(), "_")
             .takeIf { it.isNotBlank() } ?: "unnamed_file"

@@ -1,9 +1,3 @@
-
- 
-
-
-
-
 abstract class BasePreference<T>(
     private val sharedPreferences: SharedPreferences,
     protected val defaultValue: T,
@@ -11,7 +5,6 @@ abstract class BasePreference<T>(
 ) {
     private var data: NotNullLiveData<T>? = null
     private var cachedValue: T? = null
-
     val value: T
         get() {
             if (cachedValue == null) {
@@ -19,88 +12,67 @@ abstract class BasePreference<T>(
             }
             return cachedValue!!
         }
-
     protected abstract fun getValue(sharedPreferences: SharedPreferences): T
-
     private fun getData(): NotNullLiveData<T> {
         if (data == null) {
             data = NotNullLiveData(value)
         }
         return data as NotNullLiveData<T>
     }
-
     internal fun save(value: T) {
         sharedPreferences.edit(true) { put(value) }
         cachedValue = value
         getData().postValue(value)
     }
-
     protected abstract fun SharedPreferences.Editor.put(value: T)
-
     fun observe(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
         getData().observe(lifecycleOwner, observer)
     }
-
     fun <C> merge(other: BasePreference<C>): MediatorLiveData<Pair<T, C>> {
         return getData().merge(other.getData())
     }
-
     fun <C> merge(other: LiveData<C>): MediatorLiveData<Pair<T, C?>> {
         return getData().merge(other)
     }
-
     fun <C> merge(other: NotNullLiveData<C>): MediatorLiveData<Pair<T, C>> {
         return getData().merge(other)
     }
-
     fun observeForever(observer: Observer<T>) {
         getData().observeForever(observer)
     }
-
     fun removeObserver(observer: Observer<T>) {
         getData().removeObserver(observer)
     }
-
     fun removeObservers(lifecycleOwner: LifecycleOwner) {
         getData().removeObservers(lifecycleOwner)
     }
-
     fun observeForeverWithPrevious(observer: Observer<Pair<T?, T>>) {
         val mediator = MediatorLiveData<Pair<T?, T>>()
         var previousValue: T? = null
-
         mediator.addSource(getData()) { currentValue ->
             mediator.value = Pair(previousValue, currentValue!!)
             previousValue = currentValue
         }
-
         mediator.observeForever(observer)
     }
-
     fun refresh() {
         cachedValue = null
         getData().postValue(value)
     }
-
     fun getFreshValue() = getValue(sharedPreferences)
 }
-
 fun <T> BasePreference<T>.observeForeverSkipFirst(observer: Observer<T>) {
     this.observeForever(createObserverSkipFirst(observer))
 }
-
 interface TextProvider {
     fun getText(context: Context): String
 }
-
 interface StaticTextProvider : TextProvider {
     val textResId: Int
-
     override fun getText(context: Context): String {
         return context.getString(textResId)
     }
 }
-
 class EnumPreference<T>(
     sharedPreferences: SharedPreferences,
     val key: String,
@@ -110,7 +82,6 @@ class EnumPreference<T>(
 ) : BasePreference<T>(sharedPreferences, defaultValue, titleResId) where
 T : Enum<T>,
 T : TextProvider {
-
     override fun getValue(sharedPreferences: SharedPreferences): T {
         val storedValue = sharedPreferences.getString(key, null)
         return try {
@@ -120,28 +91,23 @@ T : TextProvider {
             defaultValue
         }
     }
-
     override fun SharedPreferences.Editor.put(value: T) {
         putString(key, value.name.toCamelCase())
     }
 }
-
 class StringSetPreference(
     private val key: String,
     sharedPreferences: SharedPreferences,
     defaultValue: Set<String>,
     titleResId: Int? = null,
 ) : BasePreference<Set<String>>(sharedPreferences, defaultValue, titleResId) {
-
     override fun getValue(sharedPreferences: SharedPreferences): Set<String> {
         return sharedPreferences.getStringSet(key, defaultValue)!!
     }
-
     override fun SharedPreferences.Editor.put(value: Set<String>) {
         putStringSet(key, value)
     }
 }
-
 inline fun <reified T> createEnumPreference(
     sharedPreferences: SharedPreferences,
     key: String,
@@ -150,7 +116,6 @@ inline fun <reified T> createEnumPreference(
 ): EnumPreference<T> where T : Enum<T>, T : TextProvider {
     return EnumPreference(sharedPreferences, key, defaultValue, T::class.java, titleResId)
 }
-
 class IntPreference(
     val key: String,
     sharedPreferences: SharedPreferences,
@@ -159,91 +124,73 @@ class IntPreference(
     val max: Int,
     titleResId: Int? = null,
 ) : BasePreference<Int>(sharedPreferences, defaultValue, titleResId) {
-
     override fun getValue(sharedPreferences: SharedPreferences): Int {
         return sharedPreferences.getInt(key, defaultValue)
     }
-
     override fun SharedPreferences.Editor.put(value: Int) {
         putInt(key, value)
     }
 }
-
 class LongPreference(val key: String, sharedPreferences: SharedPreferences, defaultValue: Long) :
     BasePreference<Long>(sharedPreferences, defaultValue) {
-
     override fun getValue(sharedPreferences: SharedPreferences): Long {
         return sharedPreferences.getLong(key, defaultValue)
     }
-
     override fun SharedPreferences.Editor.put(value: Long) {
         putLong(key, value)
     }
 }
-
 class StringPreference(
     private val key: String,
     sharedPreferences: SharedPreferences,
     defaultValue: String,
     titleResId: Int? = null,
 ) : BasePreference<String>(sharedPreferences, defaultValue, titleResId) {
-
     override fun getValue(sharedPreferences: SharedPreferences): String {
         return sharedPreferences.getString(key, defaultValue)!!
     }
-
     override fun SharedPreferences.Editor.put(value: String) {
         putString(key, value)
     }
 }
-
 class BooleanPreference(
     private val key: String,
     sharedPreferences: SharedPreferences,
     defaultValue: Boolean,
     titleResId: Int? = null,
 ) : BasePreference<Boolean>(sharedPreferences, defaultValue, titleResId) {
-
     override fun getValue(sharedPreferences: SharedPreferences): Boolean {
         return sharedPreferences.getBoolean(key, defaultValue)
     }
-
     override fun SharedPreferences.Editor.put(value: Boolean) {
         putBoolean(key, value)
     }
 }
-
 class ByteArrayPreference(
     val key: String,
     sharedPreferences: SharedPreferences,
     defaultValue: ByteArray?,
     titleResId: Int? = null,
 ) : BasePreference<ByteArray?>(sharedPreferences, defaultValue, titleResId) {
-
     override fun getValue(sharedPreferences: SharedPreferences): ByteArray? {
         return sharedPreferences.getString(key, null)?.toPreservedByteArray ?: defaultValue
     }
-
     override fun SharedPreferences.Editor.put(value: ByteArray?) {
         putString(key, value?.toPreservedString)
     }
 }
-
 class EncryptedPassphrasePreference(
     val key: String,
     sharedPreferences: SharedPreferences,
     defaultValue: ByteArray,
     titleResId: Int? = null,
 ) : BasePreference<ByteArray>(sharedPreferences, defaultValue, titleResId) {
-
     override fun getValue(sharedPreferences: SharedPreferences): ByteArray {
         return sharedPreferences.getString(key, null)?.toPreservedByteArray ?: defaultValue
     }
-
     override fun SharedPreferences.Editor.put(value: ByteArray) {
         putString(key, value.toPreservedString)
     }
-
     fun init(cipher: Cipher): ByteArray {
         val random =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -252,36 +199,28 @@ class EncryptedPassphrasePreference(
                 SecureRandom()
             }
         val result = ByteArray(64)
-
         random.nextBytes(result)
-
-        
         while (result.contains(0)) {
             random.nextBytes(result)
         }
-
         val encryptedPassphrase = cipher.doFinal(result)
         save(encryptedPassphrase)
         return result
     }
 }
-
 enum class NotesView(override val textResId: Int) : StaticTextProvider {
     LIST(R.string.list),
     GRID(R.string.grid),
 }
-
 enum class Theme(override val textResId: Int) : StaticTextProvider {
     DARK(R.string.dark),
     LIGHT(R.string.light),
     FOLLOW_SYSTEM(R.string.follow_system),
 }
-
 enum class DateFormat : TextProvider {
     NONE,
     RELATIVE,
     ABSOLUTE;
-
     override fun getText(context: Context): String {
         val date = Date(System.currentTimeMillis() - 86400000)
         return when (this) {
@@ -291,12 +230,10 @@ enum class DateFormat : TextProvider {
         }
     }
 }
-
 enum class TextSize(override val textResId: Int) : StaticTextProvider {
     SMALL(R.string.small),
     MEDIUM(R.string.medium),
     LARGE(R.string.large);
-
     val editBodySize: Float
         get() {
             return when (this) {
@@ -305,7 +242,6 @@ enum class TextSize(override val textResId: Int) : StaticTextProvider {
                 LARGE -> 18f
             }
         }
-
     val editTitleSize: Float
         get() {
             return when (this) {
@@ -314,7 +250,6 @@ enum class TextSize(override val textResId: Int) : StaticTextProvider {
                 LARGE -> 22f
             }
         }
-
     val displayBodySize: Float
         get() {
             return when (this) {
@@ -323,7 +258,6 @@ enum class TextSize(override val textResId: Int) : StaticTextProvider {
                 LARGE -> 16f
             }
         }
-
     val displayTitleSize: Float
         get() {
             return when (this) {
@@ -333,17 +267,14 @@ enum class TextSize(override val textResId: Int) : StaticTextProvider {
             }
         }
 }
-
 enum class ListItemSort(override val textResId: Int) : StaticTextProvider {
     NO_AUTO_SORT(R.string.no_auto_sort),
     AUTO_SORT_BY_CHECKED(R.string.auto_sort_by_checked),
 }
-
 enum class BiometricLock(override val textResId: Int) : StaticTextProvider {
     ENABLED(R.string.enabled),
     DISABLED(R.string.disabled),
 }
-
 object Constants {
     const val PASSWORD_EMPTY = ""
 }

@@ -1,5 +1,4 @@
 @file:OptIn(ExperimentalToolkitApi::class)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignInScreen(
@@ -9,7 +8,6 @@ fun SignInScreen(
     navController: NavController,
 ) {
     var selectedImageUri by remember { mutableStateOf("https://appinitdev-android.web.app/Therian/user1.png") }
-
     val defaultAvatars = listOf(
         "https://appinitdev-android.web.app/Therian/user1.png",
         "https://appinitdev-android.web.app/Therian/user2.png",
@@ -21,7 +19,6 @@ fun SignInScreen(
         "https://appinitdev-android.web.app/Therian/user8.png",
         "https://appinitdev-android.web.app/Therian/user9.png",
     )
-
     var passwordVisible by remember { mutableStateOf(false) }
     var passwordVisibleOne by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
@@ -56,16 +53,13 @@ fun SignInScreen(
     var instagram by remember { mutableStateOf("") }
     var facebook by remember { mutableStateOf("") }
     var telegram by remember { mutableStateOf("") }
-
     val brush = Brush.linearGradient(
         listOf(
             Color(0xFF238CDD),
             Color(0xFF1952C4)
         )
     )
-    
     val lottieComp by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.animation1))
-
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             modifier = Modifier.fillMaxSize(),
@@ -73,9 +67,7 @@ fun SignInScreen(
             painter = painterResource(R.drawable.login_blur),
             contentDescription = null
         )
-        
         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)))
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -84,19 +76,16 @@ fun SignInScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.height(60.dp))
-            
             LottieAnimation(
                 composition = lottieComp,
                 iterations = LottieConstants.IterateForever,
                 modifier = Modifier.size(120.dp)
             )
-
             Text(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.ExtraBold),
                 color = Color.White
             )
-            
             Text(
                 modifier = Modifier.padding(horizontal = 32.dp),
                 text = stringResource(R.string.sum_rgete_y_con_ctate_con_amigos_comparte_historias_y_descubre_nuevas_perspectivas),
@@ -104,9 +93,7 @@ fun SignInScreen(
                 textAlign = TextAlign.Center, 
                 color = Color.White.copy(alpha = 0.8f)
             )
-
             Spacer(Modifier.height(32.dp))
-
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -129,10 +116,7 @@ fun SignInScreen(
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
-                    
                     Spacer(Modifier.height(24.dp))
-
-                    
                     OutlinedTextField(
                         value = email,
                         textStyle = TextStyle(color = Color.White),
@@ -149,10 +133,7 @@ fun SignInScreen(
                         ),
                         keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.None)
                     )
-
                     Spacer(Modifier.height(12.dp))
-
-                    
                     OutlinedTextField(
                         value = password,
                         textStyle = TextStyle(color = Color.White),
@@ -178,7 +159,6 @@ fun SignInScreen(
                         ),
                         isError = errorMessage.isNotEmpty()
                     )
-
                     if (!isSignIn) {
                         Spacer(Modifier.height(12.dp))
                         OutlinedTextField(
@@ -204,7 +184,6 @@ fun SignInScreen(
                                 unfocusedBorderColor = Color.Gray
                             )
                         )
-
                         Spacer(Modifier.height(12.dp))
                         OutlinedTextField(
                             value = username,
@@ -219,18 +198,14 @@ fun SignInScreen(
                                 unfocusedBorderColor = Color.Gray
                             )
                         )
-                        
                         Spacer(Modifier.height(20.dp))
-                        
                         Text(
                             text = stringResource(R.string.selecciona_tu_avatar),
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.White,
                             modifier = Modifier.align(Alignment.Start)
                         )
-                        
                         Spacer(Modifier.height(8.dp))
-                        
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -258,7 +233,6 @@ fun SignInScreen(
                                 }
                             }
                         }
-
                         Spacer(Modifier.height(12.dp))
                         OutlinedTextField(
                             value = age,
@@ -282,11 +256,9 @@ fun SignInScreen(
                             ),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
-
                         if (ageError.isNotEmpty()) {
                             Text(text = ageError, color = Color.Red, style = MaterialTheme.typography.bodySmall)
                         }
-
                         Spacer(Modifier.height(12.dp))
                         Box(modifier = Modifier.fillMaxWidth()) {
                             OutlinedTextField(
@@ -323,10 +295,8 @@ fun SignInScreen(
                                 }
                             }
                         }
-
                         Spacer(Modifier.height(16.dp))
                         Text(stringResource(R.string.redes_sociales_opcional), color = Color.LightGray, style = MaterialTheme.typography.bodySmall)
-                        
                         OutlinedTextField(
                             value = instagram,
                             textStyle = TextStyle(color = Color.White),
@@ -337,7 +307,6 @@ fun SignInScreen(
                             shape = RoundedCornerShape(16.dp),
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color(0xFF238CDD), unfocusedBorderColor = Color.Gray)
                         )
-                        
                         OutlinedTextField(
                             value = facebook,
                             textStyle = TextStyle(color = Color.White),
@@ -348,7 +317,6 @@ fun SignInScreen(
                             shape = RoundedCornerShape(16.dp),
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color(0xFF238CDD), unfocusedBorderColor = Color.Gray)
                         )
-                        
                         OutlinedTextField(
                             value = telegram,
                             textStyle = TextStyle(color = Color.White),
@@ -359,9 +327,7 @@ fun SignInScreen(
                             shape = RoundedCornerShape(16.dp),
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color(0xFF238CDD), unfocusedBorderColor = Color.Gray)
                         )
-
                         Spacer(modifier = Modifier.height(20.dp))
-
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -388,14 +354,11 @@ fun SignInScreen(
                             )
                         }
                     }
-
                     if (errorMessage.isNotEmpty()) {
                         Spacer(Modifier.height(12.dp))
                         Text(text = errorMessage, color = Color(0xFFFF5252), style = MaterialTheme.typography.bodyMedium)
                     }
-
                     Spacer(Modifier.height(32.dp))
-
                     MainGradientButton(
                         text = if (isSignIn) stringResource(R.string.iniciar_sesi_nw) else stringResource(R.string.registrarsew),
                         onClick = {
@@ -427,9 +390,7 @@ fun SignInScreen(
                         modifier = Modifier.fillMaxWidth(),
                         isLoading = isLoading
                     )
-
                     Spacer(Modifier.height(16.dp))
-
                     TextButton(
                         onClick = {
                             isSignIn = !isSignIn
@@ -442,7 +403,6 @@ fun SignInScreen(
                             fontWeight = FontWeight.Bold
                         )
                     }
-
                     if (isSignIn) {
                         TextButton(onClick = { navController.navigate("forgot_password") }) {
                             Text(
@@ -454,7 +414,6 @@ fun SignInScreen(
                     }
                 }
             }
-            
             Spacer(Modifier.height(32.dp))
         }
     }

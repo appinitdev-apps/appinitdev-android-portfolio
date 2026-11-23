@@ -1,18 +1,14 @@
-
 fun programarNotificacionDiaria(context: Context) {
-
     val workRequest = PeriodicWorkRequestBuilder<DailyNotificationWorker>(
         1, TimeUnit.DAYS
     )
         .setInitialDelay(delayHastaHora(10), TimeUnit.MILLISECONDS).build()
-
     WorkManager.getInstance(context).enqueueUniquePeriodicWork(
         "daily_notification_work",
         ExistingPeriodicWorkPolicy.KEEP,
         workRequest
     )
 }
-
 fun delayHastaHora(hora: Int): Long {
     val ahora = Calendar.getInstance()
     val objetivo = Calendar.getInstance().apply {
@@ -23,7 +19,6 @@ fun delayHastaHora(hora: Int): Long {
     }
     return objetivo.timeInMillis - ahora.timeInMillis
 }
-
 fun solicitarPermisoNotificaciones(activity: Activity) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         if (ActivityCompat.checkSelfPermission(
@@ -39,5 +34,3 @@ fun solicitarPermisoNotificaciones(activity: Activity) {
         }
     }
 }
-
-

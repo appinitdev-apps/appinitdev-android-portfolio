@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SoundMeterPage(navController: NavHostController) {
@@ -16,9 +15,7 @@ fun SoundMeterPage(navController: NavHostController) {
     val decibelValueString by remember(decibel.floatValue) {
         derivedStateOf { if (decibel.floatValue > 0) decibelValueStrings.getOrNull((decibel.floatValue / 10).toInt() - 1) ?: "" else "" }
     }
-
     SoundMeterRecorder(audioRecord, isRunning, decibel, total, count, min, avg, max)
-
     PScaffold(topBar = {
         PTopAppBar(navController = navController,
             title = stringResource(Res.string.sound_meter), actions = {
@@ -72,7 +69,6 @@ fun SoundMeterPage(navController: NavHostController) {
             }
         }
     })
-
     if (decibelValuesDialogVisible.value) {
         AlertDialog(containerColor = MaterialTheme.colorScheme.surface,
             onDismissRequest = { decibelValuesDialogVisible.value = false },

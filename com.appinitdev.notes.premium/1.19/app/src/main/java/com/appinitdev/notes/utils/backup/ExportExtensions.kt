@@ -1,22 +1,17 @@
-
 private const val TAG = "ExportExtensions"
 private const val NOTIFICATION_CHANNEL_ID = "AutoBackups"
 private const val NOTIFICATION_ID = 123412
 private const val NOTALLYX_BACKUP_LOGS_FILE = "appinidev-backup-logs.txt"
 private const val OUTPUT_DATA_BACKUP_URI = "backupUri"
-
 const val AUTO_BACKUP_WORK_NAME = "com.appinitdev.notes.premium.AutoBackupWork"
 const val OUTPUT_DATA_EXCEPTION = "exception"
-
 private const val ON_SAVE_BACKUP_FILE = "appinitdev_AutoBackup.zip"
 private const val PERIODIC_BACKUP_FILE_PREFIX = "appinitdev_Backup_"
-
 fun ContextWrapper.createBackup(): Result {
     val app = applicationContext as Application
     val preferences = NotallyXPreferences.getInstance(app)
     val (_, maxBackups) = preferences.periodicBackups.value
     val path = preferences.backupsFolder.value
-
     if (path != EMPTY_PATH) {
         val uri = Uri.parse(path)
         val folder =
@@ -71,7 +66,6 @@ fun ContextWrapper.createBackup(): Result {
     }
     return Result.success()
 }
-
 fun ContextWrapper.autoBackupOnSave(backupPath: String, password: String, savedNote: BaseNote?) {
     val folder =
         requireBackupFolder(
@@ -126,7 +120,6 @@ fun ContextWrapper.autoBackupOnSave(backupPath: String, password: String, savedN
         tryPostErrorNotification(e)
     }
 }
-
 private fun ContextWrapper.requireBackupFolder(path: String, msg: String): DocumentFile? {
     return try {
         val folder = DocumentFile.fromTreeUri(this, path.toUri())!!
@@ -142,7 +135,6 @@ private fun ContextWrapper.requireBackupFolder(path: String, msg: String): Docum
         return null
     }
 }
-
 suspend fun ContextWrapper.checkBackupOnSave(
     preferences: NotallyXPreferences,
     note: BaseNote? = null,
@@ -160,17 +152,14 @@ suspend fun ContextWrapper.checkBackupOnSave(
         }
     }
 }
-
 fun ContextWrapper.deleteModifiedNoteBackup(backupPath: String) {
     DocumentFile.fromTreeUri(this, backupPath.toUri())?.findFile(ON_SAVE_BACKUP_FILE)?.delete()
 }
-
 fun ContextWrapper.modifiedNoteBackupExists(backupPath: String): Boolean {
     return DocumentFile.fromTreeUri(this, backupPath.toUri())
         ?.findFile(ON_SAVE_BACKUP_FILE)
         ?.exists() ?: false
 }
-
 fun ContextWrapper.exportAsZip(
     fileUri: Uri,
     compress: Boolean = false,
@@ -190,22 +179,18 @@ fun ContextWrapper.exportAsZip(
                 }
                 encryptionMethod = EncryptionMethod.AES
             }
-
         val (databaseOriginal, databaseCopy) = copyDatabase()
         zipFile.addFile(databaseCopy, zipParameters.copy(DATABASE_NAME))
         databaseCopy.delete()
-
         val imageRoot = getExternalImagesDirectory()
         val fileRoot = getExternalFilesDirectory()
         val audioRoot = getExternalAudioDirectory()
-
         val totalNotes = databaseOriginal.getBaseNoteDao().count()
         val images = databaseOriginal.getBaseNoteDao().getAllImages().toFileAttachments()
         val files = databaseOriginal.getBaseNoteDao().getAllFiles().toFileAttachments()
         val audios = databaseOriginal.getBaseNoteDao().getAllAudios()
         val totalAttachments = images.count() + files.count() + audios.size
         backupProgress?.postValue(Progress(0, totalAttachments))
-
         val counter = AtomicInteger(0)
         images.export(
             zipFile,
@@ -239,7 +224,6 @@ fun ContextWrapper.exportAsZip(
                     backupProgress?.postValue(Progress(counter.incrementAndGet(), totalAttachments))
                 }
             }
-
         zipFile.close()
         contentResolver.openOutputStream(fileUri)?.use { outputStream ->
             FileInputStream(zipFile.file).use { inputStream ->
@@ -254,7 +238,6 @@ fun ContextWrapper.exportAsZip(
         tempFile.delete()
     }
 }
-
 fun Context.exportToZip(
     zipUri: Uri,
     files: List<BackupFile>,
@@ -275,7 +258,6 @@ fun Context.exportToZip(
     }
     return true
 }
-
 private fun extractZipToDirectory(zipInputStream: InputStream, outputDir: File, password: String) {
     val tempZipFile = File.createTempFile("extractedZip", null, outputDir)
     try {
@@ -287,7 +269,6 @@ private fun extractZipToDirectory(zipInputStream: InputStream, outputDir: File, 
         tempZipFile.delete()
     }
 }
-
 private fun createZipFromDirectory(
     sourceDir: File,
     zipOutputStream: OutputStream,
@@ -314,24 +295,17 @@ private fun createZipFromDirectory(
         tempZipFile.delete()
     }
 }
-
 fun ContextWrapper.copyDatabase(): Pair<NotallyDatabase, File> {
     val database = NotallyDatabase.getDatabase(this, observePreferences = false).value
     database.checkpoint()
     val databaseFile = NotallyDatabase.getCurrentDatabaseFile(this)
     val dbFile = File(cacheDir, NotallyDatabase.DATABASE_NAME)
-
-    
     databaseFile.copyTo(dbFile, overwrite = true)
-
     return Pair(database, dbFile)
 }
-
-
 private fun List<String>.toFileAttachments(): Sequence<FileAttachment> {
     return asSequence().flatMap { string -> Converters.jsonToFiles(string) }
 }
-
 private fun Sequence<FileAttachment>.export(
     zipFile: ZipFile,
     zipParameters: ZipParameters,
@@ -352,18 +326,14 @@ private fun Sequence<FileAttachment>.export(
         }
     }
 }
-
 fun WorkInfo.PeriodicityInfo.isEqualTo(value: Long, unit: TimeUnit): Boolean {
     return repeatIntervalMillis == unit.toMillis(value)
 }
-
 fun List<WorkInfo>.containsNonCancelled(): Boolean = any { it.state != WorkInfo.State.CANCELLED }
-
 fun WorkManager.cancelAutoBackup() {
     Log.d(TAG, "Cancelling auto backup work")
     cancelUniqueWork(AUTO_BACKUP_WORK_NAME)
 }
-
 fun WorkManager.updateAutoBackup(workInfos: List<WorkInfo>, autoBackPeriodInDays: Long) {
     Log.d(TAG, "Updating auto backup schedule for period: $autoBackPeriodInDays days")
     val workInfoId = workInfos.first().id
@@ -377,7 +347,6 @@ fun WorkManager.updateAutoBackup(workInfos: List<WorkInfo>, autoBackPeriodInDays
             .build()
     updateWork(updatedWorkRequest)
 }
-
 fun WorkManager.scheduleAutoBackup(context: ContextWrapper, periodInDays: Long) {
     Log.d(TAG, "Scheduling auto backup for period: $periodInDays days")
     val request =
@@ -386,11 +355,9 @@ fun WorkManager.scheduleAutoBackup(context: ContextWrapper, periodInDays: Long) 
     try {
         enqueueUniquePeriodicWork(AUTO_BACKUP_WORK_NAME, ExistingPeriodicWorkPolicy.UPDATE, request)
     } catch (e: IllegalStateException) {
-        
         context.log(TAG, "Scheduling auto backup failed", throwable = e)
     }
 }
-
 private fun backupFile(
     zipFile: ZipFile,
     zipParameters: ZipParameters,
@@ -403,11 +370,9 @@ private fun backupFile(
         zipFile.addFile(file, zipParameters.copy("$folder/$name"))
     }
 }
-
 private fun ZipParameters.copy(fileNameInZip: String? = this.fileNameInZip): ZipParameters {
     return ZipParameters(this).apply { this@apply.fileNameInZip = fileNameInZip }
 }
-
 fun exportPdfFile(
     app: Context,
     note: BaseNote,
@@ -450,7 +415,6 @@ fun exportPdfFile(
                     )
                     pdfPrintListener?.onSuccess(file)
                 }
-
                 override fun onFailure(message: CharSequence?) {
                     pdfPrintListener?.onFailure(message)
                 }
@@ -458,7 +422,6 @@ fun exportPdfFile(
         )
     }
 }
-
 suspend fun exportPlainTextFile(
     app: Context,
     note: BaseNote,
@@ -493,13 +456,11 @@ suspend fun exportPlainTextFile(
                             when (exportType) {
                                 ExportMimeType.TXT ->
                                     note.toTxt(includeTitle = false, includeCreationDate = false)
-
                                 ExportMimeType.JSON -> note.toJson()
                                 ExportMimeType.HTML ->
                                     note.toHtml(
                                         NotallyXPreferences.getInstance(app).showDateCreated()
                                     )
-
                                 else -> TODO("Unsupported MimeType for Export")
                             }
                         )
@@ -511,7 +472,6 @@ suspend fun exportPlainTextFile(
         return@withContext file
     }
 }
-
 fun Context.exportPreferences(preferences: NotallyXPreferences, uri: Uri): Boolean {
     try {
         contentResolver.openOutputStream(uri)?.use {
@@ -527,7 +487,6 @@ fun Context.exportPreferences(preferences: NotallyXPreferences, uri: Uri): Boole
         return false
     }
 }
-
 private fun Context.tryPostErrorNotification(e: Throwable) {
     fun postErrorNotification(e: Throwable) {
         getSystemService<NotificationManager>()?.let { manager ->
@@ -589,7 +548,6 @@ private fun Context.tryPostErrorNotification(e: Throwable) {
         postErrorNotification(e)
     }
 }
-
 fun LockedActivity<*>.exportNotes(
     mimeType: ExportMimeType,
     notes: Collection<BaseNote>,
@@ -607,7 +565,6 @@ fun LockedActivity<*>.exportNotes(
                     DocumentFile.fromFile(getExportedPath()),
                     pdfPrintListener =
                         object : PdfPrintListener {
-
                             override fun onSuccess(file: DocumentFile) {
                                 showFileOptionsDialog(
                                     file,
@@ -615,7 +572,6 @@ fun LockedActivity<*>.exportNotes(
                                     saveFileResultLauncher,
                                 )
                             }
-
                             override fun onFailure(message: CharSequence?) {
                                 Toast.makeText(
                                         this@exportNotes,
@@ -652,7 +608,6 @@ fun LockedActivity<*>.exportNotes(
         }
     }
 }
-
 private fun LockedActivity<*>.showFileOptionsDialog(
     file: DocumentFile,
     mimeType: String,
@@ -663,7 +618,6 @@ private fun LockedActivity<*>.showFileOptionsDialog(
         .add(R.string.save_to_device) { saveFileToDevice(file, mimeType, resultLauncher) }
         .show()
 }
-
 private fun LockedActivity<*>.viewFile(uri: Uri, mimeType: String) {
     val intent =
         Intent(Intent.ACTION_VIEW)
@@ -674,7 +628,6 @@ private fun LockedActivity<*>.viewFile(uri: Uri, mimeType: String) {
             .wrapWithChooser(this)
     startActivity(intent)
 }
-
 private fun LockedActivity<*>.saveFileToDevice(
     file: DocumentFile,
     mimeType: String,

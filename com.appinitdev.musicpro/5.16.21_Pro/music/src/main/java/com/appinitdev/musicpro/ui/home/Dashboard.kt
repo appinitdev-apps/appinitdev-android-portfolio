@@ -1,79 +1,40 @@
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @AndroidEntryPoint
 class Dashboard : BaseHomeFragment() {
-
     private lateinit var binding: FragmentHomeDashboardBinding
-
     private val dashboardViewModel: DashboardViewModel by viewModels()
-
     private var recentlyPlayedAdapter: AdapterDashboardSongs? = null
     private var recentlyAddedAdapter: AdapterDashboardSongs? = null
     private var favoritesAdapter: AdapterDashboardSongs? = null
     private var topArtistsAdapter: AdapterDashboardArtists? = null
     private var topAlbumsAdapter: AdapterDashboardAlbums? = null
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentHomeDashboardBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.label.setAppLabel()
-
         binding.label.setOnClickListener {
             childFragmentManager.showAppLabel()
         }
-
         setupPanelsGrid()
         showMiniPlayer()
         setupHeader()
         setupCarouselSpacing()
         observeData()
-
         binding.scrollView.requireAttachedMiniPlayer()
-
         binding.settings.setOnClickListener {
             openPreferencesPanel()
         }
-
         binding.refreshRecommended.setOnClickListener {
             dashboardViewModel.refreshRecommended()
         }
     }
-
     private fun setupHeader() {
         binding.search.setOnClickListener {
             openSearch()
         }
-
         setupServerToggle(binding.serverToggle)
-
-        
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 ServerModeService.isRunning.collect { running ->
@@ -83,7 +44,6 @@ class Dashboard : BaseHomeFragment() {
             }
         }
     }
-
     private fun setupPanelsGrid() {
         val adapter = AdapterDashboardPanels(panels = dashboardViewModel.getVisiblePanelPanels())
         binding.panelsRecyclerView.layoutManager = FlexboxLayoutManager(requireContext()).apply {
@@ -98,7 +58,6 @@ class Dashboard : BaseHomeFragment() {
             }
         })
     }
-
     private fun setupCarouselSpacing() {
         val spacing = resources.getDimensionPixelSize(R.dimen.carousel_spacing)
         binding.recentlyPlayedList.addItemDecoration(LinearHorizontalSpacingDecoration(spacing))
@@ -107,49 +66,28 @@ class Dashboard : BaseHomeFragment() {
         binding.topArtistsList.addItemDecoration(LinearHorizontalSpacingDecoration(spacing))
         binding.topAlbumsList.addItemDecoration(LinearHorizontalSpacingDecoration(spacing))
     }
-
-     
-
-
-
-
-
-
-
-
-
     private fun setupRecommendedGrid(data: List<Audio>) {
         val spanConfig = dashboardViewModel.getSpanConfigForOrientation(resources.configuration.orientation)
-
         val layoutManager = SpannedGridLayoutManager(SpannedGridLayoutManager.Orientation.VERTICAL, spanConfig.spanCount)
         layoutManager.spanSizeLookup = SpannedGridLayoutManager.SpanSizeLookup { position ->
             if (position in spanConfig.bigCellPositions) SpanSize(2, 2) else SpanSize(1, 1)
         }
-
-        
         binding.recommendedGrid.layoutParams.height = dashboardViewModel.recommendedHeight.takeIf { it != -1 } ?: 0
-
-        
         val calculateAndSetHeight = {
             binding.recommendedGrid.post {
                 try {
                     val totalHeight = layoutManager.getTotalHeight() +
                             binding.recommendedGrid.paddingTop +
                             binding.recommendedGrid.paddingBottom
-
                     if (dashboardViewModel.recommendedHeight != totalHeight) {
                         binding.recommendedGrid.layoutParams.height = totalHeight
                         binding.recommendedGrid.requestLayout()
-
-                        
                         dashboardViewModel.recommendedHeight = totalHeight
                     }
                 } catch (_: UninitializedPropertyAccessException) {
-                    
                 }
             }
         }
-
         if (binding.recommendedGrid.adapter != null) {
             binding.recommendedGrid.animate()
                 .alpha(0f)
@@ -158,10 +96,7 @@ class Dashboard : BaseHomeFragment() {
                 .setDuration(300)
                 .withEndAction {
                     applyRecommendedAdapter(data, layoutManager)
-
-                    
                     calculateAndSetHeight()
-
                     binding.recommendedGrid.animate()
                         .alpha(1f)
                         .scaleX(1f)
@@ -171,25 +106,10 @@ class Dashboard : BaseHomeFragment() {
                 }.start()
         } else {
             applyRecommendedAdapter(data, layoutManager)
-
-            
             calculateAndSetHeight()
         }
-
-        
-        
-        
         binding.recommendedSection.visible(false)
     }
-
-     
-
-
-
-
-
-
-
     private fun applyRecommendedAdapter(data: List<Audio>, layoutManager: SpannedGridLayoutManager) {
         binding.recommendedGrid.adapter = null
         binding.recommendedGrid.layoutManager = layoutManager
@@ -197,18 +117,15 @@ class Dashboard : BaseHomeFragment() {
         val adapter = AdapterRecommended(data)
         binding.recommendedGrid.adapter = adapter
         binding.recommendedGrid.scheduleLayoutAnimation()
-
         adapter.setCallbacks(object : AdapterRecommendedCallbacks {
             override fun onItemClicked(items: List<Audio>, position: Int) {
                 setMediaItems(items, position)
             }
-
             override fun onItemLongClicked(items: List<Audio>, position: Int, imageView: ImageView) {
                 openSongsMenu(items, position, imageView)
             }
         })
     }
-
     private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -251,13 +168,6 @@ class Dashboard : BaseHomeFragment() {
             }
         }
     }
-
-     
-
-
-
-
-
     private fun updateLibraryStats(stats: LibraryStats?) {
         if (stats == null) return
         val formatter = NumberFormat.getNumberInstance()
@@ -267,7 +177,6 @@ class Dashboard : BaseHomeFragment() {
                 formatter.format(stats.totalHours)
         )
     }
-
     private fun updateRecentlyPlayed(songs: List<Audio>) {
         if (songs.isEmpty() || !UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_RECENTLY_PLAYED)) {
             binding.recentlyPlayedSection.gone()
@@ -280,7 +189,6 @@ class Dashboard : BaseHomeFragment() {
                 override fun onSongClicked(songs: MutableList<Audio>, position: Int) {
                     setMediaItems(songs, position)
                 }
-
                 override fun onSongLongClicked(songs: MutableList<Audio>, position: Int, imageView: ImageView) {
                     openSongsMenu(songs, position, imageView)
                 }
@@ -290,7 +198,6 @@ class Dashboard : BaseHomeFragment() {
             recentlyPlayedAdapter!!.updateData(songs)
         }
     }
-
     private fun updateRecentlyAdded(songs: List<Audio>) {
         if (songs.isEmpty() || !UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_RECENTLY_ADDED)) {
             binding.recentlyAddedSection.gone()
@@ -303,7 +210,6 @@ class Dashboard : BaseHomeFragment() {
                 override fun onSongClicked(songs: MutableList<Audio>, position: Int) {
                     setMediaItems(songs, position)
                 }
-
                 override fun onSongLongClicked(songs: MutableList<Audio>, position: Int, imageView: ImageView) {
                     openSongsMenu(songs, position, imageView)
                 }
@@ -313,7 +219,6 @@ class Dashboard : BaseHomeFragment() {
             recentlyAddedAdapter!!.updateData(songs)
         }
     }
-
     private fun updateFavorites(songs: List<Audio>) {
         if (songs.isEmpty() || !UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_FAVORITES)) {
             binding.favoritesSection.gone()
@@ -326,7 +231,6 @@ class Dashboard : BaseHomeFragment() {
                 override fun onSongClicked(songs: MutableList<Audio>, position: Int) {
                     setMediaItems(songs, position)
                 }
-
                 override fun onSongLongClicked(songs: MutableList<Audio>, position: Int, imageView: ImageView) {
                     openSongsMenu(songs, position, imageView)
                 }
@@ -336,13 +240,6 @@ class Dashboard : BaseHomeFragment() {
             favoritesAdapter!!.updateData(songs)
         }
     }
-
-     
-
-
-
-
-
     private fun updateTopArtists(artists: List<Artist>) {
         if (artists.isEmpty()) {
             binding.topArtistsSection.gone()
@@ -355,7 +252,6 @@ class Dashboard : BaseHomeFragment() {
                 override fun onArtistClicked(artist: Artist) {
                     openFragment(ArtistPage.newInstance(artist), ArtistPage.TAG)
                 }
-
                 override fun onArtistLongClicked(artist: Artist, imageView: ImageView) {
                     openArtistMenu(artist, imageView)
                 }
@@ -365,13 +261,6 @@ class Dashboard : BaseHomeFragment() {
             topArtistsAdapter!!.updateData(artists)
         }
     }
-
-     
-
-
-
-
-
     private fun updateTopAlbums(albums: List<Album>) {
         if (albums.isEmpty()) {
             binding.topAlbumsSection.gone()
@@ -384,7 +273,6 @@ class Dashboard : BaseHomeFragment() {
                 override fun onAlbumClicked(album: Album) {
                     openFragment(AlbumPage.newInstance(album), AlbumPage.TAG)
                 }
-
                 override fun onAlbumLongClicked(album: Album, imageView: ImageView) {
                     openAlbumMenu(album, imageView)
                 }
@@ -394,7 +282,6 @@ class Dashboard : BaseHomeFragment() {
             topAlbumsAdapter!!.updateData(albums)
         }
     }
-
     override fun onDestroyView() {
         recentlyPlayedAdapter = null
         recentlyAddedAdapter = null
@@ -403,68 +290,44 @@ class Dashboard : BaseHomeFragment() {
         topAlbumsAdapter = null
         super.onDestroyView()
     }
-
     override fun onAudio(audio: Audio) {
         super.onAudio(audio)
-        
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
             MainPreferences.APP_LABEL -> {
                 binding.label.setAppLabel()
             }
-            
-            
             in UserInterfacePreferences.ALL_PANEL_VISIBILITY_KEYS -> {
                 setupPanelsGrid()
-                
                 evaluateCarouselSections()
             }
         }
     }
-
-     
-
-
-
-
     private fun evaluateCarouselSections() {
         if (!UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_RECENTLY_PLAYED)) {
             binding.recentlyPlayedSection.gone()
         } else if ((recentlyPlayedAdapter?.itemCount ?: 0) > 0) {
             binding.recentlyPlayedSection.visible(false)
         }
-
         if (!UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_RECENTLY_ADDED)) {
             binding.recentlyAddedSection.gone()
         } else if ((recentlyAddedAdapter?.itemCount ?: 0) > 0) {
             binding.recentlyAddedSection.visible(false)
         }
-
         if (!UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_FAVORITES)) {
             binding.favoritesSection.gone()
         } else if ((favoritesAdapter?.itemCount ?: 0) > 0) {
             binding.favoritesSection.visible(false)
         }
     }
-
     override fun onResume() {
         super.onResume()
     }
-
     companion object {
-         
-
-
-
-
         fun newInstance(): Dashboard = Dashboard()
-
-         
         const val TAG = "Dashboard"
-
         private const val PANEL_SPAN_COUNT = 3
     }
 }

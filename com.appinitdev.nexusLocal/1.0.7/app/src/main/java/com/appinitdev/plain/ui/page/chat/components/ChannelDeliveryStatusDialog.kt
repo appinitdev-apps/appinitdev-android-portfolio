@@ -1,4 +1,3 @@
-
 @Composable
 fun ChannelDeliveryStatusDialog(
     statusData: DMessageStatusData,
@@ -10,7 +9,6 @@ fun ChannelDeliveryStatusDialog(
             addAll(statusData.failedResults.map { it.peerId })
         }
     }
-
     AlertDialog(
         modifier = Modifier.fillMaxWidth(),
         containerColor = MaterialTheme.colorScheme.surface,

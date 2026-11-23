@@ -1,16 +1,12 @@
-
 class ViewImageActivity : LockedActivity<ActivityViewImageBinding>() {
-
     private var currentImage: FileAttachment? = null
     private lateinit var deletedImages: ArrayList<FileAttachment>
     private lateinit var exportFileActivityResultLauncher: ActivityResultLauncher<Intent>
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityViewImageBinding.inflate(layoutInflater)
         setContentView(binding.root)
         configureEdgeToEdgeInsets()
-
         val savedList =
             savedInstanceState?.let {
                 BundleCompat.getParcelableArrayList(
@@ -20,11 +16,9 @@ class ViewImageActivity : LockedActivity<ActivityViewImageBinding>() {
                 )
             }
         deletedImages = savedList ?: ArrayList()
-
         val resultIntent = Intent()
         resultIntent.putExtra(EXTRA_DELETED_IMAGES, deletedImages)
         setResult(RESULT_OK, resultIntent)
-
         val savedImage =
             savedInstanceState?.let {
                 BundleCompat.getParcelable(it, CURRENT_IMAGE, FileAttachment::class.java)
@@ -32,34 +26,28 @@ class ViewImageActivity : LockedActivity<ActivityViewImageBinding>() {
         if (savedImage != null) {
             currentImage = savedImage
         }
-
         binding.MainListView.apply {
             setHasFixedSize(true)
             layoutManager =
                 LinearLayoutManager(this@ViewImageActivity, RecyclerView.HORIZONTAL, false)
             PagerSnapHelper().attachToRecyclerView(binding.MainListView)
         }
-
         val initial = intent.getIntExtra(EXTRA_POSITION, 0)
         binding.MainListView.scrollToPosition(initial)
-
         val database = NotallyDatabase.getDatabase(application)
         val id = intent.getLongExtra(EXTRA_SELECTED_BASE_NOTE, 0)
-
         database.observe(this@ViewImageActivity) {
             lifecycleScope.launch {
                 val json = withContext(Dispatchers.IO) { it.getBaseNoteDao().getImages(id) }
                 val original = Converters.jsonToFiles(json)
                 val images = ArrayList<FileAttachment>(original.size)
                 original.filterNotTo(images) { image -> deletedImages.contains(image) }
-
                 val mediaRoot = application.getExternalImagesDirectory()
                 val adapter = ImageAdapter(mediaRoot, images)
                 binding.MainListView.adapter = adapter
                 setupToolbar(binding, adapter)
             }
         }
-
         exportFileActivityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == RESULT_OK) {
@@ -67,25 +55,15 @@ class ViewImageActivity : LockedActivity<ActivityViewImageBinding>() {
                 }
             }
     }
-
     private fun configureEdgeToEdgeInsets() {
-        
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        
-        
-        
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
-
-            
             binding.Toolbar.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
                 requestLayout() 
             }
-            
-            
             binding.MainListView.apply {
                 setPadding(
                     paddingLeft,
@@ -97,7 +75,6 @@ class ViewImageActivity : LockedActivity<ActivityViewImageBinding>() {
             insets
         }
     }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.apply {
@@ -105,24 +82,19 @@ class ViewImageActivity : LockedActivity<ActivityViewImageBinding>() {
             putParcelableArrayList(EXTRA_DELETED_IMAGES, deletedImages)
         }
     }
-
     private fun setupToolbar(binding: ActivityViewImageBinding, adapter: ImageAdapter) {
         binding.Toolbar.setNavigationOnClickListener { finish() }
-
         val layoutManager = binding.MainListView.layoutManager as LinearLayoutManager
         adapter.registerAdapterDataObserver(
             object : RecyclerView.AdapterDataObserver() {
-
                 override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
                     val position = layoutManager.findFirstVisibleItemPosition()
                     binding.Toolbar.title = "${position + 1} / ${adapter.itemCount}"
                 }
             }
         )
-
         binding.MainListView.addOnScrollListener(
             object : RecyclerView.OnScrollListener() {
-
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     val position = layoutManager.findFirstVisibleItemPosition()
                     binding.Toolbar.title = "${position + 1} / ${adapter.itemCount}"
@@ -152,7 +124,6 @@ class ViewImageActivity : LockedActivity<ActivityViewImageBinding>() {
             }
         }
     }
-
     private fun share(image: FileAttachment) {
         val mediaRoot = application.getExternalImagesDirectory()
         val file = if (mediaRoot != null) File(mediaRoot, image.localName) else null
@@ -163,10 +134,6 @@ class ViewImageActivity : LockedActivity<ActivityViewImageBinding>() {
                     .apply {
                         type = image.mimeType
                         putExtra(Intent.EXTRA_STREAM, uri)
-
-                        
-                        
-                        
                         clipData = ClipData.newRawUri(null, uri)
                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     }
@@ -174,7 +141,6 @@ class ViewImageActivity : LockedActivity<ActivityViewImageBinding>() {
             startActivity(intent)
         }
     }
-
     private fun saveToDevice(image: FileAttachment) {
         val mediaRoot = application.getExternalImagesDirectory()
         val file = if (mediaRoot != null) File(mediaRoot, image.localName) else null
@@ -191,7 +157,6 @@ class ViewImageActivity : LockedActivity<ActivityViewImageBinding>() {
             exportFileActivityResultLauncher.launch(intent)
         }
     }
-
     private fun writeImageToUri(uri: Uri) {
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
@@ -212,7 +177,6 @@ class ViewImageActivity : LockedActivity<ActivityViewImageBinding>() {
                 .show()
         }
     }
-
     private fun delete(position: Int, adapter: ImageAdapter) {
         MaterialAlertDialogBuilder(this)
             .setMessage(R.string.delete_image_forever)
@@ -227,7 +191,6 @@ class ViewImageActivity : LockedActivity<ActivityViewImageBinding>() {
             }
             .show()
     }
-
     companion object {
         const val EXTRA_POSITION = "notes.intent.extra.POSITION"
         const val CURRENT_IMAGE = "CURRENT_IMAGE"

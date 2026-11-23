@@ -1,5 +1,3 @@
-
-
 class PdfDocumentAdapter(var context: Context, var path: String) : PrintDocumentAdapter() {
     override fun onLayout(
         oldAttributes: PrintAttributes,
@@ -16,7 +14,6 @@ class PdfDocumentAdapter(var context: Context, var path: String) : PrintDocument
             layoutResultCallback.onLayoutFinished(builder.build(), printAttributes != printAttributes)
         }
     }
-
     override fun onWrite(
         pages: Array<PageRange>,
         parcelFileDescriptor: ParcelFileDescriptor,
@@ -34,7 +31,6 @@ class PdfDocumentAdapter(var context: Context, var path: String) : PrintDocument
             while (inputStream.read(buff).also { size = it } >= 0 && !cancellationSignal.isCanceled) {
                 outputStream.write(buff, 0, size)
             }
-
             if (cancellationSignal.isCanceled) writeResultCallback.onWriteCancelled() else {
                 writeResultCallback.onWriteFinished(arrayOf(PageRange.ALL_PAGES))
             }

@@ -1,4 +1,3 @@
-
 @Keep
 data class AppModel(
     val id: String = "",
@@ -23,13 +22,11 @@ data class AppModel(
     val reputacion: Double = 0.0,
     val categoria: String = "Productividad", 
     val resenasProduccion: Map<String, ResenaProduccion> = emptyMap(),
-    
     val isBoosted: Boolean = false,
     val boostExpires: Long = 0L,
     val bugReports: List<BugReport> = emptyList(),
     val surveys: List<Survey> = emptyList(),
     val checklist: List<ChecklistItem> = emptyList(),
-    
     val contactoDirecto: String = "",
     val comunidadUrl: String = "",
     val cuentaPrueba: String = "",
@@ -39,23 +36,13 @@ data class AppModel(
 ){
     fun calcularReputacion(propietario: UserProfile?): Double {
         if (propietario == null) return 0.0
-
-        
         val scoreNivel = propietario.nivel
-
-        
-        
         val scorePuntos = (propietario.puntos.toDouble() / 200.0 * 5.0).coerceAtMost(5.0)
-
-        
         val scoreEstrellas = propietario.promedioEstrellas.toDouble()
-
-        
         val resultado = (scoreNivel * 0.4) + (scorePuntos * 0.3) + (scoreEstrellas * 0.3) + propietario.puntosExtra
         return resultado.coerceAtMost(5.0)
     }
 }
-
 @Keep
 data class TesterData(
     val idUser: String = "",
@@ -67,8 +54,6 @@ data class TesterData(
     val ultimaRevision: Long = 0L,
     val completado: Boolean = false
 )
-
-
 @Keep
 data class ResenaProduccion(
     val userId: String = "",
@@ -80,7 +65,6 @@ data class ResenaProduccion(
     val estado: String = "pendiente", 
     val fecha: Long = System.currentTimeMillis()
 )
-
 @Keep
 data class CategoriasApps(
     val aceptadas: List<AppModel> = emptyList(),
@@ -88,10 +72,8 @@ data class CategoriasApps(
     val pendientes: List<AppModel> = emptyList(),
     val rechazadas: List<AppModel> = emptyList(),
 ){
-    
     val total: Int get() = explorar.size + aceptadas.size + pendientes.size + rechazadas.size
 }
-
 object AppConstants {
     val CATEGORIAS = listOf(
         "Herramientas",
@@ -112,7 +94,6 @@ object AppConstants {
         "Otros"
     )
 }
-
 data class AppDraft(
     val nombre: String = "",
     val paquete: String = "",

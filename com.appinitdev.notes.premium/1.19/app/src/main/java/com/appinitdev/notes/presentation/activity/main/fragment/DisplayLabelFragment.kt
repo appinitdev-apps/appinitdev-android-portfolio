@@ -1,24 +1,17 @@
-
 class DisplayLabelFragment : NotallyFragment() {
-
     private lateinit var label: String
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         model.folder.value = Folder.NOTES
     }
-
     override fun getBackground() = R.drawable.label
-
     override fun getObservable(): LiveData<List<Item>> {
         label = requireNotNull(requireArguments().getString(EXTRA_DISPLAYED_LABEL))
         return model.getNotesByLabel(label)
     }
-
     override fun prepareNewNoteIntent(intent: Intent): Intent {
         return intent.putExtra(EXTRA_DISPLAYED_LABEL, label)
     }
-
     companion object {
         const val EXTRA_DISPLAYED_LABEL = "notes.intent.extra.DISPLAYED_LABEL"
     }

@@ -1,16 +1,10 @@
-
 class ProVersion(context : Context) {
-
     val PREFERENCE_NAME = "Pro_Preference"
     val PREFERENCE_VALUE = "Pro_Value"
-
     val preference = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
-
-    
     fun getValue() : Int{
         return preference.getInt (PREFERENCE_VALUE, 100) 
     }
-
     fun setValue(count:Int) {
         val valor =100
         val editor = preference.edit()

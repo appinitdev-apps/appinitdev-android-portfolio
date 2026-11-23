@@ -1,5 +1,3 @@
-
-
 @Composable
 fun NearbyDeviceItem(
     item: DNearbyDevice,
@@ -28,7 +26,6 @@ fun NearbyDeviceItem(
                             isLoading = true
                         )
                     }
-
                     isPaired -> {
                         POutlinedButton(
                             text = stringResource(Res.string.unpair),
@@ -37,7 +34,6 @@ fun NearbyDeviceItem(
                             buttonSize = ButtonSize.SMALL,
                         )
                     }
-
                     else -> {
                         POutlinedButton(
                             text = stringResource(Res.string.pair),
@@ -50,4 +46,3 @@ fun NearbyDeviceItem(
         )
     }
 }
-

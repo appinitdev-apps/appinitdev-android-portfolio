@@ -1,31 +1,24 @@
-
 interface IBTOperation {
     val device: BTDevice
-
     fun run()
 }
-
 data class BTOperationConnect(override val device: BTDevice) : IBTOperation {
     override fun run() {
         device.connect()
     }
-
     override fun toString(): String {
         return "BTOperationConnect: ${device.mac}"
     }
 }
-
 data class BTOperationDisconnect(override val device: BTDevice) : IBTOperation {
     override fun run() {
         device.disconnect()
         BluetoothUtil.signalEndOfOperation()
     }
-
     override fun toString(): String {
         return "BTOperationDisconnect: ${device.mac}"
     }
 }
-
 data class BTOperationCharacteristicWrite(
     override val device: BTDevice,
     val api: BluetoothApi,
@@ -36,12 +29,10 @@ data class BTOperationCharacteristicWrite(
             BluetoothUtil.signalEndOfOperation()
         }
     }
-
     override fun toString(): String {
         return "BTOperationCharacteristicWrite: ${device.mac}, ${api.charUUID}"
     }
 }
-
 data class BTOperationCharacteristicRead(
     override val device: BTDevice,
     val api: BluetoothApi,
@@ -51,12 +42,10 @@ data class BTOperationCharacteristicRead(
             BluetoothUtil.signalEndOfOperation()
         }
     }
-
     override fun toString(): String {
         return "BTOperationCharacteristicRead: ${device.mac}, ${api.charUUID}"
     }
 }
-
 data class BTOperationEnableNotifications(
     override val device: BTDevice,
     val api: BluetoothApi,
@@ -67,12 +56,10 @@ data class BTOperationEnableNotifications(
             BluetoothUtil.signalEndOfOperation()
         }
     }
-
     override fun toString(): String {
         return "BTOperationEnableNotifications: ${device.mac}, ${api.charUUID}, $enable"
     }
 }
-
 data class BTOperationMtuRequest(
     override val device: BTDevice,
     val mtu: Int,
@@ -80,7 +67,6 @@ data class BTOperationMtuRequest(
     override fun run() {
         device.bluetoothGatt?.requestMtu(mtu)
     }
-
     override fun toString(): String {
         return "BTOperationMtuRequest: ${device.mac}, $mtu"
     }

@@ -1,68 +1,44 @@
-
- 
-
-
-
-
-
-
-
 @AndroidEntryPoint
 class RecentlyPlayed : BasePanelFragment() {
-
     private lateinit var binding: FragmentRecentlyPlayedBinding
     private lateinit var headerBinding: HeaderRecentlyPlayedBinding
-
     private var adapterSongs: AdapterRecentlyPlayed? = null
-
     private val recentlyPlayedViewModel: RecentlyPlayedViewModel by viewModels({ requireActivity() })
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentRecentlyPlayedBinding.inflate(inflater, container, false)
         headerBinding = HeaderRecentlyPlayedBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.recyclerView.requireAttachedMiniPlayer()
         binding.recyclerView.attachSlideFastScroller()
         binding.appHeader.setContentView(headerBinding.root)
         binding.appHeader.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
-
         binding.recyclerView.setupGridLayoutManager(RecentlyPlayedPreferences.getGridSize().spanCount)
-
         setupClickListeners()
-
         recentlyPlayedViewModel.songs.collectListWhenStarted({ adapterSongs != null }) { songs ->
             updateSongsList(songs)
         }
     }
-
     override fun onDestroyView() {
         adapterSongs = null
         super.onDestroyView()
     }
-
     override fun getShuffleButton(): HighlightTextView {
         return headerBinding.shuffle
     }
-
     private fun setupClickListeners() {
         headerBinding.search.setOnClickListener {
             openSearch()
         }
-
         headerBinding.menu.setOnClickListener {
             openPreferencesPanel()
         }
-
         headerBinding.listStyle.setOnClickListener {
             childFragmentManager.showListStyleDialog(GenericListStyleDialog.Companion.PANEL.RECENTLY_PLAYED)
         }
     }
-
     private fun updateSongsList(songs: List<AudioWithStat>) {
         if (adapterSongs == null) {
             adapterSongs = AdapterRecentlyPlayed(initial = songs)
@@ -71,7 +47,6 @@ class RecentlyPlayed : BasePanelFragment() {
                 override fun onSongClicked(songs: MutableList<Audio>, position: Int, view: View) {
                     setMediaItems(songs, position)
                 }
-
                 override fun onSongLongClicked(audios: MutableList<Audio>, position: Int, imageView: ImageView?) {
                     openSongsMenu(audios, position, imageView)
                 }
@@ -83,10 +58,8 @@ class RecentlyPlayed : BasePanelFragment() {
                 binding.recyclerView.adapter = adapterSongs
             }
         }
-
         headerBinding.count.text = getString(R.string.x_songs, songs.size)
         headerBinding.hours.text = songs.sumOf { it.audio.duration }.toDynamicTimeString()
-
         headerBinding.hours.setOnClickListener {
             childFragmentManager.showTotalTime(
                     totalTime = songs.sumOf { it.audio.duration },
@@ -94,7 +67,6 @@ class RecentlyPlayed : BasePanelFragment() {
             )
         }
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -105,7 +77,6 @@ class RecentlyPlayed : BasePanelFragment() {
             }
         }
     }
-
     companion object {
         fun newInstance(): RecentlyPlayed {
             val args = Bundle()
@@ -113,7 +84,6 @@ class RecentlyPlayed : BasePanelFragment() {
             fragment.arguments = args
             return fragment
         }
-
         const val TAG = "RecentlyPlayed"
     }
 }

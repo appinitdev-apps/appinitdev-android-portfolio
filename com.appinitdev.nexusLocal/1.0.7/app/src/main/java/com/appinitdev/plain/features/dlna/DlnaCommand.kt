@@ -1,4 +1,3 @@
-
 sealed class DlnaCommand {
     data class SetUri(val uri: String, val title: String = "", val mediaType: DlnaMediaType = DlnaMediaType.UNKNOWN, val albumArtUri: String = "") : DlnaCommand()
     data object Play : DlnaCommand()

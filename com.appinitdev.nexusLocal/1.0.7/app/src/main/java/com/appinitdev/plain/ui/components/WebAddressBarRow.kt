@@ -1,4 +1,3 @@
-
 @Composable
 fun WebAddressBarRow(
     url: String,

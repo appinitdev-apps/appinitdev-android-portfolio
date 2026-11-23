@@ -1,5 +1,3 @@
-
-
 @Serializable
 data class FileIdParams(
     val path: String = "",

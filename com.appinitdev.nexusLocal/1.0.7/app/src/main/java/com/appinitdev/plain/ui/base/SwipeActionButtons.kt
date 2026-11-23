@@ -1,4 +1,3 @@
-
 @Composable
 fun SwipeActionButton(text: String, color: Color, onClick: () -> Unit) {
     TextButton(

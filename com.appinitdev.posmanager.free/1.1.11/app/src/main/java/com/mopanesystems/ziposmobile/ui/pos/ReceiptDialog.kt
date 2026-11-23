@@ -1,4 +1,3 @@
-
 @Composable
 fun ReceiptDialog(
     pdfPath: String?,
@@ -23,8 +22,6 @@ fun ReceiptDialog(
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-
-                
                 val bitmap = remember(pdfPath) { pdfToBitmap(File(pdfPath)) }
                 bitmap?.let {
                     Image(
@@ -37,9 +34,7 @@ fun ReceiptDialog(
                             .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
                     )
                 }
-
                 Spacer(modifier = Modifier.height(12.dp))
-
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     IconButton(
                         onClick = { sharePdf(File(pdfPath), context) },
@@ -52,7 +47,6 @@ fun ReceiptDialog(
                             modifier = Modifier.size(28.dp)
                         )
                     }
-
                     IconButton(
                         onClick = { printPdf(File(pdfPath), context) },
                         modifier = Modifier.weight(1f)
@@ -64,7 +58,6 @@ fun ReceiptDialog(
                             modifier = Modifier.size(28.dp)
                         )
                     }
-
                     IconButton(onClick = onDismiss, modifier = Modifier.weight(1f) ) {
                         Icon(
                             imageVector = Icons.Default.Check,
@@ -79,21 +72,15 @@ fun ReceiptDialog(
         }
     }
 }
-
 fun printPdf(file: File, context: Context) {
     val printManager = context.getSystemService(Context.PRINT_SERVICE) as android.print.PrintManager
     val printAdapter = PdfDocumentAdapter(context, file)
-
-    
     val attributes = PrintAttributes.Builder()
         .setMediaSize(PrintAttributes.MediaSize("CUSTOM", "TICKET", 165, 5000)) 
         .setMinMargins(PrintAttributes.Margins.NO_MARGINS)
         .build()
-
     printManager.print("Receipt", printAdapter, attributes)
 }
-
-
 fun sharePdf(file: File, context: Context) {
     val uri = androidx.core.content.FileProvider.getUriForFile(
         context,
@@ -107,8 +94,6 @@ fun sharePdf(file: File, context: Context) {
     }
     context.startActivity(Intent.createChooser(intent, "Share Receipt"))
 }
-
-
 fun pdfToBitmap(file: File): Bitmap? {
     return try {
         val renderer = android.graphics.pdf.PdfRenderer(
@@ -133,4 +118,3 @@ fun pdfToBitmap(file: File): Bitmap? {
         null
     }
 }
-

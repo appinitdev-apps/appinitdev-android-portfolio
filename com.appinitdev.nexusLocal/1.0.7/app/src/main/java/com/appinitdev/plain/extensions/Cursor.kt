@@ -1,4 +1,3 @@
-
 fun Cursor.toFile(cache: MutableMap<String, Int>): DFile {
     val id = getStringValue(MediaStore.Files.FileColumns._ID, cache)
     val title = getStringValue(MediaStore.Files.FileColumns.DISPLAY_NAME, cache)

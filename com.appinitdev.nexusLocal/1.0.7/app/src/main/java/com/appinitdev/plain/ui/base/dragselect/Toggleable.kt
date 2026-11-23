@@ -1,4 +1,3 @@
-
 fun Modifier.dragSelectToggleable(
     state: DragSelectState,
     id: String,
@@ -10,7 +9,6 @@ fun Modifier.dragSelectToggleable(
 ) { _ ->
     state.select(id)
 }
-
 fun Modifier.dragSelectToggleable(
     inSelectionMode: Boolean,
     selected: Boolean,

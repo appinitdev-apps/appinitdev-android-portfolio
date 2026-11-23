@@ -1,4 +1,3 @@
-
 object PrintHelper {
     fun printText(context: Context, textMeasurer: TextMeasurer, jobName: String, content: String) {
         val printManager = context.getSystemService(Context.PRINT_SERVICE) as? PrintManager ?: return

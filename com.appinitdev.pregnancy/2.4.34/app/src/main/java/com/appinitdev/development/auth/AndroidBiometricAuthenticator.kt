@@ -1,4 +1,3 @@
-
 class AndroidBiometricAuthenticator(private val activity: FragmentActivity) : BiometricAuthenticator {
     override fun authenticate(
         title: String,
@@ -13,27 +12,22 @@ class AndroidBiometricAuthenticator(private val activity: FragmentActivity) : Bi
                     super.onAuthenticationError(errorCode, errString)
                     onError(errString.toString())
                 }
-
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
                     onSuccess()
                 }
-
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
                     onError("Authentication failed")
                 }
             })
-
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle(title)
             .setSubtitle(subtitle)
             .setNegativeButtonText(activity.getString(com.appinitdev.development.R.string.cancel))
             .build()
-
         biometricPrompt.authenticate(promptInfo)
     }
-
     override fun canAuthenticate(): Boolean {
         val biometricManager = androidx.biometric.BiometricManager.from(activity)
         return biometricManager.canAuthenticate(

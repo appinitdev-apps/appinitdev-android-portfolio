@@ -1,4 +1,3 @@
-
 @OptIn(UnstableApi::class)
 @Composable
 fun DlnaReceiverAudioPlayer(vm: DlnaReceiverViewModel, onExit: () -> Unit) {
@@ -11,9 +10,7 @@ fun DlnaReceiverAudioPlayer(vm: DlnaReceiverViewModel, onExit: () -> Unit) {
     val seekTargetMs by DlnaRendererState.seekTargetMs.collectAsState()
     val positionMs by DlnaRendererState.currentPositionMs.collectAsState()
     val durationMs by DlnaRendererState.durationMs.collectAsState()
-
     val player = rememberVideoPlayer(context)
-
     LaunchedEffect(mediaUri) {
         if (mediaUri.isNotEmpty()) {
             player.playWhenReady = false
@@ -35,7 +32,6 @@ fun DlnaReceiverAudioPlayer(vm: DlnaReceiverViewModel, onExit: () -> Unit) {
         context.findActivity().setFullScreen(true)
         onDispose { context.findActivity().setFullScreen(false); player.stop(); player.release() }
     }
-
     val gradient = Brush.verticalGradient(listOf(Color(0xFF1A1A2E), Color(0xFF16213E), Color(0xFF0F3460)))
     Box(
         modifier = Modifier.fillMaxSize().background(gradient),
@@ -113,5 +109,3 @@ fun DlnaReceiverAudioPlayer(vm: DlnaReceiverViewModel, onExit: () -> Unit) {
         }
     }
 }
-
-

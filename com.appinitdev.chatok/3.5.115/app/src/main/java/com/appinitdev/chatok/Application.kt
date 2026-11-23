@@ -1,4 +1,3 @@
-
 @UnstableApi
 class BaseApplication : Application(), ImageLoaderFactory {
     companion object {
@@ -14,8 +13,6 @@ class BaseApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        
-        
         val settings = firestoreSettings {
             setLocalCacheSettings(
                 persistentCacheSettings {
@@ -24,12 +21,10 @@ class BaseApplication : Application(), ImageLoaderFactory {
             )
         }
         FirebaseFirestore.getInstance().firestoreSettings = settings
-
         database = AppDatabase.getDatabase(this)
         leastRecentlyUsedCacheEvictor = LeastRecentlyUsedCacheEvictor(exoPlayerCacheSize)
         databaseProvider = StandaloneDatabaseProvider(this)
         simpleCache = SimpleCache(cacheDir.resolve("video_cache"), leastRecentlyUsedCacheEvictor, databaseProvider)}
-
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(this)
             .components {

@@ -1,9 +1,7 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StoreScreen(navController: NavController, viewModel: ChatViewModel, state: AppState) {
     val activity = LocalContext.current as com.appinitdev.chatok.MainActivity
-    
     Scaffold(
         topBar = {
             TopAppBar(
@@ -25,7 +23,6 @@ fun StoreScreen(navController: NavController, viewModel: ChatViewModel, state: A
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
-            
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
@@ -52,10 +49,7 @@ fun StoreScreen(navController: NavController, viewModel: ChatViewModel, state: A
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(32.dp))
-
-            
             Text(
                 text = stringResource(R.string.suscripcion_vip),
                 color = Color(0xFFFF71FF),
@@ -63,16 +57,12 @@ fun StoreScreen(navController: NavController, viewModel: ChatViewModel, state: A
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(start = 8.dp, bottom = 16.dp)
             )
-
             VipCard(
                 title = stringResource(R.string.vip_days, 30),
                 price = stringResource(R.string.monedas_count, 50),
                 onClick = { viewModel.buyVip(30, 50) }
             )
-
             Spacer(modifier = Modifier.height(32.dp))
-
-            
             Text(
                 text = stringResource(R.string.paquetes_monedas),
                 color = Color(0xFF238CDD),
@@ -80,7 +70,6 @@ fun StoreScreen(navController: NavController, viewModel: ChatViewModel, state: A
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(start = 8.dp, bottom = 16.dp)
             )
-
             CoinPack(
                 amount = stringResource(R.string.monedas_count, 100),
                 price = "$0.99",
@@ -99,7 +88,6 @@ fun StoreScreen(navController: NavController, viewModel: ChatViewModel, state: A
         }
     }
 }
-
 @Composable
 fun VipCard(title: String, price: String, onClick: () -> Unit) {
     Card(
@@ -131,7 +119,6 @@ fun VipCard(title: String, price: String, onClick: () -> Unit) {
         }
     }
 }
-
 @Composable
 fun CoinPack(amount: String, price: String, onClick: () -> Unit) {
     Card(

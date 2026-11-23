@@ -1,8 +1,3 @@
-
- 
-
-
-
 fun parseBodyAndSpansFromHtml(
     html: String,
     rootTag: String = "body",
@@ -28,16 +23,6 @@ fun parseBodyAndSpansFromHtml(
     )
     return Pair(bodyText.trimEnd().toString(), spans)
 }
-
- 
-
-
-
-
-
-
-
-
 private fun processElement(
     element: Element,
     bodyText: StringBuilder,
@@ -45,31 +30,25 @@ private fun processElement(
     brTagsAsNewLine: Boolean,
     paragraphsAsNewLine: Boolean,
 ) {
-
     for (child in element.childNodes()) {
         when (child) {
             is TextNode -> {
-                
                 val text = child.text()
                 if (text != " ") {
                     bodyText.appendWithUrlCheck(text, spans)
                 }
             }
-
             is Element -> {
                 when (child.tagName()) {
                     "b" -> {
                         handleTextSpan(child, bodyText, spans, bold = true)
                     }
-
                     "i" -> {
                         handleTextSpan(child, bodyText, spans, italic = true)
                     }
-
                     "s" -> {
                         handleTextSpan(child, bodyText, spans, strikethrough = true)
                     }
-
                     "span" -> {
                         handleTextSpan(
                             child,
@@ -80,7 +59,6 @@ private fun processElement(
                             italic = child.isItalic(),
                         )
                     }
-
                     "a" -> {
                         handleTextSpan(
                             child,
@@ -90,9 +68,7 @@ private fun processElement(
                             linkData = child.attr("href"),
                         )
                     }
-
                     "div" -> {
-                        
                         if (bodyText.isNotEmpty()) {
                             bodyText.append("\n")
                         }
@@ -104,13 +80,11 @@ private fun processElement(
                             paragraphsAsNewLine = paragraphsAsNewLine,
                         )
                     }
-
                     "br" -> {
                         if (brTagsAsNewLine) {
                             bodyText.append("\n")
                         }
                     }
-
                     else -> {
                         processElement(child, bodyText, spans, brTagsAsNewLine, paragraphsAsNewLine)
                         if (
@@ -125,7 +99,6 @@ private fun processElement(
         }
     }
 }
-
 private fun handleTextSpan(
     element: Element,
     bodyText: StringBuilder,
@@ -153,19 +126,16 @@ private fun handleTextSpan(
             )
         )
     }
-
     if (link) {
         bodyText.append(text)
     } else {
         bodyText.appendWithUrlCheck(text, spans)
     }
 }
-
 private fun StringBuilder.appendWithUrlCheck(text: String, spans: MutableList<SpanRepresentation>) {
     checkForUrlSpan(text, spans, length)
     append(text)
 }
-
 private fun checkForUrlSpan(
     text: String,
     spans: MutableList<SpanRepresentation>,
@@ -184,13 +154,11 @@ private fun checkForUrlSpan(
         )
     }
 }
-
 private fun Element.isMonospaceFont(): Boolean {
     val fontFamily = attr("style")
     return fontFamily.contains("monospace", ignoreCase = true) ||
         fontFamily.contains("Source Code Pro", ignoreCase = true)
 }
-
 private fun Element.isBold(): Boolean {
     val style = attr("style")
     return if (style.contains("font-weight")) {
@@ -198,7 +166,6 @@ private fun Element.isBold(): Boolean {
         return fontWeight.toInt() > 400 
     } else false
 }
-
 private fun Element.isItalic(): Boolean {
     val style = attr("style")
     return style.contains("font-style:italic")

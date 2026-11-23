@@ -1,4 +1,3 @@
-
 @HiltAndroidApp
 class ZiPOSApplication : Application() {
     override fun onCreate() {

@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileEditDialog(
@@ -14,7 +13,6 @@ fun ProfileEditDialog(
     var facebook by remember { mutableStateOf(userData.facebook ?: "") }
     var telegram by remember { mutableStateOf(userData.telegram ?: "") }
     var otherLink by remember { mutableStateOf(userData.otherLink ?: "") }
-
     var genderExpanded by remember { mutableStateOf(false) }
     val genderOptions = listOf(
         stringResource(R.string.sin_especificar),
@@ -32,7 +30,6 @@ fun ProfileEditDialog(
         stringResource(R.string.dos_esp_ritus),
         stringResource(R.string.otro)
     )
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -58,7 +55,6 @@ fun ProfileEditDialog(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
-
                 LazyColumn(
                     modifier = Modifier.weight(1f, fill = false),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -77,7 +73,6 @@ fun ProfileEditDialog(
                             )
                         )
                     }
-
                     item {
                         OutlinedTextField(
                             value = bio,
@@ -92,7 +87,6 @@ fun ProfileEditDialog(
                             )
                         )
                     }
-
                     item {
                         OutlinedTextField(
                             value = age,
@@ -108,7 +102,6 @@ fun ProfileEditDialog(
                             )
                         )
                     }
-
                     item {
                         Box(modifier = Modifier.fillMaxWidth()) {
                             OutlinedTextField(
@@ -146,7 +139,6 @@ fun ProfileEditDialog(
                             }
                         }
                     }
-
                     item {
                         Text(
                             text = stringResource(R.string.redes_sociales),
@@ -155,7 +147,6 @@ fun ProfileEditDialog(
                             modifier = Modifier.padding(top = 12.dp)
                         )
                     }
-
                     item {
                         OutlinedTextField(
                             value = instagram,
@@ -170,7 +161,6 @@ fun ProfileEditDialog(
                             )
                         )
                     }
-
                     item {
                         OutlinedTextField(
                             value = facebook,
@@ -185,7 +175,6 @@ fun ProfileEditDialog(
                             )
                         )
                     }
-
                     item {
                         OutlinedTextField(
                             value = telegram,
@@ -200,7 +189,6 @@ fun ProfileEditDialog(
                             )
                         )
                     }
-
                     item {
                         OutlinedTextField(
                             value = otherLink,
@@ -216,7 +204,6 @@ fun ProfileEditDialog(
                         )
                     }
                 }
-
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)

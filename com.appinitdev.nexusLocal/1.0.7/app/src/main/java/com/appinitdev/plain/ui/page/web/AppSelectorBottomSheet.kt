@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppSelectorBottomSheet(
@@ -23,13 +22,11 @@ fun AppSelectorBottomSheet(
             }
         }
     }
-
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
             vm.loadAllAppsAsync(context)
         }
     }
-
     PModalBottomSheet(
         onDismissRequest = {
             vm.clearSelectedApps()
@@ -53,7 +50,6 @@ fun AppSelectorBottomSheet(
                     )
                 }
             )
-
             OutlinedTextField(
                 value = vm.searchQuery.value,
                 onValueChange = { vm.searchQuery.value = it },
@@ -72,7 +68,6 @@ fun AppSelectorBottomSheet(
                 singleLine = true,
                 shape = RoundedCornerShape(16.dp)
             )
-
             if (!vm.appsLoaded.value) {
                 NoDataColumn(loading = true)
             } else {

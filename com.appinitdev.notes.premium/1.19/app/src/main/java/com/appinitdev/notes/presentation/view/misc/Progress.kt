@@ -1,4 +1,3 @@
-
 open class Progress(
     val current: Int = 0,
     val total: Int = 0,

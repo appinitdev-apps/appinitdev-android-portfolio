@@ -1,4 +1,3 @@
-
 @Composable
 fun RefreshLayoutState.EllipseRefreshContent(
     min: Dp = minDp,
@@ -62,5 +61,4 @@ fun RefreshLayoutState.EllipseRefreshContent(
         content?.invoke(this, this@EllipseRefreshContent)
     }
 }
-
 private val minDp = 40.dp

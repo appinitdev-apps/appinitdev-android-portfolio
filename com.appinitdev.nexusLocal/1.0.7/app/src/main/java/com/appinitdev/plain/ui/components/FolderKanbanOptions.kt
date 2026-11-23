@@ -1,4 +1,3 @@
-
 suspend fun buildFolderOptions(
     context: Context,
     filesVM: FilesViewModel,
@@ -13,21 +12,17 @@ suspend fun buildFolderOptions(
     val sdCardPath = FileSystemHelper.getSDCardPath(context)
     val usbPaths = FileSystemHelper.getUsbDiskPaths()
     val favoriteFolders = FavoriteFoldersPreference.getValueAsync()
-
     val allPaths = mutableListOf(internalStoragePath, externalFilesDirPath)
     if (sdCardPath.isNotEmpty()) allPaths.add(sdCardPath)
     allPaths.addAll(usbPaths)
     favoriteFolders.forEach { fav ->
         if (java.io.File(fav.fullPath).exists()) allPaths.add(fav.fullPath)
     }
-
     val longestMatchPath = allPaths.filter { filesVM.selectedPath.startsWith(it) }.maxByOrNull { it.length } ?: ""
-
     val menuItems = mutableListOf(
         FolderOption(rootPath = "", fullPath = "", type = FilesType.RECENTS, isChecked = filesVM.type == FilesType.RECENTS, title = recentsText),
         FolderOption(rootPath = internalStoragePath, fullPath = internalStoragePath, type = FilesType.INTERNAL_STORAGE, isChecked = longestMatchPath == internalStoragePath, title = internalStorageText),
     )
-
     if (sdCardPath.isNotEmpty()) {
         menuItems.add(FolderOption(rootPath = sdCardPath, fullPath = sdCardPath, type = FilesType.SDCARD, isChecked = longestMatchPath == sdCardPath, title = sdcardText))
     }
@@ -35,7 +30,6 @@ suspend fun buildFolderOptions(
         menuItems.add(FolderOption(rootPath = path, fullPath = path, type = FilesType.USB_STORAGE, isChecked = longestMatchPath == path, title = "$usbStorageText ${index + 1}"))
     }
     menuItems.add(FolderOption(rootPath = externalFilesDirPath, fullPath = externalFilesDirPath, type = FilesType.APP, isChecked = longestMatchPath == externalFilesDirPath, title = fileTransferAssistantText))
-
     favoriteFolders.forEach { fav ->
         if (java.io.File(fav.fullPath).exists()) {
             val rootName = when {

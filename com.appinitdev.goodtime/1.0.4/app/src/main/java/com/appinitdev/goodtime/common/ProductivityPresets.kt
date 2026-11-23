@@ -1,4 +1,3 @@
-
 data class ProductivityPreset(
     val id: String,
     val name: String,
@@ -22,9 +21,7 @@ data class ProductivityPreset(
         )
     }
 }
-
 object ProductivityPresets {
-
     val CLASSIC_POMODORO = ProductivityPreset(
         id = "classic_pomodoro",
         name = "Classic Pomodoro",
@@ -34,7 +31,6 @@ object ProductivityPresets {
         longBreakDurationMins = 15,
         sessionsBeforeLongBreak = 4
     )
-
     val RULE_52_17 = ProductivityPreset(
         id = "rule_52_17",
         name = "Rule 52/17",
@@ -44,7 +40,6 @@ object ProductivityPresets {
         longBreakDurationMins = 30,
         sessionsBeforeLongBreak = 3
     )
-
     val ULTRADIAN_RHYTHM = ProductivityPreset(
         id = "ultradian",
         name = "Ultradian Rhythm",
@@ -54,7 +49,6 @@ object ProductivityPresets {
         longBreakDurationMins = 30,
         sessionsBeforeLongBreak = 2
     )
-
     val RULE_50_10 = ProductivityPreset(
         id = "rule_50_10",
         name = "Rule 50/10",
@@ -64,7 +58,6 @@ object ProductivityPresets {
         longBreakDurationMins = 20,
         sessionsBeforeLongBreak = 3
     )
-
     val FLOW_STATE_STOPWATCH = ProductivityPreset(
         id = "flow_state",
         name = "Flow State (Stopwatch)",
@@ -75,7 +68,6 @@ object ProductivityPresets {
         sessionsBeforeLongBreak = 0,
         isCountdown = false
     )
-
     val ALL_PRESETS = listOf(
         CLASSIC_POMODORO,
         RULE_52_17,

@@ -1,18 +1,14 @@
-
 class SmartBTDevice(val device: BTDevice) {
     val name: String
         get() {
             return device.device.name
         }
-
     fun isConnected(): Boolean {
         return device.isConnected()
     }
-
     fun disconnect() {
         BluetoothUtil.teardownConnection(device)
     }
-
     suspend fun ensureConnectedAsync(retry: Int = 3) {
         if (!device.isConnected()) {
             LogCat.d("ensureConnectedAsync: $retry")
@@ -22,7 +18,6 @@ class SmartBTDevice(val device: BTDevice) {
             }
         }
     }
-
     suspend fun requestAsync(
         api: BluetoothApi,
         requestData: BleRequestData,
@@ -39,12 +34,10 @@ class SmartBTDevice(val device: BTDevice) {
                 return r
             }
         }
-
         var r = enableNotificationsAsync(device, api, true)
         if (!r.isSuccess()) {
             return r
         }
-
         var responseStr = ""
         var i = 0
         while (i < 50) {
@@ -72,15 +65,12 @@ class SmartBTDevice(val device: BTDevice) {
             }
             i++
         }
-
         r = enableNotificationsAsync(device, api, false)
         if (!r.isSuccess()) {
             return r
         }
-
         return BluetoothResult(api.charUUID, responseStr, BluetoothActionResult.SUCCESS)
     }
-
     private suspend fun readCharacteristicAsync(
         device: BTDevice,
         api: BluetoothApi,
@@ -91,10 +81,8 @@ class SmartBTDevice(val device: BTDevice) {
         } else {
             LogCat.e("Not connected to ${device.mac}, cannot read characteristic!")
         }
-
         return BluetoothResult(api.charUUID, null, BluetoothActionResult.FAIL)
     }
-
     private suspend fun writeCharacteristicAsync(
         device: BTDevice,
         api: BluetoothApi,
@@ -106,10 +94,8 @@ class SmartBTDevice(val device: BTDevice) {
         } else {
             LogCat.e("Not connected to ${device.mac}, cannot write characteristic!")
         }
-
         return BluetoothResult(api.charUUID, null, BluetoothActionResult.FAIL)
     }
-
     private suspend fun enableNotificationsAsync(
         device: BTDevice,
         api: BluetoothApi,
@@ -121,10 +107,8 @@ class SmartBTDevice(val device: BTDevice) {
         } else {
             LogCat.e("Not connected to ${device.mac}, cannot ${if (enable) "enable" else "disable"} notifications!")
         }
-
         return BluetoothResult(api.charUUID, null, BluetoothActionResult.FAIL)
     }
-
     private suspend fun waitForResultAsync(
         type: BluetoothActionType,
         uuid: UUID?,
@@ -142,7 +126,6 @@ class SmartBTDevice(val device: BTDevice) {
             return BluetoothResult(uuid, null, BluetoothActionResult.TIMEOUT)
         }
     }
-
     private suspend fun isConnectedAsync(): Boolean {
         val result = waitForResultAsync(BluetoothActionType.CONNECTION_STATE, null)
         if (result.value == BluetoothProfile.STATE_CONNECTED) {

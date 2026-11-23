@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun MdEditorInsertImageDialog(
@@ -9,9 +8,7 @@ fun MdEditorInsertImageDialog(
     var imageUrl by imageUrlState
     var description by remember { mutableStateOf("") }
     var width by remember { mutableStateOf("") }
-
     PickImageEffect(context = context, imageUrl = imageUrlState)
-
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surface,
         onDismissRequest = {

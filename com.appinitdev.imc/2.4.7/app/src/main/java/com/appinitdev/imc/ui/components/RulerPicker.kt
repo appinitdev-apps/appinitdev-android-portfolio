@@ -1,4 +1,3 @@
-
 @Composable
 fun InteractiveRulerPicker(
     title: String,
@@ -12,30 +11,24 @@ fun InteractiveRulerPicker(
 ) {
     val density = LocalDensity.current
     val lineSpacingPx = remember(density) { with(density) { 16.dp.toPx() } }
-
     val currentValue by rememberUpdatedState(value)
     val currentOnValueChange by rememberUpdatedState(onValueChange)
-
     var accumulatedValue by remember(range) { mutableDoubleStateOf(value) }
-
     LaunchedEffect(value) {
         if (abs(value - accumulatedValue) > 0.5) {
             accumulatedValue = value
         }
     }
-
     val draggableState = rememberDraggableState { deltaPx ->
         val deltaUnits = -deltaPx * (step / lineSpacingPx)
         val newRaw = (accumulatedValue + deltaUnits).coerceIn(range.start, range.endInclusive)
         accumulatedValue = newRaw
-
         val snapped = (newRaw / step).roundToInt() * step
         val rounded = (snapped * 10).roundToInt() / 10.0
         if (rounded != currentValue) {
             currentOnValueChange(rounded)
         }
     }
-
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
@@ -50,7 +43,6 @@ fun InteractiveRulerPicker(
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -75,10 +67,7 @@ fun InteractiveRulerPicker(
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(12.dp))
-
-            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -104,7 +93,6 @@ fun InteractiveRulerPicker(
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-
                 Row(
                     verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.Center
@@ -125,7 +113,6 @@ fun InteractiveRulerPicker(
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                 }
-
                 IconButton(
                     onClick = {
                         val newValue = (value + step).coerceIn(range.start, range.endInclusive)
@@ -147,14 +134,10 @@ fun InteractiveRulerPicker(
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
-            
             val surfaceVariantColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.35f)
             val onSurfaceColor = MaterialTheme.colorScheme.onSurface
             val containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f)
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -177,32 +160,25 @@ fun InteractiveRulerPicker(
                     val width = size.width
                     val height = size.height
                     val centerX = width / 2f
-
                     val visibleTicks = (centerX / lineSpacingPx).toInt() + 3
-
                     val centerTickIndex = (accumulatedValue / step).roundToInt()
                     val valueOffset = accumulatedValue - (centerTickIndex * step)
                     val pxOffset = (valueOffset / step) * lineSpacingPx
-
                     for (i in -visibleTicks..visibleTicks) {
                         val tickIndex = centerTickIndex + i
                         val tickValue = tickIndex * step
-
                         if (tickValue in range) {
                             val x = centerX + (i * lineSpacingPx) - pxOffset.toFloat()
                             if (x in 0f..width) {
                                 val isMajor = (tickValue * 2).roundToInt() % 20 == 0
                                 val isHalf = (tickValue * 2).roundToInt() % 2 == 0
-
                                 val lineLength = when {
                                     isMajor -> height * 0.65f
                                     isHalf -> height * 0.45f
                                     else -> height * 0.30f
                                 }
-
                                 val strokeWidth = if (isMajor) 3.dp.toPx() else 1.5.dp.toPx()
                                 val color = if (isMajor) onSurfaceColor else surfaceVariantColor
-
                                 drawLine(
                                     color = color,
                                     start = Offset(x, height),
@@ -212,8 +188,6 @@ fun InteractiveRulerPicker(
                             }
                         }
                     }
-
-                    
                     val indicatorWidth = 4.dp.toPx()
                     drawLine(
                         brush = Brush.verticalGradient(
@@ -229,8 +203,6 @@ fun InteractiveRulerPicker(
                         center = Offset(centerX, height)
                     )
                 }
-
-                
                 Box(
                     modifier = Modifier
                         .fillMaxSize()

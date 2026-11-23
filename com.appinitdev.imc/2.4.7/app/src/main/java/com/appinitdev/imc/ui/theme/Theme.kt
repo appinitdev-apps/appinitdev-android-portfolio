@@ -1,4 +1,3 @@
-
 @Composable
 fun IMCTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -8,7 +7,6 @@ fun IMCTheme(
 ) {
     val primaryColor = Color(preset.primaryColorHex)
     val containerColor = Color(preset.containerColorHex)
-
     val lightColorScheme = lightColorScheme(
         primary = primaryColor,
         onPrimary = Color.White,
@@ -23,7 +21,6 @@ fun IMCTheme(
         surfaceVariant = Color(0xFFEAF4F2),
         onSurfaceVariant = Color(0xFF334155)
     )
-
     val darkColorScheme = darkColorScheme(
         primary = primaryColor,
         onPrimary = Color.Black,
@@ -38,7 +35,6 @@ fun IMCTheme(
         surfaceVariant = Color(0xFF1E294B),
         onSurfaceVariant = Color(0xFFCBD5E1)
     )
-
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
@@ -47,7 +43,6 @@ fun IMCTheme(
         darkTheme -> darkColorScheme
         else -> lightColorScheme
     }
-
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -56,7 +51,6 @@ fun IMCTheme(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
-
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,

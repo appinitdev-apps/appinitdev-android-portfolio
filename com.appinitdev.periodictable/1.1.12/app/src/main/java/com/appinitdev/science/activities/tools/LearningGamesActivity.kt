@@ -1,6 +1,4 @@
-
 class LearningGamesActivity : BaseActivity() {
-
     private lateinit var questions: List<Question>
     private var currentQuestionIndex = 0
     private var difficulty = "easy"
@@ -12,24 +10,17 @@ class LearningGamesActivity : BaseActivity() {
     private var leaveDialogShowing = false
     private var quizCompleted = false
     private lateinit var category: String
-
     private val handler = Handler(Looper.getMainLooper())
     private var pendingNextQuestionRunnable: Runnable? = null
-
-    
     private val gameResults = mutableListOf<GameResultItem>()
-
-    
     private var backCallback: OnBackPressedCallback? = null
     private var onBackInvokedCb: android.window.OnBackInvokedCallback? = null
-
     data class Question(
         val question: String,
         val correctAnswer: String,
         val alternatives: List<String>,
         val baseXp: Int
     )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val themePreference = com.appinitdev.science.preferences.ThemePreference(this)
@@ -42,33 +33,25 @@ class LearningGamesActivity : BaseActivity() {
         }
         if (themePrefValue == 0) setTheme(R.style.AppTheme)
         if (themePrefValue == 1) setTheme(R.style.AppThemeDark)
-
         setContentView(R.layout.activity_learninggames)
         findViewById<FrameLayout>(R.id.view_learn).systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-
         difficulty = intent.getStringExtra("difficulty") ?: "easy"
         category = intent.getStringExtra("category") ?: "element_symbols"
-
         totalQuestions = when (difficulty) {
             "easy" -> 8
             "medium" -> 16
             "hard" -> 24
             else -> 8
         }
-
         questions = generateQuestions(category, totalQuestions)
         if (questions.isEmpty()) {
-
             return
         }
-
         setupQuestionUI()
         updateLivesCount()
         setupAnswerListeners()
         setupBackButton()
-
-        
         backCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 val consumed = handleBackPress()
@@ -80,9 +63,7 @@ class LearningGamesActivity : BaseActivity() {
             }
         }
         onBackPressedDispatcher.addCallback(this, backCallback!!)
-
         setBackInterceptionEnabled(true)
-
         val effectOverlay = findViewById<FrameLayout>(R.id.effect_overlay)
         animatedEffectView = AnimatedEffectView(this)
         effectOverlay.addView(
@@ -93,7 +74,6 @@ class LearningGamesActivity : BaseActivity() {
             )
         )
     }
-
     private fun setupAnswerListeners() {
         val answerCards = listOf(
             findViewById<LinearLayout>(R.id.answer_1),
@@ -107,7 +87,6 @@ class LearningGamesActivity : BaseActivity() {
                 if (currentQuestionIndex >= questions.size) return@setOnClickListener
                 val q = questions[currentQuestionIndex]
                 if (index >= q.alternatives.size) return@setOnClickListener
-
                 if (isAnswering && !hasLeftGame) {
                     isAnswering = false
                     timerAnimator?.cancel()
@@ -117,23 +96,18 @@ class LearningGamesActivity : BaseActivity() {
             }
         }
     }
-
     private fun setupBackButton() {
         findViewById<ImageButton>(R.id.back_btn_learn).setOnClickListener {
             showExitConfirmationDialog()
         }
     }
-
     override fun onBackPressed() {
         showExitConfirmationDialog()
     }
-
     private fun showExitConfirmationDialog() {
         if (leaveDialogShowing || hasLeftGame) return
         leaveDialogShowing = true
-
         setBackInterceptionEnabled(true)
-
         val dialog = AlertDialog.Builder(this)
             .setTitle("Leave Game?")
             .setMessage("Are you sure you want to leave the game? You will lose 5 lives.")
@@ -149,15 +123,12 @@ class LearningGamesActivity : BaseActivity() {
             }
             .setCancelable(false)
             .create()
-
         dialog.setOnDismissListener {
             leaveDialogShowing = false
             setBackInterceptionEnabled(anyOverlayOpen() || !hasLeftGame)
         }
-
         dialog.show()
     }
-
     private fun leaveGameAndLoseLives() {
         if (!hasLeftGame) {
             hasLeftGame = true
@@ -168,12 +139,10 @@ class LearningGamesActivity : BaseActivity() {
             finishWithResults(forceNotFinished = true)
         }
     }
-
     private fun cleanupPending() {
         timerAnimator?.cancel()
         pendingNextQuestionRunnable?.let { handler.removeCallbacks(it) }
     }
-
     private fun setupQuestionUI() {
         if (hasLeftGame) return
         isAnswering = true
@@ -188,9 +157,7 @@ class LearningGamesActivity : BaseActivity() {
         val questionText = findViewById<TextView>(R.id.tv_question)
         val questionNumber = findViewById<TextView>(R.id.tv_question_number)
         val grid = findViewById<GridLayout>(R.id.grid_answers)
-
         questionNumber.text = "${currentQuestionIndex + 1}/${questions.size}"
-
         progressBar.visibility = View.VISIBLE
         progressBar.alpha = 1f
         progressBar.progress = 100
@@ -198,7 +165,6 @@ class LearningGamesActivity : BaseActivity() {
         questionText.alpha = 1f
         grid.visibility = View.VISIBLE
         grid.alpha = 0f
-
         timerAnimator?.cancel()
         timerAnimator = ValueAnimator.ofInt(100, 0).apply {
             duration = timeLimit
@@ -221,7 +187,6 @@ class LearningGamesActivity : BaseActivity() {
         q.alternatives.forEachIndexed { i, alt ->
             findViewById<TextView>(answerIds[i]).text = alt
         }
-
         if (category == "radioactive") {
             findViewById<LinearLayout>(R.id.answer_3).visibility = View.GONE
             findViewById<LinearLayout>(R.id.answer_4).visibility = View.GONE
@@ -235,12 +200,10 @@ class LearningGamesActivity : BaseActivity() {
             findViewById<LinearLayout>(R.id.answer_3).visibility = View.VISIBLE
             findViewById<LinearLayout>(R.id.answer_4).visibility = View.VISIBLE
         }
-
         grid.animate().alpha(1f).setDuration(300).start()
         progressBar.animate().alpha(1f).setDuration(300).start()
         questionText.animate().alpha(1f).setDuration(300).start()
     }
-
     private fun setAnswerEnabled(enabled: Boolean) {
         listOf(
             findViewById<LinearLayout>(R.id.answer_1),
@@ -251,7 +214,6 @@ class LearningGamesActivity : BaseActivity() {
             it.isEnabled = enabled
         }
     }
-
     private fun getXpMultiplier(): Double {
         return when (difficulty) {
             "medium" -> 1.3
@@ -259,7 +221,6 @@ class LearningGamesActivity : BaseActivity() {
             else -> 1.0
         }
     }
-
     private fun getBaseXp(category: String): Int = when (category) {
         "element_symbols" -> 8
         "element_names" -> 8
@@ -293,14 +254,12 @@ class LearningGamesActivity : BaseActivity() {
         "earth_soils" -> 120
         else -> 5
     }
-
     private fun getLivesLost(): Int {
         return when (difficulty) {
             "hard" -> 2
             else -> 1 
         }
     }
-
     private fun checkAnswer(selectedAnswer: String) {
         if (hasLeftGame) return
         isAnswering = false
@@ -308,7 +267,6 @@ class LearningGamesActivity : BaseActivity() {
         timerAnimator?.cancel()
         val q = questions[currentQuestionIndex]
         val correct = normalizeLabel(selectedAnswer) == normalizeLabel(q.correctAnswer)
-
         gameResults.add(
             GameResultItem(
                 question = q.question,
@@ -318,30 +276,25 @@ class LearningGamesActivity : BaseActivity() {
                 baseXp = q.baseXp
             )
         )
-
         val effectColors = if (selectedAnswer == "__TIMEOUT__")
             listOf(Color.parseColor("#D32F2F"), Color.parseColor("#C62828"), Color.parseColor("#FFCDD2"))
         else if (correct)
             listOf(Color.parseColor("#43A047"), Color.parseColor("#388E3C"), Color.parseColor("#81C784"))
         else
             listOf(Color.parseColor("#D32F2F"), Color.parseColor("#C62828"), Color.parseColor("#FFCDD2"))
-
         val effectOverlay = findViewById<FrameLayout>(R.id.effect_overlay)
         val grid = findViewById<GridLayout>(R.id.grid_answers)
         val progressBar = findViewById<ProgressBar>(R.id.time_progress)
         val questionText = findViewById<TextView>(R.id.tv_question)
-
         fadeOutView(grid, 200) {
             fadeOutView(progressBar, 200)
             fadeOutView(questionText, 200)
-
             fadeInEffectOverlay(effectOverlay, 300)
             animatedEffectView.post {
                 animatedEffectView.startAnimation(effectColors) {
                     fadeOutEffectOverlay(effectOverlay, 300)
                 }
             }
-
             val xpGainedBase = if (selectedAnswer == "__TIMEOUT__" || !correct) 0 else (q.baseXp * getXpMultiplier()).roundToInt()
             if (selectedAnswer == "__TIMEOUT__") {
                 showResultCard(false, selectedAnswer, 0)
@@ -352,7 +305,6 @@ class LearningGamesActivity : BaseActivity() {
             } else {
                 showResultCard(false, selectedAnswer, 0)
             }
-
             pendingNextQuestionRunnable?.let { handler.removeCallbacks(it) }
             pendingNextQuestionRunnable = Runnable {
                 if (!hasLeftGame) {
@@ -362,7 +314,6 @@ class LearningGamesActivity : BaseActivity() {
             }
             handler.postDelayed(pendingNextQuestionRunnable!!, 2000)
         }
-
         val livesLost = getLivesLost()
         if (selectedAnswer == "__TIMEOUT__" || !correct) {
             val lost = LivesManager.loseLives(this, livesLost)
@@ -375,7 +326,6 @@ class LearningGamesActivity : BaseActivity() {
             }
         }
     }
-
     private fun nextQuestionWithFlip(grid: GridLayout, wasCorrect: Boolean, selectedAnswer: String) {
         if (hasLeftGame) return
         currentQuestionIndex++
@@ -389,7 +339,6 @@ class LearningGamesActivity : BaseActivity() {
             grid.animate().rotationY(0f).setDuration(300).start()
         }
     }
-
     private fun getDifficultyLabel(): String {
         return when (difficulty) {
             "medium" -> "Medium"
@@ -397,7 +346,6 @@ class LearningGamesActivity : BaseActivity() {
             else -> "Easy"
         }
     }
-
     private fun finishWithResults(forceNotFinished: Boolean = false) {
         cleanupPending()
         val allAnswersCompleted = gameResults.size == questions.size && gameResults.all { it.pickedAnswer != null }
@@ -407,19 +355,14 @@ class LearningGamesActivity : BaseActivity() {
         val xpGameWin = if (finishedGame) (25 * xpMultiplier).roundToInt() else 0
         val xpPerfect = if (finishedGame && gameResults.all { it.wasCorrect }) (20 * xpMultiplier).roundToInt() else 0
         val totalXp = xpElements + xpGameWin + xpPerfect
-
         updateFlashcardAchievements(finishedGame, finishedGame && gameResults.all { it.wasCorrect })
-
         if (finishedGame) {
             XpManager.addGameXp(this, xpGameWin)
             if (gameResults.all { it.wasCorrect }) {
                 XpManager.addGameXp(this, xpPerfect)
             }
         }
-
-        
         StreakManager.recordPlay(this)
-
         val intent = Intent(this, FlashCardActivity::class.java)
         intent.putParcelableArrayListExtra("game_results", ArrayList(gameResults))
         intent.putExtra("game_finished", finishedGame)
@@ -433,15 +376,12 @@ class LearningGamesActivity : BaseActivity() {
         startActivity(intent)
         finish()
     }
-
     private fun showResultCard(correct: Boolean, selectedAnswer: String, xpGained: Int = 0) {
         val resultCard = findViewById<FrameLayout>(R.id.result_card_overlay)
         val resultText = findViewById<TextView>(R.id.result_text)
         val resultSubtext = findViewById<TextView>(R.id.result_subtext)
         resultCard.visibility = View.VISIBLE
-
         val livesLost = getLivesLost()
-
         if (selectedAnswer == "__TIMEOUT__") {
             resultText.text = getString(R.string.time_up)
             resultSubtext.text = if (livesLost == 1) "Lost 1 life" else "Lost $livesLost lives"
@@ -452,16 +392,12 @@ class LearningGamesActivity : BaseActivity() {
             resultText.text = getString(R.string.wrong)
             resultSubtext.text = if (livesLost == 1) "Lost 1 life" else "Lost $livesLost lives"
         }
-
         setBackInterceptionEnabled(true)
     }
-
     private fun hideResultCard() {
         findViewById<FrameLayout>(R.id.result_card_overlay).visibility = View.GONE
         setBackInterceptionEnabled(anyOverlayOpen() || !hasLeftGame)
     }
-
-    
     private fun normalizeLabel(label: String): String {
         return label.trim()
             .replace("-", " ")
@@ -473,19 +409,15 @@ class LearningGamesActivity : BaseActivity() {
             .split(" ")
             .joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
     }
-
     private fun generateQuestions(category: String, count: Int): List<Question> {
         val language = com.appinitdev.science.utils.ElementDataLoader.getAppLanguage(this)
-        
         var elements = loadElementsFromAsset("elements_$language.json")
         if (elements.isEmpty() && language != "en") {
             elements = loadElementsFromAsset("elements_en.json")
         }
         elements = elements.filter { it.element.isNotBlank() }
-
         val questions = mutableListOf<Question>()
         val usedElements = mutableSetOf<String>()
-
         fun wrongAnswersFor(fieldSelector: (ElementData) -> String, correct: String): List<String> =
             elements
                 .map { fieldSelector(it) }
@@ -497,13 +429,11 @@ class LearningGamesActivity : BaseActivity() {
                 .distinct()
                 .shuffled()
                 .take(3)
-
         var attemptsLeft = count * 6
         while (questions.size < count && attemptsLeft > 0) {
             attemptsLeft--
             val element = elements.filter { it.element !in usedElements }.randomOrNull() ?: elements.randomOrNull() ?: break
             usedElements.add(element.element)
-
             val baseXp = getBaseXp(category)
             val (questionText, correct, alternatives) = when (category) {
                 "element_symbols" -> {
@@ -711,7 +641,6 @@ class LearningGamesActivity : BaseActivity() {
                     Triple(question, correct, (wrongs + correct).distinct().shuffled())
                 }
             }
-
             if (correct.isBlank() || correct == "---") {
                 continue
             }
@@ -726,7 +655,6 @@ class LearningGamesActivity : BaseActivity() {
         }
         return questions
     }
-
     data class ElementData(
         val element: String,
         val short: String,
@@ -760,19 +688,15 @@ class LearningGamesActivity : BaseActivity() {
         val earth_crust: String,
         val earth_soils: String
     )
-
     private fun loadElementsFromAsset(filename: String): List<ElementData> {
         return try {
             val json = assets.open(filename).bufferedReader().use { it.readText() }
             val jsonObject = org.json.JSONObject(json)
             val elementsList = mutableListOf<ElementData>()
-            
-            
             val keys = jsonObject.keys()
             while (keys.hasNext()) {
                 val elementKey = keys.next()
                 val obj = jsonObject.getJSONObject(elementKey)
-                
                 elementsList.add(ElementData(
                     element = obj.optString("element"),
                     short = obj.optString("short"),
@@ -807,14 +731,12 @@ class LearningGamesActivity : BaseActivity() {
                     earth_soils = obj.optString("earth_soils")
                 ))
             }
-            
             elementsList
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
         }
     }
-
     override fun updateLivesCount() {
         val proPlusPref = com.appinitdev.science.preferences.ProPlusVersion(this)
         val isInfinite = proPlusPref.getValue() == 100
@@ -829,7 +751,6 @@ class LearningGamesActivity : BaseActivity() {
             livesLabelView.text = getString(R.string.lives_label, lives.toString())
         }
     }
-
     override fun onResume() {
         super.onResume()
         if (!hasLeftGame) {
@@ -837,37 +758,31 @@ class LearningGamesActivity : BaseActivity() {
             updateLivesCount()
         }
     }
-
     private fun updateFlashcardAchievements(finishedGame: Boolean, allCorrect: Boolean) {
         val achievementIds = listOf(101001, 101002, 101003, 101004)
         val achievements = ArrayList<Achievement>()
         AchievementModel.getList(this, achievements)
         val achMap = achievements.associateBy { it.id }
-
         if (allCorrect) {
             achMap[101001]?.let {
                 it.incrementProgress(this, 1)
             }
         }
-
         if (finishedGame) {
             listOf(101002, 101003, 101004).forEach { id ->
                 achMap[id]?.let { it.incrementProgress(this, 1) }
             }
         }
     }
-
     override fun onApplySystemInsets(top: Int, bottom: Int, left: Int, right: Int) {
         val params = findViewById<FrameLayout>(R.id.common_title_back_learn).layoutParams as ViewGroup.LayoutParams
         params.height = top + resources.getDimensionPixelSize(R.dimen.title_bar)
         findViewById<FrameLayout>(R.id.common_title_back_learn).layoutParams = params
-
         val params2 = findViewById<TextView>(R.id.tv_question_number).layoutParams as ViewGroup.MarginLayoutParams
         params2.topMargin = top + resources.getDimensionPixelSize(R.dimen.title_bar) +
                 resources.getDimensionPixelSize(R.dimen.header_down_margin)
         findViewById<TextView>(R.id.tv_question_number).layoutParams = params2
     }
-
     private fun fadeInEffectOverlay(effectOverlay: View, duration: Long = 300, onEnd: (() -> Unit)? = null) {
         effectOverlay.alpha = 0f
         effectOverlay.visibility = View.VISIBLE
@@ -877,7 +792,6 @@ class LearningGamesActivity : BaseActivity() {
             .withEndAction { onEnd?.invoke() }
             .start()
     }
-
     private fun fadeOutEffectOverlay(effectOverlay: View, duration: Long = 300, onEnd: (() -> Unit)? = null) {
         effectOverlay.animate()
             .alpha(0f)
@@ -888,7 +802,6 @@ class LearningGamesActivity : BaseActivity() {
             }
             .start()
     }
-
     private fun fadeOutView(view: View, duration: Long = 300, onEnd: (() -> Unit)? = null) {
         view.animate()
             .alpha(0f)
@@ -898,7 +811,6 @@ class LearningGamesActivity : BaseActivity() {
                 onEnd?.invoke()
             }.start()
     }
-
     private fun fadeInView(view: View, duration: Long = 300, onEnd: (() -> Unit)? = null) {
         view.alpha = 0f
         view.visibility = View.VISIBLE
@@ -908,15 +820,12 @@ class LearningGamesActivity : BaseActivity() {
             .withEndAction { onEnd?.invoke() }
             .start()
     }
-
     private fun anyOverlayOpen(): Boolean {
         val resultCard = findViewById<FrameLayout?>(R.id.result_card_overlay)
         return leaveDialogShowing || (resultCard?.visibility == View.VISIBLE)
     }
-
     private fun setBackInterceptionEnabled(enabled: Boolean) {
         backCallback?.isEnabled = enabled
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             if (enabled) {
                 if (onBackInvokedCb == null) {
@@ -945,10 +854,8 @@ class LearningGamesActivity : BaseActivity() {
             }
         }
     }
-
     private fun handleBackPress(): Boolean {
         val resultCard = findViewById<FrameLayout>(R.id.result_card_overlay)
-
         if (leaveDialogShowing) {
             leaveDialogShowing = false
             setBackInterceptionEnabled(anyOverlayOpen() || !hasLeftGame)
@@ -960,13 +867,10 @@ class LearningGamesActivity : BaseActivity() {
         }
         return false
     }
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-
         findViewById<FrameLayout>(R.id.view_learn).systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-
         try {
             val effectOverlay = findViewById<FrameLayout>(R.id.effect_overlay)
             if (this::animatedEffectView.isInitialized) {
@@ -982,7 +886,6 @@ class LearningGamesActivity : BaseActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
         updateLivesCount()
         try {
             if (!hasLeftGame && currentQuestionIndex < questions.size) {
@@ -990,7 +893,6 @@ class LearningGamesActivity : BaseActivity() {
             }
         } catch (_: Exception) { }
     }
-
     override fun onDestroy() {
         super.onDestroy()
         cleanupPending()

@@ -1,9 +1,7 @@
-
 data class Location(
     val latitude: Double,
     val longitude: Double,
 )
-
 @Polymorphic
 @Serializable
 class FileInfo(
@@ -13,13 +11,9 @@ class FileInfo(
     val tags: List<Tag>,
     @Contextual var data: MediaFileInfo?,
 )
-
 @Polymorphic
 @Serializable
 sealed class MediaFileInfo
-
 data class ImageFileInfo(val width: Int, val height: Int, val location: Location?) : MediaFileInfo()
-
 data class AudioFileInfo(val duration: Long, val location: Location?) : MediaFileInfo()
-
 data class VideoFileInfo(val width: Int, val height: Int, val duration: Long, val location: Location?) : MediaFileInfo()

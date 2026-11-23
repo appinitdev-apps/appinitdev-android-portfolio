@@ -1,4 +1,3 @@
-
 data class BaseNoteVHPreferences(
     val textSize: TextSize,
     val maxItems: Int,
@@ -7,40 +6,32 @@ data class BaseNoteVHPreferences(
     val hideLabels: Boolean,
     val hideImages: Boolean,
 )
-
 class BaseNoteVH(
     private val binding: RecyclerBaseNoteBinding,
     private val dateFormat: DateFormat,
     private val preferences: BaseNoteVHPreferences,
     listener: ItemListener,
 ) : RecyclerView.ViewHolder(binding.root) {
-
     init {
         val title = preferences.textSize.displayTitleSize
         val body = preferences.textSize.displayBodySize
-
         binding.apply {
             Title.setTextSize(TypedValue.COMPLEX_UNIT_SP, title)
             Date.setTextSize(TypedValue.COMPLEX_UNIT_SP, body)
             Note.setTextSize(TypedValue.COMPLEX_UNIT_SP, body)
-
             LinearLayout.children.forEach { view ->
                 view as TextView
                 view.setTextSize(TypedValue.COMPLEX_UNIT_SP, body)
             }
-
             Title.maxLines = preferences.maxTitleLines
             Note.maxLines = preferences.maxLines
-
             root.setOnClickListener { listener.onClick(absoluteAdapterPosition) }
-
             root.setOnLongClickListener {
                 listener.onLongClick(absoluteAdapterPosition)
                 return@setOnLongClickListener true
             }
         }
     }
-
     fun updateCheck(checked: Boolean, color: String) {
         if (checked) {
             binding.root.strokeWidth = 3.dp
@@ -49,10 +40,8 @@ class BaseNoteVH(
         }
         binding.root.isChecked = checked
     }
-
     fun bind(baseNote: BaseNote, imageRoot: File?, checked: Boolean, sortBy: NotesSortBy) {
         updateCheck(checked, baseNote.color)
-
         when (baseNote.type) {
             Type.NOTE -> bindNote(baseNote.body, baseNote.spans, baseNote.title.isEmpty())
             Type.LIST -> bindList(baseNote.items, baseNote.title.isEmpty())
@@ -65,10 +54,8 @@ class BaseNoteVH(
                 else -> Pair(null, null)
             }
         binding.Date.displayFormattedTimestamp(date, dateFormat, datePrefixResId)
-
         setImages(baseNote.images, imageRoot)
         setFiles(baseNote.files)
-
         binding.Title.apply {
             text = baseNote.title
             isVisible = baseNote.title.isNotEmpty()
@@ -85,7 +72,6 @@ class BaseNoteVH(
                 0,
             )
         }
-
         if (preferences.hideLabels) {
             binding.LabelGroup.visibility = GONE
         } else {
@@ -95,7 +81,6 @@ class BaseNoteVH(
                 binding.Note.isVisible || binding.Title.isVisible,
             )
         }
-
         if (baseNote.isEmpty()) {
             binding.Title.apply {
                 setText(baseNote.getEmptyMessage())
@@ -103,13 +88,10 @@ class BaseNoteVH(
             }
         }
         setColor(baseNote.color)
-
         binding.RemindersView.isVisible = baseNote.reminders.any { it.hasUpcomingNotification() }
     }
-
     private fun bindNote(body: String, spans: List<SpanRepresentation>, isTitleEmpty: Boolean) {
         binding.LinearLayout.visibility = GONE
-
         binding.Note.apply {
             text = body.applySpans(spans)
             if (preferences.maxLines < 1) {
@@ -120,7 +102,6 @@ class BaseNoteVH(
             }
         }
     }
-
     private fun bindList(items: List<ListItem>, isTitleEmpty: Boolean) {
         binding.apply {
             Note.visibility = GONE
@@ -150,7 +131,6 @@ class BaseNoteVH(
                         } else view.visibility = GONE
                     }
                 }
-
                 if (preferences.maxItems > 0 && items.size > preferences.maxItems) {
                     ItemsRemaining.apply {
                         visibility = VISIBLE
@@ -160,7 +140,6 @@ class BaseNoteVH(
             }
         }
     }
-
     private fun setColor(color: String) {
         binding.root.apply {
             val colorInt = context.extractColor(color)
@@ -168,16 +147,13 @@ class BaseNoteVH(
             setControlsContrastColorForAllViews(colorInt)
         }
     }
-
     private fun setImages(images: List<FileAttachment>, mediaRoot: File?) {
         binding.apply {
             if (images.isNotEmpty() && !preferences.hideImages) {
                 ImageView.visibility = VISIBLE
                 Message.visibility = GONE
-
                 val image = images[0]
                 val file = if (mediaRoot != null) File(mediaRoot, image.localName) else null
-
                 Glide.with(ImageView)
                     .load(file)
                     .centerCrop()
@@ -185,7 +161,6 @@ class BaseNoteVH(
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .listener(
                         object : RequestListener<Drawable> {
-
                             override fun onLoadFailed(
                                 e: GlideException?,
                                 model: Any?,
@@ -195,7 +170,6 @@ class BaseNoteVH(
                                 Message.visibility = VISIBLE
                                 return false
                             }
-
                             override fun onResourceReady(
                                 resource: Drawable?,
                                 model: Any?,
@@ -224,7 +198,6 @@ class BaseNoteVH(
             }
         }
     }
-
     private fun setFiles(files: List<FileAttachment>) {
         binding.apply {
             if (files.isNotEmpty()) {
@@ -243,23 +216,18 @@ class BaseNoteVH(
             }
         }
     }
-
     private fun shouldOnlyDisplayTitle(baseNote: BaseNote) =
         when (baseNote.type) {
             Type.NOTE -> preferences.maxLines < 1
             Type.LIST -> preferences.maxItems < 1
         }
-
     private fun BaseNote.isEmpty() = title.isBlank() && hasNoContents() && images.isEmpty()
-
     private fun BaseNote.hasNoContents() = body.isEmpty() && items.isEmpty()
-
     private fun BaseNote.getEmptyMessage() =
         when (type) {
             Type.NOTE -> R.string.empty_note
             Type.LIST -> R.string.empty_list
         }
-
     private fun handleChecked(textView: TextView, checked: Boolean) {
         if (checked) {
             textView.setCompoundDrawablesRelativeWithIntrinsicBounds(

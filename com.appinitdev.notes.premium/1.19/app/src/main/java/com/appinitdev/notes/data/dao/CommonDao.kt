@@ -1,7 +1,5 @@
-
 @Dao
 abstract class CommonDao(private val database: NotallyDatabase) {
-
     @Transaction
     open suspend fun deleteLabel(value: String) {
         val labelsInBaseNotes =
@@ -13,7 +11,6 @@ abstract class CommonDao(private val database: NotallyDatabase) {
         database.getBaseNoteDao().update(labelsInBaseNotes)
         database.getLabelDao().delete(value)
     }
-
     @Transaction
     open suspend fun updateLabel(oldValue: String, newValue: String) {
         val labelsInBaseNotes =
@@ -26,7 +23,6 @@ abstract class CommonDao(private val database: NotallyDatabase) {
         database.getBaseNoteDao().update(labelsInBaseNotes)
         database.getLabelDao().update(oldValue, newValue)
     }
-
     @Transaction
     open suspend fun importBackup(baseNotes: List<BaseNote>, labels: List<Label>) {
         database.getBaseNoteDao().insert(baseNotes)

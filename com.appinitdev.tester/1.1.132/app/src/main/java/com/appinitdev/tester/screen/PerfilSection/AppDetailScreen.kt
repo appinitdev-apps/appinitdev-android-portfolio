@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppDetailScreen(appId: String, viewModel: AuthViewModel, onBack: () -> Unit) {
@@ -15,38 +14,31 @@ fun AppDetailScreen(appId: String, viewModel: AuthViewModel, onBack: () -> Unit)
     val app = remember(myApps, communityApps, appId) {
         (myApps + communityApps).find { it.id == appId }
     }
-
     var showSuccessDialog by remember { mutableStateOf(false) }
     var calculatedPeekHeight by remember { mutableStateOf(340.dp) }
     val density = LocalDensity.current
-
     val sheetState = rememberStandardBottomSheetState(
         initialValue = SheetValue.PartiallyExpanded,
         skipHiddenState = true
     )
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetState)
-
     if (app == null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
         return
     }
-
     val isOwner = app.idPropietario == user?.uid
     val myStatus = app.testers[user?.uid]?.validado
     val urlLimpia = app.urlGoogleGroup.trim()
     val esUrlReal = android.util.Patterns.WEB_URL.matcher(urlLimpia).matches()
     val canAccessSheet = isOwner || myStatus == "Aceptado"
-
     var selectedTab by remember { mutableIntStateOf(0) }
-
     LaunchedEffect(selectedTab, messages.size) {
         if (selectedTab == 1) {
             lastSeenMessagesCount = messages.size
         }
     }
-
     if (showSuccessDialog) {
         AlertDialog(
             onDismissRequest = { },
@@ -100,14 +92,12 @@ fun AppDetailScreen(appId: String, viewModel: AuthViewModel, onBack: () -> Unit)
             tonalElevation = 6.dp
         )
     }
-
     DisposableEffect(appId) {
         viewModel.clearAppDetailState()
         onDispose {
             viewModel.clearAppDetailState()
         }
     }
-
     LaunchedEffect(appId, canAccessSheet, myStatus, isOwner) {
         viewModel.clearAppDetailState()
         if (canAccessSheet) {
@@ -115,12 +105,10 @@ fun AppDetailScreen(appId: String, viewModel: AuthViewModel, onBack: () -> Unit)
         }
         viewModel.loadBugReports(appId)
     }
-
     val solicitudesCount = app.testers.values.count { it.validado == "Solicitud" }
     val currentUserId = remember { FirebaseAuth.getInstance().currentUser?.uid ?: "" }
     val miData = app.testers[currentUserId]
     val misDias = (miData?.dias ?: 0).toString() + " " + stringResource(R.string.dias_label)
-
     if (showStatsModal) {
         ModalBottomSheet(onDismissRequest = { showStatsModal = false }) {
             Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
@@ -134,7 +122,6 @@ fun AppDetailScreen(appId: String, viewModel: AuthViewModel, onBack: () -> Unit)
             }
         }
     }
-
     if (showDeveloperModal) {
         com.appinitdev.tester.screen.CommunityAppsSection.DeveloperProfileModal(
             developerId = app.idPropietario,
@@ -142,11 +129,9 @@ fun AppDetailScreen(appId: String, viewModel: AuthViewModel, onBack: () -> Unit)
             onDismiss = { showDeveloperModal = false }
         )
     }
-
     if (showInstallationSteps) {
         InstallationStepsBottomSheet(app = app, onDismiss = { showInstallationSteps = false })
     }
-
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -158,7 +143,6 @@ fun AppDetailScreen(appId: String, viewModel: AuthViewModel, onBack: () -> Unit)
                     IconButton(onClick = { showReport = true }) {
                         Icon(Icons.Default.Report, stringResource(R.string.reportar), tint = MaterialTheme.colorScheme.error)
                     }
-
                     if (showReport) {
                         com.appinitdev.tester.screen.ReportDialog(
                             onDismiss = { showReport = false },
@@ -168,7 +152,6 @@ fun AppDetailScreen(appId: String, viewModel: AuthViewModel, onBack: () -> Unit)
                             }
                         )
                     }
-
                     IconButton(onClick = { showStatsModal = true }) {
                         Icon(imageVector = Icons.Default.BarChart, contentDescription = stringResource(R.string.estad_isticas))
                     }
@@ -221,7 +204,6 @@ fun AppDetailScreen(appId: String, viewModel: AuthViewModel, onBack: () -> Unit)
                             text = { Text(text = stringResource(R.string.testers), modifier = Modifier.padding(horizontal = 4.dp)) }
                         )
                     }
-
                     when (selectedTab) {
                         0 -> RequestList(app, viewModel)
                         1 -> ChatGroup(app, viewModel, isLoading)
@@ -245,13 +227,11 @@ fun AppDetailScreen(appId: String, viewModel: AuthViewModel, onBack: () -> Unit)
                                 text = { Text(stringResource(R.string.reportes)) }
                             )
                         }
-                        
                         val statusTag = when (myStatus) {
                             "Aceptado" -> null
                             "Solicitud" -> stringResource(R.string.esperando_aceptacion_chat)
                             else -> stringResource(R.string.no_has_solicitado_chat)
                         }
-
                         if (selectedTab == 0 && statusTag != null) {
                             Surface(
                                 color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
@@ -266,7 +246,6 @@ fun AppDetailScreen(appId: String, viewModel: AuthViewModel, onBack: () -> Unit)
                                 )
                             }
                         }
-                        
                         when (selectedTab) {
                             0 -> ChatGroup(app, viewModel, isLoading, isReadOnly = myStatus != "Aceptado" && !isOwner)
                             1 -> BugReportsList(app, viewModel)
@@ -309,7 +288,6 @@ fun AppDetailScreen(appId: String, viewModel: AuthViewModel, onBack: () -> Unit)
                             onInstallationStepsClick = { showInstallationSteps = true }
                         )
                     }
-                    
                     Spacer(modifier = Modifier.height(calculatedPeekHeight)) 
                 } else {
                     AppHeaderInfo(
@@ -383,7 +361,6 @@ fun AppDetailScreen(appId: String, viewModel: AuthViewModel, onBack: () -> Unit)
                         }
                     }
                 }
-                
                 Spacer(modifier = Modifier.height(32.dp))
                 Box(
                     modifier = Modifier
@@ -399,7 +376,6 @@ fun AppDetailScreen(appId: String, viewModel: AuthViewModel, onBack: () -> Unit)
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RequestList(app: AppModel, viewModel: AuthViewModel) {
@@ -412,7 +388,6 @@ fun RequestList(app: AppModel, viewModel: AuthViewModel) {
                 style = MaterialTheme.typography.bodyMedium, color = Color.Gray
             )
         }
-
         if (solicitudes.isEmpty()) {
             item { EmptySolicitudesState(stringResource(R.string.sin_solicitudes_por_el_momento)) }
         } else
@@ -432,13 +407,11 @@ fun RequestList(app: AppModel, viewModel: AuthViewModel) {
                                 modifier = Modifier.size(36.dp),
                                 colors = IconButtonDefaults.filledTonalIconButtonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant, contentColor = MaterialTheme.colorScheme.onSurfaceVariant)
                             ) { Icon(imageVector = Icons.Default.ContentCopy, contentDescription = stringResource(R.string.copiar_correo), modifier = Modifier.size(18.dp)) }
-
                             FilledIconButton(
                                 onClick = { viewModel.responseToTester(app, tester.idUser, true, context) },
                                 modifier = Modifier.size(36.dp),
                                 colors = IconButtonDefaults.filledIconButtonColors(containerColor = Color(0xFF4CAF50), contentColor = Color.White)
                             ) { Icon(imageVector = Icons.Default.Check, contentDescription = stringResource(R.string.aceptar), modifier = Modifier.size(20.dp)) }
-
                             OutlinedIconButton(
                                 onClick = { viewModel.responseToTester(app, tester.idUser, false, context) },
                                 modifier = Modifier.size(36.dp),
@@ -452,8 +425,6 @@ fun RequestList(app: AppModel, viewModel: AuthViewModel) {
         item { Spacer(modifier = Modifier.height(40.dp)) }
     }
 }
-
-
 @Composable
 fun EmptySolicitudesState(titulo: String = "") {
     Column(modifier = Modifier.fillMaxWidth().padding(40.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
@@ -462,7 +433,6 @@ fun EmptySolicitudesState(titulo: String = "") {
         Text(text = titulo, color = Color.Gray, style = MaterialTheme.typography.bodyMedium)
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppHeaderInfo(
@@ -475,17 +445,14 @@ fun AppHeaderInfo(
 ) {
     val context = LocalContext.current
     var showInfoSheet by remember { mutableStateOf(false) }
-
     if (showInfoSheet) {
         AppDetailBottomSheet(app = app, onDismiss = { showInfoSheet = false })
     }
-
     fun openUrl(url: String) {
         if (url.isNotBlank()) {
             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(if (url.startsWith("http")) url else "https://$url")))
         }
     }
-
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -543,11 +510,9 @@ fun AppHeaderInfo(
             Spacer(Modifier.height(20.dp))
             val urlLimpia = app.urlGoogleGroup.trim()
             val esUrlReal = android.util.Patterns.WEB_URL.matcher(urlLimpia).matches()
-
             val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
             val isOwner = app.idPropietario == user?.uid
             val isAccepted = isOwner || status == "Aceptado"
-
             if (status == "Solicitud" && !esUrlReal) {
                 Surface(
                     color = MaterialTheme.colorScheme.infoContainer(),
@@ -603,12 +568,9 @@ fun AppHeaderInfo(
                         Text(stringResource(R.string.link_play_store), fontSize = 11.sp, fontWeight = FontWeight.Bold, maxLines = 1)
                     }
                 }
-                
                 Spacer(Modifier.height(12.dp))
-                
                 var isVerified by remember { mutableStateOf(false) }
                 var verificationChecked by remember { mutableStateOf(false) }
-                
                 Button(
                     onClick = { 
                         isVerified = com.appinitdev.tester.Funciones.isAppInstalled(context, app.paquete)
@@ -635,10 +597,8 @@ fun AppHeaderInfo(
                         fontWeight = FontWeight.Bold
                     )
                 }
-
                 Spacer(Modifier.height(8.dp))
             }
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -656,7 +616,6 @@ fun AppHeaderInfo(
                         Spacer(Modifier.width(6.dp))
                         Text(stringResource(R.string.guia_instalacion_titulo), fontWeight = FontWeight.Bold, fontSize = 11.sp, maxLines = 1)
                     }
-
                     Button(
                         onClick = { showInfoSheet = true },
                         modifier = Modifier.weight(1f),
@@ -671,7 +630,6 @@ fun AppHeaderInfo(
                         Text(stringResource(R.string.info_app_titulo), fontWeight = FontWeight.Bold, fontSize = 11.sp, maxLines = 1)
                     }
                 }
-
                 if (status == "Aceptado") {
                     var showBugDialog by remember { mutableStateOf(false) }
                     Spacer(Modifier.height(12.dp))
@@ -693,7 +651,6 @@ fun AppHeaderInfo(
                         com.appinitdev.tester.screen.BugReportDialog(onDismiss = { showBugDialog = false }, onSubmit = { device, steps, desc -> viewModel.submitBugReport(app.id, device, steps, desc); showBugDialog = false })
                     }
                 }
-
                 val myTesterData = app.testers[user?.uid]
                 if (!isOwner && status == "Aceptado" && ((myTesterData?.dias ?: 0) >= 14 || myTesterData?.completado == true)) {
                     var showSubmitFeedbackDialog by remember { mutableStateOf(false) }
@@ -711,7 +668,6 @@ fun AppHeaderInfo(
                         Spacer(Modifier.width(8.dp))
                         Text(stringResource(R.string.enviar_feedback_final), fontWeight = FontWeight.Bold)
                     }
-
                     if (showSubmitFeedbackDialog) {
                         Submit14DayFeedbackDialog(
                             appName = app.nombre,
@@ -725,7 +681,6 @@ fun AppHeaderInfo(
                         )
                     }
                 }
-
                 if (isOwner) {
                     var showViewFeedbacksModal by remember { mutableStateOf(false) }
                     var showQuestionnaireAssistantModal by remember { mutableStateOf(false) }
@@ -739,7 +694,6 @@ fun AppHeaderInfo(
                         Spacer(Modifier.width(8.dp))
                         Text(stringResource(R.string.ver_feedbacks_14_dias), fontWeight = FontWeight.Bold)
                     }
-
                     Spacer(Modifier.height(8.dp))
                     Button(
                         onClick = { showQuestionnaireAssistantModal = true },
@@ -754,7 +708,6 @@ fun AppHeaderInfo(
                         Spacer(Modifier.width(8.dp))
                         Text(stringResource(R.string.asistente_cuestionario_play_console), fontWeight = FontWeight.Bold)
                     }
-
                     if (showViewFeedbacksModal) {
                         View14DayFeedbacksModal(
                             app = app,
@@ -762,7 +715,6 @@ fun AppHeaderInfo(
                             onDismiss = { showViewFeedbacksModal = false }
                         )
                     }
-
                     if (showQuestionnaireAssistantModal) {
                         PlayConsoleQuestionnaireAssistantModal(
                             app = app,
@@ -771,7 +723,6 @@ fun AppHeaderInfo(
                         )
                     }
                 }
-
                 if (!isOwner && (status == "Aceptado" || status == "Solicitud")) {
                     var showLeaveConfirm by remember { mutableStateOf(false) }
                     Spacer(Modifier.height(12.dp))
@@ -792,7 +743,6 @@ fun AppHeaderInfo(
                             fontSize = 14.sp
                         )
                     }
-
                     if (showLeaveConfirm) {
                         AlertDialog(
                             onDismissRequest = { showLeaveConfirm = false },
@@ -840,13 +790,9 @@ fun AppHeaderInfo(
                         )
                     }
                 }
-
-                
-                
             }
         }
     }
-
 @Composable
 fun InfoActionCard(title: String, icon: ImageVector, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Surface(
@@ -874,10 +820,8 @@ fun InfoActionCard(title: String, icon: ImageVector, modifier: Modifier = Modifi
         }
     }
 }
-
 @Composable
 private fun ColorScheme.infoContainer(): Color = primaryContainer.copy(alpha = 0.3f)
-
 @Composable
 fun TestersChart(app: AppModel, metaDias: Int = 14) {
     val listaTesters = remember(app.testers) { app.testers.values.filter { it.dias > 0 }.sortedByDescending { it.dias } }
@@ -886,7 +830,6 @@ fun TestersChart(app: AppModel, metaDias: Int = 14) {
         listaTesters.forEach { TesterBarRow(tester = it, metaDias = metaDias) }
     }
 }
-
 @Composable
 private fun TesterBarRow(tester: TesterData, metaDias: Int) {
     Column(modifier = Modifier.padding(vertical = 6.dp)) {
@@ -901,8 +844,6 @@ private fun TesterBarRow(tester: TesterData, metaDias: Int) {
         }
     }
 }
-
-
 @Composable
 fun TextLink(label: String, url: String, icon: ImageVector, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val context = LocalContext.current
@@ -922,7 +863,6 @@ fun TextLink(label: String, url: String, icon: ImageVector, onClick: () -> Unit,
         }
     }
 }
-
 @Composable
 fun JoinButton(onClick: () -> Unit) {
     ElevatedCard(
@@ -961,8 +901,6 @@ fun JoinButton(onClick: () -> Unit) {
         }
     }
 }
-
-
 @Composable
 fun ChatGroup(app: AppModel, viewModel: AuthViewModel, isLoading: Boolean, isReadOnly: Boolean = false) {
     var messageText by remember { mutableStateOf("") }
@@ -970,9 +908,7 @@ fun ChatGroup(app: AppModel, viewModel: AuthViewModel, isLoading: Boolean, isRea
     val currentUser = FirebaseAuth.getInstance().currentUser
     val listState = androidx.compose.foundation.lazy.rememberLazyListState()
     val isKeyboardVisible = WindowInsets.ime.asPaddingValues().calculateBottomPadding() > 0.dp
-
     LaunchedEffect(messages.size, isKeyboardVisible) { if (messages.isNotEmpty()) { listState.animateScrollToItem(messages.size - 1) } }
-
     Column(modifier = Modifier.fillMaxSize()) {
         LazyColumn(state = listState, modifier = Modifier.weight(1f).fillMaxWidth(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             if (isLoading) { item { Box(modifier = Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() } } }
@@ -990,8 +926,6 @@ fun ChatGroup(app: AppModel, viewModel: AuthViewModel, isLoading: Boolean, isRea
         }
     }
 }
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopSmallAppBar(title: String, onBack: () -> Unit, actions: @Composable RowScope.() -> Unit = {}) {
@@ -1022,20 +956,16 @@ fun TopSmallAppBar(title: String, onBack: () -> Unit, actions: @Composable RowSc
         actions = actions
     )
 }
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AcceptedTestersList(app: AppModel, viewModel: AuthViewModel) {
     val aceptados = app.testers.values.filter { it.validado == "Aceptado" }.sortedByDescending { it.dias }
     var selectedTester by remember { mutableStateOf<com.appinitdev.tester.model.TesterData?>(null) }
     var showExportDialog by remember { mutableStateOf(false) }
-
     selectedTester?.let { TesterProfileModal(testerData = it, viewModel = viewModel, onDismiss = { selectedTester = null }) }
     if (showExportDialog) {
         ExportPlayConsoleDialog(app = app, onDismiss = { showExportDialog = false })
     }
-
     if (aceptados.isEmpty()) { EmptySolicitudesState(stringResource(R.string.a_n_no_hay_testers_aceptados)) }
     else {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -1070,14 +1000,11 @@ fun AcceptedTestersList(app: AppModel, viewModel: AuthViewModel) {
         }
     }
 }
-
-
 @Composable
 fun BugReportsList(app: AppModel, viewModel: AuthViewModel) {
     val reports by viewModel.bugReports.collectAsState()
     val user = FirebaseAuth.getInstance().currentUser
     val isOwner = app.idPropietario == user?.uid
-
     if (reports.isEmpty()) {
         EmptySolicitudesState(stringResource(R.string.sin_reportes))
     } else {
@@ -1111,7 +1038,6 @@ fun BugReportsList(app: AppModel, viewModel: AuthViewModel) {
                             Text(stringResource(R.string.pasos_label), style = MaterialTheme.typography.labelSmall, color = Color.Gray)
                             Text(bug.stepsToReproduce, style = MaterialTheme.typography.bodySmall)
                         }
-                        
                         if (isOwner && bug.status == "abierto") {
                             Spacer(Modifier.height(12.dp))
                             Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
@@ -1129,8 +1055,6 @@ fun BugReportsList(app: AppModel, viewModel: AuthViewModel) {
         }
     }
 }
-
-
 @Composable
 fun CopyAllEmailsIcon(correos: List<String>) {
     if (correos.isEmpty()) return
@@ -1140,19 +1064,16 @@ fun CopyAllEmailsIcon(correos: List<String>) {
         Icon(imageVector = Icons.Default.ContentCopy, contentDescription = stringResource(R.string.copiar_correos))
     }
 }
-
 @Composable
 fun ExportPlayConsoleDialog(app: AppModel, onDismiss: () -> Unit) {
     val context = LocalContext.current
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-
     val validEmails = remember(app.testers) {
         app.testers.values
             .mapNotNull { it.correoUser?.trim() }
             .filter { it.isNotBlank() && android.util.Patterns.EMAIL_ADDRESS.matcher(it).matches() }
             .distinct()
     }
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -1173,7 +1094,6 @@ fun ExportPlayConsoleDialog(app: AppModel, onDismiss: () -> Unit) {
                         Text(stringResource(R.string.formato_play_console_desc), style = MaterialTheme.typography.bodySmall)
                     }
                 }
-
                 if (validEmails.isNotEmpty()) {
                     Text(
                         text = validEmails.take(5).joinToString(", ") + if (validEmails.size > 5) "..." else "",
@@ -1204,7 +1124,6 @@ fun ExportPlayConsoleDialog(app: AppModel, onDismiss: () -> Unit) {
                     Spacer(Modifier.width(8.dp))
                     Text(stringResource(R.string.copiar_formato_play_console), fontWeight = FontWeight.Bold)
                 }
-
                 OutlinedButton(
                     onClick = {
                         if (validEmails.isNotEmpty()) {
@@ -1226,7 +1145,6 @@ fun ExportPlayConsoleDialog(app: AppModel, onDismiss: () -> Unit) {
                     Spacer(Modifier.width(8.dp))
                     Text(stringResource(R.string.compartir_como_csv), fontWeight = FontWeight.Bold)
                 }
-
                 TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.cancelar))
                 }
@@ -1235,7 +1153,6 @@ fun ExportPlayConsoleDialog(app: AppModel, onDismiss: () -> Unit) {
         dismissButton = null
     )
 }
-
 @Composable
 fun Submit14DayFeedbackDialog(
     appName: String,
@@ -1246,7 +1163,6 @@ fun Submit14DayFeedbackDialog(
     var ratingDiseno by remember { mutableFloatStateOf(5f) }
     var comentarios by remember { mutableStateOf("") }
     var sugerencias by remember { mutableStateOf("") }
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -1260,7 +1176,6 @@ fun Submit14DayFeedbackDialog(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(stringResource(R.string.reporte_final_14_dias_desc), style = MaterialTheme.typography.bodySmall)
-
                 Text(stringResource(R.string.estabilidad_de_la_app), fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.labelLarge)
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     (1..5).forEach { star ->
@@ -1274,7 +1189,6 @@ fun Submit14DayFeedbackDialog(
                         )
                     }
                 }
-
                 Text(stringResource(R.string.diseno_usabilidad), fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.labelLarge)
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     (1..5).forEach { star ->
@@ -1288,7 +1202,6 @@ fun Submit14DayFeedbackDialog(
                         )
                     }
                 }
-
                 OutlinedTextField(
                     value = comentarios,
                     onValueChange = { comentarios = it },
@@ -1297,7 +1210,6 @@ fun Submit14DayFeedbackDialog(
                     maxLines = 3,
                     shape = RoundedCornerShape(12.dp)
                 )
-
                 OutlinedTextField(
                     value = sugerencias,
                     onValueChange = { sugerencias = it },
@@ -1326,7 +1238,6 @@ fun Submit14DayFeedbackDialog(
         }
     )
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun View14DayFeedbacksModal(
@@ -1335,11 +1246,9 @@ fun View14DayFeedbacksModal(
     onDismiss: () -> Unit
 ) {
     val feedbacks by viewModel.feedbackReports14Days.collectAsState()
-
     LaunchedEffect(app.id) {
         viewModel.load14DayFeedbacks(app.id)
     }
-
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
@@ -1348,7 +1257,6 @@ fun View14DayFeedbacksModal(
         ) {
             Text(stringResource(R.string.reportes_finales_14_dias_cant, feedbacks.size), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold)
             Spacer(Modifier.height(12.dp))
-
             if (feedbacks.isEmpty()) {
                 Box(modifier = Modifier.fillMaxWidth().height(180.dp), contentAlignment = Alignment.Center) {
                     Text(stringResource(R.string.sin_reportes_finales_14_dias), color = Color.Gray)
@@ -1384,7 +1292,6 @@ fun View14DayFeedbacksModal(
                     }
                 }
             }
-
             Spacer(Modifier.height(16.dp))
             Button(onClick = onDismiss, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp)) {
                 Text(stringResource(R.string.cerrar))
@@ -1392,7 +1299,6 @@ fun View14DayFeedbacksModal(
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayConsoleQuestionnaireAssistantModal(
@@ -1404,23 +1310,19 @@ fun PlayConsoleQuestionnaireAssistantModal(
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val feedbacks by viewModel.feedbackReports14Days.collectAsState()
     val bugReports by viewModel.bugReports.collectAsState()
-
     LaunchedEffect(app.id) {
         viewModel.load14DayFeedbacks(app.id)
         viewModel.loadBugReports(app.id)
     }
-
     val totalTesters = app.testers.size
     val resolvedBugs = bugReports.count { it.status == "resuelto" }
     val totalFeedbacks = feedbacks.size
     val avgRating = if (feedbacks.isNotEmpty()) feedbacks.map { it.ratingEstabilidad }.average() else 5.0
-
     val respuestaReclutamiento = stringResource(R.string.pregunta_1_reclutamiento_text)
     val respuestaFacilidad = stringResource(R.string.pregunta_2_experiencia_text)
     val respuestaFeedback = stringResource(R.string.pregunta_3_feedback_text)
     val respuestaCambios = stringResource(R.string.pregunta_4_cambios_text)
     val respuestaPreparacion = stringResource(R.string.pregunta_5_preparacion_text)
-
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
@@ -1436,9 +1338,7 @@ fun PlayConsoleQuestionnaireAssistantModal(
                     Text(stringResource(R.string.asistente_cuestionario_subtitulo), style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                 }
             }
-
             Spacer(Modifier.height(16.dp))
-
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)),
                 shape = RoundedCornerShape(16.dp),
@@ -1451,9 +1351,7 @@ fun PlayConsoleQuestionnaireAssistantModal(
                     Text(stringResource(R.string.feedbacks_14_dias_promedio, totalFeedbacks, avgRating), style = MaterialTheme.typography.bodySmall)
                 }
             }
-
             Spacer(Modifier.height(16.dp))
-
             QuestionAnswerCard(
                 numero = stringResource(R.string.pregunta_1_reclutamiento_titulo),
                 pregunta = stringResource(R.string.pregunta_1_reclutamiento_text),
@@ -1463,9 +1361,7 @@ fun PlayConsoleQuestionnaireAssistantModal(
                     showNiceToast(context, context.getString(R.string.copiar_respuesta), NiceToastType.SUCCESS)
                 }
             )
-
             Spacer(Modifier.height(12.dp))
-
             QuestionAnswerCard(
                 numero = stringResource(R.string.pregunta_2_experiencia_titulo),
                 pregunta = stringResource(R.string.pregunta_2_experiencia_text),
@@ -1475,9 +1371,7 @@ fun PlayConsoleQuestionnaireAssistantModal(
                     showNiceToast(context, context.getString(R.string.copiar_respuesta), NiceToastType.SUCCESS)
                 }
             )
-
             Spacer(Modifier.height(12.dp))
-
             QuestionAnswerCard(
                 numero = stringResource(R.string.pregunta_3_feedback_titulo),
                 pregunta = stringResource(R.string.pregunta_3_feedback_text),
@@ -1487,9 +1381,7 @@ fun PlayConsoleQuestionnaireAssistantModal(
                     showNiceToast(context, context.getString(R.string.copiar_respuesta), NiceToastType.SUCCESS)
                 }
             )
-
             Spacer(Modifier.height(12.dp))
-
             QuestionAnswerCard(
                 numero = stringResource(R.string.pregunta_4_cambios_titulo),
                 pregunta = stringResource(R.string.pregunta_4_cambios_text),
@@ -1499,9 +1391,7 @@ fun PlayConsoleQuestionnaireAssistantModal(
                     showNiceToast(context, context.getString(R.string.copiar_respuesta), NiceToastType.SUCCESS)
                 }
             )
-
             Spacer(Modifier.height(12.dp))
-
             QuestionAnswerCard(
                 numero = stringResource(R.string.pregunta_5_preparacion_titulo),
                 pregunta = stringResource(R.string.pregunta_5_preparacion_text),
@@ -1511,7 +1401,6 @@ fun PlayConsoleQuestionnaireAssistantModal(
                     showNiceToast(context, context.getString(R.string.copiar_respuesta), NiceToastType.SUCCESS)
                 }
             )
-
             if (app.esDePago) {
                 Spacer(Modifier.height(16.dp))
                 Card(
@@ -1525,18 +1414,14 @@ fun PlayConsoleQuestionnaireAssistantModal(
                     }
                 }
             }
-
             Spacer(Modifier.height(20.dp))
-
             Button(onClick = onDismiss, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp)) {
                 Text(stringResource(R.string.cerrar), fontWeight = FontWeight.Bold)
             }
-
             Spacer(Modifier.height(24.dp))
         }
     }
 }
-
 @Composable
 fun QuestionAnswerCard(
     numero: String,

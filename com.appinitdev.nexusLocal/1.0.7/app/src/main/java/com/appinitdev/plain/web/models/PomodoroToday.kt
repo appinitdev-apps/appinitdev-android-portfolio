@@ -1,4 +1,3 @@
-
 data class PomodoroToday(
     val date: String,
     val completedCount: Int,
@@ -9,4 +8,3 @@ data class PomodoroToday(
     val isPause: Boolean,
     val state: PomodoroState,
 )
-

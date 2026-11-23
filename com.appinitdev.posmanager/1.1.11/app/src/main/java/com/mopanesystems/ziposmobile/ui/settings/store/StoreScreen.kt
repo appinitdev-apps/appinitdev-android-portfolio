@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StoreScreen(
@@ -6,7 +5,6 @@ fun StoreScreen(
     onBack: (() -> Unit)? = null
 ) {
     val storeState by viewModel.store.collectAsState()
-
     storeState?.let { s ->
         var name by remember { mutableStateOf(s.name) }
         var address by remember { mutableStateOf(s.address) }
@@ -50,7 +48,6 @@ fun StoreScreen(
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    
                     val fields = listOf(
                         stringResource(R.string.name) to name,
                         stringResource(R.string.address) to address,
@@ -65,7 +62,6 @@ fun StoreScreen(
                         stringResource(R.string.currency) to currency,
                         stringResource(R.string.time_zone) to timezone
                     )
-                    
                     val nameLabel = stringResource(R.string.name)
                     val addressLabel = stringResource(R.string.address)
                     val cityLabel = stringResource(R.string.city)
@@ -78,7 +74,6 @@ fun StoreScreen(
                     val taxIdLabel = stringResource(R.string.tax_id)
                     val currencyLabel = stringResource(R.string.currency)
                     val timezoneLabel = stringResource(R.string.time_zone)
-
                     fields.forEach { (label, value) ->
                         OutlinedTextField(
                             value = value,
@@ -102,9 +97,7 @@ fun StoreScreen(
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
-
                     Spacer(modifier = Modifier.height(16.dp))
-
                     Button(
                         onClick = {
                             viewModel.updateStore(

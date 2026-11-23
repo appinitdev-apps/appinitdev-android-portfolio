@@ -1,27 +1,17 @@
-
 @TypeConverters(Converters::class)
 @Database(entities = [BaseNote::class, Label::class], version = 9)
 abstract class NotallyDatabase : RoomDatabase() {
-
     abstract fun getLabelDao(): LabelDao
-
     abstract fun getCommonDao(): CommonDao
-
     abstract fun getBaseNoteDao(): BaseNoteDao
-
     fun checkpoint() {
         getBaseNoteDao().query(SimpleSQLiteQuery("pragma wal_checkpoint(FULL)"))
     }
-
     private var biometricLockObserver: Observer<BiometricLock>? = null
     private var dataInPublicFolderObserver: Observer<Boolean>? = null
-
     companion object {
-
         const val DATABASE_NAME = "NotallyDatabase"
-
         @Volatile private var instance: NotNullLiveData<NotallyDatabase>? = null
-
         fun getCurrentDatabaseFile(context: ContextWrapper): File {
             return if (NotallyXPreferences.getInstance(context).dataInPublicFolder.value) {
                 getExternalDatabaseFile(context)
@@ -29,11 +19,9 @@ abstract class NotallyDatabase : RoomDatabase() {
                 getInternalDatabaseFile(context)
             }
         }
-
         fun getExternalDatabaseFile(context: ContextWrapper): File {
             return File(context.getExternalMediaDirectory(), DATABASE_NAME)
         }
-
         fun getExternalDatabaseFiles(context: ContextWrapper): List<File> {
             return listOf(
                 File(context.getExternalMediaDirectory(), DATABASE_NAME),
@@ -41,11 +29,9 @@ abstract class NotallyDatabase : RoomDatabase() {
                 File(context.getExternalMediaDirectory(), "$DATABASE_NAME-wal"),
             )
         }
-
         fun getInternalDatabaseFile(context: Context): File {
             return context.getDatabasePath(DATABASE_NAME)
         }
-
         fun getInternalDatabaseFiles(context: ContextWrapper): List<File> {
             val directory = context.getDatabasePath(DATABASE_NAME).parentFile
             return listOf(
@@ -54,7 +40,6 @@ abstract class NotallyDatabase : RoomDatabase() {
                 File(directory, "$DATABASE_NAME-wal"),
             )
         }
-
         private fun getCurrentDatabaseName(context: ContextWrapper): String {
             return if (NotallyXPreferences.getInstance(context).dataInPublicFolder.value) {
                 getExternalDatabaseFile(context).absolutePath
@@ -62,7 +47,6 @@ abstract class NotallyDatabase : RoomDatabase() {
                 DATABASE_NAME
             }
         }
-
         fun getDatabase(
             context: ContextWrapper,
             observePreferences: Boolean = true,
@@ -75,11 +59,9 @@ abstract class NotallyDatabase : RoomDatabase() {
                     return this.instance!!
                 }
         }
-
         fun getFreshDatabase(context: ContextWrapper): NotallyDatabase {
             return createInstance(context, NotallyXPreferences.getInstance(context), false)
         }
-
         private fun createInstance(
             context: ContextWrapper,
             preferences: NotallyXPreferences,
@@ -90,21 +72,7 @@ abstract class NotallyDatabase : RoomDatabase() {
                 NotallyDatabase::class.java,
                 getCurrentDatabaseName(context)
             ).fallbackToDestructiveMigration()
-                 
-
-
-
-
-
-
-
-
-
-
-
             val instance = instanceBuilder.build()
-
-            
             if (observePreferences) {
                 instance.biometricLockObserver = Observer {
                     NotallyDatabase.instance?.value?.biometricLockObserver?.let {
@@ -117,7 +85,6 @@ abstract class NotallyDatabase : RoomDatabase() {
                     )
                 }
                 preferences.biometricLock.observeForeverSkipFirst(instance.biometricLockObserver!!)
-
                 instance.dataInPublicFolderObserver = Observer {
                     NotallyDatabase.instance?.value?.dataInPublicFolderObserver?.let {
                         preferences.dataInPublicFolder.removeObserver(it)
@@ -130,16 +97,11 @@ abstract class NotallyDatabase : RoomDatabase() {
                 }
                 preferences.dataInPublicFolder.observeForeverSkipFirst(instance.dataInPublicFolderObserver!!)
             }
-
             return instance
         }
-
         val Migration9_10 = object : Migration(9, 10) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                
                 database.execSQL("ALTER TABLE BaseNote RENAME TO BaseNote_old")
-
-                
                 database.execSQL("""
             CREATE TABLE IF NOT EXISTS BaseNote (
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -162,8 +124,6 @@ abstract class NotallyDatabase : RoomDatabase() {
                 viewMode TEXT NOT NULL DEFAULT 'EDIT'
             )
         """.trimIndent())
-
-                
                 database.execSQL("""
             INSERT INTO BaseNote (
                 id, type, folder, color, title, pinned, timestamp, modifiedTimestamp,
@@ -174,65 +134,45 @@ abstract class NotallyDatabase : RoomDatabase() {
                 labels, body, spans, items, images, files, audios, reminders, reminder, viewMode
             FROM BaseNote_old
         """.trimIndent())
-
-                
                 database.execSQL("DROP TABLE BaseNote_old")
             }
         }
-
-
-
-
-
-
         object Migration2 : Migration(1, 2) {
-
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
                     "ALTER TABLE `BaseNote` ADD COLUMN `color` TEXT NOT NULL DEFAULT 'DEFAULT'"
                 )
             }
         }
-
         object Migration3 : Migration(2, 3) {
-
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE `BaseNote` ADD COLUMN `images` TEXT NOT NULL DEFAULT `[]`")
             }
         }
-
         object Migration4 : Migration(3, 4) {
-
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE `BaseNote` ADD COLUMN `audios` TEXT NOT NULL DEFAULT `[]`")
             }
         }
-
         object Migration5 : Migration(4, 5) {
-
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE `BaseNote` ADD COLUMN `files` TEXT NOT NULL DEFAULT `[]`")
             }
         }
-
         object Migration6 : Migration(5, 6) {
-
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
                     "ALTER TABLE `BaseNote` ADD COLUMN `modifiedTimestamp` INTEGER NOT NULL DEFAULT 'timestamp'"
                 )
             }
         }
-
         object Migration7 : Migration(6, 7) {
-
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
                     "ALTER TABLE `BaseNote` ADD COLUMN `reminders` TEXT NOT NULL DEFAULT `[]`"
                 )
             }
         }
-
         object Migration8 : Migration(7, 8) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 val cursor = db.query("SELECT id, color FROM BaseNote")
@@ -246,9 +186,7 @@ abstract class NotallyDatabase : RoomDatabase() {
                 cursor.close()
             }
         }
-
         object Migration9 : Migration(8, 9) {
-
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
                     "ALTER TABLE `BaseNote` ADD COLUMN `viewMode` TEXT NOT NULL DEFAULT '${NoteViewMode.EDIT.name}'"

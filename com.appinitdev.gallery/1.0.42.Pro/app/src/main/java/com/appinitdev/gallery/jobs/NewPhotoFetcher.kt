@@ -1,5 +1,3 @@
-
-
 class NewPhotoFetcher : JobService() {
     companion object {
         const val PHOTO_VIDEO_CONTENT_JOB = 1
@@ -7,15 +5,12 @@ class NewPhotoFetcher : JobService() {
         private val PHOTO_PATH_SEGMENTS = Images.Media.EXTERNAL_CONTENT_URI.pathSegments
         private val VIDEO_PATH_SEGMENTS = Video.Media.EXTERNAL_CONTENT_URI.pathSegments
     }
-
     private val mHandler = Handler()
     private val mWorker = Runnable {
         scheduleJob(this@NewPhotoFetcher)
         jobFinished(mRunningParams, false)
     }
-
     private var mRunningParams: JobParameters? = null
-
     fun scheduleJob(context: Context) {
         val componentName = ComponentName(context, NewPhotoFetcher::class.java)
         val photoUri = Images.Media.EXTERNAL_CONTENT_URI
@@ -24,20 +19,17 @@ class NewPhotoFetcher : JobService() {
             addTriggerContentUri(TriggerContentUri(photoUri, TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS))
             addTriggerContentUri(TriggerContentUri(videoUri, TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS))
             addTriggerContentUri(TriggerContentUri(MEDIA_URI, 0))
-
             try {
                 context.getSystemService(JobScheduler::class.java)?.schedule(build())
             } catch (ignored: Exception) {
             }
         }
     }
-
     fun isScheduled(context: Context): Boolean {
         val jobScheduler = context.getSystemService(JobScheduler::class.java)
         val jobs = jobScheduler.allPendingJobs
         return jobs.any { it.id == PHOTO_VIDEO_CONTENT_JOB }
     }
-
     override fun onStartJob(params: JobParameters): Boolean {
         mRunningParams = params
         ensureBackgroundThread {
@@ -50,7 +42,6 @@ class NewPhotoFetcher : JobService() {
                         ids.add(path[path.lastIndex])
                     }
                 }
-
                 if (ids.isNotEmpty()) {
                     val selection = StringBuilder()
                     for (id in ids) {
@@ -59,7 +50,6 @@ class NewPhotoFetcher : JobService() {
                         }
                         selection.append("${Images.ImageColumns._ID} = '$id'")
                     }
-
                     var cursor: Cursor? = null
                     try {
                         val projection = arrayOf(Images.ImageColumns.DATA)
@@ -78,16 +68,13 @@ class NewPhotoFetcher : JobService() {
                     }
                 }
             }
-
             affectedFolderPaths.forEach {
                 updateDirectoryPath(it)
             }
         }
-
         mHandler.post(mWorker)
         return true
     }
-
     override fun onStopJob(params: JobParameters): Boolean {
         mHandler.removeCallbacks(mWorker)
         return false

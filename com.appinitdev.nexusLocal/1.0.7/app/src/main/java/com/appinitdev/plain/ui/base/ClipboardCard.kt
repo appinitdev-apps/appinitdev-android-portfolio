@@ -1,4 +1,3 @@
-
 @Composable
 fun ClipboardCard(
     horizontal: Dp = PlainTheme.PAGE_HORIZONTAL_MARGIN,

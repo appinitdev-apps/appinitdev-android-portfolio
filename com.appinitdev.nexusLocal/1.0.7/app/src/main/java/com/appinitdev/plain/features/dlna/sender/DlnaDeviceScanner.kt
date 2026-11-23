@@ -1,18 +1,14 @@
-
 object DlnaDeviceScanner {
     private val devices = HashSet<DlnaDevice>()
     private val searchQuery =
         "M-SEARCH * HTTP/1.1\r\nST: ssdp:all\r\nHOST: 239.255.255.250:1900\r\nMX: 3\r\nMAN: \"ssdp:discover\"\r\n\r\n"
-
     private const val SSDP_ADDR = "239.255.255.250"
     private const val SSDP_PORT = 1900
-
     fun search(context: Context): Flow<DlnaDevice> = callbackFlow {
         devices.forEach { trySend(it) }
         val wifi = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val lock = runCatching {
             wifi.createMulticastLock("DlnaDeviceScanner").apply {
-                
                 setReferenceCounted(false)
                 acquire()
             }
@@ -44,7 +40,6 @@ object DlnaDeviceScanner {
                         }
                     }
                 } catch (_: SocketTimeoutException) {
-                    
                     socket.send(DatagramPacket(searchQuery.toByteArray(), searchQuery.length, group, SSDP_PORT))
                 }
             }

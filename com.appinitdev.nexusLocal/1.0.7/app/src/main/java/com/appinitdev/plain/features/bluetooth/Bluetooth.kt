@@ -1,4 +1,3 @@
-
 data class BleAuthData(val password: String) {
     fun toJSON(): JSONObject {
         val json = JSONObject()
@@ -6,7 +5,6 @@ data class BleAuthData(val password: String) {
         return json
     }
 }
-
 data class BleRequestData(val headers: MutableMap<String, String> = mutableMapOf(), var body: String = "") {
     fun toJSON(): JSONObject {
         val json = JSONObject()
@@ -16,10 +14,8 @@ data class BleRequestData(val headers: MutableMap<String, String> = mutableMapOf
         }
         json.put("h", headersJSON)
         json.put("b", body)
-
         return json
     }
-
     companion object {
         fun create(context: Context): BleRequestData {
             val data = BleRequestData()
@@ -33,25 +29,19 @@ data class BleRequestData(val headers: MutableMap<String, String> = mutableMapOf
         }
     }
 }
-
 data class BleSegmentData(val data: String, val state: Int) {
     fun toJSON(): JSONObject {
         val json = JSONObject()
-
         json.put("s", state)
         json.put("d", data)
-
         return json
     }
-
     fun isEnd(): Boolean {
         return (state and stateEndBit) == stateEndBit
     }
-
     companion object {
         private const val stateStartBit = 1
         const val stateEndBit = 2
-
         fun build(
             data: String,
             start: Boolean,
@@ -65,10 +55,8 @@ data class BleSegmentData(val data: String, val state: Int) {
             } else if (end) {
                 state = stateEndBit
             }
-
             return BleSegmentData(data, state)
         }
-
         fun fromJSON(value: String): BleSegmentData {
             val json = JSONObject(value)
             return BleSegmentData(json.optString("d"), json.optInt("s"))

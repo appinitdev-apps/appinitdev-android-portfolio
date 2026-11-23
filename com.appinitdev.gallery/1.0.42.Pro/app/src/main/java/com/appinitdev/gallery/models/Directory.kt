@@ -1,4 +1,3 @@
-
 @Entity(tableName = "directories", indices = [Index(value = ["path"], unique = true)])
 data class Directory(
     @PrimaryKey(autoGenerate = true) var id: Long?,
@@ -12,15 +11,11 @@ data class Directory(
     @ColumnInfo(name = "location") var location: Int,
     @ColumnInfo(name = "media_types") var types: Int,
     @ColumnInfo(name = "sort_value") var sortValue: String,
-
-    
     @Ignore var subfoldersCount: Int = 0,
     @Ignore var subfoldersMediaCount: Int = 0,
     @Ignore var containsMediaFilesDirectly: Boolean = true
 ) {
-
     constructor() : this(null, "", "", "", 0, 0L, 0L, 0L, 0, 0, "", 0, 0)
-
     fun getBubbleText(sorting: Int, context: Context, dateFormat: String? = null, timeFormat: String? = null) = when {
         sorting and SORT_BY_NAME != 0 -> name
         sorting and SORT_BY_PATH != 0 -> path
@@ -29,10 +24,7 @@ data class Directory(
         sorting and SORT_BY_RANDOM != 0 -> name
         else -> taken.formatDate(context)
     }
-
     fun areFavorites() = path == FAVORITES
-
     fun isRecycleBin() = path == RECYCLE_BIN
-
     fun getKey() = ObjectKey("$path-$modified")
 }

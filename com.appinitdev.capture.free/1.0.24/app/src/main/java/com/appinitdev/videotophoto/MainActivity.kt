@@ -1,26 +1,21 @@
-
 enum class AppScreen {
     WELCOME, HUB, MANUAL_CAPTURE, INTERVAL_CAPTURE, GALLERY
 }
-
 enum class ExportFormat(val extension: String, val displayName: String) {
     PNG("png", "PNG"),
     JPG("jpg", "JPEG")
 }
-
 enum class ExportQuality(val qualityInt: Int, val displayName: String) {
     HIGH(100, "💎 Máxima (100%)"),
     BALANCED(85, "⚖️ Equilibrada (85%)"),
     COMPRESSED(65, "⚡ Comprimida (65%)")
 }
-
 enum class StripColor(val colorInt: Int, val displayName: String) {
     BLACK(android.graphics.Color.BLACK, "⬛ Negro"),
     WHITE(android.graphics.Color.WHITE, "⬜ Blanco"),
     NEON(android.graphics.Color.parseColor("#00E5FF"), "🩵 Neón"),
     PINK(android.graphics.Color.parseColor("#FF4081"), "🩷 Rosa")
 }
-
 enum class FilterType(val displayName: String) {
     ORIGINAL("Original"),
     CINE("Cine"),
@@ -31,7 +26,6 @@ enum class FilterType(val displayName: String) {
     HDR("HDR"),
     DRAMATIC_BW("Drama")
 }
-
 data class VideoMetaData(
     val fileName: String = "video.mp4",
     val durationMs: Long = 0L,
@@ -39,14 +33,12 @@ data class VideoMetaData(
     val height: Int = 1920,
     val resolutionText: String = "1080x1920"
 )
-
 data class FaceAnalysisResult(
     val hasFace: Boolean = false,
     val isSmiling: Boolean = false,
     val eyesOpen: Boolean = false,
     val faceCount: Int = 0
 )
-
 data class ScoredFrame(
     var bitmap: Bitmap,
     val timestampMs: Long = 0L,
@@ -57,7 +49,6 @@ data class ScoredFrame(
     var eyesOpen: Boolean = false,
     var isSelected: MutableState<Boolean> = mutableStateOf(false)
 )
-
 data class AiFrameMeta(
     val sharpness: Float = 0f,
     val hasFace: Boolean = false,
@@ -68,29 +59,23 @@ data class AiFrameMeta(
     val actionTag: String? = null,
     val colorStyleTag: String? = null
 )
-
 class MainActivity : ComponentActivity() {
-
     var canEnterPip = false
     var videoWidth = 16
     var videoHeight = 9
-
     @androidx.annotation.OptIn(UnstableApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         enableEdgeToEdge()
-
         try {
             MobileAds.initialize(this) {}
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
         setContent {
             MaterialTheme {
                 var isPipMode by remember { mutableStateOf(false) }
-
                 DisposableEffect(Unit) {
                     val listener = Consumer<PictureInPictureModeChangedInfo> { info ->
                         isPipMode = info.isInPictureInPictureMode
@@ -107,10 +92,8 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-
         if (canEnterPip && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val ratioFloat = if (videoHeight > 0) videoWidth.toFloat() / videoHeight.toFloat() else 1.777f
             val aspectRatio = if (ratioFloat in 0.4184f..2.39f) {
@@ -125,8 +108,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-
 private val maxMemoryKb = (Runtime.getRuntime().maxMemory() / 1024).toInt()
 private val cacheSizeKb = (maxMemoryKb / 6).coerceAtLeast(1024 * 32) 
 private val frameCache = object : LruCache<Long, Bitmap>(cacheSizeKb) {
@@ -134,15 +115,12 @@ private val frameCache = object : LruCache<Long, Bitmap>(cacheSizeKb) {
         return bitmap.byteCount / 1024
     }
 }
-
 fun getNearestCachedFrame(targetMs: Long, stepMs: Long, totalFrames: Int): Bitmap? {
     val exact = frameCache.get(targetMs)
     if (exact != null && !isBitmapBlackOrEmpty(exact)) return exact
-
     var nearestBmp: Bitmap? = null
     var minDiff = Long.MAX_VALUE
     val targetIndex = if (stepMs > 0) (targetMs / stepMs).toInt() else 0
-
     val searchRange = (targetIndex - 12).coerceAtLeast(0)..(targetIndex + 12).coerceAtMost(totalFrames - 1)
     for (i in searchRange) {
         val checkMs = i * stepMs
@@ -157,17 +135,13 @@ fun getNearestCachedFrame(targetMs: Long, stepMs: Long, totalFrames: Int): Bitma
     }
     return nearestBmp
 }
-
 @Composable
 fun AdBanner(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val isDebug = (context.applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0
-
     if (isDebug) {
-        
         return
     }
-
     Surface(
         color = Color(0xFF0A0F1D),
         modifier = modifier
@@ -188,7 +162,6 @@ fun AdBanner(modifier: Modifier = Modifier) {
         )
     }
 }
-
 @SuppressLint("LocalContextConfigurationRead")
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -197,34 +170,25 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val db = remember { AppDatabase.getDatabase(context) }
-
     var currentScreen by rememberSaveable { mutableStateOf(AppScreen.WELCOME) }
     var selectedFormat by rememberSaveable { mutableStateOf(ExportFormat.PNG) }
-
     var videoUri by rememberSaveable { mutableStateOf<Uri?>(null) }
     var videoMeta by remember { mutableStateOf(VideoMetaData()) }
-
     var currentVideoPosition by rememberSaveable { mutableLongStateOf(0L) }
     var isExtracting by rememberSaveable { mutableStateOf(false) }
     var newlySavedCapture by rememberSaveable { mutableStateOf<CaptureEntity?>(null) }
     var isMuted by rememberSaveable { mutableStateOf(false) }
-
-    
     var autoCapturedFrames by remember { mutableStateOf<List<ScoredFrame>>(emptyList()) }
     var showAutoSelectionScreen by rememberSaveable { mutableStateOf(false) }
-
-    
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply { playWhenReady = false }
     }
-
     DisposableEffect(exoPlayer) {
         val listener = object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
                 val activity = context as? MainActivity
                 activity?.canEnterPip = (playbackState != Player.STATE_IDLE && playbackState != Player.STATE_ENDED)
             }
-
             override fun onVideoSizeChanged(videoSize: androidx.media3.common.VideoSize) {
                 if (videoSize.width > 0 && videoSize.height > 0) {
                     val activity = context as? MainActivity
@@ -232,7 +196,6 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
                     activity?.videoHeight = videoSize.height
                 }
             }
-
             override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
                 Log.e("ExoPlayer", "Error de reproducción: ${error.message}")
                 if (videoUri != null) {
@@ -252,8 +215,6 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
             exoPlayer.release()
         }
     }
-
-    
     val cropImageLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
             result.uriContent?.let { uriCortada ->
@@ -264,7 +225,6 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
                     if (bitmap != null) {
                         val localPath = saveBitmapToInternalStorage(context, bitmap, selectedFormat)
                         saveToPublicGallery(context, bitmap, selectedFormat)
-
                         val nuevaCaptura = CaptureEntity(
                             imagePath = localPath,
                             videoName = videoMeta.fileName.ifEmpty { "Video" },
@@ -272,7 +232,6 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
                         )
                         val newId = db.captureDao().insertCapture(nuevaCaptura)
                         val entitySaved = nuevaCaptura.copy(id = newId.toInt())
-
                         Toast.makeText(context, context.getString(R.string.guardado_galeria_publica), Toast.LENGTH_LONG).show()
                         newlySavedCapture = entitySaved
                     }
@@ -280,8 +239,6 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
             }
         }
     }
-
-    
     val selectAndLoadVideo: (Uri) -> Unit = { uri ->
         try {
             context.contentResolver.takePersistableUriPermission(
@@ -289,13 +246,10 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
                 Intent.FLAG_GRANT_READ_URI_PERMISSION
             )
         } catch (_: Exception) {}
-
         frameCache.evictAll()
-
         videoUri = uri
         exoPlayer.setMediaItem(MediaItem.fromUri(uri))
         exoPlayer.prepare()
-
         scope.launch(Dispatchers.IO) {
             val meta = extractVideoMetadata(context, uri)
             if (meta.durationMs > 0) {
@@ -317,8 +271,6 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
             }
         }
     }
-
-    
     val videoPicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
             try {
@@ -330,8 +282,6 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
             selectAndLoadVideo(uri)
         }
     }
-
-    
     LaunchedEffect(videoUri) {
         frameCache.evictAll()
         if (videoUri != null) {
@@ -346,7 +296,6 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
             }
         }
     }
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color(0xFF0A0F1D),
@@ -371,7 +320,6 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
                                 selectedFrames.forEach { frame ->
                                     val localPath = saveBitmapToInternalStorage(context, frame.bitmap, selectedFormat)
                                     saveToPublicGallery(context, frame.bitmap, selectedFormat)
-
                                     db.captureDao().insertCapture(
                                         CaptureEntity(
                                             imagePath = localPath,
@@ -391,7 +339,6 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
                         isSaving = isExtracting
                     )
                 }
-
                 currentScreen == AppScreen.GALLERY -> {
                     BackHandler { currentScreen = if (videoUri != null) AppScreen.HUB else AppScreen.WELCOME }
                     GalleryScreen(
@@ -401,7 +348,6 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
                         selectedFormat = selectedFormat
                     )
                 }
-
                 currentScreen == AppScreen.MANUAL_CAPTURE && videoUri != null -> {
                     BackHandler { currentScreen = AppScreen.HUB }
                     ManualCaptureScreen(
@@ -442,7 +388,6 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
                         }
                     )
                 }
-
                 currentScreen == AppScreen.INTERVAL_CAPTURE && videoUri != null -> {
                     BackHandler { currentScreen = AppScreen.HUB }
                     IntervalCaptureScreen(
@@ -473,7 +418,6 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
                         onBack = { currentScreen = AppScreen.HUB }
                     )
                 }
-
                 currentScreen == AppScreen.HUB && videoUri != null -> {
                     BackHandler { currentScreen = AppScreen.WELCOME }
                     VideoHubScreen(
@@ -497,7 +441,6 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
                         }
                     )
                 }
-
                 else -> {
                     WelcomeHeroScreen(
                         context = context,
@@ -507,7 +450,6 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
                     )
                 }
             }
-
             AnimatedVisibility(
                 visible = newlySavedCapture != null,
                 enter = fadeIn(),
@@ -531,15 +473,12 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
                     )
                 }
             }
-
             if (isExtracting && !showAutoSelectionScreen) {
                 LoadingOverlay()
             }
         }
     }
 }
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VideoHubScreen(
@@ -561,7 +500,6 @@ fun VideoHubScreen(
             .fillMaxSize()
             .background(Color(0xFF0A0F1D))
     ) {
-        
         Surface(
             color = Color(0xFF101728),
             tonalElevation = 4.dp
@@ -594,9 +532,7 @@ fun VideoHubScreen(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    
                     Box(
                         modifier = Modifier
                             .background(Color(0xFF1E283F), RoundedCornerShape(8.dp))
@@ -609,8 +545,6 @@ fun VideoHubScreen(
                             fontWeight = FontWeight.Bold
                         )
                     }
-
-                    
                     IconButton(
                         onClick = onOpenGallery,
                         modifier = Modifier
@@ -627,7 +561,6 @@ fun VideoHubScreen(
                 }
             }
         }
-
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -635,8 +568,6 @@ fun VideoHubScreen(
                 .padding(horizontal = 16.dp)
         ) {
             Spacer(Modifier.height(12.dp))
-
-            
             val hubZoomState = rememberZoomableState()
             Box(
                 modifier = Modifier
@@ -660,8 +591,6 @@ fun VideoHubScreen(
                         modifier = Modifier.fillMaxSize()
                     )
                 }
-
-                
                 var isPlaying by remember { mutableStateOf(exoPlayer.isPlaying) }
                 Box(
                     modifier = Modifier
@@ -681,10 +610,7 @@ fun VideoHubScreen(
                     )
                 }
             }
-
             Spacer(Modifier.height(8.dp))
-
-            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -704,7 +630,6 @@ fun VideoHubScreen(
                     )
                 )
             }
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -720,10 +645,7 @@ fun VideoHubScreen(
                     fontSize = 11.sp
                 )
             }
-
             Spacer(Modifier.height(16.dp))
-
-            
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF141C2E)),
                 shape = RoundedCornerShape(16.dp),
@@ -746,9 +668,7 @@ fun VideoHubScreen(
                             fontWeight = FontWeight.Bold
                         )
                     }
-
                     Spacer(Modifier.height(10.dp))
-
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -778,43 +698,30 @@ fun VideoHubScreen(
                     }
                 }
             }
-
             Spacer(Modifier.height(16.dp))
-
-            
             Text(
                 text = "Elige el método de captura",
                 color = Color.LightGray,
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.SemiBold
             )
-
             Spacer(Modifier.height(10.dp))
-
-            
             CaptureMethodCard(
                 title = "Captura manual",
                 subtitle = "Desplázate por el video y guarda exactamente los fotogramas que quieras",
                 icon = Icons.Default.TouchApp,
                 onClick = onSelectManualCapture
             )
-
             Spacer(Modifier.height(12.dp))
-
-            
             CaptureMethodCard(
                 title = "Captura por intervalo",
                 subtitle = "Extrae automáticamente fotogramas en intervalos de tiempo establecidos",
                 icon = Icons.Default.Timer,
                 onClick = onSelectIntervalCapture
             )
-
             Spacer(Modifier.height(12.dp))
-
-            
             var isExtractingAudio by remember { mutableStateOf(false) }
             val scope = rememberCoroutineScope()
-
             CaptureMethodCard(
                 title = "🎵 Extraer Audio (MP3 / AAC)",
                 subtitle = "Extrae y guarda la pista de audio de tu video en formato M4A / AAC",
@@ -839,7 +746,6 @@ fun VideoHubScreen(
         }
     }
 }
-
 @Composable
 fun CaptureMethodCard(
     title: String,
@@ -872,9 +778,7 @@ fun CaptureMethodCard(
                     modifier = Modifier.size(24.dp)
                 )
             }
-
             Spacer(Modifier.width(14.dp))
-
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
@@ -890,9 +794,7 @@ fun CaptureMethodCard(
                     fontSize = 11.sp
                 )
             }
-
             Spacer(Modifier.width(8.dp))
-
             Icon(
                 imageVector = Icons.Default.ChevronRight,
                 contentDescription = null,
@@ -901,8 +803,6 @@ fun CaptureMethodCard(
         }
     }
 }
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManualCaptureScreen(
@@ -921,11 +821,8 @@ fun ManualCaptureScreen(
     onQuickBurst: (List<ScoredFrame>) -> Unit
 ) {
     var withWatermark by rememberSaveable { mutableStateOf(false) }
-
     val totalFrames = ((videoMeta.durationMs * 30) / 1000).coerceAtLeast(1)
     val currentFrameIndex = (((currentPosition * 30) / 1000) + 1).coerceIn(1, totalFrames)
-
-    
     val stepMs = remember(videoMeta.durationMs) {
         when {
             videoMeta.durationMs <= 30_000L -> 100L
@@ -940,33 +837,24 @@ fun ManualCaptureScreen(
     }
     val activeStripIndex = (currentPosition / stepMs).toInt().coerceIn(0, totalStripFrames - 1)
     val scope = rememberCoroutineScope()
-
-    
     val retriever = remember(videoUri) {
         MediaMetadataRetriever().apply {
             try { setDataSource(context, videoUri) } catch (e: Exception) { e.printStackTrace() }
         }
     }
-
     DisposableEffect(retriever) {
         onDispose {
             try { retriever.release() } catch (_: Exception) {}
         }
     }
-
-    
     var selectedFrameBitmap by remember {
         mutableStateOf<Bitmap?>(getNearestCachedFrame(currentPosition, stepMs, totalStripFrames))
     }
-
     LaunchedEffect(currentPosition) {
-        
         val quickBmp = getNearestCachedFrame(currentPosition, stepMs, totalStripFrames)
         if (quickBmp != null) {
             selectedFrameBitmap = quickBmp
         }
-
-        
         withContext(Dispatchers.IO) {
             try {
                 val fullResFrame = retriever.getFrameAtTime(currentPosition * 1000L, MediaMetadataRetriever.OPTION_CLOSEST)
@@ -980,10 +868,7 @@ fun ManualCaptureScreen(
             }
         }
     }
-
     val aiCache = remember { mutableStateMapOf<Long, AiFrameMeta>() }
-
-    
     LaunchedEffect(videoUri, totalStripFrames) {
         withContext(Dispatchers.IO) {
             val bgRetriever = MediaMetadataRetriever()
@@ -991,7 +876,6 @@ fun ManualCaptureScreen(
                 bgRetriever.setDataSource(context, videoUri)
                 var maxScore = -1f
                 var bestTs = 0L
-
                 for (i in 0 until totalStripFrames) {
                     val tsMs = i * stepMs
                     var bmp = frameCache.get(tsMs)
@@ -1005,14 +889,12 @@ fun ManualCaptureScreen(
                             frameCache.put(tsMs, bmp)
                         }
                     }
-
                     if (bmp != null && !aiCache.containsKey(tsMs)) {
                         val sharpness = calculateSharpnessScore(bmp)
                         val faceRes = analyzeFaceAndSmile(bmp)
                         val petObj = analyzePetAndObjects(bmp)
                         val isAction = analyzeActionIntensity(bmp)
                         val colorStyle = analyzeColorAndLighting(bmp)
-
                         var score = sharpness
                         if (faceRes.hasFace) score += 40f
                         if (faceRes.eyesOpen) score += 30f
@@ -1020,12 +902,10 @@ fun ManualCaptureScreen(
                         if (petObj != null) score += 20f
                         if (isAction) score += 25f
                         if (colorStyle != null) score += 15f
-
                         if (score > maxScore) {
                             maxScore = score
                             bestTs = tsMs
                         }
-
                         val meta = AiFrameMeta(
                             sharpness = score,
                             hasFace = faceRes.hasFace,
@@ -1041,7 +921,6 @@ fun ManualCaptureScreen(
                         }
                     }
                 }
-
                 if (maxScore > 0f) {
                     withContext(Dispatchers.Main) {
                         aiCache[bestTs] = aiCache[bestTs]?.copy(isBest = true) ?: AiFrameMeta(sharpness = maxScore, isBest = true)
@@ -1053,11 +932,7 @@ fun ManualCaptureScreen(
             }
         }
     }
-
-    
     val listState = rememberLazyListState()
-
-    
     LaunchedEffect(activeStripIndex) {
         withContext(Dispatchers.IO) {
             val start = (activeStripIndex - 5).coerceAtLeast(0)
@@ -1079,23 +954,16 @@ fun ManualCaptureScreen(
             }
         }
     }
-
     val isDragged by listState.interactionSource.collectIsDraggedAsState()
-
     val haptic = LocalHapticFeedback.current
-
-    
     LaunchedEffect(activeStripIndex) {
         try {
             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
         } catch (_: Exception) {}
-
         if (!isDragged) {
             listState.animateScrollToItem(activeStripIndex)
         }
     }
-
-    
     LaunchedEffect(isDragged) {
         if (isDragged) {
             snapshotFlow {
@@ -1117,8 +985,6 @@ fun ManualCaptureScreen(
             }
         }
     }
-
-    
     var dragAccumulator by remember { mutableFloatStateOf(0f) }
     val swipeToSeekModifier = Modifier.pointerInput(Unit) {
         detectHorizontalDragGestures(
@@ -1138,13 +1004,11 @@ fun ManualCaptureScreen(
             }
         )
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF0A0F1D))
     ) {
-        
         Surface(color = Color(0xFF101728)) {
             Row(
                 modifier = Modifier
@@ -1169,7 +1033,6 @@ fun ManualCaptureScreen(
                         fontWeight = FontWeight.Bold
                     )
                 }
-
                 IconButton(onClick = onToggleMute) {
                     Icon(
                         imageVector = if (isMuted) Icons.Default.VolumeOff else Icons.Default.VolumeUp,
@@ -1179,7 +1042,6 @@ fun ManualCaptureScreen(
                 }
             }
         }
-
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -1188,8 +1050,6 @@ fun ManualCaptureScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(Modifier.height(8.dp))
-
-            
             val manualZoomState = rememberZoomableState()
             Box(
                 modifier = Modifier
@@ -1215,10 +1075,7 @@ fun ManualCaptureScreen(
                     )
                 }
             }
-
             Spacer(Modifier.height(8.dp))
-
-            
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                 var isPlaying by remember { mutableStateOf(exoPlayer.isPlaying) }
                 IconButton(onClick = {
@@ -1231,7 +1088,6 @@ fun ManualCaptureScreen(
                         tint = Color.White
                     )
                 }
-
                 val sliderPos = if (videoMeta.durationMs > 0) currentPosition.toFloat() / videoMeta.durationMs.toFloat() else 0f
                 Slider(
                     value = sliderPos.coerceIn(0f, 1f),
@@ -1247,7 +1103,6 @@ fun ManualCaptureScreen(
                     )
                 )
             }
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -1255,26 +1110,19 @@ fun ManualCaptureScreen(
                 Text(formatTimeMsShort(currentPosition), color = Color.Gray, fontSize = 11.sp)
                 Text(formatTimeMsShort(videoMeta.durationMs), color = Color.Gray, fontSize = 11.sp)
             }
-
             Spacer(Modifier.height(8.dp))
-
-            
             Text(
                 text = "Fotograma $currentFrameIndex de $totalFrames",
                 color = Color.LightGray,
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.SemiBold
             )
-
             Spacer(Modifier.height(6.dp))
-
-            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                
                 IconButton(
                     onClick = {
                         val target = ((activeStripIndex - 1) * stepMs).coerceAtLeast(0L)
@@ -1290,10 +1138,7 @@ fun ManualCaptureScreen(
                         tint = Color.White
                     )
                 }
-
                 Spacer(Modifier.width(4.dp))
-
-                
                 LazyRow(
                     state = listState,
                     contentPadding = PaddingValues(horizontal = 110.dp),
@@ -1308,11 +1153,9 @@ fun ManualCaptureScreen(
                         val timestampMs = index * stepMs
                         val isSelected = index == activeStripIndex
                         val aiMeta = aiCache[timestampMs]
-
                         var thumbnailBmp by remember(timestampMs) {
                             mutableStateOf(getNearestCachedFrame(timestampMs, stepMs, totalStripFrames))
                         }
-
                         LaunchedEffect(timestampMs) {
                             if (thumbnailBmp == null) {
                                 withContext(Dispatchers.IO) {
@@ -1335,7 +1178,6 @@ fun ManualCaptureScreen(
                                 }
                             }
                         }
-
                         Box(
                             modifier = Modifier
                                 .width(54.dp)
@@ -1372,10 +1214,7 @@ fun ManualCaptureScreen(
                         }
                     }
                 }
-
                 Spacer(Modifier.width(4.dp))
-
-                
                 IconButton(
                     onClick = {
                         val target = ((activeStripIndex + 1) * stepMs).coerceAtMost(videoMeta.durationMs)
@@ -1392,10 +1231,7 @@ fun ManualCaptureScreen(
                     )
                 }
             }
-
             Spacer(Modifier.height(10.dp))
-
-            
             Box(
                 modifier = Modifier
                     .width(140.dp)
@@ -1413,13 +1249,10 @@ fun ManualCaptureScreen(
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                     )
-
-                    
                     val currentAi = aiCache[currentPosition] ?: run {
                         val nearestTs = (currentPosition / stepMs) * stepMs
                         aiCache[nearestTs]
                     }
-
                     if (currentAi != null && (currentAi.isBest || currentAi.hasFace || currentAi.petOrObjectTag != null || currentAi.actionTag != null || currentAi.colorStyleTag != null)) {
                         Box(
                             modifier = Modifier
@@ -1452,10 +1285,7 @@ fun ManualCaptureScreen(
                     }
                 } ?: CircularProgressIndicator(color = Color(0xFF00E5FF), modifier = Modifier.size(24.dp))
             }
-
             Spacer(Modifier.height(8.dp))
-
-            
             FilterChip(
                 selected = withWatermark,
                 onClick = { withWatermark = !withWatermark },
@@ -1476,16 +1306,12 @@ fun ManualCaptureScreen(
                     iconColor = Color.LightGray
                 )
             )
-
             Spacer(Modifier.height(8.dp))
-
-            
             Row(
                 modifier = Modifier.fillMaxWidth(0.9f),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 var isAnalyzingBestFrame by remember { mutableStateOf(false) }
-
                 OutlinedButton(
                     onClick = {
                         if (!isAnalyzingBestFrame) {
@@ -1518,9 +1344,7 @@ fun ManualCaptureScreen(
                         Text("✦ IA Best", color = Color(0xFF00E5FF), fontSize = 11.sp, fontWeight = FontWeight.Bold)
                     }
                 }
-
                 var isBurstLoading by remember { mutableStateOf(false) }
-
                 OutlinedButton(
                     onClick = {
                         if (!isBurstLoading) {
@@ -1557,10 +1381,7 @@ fun ManualCaptureScreen(
                     }
                 }
             }
-
             Spacer(Modifier.height(8.dp))
-
-            
             OutlinedButton(
                 onClick = {
                     selectedFrameBitmap?.let { bmp ->
@@ -1590,13 +1411,10 @@ fun ManualCaptureScreen(
                     fontSize = 16.sp
                 )
             }
-
             Spacer(Modifier.height(12.dp))
         }
     }
 }
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IntervalCaptureScreen(
@@ -1612,14 +1430,10 @@ fun IntervalCaptureScreen(
     var intervalMs by rememberSaveable { mutableLongStateOf(1000L) }
     var startTimeMs by rememberSaveable { mutableLongStateOf(1000L.coerceAtMost(videoMeta.durationMs)) }
     var endTimeMs by rememberSaveable(videoMeta.durationMs) { mutableLongStateOf(videoMeta.durationMs) }
-
     val selectedDurationMs = (endTimeMs - startTimeMs).coerceAtLeast(100L)
     val estimatedCount = if (intervalMs > 0) ((selectedDurationMs / intervalMs) + 1).toInt().coerceIn(1, 500) else 1
-
     var currentVideoPosition by rememberSaveable { mutableLongStateOf(0L) }
     val scope = rememberCoroutineScope()
-
-    
     val stepMs = intervalMs.coerceAtLeast(100L)
     val totalStripFrames = remember(videoMeta.durationMs, stepMs) {
         if (videoMeta.durationMs > 0 && stepMs > 0) {
@@ -1627,22 +1441,17 @@ fun IntervalCaptureScreen(
         } else 1
     }
     val activeStripIndex = (currentVideoPosition / stepMs).toInt().coerceIn(0, totalStripFrames - 1)
-
     val retriever = remember(videoUri) {
         MediaMetadataRetriever().apply {
             try { setDataSource(context, videoUri) } catch (e: Exception) { e.printStackTrace() }
         }
     }
-
     DisposableEffect(retriever) {
         onDispose {
             try { retriever.release() } catch (_: Exception) {}
         }
     }
-
     val listState = rememberLazyListState()
-
-    
     LaunchedEffect(activeStripIndex) {
         withContext(Dispatchers.IO) {
             val start = (activeStripIndex - 5).coerceAtLeast(0)
@@ -1664,22 +1473,16 @@ fun IntervalCaptureScreen(
             }
         }
     }
-
     val isDraggedInterval by listState.interactionSource.collectIsDraggedAsState()
     val hapticInterval = LocalHapticFeedback.current
-
-    
     LaunchedEffect(activeStripIndex) {
         try {
             hapticInterval.performHapticFeedback(HapticFeedbackType.TextHandleMove)
         } catch (_: Exception) {}
-
         if (!isDraggedInterval) {
             listState.animateScrollToItem(activeStripIndex)
         }
     }
-
-    
     LaunchedEffect(isDraggedInterval) {
         if (isDraggedInterval) {
             snapshotFlow {
@@ -1702,8 +1505,6 @@ fun IntervalCaptureScreen(
             }
         }
     }
-
-    
     var dragAccumulator by remember { mutableFloatStateOf(0f) }
     val swipeToSeekModifier = Modifier.pointerInput(Unit) {
         detectHorizontalDragGestures(
@@ -1724,13 +1525,11 @@ fun IntervalCaptureScreen(
             }
         )
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF0A0F1D))
     ) {
-        
         Surface(color = Color(0xFF101728)) {
             Row(
                 modifier = Modifier
@@ -1755,7 +1554,6 @@ fun IntervalCaptureScreen(
                         fontWeight = FontWeight.Bold
                     )
                 }
-
                 IconButton(onClick = onToggleMute) {
                     Icon(
                         imageVector = if (isMuted) Icons.Default.VolumeOff else Icons.Default.VolumeUp,
@@ -1765,7 +1563,6 @@ fun IntervalCaptureScreen(
                 }
             }
         }
-
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -1773,8 +1570,6 @@ fun IntervalCaptureScreen(
                 .padding(horizontal = 16.dp)
         ) {
             Spacer(Modifier.height(8.dp))
-
-            
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1793,7 +1588,6 @@ fun IntervalCaptureScreen(
                     },
                     modifier = Modifier.fillMaxSize()
                 )
-
                 Box(
                     modifier = Modifier
                         .size(48.dp)
@@ -1811,10 +1605,7 @@ fun IntervalCaptureScreen(
                     )
                 }
             }
-
             Spacer(Modifier.height(6.dp))
-
-            
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1833,7 +1624,6 @@ fun IntervalCaptureScreen(
                 ) {
                     Icon(Icons.Default.ChevronLeft, null, tint = Color.White, modifier = Modifier.size(18.dp))
                 }
-
                 LazyRow(
                     state = listState,
                     contentPadding = PaddingValues(horizontal = 110.dp),
@@ -1844,11 +1634,9 @@ fun IntervalCaptureScreen(
                         val timestampMs = index * stepMs
                         val isCurrent = index == activeStripIndex
                         val isInRange = timestampMs in startTimeMs..endTimeMs
-
                         var thumbnailBmp by remember(timestampMs) {
                             mutableStateOf(frameCache.get(timestampMs))
                         }
-
                         LaunchedEffect(timestampMs) {
                             if (thumbnailBmp == null || isBitmapBlackOrEmpty(thumbnailBmp!!)) {
                                 withContext(Dispatchers.IO) {
@@ -1879,7 +1667,6 @@ fun IntervalCaptureScreen(
                                 }
                             }
                         }
-
                         Box(
                             modifier = Modifier
                                 .width(50.dp)
@@ -1915,7 +1702,6 @@ fun IntervalCaptureScreen(
                         }
                     }
                 }
-
                 IconButton(
                     onClick = {
                         val target = (exoPlayer.currentPosition + stepMs).coerceAtMost(videoMeta.durationMs)
@@ -1927,7 +1713,6 @@ fun IntervalCaptureScreen(
                     Icon(Icons.Default.ChevronRight, null, tint = Color.White, modifier = Modifier.size(18.dp))
                 }
             }
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1938,10 +1723,7 @@ fun IntervalCaptureScreen(
                 Text("Posición: ${formatTimeMsShort(exoPlayer.currentPosition)}", color = Color.White, fontSize = 11.sp)
                 Text(formatTimeMsShort(endTimeMs), color = Color(0xFFFF9100), fontSize = 11.sp, fontWeight = FontWeight.Bold)
             }
-
             Spacer(Modifier.height(8.dp))
-
-            
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF141C2E)),
                 shape = RoundedCornerShape(14.dp),
@@ -1955,10 +1737,7 @@ fun IntervalCaptureScreen(
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
-
                     Spacer(Modifier.height(6.dp))
-
-                    
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -1979,7 +1758,6 @@ fun IntervalCaptureScreen(
                         ) {
                             Text("Fijar Inicio: ${formatTimeMsShort(startTimeMs)}", color = Color(0xFF00E5FF), fontSize = 11.sp, fontWeight = FontWeight.Bold)
                         }
-
                         OutlinedButton(
                             onClick = {
                                 val current = exoPlayer.currentPosition
@@ -1997,10 +1775,7 @@ fun IntervalCaptureScreen(
                             Text("Fijar Fin: ${formatTimeMsShort(endTimeMs)}", color = Color(0xFFFF9100), fontSize = 11.sp, fontWeight = FontWeight.Bold)
                         }
                     }
-
                     Spacer(Modifier.height(6.dp))
-
-                    
                     if (videoMeta.durationMs > 0) {
                         val currentRange = (startTimeMs.toFloat() / videoMeta.durationMs.toFloat())..(endTimeMs.toFloat() / videoMeta.durationMs.toFloat())
                         RangeSlider(
@@ -2022,10 +1797,7 @@ fun IntervalCaptureScreen(
                     }
                 }
             }
-
             Spacer(Modifier.height(8.dp))
-
-            
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF141C2E)),
                 shape = RoundedCornerShape(14.dp),
@@ -2044,10 +1816,8 @@ fun IntervalCaptureScreen(
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold
                         )
-
                         val textInterval = if (intervalMs < 1000) "Cada ${intervalMs}ms ($estimatedCount fotos)"
                         else "Cada ${String.format(Locale.US, "%.1f", intervalMs / 1000f).removeSuffix(".0")}s ($estimatedCount fotos)"
-
                         Text(
                             text = textInterval,
                             color = Color(0xFF00E5FF),
@@ -2055,9 +1825,7 @@ fun IntervalCaptureScreen(
                             fontSize = 12.sp
                         )
                     }
-
                     Spacer(Modifier.height(4.dp))
-
                     Slider(
                         value = intervalMs.toFloat(),
                         onValueChange = { intervalMs = it.toLong() },
@@ -2070,10 +1838,7 @@ fun IntervalCaptureScreen(
                     )
                 }
             }
-
             Spacer(Modifier.weight(1f))
-
-            
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -2112,9 +1877,7 @@ fun IntervalCaptureScreen(
                         )
                     }
                 }
-
                 var isExportingClip by remember { mutableStateOf(false) }
-
                 OutlinedButton(
                     onClick = {
                         if (!isExportingClip) {
@@ -2156,13 +1919,10 @@ fun IntervalCaptureScreen(
                     }
                 }
             }
-
             Spacer(Modifier.height(12.dp))
         }
     }
 }
-
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -2175,23 +1935,17 @@ fun GalleryScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var showOnlyFavorites by remember { mutableStateOf(false) }
-
     val capturesFlow = if (showOnlyFavorites) db.captureDao().getFavoriteCaptures() else db.captureDao().getAllCaptures()
     val captures by capturesFlow.collectAsState(initial = emptyList())
-
     var selectedVideoGroup by rememberSaveable { mutableStateOf<String?>(null) }
     var isSelectionMode by remember { mutableStateOf(false) }
     val selectedCaptures = remember { mutableStateListOf<CaptureEntity>() }
     var showDeleteConfirmDialog by remember { mutableStateOf(false) }
-
     var selectedCaptureDetail by remember { mutableStateOf<CaptureEntity?>(null) }
-
     val dateFormat = remember { SimpleDateFormat("d MMM yyyy h:mm a", Locale.getDefault()) }
-
     val groupedCaptures = remember(captures) {
         captures.groupBy { it.videoName }
     }
-
     BackHandler(enabled = selectedVideoGroup != null || selectedCaptureDetail != null) {
         if (selectedCaptureDetail != null) {
             selectedCaptureDetail = null
@@ -2199,7 +1953,6 @@ fun GalleryScreen(
             selectedVideoGroup = null
         }
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -2249,7 +2002,6 @@ fun GalleryScreen(
                             val activeCaptures = if (selectedVideoGroup != null) {
                                 groupedCaptures[selectedVideoGroup] ?: emptyList()
                             } else captures
-
                             if (selectedCaptures.size == activeCaptures.size) {
                                 selectedCaptures.clear()
                             } else {
@@ -2263,7 +2015,6 @@ fun GalleryScreen(
                                 tint = Color.White
                             )
                         }
-
                         if (selectedCaptures.isNotEmpty()) {
                             IconButton(onClick = { showDeleteConfirmDialog = true }) {
                                 Icon(
@@ -2322,10 +2073,8 @@ fun GalleryScreen(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         if (selectedVideoGroup == null) {
-                            
                             items(groupedCaptures.entries.toList()) { (videoName, groupList) ->
                                 val coverCapture = groupList.first()
-
                                 Card(
                                     shape = RoundedCornerShape(18.dp),
                                     colors = CardDefaults.cardColors(containerColor = Color(0xFF141C2E)),
@@ -2348,8 +2097,6 @@ fun GalleryScreen(
                                                 modifier = Modifier.fillMaxSize(),
                                                 contentScale = ContentScale.Crop
                                             )
-
-                                            
                                             Box(
                                                 modifier = Modifier
                                                     .align(Alignment.BottomEnd)
@@ -2374,7 +2121,6 @@ fun GalleryScreen(
                                                 }
                                             }
                                         }
-
                                         Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)) {
                                             Text(
                                                 text = dateFormat.format(Date(coverCapture.timestamp)),
@@ -2397,12 +2143,9 @@ fun GalleryScreen(
                                 }
                             }
                         } else {
-                            
                             val groupPhotos = groupedCaptures[selectedVideoGroup] ?: emptyList()
-
                             items(groupPhotos) { capture ->
                                 val isSelected = selectedCaptures.contains(capture)
-
                                 Card(
                                     shape = RoundedCornerShape(18.dp),
                                     colors = CardDefaults.cardColors(containerColor = Color(0xFF141C2E)),
@@ -2440,7 +2183,6 @@ fun GalleryScreen(
                                                 contentScale = ContentScale.Crop,
                                                 alpha = if (isSelected) 0.5f else 1f
                                             )
-
                                             if (isSelected) {
                                                 Icon(
                                                     imageVector = Icons.Default.CheckCircle,
@@ -2453,7 +2195,6 @@ fun GalleryScreen(
                                                 )
                                             }
                                         }
-
                                         Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)) {
                                             Text(
                                                 text = dateFormat.format(Date(capture.timestamp)),
@@ -2479,11 +2220,8 @@ fun GalleryScreen(
                     }
                 }
             }
-
-            
             AdBanner()
         }
-
         if (showDeleteConfirmDialog) {
             AlertDialog(
                 onDismissRequest = { showDeleteConfirmDialog = false },
@@ -2518,7 +2256,6 @@ fun GalleryScreen(
                 }
             )
         }
-
         AnimatedVisibility(
             visible = selectedCaptureDetail != null,
             enter = fadeIn(),
@@ -2544,7 +2281,6 @@ fun GalleryScreen(
         }
     }
 }
-
 @Composable
 fun WelcomeHeroScreen(
     context: Context,
@@ -2553,7 +2289,6 @@ fun WelcomeHeroScreen(
     onSelectRecentVideo: (Uri) -> Unit
 ) {
     val recentVideos = remember { RecentVideoStore.getRecentVideos(context) }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -2582,18 +2317,14 @@ fun WelcomeHeroScreen(
                     modifier = Modifier.size(80.dp)
                 )
             }
-
             Spacer(Modifier.height(20.dp))
-
             Text(
                 text = stringResource(R.string.bienvenido),
                 style = MaterialTheme.typography.headlineMedium,
                 color = Color.White,
                 fontWeight = FontWeight.Bold
             )
-
             Spacer(Modifier.height(6.dp))
-
             Text(
                 text = stringResource(R.string.selecciona_un_video_de_tu_galer_a_para_extraer_los_mejores_fotogramas),
                 style = MaterialTheme.typography.bodyMedium,
@@ -2601,9 +2332,7 @@ fun WelcomeHeroScreen(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(0.85f)
             )
-
             Spacer(Modifier.height(24.dp))
-
             Button(
                 onClick = onSelectVideo,
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E68D7)),
@@ -2625,9 +2354,7 @@ fun WelcomeHeroScreen(
                     fontSize = 16.sp
                 )
             }
-
             Spacer(Modifier.height(12.dp))
-
             OutlinedButton(
                 onClick = onOpenGallery,
                 shape = RoundedCornerShape(16.dp),
@@ -2649,10 +2376,8 @@ fun WelcomeHeroScreen(
                     fontSize = 14.sp
                 )
             }
-
             if (recentVideos.isNotEmpty()) {
                 Spacer(Modifier.height(24.dp))
-
                 Text(
                     text = "🎥 Videos recientes",
                     color = Color.White,
@@ -2662,7 +2387,6 @@ fun WelcomeHeroScreen(
                         .fillMaxWidth(0.85f)
                         .padding(bottom = 8.dp)
                 )
-
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(0.85f),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -2670,7 +2394,6 @@ fun WelcomeHeroScreen(
                     items(recentVideos) { item ->
                         val uri = Uri.parse(item.uriString)
                         var videoThumbnail by remember(item.uriString) { mutableStateOf<Bitmap?>(null) }
-
                         LaunchedEffect(item.uriString) {
                             withContext(Dispatchers.IO) {
                                 val retriever = MediaMetadataRetriever()
@@ -2693,7 +2416,6 @@ fun WelcomeHeroScreen(
                                 }
                             }
                         }
-
                         Card(
                             colors = CardDefaults.cardColors(containerColor = Color(0xFF141C2E)),
                             shape = RoundedCornerShape(12.dp),
@@ -2723,7 +2445,6 @@ fun WelcomeHeroScreen(
                                         tint = Color.Gray,
                                         modifier = Modifier.size(24.dp)
                                     )
-
                                     Box(
                                         modifier = Modifier
                                             .align(Alignment.BottomEnd)
@@ -2739,7 +2460,6 @@ fun WelcomeHeroScreen(
                                         )
                                     }
                                 }
-
                                 Column(modifier = Modifier.padding(8.dp)) {
                                     Text(
                                         text = item.name,
@@ -2758,8 +2478,6 @@ fun WelcomeHeroScreen(
         }
     }
 }
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FullScreenDetail(
@@ -2780,13 +2498,10 @@ fun FullScreenDetail(
     var showInfoModal by remember { mutableStateOf(false) }
     var showEditTagDialog by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-
     val currentBitmap = remember(baseBitmap, currentFilter) {
         baseBitmap?.let { applyColorFilter(it, currentFilter) }
     }
-
     BackHandler { onDismiss() }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -2806,7 +2521,6 @@ fun FullScreenDetail(
                 )
             }
         }
-
         TopAppBar(
             modifier = Modifier.fillMaxWidth(),
             title = { },
@@ -2827,7 +2541,6 @@ fun FullScreenDetail(
                         tint = Color.White
                     )
                 }
-
                 IconButton(onClick = { showInfoModal = true }) {
                     Icon(
                         imageVector = Icons.Default.Info,
@@ -2835,7 +2548,6 @@ fun FullScreenDetail(
                         tint = Color.White
                     )
                 }
-
                 IconButton(onClick = {
                     val nextFav = !isFavoriteState
                     isFavoriteState = nextFav
@@ -2854,7 +2566,6 @@ fun FullScreenDetail(
                 containerColor = Color.Black.copy(alpha = 0.4f)
             )
         )
-
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -2886,9 +2597,7 @@ fun FullScreenDetail(
                     }
                 }
             }
-
             Spacer(Modifier.height(10.dp))
-
             Row(
                 modifier = Modifier
                     .background(Color(0xFF1E2230).copy(alpha = 0.85f), CircleShape)
@@ -2909,7 +2618,6 @@ fun FullScreenDetail(
                         tint = Color(0xFF00E5FF)
                     )
                 }
-
                 IconButton(onClick = {
                     baseBitmap?.let { bmp ->
                         val upscaled = upscaleBitmap2x(bmp)
@@ -2923,11 +2631,9 @@ fun FullScreenDetail(
                         tint = Color(0xFFFF9100)
                     )
                 }
-
                 IconButton(onClick = onShare) {
                     Icon(Icons.Default.Share, contentDescription = stringResource(R.string.compartir), tint = Color.White)
                 }
-
                 IconButton(onClick = onRecrop) {
                     Icon(
                         Icons.Default.Create,
@@ -2935,7 +2641,6 @@ fun FullScreenDetail(
                         tint = Color.White
                     )
                 }
-
                 IconButton(onClick = {
                     scope.launch {
                         currentBitmap?.let { bmp ->
@@ -2959,7 +2664,6 @@ fun FullScreenDetail(
             }
         }
     }
-
     if (showInfoModal) {
         PhotoMetadataModal(
             capture = capture,
@@ -2967,7 +2671,6 @@ fun FullScreenDetail(
             onDismiss = { showInfoModal = false }
         )
     }
-
     if (showEditTagDialog) {
         EditCaptureTagModal(
             capture = capture,
@@ -2980,7 +2683,6 @@ fun FullScreenDetail(
         )
     }
 }
-
 @Composable
 fun EditCaptureTagModal(
     capture: CaptureEntity,
@@ -2989,7 +2691,6 @@ fun EditCaptureTagModal(
 ) {
     var nameText by remember { mutableStateOf(capture.videoName) }
     var tagText by remember { mutableStateOf(capture.captureType) }
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -3013,7 +2714,6 @@ fun EditCaptureTagModal(
                     ),
                     singleLine = true
                 )
-
                 OutlinedTextField(
                     value = tagText,
                     onValueChange = { tagText = it },
@@ -3048,7 +2748,6 @@ fun EditCaptureTagModal(
         shape = RoundedCornerShape(16.dp)
     )
 }
-
 @Composable
 fun PhotoMetadataModal(
     capture: CaptureEntity,
@@ -3063,12 +2762,10 @@ fun PhotoMetadataModal(
             else "${bytes / 1024} KB"
         } else "N/A"
     }
-
     val width = bitmap?.width ?: 0
     val height = bitmap?.height ?: 0
     val megaPixels = if (width > 0 && height > 0) String.format(Locale.US, "%.1f MP", (width * height) / 1_000_000f) else ""
     val dateFormat = remember { SimpleDateFormat("d MMMM yyyy, h:mm:ss a", Locale.getDefault()) }
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -3097,7 +2794,6 @@ fun PhotoMetadataModal(
         shape = RoundedCornerShape(16.dp)
     )
 }
-
 @Composable
 fun MetadataRow(label: String, value: String) {
     Column {
@@ -3105,8 +2801,6 @@ fun MetadataRow(label: String, value: String) {
         Text(text = value, color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Medium)
     }
 }
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AutoSelectionInterface(
@@ -3121,7 +2815,6 @@ fun AutoSelectionInterface(
     var filterSmileAndEyes by remember { mutableStateOf(false) }
     var isExportingZip by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-
     val displayedFrames = remember(frames, filterSmileAndEyes) {
         if (filterSmileAndEyes) {
             frames.filter { it.hasFace && (it.isSmiling || it.eyesOpen) }
@@ -3129,7 +2822,6 @@ fun AutoSelectionInterface(
             frames
         }
     }
-
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xFF0A0F1D)
@@ -3156,7 +2848,6 @@ fun AutoSelectionInterface(
                     },
                     actions = {
                         val selectedCount = frames.count { it.isSelected.value }
-
                         IconButton(onClick = {
                             val bestFrames = frames.filter { it.isBestQuality || it.hasFace }
                             if (bestFrames.isNotEmpty()) {
@@ -3174,7 +2865,6 @@ fun AutoSelectionInterface(
                                 tint = Color(0xFF00E5FF)
                             )
                         }
-
                         IconButton(onClick = {
                             val allSelected = frames.all { it.isSelected.value }
                             frames.forEach { it.isSelected.value = !allSelected }
@@ -3185,7 +2875,6 @@ fun AutoSelectionInterface(
                                 tint = Color.White
                             )
                         }
-
                         TextButton(
                             onClick = { onSave(frames.filter { it.isSelected.value }) },
                             enabled = selectedCount > 0 && !isSaving
@@ -3209,7 +2898,6 @@ fun AutoSelectionInterface(
                     .padding(paddingValues)
                     .background(Color(0xFF0A0F1D))
             ) {
-                
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -3229,9 +2917,7 @@ fun AutoSelectionInterface(
                             labelColor = Color.LightGray
                         )
                     )
-
                     val selectedCount = frames.count { it.isSelected.value }
-
                     if (selectedCount == 2) {
                         OutlinedButton(
                             onClick = { showCompareDialog = true },
@@ -3243,7 +2929,6 @@ fun AutoSelectionInterface(
                             Text("🔍 Comparar (2)", color = Color(0xFF00E5FF), fontSize = 11.sp, fontWeight = FontWeight.Bold)
                         }
                     }
-
                     OutlinedButton(
                         onClick = {
                             val selBitmaps = frames.filter { it.isSelected.value }.map { it.bitmap }
@@ -3277,9 +2962,7 @@ fun AutoSelectionInterface(
                     ) {
                         Text("📦 ZIP ($selectedCount)", color = Color(0xFFFF9100), fontSize = 11.sp, fontWeight = FontWeight.Bold)
                     }
-
                     var isGeneratingGif by remember { mutableStateOf(false) }
-
                     OutlinedButton(
                         onClick = {
                             val selBitmaps = frames.filter { it.isSelected.value }.map { it.bitmap }
@@ -3313,9 +2996,7 @@ fun AutoSelectionInterface(
                     ) {
                         Text("🎞️ GIF ($selectedCount)", color = Color(0xFF00E5FF), fontSize = 11.sp, fontWeight = FontWeight.Bold)
                     }
-
                     var chosenStripColor by remember { mutableStateOf(StripColor.BLACK) }
-
                     OutlinedButton(
                         onClick = {
                             val selBitmaps = frames.filter { it.isSelected.value }.map { it.bitmap }
@@ -3340,7 +3021,6 @@ fun AutoSelectionInterface(
                         Text("📸 Tira (${chosenStripColor.displayName})", color = Color(0xFFFF4081), fontSize = 11.sp, fontWeight = FontWeight.Bold)
                     }
                 }
-
                 if (displayedFrames.isEmpty()) {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
@@ -3371,7 +3051,6 @@ fun AutoSelectionInterface(
                                         modifier = Modifier.fillMaxSize(),
                                         contentScale = ContentScale.Crop
                                     )
-
                                     if (frame.isBestQuality || frame.hasFace) {
                                         Row(
                                             modifier = Modifier
@@ -3392,7 +3071,6 @@ fun AutoSelectionInterface(
                                             }
                                         }
                                     }
-
                                     Box(
                                         modifier = Modifier
                                             .align(Alignment.TopEnd)
@@ -3419,7 +3097,6 @@ fun AutoSelectionInterface(
             }
         }
     }
-
     if (showCompareDialog) {
         val selTwo = frames.filter { it.isSelected.value }.take(2)
         if (selTwo.size == 2) {
@@ -3434,8 +3111,6 @@ fun AutoSelectionInterface(
         }
     }
 }
-
-
 suspend fun extractVideoMetadata(context: Context, uri: Uri): VideoMetaData = withContext(Dispatchers.IO) {
     try {
         context.contentResolver.takePersistableUriPermission(
@@ -3443,13 +3118,11 @@ suspend fun extractVideoMetadata(context: Context, uri: Uri): VideoMetaData = wi
             Intent.FLAG_GRANT_READ_URI_PERMISSION
         )
     } catch (_: Exception) {}
-
     val retriever = MediaMetadataRetriever()
     try {
         retriever.setDataSource(context, uri)
         val name = getVideoFileName(context, uri)
         var dur = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull() ?: 0L
-
         if (dur == 0L) {
             val extractor = MediaExtractor()
             try {
@@ -3469,13 +3142,10 @@ suspend fun extractVideoMetadata(context: Context, uri: Uri): VideoMetaData = wi
                 try { extractor.release() } catch (_: Exception) {}
             }
         }
-
         val w = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull() ?: 1080
         val h = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toIntOrNull() ?: 1920
         val rot = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)?.toIntOrNull() ?: 0
-
         val (finalW, finalH) = if (rot == 90 || rot == 270) Pair(h, w) else Pair(w, h)
-
         VideoMetaData(
             fileName = name,
             durationMs = dur,
@@ -3489,7 +3159,6 @@ suspend fun extractVideoMetadata(context: Context, uri: Uri): VideoMetaData = wi
         try { retriever.release() } catch (_: Exception) {}
     }
 }
-
 fun getVideoFileName(context: Context, uri: Uri): String {
     var name = "video.mp4"
     try {
@@ -3508,21 +3177,17 @@ fun getVideoFileName(context: Context, uri: Uri): String {
     }
     return name
 }
-
 fun formatTimeMsShort(timeMs: Long): String {
     val totalSec = timeMs / 1000
     val min = totalSec / 60
     val sec = totalSec % 60
     return String.format(Locale.US, "%02d:%02d", min, sec)
 }
-
-
 fun isBitmapBlackOrEmpty(bitmap: Bitmap): Boolean {
     try {
         val w = bitmap.width
         val h = bitmap.height
         if (w <= 0 || h <= 0) return true
-
         var totalLuminance = 0f
         val samplePoints = listOf(
             Pair(w / 4, h / 4), Pair(w / 2, h / 4), Pair(3 * w / 4, h / 4),
@@ -3543,7 +3208,6 @@ fun isBitmapBlackOrEmpty(bitmap: Bitmap): Boolean {
         return false
     }
 }
-
 fun calculateSharpnessScore(bitmap: Bitmap): Float {
     return try {
         val scaled = Bitmap.createScaledBitmap(bitmap, 120, 120, false)
@@ -3551,10 +3215,8 @@ fun calculateSharpnessScore(bitmap: Bitmap): Float {
         val height = scaled.height
         val pixels = IntArray(width * height)
         scaled.getPixels(pixels, 0, width, 0, 0, width, height)
-
         var totalLaplacian = 0.0
         var count = 0
-
         for (y in 1 until height - 1) {
             for (x in 1 until width - 1) {
                 val center = pixels[y * width + x] and 0xFF
@@ -3562,7 +3224,6 @@ fun calculateSharpnessScore(bitmap: Bitmap): Float {
                 val right = pixels[y * width + (x + 1)] and 0xFF
                 val top = pixels[(y - 1) * width + x] and 0xFF
                 val bottom = pixels[(y + 1) * width + x] and 0xFF
-
                 val lap = abs(4 * center - left - right - top - bottom)
                 totalLaplacian += lap
                 count++
@@ -3573,7 +3234,6 @@ fun calculateSharpnessScore(bitmap: Bitmap): Float {
         0f
     }
 }
-
 suspend fun analyzeFaceAndSmile(bitmap: Bitmap): FaceAnalysisResult = withContext(Dispatchers.IO) {
     try {
         val options = FaceDetectorOptions.Builder()
@@ -3582,17 +3242,14 @@ suspend fun analyzeFaceAndSmile(bitmap: Bitmap): FaceAnalysisResult = withContex
             .build()
         val detector = FaceDetection.getClient(options)
         val image = InputImage.fromBitmap(bitmap, 0)
-
         val task = detector.process(image)
         val faces: List<Face> = Tasks.await(task)
         detector.close()
-
         if (faces.isNotEmpty()) {
             val face = faces[0]
             val smileProb = face.smilingProbability ?: 0f
             val leftEye = face.leftEyeOpenProbability ?: 0f
             val rightEye = face.rightEyeOpenProbability ?: 0f
-
             FaceAnalysisResult(
                 hasFace = true,
                 isSmiling = smileProb > 0.35f,
@@ -3606,7 +3263,6 @@ suspend fun analyzeFaceAndSmile(bitmap: Bitmap): FaceAnalysisResult = withContex
         FaceAnalysisResult(hasFace = false)
     }
 }
-
 fun analyzeColorAndLighting(bitmap: Bitmap): String? {
     try {
         val scaled = Bitmap.createScaledBitmap(bitmap, 60, 60, false)
@@ -3614,30 +3270,25 @@ fun analyzeColorAndLighting(bitmap: Bitmap): String? {
         val h = scaled.height
         val pixels = IntArray(w * h)
         scaled.getPixels(pixels, 0, w, 0, 0, w, h)
-
         var totalR = 0f
         var totalG = 0f
         var totalB = 0f
         var totalLum = 0f
-
         for (p in pixels) {
             val r = (p shr 16) and 0xFF
             val g = (p shr 8) and 0xFF
             val b = p and 0xFF
             val lum = 0.299f * r + 0.587f * g + 0.114f * b
-
             totalR += r
             totalG += g
             totalB += b
             totalLum += lum
         }
-
         val count = pixels.size.toFloat()
         val avgR = totalR / count
         val avgG = totalG / count
         val avgB = totalB / count
         val avgLum = totalLum / count
-
         return when {
             avgR > 160 && avgG in 100f..180f && avgB < 120 -> "🌅 Atardecer"
             avgG > avgR * 1.15f && avgG > avgB * 1.15f -> "🌿 Naturaleza"
@@ -3649,7 +3300,6 @@ fun analyzeColorAndLighting(bitmap: Bitmap): String? {
         return null
     }
 }
-
 fun analyzeActionIntensity(bitmap: Bitmap): Boolean {
     try {
         val scaled = Bitmap.createScaledBitmap(bitmap, 80, 80, false)
@@ -3657,7 +3307,6 @@ fun analyzeActionIntensity(bitmap: Bitmap): Boolean {
         val h = scaled.height
         val pixels = IntArray(w * h)
         scaled.getPixels(pixels, 0, w, 0, 0, w, h)
-
         var totalGrad = 0.0
         for (y in 0 until h - 1) {
             for (x in 0 until w - 1) {
@@ -3674,7 +3323,6 @@ fun analyzeActionIntensity(bitmap: Bitmap): Boolean {
         return false
     }
 }
-
 fun analyzePetAndObjects(bitmap: Bitmap): String? {
     try {
         val scaled = Bitmap.createScaledBitmap(bitmap, 60, 60, false)
@@ -3682,26 +3330,21 @@ fun analyzePetAndObjects(bitmap: Bitmap): String? {
         val h = scaled.height
         val pixels = IntArray(w * h)
         scaled.getPixels(pixels, 0, w, 0, 0, w, h)
-
         var brownOrangeCount = 0
         var greenCount = 0
         var skyBlueCount = 0
-
         for (p in pixels) {
             val r = (p shr 16) and 0xFF
             val g = (p shr 8) and 0xFF
             val b = p and 0xFF
-
             if (r in 110..220 && g in 70..160 && b in 30..110) brownOrangeCount++
             if (g > r * 1.2f && g > b * 1.2f) greenCount++
             if (b > r * 1.2f && b > g && r < 140) skyBlueCount++
         }
-
         val total = pixels.size.toFloat()
         val brownRatio = brownOrangeCount / total
         val greenRatio = greenCount / total
         val skyRatio = skyBlueCount / total
-
         return when {
             brownRatio > 0.28f -> "🐶 Mascota / Pelaje"
             greenRatio > 0.30f || skyRatio > 0.30f -> "🌅 Paisaje"
@@ -3711,25 +3354,20 @@ fun analyzePetAndObjects(bitmap: Bitmap): String? {
         return null
     }
 }
-
 fun upscaleBitmap2x(source: Bitmap): Bitmap {
     val width = source.width * 2
     val height = source.height * 2
     val scaled = Bitmap.createScaledBitmap(source, width, height, true)
     return enhanceBitmapQuality(scaled)
 }
-
 fun enhanceBitmapQuality(source: Bitmap): Bitmap {
     val width = source.width
     val height = source.height
     val output = Bitmap.createBitmap(width, height, source.config ?: Bitmap.Config.ARGB_8888)
-
     val canvas = Canvas(output)
     val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
-
     val cm = ColorMatrix()
     cm.setSaturation(1.10f)
-
     val scale = 1.08f
     val translate = (-0.5f * scale + 0.5f) * 255f
     val contrastMatrix = floatArrayOf(
@@ -3739,24 +3377,18 @@ fun enhanceBitmapQuality(source: Bitmap): Bitmap {
         0f, 0f, 0f, 1f, 0f
     )
     cm.postConcat(ColorMatrix(contrastMatrix))
-
     paint.colorFilter = ColorMatrixColorFilter(cm)
     canvas.drawBitmap(source, 0f, 0f, paint)
-
     return output
 }
-
 fun applyColorFilter(source: Bitmap, filter: FilterType): Bitmap {
     if (filter == FilterType.ORIGINAL) return source
-
     val width = source.width
     val height = source.height
     val output = Bitmap.createBitmap(width, height, source.config ?: Bitmap.Config.ARGB_8888)
-
     val canvas = Canvas(output)
     val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
     val cm = ColorMatrix()
-
     when (filter) {
         FilterType.CINE -> {
             cm.setSaturation(0.9f)
@@ -3813,13 +3445,10 @@ fun applyColorFilter(source: Bitmap, filter: FilterType): Bitmap {
         }
         FilterType.ORIGINAL -> {}
     }
-
     paint.colorFilter = ColorMatrixColorFilter(cm)
     canvas.drawBitmap(source, 0f, 0f, paint)
-
     return output
 }
-
 suspend fun runAutoExtractionParallel(
     context: Context,
     uri: Uri,
@@ -3832,11 +3461,9 @@ suspend fun runAutoExtractionParallel(
     val actualCount = count.coerceIn(1, maxFrames)
     val effectiveRangeMs = if (endTimeMs > startTimeMs) endTimeMs - startTimeMs else count * intervalMs
     val effectiveIntervalMs = if (count > maxFrames && actualCount > 0) effectiveRangeMs / actualCount else intervalMs
-
     val frames = mutableListOf<ScoredFrame>()
     val workerCount = 4
     val batchSize = (actualCount + workerCount - 1) / workerCount
-
     val deferredBatches = (0 until workerCount).map { worker ->
         async(Dispatchers.IO) {
             val batchList = mutableListOf<ScoredFrame>()
@@ -3845,27 +3472,22 @@ suspend fun runAutoExtractionParallel(
                 retriever.setDataSource(context, uri)
                 val startIdx = worker * batchSize
                 val endIdx = (startIdx + batchSize).coerceAtMost(actualCount)
-
                 for (i in startIdx until endIdx) {
                     val targetMs = startTimeMs + (i * effectiveIntervalMs)
                     if (endTimeMs > 0 && targetMs > endTimeMs) break
                     val timeUs = targetMs * 1000L
-
                     val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                         retriever.getScaledFrameAtTime(timeUs, MediaMetadataRetriever.OPTION_CLOSEST_SYNC, 640, 640)
                     } else {
                         retriever.getFrameAtTime(timeUs, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
                     }
-
                     if (bitmap != null && !isBitmapBlackOrEmpty(bitmap)) {
                         val score = calculateSharpnessScore(bitmap)
                         val faceRes = analyzeFaceAndSmile(bitmap)
-
                         var compositeScore = score
                         if (faceRes.hasFace) compositeScore += 40f
                         if (faceRes.eyesOpen) compositeScore += 30f
                         if (faceRes.isSmiling) compositeScore += 30f
-
                         batchList.add(
                             ScoredFrame(
                                 bitmap = bitmap,
@@ -3886,12 +3508,9 @@ suspend fun runAutoExtractionParallel(
             batchList
         }
     }
-
     val allBatches = deferredBatches.awaitAll()
     allBatches.forEach { frames.addAll(it) }
-
     frames.sortBy { it.timestampMs }
-
     val topScore = frames.maxOfOrNull { it.sharpnessScore } ?: 0f
     frames.forEach { frame ->
         if (topScore > 0 && frame.sharpnessScore >= topScore * 0.85f) {
@@ -3901,10 +3520,8 @@ suspend fun runAutoExtractionParallel(
             frame.isSelected.value = false
         }
     }
-
     frames
 }
-
 suspend fun findBestFrameNearTimestamp(
     context: Context,
     videoUri: Uri,
@@ -3914,11 +3531,9 @@ suspend fun findBestFrameNearTimestamp(
     val retriever = MediaMetadataRetriever()
     var bestTimestampMs = centerMs
     var maxScore = -1f
-
     try {
         retriever.setDataSource(context, videoUri)
         val offsets = (-5..5).map { it * 100L }
-
         for (offset in offsets) {
             val sampleMs = (centerMs + offset).coerceIn(0L, durationMs)
             val sampleUs = sampleMs * 1000L
@@ -3930,7 +3545,6 @@ suspend fun findBestFrameNearTimestamp(
                 if (face.hasFace) score += 40f
                 if (face.eyesOpen) score += 30f
                 if (face.isSmiling) score += 30f
-
                 if (score > maxScore) {
                     maxScore = score
                     bestTimestampMs = sampleMs
@@ -3942,10 +3556,8 @@ suspend fun findBestFrameNearTimestamp(
     } finally {
         try { retriever.release() } catch (_: Exception) {}
     }
-
     bestTimestampMs
 }
-
 suspend fun saveToPublicGallery(
     context: Context,
     bitmap: Bitmap,
@@ -3955,7 +3567,6 @@ suspend fun saveToPublicGallery(
     val extension = format.extension
     val mimeType = if (format == ExportFormat.PNG) "image/png" else "image/jpeg"
     val filename = "Capture_${System.currentTimeMillis()}.$extension"
-
     val contentValues = ContentValues().apply {
         put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
         put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
@@ -3967,17 +3578,14 @@ suspend fun saveToPublicGallery(
             put(MediaStore.MediaColumns.IS_PENDING, 1)
         }
     }
-
     val resolver = context.contentResolver
     val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-
     uri?.let { targetUri ->
         resolver.openOutputStream(targetUri)?.use { output ->
             val compressFormat = if (format == ExportFormat.PNG)
                 Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
             bitmap.compress(compressFormat, quality.qualityInt, output)
         }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             contentValues.clear()
             contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
@@ -3986,7 +3594,6 @@ suspend fun saveToPublicGallery(
         targetUri
     }
 }
-
 fun loadBitmapFromPathOrUri(context: Context, pathOrUri: String): Bitmap? {
     return try {
         if (pathOrUri.startsWith("content://") || pathOrUri.startsWith("file://")) {
@@ -4010,7 +3617,6 @@ fun loadBitmapFromPathOrUri(context: Context, pathOrUri: String): Bitmap? {
         null
     }
 }
-
 suspend fun saveBitmapToInternalStorage(
     context: Context,
     bitmap: Bitmap,
@@ -4026,7 +3632,6 @@ suspend fun saveBitmapToInternalStorage(
     }
     file.absolutePath
 }
-
 suspend fun saveImageToInternalStorage(
     context: Context,
     uri: Uri,
@@ -4036,7 +3641,6 @@ suspend fun saveImageToInternalStorage(
         val extension = format.extension
         val filename = "Capture_${System.currentTimeMillis()}.$extension"
         val file = File(context.filesDir, filename)
-
         context.contentResolver.openInputStream(uri)?.use { input ->
             file.outputStream().use { output ->
                 input.copyTo(output)
@@ -4045,7 +3649,6 @@ suspend fun saveImageToInternalStorage(
         file.absolutePath
     }
 }
-
 suspend fun saveBitmapToTempUri(
     context: Context,
     bitmap: Bitmap,
@@ -4054,7 +3657,6 @@ suspend fun saveBitmapToTempUri(
     return withContext(Dispatchers.IO) {
         val extension = format.extension
         val tempFile = File(context.cacheDir, "auto_capture_${System.currentTimeMillis()}.$extension")
-
         try {
             tempFile.outputStream().use { out ->
                 val compressFormat = if (format == ExportFormat.PNG) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
@@ -4064,11 +3666,9 @@ suspend fun saveBitmapToTempUri(
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
         Uri.fromFile(tempFile)
     }
 }
-
 fun shareImage(context: Context, pathOrUri: String) {
     try {
         val uri = if (pathOrUri.startsWith("content://")) {
@@ -4078,19 +3678,16 @@ fun shareImage(context: Context, pathOrUri: String) {
             FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
         }
         val mimeType = if (pathOrUri.lowercase().endsWith("png")) "image/png" else "image/jpeg"
-
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = mimeType
             putExtra(Intent.EXTRA_STREAM, uri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-
         context.startActivity(Intent.createChooser(intent, context.getString(R.string.compartir_captura_con)))
     } catch (e: Exception) {
         Toast.makeText(context, context.getString(R.string.error_al_compartir_la_imagen), Toast.LENGTH_SHORT).show()
     }
 }
-
 fun launchCropper(
     context: Context,
     bitmap: Bitmap,
@@ -4098,14 +3695,11 @@ fun launchCropper(
     format: ExportFormat,
 ) {
     val tempFile = File(context.cacheDir, "temp_capture.${format.extension}")
-
     tempFile.outputStream().use { out ->
         val compressFormat = if (format == ExportFormat.PNG) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
         bitmap.compress(compressFormat, 100, out)
     }
-
     val uri = Uri.fromFile(tempFile)
-
     val options = CropImageContractOptions(uri, CropImageOptions().apply {
         guidelines = CropImageView.Guidelines.ON
         showProgressBar = true
@@ -4115,14 +3709,11 @@ fun launchCropper(
         allowRotation = true
         allowFlipping = true
         autoZoomEnabled = true
-
         outputCompressFormat = if (format == ExportFormat.PNG) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
         outputCompressQuality = 100
     })
-
     launcher.launch(options)
 }
-
 @Composable
 fun LoadingOverlay() {
     val infiniteTransition = rememberInfiniteTransition(label = "blink")
@@ -4162,27 +3753,21 @@ fun LoadingOverlay() {
         }
     }
 }
-
 fun drawTimestampWatermark(source: Bitmap, timestampMs: Long): Bitmap {
     val result = source.copy(Bitmap.Config.ARGB_8888, true)
     val canvas = Canvas(result)
-
     val timeText = formatTimeMsShort(timestampMs)
     val watermarkText = "🕒 $timeText"
-
     val textSize = (source.height * 0.038f).coerceAtLeast(28f)
     val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = android.graphics.Color.WHITE
         this.textSize = textSize
         typeface = android.graphics.Typeface.DEFAULT_BOLD
     }
-
     val padding = textSize * 0.5f
     val textWidth = paint.measureText(watermarkText)
-
     val x = source.width - textWidth - padding * 2
     val y = source.height - padding * 1.5f
-
     val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = android.graphics.Color.argb(160, 0, 0, 0)
     }
@@ -4194,10 +3779,8 @@ fun drawTimestampWatermark(source: Bitmap, timestampMs: Long): Bitmap {
     )
     canvas.drawRoundRect(rect, padding * 0.5f, padding * 0.5f, bgPaint)
     canvas.drawText(watermarkText, x, y, paint)
-
     return result
 }
-
 suspend fun extractAudioFromVideo(
     context: Context,
     videoUri: Uri,
@@ -4208,10 +3791,8 @@ suspend fun extractAudioFromVideo(
     try {
         extractor = MediaExtractor()
         extractor.setDataSource(context, videoUri, null)
-
         var audioTrackIndex = -1
         var format: android.media.MediaFormat? = null
-
         for (i in 0 until extractor.trackCount) {
             val trackFormat = extractor.getTrackFormat(i)
             val mime = trackFormat.getString(android.media.MediaFormat.KEY_MIME)
@@ -4221,11 +3802,8 @@ suspend fun extractAudioFromVideo(
                 break
             }
         }
-
         if (audioTrackIndex == -1 || format == null) return@withContext null
-
         extractor.selectTrack(audioTrackIndex)
-
         val cleanName = videoName.substringBeforeLast(".") + "_audio.m4a"
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, cleanName)
@@ -4235,42 +3813,34 @@ suspend fun extractAudioFromVideo(
                 put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
         }
-
         val resolver = context.contentResolver
         val audioUri = resolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, contentValues)
-
         if (audioUri != null) {
             val fileDescriptor = resolver.openFileDescriptor(audioUri, "w")?.fileDescriptor
             if (fileDescriptor != null) {
                 muxer = MediaMuxer(fileDescriptor, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
                 val muxerTrackIndex = muxer.addTrack(format)
                 muxer.start()
-
                 val bufferSize = 1024 * 1024
                 val buffer = java.nio.ByteBuffer.allocate(bufferSize)
                 val bufferInfo = MediaCodec.BufferInfo()
-
                 while (true) {
                     bufferInfo.offset = 0
                     bufferInfo.size = extractor.readSampleData(buffer, 0)
                     if (bufferInfo.size < 0) break
-
                     bufferInfo.presentationTimeUs = extractor.sampleTime
                     bufferInfo.flags = extractor.sampleFlags
                     muxer.writeSampleData(muxerTrackIndex, buffer, bufferInfo)
                     extractor.advance()
                 }
-
                 muxer.stop()
                 muxer.release()
                 muxer = null
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     contentValues.clear()
                     contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
                     resolver.update(audioUri, contentValues, null, null)
                 }
-
                 return@withContext audioUri
             }
         }
@@ -4283,7 +3853,6 @@ suspend fun extractAudioFromVideo(
         try { extractor?.release() } catch (_: Exception) {}
     }
 }
-
 fun shareAudioFile(context: Context, audioUri: Uri) {
     try {
         val intent = Intent(Intent.ACTION_SEND).apply {
@@ -4296,7 +3865,6 @@ fun shareAudioFile(context: Context, audioUri: Uri) {
         Toast.makeText(context, "Error al compartir audio", Toast.LENGTH_SHORT).show()
     }
 }
-
 suspend fun extractBurstFrames(
     context: Context,
     uri: Uri,
@@ -4340,18 +3908,15 @@ suspend fun extractBurstFrames(
     }
     list
 }
-
 data class RecentVideo(
     val uriString: String,
     val name: String,
     val durationMs: Long,
     val timestamp: Long = System.currentTimeMillis()
 )
-
 object RecentVideoStore {
     private const val PREFS_NAME = "recent_videos_prefs"
     private const val KEY_RECENT_LIST = "key_recent_list"
-
     fun getRecentVideos(context: Context): List<RecentVideo> {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val jsonString = prefs.getString(KEY_RECENT_LIST, null) ?: return emptyList()
@@ -4374,7 +3939,6 @@ object RecentVideoStore {
         }
         return list
     }
-
     fun addRecentVideo(context: Context, video: RecentVideo) {
         val current = getRecentVideos(context).toMutableList()
         current.removeAll { it.uriString == video.uriString }
@@ -4382,7 +3946,6 @@ object RecentVideoStore {
         if (current.size > 8) {
             current.removeAt(current.lastIndex)
         }
-
         val array = org.json.JSONArray()
         current.forEach { item ->
             val obj = org.json.JSONObject().apply {
@@ -4393,14 +3956,12 @@ object RecentVideoStore {
             }
             array.put(obj)
         }
-
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .edit()
             .putString(KEY_RECENT_LIST, array.toString())
             .apply()
     }
 }
-
 suspend fun exportFramesToZip(
     context: Context,
     frames: List<Bitmap>,
@@ -4408,7 +3969,6 @@ suspend fun exportFramesToZip(
 ): Uri? = withContext(Dispatchers.IO) {
     try {
         val zipName = "Capturas_ZIP_${System.currentTimeMillis()}.zip"
-
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, zipName)
             put(MediaStore.MediaColumns.MIME_TYPE, "application/zip")
@@ -4417,10 +3977,8 @@ suspend fun exportFramesToZip(
                 put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
         }
-
         val resolver = context.contentResolver
         val zipUri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
-
         if (zipUri != null) {
             resolver.openOutputStream(zipUri)?.use { outputStream ->
                 java.util.zip.ZipOutputStream(java.io.BufferedOutputStream(outputStream)).use { zipOut ->
@@ -4435,13 +3993,11 @@ suspend fun exportFramesToZip(
                     }
                 }
             }
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 contentValues.clear()
                 contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
                 resolver.update(zipUri, contentValues, null, null)
             }
-
             return@withContext zipUri
         }
         null
@@ -4450,7 +4006,6 @@ suspend fun exportFramesToZip(
         null
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SideBySideCompareModal(
@@ -4484,7 +4039,6 @@ fun SideBySideCompareModal(
                     },
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF101728))
                 )
-
                 Row(
                     modifier = Modifier
                         .weight(1f)
@@ -4500,7 +4054,6 @@ fun SideBySideCompareModal(
                             onDismiss()
                         }
                     )
-
                     CompareFrameColumn(
                         modifier = Modifier.weight(1f),
                         frame = frame2,
@@ -4515,7 +4068,6 @@ fun SideBySideCompareModal(
         }
     }
 }
-
 @Composable
 fun CompareFrameColumn(
     modifier: Modifier = Modifier,
@@ -4537,7 +4089,6 @@ fun CompareFrameColumn(
         ) {
             Text(title, color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(6.dp))
-
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -4552,9 +4103,7 @@ fun CompareFrameColumn(
                     contentScale = ContentScale.Crop
                 )
             }
-
             Spacer(Modifier.height(6.dp))
-
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 if (frame.isBestQuality) {
                     Text("✦ Nitidez Top", color = Color(0xFF00E5FF), fontSize = 10.sp, fontWeight = FontWeight.Bold)
@@ -4565,9 +4114,7 @@ fun CompareFrameColumn(
                     Text("👀 Ojos", color = Color.Green, fontSize = 10.sp)
                 }
             }
-
             Spacer(Modifier.height(8.dp))
-
             Button(
                 onClick = onChoose,
                 modifier = Modifier.fillMaxWidth().height(40.dp),
@@ -4579,7 +4126,6 @@ fun CompareFrameColumn(
         }
     }
 }
-
 suspend fun exportBitmapsToAnimatedGif(
     context: Context,
     bitmaps: List<Bitmap>,
@@ -4592,7 +4138,6 @@ suspend fun exportBitmapsToAnimatedGif(
         val frames = if (isBoomerang) {
             validBitmaps + validBitmaps.drop(1).dropLast(1).reversed()
         } else validBitmaps
-
         val name = "GIF_${if (isBoomerang) "Boomerang_" else ""}${System.currentTimeMillis()}.gif"
         val values = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, name)
@@ -4602,7 +4147,6 @@ suspend fun exportBitmapsToAnimatedGif(
                 put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
         }
-
         val resolver = context.contentResolver
         val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
         uri?.let { destUri ->
@@ -4629,7 +4173,6 @@ suspend fun exportBitmapsToAnimatedGif(
         null
     }
 }
-
 fun createPhotoStripCollage(
     bitmaps: List<Bitmap>,
     backgroundColor: Int = android.graphics.Color.BLACK,
@@ -4637,22 +4180,17 @@ fun createPhotoStripCollage(
 ): Bitmap {
     val items = bitmaps.take(6)
     if (items.isEmpty()) return Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
-
     val targetWidth = 800
     val targetItemHeight = (targetWidth * 0.75f).toInt()
     val padding = 30
     val headerHeight = 80
     val footerHeight = 100
-
     val totalHeight = headerHeight + (items.size * targetItemHeight) + ((items.size + 1) * padding) + footerHeight
     val output = Bitmap.createBitmap(targetWidth + (padding * 2), totalHeight, Bitmap.Config.ARGB_8888)
-
     val canvas = Canvas(output)
     canvas.drawColor(backgroundColor)
-
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     var currentY = headerHeight + padding
-
     val titlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = if (backgroundColor == android.graphics.Color.WHITE) android.graphics.Color.BLACK else android.graphics.Color.WHITE
         textSize = 36f
@@ -4660,23 +4198,19 @@ fun createPhotoStripCollage(
         textAlign = Paint.Align.CENTER
     }
     canvas.drawText(titleText, (output.width / 2).toFloat(), headerHeight.toFloat(), titlePaint)
-
     items.forEach { sourceBmp ->
         val scaled = Bitmap.createScaledBitmap(sourceBmp, targetWidth, targetItemHeight, true)
         canvas.drawBitmap(scaled, padding.toFloat(), currentY.toFloat(), paint)
         currentY += targetItemHeight + padding
     }
-
     val footerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = android.graphics.Color.GRAY
         textSize = 24f
         textAlign = Paint.Align.CENTER
     }
     canvas.drawText("✨ Captured with Video to Photo", (output.width / 2).toFloat(), (totalHeight - padding).toFloat(), footerPaint)
-
     return output
 }
-
 suspend fun detectSceneCuts(
     context: Context,
     uri: Uri,
@@ -4689,7 +4223,6 @@ suspend fun detectSceneCuts(
         retriever.setDataSource(context, uri)
         var prevBitmap: Bitmap? = null
         val totalSteps = (durationMs / stepMs).toInt().coerceIn(1, 100)
-
         for (i in 0 until totalSteps) {
             val sampleMs = i * stepMs
             val bmp = retriever.getScaledFrameAtTime(sampleMs * 1000L, MediaMetadataRetriever.OPTION_CLOSEST_SYNC, 120, 120)
@@ -4710,7 +4243,6 @@ suspend fun detectSceneCuts(
     }
     cuts
 }
-
 fun calculateBitmapDifference(bmp1: Bitmap, bmp2: Bitmap): Float {
     try {
         val w = bmp1.width.coerceAtMost(bmp2.width)
@@ -4718,16 +4250,13 @@ fun calculateBitmapDifference(bmp1: Bitmap, bmp2: Bitmap): Float {
         var totalDiff = 0f
         val step = 12
         var samples = 0
-
         for (y in 0 until h step step) {
             for (x in 0 until w step step) {
                 val p1 = bmp1.getPixel(x, y)
                 val p2 = bmp2.getPixel(x, y)
-
                 val rDiff = abs(((p1 shr 16) and 0xFF) - ((p2 shr 16) and 0xFF)) / 255f
                 val gDiff = abs(((p1 shr 8) and 0xFF) - ((p2 shr 8) and 0xFF)) / 255f
                 val bDiff = abs((p1 and 0xFF) - (p2 and 0xFF)) / 255f
-
                 totalDiff += (rDiff + gDiff + bDiff) / 3f
                 samples++
             }
@@ -4737,7 +4266,6 @@ fun calculateBitmapDifference(bmp1: Bitmap, bmp2: Bitmap): Float {
         return 0f
     }
 }
-
 suspend fun trimAndExportVideoClip(
     context: Context,
     videoUri: Uri,
@@ -4750,7 +4278,6 @@ suspend fun trimAndExportVideoClip(
     try {
         extractor = MediaExtractor()
         extractor.setDataSource(context, videoUri, null)
-
         val values = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, outputName)
             put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
@@ -4759,18 +4286,14 @@ suspend fun trimAndExportVideoClip(
                 put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
         }
-
         val resolver = context.contentResolver
         val clipUri = resolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values)
-
         if (clipUri != null) {
             val pfd = resolver.openFileDescriptor(clipUri, "w")
             if (pfd != null) {
                 muxer = MediaMuxer(pfd.fileDescriptor, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
-
                 val trackCount = extractor.trackCount
                 val indexMap = HashMap<Int, Int>()
-
                 for (i in 0 until trackCount) {
                     val format = extractor.getTrackFormat(i)
                     val mime = format.getString(android.media.MediaFormat.KEY_MIME) ?: ""
@@ -4780,50 +4303,37 @@ suspend fun trimAndExportVideoClip(
                         indexMap[i] = muxerTrack
                     }
                 }
-
                 muxer.start()
-
                 val bufferSize = 1024 * 1024
                 val buffer = java.nio.ByteBuffer.allocate(bufferSize)
                 val bufferInfo = MediaCodec.BufferInfo()
-
                 val startUs = startMs * 1000L
                 val endUs = endMs * 1000L
-
                 extractor.seekTo(startUs, MediaExtractor.SEEK_TO_CLOSEST_SYNC)
-
                 while (true) {
                     val trackIndex = extractor.sampleTrackIndex
                     if (trackIndex < 0) break
-
                     val sampleTimeUs = extractor.sampleTime
                     if (sampleTimeUs > endUs) break
-
                     bufferInfo.offset = 0
                     bufferInfo.size = extractor.readSampleData(buffer, 0)
                     if (bufferInfo.size < 0) break
-
                     bufferInfo.presentationTimeUs = (sampleTimeUs - startUs).coerceAtLeast(0L)
                     bufferInfo.flags = extractor.sampleFlags
-
                     val muxerTrackIndex = indexMap[trackIndex]
                     if (muxerTrackIndex != null) {
                         muxer.writeSampleData(muxerTrackIndex, buffer, bufferInfo)
                     }
-
                     extractor.advance()
                 }
-
                 muxer.stop()
                 muxer.release()
                 muxer = null
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     values.clear()
                     values.put(MediaStore.MediaColumns.IS_PENDING, 0)
                     resolver.update(clipUri, values, null, null)
                 }
-
                 return@withContext clipUri
             }
         }
@@ -4836,5 +4346,3 @@ suspend fun trimAndExportVideoClip(
         try { extractor?.release() } catch (_: Exception) {}
     }
 }
-
-

@@ -1,4 +1,3 @@
-
 object EquationModel {
     fun getList(equation: ArrayList<Equation>) {
         equation.add(Equation("Density", "General", R.drawable.e_density, "p: Density \nm: Mass \nV: Volume"))
@@ -78,6 +77,5 @@ object EquationModel {
         equation.add(Equation("Absorbed Dose", "Nuclear Physics", R.drawable.e_absorbeddose, "D: Absorbed Dose \nE: Energy \nm: Mass"))
         equation.add(Equation("Equivalent Dose", "Nuclear Physics", R.drawable.e_equivalentdose, "H: Equivalent Dose \nD: Absorbed Dose \nQ: Quality Factor"))
         equation.add(Equation("Energy in Capacitor", "Electricity", R.drawable.e_equivalentdose, ""))
-
     }
 }

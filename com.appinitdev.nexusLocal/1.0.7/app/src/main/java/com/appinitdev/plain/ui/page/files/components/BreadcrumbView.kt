@@ -1,5 +1,3 @@
-
-
 @Composable
 fun BreadcrumbView(
     breadcrumbs: List<BreadcrumbItem>,
@@ -7,7 +5,6 @@ fun BreadcrumbView(
     onItemClick: (BreadcrumbItem) -> Unit
 ) {
     val scrollState = rememberScrollState()
-    
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -28,7 +25,6 @@ fun BreadcrumbView(
                     .clickable { onItemClick(item) }
                     .padding(vertical = 4.dp)
             )
-
             if (index < breadcrumbs.size - 1) {
                 Text(
                     text = " / ",

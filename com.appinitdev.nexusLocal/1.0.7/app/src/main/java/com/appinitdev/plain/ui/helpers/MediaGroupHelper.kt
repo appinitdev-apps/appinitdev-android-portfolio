@@ -1,10 +1,8 @@
-
 data class MediaDateGroup<T>(
     val dateKey: String,
     val dateLabel: String,
     val items: List<T>
 )
-
 fun <T> groupMediaByDate(
     items: List<T>,
     getDate: (T) -> Instant

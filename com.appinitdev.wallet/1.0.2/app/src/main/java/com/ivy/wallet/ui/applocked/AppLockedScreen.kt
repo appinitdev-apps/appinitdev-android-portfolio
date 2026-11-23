@@ -1,4 +1,3 @@
-
 @SuppressLint("ComposeModifierMissing")
 @Composable
 @Suppress("LongMethod", "FunctionNaming")
@@ -13,7 +12,6 @@ fun BoxWithConstraintsScope.AppLockedScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(Modifier.height(32.dp))
-
         Text(
             modifier = Modifier
                 .background(UI.colors.medium, UI.shapes.rFull)
@@ -24,9 +22,7 @@ fun BoxWithConstraintsScope.AppLockedScreen(
                 fontWeight = FontWeight.ExtraBold,
             )
         )
-
         Spacer(Modifier.weight(1f))
-
         Image(
             modifier = Modifier
                 .size(width = 96.dp, height = 138.dp),
@@ -35,9 +31,7 @@ fun BoxWithConstraintsScope.AppLockedScreen(
             contentScale = ContentScale.FillBounds,
             contentDescription = "unlock icon"
         )
-
         Spacer(Modifier.weight(1f))
-
         Text(
             text = stringResource(R.string.authenticate_text),
             style = UI.typo.b2.style(
@@ -45,14 +39,11 @@ fun BoxWithConstraintsScope.AppLockedScreen(
                 color = Gray
             )
         )
-
         Spacer(Modifier.height(24.dp))
-
         val latestOnContinueWithoutAuthentication by rememberUpdatedState(
             newValue = onContinueWithoutAuthentication
         )
         val latestOnShowOSBiometricsModal by rememberUpdatedState(onShowOSBiometricsModal)
-
         val context = LocalContext.current
         IvyButton(
             modifier = Modifier
@@ -73,8 +64,6 @@ fun BoxWithConstraintsScope.AppLockedScreen(
             )
         }
         Spacer(Modifier.height(24.dp))
-
-        
         LaunchedEffect(true) {
             osAuthentication(
                 context = context,
@@ -84,7 +73,6 @@ fun BoxWithConstraintsScope.AppLockedScreen(
         }
     }
 }
-
 private fun osAuthentication(
     context: Context,
     onShowOSBiometricsModal: () -> Unit,
@@ -96,7 +84,6 @@ private fun osAuthentication(
         onContinueWithoutAuthentication()
     }
 }
-
 @Preview
 @Composable
 @Suppress("FunctionNaming", "UnusedPrivateMember")

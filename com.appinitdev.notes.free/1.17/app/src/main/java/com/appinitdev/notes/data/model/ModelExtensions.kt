@@ -1,12 +1,9 @@
-
 private const val NOTE_URL_PREFIX = "note://"
 private val NOTE_URL_POSTFIX_NOTE = "/${Type.NOTE.name}"
 private val NOTE_URL_POSTFIX_LIST = "/${Type.LIST.name}"
-
 fun CharSequence?.isNoteUrl(): Boolean {
     return this?.let { startsWith(NOTE_URL_PREFIX) } ?: false
 }
-
 fun Long.createNoteUrl(type: Type): String {
     val postfix =
         when (type) {
@@ -15,15 +12,12 @@ fun Long.createNoteUrl(type: Type): String {
         }
     return "$NOTE_URL_PREFIX$this$postfix"
 }
-
 fun String.getNoteIdFromUrl(): Long {
     return substringAfter(NOTE_URL_PREFIX).substringBefore("/").toLong()
 }
-
 fun String.getNoteTypeFromUrl(): Type {
     return Type.valueOf(substringAfterLast("/"))
 }
-
 val FileAttachment.isImage: Boolean
     get() {
         return mimeType.isImageMimeType
@@ -36,7 +30,6 @@ val String.isAudioMimeType: Boolean
     get() {
         return startsWith("audio/")
     }
-
 fun BaseNote.toTxt(includeTitle: Boolean = true, includeCreationDate: Boolean = true) =
     buildString {
         val date = DateFormat.getDateInstance(DateFormat.FULL).format(timestamp)
@@ -45,7 +38,6 @@ fun BaseNote.toTxt(includeTitle: Boolean = true, includeCreationDate: Boolean = 
                 Type.NOTE -> body
                 Type.LIST -> items.toText()
             }
-
         if (title.isNotEmpty() && includeTitle) {
             append("${title}\n\n")
         }
@@ -55,7 +47,6 @@ fun BaseNote.toTxt(includeTitle: Boolean = true, includeCreationDate: Boolean = 
         append(body)
         return toString()
     }
-
 fun BaseNote.toJson(): String {
     val jsonObject =
         JSONObject()
@@ -66,13 +57,11 @@ fun BaseNote.toJson(): String {
             .put("timestamp", timestamp)
             .put("modifiedTimestamp", modifiedTimestamp)
             .put("labels", JSONArray(labels))
-
     when (type) {
         Type.NOTE -> {
             jsonObject.put("body", body)
             jsonObject.put("spans", Converters.spansToJSONArray(spans))
         }
-
         Type.LIST -> {
             jsonObject.put("items", Converters.itemsToJSONArray(items))
         }
@@ -81,7 +70,6 @@ fun BaseNote.toJson(): String {
     jsonObject.put("viewMode", viewMode.name)
     return jsonObject.toString(2)
 }
-
 fun String.toBaseNote(): BaseNote {
     val jsonObject = JSONObject(this)
     val id = jsonObject.getLongOrDefault("id", -1L)
@@ -123,7 +111,6 @@ fun String.toBaseNote(): BaseNote {
         viewMode,
     )
 }
-
 private fun JSONObject.getStringOrDefault(key: String, defaultValue: String): String {
     return try {
         getString(key)
@@ -131,7 +118,6 @@ private fun JSONObject.getStringOrDefault(key: String, defaultValue: String): St
         defaultValue
     }
 }
-
 private fun JSONObject.getArrayOrEmpty(key: String): JSONArray {
     return try {
         getJSONArray(key)
@@ -139,7 +125,6 @@ private fun JSONObject.getArrayOrEmpty(key: String): JSONArray {
         JSONArray("[]")
     }
 }
-
 private fun JSONObject.getBooleanOrDefault(key: String, defaultValue: Boolean): Boolean {
     return try {
         getBoolean(key)
@@ -147,7 +132,6 @@ private fun JSONObject.getBooleanOrDefault(key: String, defaultValue: Boolean): 
         defaultValue
     }
 }
-
 private fun JSONObject.getLongOrDefault(key: String, defaultValue: Long): Long {
     return try {
         getLong(key)
@@ -155,27 +139,22 @@ private fun JSONObject.getLongOrDefault(key: String, defaultValue: Long): Long {
         defaultValue
     }
 }
-
 fun BaseNote.toHtml(showDateCreated: Boolean) = buildString {
     val date = DateFormat.getDateInstance(DateFormat.FULL).format(timestamp)
     val title = Html.escapeHtml(title)
-
     append("<!DOCTYPE html>")
     append("<html><head>")
     append("<meta charset=\"UTF-8\"><title>$title</title>")
     append("</head><body>")
     append("<h2>$title</h2>")
-
     if (showDateCreated) {
         append("<p>$date</p>")
     }
-
     when (type) {
         Type.NOTE -> {
             val body = body.applySpans(spans).toHtml()
             append(body)
         }
-
         Type.LIST -> {
             append("<ol style=\"list-style: none; padding: 0;\">")
             items.forEach { item ->
@@ -189,9 +168,7 @@ fun BaseNote.toHtml(showDateCreated: Boolean) = buildString {
     }
     append("</body></html>")
 }
-
 fun List<BaseNote>.toNoteIdReminders() = map { NoteIdReminder(it.id, it.reminders) }
-
 fun BaseNote.attachmentsDifferFrom(other: BaseNote): Boolean {
     return files.size != other.files.size ||
         files.any { file -> other.files.none { it.localName == file.localName } } ||
@@ -201,9 +178,7 @@ fun BaseNote.attachmentsDifferFrom(other: BaseNote): Boolean {
         audios.any { audio -> other.audios.none { it.name == audio.name } } ||
         other.audios.any { audio -> audios.none { it.name == audio.name } }
 }
-
 fun Date.toText(): String = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(this)
-
 fun Repetition.toText(context: Context): String =
     when {
         value == 1 && unit == RepetitionTimeUnit.DAYS -> context.getString(R.string.daily)
@@ -212,7 +187,6 @@ fun Repetition.toText(context: Context): String =
         value == 1 && unit == RepetitionTimeUnit.YEARS -> context.getString(R.string.yearly)
         else -> "${context.getString(R.string.every)} $value ${unit.toText(context)}"
     }
-
 private fun RepetitionTimeUnit.toText(context: Context): String {
     val resId =
         when (this) {
@@ -225,9 +199,7 @@ private fun RepetitionTimeUnit.toText(context: Context): String {
         }
     return context.getString(resId)
 }
-
 fun Collection<Reminder>.copy() = map { it.copy() }
-
 fun RepetitionTimeUnit.toCalendarField(): Int {
     return when (this) {
         RepetitionTimeUnit.MINUTES -> Calendar.MINUTE
@@ -238,7 +210,6 @@ fun RepetitionTimeUnit.toCalendarField(): Int {
         RepetitionTimeUnit.YEARS -> Calendar.YEAR
     }
 }
-
 fun Reminder.nextNotification(from: Date = Date()): Date? {
     if (from.before(dateTime)) {
         return dateTime
@@ -253,16 +224,13 @@ fun Reminder.nextNotification(from: Date = Date()): Date? {
     reminderStart.add(repetition!!.unit.toCalendarField(), unitsUntilNext)
     return reminderStart.time
 }
-
 fun Reminder.nextRepetition(from: Date = Date()): Date? {
     if (repetition == null) {
         return null
     }
     return nextNotification(from)
 }
-
 fun Reminder.hasUpcomingNotification() = !(dateTime.before(Date()) && repetition == null)
-
 fun Repetition.toMillis(): Long {
     return Calendar.getInstance()
         .apply {
@@ -271,17 +239,13 @@ fun Repetition.toMillis(): Long {
         }
         .timeInMillis
 }
-
 fun Collection<Reminder>.hasAnyUpcomingNotifications(): Boolean {
     return any { it.hasUpcomingNotification() }
 }
-
 fun Collection<Reminder>.findNextNotificationDate(): Date? {
     return mapNotNull { it.nextNotification() }.minByOrNull { it }
 }
-
 fun Date.toCalendar() = Calendar.getInstance().apply { timeInMillis = this@toCalendar.time }
-
 fun List<ListItem>.toText() = buildString {
     for (item in this@toText) {
         val check = if (item.checked) "[✓]" else "[ ]"
@@ -289,9 +253,7 @@ fun List<ListItem>.toText() = buildString {
         appendLine("$childIndentation$check ${item.body}")
     }
 }
-
 fun Collection<ListItem>.deepCopy() = map { it.copy(children = mutableListOf()) }
-
 fun ColorString.isValid() =
     when (this) {
         COLOR_DEFAULT -> true

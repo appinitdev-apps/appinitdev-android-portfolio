@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResultScreen(
@@ -10,7 +9,6 @@ fun ResultScreen(
 ) {
     val context = LocalContext.current
     var isSaved by remember { mutableStateOf(false) }
-
     val statusColor = when (result.bmiType) {
         1 -> UnderweightBlue
         2 -> NormalGreen
@@ -19,7 +17,6 @@ fun ResultScreen(
         5 -> ObesityRed
         else -> ObesityPurple
     }
-
     val headerShare = stringResource(id = R.string.mi_resultado_imc_share)
     val estadoShare = stringResource(id = R.string.estado_share)
     val valorShare = stringResource(id = R.string.valor_imc_share)
@@ -28,7 +25,6 @@ fun ResultScreen(
     val pesoIdealShare = stringResource(id = R.string.peso_ideal_share)
     val appShare = stringResource(id = R.string.calculado_con_app_share)
     val chooserTitle = stringResource(id = R.string.compartir_resultado_title)
-
     fun shareResult() {
         val shareText = """
             $headerShare
@@ -40,14 +36,12 @@ fun ResultScreen(
             
             $appShare
         """.trimIndent()
-
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, shareText)
         }
         context.startActivity(Intent.createChooser(intent, chooserTitle))
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -94,7 +88,6 @@ fun ResultScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -122,17 +115,13 @@ fun ResultScreen(
                         color = MaterialTheme.colorScheme.onSurface,
                         letterSpacing = 0.5.sp
                     )
-
                     Spacer(modifier = Modifier.height(6.dp))
-
                     BmiGaugeView(
                         bmiValue = result.bmiValue,
                         isBabyCategory = (result.categoryId == 1)
                     )
                 }
             }
-
-            
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -166,9 +155,7 @@ fun ResultScreen(
                             )
                         }
                     }
-
                     Spacer(modifier = Modifier.width(14.dp))
-
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = result.statusText,
@@ -176,7 +163,6 @@ fun ResultScreen(
                             fontWeight = FontWeight.ExtraBold,
                             color = statusColor
                         )
-
                         if (result.heightStatusText.isNotEmpty()) {
                             Text(
                                 text = result.heightStatusText,
@@ -188,8 +174,6 @@ fun ResultScreen(
                     }
                 }
             }
-
-            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -205,8 +189,6 @@ fun ResultScreen(
                     modifier = Modifier.weight(1f)
                 )
             }
-
-            
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
@@ -247,8 +229,6 @@ fun ResultScreen(
                     }
                 }
             }
-
-            
             val rec = result.healthRecommendation
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -268,8 +248,6 @@ fun ResultScreen(
                         fontWeight = FontWeight.ExtraBold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
-
-                    
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.Top
@@ -311,8 +289,6 @@ fun ResultScreen(
                             )
                         }
                     }
-
-                    
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.Top
@@ -356,8 +332,6 @@ fun ResultScreen(
                     }
                 }
             }
-
-            
             if (result.referenceTable.isNotEmpty()) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -377,13 +351,10 @@ fun ResultScreen(
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
-
                         ReferenceTableContent(table = result.referenceTable, categoryId = result.categoryId)
                     }
                 }
             }
-
-            
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -417,7 +388,6 @@ fun ResultScreen(
                         fontWeight = FontWeight.Bold
                     )
                 }
-
                 OutlinedButton(
                     onClick = onNewCalculation,
                     modifier = Modifier
@@ -441,7 +411,6 @@ fun ResultScreen(
         }
     }
 }
-
 @Composable
 fun MetricCard(
     title: String,
@@ -478,7 +447,6 @@ fun MetricCard(
         }
     }
 }
-
 @Composable
 fun ReferenceTableContent(table: DoubleArray, categoryId: Int) {
     Column(
@@ -521,7 +489,6 @@ fun ReferenceTableContent(table: DoubleArray, categoryId: Int) {
         }
     }
 }
-
 @Composable
 fun TableRowItem(label: String, value: String) {
     Row(

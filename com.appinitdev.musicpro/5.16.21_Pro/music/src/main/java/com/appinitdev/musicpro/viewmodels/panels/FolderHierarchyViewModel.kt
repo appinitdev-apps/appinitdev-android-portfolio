@@ -1,25 +1,15 @@
-
- 
-
-
-
-
 @HiltViewModel(assistedFactory = FolderHierarchyViewModel.Factory::class)
 class FolderHierarchyViewModel @AssistedInject constructor(
         application: Application,
         @Assisted val folderPath: String?,
         private val audioRepository: AudioRepository
 ) : WrappedViewModel(application) {
-
     private val _contents = MutableStateFlow(FolderHierarchyContents())
     val contents: StateFlow<FolderHierarchyContents> = _contents.asStateFlow()
-
     private var loadJob: Job? = null
-
     init {
         loadContents()
     }
-
     private fun loadContents() {
         loadJob?.cancel()
         loadJob = viewModelScope.launch {
@@ -54,7 +44,6 @@ class FolderHierarchyViewModel @AssistedInject constructor(
             }
         }
     }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -65,17 +54,14 @@ class FolderHierarchyViewModel @AssistedInject constructor(
             }
         }
     }
-
     data class FolderHierarchyContents(
             val subFolders: List<Folder> = emptyList(),
             val songs: List<Audio> = emptyList()
     )
-
     @AssistedFactory
     interface Factory {
         fun create(folderPath: String?): FolderHierarchyViewModel
     }
-
     companion object {
         private const val TAG = "FolderHierarchyViewModel"
     }

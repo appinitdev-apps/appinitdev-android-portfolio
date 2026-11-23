@@ -1,17 +1,9 @@
-
- 
-
-
-
-
-
 fun Modifier.pinchZoomGrid(
     cellsPerRow: MutableState<Int>,
     hapticFeedback: HapticFeedback,
     scope: CoroutineScope,
     onCellsChanged: suspend (Int) -> Unit,
 ): Modifier = this.pointerInput("pinchZoomGrid") {
-    
     var zoomAccumulator = 1f
     awaitEachGesture {
         awaitFirstDown(requireUnconsumed = false)
@@ -51,8 +43,6 @@ fun Modifier.pinchZoomGrid(
                     }
                 }
                 prevDistance = dist
-                
-                
                 pointers.forEach { it.consume() }
             } else {
                 if (pinchActive) zoomAccumulator = 1f
@@ -62,12 +52,6 @@ fun Modifier.pinchZoomGrid(
         } while (event.changes.any { it.pressed })
     }
 }
-
- 
-
-
-
-
 @Composable
 fun rememberBoostFlingBehavior(velocityMultiplier: Float): FlingBehavior {
     val decaySpec: DecayAnimationSpec<Float> = rememberSplineBasedDecay()

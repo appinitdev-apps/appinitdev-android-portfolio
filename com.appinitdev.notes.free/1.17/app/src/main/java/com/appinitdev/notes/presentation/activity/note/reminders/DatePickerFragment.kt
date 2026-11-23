@@ -1,9 +1,7 @@
-
 class DatePickerFragment(
     private val date: Date?,
     private val listener: DatePickerDialog.OnDateSetListener,
 ) : DialogFragment() {
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val now = now()
         val c = date?.let { Calendar.getInstance().apply { time = it } } ?: now

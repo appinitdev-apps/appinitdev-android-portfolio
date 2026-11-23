@@ -1,36 +1,24 @@
-
 @HiltViewModel
 class ProductViewModel @Inject constructor(
     private val productRepository: ProductRepository
 ) : ViewModel() {
-
     private val _products = MutableStateFlow<List<Product>>(emptyList())
     val products: StateFlow<List<Product>> = _products.asStateFlow()
-
-
     val allCategories: StateFlow<List<Category>> =
         productRepository.getAllCategories()
             .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-
     private val _filteredProducts = MutableStateFlow<List<Product>>(emptyList())
     val filteredProducts: StateFlow<List<Product>> = _filteredProducts.asStateFlow()
-
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
-
     private val _selectedCategory = MutableStateFlow<String?>(null)
     val selectedCategory: StateFlow<String?> = _selectedCategory.asStateFlow()
-
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
-
     private val _selectedMode = MutableStateFlow(1) 
     val selectedMode: StateFlow<Int> = _selectedMode.asStateFlow()
-
-
     init {
         loadProducts()
         viewModelScope.launch {
@@ -39,79 +27,13 @@ class ProductViewModel @Inject constructor(
                 insertDefaultCategories()
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
-
-
     private suspend fun insertDefaultCategories() {
         val defaultCategories = listOf(
             Category(id = "Default1", name = "All")
         )
         productRepository.insertCategories(defaultCategories)
     }
-
     fun setMode(mode: Int) {
         _selectedMode.value = mode
     }
@@ -130,44 +52,33 @@ class ProductViewModel @Inject constructor(
                 _isLoading.value = false
             }
         }
-
-
     }
-
     fun searchProducts(query: String) {
         _searchQuery.value = query
         applyFilters()
     }
-
     fun filterByCategory(categoryId: String?) {
         _selectedCategory.value = categoryId
         applyFilters()
     }
-
     fun clearFilters() {
         _searchQuery.value = ""
         _selectedCategory.value = null
         applyFilters()
     }
-
     private fun applyFilters() {
         val query = _searchQuery.value.lowercase()
         val categoryId = _selectedCategory.value
-
         val filtered = _products.value.filter { product ->
             val matchesSearch = query.isEmpty() ||
                     product.name.lowercase().contains(query) ||
                     product.sku.lowercase().contains(query) ||
                     product.barcode?.lowercase()?.contains(query) == true
-
             val matchesCategory = categoryId == null || product.categoryId == categoryId
-
             matchesSearch && matchesCategory
         }
-
         _filteredProducts.value = filtered
     }
-
     fun addProduct(product: Product) {
         viewModelScope.launch {
             try {
@@ -177,7 +88,6 @@ class ProductViewModel @Inject constructor(
             }
         }
     }
-
     fun updateProduct(product: Product) {
         viewModelScope.launch {
             try {
@@ -188,7 +98,6 @@ class ProductViewModel @Inject constructor(
             }
         }
     }
-
     fun deleteProduct(product: Product) {
         viewModelScope.launch {
             try {
@@ -198,7 +107,6 @@ class ProductViewModel @Inject constructor(
             }
         }
     }
-
     fun activeProduct(product: Product) {
         viewModelScope.launch {
             try {
@@ -208,8 +116,6 @@ class ProductViewModel @Inject constructor(
             }
         }
     }
-
-
     fun updateStockQuantity(productId: String, quantity: Int) {
         viewModelScope.launch {
             try {
@@ -219,13 +125,11 @@ class ProductViewModel @Inject constructor(
             }
         }
     }
-
     fun getProductByBarcode(barcode: String) {
         viewModelScope.launch {
             try {
                 val product = productRepository.getProductByBarcode(barcode)
                 if (product != null) {
-                    
                     _errorMessage.value = "Product found: ${product.name}"
                 } else {
                     _errorMessage.value = "Product not found for barcode: $barcode"
@@ -235,7 +139,6 @@ class ProductViewModel @Inject constructor(
             }
         }
     }
-
     fun getLowStockProducts() {
         viewModelScope.launch {
             try {
@@ -247,7 +150,6 @@ class ProductViewModel @Inject constructor(
             }
         }
     }
-
     fun getOutOfStockProducts() {
         viewModelScope.launch {
             try {
@@ -259,7 +161,6 @@ class ProductViewModel @Inject constructor(
             }
         }
     }
-
     fun getProductBySku(sku: String, onResult: (Product?) -> Unit) {
         viewModelScope.launch {
             try {
@@ -271,7 +172,6 @@ class ProductViewModel @Inject constructor(
             }
         }
     }
-
     fun insertProducts(products: List<Product>) {
         viewModelScope.launch {
             try {
@@ -281,12 +181,9 @@ class ProductViewModel @Inject constructor(
             }
         }
     }
-
     fun clearErrorMessage() {
         _errorMessage.value = null
     }
-
-    
     fun createNewProduct(
         name: String,
         sku: String,

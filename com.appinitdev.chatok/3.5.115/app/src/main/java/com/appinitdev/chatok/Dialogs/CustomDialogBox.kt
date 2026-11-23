@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomDialogBox(
@@ -33,9 +32,7 @@ fun CustomDialogBox(
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
-                
                 Spacer(modifier = Modifier.height(24.dp))
-                
                 OutlinedTextField(
                     value = state.srEmail,
                     onValueChange = { setEmail(it.lowercase()) },
@@ -50,9 +47,7 @@ fun CustomDialogBox(
                         unfocusedBorderColor = Color.Gray
                     )
                 )
-                
                 Spacer(modifier = Modifier.height(32.dp))
-                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -62,7 +57,6 @@ fun CustomDialogBox(
                         onClick = hideDialog,
                         modifier = Modifier.weight(1f)
                     )
-                    
                     MainGradientButton(
                         text = stringResource(R.string.agregar),
                         onClick = addChat,

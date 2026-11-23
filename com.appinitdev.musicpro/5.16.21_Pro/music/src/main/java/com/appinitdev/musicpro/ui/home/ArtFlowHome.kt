@@ -1,36 +1,21 @@
-
- 
-
-
-
-
-
-
 class ArtFlowHome : MediaFragment() {
-
     private lateinit var binding: FragmentHomeArtflowBinding
     private lateinit var gridLayoutManager: GridLayoutManager
     private val homeViewModel: HomeViewModel by viewModels({ requireActivity() })
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentHomeArtflowBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val spanCount = if (BarHeight.isLandscape(requireContext())) 3 else 1
         gridLayoutManager = GridLayoutManager(requireContext(), spanCount)
         binding.recyclerView.layoutManager = gridLayoutManager
-
         postponeEnterTransition()
         requireLightBarIcons()
-
         binding.recyclerView.setBackgroundColor(Color.BLACK)
         binding.recyclerView.requireAttachedMiniPlayer()
-
         binding.sideBar.attachToRecyclerView(binding.recyclerView)
         binding.sideBar.setCenterItemsVertically(true)
         binding.sideBar.setItemStyle(backgroundColor = ThemeManager.theme.viewGroupTheme.backgroundColor)
@@ -42,7 +27,6 @@ class ArtFlowHome : MediaFragment() {
                 FelicitySideBar.SidebarItem(R.drawable.ic_search),
                 FelicitySideBar.SidebarItem(R.drawable.ic_settings)
         ))
-
         binding.sideBar.setOnItemClickListener { id, anchorView ->
             Log.d(TAG, "Sidebar item clicked with id: $id")
             when (id) {
@@ -111,9 +95,7 @@ class ArtFlowHome : MediaFragment() {
                 }
             }
         }
-
         var adapter: AdapterArtFlowHome? = null
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 combine(
@@ -127,28 +109,23 @@ class ArtFlowHome : MediaFragment() {
                 }.collect { sections ->
                     Log.d(TAG, "Data received: ${sections.size} sections")
                     if (sections.isEmpty()) return@collect
-
                     if (adapter == null) {
                         adapter = AdapterArtFlowHome(sections)
                         binding.recyclerView.adapter = adapter
                         binding.recyclerView.setHasFixedSize(true)
-
                         adapter.setAdapterArtFlowHomeCallbacks(object : AdapterArtFlowHome.Companion.AdapterArtFlowHomeCallbacks {
                             override fun onItemClicked(imageView: ImageView, rowPosition: Int, itemPosition: Int) {
                                 val audios = adapter.getSection(rowPosition)?.items?.filterIsInstance<Audio>()
                                 if (audios.isNullOrEmpty()) return
                                 setMediaItems(audios, itemPosition)
                             }
-
                             override fun onItemLongClicked(imageView: ImageView, rowPosition: Int, itemPosition: Int) {
                                 binding.sideBar.hide()
                                 val audios = adapter.getSection(rowPosition)?.items?.filterIsInstance<Audio>()
                                 if (audios.isNullOrEmpty()) return
-
                                 val rowHolder = binding.recyclerView
                                     .findViewHolderForAdapterPosition(rowPosition) as? AdapterArtFlowHome.Holder
                                 rowHolder?.binding?.felicitySlider?.stop()
-
                                 openSongsMenu(audios, itemPosition, imageView) {
                                     rowHolder?.binding?.felicitySlider?.start()
                                     postDelayed(250L) {
@@ -156,15 +133,12 @@ class ArtFlowHome : MediaFragment() {
                                     }
                                 }
                             }
-
                             override fun onClicked(view: View, position: Int, itemPosition: Int) {
                                 Log.d(TAG, "Section container clicked at position: $position, itemPosition: $itemPosition")
                             }
-
                             override fun onClicked(view: View, position: Int) {
                                 Log.d(TAG, "Section container clicked at position: $position")
                             }
-
                             override fun onPanelItemClicked(title: Int, view: View) {
                                 Log.d(TAG, "Panel item clicked with title: $title")
                                 when (title) {
@@ -176,7 +150,6 @@ class ArtFlowHome : MediaFragment() {
                                 }
                             }
                         })
-
                         binding.recyclerView.setOnTouchListener { _, event ->
                             when (event.action) {
                                 MotionEvent.ACTION_UP -> {
@@ -190,7 +163,6 @@ class ArtFlowHome : MediaFragment() {
                             }
                             false
                         }
-
                         requireView().startTransitionOnPreDraw()
                     } else {
                         adapter.updateData(sections)
@@ -199,18 +171,6 @@ class ArtFlowHome : MediaFragment() {
             }
         }
     }
-
-     
-
-
-
-
-
-
-
-
-
-
     private fun buildSections(
             favorites: List<Audio>,
             recentlyPlayed: List<Audio>,
@@ -226,28 +186,16 @@ class ArtFlowHome : MediaFragment() {
         if (recentlyAdded.isNotEmpty()) sections.add(ArtFlowData(R.string.recently_added, recentlyAdded))
         return sections
     }
-
     override fun onResume() {
         super.onResume()
     }
-
     companion object {
-         
-
-
-
-
         fun newInstance(): ArtFlowHome {
             val args = Bundle()
             val fragment = ArtFlowHome()
             fragment.arguments = args
             return fragment
         }
-
         const val TAG = "ArtFlowHome"
     }
 }
-
-
-
-

@@ -1,10 +1,8 @@
-
 data class PlotFunction(
     val name: String,
     val formulaLatex: String,
     val evaluator: (Double) -> Double
 )
-
 @Composable
 fun FunctionPlotter(
     modifier: Modifier = Modifier
@@ -18,10 +16,8 @@ fun FunctionPlotter(
         PlotFunction("Polinomio", "y = x³ - 3x") { x -> x * x * x - 3 * x },
         PlotFunction("Línea Recta", "y = 2x + 1") { x -> 2 * x + 1.0 }
     )
-
     var selectedFunc by remember { mutableStateOf(availableFunctions.first()) }
     var scale by remember { mutableFloatStateOf(40f) } 
-
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
@@ -37,8 +33,6 @@ fun FunctionPlotter(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
-
-            
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(availableFunctions) { func ->
                     FilterChip(
@@ -48,8 +42,6 @@ fun FunctionPlotter(
                     )
                 }
             }
-
-            
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -65,37 +57,27 @@ fun FunctionPlotter(
                     val height = size.height
                     val centerX = width / 2f
                     val centerY = height / 2f
-
                     val axisColor = Color.Gray.copy(alpha = 0.6f)
                     val gridColor = Color.Gray.copy(alpha = 0.2f)
                     val curveColor = Color(0xFF3B82F6)
-
-                    
                     val step = scale
                     var xGrid = centerX % step
                     while (xGrid < width) {
                         drawLine(gridColor, Offset(xGrid, 0f), Offset(xGrid, height), strokeWidth = 1f)
                         xGrid += step
                     }
-
                     var yGrid = centerY % step
                     while (yGrid < height) {
                         drawLine(gridColor, Offset(0f, yGrid), Offset(width, yGrid), strokeWidth = 1f)
                         yGrid += step
                     }
-
-                    
                     drawLine(axisColor, Offset(0f, centerY), Offset(width, centerY), strokeWidth = 3f)
                     drawLine(axisColor, Offset(centerX, 0f), Offset(centerX, height), strokeWidth = 3f)
-
-                    
                     val path = Path()
                     var isFirst = true
-
                     for (px in 0..width.toInt() step 2) {
                         val xVal = (px - centerX) / scale
                         val yVal = selectedFunc.evaluator(xVal.toDouble())
-
                         if (!yVal.isNaN() && !yVal.isInfinite()) {
                             val py = centerY - (yVal.toFloat() * scale)
                             if (py in -500f..(height + 500f)) {
@@ -112,7 +94,6 @@ fun FunctionPlotter(
                             isFirst = true
                         }
                     }
-
                     drawPath(
                         path = path,
                         color = curveColor,
@@ -120,8 +101,6 @@ fun FunctionPlotter(
                     )
                 }
             }
-
-            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -132,7 +111,6 @@ fun FunctionPlotter(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
-
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(onClick = { if (scale > 15f) scale -= 10f }) {
                         Text("🔍 -")

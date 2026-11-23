@@ -1,30 +1,10 @@
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class AlarmManagerHandler(
     private val context: Context,
     private val timeProvider: TimeProvider,
     private val log: Logger,
 ) : EventListener {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
     private var isForeground = true
-
     override fun onEvent(event: Event) {
         if (event == Event.BringToForeground) {
             isForeground = true
@@ -39,9 +19,7 @@ class AlarmManagerHandler(
                         setAlarm(event.endTime)
                     }
                 }
-
                 else -> {
-                    
                 }
             }
         } else {
@@ -52,20 +30,16 @@ class AlarmManagerHandler(
                         setAlarm(event.endTime)
                     }
                 }
-
                 is Event.AddOneMinute -> {
                     if (event.endTime != 0L) {
                         setAlarm(event.endTime)
                     }
                 }
-
                 else -> {
-                    
                 }
             }
         }
     }
-
     private fun setAlarm(triggerAtMillis: Long) {
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.ELAPSED_REALTIME_WAKEUP,
@@ -73,13 +47,11 @@ class AlarmManagerHandler(
             getAlarmPendingIntent(),
         )
     }
-
     private fun cancelAlarm() {
         val pendingIntent = getAlarmPendingIntent()
         alarmManager.cancel(pendingIntent)
         pendingIntent.cancel()
     }
-
     private fun getAlarmPendingIntent(): PendingIntent =
         PendingIntent.getBroadcast(
             context,

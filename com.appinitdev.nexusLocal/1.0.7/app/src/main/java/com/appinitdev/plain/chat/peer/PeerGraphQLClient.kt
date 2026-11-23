@@ -1,19 +1,12 @@
-
 data class GraphQLResponse(
     val data: JSONObject? = null,
     val errors: List<GraphQLError>? = null,
     val isSuccess: Boolean = false
 )
-
 data class GraphQLError(
     val message: String
 )
-
 object PeerGraphQLClient {
-     
-
-
-
     suspend fun createChatItem(
         peer: DPeer,
         clientId: String,
@@ -29,7 +22,6 @@ object PeerGraphQLClient {
                     }
                 }
             """.trimIndent()
-
         return execute(
             peer = peer,
             clientId = clientId,
@@ -37,12 +29,6 @@ object PeerGraphQLClient {
             variables = mapOf("content" to content.toJSONString())
         )
     }
-
-     
-
-
-
-
     suspend fun sendChannelSystemMessage(
         peer: DPeer,
         clientId: String,
@@ -56,13 +42,10 @@ object PeerGraphQLClient {
                     channelSystemMessage(type: $type, payload: $payload)
                 }
             """.trimIndent()
-
         val variables = mapOf(
             "type" to type,
             "payload" to payload,
         )
-
-        
         val useChannelKey = peer.key.isEmpty() && channelKey.isNotEmpty()
         return if (useChannelKey) {
             execute(
@@ -77,12 +60,6 @@ object PeerGraphQLClient {
             execute(peer = peer, clientId = clientId, query = mutation, variables = variables)
         }
     }
-
-     
-
-
-
-
     suspend fun createChannelChatItem(
         peer: DPeer,
         channelId: String,
@@ -100,7 +77,6 @@ object PeerGraphQLClient {
                     }
                 }
             """.trimIndent()
-
         return execute(
             peer = peer,
             encryptionKey = channelKey,
@@ -110,15 +86,6 @@ object PeerGraphQLClient {
             channelId = channelId,
         )
     }
-
-     
-
-
-
-
-
-
-
     private suspend fun execute(
         peer: DPeer,
         encryptionKey: String = peer.key,
@@ -128,7 +95,6 @@ object PeerGraphQLClient {
         channelId: String = "",
     ): GraphQLResponse? {
         return try {
-
             val requestJson = JSONObject().apply {
                 put("query", query)
                 val variablesJson = JSONObject()
@@ -137,14 +103,9 @@ object PeerGraphQLClient {
                 }
                 put("variables", variablesJson)
             }.toString()
-
-            
             val timestamp = System.currentTimeMillis().toString()
             val signature = SignatureHelper.signTextAsync("$timestamp$requestJson")
-
-            
             val requestBody = "$signature|$timestamp|$requestJson".toRequestBody("application/json".toMediaType())
-
             val requestBuilder = Request.Builder()
                 .url(peer.getApiUrl())
                 .post(requestBody)
@@ -152,11 +113,9 @@ object PeerGraphQLClient {
             if (channelId.isNotEmpty()) {
                 requestBuilder.addHeader("c-cid", channelId)
             }
-
             val httpClient = HttpClientManager.createCryptoHttpClient(encryptionKey, 10)
             val response = httpClient.newCall(requestBuilder.build()).execute()
             val responseBody = response.body.string()
-
             if (response.isSuccessful) {
                 parseGraphQLResponse(responseBody)
             } else {
@@ -168,7 +127,6 @@ object PeerGraphQLClient {
             null
         }
     }
-
     private fun parseGraphQLResponse(responseBody: String): GraphQLResponse? {
         return try {
             val json = JSONObject(responseBody)
@@ -177,7 +135,6 @@ object PeerGraphQLClient {
             } else {
                 null
             }
-
             val errors = if (json.has("errors")) {
                 val errorsArray = json.getJSONArray("errors")
                 (0 until errorsArray.length()).map { i ->

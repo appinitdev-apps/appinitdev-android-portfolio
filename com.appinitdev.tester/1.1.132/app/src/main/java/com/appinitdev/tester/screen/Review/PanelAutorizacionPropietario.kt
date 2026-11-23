@@ -1,23 +1,15 @@
-
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-
 fun PanelAutorizacionPropietario(
     appId: String,
     viewModel: AuthViewModel,
     onBack: () -> Unit,
 ) {
     val userApps by viewModel.userApps.collectAsState()
-    
-
-    
     var selectedFilter by remember { mutableIntStateOf(0) }
     val app by remember(userApps, appId) {
         derivedStateOf { userApps.find { it.id == appId } }
     }
-
     val resenasFiltradas by remember(app, selectedFilter) {
         derivedStateOf {
             val estadoBuscado = when(selectedFilter) {
@@ -28,7 +20,6 @@ fun PanelAutorizacionPropietario(
             app?.resenasProduccion?.filter { it.value.estado == estadoBuscado }?.toList() ?: emptyList()
         }
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -57,17 +48,9 @@ fun PanelAutorizacionPropietario(
             ) { CircularProgressIndicator() }
             return@Scaffold
         }
-
-        
-
-
-
-
-
         Column(modifier = Modifier
             .padding(padding)
             .fillMaxSize()) {
-            
             TabRow(selectedTabIndex = selectedFilter) {
                 Tab(selected = selectedFilter == 0, onClick = { selectedFilter = 0 }) {
                     val count = app!!.resenasProduccion.values.count { it.estado == "pendiente" }
@@ -81,12 +64,10 @@ fun PanelAutorizacionPropietario(
                 Tab(selected = selectedFilter == 1, onClick = { selectedFilter = 1 }) {
                     Text(stringResource(R.string.aprobadas), modifier = Modifier.padding(16.dp))
                 }
-
                 Tab(selected = selectedFilter == 2, onClick = { selectedFilter = 2 }) {
                     Text(stringResource(R.string.rechazadas), modifier = Modifier.padding(16.dp))
                 }
             }
-
             if (resenasFiltradas.isEmpty()) {
                 Box(Modifier
                     .fillMaxSize()
@@ -108,11 +89,9 @@ fun PanelAutorizacionPropietario(
                                 viewModel.aprobarResenaProduccion(app!!.id, testerId, resena)
                             },
                             onRechazar = {
-                                
                                 viewModel.actualizarEstadoResena(app!!.id, testerId, "rechazada")
                             },
                             onReevaluar = {
-                                
                                 viewModel.actualizarEstadoResena(app!!.id, testerId, "pendiente")
                             }
                         )
@@ -122,7 +101,6 @@ fun PanelAutorizacionPropietario(
         }
     }
 }
-
 @Composable
 fun ResenaItemCard(
     resena: ResenaProduccion,
@@ -135,14 +113,11 @@ fun ResenaItemCard(
     val context = LocalContext.current
     var showFullImage by remember { mutableStateOf(false) }
     var procesando by remember { mutableStateOf(false) }
-
-    
     val backgroundColor = when (estadoActual) {
         0 -> Color(0xFFF1F8E9) 
         1 -> Color(0xFFE8EAF6) 
         else -> Color(0xFFFFEBEE) 
     }
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(2.dp),
@@ -150,7 +125,6 @@ fun ResenaItemCard(
     ) {
         Column(Modifier.padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                
                 AsyncImage(
                     model = resena.evidenciaUrl,
                     contentDescription = "Evidencia",
@@ -161,10 +135,7 @@ fun ResenaItemCard(
                         .clickable { showFullImage = true },
                     contentScale = ContentScale.Crop
                 )
-
                 Spacer(Modifier.width(12.dp))
-
-                
                 Column(Modifier.weight(1f)) {
                     Text(
                         resena.userName ?: "Tester",
@@ -179,16 +150,10 @@ fun ResenaItemCard(
                         color = Color.Gray
                     )
                 }
-
-                
                 Box(contentAlignment = Alignment.Center) {
-
-
-
                         when (estadoActual) {
                             0 -> { 
                                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    
                                     IconButton(
                                         onClick = {
                                             procesando = true
@@ -198,7 +163,6 @@ fun ResenaItemCard(
                                     ) {
                                         Icon(Icons.Default.Close, contentDescription = stringResource(R.string.rechazar), tint = Color.Red)
                                     }
-                                    
                                     Button(
                                         onClick = {
                                             procesando = true
@@ -220,7 +184,6 @@ fun ResenaItemCard(
                                 )
                             }
                             2 -> { 
-                                
                                 OutlinedButton(
                                     onClick = {
                                         procesando = true
@@ -235,13 +198,10 @@ fun ResenaItemCard(
                                 }
                             }
                         }
-                   
                 }
             }
         }
     }
-
-    
     if (showFullImage) {
         Dialog(onDismissRequest = { showFullImage = false }) {
             Card(

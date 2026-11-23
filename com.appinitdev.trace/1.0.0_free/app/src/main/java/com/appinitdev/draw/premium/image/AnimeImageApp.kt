@@ -1,4 +1,3 @@
-
 @Composable
 fun AnimeImageApp(
     onImageSelected: (String) -> Unit,
@@ -8,21 +7,15 @@ fun AnimeImageApp(
     var page by remember { mutableIntStateOf(1) }
     var selectedCategory by remember { mutableStateOf("cosplay") }
     var isLoading by remember { mutableStateOf(false) }
-
-    
     val cache = remember { mutableMapOf<String, List<Image>>() }
-
     val categories = listOf("cosplay", "girl", "woman",  "anime", "draw", "manga", "illustration", "art")
-
     val apiKey = ""
-
     LaunchedEffect(page, selectedCategory) {
         val cacheKey = ""
         if (cache.containsKey(cacheKey)) {
             images = cache[cacheKey] ?: emptyList()
             return@LaunchedEffect
         }
-
         isLoading = true
         try {
             Log.d("AnimeImageApp", "Searching Pixabay: query='$selectedCategory', page=$page")
@@ -47,7 +40,6 @@ fun AnimeImageApp(
             isLoading = false
         }
     }
-
     ShowGalleryDialog(
         images = images,
         categories = categories,
@@ -77,5 +69,3 @@ fun AnimeImageApp(
         }
     )
 }
-
-

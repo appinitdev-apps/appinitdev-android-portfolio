@@ -1,19 +1,13 @@
-
 object AdManager {
-
     private var isInitialized = false
-
     private fun isDebug(context: Context): Boolean {
         return (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
     }
-
     fun initialize(context: Context) {
         if (isDebug(context) || isInitialized) return
-
         val params = ConsentRequestParameters.Builder()
             .setTagForUnderAgeOfConsent(false)
             .build()
-
         val consentInformation = UserMessagingPlatform.getConsentInformation(context)
         consentInformation.requestConsentInfoUpdate(
             context as android.app.Activity,
@@ -40,12 +34,10 @@ object AdManager {
                 )
             }
         )
-
         if (consentInformation.canRequestAds()) {
             initMobileAds(context)
         }
     }
-
     private fun initMobileAds(context: Context) {
         if (!isInitialized) {
             MobileAds.initialize(context)
@@ -53,17 +45,13 @@ object AdManager {
         }
     }
 }
-
 @Composable
 fun AdBanner(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val isDebug = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
-
     if (isDebug) {
-        
         return
     }
-
     AndroidView(
         modifier = modifier.fillMaxWidth(),
         factory = { ctx ->

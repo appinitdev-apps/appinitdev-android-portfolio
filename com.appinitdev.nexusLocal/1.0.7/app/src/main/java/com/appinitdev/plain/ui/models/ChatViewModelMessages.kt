@@ -1,8 +1,6 @@
-
 fun ChatViewModel.sendMessage(content: DMessageContent, onResult: (Boolean) -> Unit = {}) {
     viewModelScope.launch(Dispatchers.IO) {
         val state = chatState.value
-
         if (state.target.type == ChatTargetType.PEER && !state.target.isLocal()) {
             val peer = AppDatabase.instance.peerDao().getById(state.target.toId)
             if (peer == null || peer.status != "paired") {
@@ -10,10 +8,8 @@ fun ChatViewModel.sendMessage(content: DMessageContent, onResult: (Boolean) -> U
                 return@launch
             }
         }
-
         val item = ChatSender.createChatItem(state.target, content)
         addAll(listOf(item))
-
         if (!state.target.isLocal()) {
             ChatSender.send(item, state.target, onlinePeerIds.value)
             update(item)
@@ -22,7 +18,6 @@ fun ChatViewModel.sendMessage(content: DMessageContent, onResult: (Boolean) -> U
         onResult(if (state.target.isLocal()) true else item.status == "sent")
     }
 }
-
 fun ChatViewModel.sendTextMessage(text: String, context: Context, onResult: (Boolean) -> Unit = {}) {
     viewModelScope.launch(Dispatchers.IO) {
         val content = if (text.length > Constants.MAX_MESSAGE_LENGTH) {
@@ -33,7 +28,6 @@ fun ChatViewModel.sendTextMessage(text: String, context: Context, onResult: (Boo
         sendMessage(content, onResult)
     }
 }
-
 suspend fun ChatViewModel.sendFilesImmediate(files: List<DMessageFile>, isImageVideo: Boolean): String {
     val state = chatState.value
     val content = if (isImageVideo) {
@@ -52,7 +46,6 @@ suspend fun ChatViewModel.sendFilesImmediate(files: List<DMessageFile>, isImageV
     sendEvent(WebSocketEvent(EventType.MESSAGE_CREATED, JsonHelper.jsonEncode(listOf(item.toModel()))))
     return item.id
 }
-
 fun ChatViewModel.updateFilesMessage(messageId: String, files: List<DMessageFile>, isImageVideo: Boolean) {
     viewModelScope.launch(Dispatchers.IO) {
         val state = chatState.value
@@ -68,7 +61,6 @@ fun ChatViewModel.updateFilesMessage(messageId: String, files: List<DMessageFile
         update(item)
     }
 }
-
 internal fun createLongTextFile(text: String, context: Context): DMessageContent {
     val timestamp = TimeHelper.now().toEpochMilliseconds()
     val fileName = "message-$timestamp.txt"

@@ -1,14 +1,3 @@
-
- 
-
-
-
-
-
-
-
-
-
 @Composable
 public fun AlphaTile(
   modifier: Modifier,
@@ -24,7 +13,6 @@ public fun AlphaTile(
   val colorPaint: Paint = Paint().apply {
     this.color = controller?.selectedColor?.value ?: selectedColor
   }
-
   Canvas(
     modifier = modifier
       .fillMaxSize()

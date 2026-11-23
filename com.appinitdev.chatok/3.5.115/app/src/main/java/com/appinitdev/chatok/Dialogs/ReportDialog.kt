@@ -1,4 +1,3 @@
-
 @Composable
 fun ReportDialog(
     reportedUsername: String,
@@ -9,7 +8,6 @@ fun ReportDialog(
     var details by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
     val reasons = listOf("Spam", "Contenido Inapropiado", "Acoso", "Estafa", "Otro")
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -36,9 +34,7 @@ fun ReportDialog(
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Box(modifier = Modifier.fillMaxWidth()) {
                     OutlinedButton(
                         onClick = { expanded = true },
@@ -63,9 +59,7 @@ fun ReportDialog(
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 OutlinedTextField(
                     value = details,
                     onValueChange = { details = it },
@@ -80,9 +74,7 @@ fun ReportDialog(
                         unfocusedTextColor = Color.White
                     )
                 )
-
                 Spacer(modifier = Modifier.height(32.dp))
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)

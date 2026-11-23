@@ -1,4 +1,3 @@
-
 class NestedScrollViewItemTouchHelper(
     callback: Callback,
     private val scrollView: NestedScrollView,
@@ -7,11 +6,9 @@ class NestedScrollViewItemTouchHelper(
     private var selectedStartScrollY: Float = -1f
     private var selectedView: View? = null
     private var dragScrollStartTimeInMs: Long = 0
-
     private var lastmDy = 0f
     private var lastScrollY = 0
     private var tmpRect: Rect? = null
-
     override fun select(selected: RecyclerView.ViewHolder?, actionState: Int) {
         super.select(selected, actionState)
         if (selected != null) {
@@ -20,14 +17,6 @@ class NestedScrollViewItemTouchHelper(
             selectedStartScrollY = scrollView!!.scrollY.toFloat()
         }
     }
-
-     
-
-
-
-
-
-
     override fun scrollIfNecessary(): Boolean {
         if (mSelected == null) {
             dragScrollStartTimeInMs = Long.MIN_VALUE
@@ -42,21 +31,14 @@ class NestedScrollViewItemTouchHelper(
         }
         var scrollY = 0
         val currentScrollY = scrollView.scrollY
-
-        
         val actualShowingHeight =
             scrollView.height - mRecyclerView.top - mRecyclerView.paddingBottom
-
         lm!!.calculateItemDecorationsForChild(mSelected.itemView, tmpRect!!)
         if (lm.canScrollVertically()) {
-            
             if (lastScrollY != 0 && abs(lastmDy) >= abs(mDy)) {
                 scrollY = lastScrollY
             } else {
-                
                 val curY = (selectedStartY + mDy - currentScrollY).toInt()
-                
-                
                 val checkDy = (mDy + selectedStartScrollY - currentScrollY).toInt()
                 val topDiff = curY - tmpRect!!.top - mRecyclerView.paddingTop
                 if (checkDy < 0 && topDiff < 0) { 
@@ -85,7 +67,6 @@ class NestedScrollViewItemTouchHelper(
         }
         if (scrollY != 0) {
             val maxScrollY = scrollView.childrenHeightsSum - scrollView.height
-            
             if (
                 (scrollY < 0 && scrollView.scrollY > 0) ||
                     (scrollY > 0 && scrollView.scrollY < maxScrollY)
@@ -94,7 +75,6 @@ class NestedScrollViewItemTouchHelper(
                     dragScrollStartTimeInMs = now
                 }
                 scrollView.scrollBy(0, scrollY)
-                
                 selectedView?.translationY = selectedView!!.translationY + scrollY
                 return true
             }
@@ -104,7 +84,6 @@ class NestedScrollViewItemTouchHelper(
         lastmDy = 0f
         return false
     }
-
     private val ViewGroup.childrenHeightsSum
         get() = children.map { it.measuredHeight }.sum()
 }

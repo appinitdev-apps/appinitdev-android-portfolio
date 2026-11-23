@@ -1,4 +1,3 @@
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun FilesPage(
@@ -13,13 +12,10 @@ fun FilesPage(
     val topRefreshLayoutState = rememberRefreshLayoutState {
         scope.launch { withIO { filesVM.loadAsync(context) }; setRefreshState(RefreshContentState.Finished) }
     }
-
     FilesPageEffects(filesVM, context, scope, folderPath, previewerState, audioPlaylistVM)
     FilesPageDialogs(filesVM, context, scope)
-
     val title = when {
         filesVM.selectMode.value -> stringRes(Res.string.x_selected, "count" to filesVM.selectedIds.size)
-
         filesVM.type == FilesType.RECENTS -> stringResource(Res.string.recents)
         ZipBrowserHelper.isZipPath(filesVM.selectedPath) -> ZipBrowserHelper.getDisplayName(filesVM.selectedPath)
         filesVM.selectedPath != filesVM.rootPath -> filesVM.selectedPath.getFilenameFromPath()
@@ -33,7 +29,6 @@ fun FilesPage(
         if (flc > 0) sl.add(pluralStringResource(Res.plurals.x_files, flc, flc))
         sl.joinToString(", ")
     } else ""
-
     PScaffold(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
         SearchableTopBar(
             navController = navController,

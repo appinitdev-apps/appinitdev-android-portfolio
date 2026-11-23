@@ -1,4 +1,3 @@
-
 data class Services(
     val id: String,
     val nombre: String,
@@ -19,11 +18,9 @@ data class Services(
         parcel.readString() ?: "",
         parcel.readString() ?: ""
     )
-
     override fun describeContents(): Int {
         return 0 
     }
-
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(id)
         dest.writeString(nombre)
@@ -34,12 +31,10 @@ data class Services(
         dest.writeString(costoColectivo)
         dest.writeString(costoPrivado)
     }
-
     companion object CREATOR : Parcelable.Creator<Services> {
         override fun createFromParcel(parcel: Parcel): Services {
             return Services(parcel)
         }
-
         override fun newArray(size: Int): Array<Services?> {
             return arrayOfNulls(size)
         }

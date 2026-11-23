@@ -1,4 +1,3 @@
-
 @Entity(tableName = "products")
 data class Product(
     @PrimaryKey
@@ -26,39 +25,30 @@ data class Product(
     override val updatedAt: LocalDateTime = LocalDateTime.now(),
     override val storeId: String? = null
 ) : Identifiable, Auditable, StoreScoped {
-
     val hasLowStock: Boolean
         get() = stockQuantity in 1..minStockLevel
-
     val isOutOfStock: Boolean
         get() = stockQuantity <= 0
-
     val isAvailable: Boolean
         get() = isActive && stockQuantity > 0
-
     val totalStockValue: BigDecimal
         get() = price.multiply(BigDecimal(stockQuantity))
-
     val totalStockCost: BigDecimal
         get() = (cost ?: BigDecimal.ZERO).multiply(BigDecimal(stockQuantity))
-
     fun calculateTaxAmount(quantity: Int = 1): BigDecimal {
         if (!isTaxable || taxRate <= BigDecimal.ZERO) return BigDecimal.ZERO
         return price.multiply(BigDecimal(quantity))
             .multiply(taxRate)
             .divide(BigDecimal(100), 2, RoundingMode.HALF_UP)
     }
-
     fun calculateTotalPriceWithTax(quantity: Int = 1): BigDecimal {
         val basePrice = price.multiply(BigDecimal(quantity))
         return basePrice + calculateTaxAmount(quantity)
     }
-
     fun calculateProfitMargin(): BigDecimal {
         val unitCost = cost ?: BigDecimal.ZERO
         return price - unitCost
     }
-
     fun calculateProfitMarginPercentage(): Double {
         val unitCost = cost ?: return 100.0
         if (price <= BigDecimal.ZERO) return 0.0
@@ -66,7 +56,6 @@ data class Product(
         return profit.divide(price, 4, RoundingMode.HALF_UP).toDouble() * 100
     }
 }
-
 @Entity(tableName = "categories")
 data class Category(
     @PrimaryKey
@@ -79,11 +68,9 @@ data class Category(
     override val updatedAt: LocalDateTime = LocalDateTime.now(),
     override val storeId: String? = null
 ) : Identifiable, Auditable, StoreScoped {
-
     val isSubcategory: Boolean
         get() = !parentId.isNullOrEmpty()
 }
-
 @Entity(tableName = "subcategories")
 data class Subcategory(
     @PrimaryKey

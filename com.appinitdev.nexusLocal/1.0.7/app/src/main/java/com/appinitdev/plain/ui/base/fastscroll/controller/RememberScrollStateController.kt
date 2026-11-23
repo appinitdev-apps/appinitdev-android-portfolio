@@ -1,4 +1,3 @@
-
 @Composable
 internal fun rememberScrollStateController(
     state: ScrollState,
@@ -8,15 +7,12 @@ internal fun rememberScrollStateController(
     selectionMode: ScrollbarSelectionMode
 ): ScrollStateController {
     val coroutineScope = rememberCoroutineScope()
-
     val visibleLengthDpUpdated = rememberUpdatedState(visibleLengthDp)
     val thumbMinLengthUpdated = rememberUpdatedState(thumbMinLength)
     val alwaysShowScrollBarUpdated = rememberUpdatedState(alwaysShowScrollBar)
     val selectionModeUpdated = rememberUpdatedState(selectionMode)
-
     val isSelected = remember { mutableStateOf(false) }
     val dragOffset = remember { mutableFloatStateOf(0f) }
-
     val fullLengthDp = with(LocalDensity.current) {
         remember {
             derivedStateOf {
@@ -24,7 +20,6 @@ internal fun rememberScrollStateController(
             }
         }
     }
-
     val thumbSizeNormalizedReal = remember {
         derivedStateOf {
             if (fullLengthDp.value == 0.dp) 1f else {
@@ -33,19 +28,16 @@ internal fun rememberScrollStateController(
             }
         }
     }
-
     val thumbSizeNormalized = remember {
         derivedStateOf {
             thumbSizeNormalizedReal.value.coerceAtLeast(thumbMinLengthUpdated.value)
         }
     }
-
     fun offsetCorrection(top: Float): Float {
         val topRealMax = 1f
         val topMax = (1f - thumbSizeNormalized.value).coerceIn(0f, 1f)
         return top * topMax / topRealMax
     }
-
     val thumbOffsetNormalized = remember {
         derivedStateOf {
             if (state.maxValue == 0) return@derivedStateOf 0f
@@ -53,13 +45,11 @@ internal fun rememberScrollStateController(
             offsetCorrection(normalized)
         }
     }
-
     val thumbIsInAction = remember {
         derivedStateOf {
             state.isScrollInProgress || isSelected.value || alwaysShowScrollBarUpdated.value
         }
     }
-
     return remember {
         ScrollStateController(
             thumbSizeNormalized = thumbSizeNormalized,
