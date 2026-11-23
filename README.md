@@ -3,6 +3,8 @@
 Documentación y copias Kotlin parciales. Cada carpeta de paquete/versión cuenta con su `README.md`.
 No contiene proyectos Android compilables. Revisa los secretos y permisos de código antes de publicar.
 
+<a href="https://trace.appinitdev.com/"><img src="https://appinitdev.com/images/parallax-03.png" alt="Logotipo" width="100%" loading="lazy"></a>
+
 ## Aplicaciones incluidas
 
 - **CanvasLab AI: Editor de Fotos** · `com.appinitdev.canvas.free` · `1.2.37_Premium` · [README y código](com.appinitdev.canvas.free/1.2.37_Premium/README.md)

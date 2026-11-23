@@ -1,6 +1,6 @@
 <!-- AppInitDev · README oficial de presentación · datos del catálogo facilitado -->
 <div align="center">
-<a href="https://trace.appinitdev.com/"><img src="https://appinitdev.com/imagen_apps/com.appinitdev.trace/icon.png" alt="Icono oficial de TraceDraw: Calcar y Dibujar" width="104" loading="lazy"></a>
+<a href="https://trace.appinitdev.com/"><img src="assets/imagen_apps/icon.png" alt="Icono oficial de TraceDraw: Calcar y Dibujar" width="104" loading="lazy"></a>
 
 # TraceDraw: Calcar y Dibujar
 
@@ -38,7 +38,7 @@
 
 
 
-<a href="https://trace.appinitdev.com/"><img src="https://appinitdev.com/imagen_apps/com.appinitdev.trace/headerImage.png" alt="Imagen promocional de TraceDraw: Calcar y Dibujar" width="100%" loading="lazy"></a>
+<a href="https://trace.appinitdev.com/"><img src="assets/imagen_apps/headerImage.png" alt="Imagen promocional de TraceDraw: Calcar y Dibujar" width="100%" loading="lazy"></a>
 
 ## En pocas palabras
 
@@ -65,25 +65,23 @@
 
 ## Capturas de pantalla
 
-Imágenes de la ficha de la aplicación, referenciadas directamente desde el catálogo gráfico de AppInitDev.
+<!-- APPINITDEV_IMAGEN_APPS_INICIO -->
+Capturas originales de la aplicación, incorporadas desde el catálogo local de AppInitDev.
 
 <p align="center">
-  <a href="https://appinitdev.com/imagen_apps/com.appinitdev.draw/screenshot_1.png"><img src="https://appinitdev.com/imagen_apps/com.appinitdev.draw/screenshot_1.png" alt="TraceDraw: Calcar y Dibujar — captura de pantalla 1" width="170" loading="lazy"></a>
-  <a href="https://appinitdev.com/imagen_apps/com.appinitdev.draw/screenshot_2.png"><img src="https://appinitdev.com/imagen_apps/com.appinitdev.draw/screenshot_2.png" alt="TraceDraw: Calcar y Dibujar — captura de pantalla 2" width="170" loading="lazy"></a>
-  <a href="https://appinitdev.com/imagen_apps/com.appinitdev.draw/screenshot_3.png"><img src="https://appinitdev.com/imagen_apps/com.appinitdev.draw/screenshot_3.png" alt="TraceDraw: Calcar y Dibujar — captura de pantalla 3" width="170" loading="lazy"></a>
-  <a href="https://appinitdev.com/imagen_apps/com.appinitdev.draw/screenshot_4.png"><img src="https://appinitdev.com/imagen_apps/com.appinitdev.draw/screenshot_4.png" alt="TraceDraw: Calcar y Dibujar — captura de pantalla 4" width="170" loading="lazy"></a>
+  <a href="assets/imagen_apps/screenshot_1.png"><img src="assets/imagen_apps/screenshot_1.png" alt="com.appinitdev.trace — captura 1" width="180"></a>
+  <a href="assets/imagen_apps/screenshot_2.png"><img src="assets/imagen_apps/screenshot_2.png" alt="com.appinitdev.trace — captura 2" width="180"></a>
+  <a href="assets/imagen_apps/screenshot_3.png"><img src="assets/imagen_apps/screenshot_3.png" alt="com.appinitdev.trace — captura 3" width="180"></a>
+  <a href="assets/imagen_apps/screenshot_4.png"><img src="assets/imagen_apps/screenshot_4.png" alt="com.appinitdev.trace — captura 4" width="180"></a>
 </p>
-
-<details>
-<summary>Ver las 4 capturas adicionales</summary>
 
 <p align="center">
-  <a href="https://appinitdev.com/imagen_apps/com.appinitdev.draw/screenshot_5.png"><img src="https://appinitdev.com/imagen_apps/com.appinitdev.draw/screenshot_5.png" alt="TraceDraw: Calcar y Dibujar — captura de pantalla 5" width="170" loading="lazy"></a>
-  <a href="https://appinitdev.com/imagen_apps/com.appinitdev.draw/screenshot_6.png"><img src="https://appinitdev.com/imagen_apps/com.appinitdev.draw/screenshot_6.png" alt="TraceDraw: Calcar y Dibujar — captura de pantalla 6" width="170" loading="lazy"></a>
-  <a href="https://appinitdev.com/imagen_apps/com.appinitdev.draw/screenshot_7.png"><img src="https://appinitdev.com/imagen_apps/com.appinitdev.draw/screenshot_7.png" alt="TraceDraw: Calcar y Dibujar — captura de pantalla 7" width="170" loading="lazy"></a>
-  <a href="https://appinitdev.com/imagen_apps/com.appinitdev.draw/screenshot_8.png"><img src="https://appinitdev.com/imagen_apps/com.appinitdev.draw/screenshot_8.png" alt="TraceDraw: Calcar y Dibujar — captura de pantalla 8" width="170" loading="lazy"></a>
+  <a href="assets/imagen_apps/screenshot_5.png"><img src="assets/imagen_apps/screenshot_5.png" alt="com.appinitdev.trace — captura 5" width="180"></a>
+  <a href="assets/imagen_apps/screenshot_6.png"><img src="assets/imagen_apps/screenshot_6.png" alt="com.appinitdev.trace — captura 6" width="180"></a>
+  <a href="assets/imagen_apps/screenshot_7.png"><img src="assets/imagen_apps/screenshot_7.png" alt="com.appinitdev.trace — captura 7" width="180"></a>
+  <a href="assets/imagen_apps/screenshot_8.png"><img src="assets/imagen_apps/screenshot_8.png" alt="com.appinitdev.trace — captura 8" width="180"></a>
 </p>
-</details>
+<!-- APPINITDEV_IMAGEN_APPS_FIN -->
 
 ## Primeros pasos
 
