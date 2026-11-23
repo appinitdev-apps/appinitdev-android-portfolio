@@ -2,10 +2,10 @@
 class BackupRestoreViewModel : ViewModel() {
     data class ExportItem(val dir: String, val file: File)
 
-    /**
-     * Used on Android 9 and below where ACTION_CREATE_DOCUMENT is broken on many OEM devices.
-     * Writes the backup zip directly to app-specific external storage (no permission required).
-     */
+     
+
+
+
     fun backupToFile(context: Context, fileName: String) {
         viewModelScope.launch(Dispatchers.IO) {
             DialogHelper.showLoading()
@@ -108,8 +108,8 @@ class BackupRestoreViewModel : ViewModel() {
             }
             return
         }
-        // Skip non-regular files (sockets, pipes, device nodes, etc.).
-        // FileInputStream on a socket/pipe would block forever.
+        
+        
         if (!file.isFile) return
         try {
             val entry = ZipEntry(dir + file.name)

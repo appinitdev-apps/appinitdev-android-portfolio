@@ -12,7 +12,7 @@ class MigrationsManager @Inject constructor(
 
     @Suppress("TooGenericExceptionCaught", "PrintStackTrace", "MagicNumber")
     suspend fun executeMigrations() {
-        delay(2_000L) // to not the make the app start slower
+        delay(2_000L) 
 
         val data = context.dataStore.data.firstOrNull()
 
@@ -29,7 +29,7 @@ class MigrationsManager @Inject constructor(
                     e.printStackTrace()
                 }
 
-                // Mark the migration as executed
+                
                 context.dataStore.edit {
                     it[key] = true
                 }

@@ -85,7 +85,7 @@ class VideoFragment : ViewPagerFragment(), TextureView.SurfaceTextureListener,
 
             mSeekBar = bottomVideoTimeHolder.videoSeekbar
             mSeekBar.setOnSeekBarChangeListener(this@VideoFragment)
-            // adding an empty click listener just to avoid ripple animation at toggling fullscreen
+            
             mSeekBar.setOnClickListener { }
 
             mTimeHolder = bottomVideoTimeHolder.videoTimeHolder
@@ -143,7 +143,7 @@ class VideoFragment : ViewPagerFragment(), TextureView.SurfaceTextureListener,
         storeStateVariables()
         Glide.with(context).load(mMedium.path).into(binding.videoPreview)
 
-        // setMenuVisibility is not called at VideoActivity (third party intent)
+        
         if (!mIsFragmentVisible && activity is VideoActivity) {
             mIsFragmentVisible = true
         }
@@ -151,7 +151,7 @@ class VideoFragment : ViewPagerFragment(), TextureView.SurfaceTextureListener,
         mIsFullscreen =
             activity.window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_FULLSCREEN == View.SYSTEM_UI_FLAG_FULLSCREEN
         initTimeHolder()
-        // checkIfPanorama() TODO: Implement panorama using a FOSS library
+        
 
         ensureBackgroundThread {
             activity.getVideoResolution(mMedium.path)?.apply {
@@ -230,7 +230,7 @@ class VideoFragment : ViewPagerFragment(), TextureView.SurfaceTextureListener,
     override fun onResume() {
         super.onResume()
         mConfig =
-            requireContext().config      // make sure we get a new config, in case the user changed something in the app settings
+            requireContext().config      
         requireActivity().updateTextColors(binding.videoHolder)
         val allowVideoGestures = mConfig.allowVideoGestures
         mTextureView.beGoneIf(mConfig.openVideosOnSeparateScreen || mIsPanorama)
@@ -414,7 +414,7 @@ class VideoFragment : ViewPagerFragment(), TextureView.SurfaceTextureListener,
                 newPosition: Player.PositionInfo,
                 @Player.DiscontinuityReason reason: Int,
             ) {
-                // Reset progress views when video loops.
+                
                 if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION) {
                     mSeekBar.progress = 0
                     mCurrTimeView.text = 0.getFormattedDuration()
@@ -472,7 +472,7 @@ class VideoFragment : ViewPagerFragment(), TextureView.SurfaceTextureListener,
     private fun checkExtendedDetails() {
         if (mConfig.showExtendedDetails) {
             binding.videoDetails.apply {
-                beInvisible()   // make it invisible so we can measure it, but not show yet
+                beInvisible()   
                 text = getMediumExtendedDetails(mMedium)
                 onGlobalLayout {
                     if (isAdded) {

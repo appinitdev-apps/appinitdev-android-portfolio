@@ -1,11 +1,11 @@
 
-/**
- * [BroadcastReceiver] for sending notifications via [NotificationManager] for [Reminder]s.
- * Reschedules reminders on [Intent.ACTION_BOOT_COMPLETED] or if
- * [AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED] has changed and exact alarms
- * are allowed. For [Reminder] that have [Reminder.repetition] it automatically reschedules the next
- * alarm.
- */
+ 
+
+
+
+
+
+
 class ReminderReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.d(TAG, "onReceive: ${intent?.action}")

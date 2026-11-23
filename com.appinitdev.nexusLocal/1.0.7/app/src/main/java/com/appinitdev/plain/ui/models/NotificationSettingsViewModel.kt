@@ -12,7 +12,7 @@ class NotificationSettingsViewModel : ViewModel() {
     var appsLoaded = mutableStateOf(false)
     var searchQuery = mutableStateOf("")
     
-    // For multiple selection in app selector
+    
     val selectedAppIds = mutableStateListOf<String>()
 
     suspend fun loadDataAsync(context: Context) {
@@ -24,7 +24,7 @@ class NotificationSettingsViewModel : ViewModel() {
                     val app = PackageHelper.getPackage(packageName)
                     apps.add(app)
                 } catch (e: Exception) {
-                    // App might be uninstalled, remove from list
+                    
                     NotificationFilterPreference.toggleAppAsync(packageName)
                 }
             }
@@ -93,7 +93,7 @@ class NotificationSettingsViewModel : ViewModel() {
                 val app = PackageHelper.getPackage(packageName)
                 apps.add(app)
             } catch (e: Exception) {
-                // App might be uninstalled, remove from list
+                
                 NotificationFilterPreference.toggleAppAsync(packageName)
             }
         }

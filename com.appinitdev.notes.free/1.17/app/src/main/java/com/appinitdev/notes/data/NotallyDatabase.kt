@@ -90,21 +90,21 @@ abstract class NotallyDatabase : RoomDatabase() {
                 NotallyDatabase::class.java,
                 getCurrentDatabaseName(context)
             ).fallbackToDestructiveMigration()
-                /*.addMigrations(
-                    Migration2,
-                    Migration3,
-                    Migration4,
-                    Migration5,
-                    Migration6,
-                    Migration7,
-                    Migration8,
-                    Migration9,
-                    Migration9_10
-                )*/
+                 
+
+
+
+
+
+
+
+
+
+
 
             val instance = instanceBuilder.build()
 
-            // Observadores de preferencias (solo si quieres seguir observando cambios)
+            
             if (observePreferences) {
                 instance.biometricLockObserver = Observer {
                     NotallyDatabase.instance?.value?.biometricLockObserver?.let {
@@ -136,10 +136,10 @@ abstract class NotallyDatabase : RoomDatabase() {
 
         val Migration9_10 = object : Migration(9, 10) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                // 1. Renombrar tabla antigua
+                
                 database.execSQL("ALTER TABLE BaseNote RENAME TO BaseNote_old")
 
-                // 2. Crear tabla nueva con todos los defaults correctos
+                
                 database.execSQL("""
             CREATE TABLE IF NOT EXISTS BaseNote (
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -163,7 +163,7 @@ abstract class NotallyDatabase : RoomDatabase() {
             )
         """.trimIndent())
 
-                // 3. Copiar datos de la tabla antigua a la nueva
+                
                 database.execSQL("""
             INSERT INTO BaseNote (
                 id, type, folder, color, title, pinned, timestamp, modifiedTimestamp,
@@ -175,7 +175,7 @@ abstract class NotallyDatabase : RoomDatabase() {
             FROM BaseNote_old
         """.trimIndent())
 
-                // 4. Eliminar la tabla antigua
+                
                 database.execSQL("DROP TABLE BaseNote_old")
             }
         }

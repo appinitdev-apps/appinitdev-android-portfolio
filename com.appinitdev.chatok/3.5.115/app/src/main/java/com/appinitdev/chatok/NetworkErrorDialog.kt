@@ -3,7 +3,7 @@
 fun NetworkErrorDialog(showDialog: Boolean) {
     if (showDialog) {
         AlertDialog(
-            onDismissRequest = { /* No se cierra con toque fuera ni back */ },
+            onDismissRequest = {   },
             title = null,
             text = {
                 Column(
@@ -17,7 +17,7 @@ fun NetworkErrorDialog(showDialog: Boolean) {
                     )
                 }
             },
-            confirmButton = {},  // Sin botones
+            confirmButton = {},  
             dismissButton = {},
             properties = DialogProperties(
                 dismissOnBackPress = false,
@@ -29,25 +29,25 @@ fun NetworkErrorDialog(showDialog: Boolean) {
 
 
 
-/*@Composable
-fun NetworkErrorDialog(showDialog: Boolean) {
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { /* No se cierra con toque fuera ni back */ },
-            title = null,
-            text = {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_network_error),
-                    contentDescription = "Error de red",
-                    modifier = Modifier.size(150.dp)
-                )
-            },
-            confirmButton = {},  // Sin botones
-            dismissButton = {},
-            properties = DialogProperties(
-                dismissOnBackPress = false,
-                dismissOnClickOutside = false
-            )
-        )
-    }
-}*/
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

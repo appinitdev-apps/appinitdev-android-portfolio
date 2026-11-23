@@ -3,10 +3,10 @@ internal fun resolveSenderName(headers: Map<String, String>, senderIp: String): 
     return headers["c-name"]?.takeIf { it.isNotBlank() } ?: senderIp
 }
 
-/**
- * Reads one HTTP header line (terminated by CRLF) as ASCII from the buffered stream.
- * Returns null on EOF, or an empty string on a blank line (end of headers).
- */
+ 
+
+
+
 internal fun BufferedInputStream.readHttpLine(): String? {
     val sb = StringBuilder()
     var prev = -1
@@ -14,7 +14,7 @@ internal fun BufferedInputStream.readHttpLine(): String? {
         val b = read()
         if (b == -1) return if (sb.isEmpty()) null else sb.toString()
         if (prev == '\r'.code && b == '\n'.code) {
-            sb.deleteCharAt(sb.length - 1) // remove the trailing \r
+            sb.deleteCharAt(sb.length - 1) 
             return sb.toString()
         }
         sb.append(b.toChar())
@@ -22,10 +22,10 @@ internal fun BufferedInputStream.readHttpLine(): String? {
     }
 }
 
-/**
- * Reads exactly [contentLength] bytes from the stream and decodes as UTF-8.
- * This correctly handles multi-byte characters (e.g. Chinese) unlike char-count approaches.
- */
+ 
+
+
+
 internal fun readBodyBytes(bis: BufferedInputStream, contentLength: Int): String {
     if (contentLength <= 0) return ""
     val buf = ByteArray(contentLength)

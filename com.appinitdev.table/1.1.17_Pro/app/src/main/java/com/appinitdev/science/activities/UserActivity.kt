@@ -11,13 +11,13 @@ class UserActivity : BaseActivity(), AchievementAdapter.OnAchievementClickListen
     private lateinit var tvSyncStatus: TextView
     private lateinit var userImg: ImageView
 
-    // Using lazy so FirebaseApp is initialized in Application.onCreate before we get the instance
+    
 
-    // Legacy sign-in launcher (fallback)
+    
 
 
-    // One Tap (Identity) fields
-   // One Tap launcher (modern sliding up account selector)
+    
+   
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +34,7 @@ class UserActivity : BaseActivity(), AchievementAdapter.OnAchievementClickListen
         }
         setContentView(R.layout.activity_user)
 
-        //Setting up UI and adding sync status
+        
 
         tvUserInfo = TextView(this).apply {
             textSize = 14f
@@ -47,7 +47,7 @@ class UserActivity : BaseActivity(), AchievementAdapter.OnAchievementClickListen
             setTextColor(context.obtainStyledAttributes(intArrayOf(androidx.appcompat.R.attr.actionMenuTextColor)).let { ta -> val color = ta.getColor(0, currentTextColor); ta.recycle(); color })
         }
 
-        // insert status text under pro_badge if possible
+        
         try {
             val proBadge = findViewById<TextView>(R.id.pro_badge)
             val parent = proBadge.parent as? ViewGroup
@@ -69,33 +69,33 @@ class UserActivity : BaseActivity(), AchievementAdapter.OnAchievementClickListen
             val proBadge = findViewById<TextView>(R.id.pro_badge)
             val parent = proBadge.parent as? ViewGroup
             parent?.addView(btnSignOut)
-        } catch (_: Exception) { /* ignore */ }
+        } catch (_: Exception) {   }
 
-        // achievements list setup
+        
         recyclerView = findViewById<RecyclerView>(R.id.recycler_view_achievements)
         recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         setupRecyclerView()
 
         findViewById<FrameLayout>(R.id.view_user).systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 
-        //setupTitleController()
+        
         setupBackButton()
         setupStats()
         rateSetup()
         shareSetup()
 
-        // PRO badge text
+        
         val proPref = ProVersion(this).getValue()
         val proPlusPref = ProPlusVersion(this).getValue()
         if (proPref == 1) findViewById<TextView>(R.id.pro_badge).text = getString(R.string.non_pro)
         if (proPref == 100) findViewById<TextView>(R.id.pro_badge).text = getString(R.string.pro_user)
         if (proPlusPref == 100) findViewById<TextView>(R.id.pro_badge).text = getString(R.string.pro_plus_user)
 
-        // Replace user title views with user's name (they will be updated from updateUi)
-        // initialize with a default placeholder
+        
+        
         setUserTitleViews("User Page")
 
-        // legacy persisted image uri
+        
         val sharedPref = getSharedPreferences("UserActivityPrefs", Context.MODE_PRIVATE)
         val uriString = sharedPref.getString("user_img_uri", null)
         uriString?.let {
@@ -107,12 +107,12 @@ class UserActivity : BaseActivity(), AchievementAdapter.OnAchievementClickListen
             }
         }
 
-        // Initialize One Tap sign-in (Identity) to provide sliding-up account selector
+        
 
 
 
 
-        // profile image click: sign-in/out (use One Tap first, fallback to legacy)
+        
 
 
 
@@ -123,10 +123,10 @@ class UserActivity : BaseActivity(), AchievementAdapter.OnAchievementClickListen
 
 
     private fun setUserTitleViews(name: String) {
-      //  val downState = findViewById<TextView>(R.id.user_title_downstate)
-//        val upState = findViewById<TextView>(R.id.user_title)
-//        downState?.text = name
-//        upState?.text = name
+      
+
+
+
     }
 
 
@@ -138,12 +138,12 @@ class UserActivity : BaseActivity(), AchievementAdapter.OnAchievementClickListen
         setUserTitleViews("User Page")
     }
 
-    /**
-     * Called after Firebase sign-in is established (or when UI is refreshed while signed in).
-     * Reads FirebaseAuth.currentUser for uid/photo/name and performs progress sync.
-     *
-     * Sync is only performed for Pro or Pro+ users. All users may sign in, but only sync for paying users.
-     */
+     
+
+
+
+
+
 
 
     private fun setupTitleController() {
@@ -174,7 +174,7 @@ class UserActivity : BaseActivity(), AchievementAdapter.OnAchievementClickListen
         val recyclerView = findViewById<RecyclerView>(R.id.recycler_view_achievements)
         achievementsList.clear()
         AchievementModel.getList(this, achievementsList)
-        // ensure each achievement loads its persisted progress
+        
         achievementsList.forEach { it.loadProgress(this) }
         achievementsList.sortByDescending { it.progress.toDouble() / it.maxProgress.toDouble() }
         recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
@@ -192,7 +192,7 @@ class UserActivity : BaseActivity(), AchievementAdapter.OnAchievementClickListen
             findViewById<TextView>(R.id.calculation_stat).text = statistics[1].progress.toString()
             findViewById<TextView>(R.id.search_stat).text = statistics[2].progress.toString()
         } else {
-            // clear if missing
+            
             findViewById<TextView>(R.id.elements_stat).text = "0"
             findViewById<TextView>(R.id.calculation_stat).text = "0"
             findViewById<TextView>(R.id.search_stat).text = "0"
@@ -230,6 +230,6 @@ class UserActivity : BaseActivity(), AchievementAdapter.OnAchievementClickListen
     }
 
     override fun achievementClickListener(item: Achievement, position: Int) {
-        // Not implemented yet
+        
     }
 }

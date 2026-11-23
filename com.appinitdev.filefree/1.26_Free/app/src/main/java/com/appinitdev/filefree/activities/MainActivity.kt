@@ -53,7 +53,7 @@ class MainActivity : SimpleActivity() {
             if (binding.mainMenu.isSearchOpen) {
                 binding.mainMenu.closeSearch()
             } else if (currentFragment is RecentsFragment || currentFragment is StorageFragment) {
-                finish() // antes era super.onBackPressed()
+                finish() 
             } else if ((currentFragment as ItemsFragment).getBreadcrumbs().getItemCount() <= 1) {
                 if (!wasBackJustPressed && config.pressBackTwice) {
                     wasBackJustPressed = true
@@ -71,23 +71,23 @@ class MainActivity : SimpleActivity() {
             }
         }
 
-        // Mostrar al iniciar la app
+        
         showProUpgradeDialog(this)
 
-        // Configurar repetición cada 2 minutos
+        
         dialogRunnable = Runnable {
             showProUpgradeDialog(this)
-            handler.postDelayed(dialogRunnable, 2 * 60 * 1000) // 2 minutos
+            handler.postDelayed(dialogRunnable, 2 * 60 * 1000) 
         }
 
-        // Iniciar el ciclo
+        
         handler.postDelayed(dialogRunnable, 2 * 60 * 1000)
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
-        // Detener el ciclo para evitar fugas
+        
         handler.removeCallbacks(dialogRunnable)
     }
 
@@ -130,28 +130,28 @@ class MainActivity : SimpleActivity() {
         config.lastUsedViewPagerPage = binding.mainViewPager.currentItem
     }
 
-    /*override fun onBackPressed() {
-        val currentFragment = getCurrentFragment()
-        if (binding.mainMenu.isSearchOpen) {
-            binding.mainMenu.closeSearch()
-        } else if (currentFragment is RecentsFragment || currentFragment is StorageFragment) {
-            super.onBackPressed()
-        } else if ((currentFragment as ItemsFragment).getBreadcrumbs().getItemCount() <= 1) {
-            if (!wasBackJustPressed && config.pressBackTwice) {
-                wasBackJustPressed = true
-                toast(R.string.press_back_again)
-                Handler().postDelayed({
-                    wasBackJustPressed = false
-                }, BACK_PRESS_TIMEOUT.toLong())
-            } else {
-                appLockManager.lock()
-                finish()
-            }
-        } else {
-            currentFragment.getBreadcrumbs().removeBreadcrumb()
-            openPath(currentFragment.getBreadcrumbs().getLastItem().path)
-        }
-    }*/
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     fun refreshMenuItems() {
         val currentFragment = getCurrentFragment() ?: return
@@ -549,7 +549,7 @@ class MainActivity : SimpleActivity() {
 
 
 
-        //startAboutActivity(R.string.app_name, licenses, BuildConfig.VERSION_NAME, faqItems, true)
+        
     }
 
     private fun checkIfRootAvailable() {
@@ -583,7 +583,7 @@ class MainActivity : SimpleActivity() {
         finish()
     }
 
-    // used at apps that have no file access at all, but need to work with files. For example Simple Calendar uses this at exporting events into a file
+    
     fun createDocumentConfirmed(path: String) {
         val filename = intent.getStringExtra(Intent.EXTRA_TITLE) ?: ""
         if (filename.isEmpty()) {

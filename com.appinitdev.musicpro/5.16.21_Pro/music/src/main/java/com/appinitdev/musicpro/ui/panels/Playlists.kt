@@ -1,15 +1,15 @@
 
-/**
- * Panel fragment that displays all playlists — both manually created ones and those
- * automatically imported from M3U files found on the device. Follows the same structural
- * pattern as [Songs] and [Favorites].
- *
- * <p>M3U playlists are now automatically maintained by the library scanner, so there's
- * no manual "Import M3U" button here anymore. The scanner does all the heavy lifting
- * in the background after each audio scan completes.</p>
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
 @AndroidEntryPoint
 class Playlists : BasePanelFragment() {
 
@@ -65,11 +65,11 @@ class Playlists : BasePanelFragment() {
         }
     }
 
-    /**
-     * Initializes or updates the playlist adapter and refreshes the header count chip.
-     *
-     * @param playlists The latest sorted list of [PlaylistWithSongs] objects.
-     */
+     
+
+
+
+
     private fun updateList(playlists: List<PlaylistWithSongs>) {
         if (adapterPlaylists == null) {
             adapterPlaylists = AdapterPlaylists(playlists)

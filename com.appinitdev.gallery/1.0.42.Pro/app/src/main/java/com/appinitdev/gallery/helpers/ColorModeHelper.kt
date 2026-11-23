@@ -1,7 +1,7 @@
 
-/**
- * Helper class to manage color modes for HDR and wide color gamut images.
- */
+ 
+
+
 object ColorModeHelper {
 
     fun isGainmapSupported() = isUpsideDownCakePlus()

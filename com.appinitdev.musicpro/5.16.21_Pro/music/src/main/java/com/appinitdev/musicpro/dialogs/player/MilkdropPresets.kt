@@ -1,15 +1,15 @@
 
-/**
- * Bottom-sheet dialog that lists all bundled Milkdrop presets and lets the user
- * pick one.
- *
- * Preset selection is forwarded directly to the parent fragment's [MilkdropViewModel]
- * via [MilkdropViewModel.selectPreset], which handles persisting the path, stopping
- * any running auto-shuffle, and loading the new preset into projectM — no
- * [SharedPreferences][android.content.SharedPreferences] polling required.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
 class MilkdropPresets : ScopedBottomSheetFragment() {
 
     private lateinit var binding: DialogMilkdropPresetsBinding
@@ -17,11 +17,11 @@ class MilkdropPresets : ScopedBottomSheetFragment() {
 
     private val viewModel: MilkdropPresetsViewModel by viewModels()
 
-    /**
-     * The parent [com.appinitdev.musicpro.ui.panels.Milkdrop] fragment's ViewModel, shared
-     * so that preset selection updates the pager position and halts shuffle without any
-     * indirect SharedPreferences round-trip.
-     */
+     
+
+
+
+
     private val milkdropViewModel: MilkdropViewModel by viewModels(
             ownerProducer = { requireParentFragment() }
     )
@@ -51,7 +51,7 @@ class MilkdropPresets : ScopedBottomSheetFragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.presets.collect { list ->
                     adapter?.submitList(list)
-                    // Scroll to the selected preset so it is immediately visible.
+                    
                     val selectedIndex = list.indexOfFirst { it.path == currentPath }
                     if (selectedIndex >= 0) {
                         binding.presetsRecyclerView.scrollToPosition(selectedIndex)
@@ -62,8 +62,8 @@ class MilkdropPresets : ScopedBottomSheetFragment() {
     }
 
     private fun onPresetSelected(preset: MilkdropPreset) {
-        // Delegate to the parent ViewModel so the pager scrolls, shuffle stops if needed,
-        // and the preset is loaded — all in one coordinated call.
+        
+        
         milkdropViewModel.selectPreset(preset.path)
         dismissAllowingStateLoss()
     }

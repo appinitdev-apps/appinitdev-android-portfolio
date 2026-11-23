@@ -1,17 +1,17 @@
 
-/**
- * ViewModel for the Playlists panel.
- *
- * <p>Loads playlists paired with their song lists from [PlaylistRepository] using
- * the with-songs query so the song count is always up to date without a
- * separate query. Sorting is performed in-memory to avoid extra database round-trips.</p>
- *
- * <p>M3U playlists are now managed automatically by the library scanner running in
- * the background — no user action needed. The scanner picks up M3U files on disk,
- * creates or refreshes playlists for them, and cleans up any that no longer exist.</p>
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 @HiltViewModel
 class PlaylistsViewModel @Inject constructor(
         application: Application,
@@ -21,7 +21,7 @@ class PlaylistsViewModel @Inject constructor(
     private val _playlists = MutableStateFlow<List<PlaylistWithSongs>>(emptyList())
     val playlists: StateFlow<List<PlaylistWithSongs>> = _playlists.asStateFlow()
 
-    /** Cached raw list kept for cheap in-memory re-sorts. */
+     
     private var rawList: List<PlaylistWithSongs> = emptyList()
 
     private var loadJob: Job? = null
@@ -53,10 +53,10 @@ class PlaylistsViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Sorts the raw playlist-with-songs list according to the current [PlaylistPreferences]
-     * sort field and direction, returning the sorted copy.
-     */
+     
+
+
+
     private fun List<PlaylistWithSongs>.sorted(): List<PlaylistWithSongs> {
         val ascending = PlaylistPreferences.getSortingStyle() == CommonPreferencesConstants.ASCENDING
         return when (PlaylistPreferences.getSongSort()) {

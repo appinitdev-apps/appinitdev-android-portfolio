@@ -6,17 +6,17 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
 
     private var shuffleButton: HighlightTextView? = null
 
-    /**
-     * Holds the artist whose image we're waiting on while the photo picker is open.
-     * We keep it here so the result callback can reach it after the picker returns.
-     */
+     
+
+
+
     private var pendingArtistForImagePick: Artist? = null
 
-    /**
-     * The photo picker launcher. We register it once here and reuse it whenever
-     * the user taps "Pick Artist Image" from the artist menu. The result comes back
-     * as a content URI which we decode into a Bitmap and hand off to [ArtistCover].
-     */
+     
+
+
+
+
     private val artistImagePickerLauncher: ActivityResultLauncher<PickVisualMediaRequest> =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             val artist = pendingArtistForImagePick ?: return@registerForActivityResult
@@ -50,10 +50,10 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
         setShuffleButtonState()
 
         getShuffleButton()?.setOnClickListener {
-            /**
-             * Do not toggle the shuffle here, that is for the long press
-             * menu. When tapped it simply shuffles the current list/queue.
-             */
+             
+
+
+
             onShuffleClicked()
         }
 
@@ -66,10 +66,10 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
             MediaPlaybackManager.songSeekPositionFlow.collect { position ->
                 onSeekChanged(position)
 
-                // Save to database every 5 seconds or 5% of duration, whichever is larger
+                
                 val song = MediaPlaybackManager.getCurrentSong()
                 if (song != null) {
-                    val threshold = maxOf(5000L, song.duration / 20) // 5 seconds or 5% of duration
+                    val threshold = maxOf(5000L, song.duration / 20) 
                     if (abs(position - lastSavedSeekPosition) > threshold) {
                         lastSavedSeekPosition = position
                         saveCurrentPlaybackState()
@@ -79,9 +79,9 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            // repeatOnLifecycle(STARTED) ensures we re-subscribe and replay the last
-            // emitted position every time the fragment comes back to the foreground.
-            // This guarantees onAudio() fires on resume, clearing any stale highlights.
+            
+            
+            
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 MediaPlaybackManager.songPositionFlow.collect { position ->
                     Log.d(TAG, "Song position: $position")
@@ -89,7 +89,7 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
                         onAudio(song)
                     }
                     onPositionChanged(position)
-                    // Save state when song position changes
+                    
                     saveCurrentPlaybackState()
                 }
             }
@@ -110,8 +110,8 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
     }
 
     protected fun setMediaItems(songs: List<Audio>, position: Int = 0) {
-        // If even one song is in the basket already, this tap is a selection action, not a play
-        // action. Toggle the tapped song in or out of the basket and call it a day.
+        
+        
         if (SelectionManager.hasSelection) {
             val audio = songs.getOrNull(position) ?: return
             SelectionManager.toggle(audio)
@@ -125,56 +125,56 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
 
         when {
             isSameQueue && isSameSong -> {
-                // Case 1: Same queue, same song — just open the player
+                
                 openDefaultPlayer().also {
-                    /**
-                     * User tapped the same song that's already playing or paused in the queue.
-                     * Open the player without changing anything, but if the song was paused,
-                     * resume playback since the user explicitly tapped it.
-                     */
+                     
+
+
+
+
                     MediaPlaybackManager.startPlayingIfPaused()
                 }
             }
             isSameQueue && !isSameSong -> {
-                // Case 4: Same queue but different song — user tapped explicitly, always play.
+                
                 MediaPlaybackManager.updatePosition(position, forcePlay = true)
             }
             isSameSong -> {
-                // Case 2: Same song playing but queue is different — update queue silently and open player
+                
                 updateQueueSilently(songs, position)
             }
             else -> {
-                // Case 3: Different queue and different song — default behavior
+                
                 MediaPlaybackManager.setSongs(songs, position, autoPlay = true)
                 createSongHistoryDatabase(songs)
             }
         }
 
-        /**
-         * Show miniplayer in all cases when setting media items, because if the user is explicitly tapping
-         * to play a song, they likely want quick access to playback controls. This also ensures the miniplayer
-         * is visible when navigating to the player from a different screen (e.g. from the playing queue or from a notification)
-         */
+         
+
+
+
+
         showMiniPlayer()
     }
 
-    /**
-     * Plays [audio] as a solo single-song queue starting at [startPositionMs].
-     *
-     * This is used by the Bookmarks panel when the user taps a specific bookmark —
-     * the song plays alone (no album/playlist context) and begins at the exact
-     * timestamp where the bookmark was placed.
-     */
+     
+
+
+
+
+
+
     protected fun setMediaItemWithSeek(audio: Audio, startPositionMs: Long) {
         MediaPlaybackManager.setSongs(listOf(audio), 0, startPositionMs = startPositionMs, autoPlay = true)
         createSongHistoryDatabase(listOf(audio))
         showMiniPlayer()
     }
 
-    /**
-     * Shuffles [songs] using the smart artist-aware algorithm, then starts playing from
-     * position 0. The shuffled queue replaces the current queue entirely.
-     */
+     
+
+
+
     protected fun shuffleMediaItems(songs: List<Audio>) {
         val shuffled = smartShuffle(songs, { it.artist ?: "" }).toMutableList()
         MediaPlaybackManager.setSongs(shuffled, 0, autoPlay = true)
@@ -198,8 +198,8 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
         val seek = MediaPlaybackManager.getSeekPosition()
         val shuffleEnabled = ShufflePreferences.isShuffleEnabled()
 
-        // Save the original (unshuffled) queue with the index pointing to the current song
-        // inside that original order, so a restore can re-apply shuffle from a clean starting point.
+        
+        
         val queueToSave = MediaPlaybackManager.getOriginalQueue().takeIf { it.isNotEmpty() } ?: songs
         val currentSong = MediaPlaybackManager.getCurrentSong()
         val idx = if (currentSong != null) {
@@ -237,7 +237,7 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
 
             override fun onDestroy(owner: LifecycleOwner) {
                 super.onDestroy(owner)
-                // Don't force-show during configuration changes; preserve current state
+                
                 if (requireActivity().isChangingConfigurations.not()) {
                     shouldShowMiniPlayer = true
                     showMiniPlayer()
@@ -247,10 +247,10 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
     }
 
     protected fun peekMiniPlayer() {
-        // show mini player briefly then hide it again
+        
         showMiniPlayer()
         viewLifecycleOwner.lifecycleScope.launch {
-            delay(2000) // Show for 2 seconds
+            delay(2000) 
 
             if (wantsMiniPlayerVisible.not()) {
                 hideMiniPlayer()
@@ -272,14 +272,14 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
         })
     }
 
-    /**
-     * Attaches the mini player auto-hide behavior to this [NestedScrollView] for the
-     * lifetime of the current fragment view. When the fragment starts the mini player
-     * begins tracking scroll events; when the fragment pauses the listener is removed.
-     *
-     * Call this in [onViewCreated] on the root [NestedScrollView] of your layout whenever
-     * you want the same hide-on-scroll behavior that RecyclerView-based screens use.
-     */
+     
+
+
+
+
+
+
+
     protected fun NestedScrollView.requireAttachedMiniPlayer() {
         viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onCreate(owner: LifecycleOwner) {
@@ -302,12 +302,12 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
         miniPlayerCallbacks?.onHideMiniPlayer()
     }
 
-    /**
-     * Request that the mini player renders with a transparent background for the
-     * duration of this fragment's lifecycle.  Useful for panels that have a dark
-     * or image-based background where an opaque card would look out of place
-     * (e.g. ArtFlowHome).
-     */
+     
+
+
+
+
+
     protected fun requireTransparentMiniPlayer() {
         viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onCreate(owner: LifecycleOwner) {
@@ -337,26 +337,26 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
     }
 
     open fun onSeekChanged(seek: Long) {
-        /* no-op */
+         
     }
 
-    /**
-     * Called whenever the MediaPlaybackManager queue list changes (songs added, removed, reordered).
-     * Subclasses that display the queue or its size should override this to refresh their UI.
-     *
-     * @param songs the updated, authoritative list of queued [Audio] tracks.
-     */
+     
+
+
+
+
+
     open fun onSongListChanged(songs: List<Audio>) {
-        /* no-op */
+         
     }
 
-    /**
-     * Called when the "Bookmarks" option in the song menu is tapped for the currently
-     * playing [audio]. The default implementation does nothing — [BasePlayerFragment]
-     * overrides this to open the bookmark context menu.
-     */
+     
+
+
+
+
     protected open fun onSongMenuBookmarksClicked(audio: Audio) {
-        /* no-op */
+         
     }
 
     protected fun openSongsMenu(
@@ -388,8 +388,8 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
                     binding.insertAndPlay.gone(animate = false)
                     binding.addToQueue.gone(animate = false)
                     binding.playNext.gone(animate = false)
-                    // Bookmarks only make sense for the currently playing song since the
-                    // BookmarksManager only tracks the active track.
+                    
+                    
                     binding.bookmarks.visible(animate = false)
                 }
 
@@ -398,8 +398,8 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
                 if (audio.isFavorite) binding.addToFavorites.text = getString(R.string.remove_from_favorites)
                 if (audio.isAlwaysSkip) binding.alwaysSkip.text = getString(R.string.never_skip)
 
-                // Flip the selection button text depending on whether this song is already in the basket.
-                // It's like a toggle switch — on means "remove", off means "add".
+                
+                
                 if (SelectionManager.isSelected(audio)) {
                     binding.addToSelection.text = getString(R.string.remove_from_selection)
                     binding.addToSelection.setCompoundDrawablesWithIntrinsicBounds(
@@ -407,7 +407,7 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
                             null, null, null)
                 }
 
-                // --------------- Favorites icon logic ---------------
+                
                 if (UserInterfacePreferences.isLikeIconInsteadOfThumb()) {
                     if (audio.isFavorite) {
                         binding.addToFavorites.setStartDrawable(R.drawable.ic_thumb_up_16dp)
@@ -422,7 +422,7 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
                     }
                 }
 
-                // --------------- Bookmark button logic ---------------
+                
                 if (showBookmarks) {
                     binding.bookmarks.visible(false)
                 } else {
@@ -508,8 +508,8 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
                 }
 
                 binding.share.setOnClickListener {
-                    // The audio URI is already a content:// URI with a persisted SAF grant,
-                    // so we can pass it directly to the share sheet. No FileProvider detour needed.
+                    
+                    
                     val audioUri = audio.uri.toUri()
                     ShareCompat.IntentBuilder(requireContext())
                         .setType(audio.mimeType ?: "audio/*")
@@ -546,8 +546,8 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
                     dismissImmediately()
                 }
 
-                // Drop this song into the selection basket (or pull it out) depending on its
-                // current state. One button, two jobs — efficient and intuitive.
+                
+                
                 binding.addToSelection.setOnClickListener {
                     SelectionManager.toggle(audio)
                     dismiss()
@@ -601,11 +601,11 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
         }
     }
 
-    /**
-     * Toggles the favorite state of the currently playing song.
-     * Updates the [AudioDatabase] and the in-memory [Audio] object, then re-emits
-     * [MediaPlaybackManager.notifyCurrentSongUpdated] so observers (e.g. [DefaultPlayer]) refresh their UI.
-     */
+     
+
+
+
+
     protected fun toggleFavorite() {
         val audio = MediaPlaybackManager.getCurrentSong() ?: return
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
@@ -623,7 +623,7 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
                 container = requireContainerView(),
                 inflateBinding = DialogDeleteSongBinding::inflate)
             .onViewCreated { binding ->
-                // Duck audio if same song is playing
+                
                 if (MediaPlaybackManager.getCurrentSong()?.id == audio.id) {
                     MediaPlaybackManager.duck()
                 }
@@ -666,24 +666,24 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
                 }
             }
             .onDismiss {
-                MediaPlaybackManager.unduck() // Ensure we unduck if user dismisses by tapping outside or pressing back
+                MediaPlaybackManager.unduck() 
             }
             .build()
             .show()
     }
 
-    /**
-     * Shows a simple "Are you sure?" confirmation dialog with "Sure" and "Cancel" options.
-     * The [onResult] callback returns true if the user confirmed, false if they canceled.
-     *
-     * Calls on result on both conditions, so make sure to check for the result in the block.
-     */
+     
+
+
+
+
+
     protected fun withSureDialog(onResult: (Boolean) -> Unit) {
         SimpleDialog.Builder(
                 container = requireContainerView(),
                 inflateBinding = DialogSureBinding::inflate)
             .onViewCreated { _ ->
-                /* no-op */
+                 
             }.onDialogInflated { binding, dismiss, _ ->
                 binding.sure.setOnClickListener {
                     onResult(true)
@@ -696,7 +696,7 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
                 }
             }
             .onDismiss {
-                /* no-op */
+                 
             }
             .build()
             .show()
@@ -705,8 +705,8 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
     private fun deleteSong(audio: Audio, lyrics: Boolean) {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             try {
-                // Step 1: Remove the song from the playback queue on the main thread so playback
-                // never tries to open a URI we are about to delete.
+                
+                
                 withContext(Dispatchers.Main) {
                     val queueIndex = MediaPlaybackManager.getSongs().indexOfFirst { it.id == audio.id }
                     when {
@@ -715,16 +715,16 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
                     }
                 }
 
-                // Step 2: Delete the audio file itself.
+                
                 val audioUri = audio.uri.toUri()
                 val isMediaStore = audioUri.authority?.contains("media") == true
 
                 val deleted = try {
                     if (isMediaStore) {
-                        // For MediaStore URIs, use the content resolver directly.
+                        
                         requireContext().contentResolver.delete(audioUri, null, null) > 0
                     } else {
-                        // For SAF content URIs, use DocumentsContract.
+                        
                         DocumentsContract.deleteDocument(requireContext().contentResolver, audioUri)
                         true
                     }
@@ -734,12 +734,12 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
                 }
 
                 if (deleted) {
-                    // Step 3: Remove the row from the database.
+                    
                     AudioDatabase.getInstance(requireContext()).audioDao()?.delete(audio)
                     Log.d(TAG, "Song deleted successfully: ${audio.title}")
 
                     if (lyrics) {
-                        // Clean up the internally-stored LRC/TXT sidecar files.
+                        
                         LrcRepository.deleteSidecarsStatic(requireContext(), audio.uri)
                     }
                 } else {
@@ -755,17 +755,17 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
         openFragment(Milkdrop.newInstance(), Milkdrop.TAG)
     }
 
-    /**
-     * Opens the playlist context menu dialog for the given [item], mirroring the pattern of
-     * [openSongsMenu]. When an [imageView] is supplied the dialog animates in with a shared
-     * image transition; otherwise a plain fade is used.
-     *
-     * Available actions: Play, Shuffle, Add All to Queue, Share, Edit, Delete.
-     *
-     * @param item      The [PlaylistWithSongs] whose metadata populates the menu header and
-     *                  whose songs power the playback and share actions.
-     * @param imageView Optional source [ImageView] for the shared-element transition.
-     */
+     
+
+
+
+
+
+
+
+
+
+
     protected fun openPlaylistMenu(item: PlaylistWithSongs, imageView: ImageView?) {
         val onViewCreated: (DialogPlaylistMenuBinding) -> Unit = { binding ->
             miniPlayerCallbacks?.onHideMiniPlayer()
@@ -840,13 +840,13 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
         }
     }
 
-    /**
-     * Shares all songs in [item] as a multi-file send intent.
-     * Audio files are already SAF content URIs, so we pass them straight to the
-     * chooser with [Intent.FLAG_GRANT_READ_URI_PERMISSION] — no FileProvider needed.
-     *
-     * @param item The [PlaylistWithSongs] whose songs will be shared.
-     */
+     
+
+
+
+
+
+
     private fun sharePlaylistSongs(item: PlaylistWithSongs) {
         val uris = item.songs.map { it.uri.toUri() } as ArrayList<Uri>
         if (uris.isEmpty()) return
@@ -858,12 +858,12 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
         startActivity(Intent.createChooser(intent, getString(R.string.send)))
     }
 
-    /**
-     * Shows the "Edit Playlist" dialog pre-filled with the current [item] name and description.
-     * On confirmation the [item.playlist] row is updated in the database via the IO dispatcher.
-     *
-     * @param item The [PlaylistWithSongs] whose metadata will be edited.
-     */
+     
+
+
+
+
+
     private fun showEditPlaylistDialog(item: PlaylistWithSongs) {
         SimpleDialog.Builder(
                 container = requireContainerView(),
@@ -897,17 +897,17 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
                 }
             }
             .setWidthRatio(getDialogWidthRation())
-            .onDismiss { /* no-op */ }
+            .onDismiss {   }
             .build()
             .show()
     }
 
-    /**
-     * Deletes [item]'s playlist row from the database on the IO dispatcher. All associated
-     * cross-ref rows are removed automatically by Room's cascade-delete foreign key.
-     *
-     * @param item The [PlaylistWithSongs] to delete.
-     */
+     
+
+
+
+
+
     private fun deletePlaylist(item: PlaylistWithSongs) {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             AudioDatabase.getInstance(requireContext()).playlistDao().deletePlaylist(item.playlist)
@@ -915,20 +915,20 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
         }
     }
 
-    /**
-     * Opens the album context menu dialog for the given [album], mirroring the structure of
-     * [openPlaylistMenu]. When [imageView] is supplied the dialog animates in with a shared
-     * image transition; otherwise a plain fade is used.
-     *
-     * Songs belonging to this album are fetched lazily from [Album.songPaths] on the IO
-     * dispatcher only when a playback or share action is tapped, avoiding the cost of loading
-     * full [Audio] objects upfront for every item in the album list.
-     *
-     * Available actions: Play, Shuffle, Add All to Queue, Go to Artist, Share.
-     *
-     * @param album     The [Album] whose metadata populates the menu header.
-     * @param imageView Optional source [ImageView] for the shared-element transition.
-     */
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
     protected fun openAlbumMenu(album: Album, imageView: ImageView?) {
         val onViewCreated: (DialogAlbumMenuBinding) -> Unit = { binding ->
             miniPlayerCallbacks?.onHideMiniPlayer()
@@ -1015,16 +1015,16 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
         }
     }
 
-    /**
-     * Opens the artist context menu dialog for the given [artist], mirroring the structure of
-     * [openAlbumMenu]. When [imageView] is supplied the dialog animates in with a shared image
-     * transition; otherwise a plain fade is used.
-     *
-     * Available actions: Play, Shuffle, Add All to Queue, Share.
-     *
-     * @param artist    The [Artist] whose metadata populates the menu header.
-     * @param imageView Optional source [ImageView] for the shared-element transition.
-     */
+     
+
+
+
+
+
+
+
+
+
     protected fun openArtistMenu(artist: Artist, imageView: ImageView?) {
         val onViewCreated: (DialogArtistMenuBinding) -> Unit = { binding ->
             miniPlayerCallbacks?.onHideMiniPlayer()
@@ -1070,7 +1070,7 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
             }
 
             binding.pickArtistImage.setOnClickListener {
-                // Store the artist so the picker result callback knows whose image to save.
+                
                 pendingArtistForImagePick = artist
                 artistImagePickerLauncher.launch(
                         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -1108,13 +1108,13 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
         }
     }
 
-    /**
-     * Fetches full [Audio] objects for the given list of file [paths] from the local database.
-     * Runs on the IO dispatcher and silently skips any path whose record is not found.
-     *
-     * @param paths The ordered list of file paths to resolve.
-     * @return Resolved [Audio] objects in the same order as [paths], with missing entries omitted.
-     */
+     
+
+
+
+
+
+
     private suspend fun fetchAudiosByPaths(paths: List<String>): List<Audio> {
         return withContext(Dispatchers.IO) {
             val dao = AudioDatabase.getInstance(requireContext()).audioDao()
@@ -1123,13 +1123,13 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
         }
     }
 
-    /**
-     * Shares all [audios] as a multi-file send intent.
-     * Audio files are already SAF content URIs, so we pass them straight to the
-     * chooser with [Intent.FLAG_GRANT_READ_URI_PERMISSION] — no FileProvider needed.
-     *
-     * @param audios The list of [Audio] tracks to share.
-     */
+     
+
+
+
+
+
+
     protected fun shareAudioList(audios: List<Audio>) {
         val uris = audios.map { it.uri.toUri() } as ArrayList<Uri>
         if (uris.isEmpty()) return
@@ -1158,15 +1158,15 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
     override val wantsMiniPlayerVisible: Boolean
         get() = shouldShowMiniPlayer
 
-    /**
-     * Re-asserts the correct mini player visibility for this fragment when a predictive back
-     * gesture is canceled. This is necessary because the previous fragment's lifecycle may
-     * partially advance while the gesture is in progress (for example, via
-     * {@code repeatOnLifecycle(STARTED)}), which can imperatively call {@code showMiniPlayer()}
-     * and leave the shared mini player in a leaked state. Calling this on cancel ensures the
-     * mini player reflects what this fragment actually wants, since the fragment remains the
-     * current visible screen after the gesture is abandoned.
-     */
+     
+
+
+
+
+
+
+
+
     override fun onCancelPredictiveBack() {
         super.onCancelPredictiveBack()
         if (shouldShowMiniPlayer) {
@@ -1185,16 +1185,16 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
         }
     }
 
-    /**
-     * Shows a dialog listing all [bookmarks] for a given song.
-     *
-     * Every row shows the bookmark's timestamp. Tapping a row triggers [onTimestampClicked],
-     * which receives the bookmark and a lambda you can call to close the dialog.
-     *
-     * If [onDelete] is provided, each row also gets a small trash button next to the timestamp.
-     * Tapping it calls [onDelete] with the bookmark, and the row animates out of the list
-     * automatically using RecyclerView's built-in item removal transition.
-     */
+     
+
+
+
+
+
+
+
+
+
     protected fun openBookmarksList(
             bookmarks: List<AudioBookmark>,
             onTimestampClicked: (AudioBookmark, dismiss: () -> Unit) -> Unit,
@@ -1232,7 +1232,7 @@ open class MediaFragment : ScopedFragment(), MiniPlayerPolicy {
                 container = requireContainerView(),
                 inflateBinding = DialogBookmarksListBinding::inflate)
             .onDialogInflated(onDialogInflated)
-            .onDismiss { /* no-op */ }
+            .onDismiss {   }
             .setWidthRatio(getDialogWidthRation())
             .build()
             .show()

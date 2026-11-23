@@ -144,11 +144,11 @@ object ContactMediaStoreHelper {
             operations.addAll(contact.groupIds.map { ContentHelper.newInsert(id, type, it.value) })
         }
 
-//            val uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contact.contactId.toString())
-//            val contentValues = ContentValues(2)
-//            contentValues.put(ContactsContract.Contacts.STARRED, contact.starred)
-//            contentValues.put(ContactsContract.Contacts.CUSTOM_RINGTONE, contact.ringtone)
-//            context.contentResolver.update(uri, contentValues, null, null)
+
+
+
+
+
 
         context.contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
     }

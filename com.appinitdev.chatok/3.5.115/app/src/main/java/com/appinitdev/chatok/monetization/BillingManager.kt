@@ -75,7 +75,7 @@ class BillingManager(
                     .build()
                 billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
                     if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                        // Grant coins based on productId
+                        
                         val coins = when (purchase.products[0]) {
                             "chatcoins_100" -> 100
                             "chatcoins_500" -> 500

@@ -10,7 +10,7 @@ object QueryHelper {
                 if (ids.isNotEmpty()) {
                     fields.add(FilterField("ids", ":", ids.joinToString(",")))
                 } else {
-                    fields.add(FilterField("ids", ":","invalid_ids")) // still need to set the ids to indicate no result
+                    fields.add(FilterField("ids", ":","invalid_ids")) 
                 }
             }
             return fields

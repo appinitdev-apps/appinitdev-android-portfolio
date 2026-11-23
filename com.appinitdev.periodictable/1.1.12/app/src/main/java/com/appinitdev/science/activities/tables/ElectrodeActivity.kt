@@ -3,7 +3,7 @@ class ElectrodeActivity : BaseActivity() {
     private var seriesList = ArrayList<Series>()
     var mAdapter = ElectrodeAdapter(seriesList, this, this)
 
-    // Unified back handling fields
+    
     private var backCallback: OnBackPressedCallback? = null
     private var onBackInvokedCb: android.window.OnBackInvokedCallback? = null
     private val uiHandler = Handler(Looper.getMainLooper())
@@ -21,20 +21,20 @@ class ElectrodeActivity : BaseActivity() {
         }
         if (themePrefValue == 0) { setTheme(R.style.AppTheme) }
         if (themePrefValue == 1) { setTheme(R.style.AppThemeDark) }
-        setContentView(R.layout.activity_electrode) //REMEMBER: Never move any function calls above this
+        setContentView(R.layout.activity_electrode) 
 
-        // Register a lifecycle-aware OnBackPressedCallback (disabled by default).
+        
         backCallback = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
                 val consumed = handleBackPress()
                 if (!consumed) {
-                    // Not consumed by overlays -> fall back to default behaviour.
-                    // Temporarily disable the callback to avoid recursion, then dispatch.
+                    
+                    
                     isEnabled = false
                     try {
                         onBackPressedDispatcher.onBackPressed()
                     } finally {
-                        // Leave disabled by default for this activity (enable when overlays open)
+                        
                         isEnabled = false
                     }
                 }
@@ -42,14 +42,14 @@ class ElectrodeActivity : BaseActivity() {
         }
         onBackPressedDispatcher.addCallback(this, backCallback!!)
 
-        // Register platform callback for Android 14+ to forward gestures to the dispatcher when enabled.
-        // Start with interception disabled (we only need it when overlays are visible).
+        
+        
         setBackInterceptionEnabled(false)
 
         recyclerView()
         clickSearch()
 
-        //Add value to most used:
+        
         val mostUsedPreference = MostUsedPreference(this)
         val mostUsedPrefValue = mostUsedPreference.getValue()
         val targetLabel = "ele"
@@ -140,7 +140,7 @@ class ElectrodeActivity : BaseActivity() {
             val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(findViewById<EditText>(R.id.edit_ele), InputMethodManager.SHOW_IMPLICIT)
 
-            // Search bar shown -> enable back interception
+            
             setBackInterceptionEnabled(true)
         }
         findViewById<ImageButton>(R.id.close_ele_search).setOnClickListener {
@@ -157,25 +157,25 @@ class ElectrodeActivity : BaseActivity() {
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
             }
 
-            // closed -> update interception state
+            
             setBackInterceptionEnabled(anyOverlayOpen())
         }
     }
 
-    // Basic handler for in-activity overlays (search bar currently)
+    
     private fun anyOverlayOpen(): Boolean {
         val searchBarVisible = findViewById<FrameLayout>(R.id.search_bar_ele).visibility == View.VISIBLE
         return searchBarVisible
     }
 
-    // Close overlays if visible; return true when consumed.
+    
     private fun handleBackPress(): Boolean {
         val searchBar = findViewById<FrameLayout>(R.id.search_bar_ele)
 
-        // If search bar visible, close it
+        
         if (searchBar.visibility == View.VISIBLE) {
             Utils.fadeOutAnim(searchBar, 1)
-            // restore title box after a short delay to match original timing
+            
             Handler(Looper.getMainLooper()).postDelayed({
                 Utils.fadeInAnim(findViewById<FrameLayout>(R.id.title_box), 150)
             }, 151)
@@ -186,7 +186,7 @@ class ElectrodeActivity : BaseActivity() {
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
             }
 
-            // update interception state after closing
+            
             setBackInterceptionEnabled(anyOverlayOpen())
             return true
         }
@@ -194,13 +194,13 @@ class ElectrodeActivity : BaseActivity() {
         return false
     }
 
-    /**
-     * Centralized management of platform back interception for Android 14+.
-     * We forward platform back invocations to the OnBackPressedDispatcher to ensure
-     * gestures and hardware back buttons call the same callbacks.
-     */
+     
+
+
+
+
     private fun setBackInterceptionEnabled(enabled: Boolean) {
-        // Keep OnBackPressedCallback state in sync
+        
         backCallback?.isEnabled = enabled
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -213,7 +213,7 @@ class ElectrodeActivity : BaseActivity() {
                             } catch (e: Exception) {
                                 val consumed = handleBackPress()
                                 if (!consumed) {
-                                    // fallback to finishing
+                                    
                                     finish()
                                 }
                             }
@@ -225,7 +225,7 @@ class ElectrodeActivity : BaseActivity() {
                             onBackInvokedCb!!
                         )
                     } catch (_: Exception) {
-                        // ignore registration errors on some devices
+                        
                     }
                 }
             } else {
@@ -233,7 +233,7 @@ class ElectrodeActivity : BaseActivity() {
                     try {
                         onBackInvokedDispatcher.unregisterOnBackInvokedCallback(onBackInvokedCb!!)
                     } catch (_: Exception) {
-                        // ignore
+                        
                     }
                     onBackInvokedCb = null
                 }
@@ -243,7 +243,7 @@ class ElectrodeActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        // Cleanup back interception hooks
+        
         backCallback?.remove()
         backCallback = null
         if (onBackInvokedCb != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {

@@ -34,12 +34,12 @@ fun Route.addUploads() {
                             }
 
                             "file" -> {
-                                // Strip any path components from the filename to prevent
-                                // directory traversal and duplicate-folder bugs (some browsers
-                                // include webkitRelativePath in the Content-Disposition filename).
+                                
+                                
+                                
                                 fileName = File(part.originalFileName as String).name
                                 if (info.isAppFile) {
-                                    // Import into content-addressable chat file store for deduplication
+                                    
                                     val tempFile = File(MainApp.instance.cacheDir, "chat_upload_${System.currentTimeMillis()}_${Thread.currentThread().id}")
                                     tempFile.parentFile?.mkdirs()
                                     FileOutputStream(tempFile).use { fos ->
@@ -52,8 +52,8 @@ fun Route.addUploads() {
                                         throw IOException("Size mismatch: expected ${info.size}, got $actual")
                                     }
                                     val dFile = AppFileStore.importFile(MainApp.instance, tempFile, part.contentType?.toString() ?: "", deleteSrc = true)
-                                    val fidSuffix = java.io.File(dFile.realPath).name  // "{hash}.{ext}"
-                                    fileName = fidSuffix // client forms fid:{fidSuffix}
+                                    val fidSuffix = java.io.File(dFile.realPath).name  
+                                    fileName = fidSuffix 
                                 } else {
                                     if (info.dir.isEmpty() || fileName.isEmpty()) {
                                         throw IllegalArgumentException("dir or fileName is empty")
@@ -70,8 +70,8 @@ fun Route.addUploads() {
                                     LogCat.d("Upload: ${info.dir}, ${destFile.absolutePath}")
                                     destFile.parentFile?.mkdirs()
 
-                                    // Write to a temp file first, then rename atomically.
-                                    // This prevents the file from appearing in listings with a partial size.
+                                    
+                                    
                                     val tempFile = File(destFile.parentFile, ".upload_tmp_${System.currentTimeMillis()}_${Thread.currentThread().id}")
                                     try {
                                         FileOutputStream(tempFile).use { fos ->
@@ -152,14 +152,14 @@ fun Route.addUploads() {
                                     throw IllegalArgumentException("fileId or index is missing or invalid")
                                 }
 
-                                // Create directory in cache dir using file_id as directory name
+                                
                                 val chunkDir = File(MainApp.instance.filesDir, "upload_tmp/${chunkInfo.fileId}")
                                 chunkDir.mkdirs()
 
-                                // Stream chunk directly to disk — never load the entire 5 MB
-                                // chunk as a byte array.  With 3 parallel workers, toByteArray()
-                                // caused ~30 MB of simultaneous heap allocations which triggered
-                                // OOM kills on Huawei/EMUI devices mid-transfer.
+                                
+                                
+                                
+                                
                                 val chunkFile = File(chunkDir, "chunk_${chunkInfo.index}")
                                 val tempFile = File(chunkDir, ".tmp_chunk_${chunkInfo.index}_${System.nanoTime()}")
                                 try {
@@ -169,18 +169,18 @@ fun Route.addUploads() {
                                         savedSize = fos.channel.position()
                                     }
 
-                                    // Verify received size matches expected
+                                    
                                     if (chunkInfo.size > 0 && savedSize != chunkInfo.size) {
                                         tempFile.delete()
                                         throw IOException("Chunk ${chunkInfo.index} size mismatch: expected ${chunkInfo.size}, received $savedSize")
                                     }
 
-                                    // Atomic rename to final chunk file
+                                    
                                     if (chunkFile.exists()) chunkFile.delete()
                                     if (!tempFile.renameTo(chunkFile)) {
-                                        // renameTo can move the file but still return false
-                                        // on some Android file systems. Only use copyTo
-                                        // fallback when the source file still exists.
+                                        
+                                        
+                                        
                                         if (tempFile.exists()) {
                                             tempFile.copyTo(chunkFile, overwrite = true)
                                             tempFile.delete()
@@ -189,8 +189,8 @@ fun Route.addUploads() {
                                         }
                                     }
 
-                                    // Post-rename verification: ensure the final chunk
-                                    // file has the correct size.
+                                    
+                                    
                                     val finalSize = chunkFile.length()
                                     if (chunkInfo.size > 0 && finalSize != chunkInfo.size) {
                                         chunkFile.delete()

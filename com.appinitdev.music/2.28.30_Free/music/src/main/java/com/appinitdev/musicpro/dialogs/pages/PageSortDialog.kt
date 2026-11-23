@@ -1,17 +1,17 @@
 
-/**
- * Bottom-sheet dialog for selecting the sort field and sort order for a specific viewer page.
- *
- * Each page type (album, artist, genre, folder, year) stores its preferences
- * independently via [PagePreferences]. The [PAGE_TYPE] bundle argument determines which
- * preference keys to read and write. Only the Album page shows the Track Number chip,
- * since track order is meaningful only within a single album context.
- *
- * Note: The Playlist page does not use this dialog — it uses PlaylistSongsSort instead,
- * which persists the sort preference per-playlist directly in the database.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 class PageSortDialog : ScopedBottomSheetFragment() {
 
     private lateinit var binding: DialogSortPageBinding
@@ -138,12 +138,12 @@ class PageSortDialog : ScopedBottomSheetFragment() {
             return fragment
         }
 
-        /**
-         * Shows the page sort dialog for the given [pageType].
-         *
-         * @param pageType One of the [PageSort].PAGE_TYPE_* constants.
-         * @return The shown [PageSortDialog].
-         */
+         
+
+
+
+
+
         fun FragmentManager.showPageSortDialog(pageType: String): PageSortDialog {
             val dialog = newInstance(pageType)
             dialog.show(this, TAG)

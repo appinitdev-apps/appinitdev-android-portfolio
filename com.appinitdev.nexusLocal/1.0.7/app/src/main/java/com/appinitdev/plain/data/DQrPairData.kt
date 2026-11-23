@@ -5,7 +5,7 @@ data class DQrPairData(
     val name: String,
     val port: Int,
     val deviceType: DeviceType,
-    val ips: List<String> = emptyList(), // All IP addresses
+    val ips: List<String> = emptyList(), 
 ) {
     fun toQrContent(): String = QR_PREFIX + JsonHelper.jsonEncode(this)
 

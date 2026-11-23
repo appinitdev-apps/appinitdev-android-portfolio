@@ -91,30 +91,30 @@ private fun ScanOverlay(modifier: Modifier = Modifier) {
         val left = (size.width - boxSize) / 2f
         val top = (size.height - boxSize) / 2f
 
-        // Dark overlay around scan area
+        
         drawRect(color = Color.Black.copy(alpha = 0.5f), topLeft = Offset(0f, 0f), size = Size(size.width, top))
         drawRect(color = Color.Black.copy(alpha = 0.5f), topLeft = Offset(0f, top + boxSize), size = Size(size.width, size.height - top - boxSize))
         drawRect(color = Color.Black.copy(alpha = 0.5f), topLeft = Offset(0f, top), size = Size(left, boxSize))
         drawRect(color = Color.Black.copy(alpha = 0.5f), topLeft = Offset(left + boxSize, top), size = Size(size.width - left - boxSize, boxSize))
 
-        // Corner decorations
+        
         val cornerLen = 40.dp.toPx()
         val cornerStroke = 3.dp.toPx()
         val white = Color.White
-        // top-left
+        
         drawLine(white, Offset(left, top), Offset(left + cornerLen, top), cornerStroke)
         drawLine(white, Offset(left, top), Offset(left, top + cornerLen), cornerStroke)
-        // top-right
+        
         drawLine(white, Offset(left + boxSize, top), Offset(left + boxSize - cornerLen, top), cornerStroke)
         drawLine(white, Offset(left + boxSize, top), Offset(left + boxSize, top + cornerLen), cornerStroke)
-        // bottom-left
+        
         drawLine(white, Offset(left, top + boxSize), Offset(left + cornerLen, top + boxSize), cornerStroke)
         drawLine(white, Offset(left, top + boxSize), Offset(left, top + boxSize - cornerLen), cornerStroke)
-        // bottom-right
+        
         drawLine(white, Offset(left + boxSize, top + boxSize), Offset(left + boxSize - cornerLen, top + boxSize), cornerStroke)
         drawLine(white, Offset(left + boxSize, top + boxSize), Offset(left + boxSize, top + boxSize - cornerLen), cornerStroke)
 
-        // Animated scan line
+        
         val lineY = top + boxSize * scanProgress
         drawRect(
             brush = Brush.horizontalGradient(

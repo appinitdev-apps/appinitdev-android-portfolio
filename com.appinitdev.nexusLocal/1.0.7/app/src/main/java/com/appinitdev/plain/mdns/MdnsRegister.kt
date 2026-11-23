@@ -1,8 +1,8 @@
 
-/**
- * Watches network changes and re-registers mDNS to keep discovery accurate across
- * VPN/Wi-Fi/cellular transitions.
- */
+ 
+
+
+
 class MdnsRegister(
     context: Context,
     private val isActive: () -> Boolean,
@@ -15,7 +15,7 @@ class MdnsRegister(
     private var reregisterJob: Job? = null
     private var hotspotWatcher: MdnsHotspotWatcher? = null
 
-    /** Snapshot of the interfaces at last successful registration ("wlan0:192.168.1.5"). */
+     
     @Volatile
     private var lastRegisteredIfaces: Set<String> = emptySet()
 
@@ -35,10 +35,10 @@ class MdnsRegister(
     fun schedule(reason: String) {
         if (!isActive()) return
 
-        // Fast-path: if LAN interfaces haven't changed and mDNS is already registered,
-        // don't cancel an in-flight debounce job.  This prevents cellular
-        // onLinkPropertiesChanged storms (DNS updates, CLAT/NAT64 changes) from
-        // continuously resetting the debounce timer and blocking re-registration.
+        
+        
+        
+        
         val currentIfaces = candidateInterfaces()
             .map { (iface, ip) -> "${iface.name}:${ip.hostAddress}" }
             .toSet()
@@ -48,16 +48,16 @@ class MdnsRegister(
 
         reregisterJob?.cancel()
         reregisterJob = coIO {
-            delay(2000) // debounce network churn
+            delay(2000) 
             if (!isActive()) return@coIO
 
-            // Re-fetch — interfaces may have changed since fast-path check above.
+            
             val freshIfaces = candidateInterfaces()
                 .map { (iface, ip) -> "${iface.name}:${ip.hostAddress}" }
                 .toSet()
 
-            // Network gone — tear down responder and reset so the next
-            // network-up event triggers a fresh registration.
+            
+            
             if (freshIfaces.isEmpty()) {
                 if (lastRegisteredIfaces.isNotEmpty()) {
                     LogCat.d("mDNS teardown ($reason): no interfaces, clearing registration state")

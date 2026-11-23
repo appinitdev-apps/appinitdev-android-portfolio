@@ -8,7 +8,7 @@ class ChatRepository(
     private val activeMessageListeners = mutableMapOf<String, ListenerRegistration>()
     private val usersCollection = firestore.collection("users")
 
-    // --- CHATS ---
+    
     
     fun getChatsFlow(): Flow<List<ChatData>> = chatDao.getAllChats().map { entities ->
         entities.map { it.toChatData() }
@@ -40,7 +40,7 @@ class ChatRepository(
 
     suspend fun getLocalChat(chatId: String): ChatEntity? = chatDao.getChatById(chatId)
 
-    // --- MESSAGES ---
+    
 
     fun getMessagesFlow(chatId: String): Flow<List<Message>> = chatDao.getMessagesForChat(chatId).map { entities ->
         entities.map { it.toMessage() }.sortedByDescending { it.time }
@@ -62,7 +62,7 @@ class ChatRepository(
         activeMessageListeners[chatId] = listener
     }
 
-    // --- STORIES ---
+    
 
     fun getLocalStoriesFlow(): Flow<List<Story>> = chatDao.getAllStories().map { entities ->
         entities.map { it.toStory() }
@@ -91,7 +91,7 @@ class ChatRepository(
         }
     }
 
-    // --- USERS & STATUS ---
+    
 
     suspend fun getLocalUser(userId: String): UserData? = chatDao.getUserById(userId)?.toUserData()
 
@@ -115,7 +115,7 @@ class ChatRepository(
             val userDoc = usersCollection.document(userId).get().await()
             val userData = userDoc.toObject(UserData::class.java) ?: return
             
-            // Si el usuario desactivó su visibilidad, no lo ponemos online a menos que sea forzado (ignorePref)
+            
             val shouldBeOnline = if (!ignorePref && !userData.pref.online) false else online
             
             val currentOnline = userDoc.getBoolean("pref.status") ?: false
@@ -131,7 +131,7 @@ class ChatRepository(
                     chatDao.getUserById(userId)?.let { entity ->
                         chatDao.insertUser(entity.copy(
                             isOnline = shouldBeOnline, 
-                            showOnlineSetting = userData.pref.online, // Preserve preference
+                            showOnlineSetting = userData.pref.online, 
                             lastSeen = System.currentTimeMillis()
                         ))
                     }
@@ -144,11 +144,11 @@ class ChatRepository(
 
     suspend fun setAllUsersOffline() {
         try {
-            // Buscamos usuarios que están marcados como conectados (status = true)
+            
             val snapshot = usersCollection.whereEqualTo("pref.status", true).get().await()
             val batch = firestore.batch()
             snapshot.documents.forEach { doc ->
-                // Solo ponemos status en false, NO tocamos la preferencia 'online'
+                
                 batch.update(doc.reference, "pref.status", false)
             }
             batch.commit().await()
@@ -190,7 +190,7 @@ class ChatRepository(
 
     suspend fun deleteUserAccount(userId: String) {
         try {
-            // 1. Delete user's stories from Firestore
+            
             val userStories = firestore.collection("stories")
                 .whereEqualTo("userId", userId)
                 .get().await()
@@ -198,7 +198,7 @@ class ChatRepository(
                 doc.reference.delete().await()
             }
 
-            // 2. Delete user's verification requests
+            
             val userVerifications = firestore.collection("verification_requests")
                 .whereEqualTo("userId", userId)
                 .get().await()
@@ -206,17 +206,17 @@ class ChatRepository(
                 doc.reference.delete().await()
             }
 
-            // 3. Delete user document from Firestore
+            
             firestore.collection("users").document(userId).delete().await()
 
-            // 4. Delete user's Storage photos if any
+            
             try {
                 FirebaseStorage.getInstance().reference.child("photos/$userId").delete().await()
             } catch (e: Exception) {
                 Log.e("ChatRepository", "No storage photos to delete or error", e)
             }
 
-            // 5. Delete Firebase Authentication user account
+            
             val authUser = FirebaseAuth.getInstance().currentUser
             if (authUser != null && authUser.uid == userId) {
                 try {
@@ -226,7 +226,7 @@ class ChatRepository(
                 }
             }
 
-            // 6. Local cleanup
+            
             chatDao.clearAllData()
             clearAllListeners()
         } catch (e: Exception) {
@@ -259,7 +259,7 @@ class ChatRepository(
         }
     }
 
-    // --- MONETIZATION ---
+    
 
     suspend fun addCoins(userId: String, amount: Int) {
         firestore.collection("users").document(userId).update("balance", FieldValue.increment(amount.toLong())).await()
@@ -291,7 +291,7 @@ class ChatRepository(
             val currentBalance = snapshot.getLong("balance") ?: 0
             if (currentBalance < cost) throw Exception("Saldo insuficiente")
 
-            val boostUntil = Timestamp(Date(System.currentTimeMillis() + 30 * 60 * 1000)) // 30 minutes
+            val boostUntil = Timestamp(Date(System.currentTimeMillis() + 30 * 60 * 1000)) 
 
             transaction.update(userRef, "balance", currentBalance - cost)
             transaction.update(userRef, "boostedUntil", boostUntil)
@@ -324,7 +324,7 @@ class ChatRepository(
             val unlocked = userSnap.get("unlockedChats") as? List<*> ?: emptyList<String>()
             if (unlocked.contains(sellerId)) return@runTransaction
 
-            // Toda la ganancia va para el Administrador (implícito al no dar nada al vendedor)
+            
             transaction.update(userRef, "balance", balance - cost)
             transaction.update(userRef, "unlockedChats", FieldValue.arrayUnion(sellerId))
         }.await()
@@ -341,14 +341,14 @@ class ChatRepository(
             val unlocked = userSnap.get("unlockedStories") as? List<*> ?: emptyList<String>()
             if (unlocked.contains(storyId)) return@runTransaction
 
-            // Toda la ganancia va para el Administrador
+            
             transaction.update(userRef, "balance", balance - cost)
             transaction.update(userRef, "unlockedStories", FieldValue.arrayUnion(storyId))
         }.await()
     }
 
     suspend fun getRandomUser(currentUserId: String, excludedEmails: Set<String>): UserData? {
-        // Find boosted users first
+        
         val boostedSnapshot = usersCollection
             .whereGreaterThan("boostedUntil", Timestamp.now())
             .limit(10)
@@ -371,7 +371,7 @@ class ChatRepository(
         return if (priorityList.isNotEmpty()) priorityList.random() else allUsers.random()
     }
 
-    // --- GROUPS ---
+    
 
     fun getMyGroupsFlow(userId: String): Flow<List<GroupChatData>> = callbackFlow {
         val listener = firestore.collection("groups").whereArrayContains("memberIds", userId)
@@ -400,7 +400,7 @@ class ChatRepository(
         emit(Pair(snapshot.documents.mapNotNull { it.toObject(GroupChatData::class.java) }, snapshot.documents.lastOrNull()))
     }.flowOn(Dispatchers.IO)
 
-    // --- UTILS ---
+    
 
     fun clearAllListeners() {
         chatsListener?.remove()

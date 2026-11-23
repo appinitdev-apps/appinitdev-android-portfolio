@@ -10,7 +10,7 @@ fun ColorPickerDialog(
     Column(
         modifier = Modifier.padding(16.dp)
     ) {
-        // 🎨 Selector principal
+        
         HsvColorPicker(
             modifier = Modifier
                 .fillMaxWidth()
@@ -23,7 +23,7 @@ fun ColorPickerDialog(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 🌞 Brillo
+        
         BrightnessSlider(
             modifier = Modifier
                 .fillMaxWidth()
@@ -33,7 +33,7 @@ fun ColorPickerDialog(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // 🌫️ Transparencia
+        
         AlphaSlider(
             modifier = Modifier
                 .fillMaxWidth()
@@ -42,14 +42,14 @@ fun ColorPickerDialog(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 👀 Vista previa
+        
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp) // espacio entre box y botón
+            horizontalArrangement = Arrangement.spacedBy(16.dp) 
         ) {
             Box(
                 modifier = Modifier
-                    .weight(1f) // ocupa todo el ancho disponible
+                    .weight(1f) 
                     .height(60.dp)
                     .background(selectedColor)
             )
@@ -59,7 +59,7 @@ fun ColorPickerDialog(
                 modifier = Modifier.align(Alignment.CenterVertically)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Check, // ✅ icono de confirmación
+                    imageVector = Icons.Default.Check, 
                     contentDescription = "Seleccionar color",
                     modifier = Modifier.size(40.dp)
                 )

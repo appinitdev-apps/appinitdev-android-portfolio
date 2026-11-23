@@ -121,13 +121,13 @@ fun StoryDialog(appState: AppState,
                 val image = story.images[index]
                 val isOwnStory = story.userId == appState.userData?.userId
                 
-                // Logic: 
-                // 1. First image (index 0) is always free.
-                // 2. Subsequent images are free if it's your own story or you've unlocked this specific story.
+                
+                
+                
                 val isStoryUnlocked = appState.userData?.unlockedStories?.contains(story.id) ?: false
                 val isUnlocked = index == 0 || isOwnStory || isStoryUnlocked
                 
-                val unlockCost = 15 // Platform fixed price for all images
+                val unlockCost = 15 
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     AsyncImage(
@@ -280,7 +280,7 @@ fun StoryDialog(appState: AppState,
                                     onClick = {
                                         Log.d("STORY_REPLY", "Iniciando respuesta para el usuario: ${story.userId}")
 
-                                        // 1. Buscamos el ID del chat
+                                        
                                         viewModel.findChatIdPro(story.userId) { chatId ->
                                             Log.d("STORY_REPLY", "Resultado de findChatId: $chatId")
 
@@ -298,7 +298,7 @@ fun StoryDialog(appState: AppState,
                                             } else {
                                                 Log.d("STORY_REPLY", "No se encontró chat previo. Creando nuevo chat con ${story.username}...")
 
-                                                // SI NO SON CONTACTOS:
+                                                
                                                 val storyAuthor = UserData(
                                                     userId = story.userId,
                                                     username = story.username,
@@ -308,15 +308,15 @@ fun StoryDialog(appState: AppState,
                                                 val replyMessage = Message().copy(
                                                     senderId = currentUserId,
                                                     imgUrl = story.images[pagerState.currentPage].imgUrl,
-                                                    content = context.getString(R.string.respondio_a_la_historia), // Esto es el subtítulo
+                                                    content = context.getString(R.string.respondio_a_la_historia), 
 
                                                 )
-                                                // 1. Intentamos crear el chat
+                                                
                                                 viewModel.createChat(storyAuthor)
                                                 viewModel.createChatAndReply(storyAuthor, replyMessage, reply)
                                                 Log.d("STORY_REPLY", "Llamada a createChat enviada. Re-buscando nuevo ID...")
 
-                                                // 2. Buscamos el ID del nuevo chat creado
+                                                
                                                 viewModel.findChatId(story.userId) { newChatId ->
                                                     Log.d("STORY_REPLY", "Segundo intento findChatId: $newChatId")
 
@@ -336,7 +336,7 @@ fun StoryDialog(appState: AppState,
                                                 }
                                             }
 
-                                            // Notificación y limpieza
+                                            
                                             viewModel.sendNotification(context.getString(R.string.respondio_a_la_historia), story.userId)
                                             reply = ""
                                             Toast.makeText(context, context.getString(R.string.mensaje_enviado_a, story.username ?: ""), Toast.LENGTH_SHORT).show()

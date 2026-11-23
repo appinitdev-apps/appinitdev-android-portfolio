@@ -7,7 +7,7 @@ object CsvExportManager {
         records: List<GrowthRecord>
     ) {
         val sb = StringBuilder()
-        // CSV Header Row
+        
         sb.append("\"Fecha\",\"Paciente\",\"Peso (kg)\",\"Estatura (cm)\",\"IMC\",\"Estado Nutricional\"\n")
 
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())

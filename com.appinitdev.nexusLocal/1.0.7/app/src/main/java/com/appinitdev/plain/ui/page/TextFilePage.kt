@@ -70,8 +70,8 @@ fun TextFilePage(
             )
         },
         content = { paddingValues ->
-            // Use Box so the WebView renders in the background while the spinner
-            // overlays it — avoids a layout-shift freeze when the spinner hides.
+            
+            
             Box(modifier = Modifier
                 .padding(top = paddingValues.calculateTopPadding())
                 .fillMaxSize()) {

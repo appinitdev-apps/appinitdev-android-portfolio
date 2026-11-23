@@ -1,8 +1,8 @@
 
-/**
- * [AppCompatEditText] whose changes (text edits or span changes) are pushed to [changeHistory].
- * *
- */
+ 
+
+
+
 open class HighlightableEditText(context: Context, attrs: AttributeSet) :
     EditTextWithWatcher(context, attrs) {
 
@@ -11,11 +11,11 @@ open class HighlightableEditText(context: Context, attrs: AttributeSet) :
         return Pair(text.getSpanStart(span), text.getSpanEnd(span))
     }
 
-    /**
-     * Removes [span] from `text`.
-     *
-     * @param removeText if this is `true` the text of the [span] is removed from `text`.
-     */
+     
+
+
+
+
     protected fun removeSpan(span: CharacterStyle, removeText: Boolean = false) {
         val (start, end) = getSpanRange(span)
         text?.removeSelectionFromSpans(start, end)
@@ -43,14 +43,14 @@ open class HighlightableEditText(context: Context, attrs: AttributeSet) :
         selectedHighlightedSpan = null
     }
 
-    /**
-     * Visibly highlight text from [startIdx] to [endIdx]. If [selected] is true the text is
-     * highlighted uniquely. There can only be one [selected] highlight.
-     *
-     * @return Vertical offset to highlighted text line.
-     */
+     
+
+
+
+
+
     fun highlight(startIdx: Int, endIdx: Int, selected: Boolean): Int? {
-        // TODO: Could be replaced with EditText.highlights? (API >= 34)
+        
         if (selected) {
             selectedHighlightedSpan?.unselect()
         }

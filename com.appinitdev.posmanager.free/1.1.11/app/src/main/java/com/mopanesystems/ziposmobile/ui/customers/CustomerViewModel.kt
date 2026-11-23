@@ -128,7 +128,7 @@ class CustomerViewModel @Inject constructor(
                     val newBalance = customer.balance + amount
                     customerRepository.updateBalance(customerId, newBalance)
                     
-                    // Add transaction record
+                    
                     val transaction = CustomerTransaction(
                         id = UUID.randomUUID().toString(),
                         customerId = customerId,
@@ -238,7 +238,7 @@ class CustomerViewModel @Inject constructor(
         _errorMessage.value = null
     }
 
-    // Helper function to create a new customer
+    
     fun createNewCustomer(
         firstName: String,
         lastName: String,

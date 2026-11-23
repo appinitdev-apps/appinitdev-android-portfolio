@@ -43,7 +43,7 @@ interface ProductPerformanceDao {
     fun getProductPerformanceByProductAndPeriod(productId: String, period: String, startDate: LocalDateTime, endDate: LocalDateTime): Flow<List<ProductPerformance>>
 
 
-//    @Query("SELECT * FROM product_performance WHERE period = :period AND periodStart BETWEEN :startDate AND :endDate ORDER BY revenue DESC")
+
     @Query("SELECT * FROM product_performance WHERE period = :period AND periodStart BETWEEN :startDate AND :endDate ORDER BY revenue DESC")
     fun getProductPerformanceByPeriod(period: String, startDate: String, endDate: String): Flow<List<ProductPerformance>>
 

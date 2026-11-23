@@ -27,11 +27,11 @@ class ProActivity : BaseActivity(), BillingManager.Listener {
         if (themePrefValue == 1) setTheme(R.style.AppThemeDark)
         setContentView(R.layout.activity_pro_v2)
 
-        // Initialize BillingManager
+        
         billingManager = BillingManager(this, lifecycleScope, this)
         billingManager.initialize()
 
-        // Hook up UI buttons to delegate to billingManager
+        
         findViewById<TextView>(R.id.pro_buy_btn).setOnClickListener {
             if (!billingManager.isOwnsProVersion() && !billingManager.isOwnsProPlusVersion()) {
                 billingManager.getProductDetail(PRO_PAGE_PRODUCT_ID)?.let { billingManager.launchPurchase(it) }
@@ -51,7 +51,7 @@ class ProActivity : BaseActivity(), BillingManager.Listener {
             this.onBackPressed()
         }
 
-        // NEW: Handle click on "product_text"
+        
 
     }
 
@@ -60,24 +60,24 @@ class ProActivity : BaseActivity(), BillingManager.Listener {
         billingManager.endConnection()
     }
 
-    // BillingManager.Listener implementations
-//    override fun onProductsUpdated() {
-//        // refresh local product map and UI
-//        productDetailMap[PRO_PAGE_PRODUCT_ID] =
-//            (billingManager.getProductDetail(PRO_PAGE_PRODUCT_ID) ?: continueOnUi {}) as ProductDetails
-//        productDetailMap[PRO_PLUS_PRODUCT_ID] =
-//            (billingManager.getProductDetail(PRO_PLUS_PRODUCT_ID) ?: continueOnUi {}) as ProductDetails
-//        productDetailMap[PRO_PLUS_UPGRADE_PRODUCT_ID] =
-//            (billingManager.getProductDetail(PRO_PLUS_UPGRADE_PRODUCT_ID) ?: continueOnUi {}) as ProductDetails
-//
-//        runOnUiThread {
-//            updateProOptionsUI()
-//            updatePurchaseCardsUI()
-//        }
-//    }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     override fun onProductsUpdated() {
-        // Intentamos obtener cada producto y solo lo guardamos si no es null
+        
         billingManager.getProductDetail(PRO_PAGE_PRODUCT_ID)?.let {
             productDetailMap[PRO_PAGE_PRODUCT_ID] = it
         }
@@ -95,7 +95,7 @@ class ProActivity : BaseActivity(), BillingManager.Listener {
     }
 
     override fun onPurchasesUpdated() {
-        // refresh internal flags and UI
+        
         ownsProVersion = billingManager.isOwnsProVersion()
         ownsProPlusVersion = billingManager.isOwnsProPlusVersion()
         runOnUiThread {
@@ -105,7 +105,7 @@ class ProActivity : BaseActivity(), BillingManager.Listener {
     }
 
     override fun onPurchaseCompleted(productId: String) {
-        // update preferences and UI similar to original behavior
+        
         val proPref = ProVersion(this)
         val proPlusPref = ProPlusVersion(this)
 
@@ -126,7 +126,7 @@ class ProActivity : BaseActivity(), BillingManager.Listener {
 
         runOnUiThread {
             Toast.makeText(this@ProActivity, "Purchase complete!", Toast.LENGTH_SHORT).show()
-            // small delay to let Google Play finalize state if needed
+            
             android.os.Handler().postDelayed({
                 updateProOptionsUI()
                 updatePurchaseCardsUI()
@@ -138,18 +138,18 @@ class ProActivity : BaseActivity(), BillingManager.Listener {
         ToastUtil.showToast(this, message)
     }
 
-    // small helper to avoid repetitive null-handling when updating product map
+    
     private inline fun <T> continueOnUi(block: () -> T) {}
 
     private fun queryProducts() {
-        // BillingManager already queries products on setup; this is kept for parity if needed
+        
     }
 
     private fun queryPurchases() {
-        // BillingManager already queries purchases on setup; this is kept for parity if needed
+        
     }
 
-    // Function to set preferences based on account products
+    
     private fun checkAndSetPreferences() {
         val proPref = ProVersion(this)
         val proPlusPref = ProPlusVersion(this)
@@ -192,7 +192,7 @@ class ProActivity : BaseActivity(), BillingManager.Listener {
         return formattedPrice ?: getString(R.string.price_not_available)
     }
 
-    // Update preferences and buy buttons when displaying UI
+    
     private fun updateProOptionsUI() {
         val proBuyBtn = findViewById<TextView>(R.id.pro_buy_btn)
         val proPlusBuyBtn = findViewById<TextView>(R.id.pro_plus_buy_btn)
@@ -201,7 +201,7 @@ class ProActivity : BaseActivity(), BillingManager.Listener {
         val proPref = ProVersion(this)
         val proPlusPref = ProPlusVersion(this)
 
-        // use billingManager state if available
+        
         ownsProVersion = billingManager.isOwnsProVersion()
         ownsProPlusVersion = billingManager.isOwnsProPlusVersion()
 
@@ -243,7 +243,7 @@ class ProActivity : BaseActivity(), BillingManager.Listener {
         }
     }
 
-    // Update cards or other purchase UI
+    
     private fun updatePurchaseCardsUI() {
         val proCard = findViewById<FrameLayout>(R.id.pro_bg)
         val proPlusCard = findViewById<FrameLayout>(R.id.pro_plus_bg)

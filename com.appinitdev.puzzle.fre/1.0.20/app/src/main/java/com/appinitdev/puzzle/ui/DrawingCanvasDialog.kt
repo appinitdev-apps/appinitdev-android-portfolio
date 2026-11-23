@@ -145,7 +145,7 @@ fun DrawingCanvasDialog(
                         }
                 ) {
                     Canvas(modifier = Modifier.fillMaxSize()) {
-                        // 1. Dibuja trazos ya guardados
+                        
                         paths.forEach { pathState ->
                             drawPath(
                                 path = pathState.path,
@@ -158,7 +158,7 @@ fun DrawingCanvasDialog(
                             )
                         }
 
-                        // 2. Dibuja el trazo actual EN TIEMPO REAL mientras mueves el dedo
+                        
                         if (currentPoints.size > 1) {
                             val activePath = createPathFromPoints(currentPoints)
                             drawPath(
@@ -182,7 +182,7 @@ fun DrawingCanvasDialog(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Selector de colores y tamaño de pincel
+                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -210,7 +210,7 @@ fun DrawingCanvasDialog(
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    // Grosor de pincel
+                    
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         strokeSizes.forEach { size ->
                             val isSelected = strokeWidth == size
@@ -242,7 +242,7 @@ fun DrawingCanvasDialog(
                         val canvas = android.graphics.Canvas(bitmap)
                         canvas.drawColor(android.graphics.Color.WHITE)
 
-                        // Mapeo 1:1 hiper-preciso utilizando las dimensiones reales del canvas UI
+                        
                         val uiWidth = if (canvasSize.width > 0f) canvasSize.width else targetSize.toFloat()
                         val uiHeight = if (canvasSize.height > 0f) canvasSize.height else targetSize.toFloat()
 
@@ -264,7 +264,7 @@ fun DrawingCanvasDialog(
                             paint.color = pathState.color.toArgb()
                             paint.strokeWidth = pathState.strokeWidth * scaleX
 
-                            // Creamos una copia del path para transformar sin alterar la vista en pantalla
+                            
                             val androidPath = AndroidPath(pathState.path.asAndroidPath())
                             androidPath.transform(matrix)
 

@@ -1,11 +1,11 @@
 
-/**
- * A dedicated adapter for the Selections panel. Unlike [AdapterSongs], this one always
- * uses the simple list layout regardless of what the user has chosen for the main song list.
- * That way the selection basket always looks clean and consistent.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 class AdapterSelections(initial: List<Audio>) : FastScrollAdapter<AdapterSelections.SelectionHolder>() {
 
     private var generalAdapterCallbacks: GeneralAdapterCallbacks? = null
@@ -93,7 +93,7 @@ class AdapterSelections(initial: List<Audio>) : FastScrollAdapter<AdapterSelecti
             binding.container.setOnClickListener {
                 generalAdapterCallbacks?.onSongClicked(songs, bindingAdapterPosition, it)
             }
-            // Long-press lets the user pull a single track out of the selection basket.
+            
             binding.container.setOnLongClickListener {
                 generalAdapterCallbacks?.onSongLongClicked(songs, bindingAdapterPosition, binding.cover)
                 true

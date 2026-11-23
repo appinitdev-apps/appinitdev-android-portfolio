@@ -1,15 +1,15 @@
 
-/**
- * Adapter for the "Playing Queue" screen. It shows every song in the playback queue, lets the
- * user drag items to reorder them, and swipe to remove them. Items that have already been played
- * (i.e. they sit before the current song) are gently faded out so it's immediately obvious where
- * you are in the queue — kind of like a musical rearview mirror.
- *
- * It extends [FastScrollAdapter] so that heavy work like image loading is automatically skipped
- * while the fast-scroll thumb is being dragged, which keeps scrolling buttery-smooth.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
 class AdapterPlayingQueue(initial: List<Audio>) : FastScrollAdapter<AdapterPlayingQueue.QueueHolder>() {
 
     private var generalAdapterCallbacks: GeneralAdapterCallbacks? = null
@@ -17,19 +17,19 @@ class AdapterPlayingQueue(initial: List<Audio>) : FastScrollAdapter<AdapterPlayi
     private var onItemMovedCallback: ((fromPosition: Int, toPosition: Int) -> Unit)? = null
     private var onItemSwipedCallback: ((position: Int) -> Unit)? = null
 
-    /**
-     * Plain mutable list — single source of truth, mutated directly on the main thread.
-     * No AsyncListDiffer: async diffs race with ItemTouchHelper and cause wrong highlights.
-     */
+     
+
+
+
     private val songs: MutableList<Audio> = mutableListOf()
 
-    /**
-     * The index of the song that is currently playing. Every item at a lower index will be
-     * drawn at a reduced alpha to show that those songs are "in the past".
-     */
+     
+
+
+
     private var currentPosition: Int = 0
 
-    /** True while a drag gesture is in progress — defers external list updates. */
+     
     private var isDragInProgress = false
     private var pendingList: List<Audio>? = null
 
@@ -60,15 +60,15 @@ class AdapterPlayingQueue(initial: List<Audio>) : FastScrollAdapter<AdapterPlayi
         )
     }
 
-    /**
-     * This is called by [FastScrollAdapter] automatically. When [isLightBind] is true (fast-scroll
-     * thumb being dragged), we skip heavy work like image loading so scrolling stays smooth.
-     * We still apply the "past songs" fade here because that's just an alpha — very cheap.
-     */
+     
+
+
+
+
     override fun onBind(holder: QueueHolder, position: Int, isLightBind: Boolean) {
         holder.bind(songs[position], isLightBind)
-        // Songs before the currently playing one look "faded out" — they've already had their
-        // moment in the spotlight, so we dim them a little as a polite reminder.
+        
+        
         holder.itemView.alpha = if (position < currentPosition) PAST_SONG_ALPHA else 1f
     }
 
@@ -92,10 +92,10 @@ class AdapterPlayingQueue(initial: List<Audio>) : FastScrollAdapter<AdapterPlayi
         this.onItemSwipedCallback = callback
     }
 
-    /**
-     * Tell the adapter which song is currently playing so it can fade out the ones before it.
-     * Only the items whose faded-ness actually changed are refreshed — no unnecessary redraws.
-     */
+     
+
+
+
     @SuppressLint("NotifyDataSetChanged")
     fun updateCurrentPosition(newPosition: Int) {
         val old = currentPosition
@@ -103,11 +103,11 @@ class AdapterPlayingQueue(initial: List<Audio>) : FastScrollAdapter<AdapterPlayi
         notifyDataSetChanged()
     }
 
-    /**
-     * Apply a new list from outside (ViewModel / MediaPlaybackManager flow).
-     * Deferred while a drag is in progress to avoid visual conflicts.
-     * Uses synchronous DiffUtil — queue sizes are always small.
-     */
+     
+
+
+
+
     fun updateSongs(newSongs: List<Audio>) {
         if (isDragInProgress) {
             pendingList = newSongs.toList()
@@ -163,8 +163,8 @@ class AdapterPlayingQueue(initial: List<Audio>) : FastScrollAdapter<AdapterPlayi
             binding.container.enableDragHandle = true
             bindSelectionState(audio)
 
-            // Start a drag whenever the finger lands inside the drawn drag-handle region
-            // on the right edge of the row — no extra view needed in the layout.
+            
+            
             binding.container.setOnTouchListener { _, event ->
                 if (event.actionMasked == MotionEvent.ACTION_DOWN &&
                         binding.container.isDragHandleRegion(event.x)) {
@@ -226,11 +226,11 @@ class AdapterPlayingQueue(initial: List<Audio>) : FastScrollAdapter<AdapterPlayi
             if (dragFromPosition == -1) dragFromPosition = from
             dragToPosition = to
 
-            // Mutate backing list directly — no DiffUtil, no async, no races.
+            
             songs.add(to, songs.removeAt(from))
-            // Tell RecyclerView exactly what moved — ItemTouchHelper owns the animation.
+            
             notifyItemMoved(from, to)
-            // Mirror the move in MediaPlaybackManager silently (no songPositionFlow, no ExoPlayer call).
+            
             MediaPlaybackManager.moveQueueItemSilently(from, to)
 
             return true
@@ -256,8 +256,8 @@ class AdapterPlayingQueue(initial: List<Audio>) : FastScrollAdapter<AdapterPlayi
         override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
             super.clearView(recyclerView, viewHolder)
 
-            // MediaPlaybackManager's list and ExoPlayer queue are already fully synced by the
-            // incremental moveQueueItemSilently calls in onMove — no extra callback needed.
+            
+            
 
             dragFromPosition = -1
             dragToPosition = -1
@@ -340,10 +340,10 @@ class AdapterPlayingQueue(initial: List<Audio>) : FastScrollAdapter<AdapterPlayi
     }
 
     companion object {
-        /**
-         * How transparent the "already played" songs look. 0.38f is the standard Material
-         * "disabled" alpha — dim enough to notice, bright enough to still read.
-         */
+         
+
+
+
         private const val PAST_SONG_ALPHA = 0.38f
     }
 }

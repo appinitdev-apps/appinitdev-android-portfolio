@@ -11,10 +11,10 @@ class SimpleHomeViewModel(application: Application) : WrappedViewModel(applicati
         return homeData
     }
 
-    /**
-     * Forces a reload of the home data from preferences.
-     * Use this after resetting the item order so the list reflects the default arrangement.
-     */
+     
+
+
+
     fun reloadHomeData() {
         setHomeData()
     }
@@ -23,8 +23,8 @@ class SimpleHomeViewModel(application: Application) : WrappedViewModel(applicati
         viewModelScope.launch(Dispatchers.IO) {
             val defaultPanels = mutableListOf<Any>()
 
-            // Build the Library group — Songs, Albums, and Artists are always visible
-            // because the app would feel pretty empty without them. Everything else is optional.
+            
+            
             val libraryItems = mutableListOf<Any>()
             libraryItems.add(Panel(R.string.songs, R.drawable.ic_song))
             libraryItems.add(Panel(R.string.albums, R.drawable.ic_album))
@@ -40,11 +40,11 @@ class SimpleHomeViewModel(application: Application) : WrappedViewModel(applicati
             if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_PLAYLISTS))
                 libraryItems.add(Panel(R.string.playlists, R.drawable.ic_list))
 
-            // Library group always has at least songs/albums/artists, so it's always present.
+            
             defaultPanels.add(Group(R.string.library))
             defaultPanels.addAll(libraryItems)
 
-            // Build the Activity group — entirely optional, hide the whole group when empty.
+            
             val activityItems = mutableListOf<Any>()
             if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_PLAYING_QUEUE))
                 activityItems.add(Panel(R.string.playing_queue, R.drawable.ic_queue))
@@ -73,7 +73,7 @@ class SimpleHomeViewModel(application: Application) : WrappedViewModel(applicati
                 defaultPanels.addAll(activityItems)
             }
 
-            // Build the Files group — same deal, hide when all items are turned off.
+            
             val filesItems = mutableListOf<Any>()
             if (UserInterfacePreferences.isPanelVisible(UserInterfacePreferences.PANEL_VISIBLE_FOLDERS))
                 filesItems.add(Panel(R.string.folders, R.drawable.ic_folder))
@@ -97,8 +97,8 @@ class SimpleHomeViewModel(application: Application) : WrappedViewModel(applicati
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when {
             key == UserInterfacePreferences.LIKE_ICON_INSTEAD_OF_HEART -> setHomeData()
-            // Rebuild the list whenever any panel's visibility is toggled so Simple Home
-            // stays in sync with what the user just changed — no restart needed.
+            
+            
             key in UserInterfacePreferences.ALL_PANEL_VISIBILITY_KEYS -> setHomeData()
         }
     }

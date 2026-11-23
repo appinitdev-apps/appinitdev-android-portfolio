@@ -4,34 +4,34 @@ class Lyrics : MediaFragment(), AddLyrics.Companion.OnLyricsCreatedListener {
 
     private lateinit var binding: FragmentLyricsBinding
 
-    /**
-     * Path of the song whose lyrics are currently rendered in the lrc view.
-     * Compared in [onAudio] to distinguish a genuine song change from a
-     * predictive-back resume that replays [MediaPlaybackManager.songPositionFlow] for
-     * the same song — the latter must NOT reset the view.
-     *
-     * Also used to re-seek seekbar and lrc view to the correct position when a predictive-back resumes
-     */
+     
+
+
+
+
+
+
+
     private var currentAudioPath: String? = null
 
-    /**
-     * Holds an [Audio] track whose waveform has been requested but whose load has been
-     * intentionally deferred because ExoPlayer has not yet reached the playing state.
-     * Cleared to `null` as soon as [loadWaveformWhenReady] actually kicks off the decode.
-     */
+     
+
+
+
+
     private var pendingWaveformAudio: Audio? = null
 
-    /** Debounce handler – coalesces rapid text-size changes from the slider. */
+     
     private val textSizeHandler = Handler(Looper.getMainLooper())
     private val textSizeRunnable = Runnable { applyTextSize() }
 
-    /** ViewModel that decodes and exposes the per-second waveform amplitude data. */
+     
     private val waveformViewModel: WaveformViewModel by viewModels()
 
-    /**
-     * Reads from the shared [com.appinitdev.musicpro.managers.LyricsManager] so this panel and
-     * the player screen always display the same lyrics data — no more stale panel blues.
-     */
+     
+
+
+
     private val lyricsViewModel: LyricsViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -55,12 +55,12 @@ class Lyrics : MediaFragment(), AddLyrics.Companion.OnLyricsCreatedListener {
             childFragmentManager.showLyricsMenu().setOnMenuListener(object : LyricsMenu.Companion.LyricsMenuListener {
                 override fun onTimeMinusClicked() {
                     lyricsViewModel.seekBy(-SEEK_JUMP_MS)
-                    // syncOffset is updated inside LyricsManager.seekBy() — no extra line needed
+                    
                 }
 
                 override fun onTimePlusClicked() {
                     lyricsViewModel.seekBy(SEEK_JUMP_MS)
-                    // Same as above — the manager keeps track of the accumulated offset
+                    
                 }
 
                 override fun onLyricsDelete() {
@@ -103,8 +103,8 @@ class Lyrics : MediaFragment(), AddLyrics.Companion.OnLyricsCreatedListener {
             openFragment(LyricsSearch.newInstance(), LyricsSearch.TAG)
         }
 
-        // Collect from the shared manager — every screen collecting this StateFlow
-        // always gets the same data, so the lyrics panel never shows a stale song.
+        
+        
         viewLifecycleOwner.lifecycleScope.launch {
             lyricsViewModel.lrcData.collect { lrcData ->
                 if (lrcData == null || lrcData.isEmpty) {
@@ -118,8 +118,8 @@ class Lyrics : MediaFragment(), AddLyrics.Companion.OnLyricsCreatedListener {
             }
         }
 
-        // Watch the loading status and update the empty-text in the lrc view so the user
-        // knows what is happening while the app is talking to the internet.
+        
+        
         viewLifecycleOwner.lifecycleScope.launch {
             lyricsViewModel.loadingStatus.collect { status ->
                 val message = when (status) {
@@ -131,16 +131,16 @@ class Lyrics : MediaFragment(), AddLyrics.Companion.OnLyricsCreatedListener {
             }
         }
 
-        // Listen for the signal from LyricsSearch that a new .lrc sidecar was saved so that
-        // the lyrics panel refreshes immediately without requiring a close/reopen cycle.
+        
+        
         parentFragmentManager.setFragmentResultListener(
                 LyricsSearch.REQUEST_KEY_LYRICS_SAVED, viewLifecycleOwner) { _, _ ->
             Log.d(TAG, "Lyrics saved signal received, reloading lrc data.")
             lyricsViewModel.reloadLrcData()
         }
 
-        // Listen for the signal from LrcEditor that the user has saved a newly edited .lrc
-        // file, so this panel can reload without requiring the user to close and reopen.
+        
+        
         parentFragmentManager.setFragmentResultListener(
                 LrcEditor.REQUEST_KEY_LRC_SAVED, viewLifecycleOwner) { _, _ ->
             Log.d(TAG, "LRC editor saved signal received, reloading lrc data.")
@@ -178,17 +178,17 @@ class Lyrics : MediaFragment(), AddLyrics.Companion.OnLyricsCreatedListener {
         }
     }
 
-    /** Applies the current text-size preferences to the view immediately. */
+     
     private fun applyTextSize() {
         val normal = LyricsPreferences.getLrcTextSize()
         binding.lrc.setTextSizes(normal, normal * LRC_HIGHLIGHT_TIMES)
     }
 
-    /**
-     * Schedules [applyTextSize] after [TEXT_SIZE_DEBOUNCE_MS] ms, cancelling any
-     * previously pending call.  Rapid slider events therefore collapse into one update
-     * that fires only once the user stops (or nearly stops) dragging.
-     */
+     
+
+
+
+
     private fun scheduleTextSizeUpdate() {
         textSizeHandler.removeCallbacks(textSizeRunnable)
         textSizeHandler.postDelayed(textSizeRunnable, TEXT_SIZE_DEBOUNCE_MS)
@@ -213,24 +213,24 @@ class Lyrics : MediaFragment(), AddLyrics.Companion.OnLyricsCreatedListener {
         binding.seekbar.setProgress(MediaPlaybackManager.getSeekPosition(), animate = false)
         updatePlayButtonState(MediaPlaybackManager.isPlaying())
 
-        // Defer waveform decoding until ExoPlayer is actually playing to avoid
-        // Amplituda and ExoPlayer fighting over the same file I/O resources.
+        
+        
         loadWaveformWhenReady(audio)
     }
 
-    /**
-     * Schedules waveform decoding for [audio].
-     *
-     * The decode starts immediately when the player is already playing or in a ready state
-     * (paused or playing). If the player is still buffering or idle, [audio] is stored in
-     * [pendingWaveformAudio] and the decode is deferred until [onPlaybackStateChanged]
-     * receives [MediaConstants.PLAYBACK_READY] or [MediaConstants.PLAYBACK_PLAYING].
-     *
-     * This prevents Amplituda and ExoPlayer from contending over the same file I/O
-     * resources during the initial buffering phase.
-     *
-     * @param audio the track whose waveform should be decoded
-     */
+     
+
+
+
+
+
+
+
+
+
+
+
+
     private fun loadWaveformWhenReady(audio: Audio) {
         if (MediaPlaybackManager.isPlaying() || MediaPlaybackManager.isPlayerReady()) {
             waveformViewModel.loadWaveform(audio)
@@ -258,8 +258,8 @@ class Lyrics : MediaFragment(), AddLyrics.Companion.OnLyricsCreatedListener {
 
     override fun onResume() {
         super.onResume()
-        // If lyrics data is missing after returning from a long background session,
-        // force a fresh reload so the view is not left blank.
+        
+        
         if (lyricsViewModel.lrcData.value?.isEmpty == true) {
             lyricsViewModel.reloadLrcData()
         }
@@ -287,11 +287,11 @@ class Lyrics : MediaFragment(), AddLyrics.Companion.OnLyricsCreatedListener {
             binding.seekbar.setDurationWithReset(audio.duration)
         }
 
-        // Always refresh the seek position (covers predictive-back resume and actual changes).
+        
         binding.seekbar.setProgress(MediaPlaybackManager.getSeekPosition(), animate = true)
 
-        // Defer waveform decoding until ExoPlayer is actually playing to avoid
-        // Amplituda and ExoPlayer fighting over the same file I/O resources.
+        
+        
         loadWaveformWhenReady(audio)
     }
 
@@ -299,9 +299,9 @@ class Lyrics : MediaFragment(), AddLyrics.Companion.OnLyricsCreatedListener {
         super.onPlaybackStateChanged(state)
         when (state) {
             MediaConstants.PLAYBACK_READY -> {
-                // ExoPlayer has finished buffering and the decoder is ready. This is the
-                // earliest safe moment to run Amplituda's extraction in parallel, regardless
-                // of whether playback will start immediately or stay paused.
+                
+                
+                
                 pendingWaveformAudio?.let { audio ->
                     waveformViewModel.loadWaveform(audio)
                     pendingWaveformAudio = null
@@ -309,8 +309,8 @@ class Lyrics : MediaFragment(), AddLyrics.Companion.OnLyricsCreatedListener {
             }
             MediaConstants.PLAYBACK_PLAYING -> {
                 updatePlayButtonState(true)
-                // Also drain any pending waveform that was queued before the ready event arrived
-                // (e.g., when the service emits PLAYING without a preceding READY being observed).
+                
+                
                 pendingWaveformAudio?.let { audio ->
                     waveformViewModel.loadWaveform(audio)
                     pendingWaveformAudio = null
@@ -323,7 +323,7 @@ class Lyrics : MediaFragment(), AddLyrics.Companion.OnLyricsCreatedListener {
     }
 
     override fun onLyricsCreated() {
-        // Reload the lyrics view after the sidecar file has been created
+        
         lyricsViewModel.reloadLrcData()
     }
 
@@ -339,7 +339,7 @@ class Lyrics : MediaFragment(), AddLyrics.Companion.OnLyricsCreatedListener {
 
         private const val LRC_HIGHLIGHT_TIMES = 1.2F
 
-        /** How long to wait after the last slider event before applying the text-size change. */
+         
         private const val TEXT_SIZE_DEBOUNCE_MS = 150L
         private const val SEEK_JUMP_MS = 500L
     }

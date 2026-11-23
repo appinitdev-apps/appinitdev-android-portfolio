@@ -16,7 +16,7 @@ class AlbumsViewModel @Inject constructor(
         viewModelScope.launch {
             audioRepository.getAllAlbumsWithAggregation()
                 .map { albumList -> albumList.sorted() }
-                .distinctUntilChanged()  // Prevent identical consecutive emissions
+                .distinctUntilChanged()  
                 .catch { exception ->
                     Log.e(TAG, "Error loading albums", exception)
                     emit(emptyList())

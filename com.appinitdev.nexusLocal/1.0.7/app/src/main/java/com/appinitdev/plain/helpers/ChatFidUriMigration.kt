@@ -1,14 +1,14 @@
 
-/**
- * One-time migration: add lowercase file extension to all legacy fid: URIs
- * stored as `fid:{hash}` (without extension).
- *
- * For each DChat with images/files content, finds items with bare fid:{hash}
- * URIs, derives the extension from the DAppFile mimeType, renames the file on
- * disk, updates DAppFile.realPath, and rewrites the DChat content.
- *
- * Guarded by [FidUriExtMigratedPreference] so it only runs once.
- */
+ 
+
+
+
+
+
+
+
+
+
 object ChatFidUriMigration {
 
     fun run(context: Context) {

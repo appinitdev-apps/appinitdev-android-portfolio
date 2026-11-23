@@ -1,17 +1,17 @@
 
-/**
- * ViewModel for the ArtFlow home screen.
- *
- * Exposes four independent [StateFlow] streams — one per curated section (Favorites,
- * Recently Played, Most Played, Recently Added). Each stream is backed by a long-lived
- * Room flow so any addition or deletion in the audio database is immediately forwarded to
- * the UI without requiring a restart.
- *
- * Each section has its own [Job] so flows can be cancelled and restarted independently
- * when library-filter preferences change.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(
         application: Application,
@@ -21,48 +21,48 @@ class HomeViewModel @Inject constructor(
 
     private val _favorites = MutableStateFlow<List<Audio>>(emptyList())
 
-    /** Favorite songs, re-emitted whenever the audio table changes. */
+     
     val favorites: StateFlow<List<Audio>> = _favorites.asStateFlow()
 
     private val _recentlyPlayed = MutableStateFlow<List<Audio>>(emptyList())
 
-    /** Recently-played songs ordered by last-played timestamp descending, re-emitted on stat table changes. */
+     
     val recentlyPlayed: StateFlow<List<Audio>> = _recentlyPlayed.asStateFlow()
 
     private val _mostPlayed = MutableStateFlow<List<Audio>>(emptyList())
 
-    /** Most-played songs ordered by play count descending, re-emitted on stat table changes. */
+     
     val mostPlayed: StateFlow<List<Audio>> = _mostPlayed.asStateFlow()
 
     private val _recentlyAdded = MutableStateFlow<List<Audio>>(emptyList())
 
-    /** Recently-added songs ordered by date-added descending, re-emitted on audio table changes. */
+     
     val recentlyAdded: StateFlow<List<Audio>> = _recentlyAdded.asStateFlow()
 
     private val _recommended = MutableStateFlow<List<Audio>>(emptyList())
 
-    /**
-     * A random selection of songs fetched from the database on each explicit
-     * refresh, used to populate the spanned art grid in the recommended section.
-     */
+     
+
+
+
     val recommended: StateFlow<List<Audio>> = _recommended.asStateFlow()
 
     private val _libraryStats = MutableStateFlow<Pair<Int, Long>?>(null)
 
-    /**
-     * A pair of (trackCount, totalDurationMs) so the header chip can show something like
-     * "12,403 Tracks • 840 Hours". Updates automatically whenever the audio table changes.
-     */
+     
+
+
+
     val libraryStats: StateFlow<Pair<Int, Long>?> = _libraryStats.asStateFlow()
 
-    /** Active coroutine job collecting the recommended combined flow. */
+     
     private var recommendedJob: Job? = null
 
-    /**
-     * Incremented each time the user explicitly requests a new recommendation shuffle.
-     * Including this value in the [combine] for the recommended flow ensures a reshuffle
-     * even when the underlying data has not changed.
-     */
+     
+
+
+
+
     private val _recommendedRefreshTrigger = MutableStateFlow(0)
 
     private var favoritesJob: Job? = null
@@ -131,14 +131,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Starts (or restarts) the recommended-grid flow by combining three reactive Room flows
-     * with [_recommendedRefreshTrigger]. Any change in the audio table, the stats table, or
-     * an explicit refresh request will trigger a full recompute of the recommendation list.
-     *
-     * The previous collection job is cancelled before a new one starts to avoid duplicate
-     * emissions if the trigger is incremented.
-     */
+     
+
+
+
+
+
+
+
     private fun startRecommendedFlow() {
         recommendedJob?.cancel()
         recommendedJob = viewModelScope.launch(Dispatchers.IO) {
@@ -160,18 +160,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Pure function that derives the final recommended list from the three data sources.
-     * Keeps the top [RECOMMENDED_MOST_PLAYED_COUNT] most-played songs, adds up to
-     * [RECOMMENDED_RECENTLY_PLAYED_COUNT] recently-played songs that are not already
-     * in the most-played set, then fills remaining slots from the full library using
-     * [millerShuffle].
-     *
-     * @param mostPlayedList  Latest most-played list from the stats table.
-     * @param recentlyPlayedList  Latest recently-played list from the stats table.
-     * @param allAudio  Latest full audio library snapshot.
-     * @return A shuffled list of up to [RECOMMENDED_MAX_COUNT] songs.
-     */
+     
+
+
+
+
+
+
+
+
+
+
+
     private fun computeRecommended(
             mostPlayedList: List<Audio>,
             recentlyPlayedList: List<Audio>,
@@ -196,11 +196,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Watches the full audio library and keeps the library stats pair up to date.
-     * Runs in the background so a fresh media scan instantly refreshes the header chip
-     * without any manual intervention from the fragment.
-     */
+     
+
+
+
+
     private fun startLibraryStatsFlow() {
         viewModelScope.launch {
             audioRepository.getAllAudio()
@@ -232,17 +232,17 @@ class HomeViewModel @Inject constructor(
         private const val TAG = "HomeViewModel"
         private const val TAKE_COUNT = 18
 
-        /**
-         * Total number of songs to include in the recommended pool for the tile grid.
-         * Set generously so there is always enough variety to fill every song tile slot,
-         * even when some panel slots overflow into song slots.
-         */
+         
+
+
+
+
         private const val RECOMMENDED_MAX_COUNT = 30
 
-        /** Number of slots in the recommended grid filled from the most-played list. */
+         
         private const val RECOMMENDED_MOST_PLAYED_COUNT = 8
 
-        /** Number of slots in the recommended grid filled from the recently-played list. */
+         
         private const val RECOMMENDED_RECENTLY_PLAYED_COUNT = 6
     }
 }

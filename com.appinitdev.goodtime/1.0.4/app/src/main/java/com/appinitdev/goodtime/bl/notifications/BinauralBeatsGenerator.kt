@@ -62,8 +62,8 @@ object BinauralBeatsGenerator {
                     val leftVal = Math.sin(2.0 * Math.PI * leftFreq * t) * 0.3
                     val rightVal = Math.sin(2.0 * Math.PI * rightFreq * t) * 0.3
 
-                    buffer[i] = (leftVal * 32767).toInt().toShort()     // Left Channel
-                    buffer[i + 1] = (rightVal * 32767).toInt().toShort() // Right Channel
+                    buffer[i] = (leftVal * 32767).toInt().toShort()     
+                    buffer[i + 1] = (rightVal * 32767).toInt().toShort() 
                     sampleIndex++
                 }
                 audioTrack?.write(buffer, 0, buffer.size)

@@ -25,7 +25,7 @@ class Lyrics : MediaBottomDialogFragment(), AddLyrics.Companion.OnLyricsCreatedL
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Allow the BottomSheet to take over (dismiss) once the user scrolls past the end of lyrics
+        
         binding.lrcView.setParentDismissEnabled(true)
         binding.lrcView.setFadeLength(FelicityLrcView.DEFAULT_FADE_LENGTH.div(2))
         setAlignment()
@@ -45,8 +45,8 @@ class Lyrics : MediaBottomDialogFragment(), AddLyrics.Companion.OnLyricsCreatedL
             }
         }
 
-        // Update the empty text in the lrc view to reflect what the loader is doing,
-        // so the user sees "Searching…" instead of a blank screen while waiting.
+        
+        
         lyricsViewModel.getLoadingStatus().observe(viewLifecycleOwner) { status ->
             val message = when (status) {
                 is LyricsLoadingStatus.Searching -> getString(R.string.searching_lyrics)
@@ -65,13 +65,13 @@ class Lyrics : MediaBottomDialogFragment(), AddLyrics.Companion.OnLyricsCreatedL
     }
 
     override fun onLyricsCreated() {
-        // Reload the lyrics view after the sidecar file has been created
+        
         lyricsViewModel.reloadLrcData()
     }
 
     override fun onSeekChanged(seek: Long) {
         super.onSeekChanged(seek)
-        // Only highlight if the dialog is showing lyrics for the currently playing song
+        
         val currentSong = MediaPlaybackManager.getCurrentSong()
         if (currentSong != null && audio != null && currentSong.id == audio!!.id) {
             binding.lrcView.updateTime(seek + lyricsViewModel.syncOffset)
@@ -80,9 +80,9 @@ class Lyrics : MediaBottomDialogFragment(), AddLyrics.Companion.OnLyricsCreatedL
 
     override fun onAudio(audio: Audio) {
         super.onAudio(audio)
-        // If the song in the dialog is no longer the playing song, stop highlighting
-        // (updateTime will simply not be called when ids don't match, no action needed)
-        // so unhighlight the lyrics
+        
+        
+        
         if (this.audio != null && audio.id == this.audio!!.id) {
             binding.lrcView.updateTime(MediaPlaybackManager.getSeekPosition() + lyricsViewModel.syncOffset)
         } else {
@@ -98,7 +98,7 @@ class Lyrics : MediaBottomDialogFragment(), AddLyrics.Companion.OnLyricsCreatedL
         }
     }
 
-    /** Applies the current text-size preferences to the view immediately. */
+     
     private fun applyTextSize() {
         val normal = LyricsPreferences.getLrcTextSize()
         binding.lrcView.setTextSizes(normal, normal * LRC_HIGHLIGHT_TIMES)

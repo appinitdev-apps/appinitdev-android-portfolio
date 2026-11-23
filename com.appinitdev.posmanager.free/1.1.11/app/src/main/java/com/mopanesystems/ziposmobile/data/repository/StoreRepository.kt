@@ -5,7 +5,7 @@ class StoreRepository @Inject constructor(
     private val userDao: UserDao,
     private val userPermissionDao: UserPermissionDao
 ) {
-    // Store operations
+    
 
     fun getStore(): Flow<Store?> = storeDao.getStore()
 
@@ -14,19 +14,19 @@ class StoreRepository @Inject constructor(
     suspend fun updateStore(store: Store) = storeDao.update(store)
 
 
-    /*fun getAllActiveStores(): Flow<List<Store>> = storeDao.getAllActiveStores()
+     
+
+
+
+
+
+
+
+
+
+
+
     
-    suspend fun getStoreById(id: String): Store? = storeDao.getStoreById(id)
-    
-    suspend fun insertStore(store: Store) = storeDao.insertStore(store)
-    
-    suspend fun updateStore(store: Store) = storeDao.updateStore(store)
-    
-    suspend fun deleteStore(store: Store) = storeDao.deleteStore(store)
-    
-    suspend fun deactivateStore(storeId: String) = storeDao.deactivateStore(storeId)
-    */
-    // User operations
     fun getAllActiveUsers(): Flow<List<User>> = userDao.getAllActiveUsers()
     
     fun getUsersByStore(storeId: String): Flow<List<User>> = userDao.getUsersByStore(storeId)
@@ -49,7 +49,7 @@ class StoreRepository @Inject constructor(
     
     suspend fun updateLastLogin(userId: String, loginTime: LocalDateTime) = userDao.updateLastLogin(userId, loginTime)
     
-    // User Permission operations
+    
     fun getUserPermissions(userId: String): Flow<List<UserPermission>> = userPermissionDao.getUserPermissions(userId)
     
     suspend fun getUserPermission(userId: String, permission: String): UserPermission? = 

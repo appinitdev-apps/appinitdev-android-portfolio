@@ -32,14 +32,14 @@ object MetadataHelper {
         }
     }
 
-    /**
-     * Extracts the title metadata from the source
-     * audio file
-     *
-     * @param context
-     * @param mediaMetadataRetriever
-     * @return [String]
-     */
+     
+
+
+
+
+
+
+
     private fun getSongTitleMeta(
             context: Context,
             songUri: Uri,
@@ -53,14 +53,14 @@ object MetadataHelper {
         }
     }
 
-    /**
-     * Extracts the artist metadata from the source
-     * audio file
-     *
-     * @param context
-     * @param mediaMetadataRetriever
-     * @return [String]
-     */
+     
+
+
+
+
+
+
+
     private fun getSongArtistMeta(
             context: Context,
             mediaMetadataRetriever: MediaMetadataRetriever
@@ -72,14 +72,14 @@ object MetadataHelper {
         }
     }
 
-    /**
-     * Extracts the album metadata from the source
-     * audio file
-     *
-     * @param context
-     * @param mediaMetadataRetriever
-     * @return [String]
-     */
+     
+
+
+
+
+
+
+
     private fun getSongAlbumMeta(
             context: Context,
             mediaMetadataRetriever: MediaMetadataRetriever
@@ -91,23 +91,23 @@ object MetadataHelper {
         }
     }
 
-    /**
-     * Calculates the bitrate of the given audio file in
-     * kbps or mbps and returns the appended string
-     *
-     * @throws IOException
-     * @throws IllegalArgumentException
-     * @throws NullPointerException
-     * @return Bitrate of the given audio file as String
-     */
+     
+
+
+
+
+
+
+
+
     private fun getBitrate(mediaMetadataRetriever: MediaMetadataRetriever): String {
         return mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)!!
             .toInt().toBitrate()
     }
 
-    /**
-     * Get extension of any Mime Type based content URI
-     */
+     
+
+
     private fun getFileExtension(context: Context, uri: Uri?): String {
         val e = "." + MimeTypeMap.getSingleton()
             .getExtensionFromMimeType(context.contentResolver.getType(uri!!))

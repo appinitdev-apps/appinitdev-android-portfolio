@@ -8,8 +8,8 @@ class IsoPreferences(context : Context) {
 
     fun getValue() : Int{
         return preference.getInt (PREFERENCE_VALUE, 0)
-        //0 == Alphabetical
-        //1 == Element Number
+        
+        
     }
 
     fun setValue(count:Int) {
@@ -28,8 +28,8 @@ class sendIso(context : Context) {
 
     fun getValue() : String{
         return preference.getString (PREFERENCE_VALUE, "false")!!
-        //0 == Not sent
-        //1 == Sent
+        
+        
     }
 
     fun setValue(count:String) {

@@ -281,7 +281,7 @@ fun NumberPuzzleScreen(puzzleDao: PuzzleDao) {
     val timeLimit = appSettings.timeAttackLimitSeconds
     val displaySeconds = if (isTimeAttack) maxOf(0, timeLimit - timeSeconds) else timeSeconds
 
-    // Replay System States
+    
     var moveHistory by remember { mutableStateOf(listOf<Int>()) }
     var initialPiecesState by remember { mutableStateOf<List<Piece>>(emptyList()) }
     var isReplaying by remember { mutableStateOf(false) }

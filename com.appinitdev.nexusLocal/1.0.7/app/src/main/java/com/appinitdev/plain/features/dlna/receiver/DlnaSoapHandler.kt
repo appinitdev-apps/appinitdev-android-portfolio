@@ -1,8 +1,8 @@
 
-/** Parses incoming UPnP SOAP requests and builds SOAP responses using shared DlnaSoap envelope. */
+ 
 object DlnaSoapHandler {
 
-    /** Returns (actionName, paramMap) from the SOAPAction header and XML body. */
+     
     fun parseSoapAction(soapActionHeader: String, body: String): Pair<String, Map<String, String>> {
         val action = soapActionHeader.removeSurrounding("\"").substringAfterLast('#')
         return Pair(action, parseBodyParams(body, action))
@@ -95,10 +95,10 @@ object DlnaSoapHandler {
         return if (closeTag > tagEnd) meta.substring(tagEnd + 1, closeTag).trim() else ""
     }
 
-    /**
-     * Strips common media file extensions and URL-decodes percent-encoded characters
-     * so the UI shows a clean track/video name instead of "song.mp3" or "video%20title.mp4".
-     */
+     
+
+
+
     fun cleanMediaTitle(raw: String): String {
         val mediaExtensions = setOf(
             "mp3", "flac", "aac", "ogg", "m4a", "wav", "opus", "wma",
@@ -122,7 +122,7 @@ object DlnaSoapHandler {
                 else -> DlnaMediaType.UNKNOWN
             }
         }
-        // Fallback: detect from URI extension
+        
         val ext = fallbackUri.substringAfterLast('.').substringBefore('?').lowercase()
         return when (ext) {
             "mp3", "flac", "aac", "ogg", "m4a", "wav", "opus", "wma" -> DlnaMediaType.AUDIO

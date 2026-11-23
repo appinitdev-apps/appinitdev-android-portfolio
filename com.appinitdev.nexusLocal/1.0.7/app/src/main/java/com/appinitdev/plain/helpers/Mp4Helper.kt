@@ -1,12 +1,12 @@
 
-/**
- * Convert 3gp (H.263 + AMR-NB) to mp4 (H.264 + AAC) for browser playback.
- *
- * Uses a three-phase approach to avoid MediaMuxer timing issues:
- *   Phase 1 – transcode/remux video into memory
- *   Phase 2 – transcode audio into memory
- *   Phase 3 – mux buffered samples into mp4 file
- */
+ 
+
+
+
+
+
+
+
 object Mp4Helper {
 
     private class EncodedSample(
@@ -23,7 +23,7 @@ object Mp4Helper {
     fun convert3gpToMp4(context: Context, uri: Uri): ByteArray? {
         val tmpFile = File.createTempFile("mms_", ".mp4", context.cacheDir)
         try {
-            // ── Discover tracks ──────────────────────────────────────────
+            
             var videoTrackIndex = -1
             var audioTrackIndex = -1
             var videoFormat: MediaFormat? = null
@@ -52,7 +52,7 @@ object Mp4Helper {
             val isH264 = videoMime == MediaFormat.MIMETYPE_VIDEO_AVC
             LogCat.d("Mp4Helper: video=$videoMime ${if (isH264) "(remux)" else "(transcode)"}, audio=${audioFormat?.getString(MediaFormat.KEY_MIME) ?: "none"}")
 
-            // ── Phase 1: process video ───────────────────────────────────
+            
             val videoData: TrackData = run {
                 val ext = MediaExtractor()
                 ext.setDataSource(context, uri, null)
@@ -64,7 +64,7 @@ object Mp4Helper {
                 }
             }
 
-            // ── Phase 2: process audio ───────────────────────────────────
+            
             val audioData: TrackData? = if (audioTrackIndex >= 0 && audioFormat != null) {
                 val ext = MediaExtractor()
                 ext.setDataSource(context, uri, null)
@@ -76,7 +76,7 @@ object Mp4Helper {
                 }
             } else null
 
-            // ── Phase 3: mux into mp4 (interleaved by timestamp) ─────────
+            
             LogCat.d("Mp4Helper: muxing video=${videoData.samples.size} frames, audio=${audioData?.samples?.size ?: 0} frames")
 
             val muxer = MediaMuxer(tmpFile.absolutePath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
@@ -87,9 +87,9 @@ object Mp4Helper {
             val buf = ByteBuffer.allocate(1024 * 1024)
             val info = MediaCodec.BufferInfo()
 
-            // Merge video and audio samples, interleaved by presentation time.
-            // This matches MPEG4Writer's expected interleaving pattern and avoids
-            // writer-thread race conditions that can stop all tracks prematurely.
+            
+            
+            
             data class MuxSample(val trackIndex: Int, val sample: EncodedSample)
 
             val merged = mutableListOf<MuxSample>()
@@ -101,7 +101,7 @@ object Mp4Helper {
 
             for (ms in merged) {
                 buf.clear(); buf.put(ms.sample.data); buf.flip()
-                // Only keep KEY_FRAME flag; strip CODEC_CONFIG, EOS, and others
+                
                 val cleanFlags = if (ms.sample.flags and MediaCodec.BUFFER_FLAG_KEY_FRAME != 0) {
                     MediaCodec.BUFFER_FLAG_KEY_FRAME
                 } else {
@@ -125,7 +125,7 @@ object Mp4Helper {
         }
     }
 
-    // ── remux: copy compressed samples as-is ─────────────────────────────
+    
 
     private fun remuxTrack(extractor: MediaExtractor, format: MediaFormat): TrackData {
         val samples = mutableListOf<EncodedSample>()
@@ -143,14 +143,14 @@ object Mp4Helper {
         return TrackData(format, samples)
     }
 
-    // ── H.263 → H.264  (decode → surface → encode) ──────────────────────
+    
 
     private fun transcodeH263ToH264(extractor: MediaExtractor, inputFormat: MediaFormat): TrackData {
         val width = inputFormat.getInteger(MediaFormat.KEY_WIDTH)
         val height = inputFormat.getInteger(MediaFormat.KEY_HEIGHT)
         val frameRate = try { inputFormat.getInteger(MediaFormat.KEY_FRAME_RATE) } catch (_: Exception) { 15 }
 
-        // Encoder
+        
         val encFormat = MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_AVC, width, height).apply {
             setInteger(MediaFormat.KEY_BIT_RATE, 500_000)
             setInteger(MediaFormat.KEY_FRAME_RATE, frameRate)
@@ -162,7 +162,7 @@ object Mp4Helper {
         val inputSurface = encoder.createInputSurface()
         encoder.start()
 
-        // Decoder → renders onto encoder's input surface
+        
         val decoder = MediaCodec.createDecoderByType(inputFormat.getString(MediaFormat.KEY_MIME)!!)
         decoder.configure(inputFormat, inputSurface, null, 0)
         decoder.start()
@@ -175,7 +175,7 @@ object Mp4Helper {
         var encOutputEOS = false
 
         while (!encOutputEOS) {
-            // 1. Feed compressed H.263 into decoder
+            
             if (!decInputEOS) {
                 val idx = decoder.dequeueInputBuffer(10_000)
                 if (idx >= 0) {
@@ -191,7 +191,7 @@ object Mp4Helper {
                 }
             }
 
-            // 2. Drain decoder output → rendered to surface automatically
+            
             if (!decOutputEOS) {
                 val idx = decoder.dequeueOutputBuffer(bufferInfo, 10_000)
                 if (idx >= 0) {
@@ -203,7 +203,7 @@ object Mp4Helper {
                 }
             }
 
-            // 3. Drain encoder output → collect H.264 samples
+            
             val idx = encoder.dequeueOutputBuffer(bufferInfo, 10_000)
             if (idx == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
                 outputFormat = encoder.outputFormat
@@ -232,19 +232,19 @@ object Mp4Helper {
         return TrackData(outputFormat ?: encFormat, samples)
     }
 
-    // ── AMR-NB → AAC  (decode → PCM → encode) ───────────────────────────
+    
 
     private fun transcodeAmrToAac(extractor: MediaExtractor, inputFormat: MediaFormat): TrackData {
         val sampleRate = inputFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE)
         val channelCount = inputFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
         val audioMime = inputFormat.getString(MediaFormat.KEY_MIME)!!
 
-        // Decoder
+        
         val decoder = MediaCodec.createDecoderByType(audioMime)
         decoder.configure(inputFormat, null, null, 0)
         decoder.start()
 
-        // Encoder
+        
         val aacFormat = MediaFormat.createAudioFormat(MediaFormat.MIMETYPE_AUDIO_AAC, sampleRate, channelCount).apply {
             setInteger(MediaFormat.KEY_BIT_RATE, 64_000)
             setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC)
@@ -260,7 +260,7 @@ object Mp4Helper {
         var encOutputEOS = false
 
         while (!encOutputEOS) {
-            // 1. Feed AMR into decoder
+            
             if (!decInputEOS) {
                 val idx = decoder.dequeueInputBuffer(10_000)
                 if (idx >= 0) {
@@ -276,7 +276,7 @@ object Mp4Helper {
                 }
             }
 
-            // 2. Drain decoder → feed encoder
+            
             val decIdx = decoder.dequeueOutputBuffer(bufferInfo, 10_000)
             if (decIdx >= 0) {
                 val pcm = decoder.getOutputBuffer(decIdx)!!
@@ -290,7 +290,7 @@ object Mp4Helper {
                 decoder.releaseOutputBuffer(decIdx, false)
             }
 
-            // 3. Drain encoder → collect AAC samples
+            
             val encIdx = encoder.dequeueOutputBuffer(bufferInfo, 10_000)
             if (encIdx == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
                 outputFormat = encoder.outputFormat

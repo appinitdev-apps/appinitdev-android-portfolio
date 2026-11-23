@@ -1,9 +1,9 @@
 
-/**
- * For some reason, this method crashes sometimes with an IndexOutOfBoundsException that I've not
- * been able to replicate. When this happens, to prevent the entire app from crashing and becoming
- * unusable, the exception is suppressed.
- */
+ 
+
+
+
+
 fun String.applySpans(representations: List<SpanRepresentation>): Editable {
     val editable = Editable.Factory.getInstance().newEditable(this)
     representations.forEach { (start, end, bold, link, linkData, italic, monospace, strikethrough)
@@ -39,12 +39,12 @@ fun createBoldSpan() =
         StyleSpan(Typeface.BOLD)
     }
 
-/**
- * Adjusts or removes spans based on the selection range.
- *
- * @param selectionStart the start index of the selection
- * @param selectionEnd the end index of the selection
- */
+ 
+
+
+
+
+
 fun Editable.removeSelectionFromSpans(
     selectionStart: Int,
     selectionEnd: Int,
@@ -56,25 +56,25 @@ fun Editable.removeSelectionFromSpans(
         val spanEnd = getSpanEnd(span)
 
         when {
-            // Case 1: Selection is exactly the span's range (remove entire span)
+            
             selectionStart <= spanStart && selectionEnd >= spanEnd -> {
                 removeSpan(span)
             }
-            // Case 2: Selection is part of the span (split the span)
+            
             selectionStart > spanStart && selectionEnd < spanEnd -> {
-                // Remove the original span
+                
                 removeSpan(span)
-                // Reapply two new spans: one for the part before the selection, and one for the
-                // part after
+                
+                
                 setSpan(span, spanStart, selectionStart, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 setSpan(span, selectionEnd, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
-            // Case 3: Selection overlaps the start of the span (trim the span)
+            
             selectionStart <= spanStart && selectionEnd < spanEnd -> {
                 removeSpan(span)
                 setSpan(span, selectionEnd, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
-            // Case 4: Selection overlaps the end of the span (trim the span)
+            
             else -> {
                 removeSpan(span)
                 setSpan(span, spanStart, selectionStart, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -178,15 +178,15 @@ val Int.dp: Int
 val Float.dp: Int
     get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 
-/**
- * Creates a TextWatcher for an EditText that is part of a list. Everytime the text is changed, a
- * Change is added to the ChangeHistory.
- *
- * @param positionGetter Function to determine the current position of the EditText in the list
- *   (e.g. the current absoluteAdapterPosition when using RecyclerViewer.Adapter)
- * @param onTextChanged optional text change handler. Returns whether or not the original change
- *   should be ignored or not.
- */
+ 
+
+
+
+
+
+
+
+
 fun EditText.createListTextWatcherWithHistory(
     listManager: ListManager,
     positionGetter: () -> Int,
@@ -548,10 +548,10 @@ fun Context.getColorFromAttr(@AttrRes attr: Int): Int {
         throw IllegalArgumentException("Attribute not found in current theme")
     }
     return if (typedValue.resourceId != 0) {
-        // It's a reference (@color/something), resolve it properly
+        
         ContextCompat.getColor(this, typedValue.resourceId)
     } else {
-        // It's a direct color value
+        
         typedValue.data
     }
 }
@@ -578,7 +578,7 @@ fun View.setControlsColorForAllViews(
                 controlsColor,
                 backgroundColor,
                 overwriteBackground,
-            ) // Recursive call for nested layouts
+            ) 
         }
         if (this is MaterialCardView) {
             checkedIconTint = ColorStateList.valueOf(controlsColor)
@@ -648,27 +648,27 @@ fun TextView.setSelectionHandleColor(@ColorInt color: Int) {
     } catch (_: Exception) {}
 }
 
-/**
- * This uses light-graylisted Android APIs. Verified that it works in devices running APIs 21
- * and 28. Source: https://gist.github.com/carranca/7e3414622ad7fc6ef375c8cd8dc840c9
- */
+ 
+
+
+
 private fun TextView.setSelectHandleColor(@ColorInt color: Int) {
-    // Retrieve a reference to this text field's android.widget.Editor
+    
     val editor = getEditor()
 
     handles.forEach {
-        // Retrieve the field pointing to the drawable currently being used for the select handle
+        
         val resourceField = TextView::class.java.getDeclaredField(it.resourceFieldName)
         resourceField.isAccessible = true
 
-        // Retrieve the drawable resource from that field
+        
         val drawableId = resourceField.getInt(this)
         val drawable = ContextCompat.getDrawable(context, drawableId)
 
-        // Apply a filter on that drawable with the desired colour
+        
         drawable?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
 
-        // Override the drawable being used by the Editor with our coloured drawable
+        
         val selectHandleField = editor.javaClass.getDeclaredField(it.selectHandleFieldName)
         selectHandleField.isAccessible = true
         selectHandleField.set(editor, drawable)

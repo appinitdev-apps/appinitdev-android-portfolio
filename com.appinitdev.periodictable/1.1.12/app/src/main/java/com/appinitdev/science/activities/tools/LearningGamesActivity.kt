@@ -16,10 +16,10 @@ class LearningGamesActivity : BaseActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var pendingNextQuestionRunnable: Runnable? = null
 
-    // Results tracking
+    
     private val gameResults = mutableListOf<GameResultItem>()
 
-    // Lifecycle-aware back callback and optional platform back-invoked callback
+    
     private var backCallback: OnBackPressedCallback? = null
     private var onBackInvokedCb: android.window.OnBackInvokedCallback? = null
 
@@ -68,7 +68,7 @@ class LearningGamesActivity : BaseActivity() {
         setupAnswerListeners()
         setupBackButton()
 
-        // Register lifecycle-aware OnBackPressedCallback.
+        
         backCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 val consumed = handleBackPress()
@@ -297,7 +297,7 @@ class LearningGamesActivity : BaseActivity() {
     private fun getLivesLost(): Int {
         return when (difficulty) {
             "hard" -> 2
-            else -> 1 // easy and medium
+            else -> 1 
         }
     }
 
@@ -417,7 +417,7 @@ class LearningGamesActivity : BaseActivity() {
             }
         }
 
-        // Record a play for streak tracking (this will schedule reminders when streak >= 3)
+        
         StreakManager.recordPlay(this)
 
         val intent = Intent(this, FlashCardActivity::class.java)
@@ -461,7 +461,7 @@ class LearningGamesActivity : BaseActivity() {
         setBackInterceptionEnabled(anyOverlayOpen() || !hasLeftGame)
     }
 
-    // Normalization function to canonicalize labels and answers (unit checks removed)
+    
     private fun normalizeLabel(label: String): String {
         return label.trim()
             .replace("-", " ")
@@ -476,7 +476,7 @@ class LearningGamesActivity : BaseActivity() {
 
     private fun generateQuestions(category: String, count: Int): List<Question> {
         val language = com.appinitdev.science.utils.ElementDataLoader.getAppLanguage(this)
-        // Try to load elements in the user's language, fallback to English if not available
+        
         var elements = loadElementsFromAsset("elements_$language.json")
         if (elements.isEmpty() && language != "en") {
             elements = loadElementsFromAsset("elements_en.json")
@@ -767,7 +767,7 @@ class LearningGamesActivity : BaseActivity() {
             val jsonObject = org.json.JSONObject(json)
             val elementsList = mutableListOf<ElementData>()
             
-            // Iterate over all keys (element names) in the JSON object
+            
             val keys = jsonObject.keys()
             while (keys.hasNext()) {
                 val elementKey = keys.next()

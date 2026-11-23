@@ -48,7 +48,7 @@ fun PaymentDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Campo de monto a pagar + botón de pago exacto / completo
+                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -85,7 +85,7 @@ fun PaymentDialog(
                     }
                 }
 
-                // Mensajes dinámicos según el monto ingresado
+                
                 when {
                     paid > total -> {
                         val change = paid.subtract(total)

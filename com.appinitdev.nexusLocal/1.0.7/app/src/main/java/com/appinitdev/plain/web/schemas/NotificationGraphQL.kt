@@ -17,7 +17,7 @@ fun SchemaBuilder.addNotificationSchema() {
         resolver { id: ID, actionIndex: Int, text: String ->
             val actions = AndroidTempData.notificationActions[id.value]
                 ?: throw GraphQLError("notification_not_found")
-            // Only consider reply-capable actions (those with remoteInputs)
+            
             val replyActions = actions.filter { it.remoteInputs != null && it.remoteInputs.isNotEmpty() }
             val action = replyActions.getOrNull(actionIndex)
                 ?: throw GraphQLError("action_not_found")
@@ -26,7 +26,7 @@ fun SchemaBuilder.addNotificationSchema() {
             val intent = Intent()
             val bundle = Bundle()
             bundle.putCharSequence(remoteInput.resultKey, text)
-            RemoteInput.addResultsToIntent(remoteInputs, intent, bundle) // uses android.app.RemoteInput
+            RemoteInput.addResultsToIntent(remoteInputs, intent, bundle) 
             action.actionIntent.send(MainApp.instance, 0, intent)
             true
         }

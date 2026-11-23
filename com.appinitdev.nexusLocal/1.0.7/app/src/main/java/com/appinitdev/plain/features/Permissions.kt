@@ -245,33 +245,33 @@ object Permissions {
             PermissionItem.create(context, Res.drawable.contact_round, Permission.WRITE_CONTACTS, setOf(Permission.READ_CONTACTS, Permission.WRITE_CONTACTS))
         )
 
-//        if (AppFeatureType.SMS.has()) {
-//            list.add(
-//                PermissionItem.create(
-//                    context,
-//                    Res.drawable.message_square_text,
-//                    Permission.READ_SMS,
-//                    setOf(Permission.READ_SMS),
-//                )
-//            )
-//            list.add(
-//                PermissionItem.create(
-//                    context,
-//                    Res.drawable.message_square_text,
-//                    Permission.SEND_SMS,
-//                    setOf( Permission.SEND_SMS),
-//                )
-//            )
-//        }
-//        if (AppFeatureType.CALLS.has()) {
-//            list.add(PermissionItem.create(context, Res.drawable.call_log, Permission.WRITE_CALL_LOG, setOf(Permission.READ_CALL_LOG, Permission.WRITE_CALL_LOG)))
-//        }
-//        list.add(
-//            PermissionItem.create(context, Res.drawable.phone_call, Permission.CALL_PHONE)
-//        )
-//        list.add(
-//            PermissionItem.create(context, Res.drawable.file_digit, Permission.READ_PHONE_NUMBERS, setOf(Permission.READ_PHONE_STATE, Permission.READ_PHONE_NUMBERS))
-//        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if (AppFeatureType.APPS.has()) {
             list.add(
                 PermissionItem.create(context, Res.drawable.package2, Permission.QUERY_ALL_PACKAGES)
@@ -284,20 +284,20 @@ object Permissions {
         setOf(
             Permission.CAMERA,
             Permission.WRITE_EXTERNAL_STORAGE,
-//            Permission.CALL_PHONE,
-//            Permission.READ_CALL_LOG,
-//            Permission.WRITE_CALL_LOG,
+
+
+
             Permission.READ_CONTACTS,
             Permission.WRITE_CONTACTS,
-//            Permission.READ_SMS,
-//            Permission.SEND_SMS,
+
+
             Permission.POST_NOTIFICATIONS,
             Permission.RECORD_AUDIO,
             Permission.READ_MEDIA_IMAGES,
             Permission.READ_MEDIA_VIDEOS,
             Permission.READ_MEDIA_AUDIO,
             Permission.READ_PHONE_STATE,
-//            Permission.READ_PHONE_NUMBERS,
+
             Permission.SCHEDULE_EXACT_ALARM,
         ).forEach { permission ->
             launcherMap[permission] =
@@ -310,7 +310,7 @@ object Permissions {
 
         setOf(
             Permission.WRITE_EXTERNAL_STORAGE,
-//            Permission.SYSTEM_ALERT_WINDOW,
+
             Permission.POST_NOTIFICATIONS,
             Permission.NOTIFICATION_LISTENER,
             Permission.SCHEDULE_EXACT_ALARM,
@@ -319,9 +319,9 @@ object Permissions {
                 activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                     canContinue = true
                     if (permission == Permission.WRITE_EXTERNAL_STORAGE) {
-                        // Environment.isExternalStorageManager() may not immediately reflect the
-                        // granted state when returning from ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION.
-                        // Add a short delay to let the system propagate the permission change.
+                        
+                        
+                        
                         coIO {
                             delay(1500)
                             val map = mapOf(permission.toSysPermission() to permission.can(MainApp.instance))

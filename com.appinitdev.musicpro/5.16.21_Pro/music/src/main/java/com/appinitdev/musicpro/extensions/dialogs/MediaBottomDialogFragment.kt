@@ -10,10 +10,10 @@ abstract class MediaBottomDialogFragment : ScopedBottomSheetFragment() {
             MediaPlaybackManager.songSeekPositionFlow.collect { position ->
                 onSeekChanged(position)
 
-                // Save to database every 5 seconds or 5% of duration, whichever is larger
+                
                 val song = MediaPlaybackManager.getCurrentSong()
                 if (song != null) {
-                    val threshold = maxOf(5000L, song.duration / 20) // 5 seconds or 5% of duration
+                    val threshold = maxOf(5000L, song.duration / 20) 
                     if (abs(position - lastSavedSeekPosition) > threshold) {
                         lastSavedSeekPosition = position
                         saveCurrentPlaybackState()
@@ -23,9 +23,9 @@ abstract class MediaBottomDialogFragment : ScopedBottomSheetFragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            // repeatOnLifecycle(STARTED) ensures we re-subscribe and replay the last
-            // emitted position every time the fragment comes back to the foreground.
-            // This guarantees onAudio() fires on resume, clearing any stale highlights.
+            
+            
+            
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 MediaPlaybackManager.songPositionFlow.collect { position ->
                     Log.d(TAG, "Song position: $position")
@@ -33,7 +33,7 @@ abstract class MediaBottomDialogFragment : ScopedBottomSheetFragment() {
                         onAudio(song)
                     }
                     onPositionChanged(position)
-                    // Save state when song position changes
+                    
                     saveCurrentPlaybackState()
                 }
             }
@@ -59,7 +59,7 @@ abstract class MediaBottomDialogFragment : ScopedBottomSheetFragment() {
     }
 
     protected fun setMediaItems(songs: List<Audio>, position: Int = 0) {
-        // MediaPlaybackManager.setSongs(songs, position)
+        
         MediaPlaybackManager.play()
         createSongHistoryDatabase(songs)
     }
@@ -91,7 +91,7 @@ abstract class MediaBottomDialogFragment : ScopedBottomSheetFragment() {
     }
 
     open fun onSeekChanged(seek: Long) {
-        /* no-op */
+         
     }
 
     companion object {

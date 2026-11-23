@@ -10,7 +10,7 @@ object ImageSearchIndexer {
     var totalImages = 0; private set
     var indexedImages = 0; private set
 
-    /** Index specific images incrementally (single worker, no progress UI). */
+     
     suspend fun indexImages(images: List<com.appinitdev.nexusLocal.data.DImage>) = withContext(Dispatchers.IO) {
         if (images.isEmpty()) return@withContext
         val dao = AppDatabase.instance.imageEmbeddingDao()
@@ -33,7 +33,7 @@ object ImageSearchIndexer {
         }
     }
 
-    /** Full scan with progress tracking (parallel workers). */
+     
     suspend fun start(forceReindex: Boolean = false) = withContext(Dispatchers.IO) {
         if (isRunning) return@withContext
         if (ImageSearchManager.status.value != ImageSearchStatus.READY) return@withContext
@@ -77,7 +77,7 @@ object ImageSearchIndexer {
         val resultCh = Channel<DImageEmbedding>(BATCH_SIZE * 2)
         val indexed = AtomicInteger(indexedImages)
 
-        // Dispatcher: feed images into work queue
+        
         launch(Dispatchers.IO) {
             for (image in toIndex) {
                 if (cancelled) break
@@ -86,7 +86,7 @@ object ImageSearchIndexer {
             imageCh.close()
         }
 
-        // Parallel bitmap loaders
+        
         val loaderJobs = (0 until NUM_LOADERS).map {
             launch(Dispatchers.IO) {
                 for (image in imageCh) {
@@ -98,7 +98,7 @@ object ImageSearchIndexer {
         }
         launch { loaderJobs.joinAll(); bitmapCh.close() }
 
-        // Parallel inference workers, each with own model + buffers
+        
         val workers = (0 until NUM_WORKERS).map { ImageEmbedWorker(modelFile) }
         val workerJobs = workers.map { worker ->
             launch(Dispatchers.Default) {
@@ -111,7 +111,7 @@ object ImageSearchIndexer {
         }
         launch { workerJobs.joinAll(); resultCh.close() }
 
-        // Batch writer
+        
         val batch = mutableListOf<DImageEmbedding>()
         for (item in resultCh) {
             batch.add(item)

@@ -1,17 +1,17 @@
 
-/**
- * Recycler adapter for song lists that append a per-item stat value to the album line,
- * displayed as {@code "Album Name • stat text"}. Used by the Recently Played panel
- * (relative last-played time) and the Most Played panel (play count).
- *
- * <p>Uses the same {@code adapter_style_list} and {@code adapter_style_grid} layouts that
- * {@link AdapterSongs} uses, so the visual style is identical across all song panels.
- * The caller supplies a [gridTypeProvider] so each panel can use its own preference key,
- * and a [statTextProvider] that returns just the stat portion of the third line (e.g.
- * {@code "2 minutes ago"} or {@code "5 times"}).</p>
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 class AdapterSongsWithStat(
         initial: List<AudioWithStat>,
         private val statTextProvider: (AudioWithStat) -> CharSequence
@@ -68,7 +68,7 @@ class AdapterSongsWithStat(
 
     private val songs: List<AudioWithStat> get() = differ.currentList
 
-    /** Extracted [Audio] list used when passing items to media or callback consumers. */
+     
     private val audioList: List<Audio> get() = songs.map { it.audio }
 
     init {
@@ -125,20 +125,20 @@ class AdapterSongsWithStat(
         }
     }
 
-    /** Registers the callback that handles click and long-click events on song items. */
+     
     fun setGeneralAdapterCallbacks(callbacks: GeneralAdapterCallbacks) {
         this.generalAdapterCallbacks = callbacks
     }
 
-    /** Submits an updated list, triggering diff calculation on a background thread. */
+     
     fun updateSongs(newSongs: List<AudioWithStat>) {
         differ.submitList(newSongs.toList())
     }
 
-    /**
-     * Builds the combined album + stat string for the tertiary detail line.
-     * If the album name is absent the stat text is shown on its own.
-     */
+     
+
+
+
     private fun buildTertiaryText(item: AudioWithStat): CharSequence {
         val album = item.audio.getProperAlbum().takeIf { it.isNotEmpty() }
         val stat = statTextProvider(item)
@@ -210,10 +210,10 @@ class AdapterSongsWithStat(
     }
 
     companion object {
-        /**
-         * Returns a human-readable relative time string for [timestamp], such as
-         * "2 minutes ago", "Yesterday", "3 weeks ago", or "Last month".
-         */
+         
+
+
+
         fun formatRelativeTime(timestamp: Long): CharSequence {
             return DateUtils.getRelativeTimeSpanString(
                     timestamp,

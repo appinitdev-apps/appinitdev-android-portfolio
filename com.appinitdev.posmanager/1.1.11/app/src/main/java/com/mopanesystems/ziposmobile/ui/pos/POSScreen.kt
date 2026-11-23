@@ -1,5 +1,5 @@
 
-// Modern Cart Item Component
+
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun ModernCartItemRow(
@@ -21,7 +21,7 @@ fun ModernCartItemRow(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Product info
+            
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -37,12 +37,12 @@ fun ModernCartItemRow(
                 )
             }
 
-            // Modern quantity and actions
+            
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                // Modern quantity controls
+                
 
                 Surface(
                     shape = MaterialTheme.shapes.large,
@@ -53,7 +53,7 @@ fun ModernCartItemRow(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(horizontal = 4.dp, vertical = 6.dp)
                     ) {
-                        // Decrease button
+                        
                         Surface(
                             enabled = item.quantity > 1,
                             onClick = { if (item.quantity > 1) onQuantityChange(item.quantity - 1) },
@@ -71,7 +71,7 @@ fun ModernCartItemRow(
                             }
                         }
 
-                        // Quantity display
+                        
                         Text(
                             text = item.quantity.toString() ,
                             style = MaterialTheme.typography.titleLarge.copy(
@@ -82,7 +82,7 @@ fun ModernCartItemRow(
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
 
-                        // Increase button
+                        
                         Surface(
                             enabled = item.product.stockQuantity > item.quantity,
                             onClick = { if (item.product.stockQuantity > item.quantity)onQuantityChange(item.quantity + 1) },
@@ -102,12 +102,12 @@ fun ModernCartItemRow(
                     }
                 }
 
-                // Total price and remove button
+                
                 Column(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    // Total price with modern styling
+                    
                     if(!edit)
 
                     Surface(
@@ -125,7 +125,7 @@ fun ModernCartItemRow(
                         )
                     }
 
-                    // Modern remove button
+                    
                     if(edit)
                     Surface(
                         onClick = onRemove,
@@ -176,7 +176,7 @@ fun POSScreenCompose(
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Modern Header with elevated design
+        
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
@@ -203,7 +203,7 @@ fun POSScreenCompose(
                     )
                 }
 
-                // Modern action button
+                
                 Surface(
                     onClick = onScanBarcode,
                     shape = MaterialTheme.shapes.large,
@@ -222,7 +222,7 @@ fun POSScreenCompose(
             }
         }
 
-        // Modern Customer Section
+        
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
@@ -298,7 +298,7 @@ fun POSScreenCompose(
             }
         }
 
-        // Modern Cart Section with glass-morphism style
+        
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -312,7 +312,7 @@ fun POSScreenCompose(
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Cart header with item count
+                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -338,7 +338,7 @@ fun POSScreenCompose(
                                 Icon(
                                     imageVector = if (!productEdit) Icons.Default.DeleteOutline else Icons.Default.Check,
                                     contentDescription = "Edit Product",
-                                  //  tint =if (!productEdit) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onSecondaryContainer,
+                                  
                                     modifier = Modifier.size(20.dp)
                                 )
                             }
@@ -359,7 +359,7 @@ fun POSScreenCompose(
                     }
                 }
 
-                // Cart content with modern empty state
+                
                 if (cartItems.isEmpty()) {
                     Column(
                         modifier = Modifier
@@ -403,8 +403,8 @@ fun POSScreenCompose(
                     ) {
                         items(
                             items = cartItems,
-                            key = { it.id } // aquí defines la clave única
-                        ) { item ->       // solo un parámetro: el item
+                            key = { it.id } 
+                        ) { item ->       
                             ModernCartItemRow(
                                 item = item,
                                 onQuantityChange = { newQuantity ->
@@ -452,7 +452,7 @@ fun POSScreenCompose(
             }
         }
 
-        // Modern Total and Actions Section
+        
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
@@ -463,7 +463,7 @@ fun POSScreenCompose(
                 modifier = Modifier.padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Modern summary section
+                
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -519,11 +519,11 @@ fun POSScreenCompose(
                     }
                 }
 
-                // Modern payment buttons
+                
                 Column(
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    // Payment method buttons
+                    
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -533,7 +533,7 @@ fun POSScreenCompose(
 
                                 paymentMethod = PaymentMethod.CASH
                                 showPaymentDialog= true
-                                //onProcessPayment(PaymentMethod.CASH)
+                                
                                   },
                             modifier = Modifier
                                 .weight(1f)
@@ -560,7 +560,7 @@ fun POSScreenCompose(
                             onClick = {
                                 paymentMethod = PaymentMethod.CARD
                                 showPaymentDialog= true
-                               // onProcessPayment(PaymentMethod.CARD)
+                               
                                       },
                             modifier = Modifier
                                 .weight(1f)
@@ -587,7 +587,7 @@ fun POSScreenCompose(
                             onClick = {
                                 paymentMethod = PaymentMethod.MOBILE_PAYMENT
                                 showPaymentDialog= true
-                               // onProcessPayment(PaymentMethod.MOBILE_PAYMENT)
+                               
                                       },
                             modifier = Modifier
                                 .weight(1f)
@@ -611,7 +611,7 @@ fun POSScreenCompose(
                         }
                     }
 
-                    // Clear cart button
+                    
 
 
                     if (isProcessing) {
@@ -637,7 +637,7 @@ fun POSScreenCompose(
             PaymentDialog(
                 customer = selectedCustomer,
                 total = totalAmount,
-                paymentMethod = paymentMethod, // pasas la variable declarada con remember
+                paymentMethod = paymentMethod, 
                 onDismiss = { showPaymentDialog = false },
                 onProcessPayment = { result ->
                     onProcessPayment(result)
@@ -726,4 +726,4 @@ fun CartItemRowCompose(
     }
 }
 
-// CartItem data class is defined in POSViewModel.kt
+

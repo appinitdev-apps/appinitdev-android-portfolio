@@ -49,13 +49,13 @@ fun MessageBubble(
 fun SmartChatText(text: String, isMe: Boolean) {
     val uriHandler = LocalUriHandler.current
 
-    // Color del texto base dependiendo de si es mi mensaje o no
+    
     val textColor = if (isMe) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
-    val linkColor = if (isMe) Color(0xFF80D8FF) else Color(0xFF007BFF) // Azul más claro en fondo oscuro
+    val linkColor = if (isMe) Color(0xFF80D8FF) else Color(0xFF007BFF) 
 
     val annotatedString = remember(text) {
         buildAnnotatedString {
-            // 1. Aplicamos Estilos de Markdown (*B*, _I_, ~S~, ```C```)
+            
             append(text)
 
             val boldRegex = Regex("\\*(.*?)\\*")
@@ -64,22 +64,22 @@ fun SmartChatText(text: String, isMe: Boolean) {
             val codeRegex = Regex("```(.*?)```")
             val mentionRegex = Regex("@(\\w+)")
 
-            // Negrita
+            
             boldRegex.findAll(text).forEach { addStyle(SpanStyle(fontWeight = FontWeight.Bold), it.range.first, it.range.last + 1) }
-            // Cursiva
+            
             italicRegex.findAll(text).forEach { addStyle(SpanStyle(fontStyle = FontStyle.Italic), it.range.first, it.range.last + 1) }
-            // Tachado
+            
             strikeRegex.findAll(text).forEach { addStyle(SpanStyle(textDecoration = TextDecoration.LineThrough), it.range.first, it.range.last + 1) }
-            // Código monoespaciado
+            
             codeRegex.findAll(text).forEach {
                 addStyle(SpanStyle(fontFamily = FontFamily.Monospace, background = Color.Black.copy(alpha = 0.1f)), it.range.first, it.range.last + 1)
             }
-            // Menciones (@usuario)
+            
             mentionRegex.findAll(text).forEach {
                 addStyle(SpanStyle(fontWeight = FontWeight.Bold, color = if(isMe) Color.Yellow else Color(0xFF25D366)), it.range.first, it.range.last + 1)
             }
 
-            // 2. Detección automática de Links (URL, Email, Teléfono)
+            
             val spannable = android.text.SpannableString(text)
             LinkifyCompat.addLinks(spannable, Linkify.ALL)
             val spans = spannable.getSpans(0, text.length, android.text.style.URLSpan::class.java)
@@ -98,7 +98,7 @@ fun SmartChatText(text: String, isMe: Boolean) {
         }
     }
 
-    // SelectionContainer permite que el usuario copie el texto
+    
     SelectionContainer {
         ClickableText(
             text = annotatedString,
@@ -106,7 +106,7 @@ fun SmartChatText(text: String, isMe: Boolean) {
             onClick = { offset ->
                 annotatedString.getStringAnnotations(tag = "URL", start = offset, end = offset)
                     .firstOrNull()?.let { annotation ->
-                        // Abre el link, el marcador de teléfono o el correo
+                        
                         uriHandler.openUri(annotation.item)
                     }
             }
@@ -125,7 +125,7 @@ fun InfoBlockExpandable(
     val uriHandler = LocalUriHandler.current
     val linkColor = MaterialTheme.colorScheme.primary
 
-    // 1. Procesar el texto para detectar links
+    
     val annotatedString = remember(content) {
         buildAnnotatedString {
             append(content)
@@ -150,11 +150,11 @@ fun InfoBlockExpandable(
     }
 
     Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-        // CABECERA: Título + Flecha
+        
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { isExpanded = !isExpanded }, // Hacer que todo el título sea clickeable
+                .clickable { isExpanded = !isExpanded }, 
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -175,7 +175,7 @@ fun InfoBlockExpandable(
             }
         }
 
-        // CONTENIDO ANIMADO
+        
         AnimatedVisibility(
             visible = isExpanded,
             enter = fadeIn() + expandVertically(),
@@ -214,13 +214,13 @@ fun InfoBlock(title: String, content: String) {
     val uriHandler = LocalUriHandler.current
     val linkColor = MaterialTheme.colorScheme.primary
 
-    // 1. Crear el AnnotatedString con estilos de enlace
+    
     val annotatedString = remember(content) {
         buildAnnotatedString {
             val text = content.take(300)
             append(text)
 
-            // Detección automática de Links (URL, Email, Teléfono) usando Linkify
+            
             val spannable = android.text.SpannableString(text)
             android.text.util.Linkify.addLinks(spannable, android.text.util.Linkify.ALL)
             val spans = spannable.getSpans(0, text.length, android.text.style.URLSpan::class.java)
@@ -256,7 +256,7 @@ fun InfoBlock(title: String, content: String) {
         color = MaterialTheme.colorScheme.secondary
     )
 
-    // 2. Usar ClickableText para que los links funcionen al tocarlos
+    
     SelectionContainer {
         ClickableText(
             text = annotatedString,
@@ -269,7 +269,7 @@ fun InfoBlock(title: String, content: String) {
                         try {
                             uriHandler.openUri(annotation.item)
                         } catch (e: Exception) {
-                            // Manejar error si no hay app para abrir el link
+                            
                         }
                     }
             }

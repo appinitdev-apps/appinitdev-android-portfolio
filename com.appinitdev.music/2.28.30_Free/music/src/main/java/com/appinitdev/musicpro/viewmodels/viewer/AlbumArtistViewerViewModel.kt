@@ -1,11 +1,11 @@
 
-/**
- * Drives the Album Artist page — fetches all songs, albums, and genres for a single album
- * artist and exposes them as a [PageData] state. Re-sorting is done in memory so we
- * skip unnecessary database round-trips (speedy!).
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 @HiltViewModel(assistedFactory = AlbumArtistViewerViewModel.Factory::class)
 class AlbumArtistViewerViewModel @AssistedInject constructor(
         @Assisted private val albumArtist: Artist,
@@ -18,14 +18,14 @@ class AlbumArtistViewerViewModel @AssistedInject constructor(
 
     private val _artistInfo = MutableStateFlow<MusicBrainzArtistInfo?>(null)
 
-    /**
-     * Profile fetched from MusicBrainz for this album artist — bio, genre tags,
-     * country, active years, etc. Stays null while the fetch is running or when
-     * no matching entry exists in MusicBrainz.
-     */
+     
+
+
+
+
     val artistInfo: StateFlow<MusicBrainzArtistInfo?> = _artistInfo.asStateFlow()
 
-    /** The raw, unsorted song list — cached so re-sorting never touches the database. */
+     
     private var rawSongs: List<Audio> = emptyList()
 
     init {
@@ -57,10 +57,10 @@ class AlbumArtistViewerViewModel @AssistedInject constructor(
         }
     }
 
-    /**
-     * Re-sorts the cached song list using the current page preferences and publishes
-     * the updated [PageData] without hitting the database. Think of it as a free refresh.
-     */
+     
+
+
+
     fun resort() {
         val current = _data.value ?: return
         viewModelScope.launch(Dispatchers.Default) {
@@ -69,11 +69,11 @@ class AlbumArtistViewerViewModel @AssistedInject constructor(
         }
     }
 
-    /**
-     * Kicks off a background fetch of the album artist's MusicBrainz profile.
-     * The result lands in [artistInfo] once ready; until then it stays null.
-     * If the user has disabled MusicBrainz in Library preferences, no request is made.
-     */
+     
+
+
+
+
     private fun loadArtistInfo() {
         if (!LibraryPreferences.isMusicBrainzEnabled()) {
             Log.d(TAG, "MusicBrainz is disabled, skipping fetch for: ${albumArtist.name}")

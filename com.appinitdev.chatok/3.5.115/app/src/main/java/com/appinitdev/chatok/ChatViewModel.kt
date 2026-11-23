@@ -11,7 +11,7 @@ class ChatViewModel : ViewModel() {
     private val _state = MutableStateFlow(AppState())
     val state = _state.asStateFlow()
 
-    // --- Observables (UI) ---
+    
     var chats by mutableStateOf<List<ChatData>>(emptyList())
     var solicitudesRecibidas by mutableStateOf<List<ChatData>>(emptyList())
     var solicitudesEnviadas by mutableStateOf<List<ChatData>>(emptyList())
@@ -26,7 +26,7 @@ class ChatViewModel : ViewModel() {
     var verificationRequests by mutableStateOf<List<VerificationRequest>>(emptyList())
     var reportRequests by mutableStateOf<List<ReportRequest>>(emptyList())
 
-    // --- State Helpers ---
+    
     var tp by mutableStateOf(ChatData())
     var forwardMsgs = mutableStateListOf<Message>()
     var reply by mutableStateOf("")
@@ -37,7 +37,7 @@ class ChatViewModel : ViewModel() {
     var msg by mutableStateOf(Message())
     var searchText by mutableStateOf("")
     
-    // Additional Properties for UI state
+    
     var fileUri by mutableStateOf<Uri?>(null)
     var searchText1 by mutableStateOf("")
     var showSearch by mutableStateOf(false)
@@ -146,7 +146,7 @@ class ChatViewModel : ViewModel() {
         val myUser = state.value.userData ?: return
         val cost = 50
         if (myUser.balance < cost) {
-            // Should show error in UI
+            
             return
         }
 
@@ -177,7 +177,7 @@ class ChatViewModel : ViewModel() {
                     )
                     viewModelScope.launch { 
                         repository.submitVerificationRequest(request)
-                        // Deduct coins
+                        
                         firestore.collection("users").document(myUser.userId).update("balance", FieldValue.increment(-cost.toLong()))
                     }
                 }
@@ -214,7 +214,7 @@ class ChatViewModel : ViewModel() {
                 )
                 repository.submitReport(report)
                 
-                // --- AUTOMATED MODERATION ---
+                
                 val userRef = firestore.collection("users").document(reportedUserId)
                 firestore.runTransaction { transaction ->
                     val snapshot = transaction.get(userRef)
@@ -224,7 +224,7 @@ class ChatViewModel : ViewModel() {
                     transaction.update(userRef, "reportCount", nextReports)
                     
                     if (nextReports >= 3) {
-                        // Suspend for 24 hours
+                        
                         val suspendedUntil = Timestamp(Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
                         transaction.update(userRef, "suspendedUntil", suspendedUntil)
                     }
@@ -258,7 +258,7 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    // --- MONETIZATION ---
+    
 
     fun addCoins(amount: Int) {
         val uid = state.value.userData?.userId ?: return
@@ -310,7 +310,7 @@ class ChatViewModel : ViewModel() {
             try {
                 repository.transferCoins(fromUid, toUserId, amount)
                 showTransferAnimation = true
-                delay(3000) // Duration of animation
+                delay(3000) 
                 showTransferAnimation = false
                 withContext(Dispatchers.Main) { onSuccess() }
             } catch (e: Exception) {
@@ -333,7 +333,7 @@ class ChatViewModel : ViewModel() {
             .launchIn(viewModelScope)
     }
 
-    // --- Core Logic ---
+    
 
     fun showChats(userId: String) = repository.syncChats(userId)
 
@@ -358,9 +358,9 @@ class ChatViewModel : ViewModel() {
             messages = it 
             _isLoading.value = false
             
-            // Animation for received coins
+            
             if (it.isNotEmpty() && oldMessagesSize > 0 && it.size > oldMessagesSize) {
-                val lastMsg = it.first() // It's reversed or sorted descending
+                val lastMsg = it.first() 
                 if (lastMsg.senderId != state.value.userData?.userId && 
                     lastMsg.content?.startsWith("🎁") == true) {
                     showTransferAnimation = true
@@ -389,7 +389,7 @@ class ChatViewModel : ViewModel() {
         val fileName = "${System.currentTimeMillis()}.jpg"
         val ref = storage.reference.child("$folder/$uid/$fileName")
         
-        // --- IMAGE COMPRESSION ---
+        
         val finalBytes = if (uri != Uri.EMPTY && folder == "photos") {
             try {
                 com.appinitdev.chatok.utils.MediaUtils.compressImage(BaseApplication.instance.applicationContext, uri)
@@ -465,10 +465,10 @@ class ChatViewModel : ViewModel() {
         
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                // Inserción inmediata local para feedback instantáneo (Offline ready)
+                
                 chatDao.insertMessages(listOf(message.toEntity(chatId)))
                 
-                // Actualizar el último mensaje localmente también
+                
                 repository.getLocalChat(chatId)?.let { chatEntity ->
                     chatDao.insertChats(listOf(chatEntity.copy(
                         lastMessageId = msgId,
@@ -477,7 +477,7 @@ class ChatViewModel : ViewModel() {
                     )))
                 }
                 
-                // Enviar a Firestore (Firestore se encarga del reintento si está offline)
+                
                 firestore.collection("chats").document(chatId).collection("message").document(msgId).set(message).await()
                 
                 val chatDoc = firestore.collection("chats").document(chatId).get().await()
@@ -493,11 +493,11 @@ class ChatViewModel : ViewModel() {
                 
                 val updates = mutableMapOf<String, Any>("last" to message)
                 
-                // Solo se acepta automáticamente si el remitente es el destinatario (user2)
+                
                 val user2Id = chatDoc.getString("user2.userId")
                 if (!isAccepted && finalSenderId == user2Id) {
                     updates["accepted"] = true
-                    // Actualizar localmente de inmediato
+                    
                     repository.acceptChatLocally(chatId)
                 }
 
@@ -566,12 +566,12 @@ class ChatViewModel : ViewModel() {
                 val storyDoc = storyRef.get().await()
                 val story = storyDoc.toObject(Story::class.java) ?: return@launch
                 
-                if (story.userId == myUser.userId) return@launch // Don't count own views
+                if (story.userId == myUser.userId) return@launch 
                 
                 val updatedImages = story.images.toMutableList()
                 val image = updatedImages[imageIndex]
                 
-                if (image.viewedBy.any { it.userId == myUser.userId }) return@launch // Already viewed
+                if (image.viewedBy.any { it.userId == myUser.userId }) return@launch 
                 
                 val newViewer = StoryViewer(
                     ppurl = myUser.ppurl ?: "",
@@ -628,7 +628,7 @@ class ChatViewModel : ViewModel() {
                 ppurl = otherUser.ppurl ?: "",
                 email = otherUser.email
             ),
-            accepted = false // Starts as a request
+            accepted = false 
         )
         
         firestore.collection("chats").document(chatId).set(chatData)
@@ -661,7 +661,7 @@ class ChatViewModel : ViewModel() {
                     firestore.collection("chats").document(chatId).set(chatData).await()
                 }
                 
-                // Now send the reply
+                
                 sendReply(chatId, replyContent, replyMsg = replyMessage)
             } catch (e: Exception) {
                 Log.e("ChatViewModel", "createChatAndReply error", e)
@@ -670,7 +670,7 @@ class ChatViewModel : ViewModel() {
     }
 
     fun sendNotification(message: String, userId: String) {
-        // Enviar notificación a través de Firestore para que un Cloud Function la procese
+        
         val notification = mapOf(
             "to" to userId,
             "message" to message,
@@ -683,11 +683,11 @@ class ChatViewModel : ViewModel() {
     fun deleteMsg(msgIds: List<String>, chatId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             msgIds.forEach { msgId ->
-                // Marcar como borrado en Firestore
+                
                 val msgRef = firestore.collection("chats").document(chatId).collection("message").document(msgId)
                 msgRef.update("isDeleted", true, "content", "Mensaje borrado").await()
                 
-                // Si es el último mensaje del chat, actualizar también el objeto 'last' en el documento del chat
+                
                 val chatDoc = firestore.collection("chats").document(chatId).get().await()
                 val lastMsg = chatDoc.get("last", Message::class.java)
                 if (lastMsg?.msgId == msgId) {
@@ -695,7 +695,7 @@ class ChatViewModel : ViewModel() {
                     firestore.collection("chats").document(chatId).update("last", updatedLast)
                 }
                 
-                // Borrar localmente del dispositivo si existe
+                
                 try {
                     val directory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "ChatOk")
                     directory.listFiles()?.forEach { file ->
@@ -715,7 +715,7 @@ class ChatViewModel : ViewModel() {
         if (!directory.exists()) directory.mkdirs()
         
         val file = File(directory, fileName)
-        if (file.exists()) return // Ya descargado
+        if (file.exists()) return 
 
         val request = DownloadManager.Request(Uri.parse(url))
             .setTitle(fileName)
@@ -751,7 +751,7 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    // --- Groups & Status ---
+    
 
     fun loadMyGroups() {
         val uid = state.value.userData?.userId ?: return
@@ -765,7 +765,7 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    // Alias para compatibilidad con MainActivity y AppLifecycleObserver
+    
     fun actualizarEstadoYStatusUsuario(online: Boolean, userId: String) {
         updateStatus(online, userId)
     }
@@ -787,14 +787,14 @@ class ChatViewModel : ViewModel() {
 
     fun readAllMessagesInChat(chatId: String) {
         if (chatId.isEmpty()) return
-        // No bloquear la UI con isLoading para una operación de marcado de lectura
+        
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val myId = state.value.userData?.userId ?: return@launch
                 val messagesCollection = firestore.collection("chats").document(chatId).collection("message")
                 
-                // Solo marcar como leídos los mensajes que no son míos
-                // Filtramos por 'read' == false y luego discriminamos por 'senderId' en memoria para evitar requerir un índice compuesto de Firestore
+                
+                
                 val unread = messagesCollection
                     .whereEqualTo("read", false)
                     .get().await()
@@ -807,7 +807,7 @@ class ChatViewModel : ViewModel() {
                     batch.commit().await()
                 }
 
-                // Resetear contador de no leídos en el chat
+                
                 val chatDoc = firestore.collection("chats").document(chatId).get().await()
                 val user1Id = chatDoc.getString("user1.userId")
                 val fieldToReset = if (user1Id == myId) "user1.unread" else "user2.unread"
@@ -823,7 +823,7 @@ class ChatViewModel : ViewModel() {
         _state.update { it.copy(User2 = usr, chatId = id) }
         val myId = state.value.userData?.userId ?: return
         
-        // Observar estado del otro usuario en tiempo real
+        
         userJob?.cancel()
         userJob = viewModelScope.launch {
             repository.observeUser(usr.userId).collect { updatedUser ->
@@ -855,7 +855,7 @@ class ChatViewModel : ViewModel() {
         val chatId = state.value.chatId
         val myId = state.value.userData?.userId
         _state.update { it.copy(chatId = "") }
-        userJob?.cancel() // Detener observación al salir
+        userJob?.cancel() 
         
         if (chatId.isNotEmpty() && myId != null) {
             viewModelScope.launch(Dispatchers.IO) {
@@ -903,7 +903,7 @@ class ChatViewModel : ViewModel() {
 
     fun onSignInResult(result: SignInResult) {
         _state.update { it.copy(isSignedIn = result.data != null, signInError = result.errmsg) }
-        // Solo actualizar userData si no tenemos información más completa ya cargada
+        
         if (result.data != null) {
             if (_state.value.userData == null || _state.value.userData?.username.isNullOrEmpty()) {
                 _state.update { it.copy(userData = result.data) }
@@ -916,13 +916,13 @@ class ChatViewModel : ViewModel() {
             age = if(age.isNotEmpty()) age else userData.age, 
             gender = if(gender.isNotEmpty()) gender else userData.gender
         )
-        // Actualizar estado local inmediatamente para evitar UI vacía
+        
         _state.update { it.copy(userData = updatedUser, isSignedIn = true) }
         
         viewModelScope.launch {
             try { 
                 firestore.collection("users").document(updatedUser.userId).set(updatedUser).await() 
-                // Asegurarnos de que el repositorio local también tenga la info
+                
                 repository.insertUser(updatedUser)
             }
             catch (e: Exception) { Log.e("ChatViewModel", "Error adding user data", e) }
@@ -935,19 +935,19 @@ class ChatViewModel : ViewModel() {
     }
 
     fun getBlockedUsers(userIds: List<String>) {
-        // Implementation for getting blocked users
+        
     }
 
     fun unblockUser(userId: String) {
-        // Implementation
+        
     }
 
     fun blockUser(userId: String) {
-        // Implementation
+        
     }
 
     fun loadMoreMessages(chatId: String) {
-        // Implementation
+        
     }
 
     fun clearChat(chatId: String) {
@@ -980,15 +980,15 @@ class ChatViewModel : ViewModel() {
     }
 
     fun removeReaction(chatId: String, msgId: String) {
-        // Implementation
+        
     }
 
     fun addScheduledMsg(msg: ScheduledMsg) {
-        // Implementation
+        
     }
 
     fun cancelScheduledMsg(chatId: String, content: String, senderId: String = "") {
-        // Implementation
+        
     }
 
     fun deleteChat(chatIds: List<String>) {
@@ -1060,7 +1060,7 @@ class ChatViewModel : ViewModel() {
                     }
                 }
                 
-                // Create new story
+                
                 val newId = firestore.collection("stories").document().id
                 val newStory = Story(
                     id = newId,
@@ -1076,7 +1076,7 @@ class ChatViewModel : ViewModel() {
     }
 
     fun markUserAsRejected(email: String) {
-        // Implementation
+        
     }
 
     fun updatePref(userData: UserData, pref: Pref) {
@@ -1153,7 +1153,7 @@ class ChatViewModel : ViewModel() {
                 firestore.collection("chats").document(chatId).collection("message").document(msgId)
                     .update("viewedAt", Timestamp.now())
                 
-                // Update local DB too
+                
                 val entity = chatDao.getMessageById(msgId)
                 if (entity != null) {
                     chatDao.insertMessages(listOf(entity.copy(viewedAt = System.currentTimeMillis())))

@@ -39,7 +39,7 @@ class CustomerRepository @Inject constructor(
     
     suspend fun updateRiskScore(customerId: String, riskScore: Int) = customerDao.updateRiskScore(customerId, riskScore)
     
-    // Customer Transactions
+    
     fun getCustomerTransactions(customerId: String): Flow<List<CustomerTransaction>> = customerDao.getCustomerTransactions(customerId)
     
     fun getCustomerTransactionsByType(customerId: String, type: TransactionType): Flow<List<CustomerTransaction>> = 

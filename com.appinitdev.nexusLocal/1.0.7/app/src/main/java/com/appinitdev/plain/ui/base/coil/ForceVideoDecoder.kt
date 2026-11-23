@@ -1,16 +1,16 @@
 
-/**
- * A Coil3 [Decoder] that extracts a thumbnail frame from a video file using
- * [MediaMetadataRetriever], bypassing the normal MIME-type check.
- *
- * This is needed for videos stored under content-addressable hash paths (fid: URIs)
- * which have no file extension, so Coil cannot detect the MIME type and therefore
- * skips [coil3.video.VideoFrameDecoder] by default.
- *
- * Register [Factory] on a specific [coil3.request.ImageRequest] (not globally) via
- * [coil3.request.ImageRequest.Builder.components] so that only known video requests
- * use this decoder.
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
 class ForceVideoDecoder(
     private val source: ImageSource,
     private val options: Options,
@@ -34,19 +34,19 @@ class ForceVideoDecoder(
         }
     }
 
-    /**
-     * A [Decoder.Factory] that creates a [ForceVideoDecoder] without any MIME-type check.
-     *
-     * Only add this to an [coil3.request.ImageRequest] when you are certain the target
-     * file is a video (e.g. based on the original filename, not the path).
-     */
+     
+
+
+
+
+
     class Factory : Decoder.Factory {
         override fun create(
             result: SourceFetchResult,
             options: Options,
             imageLoader: ImageLoader,
         ): Decoder? {
-            // Only applicable to file-backed sources (fid: / regular file paths)
+            
             return ForceVideoDecoder(result.source, options)
         }
     }

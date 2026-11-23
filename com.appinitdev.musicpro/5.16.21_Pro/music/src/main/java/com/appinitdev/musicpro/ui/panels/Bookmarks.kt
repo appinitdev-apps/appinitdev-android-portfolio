@@ -1,14 +1,14 @@
 
-/**
- * Panel that shows every audio track that has at least one saved bookmark.
- *
- * Tapping a song row opens a dialog listing all bookmarks for that track.
- * Tapping a bookmark in the dialog plays the song solo from that exact position.
- * Each bookmark row in the dialog has its own delete button, making it easy
- * to remove individual timestamps without clearing everything at once.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
 @AndroidEntryPoint
 class Bookmarks : BasePanelFragment() {
 
@@ -63,10 +63,10 @@ class Bookmarks : BasePanelFragment() {
         }
     }
 
-    /**
-     * Opens the bookmarks list dialog for a specific song, with the ability to
-     * delete individual bookmarks using the delete button on each row.
-     */
+     
+
+
+
     private fun openBookmarksList(item: AudioWithBookmarks) {
         val bookmarks = item.bookmarks.sortedBy { it.timestampMs }
         openBookmarksList(

@@ -18,7 +18,7 @@ fun programarNotificacionDiaria(context: Context) {
         workRequest
     )
 
-    // Tarea de verificación periódica cada 24 horas sin restricciones estrictas
+    
     val verificationConstraints = Constraints.Builder()
         .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
         .setRequiresCharging(false)

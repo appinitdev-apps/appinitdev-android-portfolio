@@ -8,12 +8,12 @@ fun rememberScroller(
     return rememberScroller(scrollableState, { pixelAmount }, duration)
 }
 
-/**
- * A utility to programmatically scroll a [ScrollableState].
- *
- * @param scrollableState The [ScrollableState] to scroll.
- * @param pixelPerSecond The amount of pixels to scroll per second.
- */
+ 
+
+
+
+
+
 @Composable
 fun rememberScroller(
     scrollableState: ScrollableState,
@@ -31,13 +31,13 @@ fun rememberScroller(
     }
 }
 
-/**
- * A utility to programmatically scroll a [ScrollableState].
- *
- * @param scrollableState The [ScrollableState] to scroll.
- * @param pixelAmountProvider A function that returns the amount of pixels to scroll per duration.
- * @param duration The duration of each scroll in milliseconds.
- */
+ 
+
+
+
+
+
+
 @Composable
 fun rememberScroller(
     scrollableState: ScrollableState,

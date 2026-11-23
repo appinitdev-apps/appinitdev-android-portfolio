@@ -16,7 +16,7 @@ class GenresViewModel @Inject constructor(
         viewModelScope.launch {
             audioRepository.getAllGenresWithAggregation()
                 .map { genreList -> genreList.sorted() }
-                .distinctUntilChanged()  // Prevent identical consecutive emissions
+                .distinctUntilChanged()  
                 .catch { exception ->
                     Log.e(TAG, "Error loading genres", exception)
                     emit(emptyList())

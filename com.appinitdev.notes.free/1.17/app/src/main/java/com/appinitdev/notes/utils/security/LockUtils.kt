@@ -104,7 +104,7 @@ private fun showBiometricOrPinPrompt(
         }
 
         else -> {
-            // API 21-22: No biometric support, fallback to PIN/Password
+            
             promptPinAuthentication(context, activityResultLauncher, titleResId, onFailure)
         }
     }
@@ -118,7 +118,7 @@ private fun promptPinAuthentication(
 ) {
     val keyguardManager = ContextCompat.getSystemService(context, KeyguardManager::class.java)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        // For API 23 and above, use isDeviceSecure
+        
         if (keyguardManager?.isDeviceSecure == true) {
             val intent =
                 keyguardManager.createConfirmDeviceCredentialIntent(
@@ -134,7 +134,7 @@ private fun promptPinAuthentication(
             onFailure.invoke(null)
         }
     } else {
-        // For API 21-22, use isKeyguardSecure
+        
         if (keyguardManager?.isKeyguardSecure == true) {
             val intent =
                 keyguardManager.createConfirmDeviceCredentialIntent(

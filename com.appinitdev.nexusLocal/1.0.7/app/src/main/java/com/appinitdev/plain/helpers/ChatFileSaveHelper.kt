@@ -1,12 +1,12 @@
 
 
 object ChatFileSaveHelper {
-    /**
-     * Import a file from a content-resolver [uri] into the content-addressable
-     * chat file store with two-step dedup.
-     *
-     * Returns a `fid:{sha256}` URI to embed in [com.appinitdev.nexusLocal.db.DMessageFile.uri].
-     */
+     
+
+
+
+
+
     fun importFromUri(
         context: Context,
         uri: Uri,
@@ -19,18 +19,18 @@ object ChatFileSaveHelper {
             val dFile = AppFileStore.importFile(context, tempFile, mimeType, deleteSrc = true)
             return AppFileStore.toFidUri(dFile.id, AppFileStore.extFromMime(dFile.mimeType))
         } finally {
-            // Guard: if importFile did not consume (due to error path), clean up
+            
             if (tempFile.exists()) tempFile.delete()
         }
     }
 
-    /**
-     * Import an already-downloaded / on-disk [srcFile] into the content-addressable
-     * chat file store.
-     *
-     * [srcFile] is deleted on success (move semantics via [deleteSrc]).
-     * Returns a `fid:{sha256}` URI to embed in [com.appinitdev.nexusLocal.db.DMessageFile.uri].
-     */
+     
+
+
+
+
+
+
     fun importDownloadedFile(
         context: Context,
         srcFile: File,

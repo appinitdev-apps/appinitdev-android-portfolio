@@ -5,11 +5,11 @@ data class BugReport(
     val appId: String = "",
     val userId: String = "",
     val userName: String = "",
-    val deviceInfo: String = "", // Modelo, Versión Android
+    val deviceInfo: String = "", 
     val stepsToReproduce: String = "",
     val description: String = "",
     val imageUrl: String? = null,
-    val status: String = "Open", // Open, In Progress, Resolved, Closed
+    val status: String = "Open", 
     val timestamp: Long = System.currentTimeMillis()
 )
 
@@ -46,7 +46,7 @@ data class UserNotification(
     val userId: String = "",
     val title: String = "",
     val body: String = "",
-    val type: String = "general", // general, bug_update, new_app, survey, points
+    val type: String = "general", 
     val isRead: Boolean = false,
     val timestamp: Long = System.currentTimeMillis(),
     val data: Map<String, String> = emptyMap(),
@@ -80,7 +80,7 @@ data class PointsTransaction(
     val id: String = "",
     val userId: String = "",
     val amount: Int = 0,
-    val reason: String = "", // Ejemplo: "Check-in diario", "Referido", "Boost App"
+    val reason: String = "", 
     val timestamp: Long = System.currentTimeMillis()
 )
 
@@ -88,8 +88,8 @@ data class PointsTransaction(
 data class UserReport(
     val id: String = "",
     val reporterId: String = "",
-    val reportedId: String = "", // ID del usuario o de la App
-    val type: String = "app", // app, user, message
+    val reportedId: String = "", 
+    val type: String = "app", 
     val reason: String = "",
     val timestamp: Long = System.currentTimeMillis()
 )

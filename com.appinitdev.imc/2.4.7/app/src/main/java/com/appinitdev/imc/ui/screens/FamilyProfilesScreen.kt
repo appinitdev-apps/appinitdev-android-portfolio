@@ -97,7 +97,7 @@ fun FamilyProfilesScreen(
                 .background(MaterialTheme.colorScheme.background)
         ) {
             if (selectedMember == null) {
-                // Member List View
+                
                 if (members.isEmpty()) {
                     Box(
                         modifier = Modifier
@@ -159,7 +159,7 @@ fun FamilyProfilesScreen(
                     }
                 }
             } else {
-                // Member Growth Detail & Multi-Metric Charts View
+                
                 val activeMember = selectedMember!!
                 var memberRecords by remember(activeMember.id) {
                     mutableStateOf(manager.getGrowthRecordsForMember(activeMember.id))
@@ -181,7 +181,7 @@ fun FamilyProfilesScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // Profile Header Banner
+                    
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(20.dp),
@@ -237,7 +237,7 @@ fun FamilyProfilesScreen(
                         }
                     }
 
-                    // Direct Print & Export Buttons Row (PDF, Print, CSV)
+                    
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -325,7 +325,7 @@ fun FamilyProfilesScreen(
                         }
                     }
 
-                    // Quick Log Button
+                    
                     Button(
                         onClick = { showAddMeasurementDialog = true },
                         modifier = Modifier
@@ -345,10 +345,10 @@ fun FamilyProfilesScreen(
                         )
                     }
 
-                    // WHO Percentiles Band Chart
+                    
                     WhoPercentileChart(records = memberRecords)
 
-                    // Metric Filter Tabs for Specialized Charts
+                    
                     Text(
                         text = stringResource(id = R.string.filtro_graficas_evolucion),
                         fontSize = 15.sp,
@@ -377,13 +377,13 @@ fun FamilyProfilesScreen(
                         }
                     }
 
-                    // Filtered Chart Rendering
+                    
                     GenericMetricChart(
                         title = "Evolución de ${metricTitles[selectedMetricTab]}",
                         measurements = currentMetricMeasurements
                     )
 
-                    // History Table for Member
+                    
                     if (memberRecords.isNotEmpty()) {
                         Text(
                             text = stringResource(id = R.string.historial_de_mediciones),
@@ -446,7 +446,7 @@ fun FamilyProfilesScreen(
         }
     }
 
-    // Add Family Member Dialog
+    
     if (showAddMemberDialog) {
         var nameInput by remember { mutableStateOf("") }
         var relationshipInput by remember { mutableStateOf("Hijo/a") }
@@ -567,7 +567,7 @@ fun FamilyProfilesScreen(
         )
     }
 
-    // Edit Family Member Dialog
+    
     if (memberToEdit != null) {
         val target = memberToEdit!!
         val birthCal = Calendar.getInstance().apply { timeInMillis = target.birthTimestamp }
@@ -694,7 +694,7 @@ fun FamilyProfilesScreen(
         )
     }
 
-    // Delete Family Member Confirmation Dialog
+    
     if (memberToDelete != null) {
         val target = memberToDelete!!
         AlertDialog(
@@ -757,7 +757,7 @@ fun FamilyProfilesScreen(
         )
     }
 
-    // Delete Individual Growth Record Confirmation Dialog
+    
     if (recordToDelete != null && selectedMember != null) {
         val activeMember = selectedMember!!
         val rec = recordToDelete!!
@@ -801,7 +801,7 @@ fun FamilyProfilesScreen(
         )
     }
 
-    // Add Measurement Dialog
+    
     if (showAddMeasurementDialog && selectedMember != null) {
         val activeMember = selectedMember!!
         var weightInput by remember { mutableStateOf("12.5") }

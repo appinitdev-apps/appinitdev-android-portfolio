@@ -3,7 +3,7 @@ data class ProfileMeasurement(
     val id: Long = System.currentTimeMillis(),
     val memberId: Long,
     val timestamp: Long = System.currentTimeMillis(),
-    val metricType: String, // "WEIGHT", "HEIGHT", "BMI", "HEAD_CIRCUMFERENCE", "BODY_FAT", "ICE", "WATER"
+    val metricType: String, 
     val valueNumeric: Double,
     val secondaryValue: Double = 0.0,
     val unitLabel: String,
@@ -17,7 +17,7 @@ class BmiDatabaseHelper(private val context: Context) : SQLiteOpenHelper(context
         private const val DATABASE_NAME = "bmi_app_database.db"
         private const val DATABASE_VERSION = 3
 
-        // Table 1: General History
+        
         private const val TABLE_HISTORY = "bmi_history"
         private const val COL_H_ID = "id"
         private const val COL_H_TIMESTAMP = "timestamp"
@@ -29,7 +29,7 @@ class BmiDatabaseHelper(private val context: Context) : SQLiteOpenHelper(context
         private const val COL_H_STATUS_TEXT = "status_text"
         private const val COL_H_GENDER = "gender"
 
-        // Table 2: Family Members
+        
         private const val TABLE_MEMBERS = "family_members"
         private const val COL_M_ID = "id"
         private const val COL_M_NAME = "name"
@@ -38,7 +38,7 @@ class BmiDatabaseHelper(private val context: Context) : SQLiteOpenHelper(context
         private const val COL_M_RELATIONSHIP = "relationship"
         private const val COL_M_AVATAR_RES_ID = "avatar_res_id"
 
-        // Table 3: Growth Records
+        
         private const val TABLE_GROWTH_RECORDS = "family_growth_records"
         private const val COL_G_ID = "id"
         private const val COL_G_MEMBER_ID = "member_id"
@@ -48,14 +48,14 @@ class BmiDatabaseHelper(private val context: Context) : SQLiteOpenHelper(context
         private const val COL_G_BMI_VALUE = "bmi_value"
         private const val COL_G_STATUS_TEXT = "status_text"
 
-        // Table 4: Daily Water Tracker
+        
         private const val TABLE_WATER = "daily_water_intake"
         private const val COL_W_ID = "id"
         private const val COL_W_DATE_STR = "date_str"
         private const val COL_W_CONSUMED_ML = "consumed_ml"
         private const val COL_W_TARGET_ML = "target_ml"
 
-        // Table 5: Unified Profile Measurements (New Version 3)
+        
         private const val TABLE_MEASUREMENTS = "profile_measurements"
         private const val COL_PM_ID = "id"
         private const val COL_PM_MEMBER_ID = "member_id"
@@ -166,7 +166,7 @@ class BmiDatabaseHelper(private val context: Context) : SQLiteOpenHelper(context
         }
     }
 
-    // --- SQLite Operations: Profile Unified Measurements ---
+    
     fun insertProfileMeasurement(measurement: ProfileMeasurement): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
@@ -276,7 +276,7 @@ class BmiDatabaseHelper(private val context: Context) : SQLiteOpenHelper(context
         db.delete(TABLE_MEASUREMENTS, "$COL_PM_ID = ?", arrayOf(id.toString()))
     }
 
-    // --- SQLite Operations: Water Tracker ---
+    
     fun getWaterIntakeForDate(dateStr: String): Pair<Int, Int> {
         val db = readableDatabase
         val cursor = db.query(TABLE_WATER, arrayOf(COL_W_CONSUMED_ML, COL_W_TARGET_ML), "$COL_W_DATE_STR = ?", arrayOf(dateStr), null, null, null)
@@ -311,7 +311,7 @@ class BmiDatabaseHelper(private val context: Context) : SQLiteOpenHelper(context
         db.delete(TABLE_WATER, "$COL_W_DATE_STR = ?", arrayOf(dateStr))
     }
 
-    // --- SQLite Operations: General History ---
+    
     fun insertHistoryRecord(record: BmiRecord): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
@@ -373,7 +373,7 @@ class BmiDatabaseHelper(private val context: Context) : SQLiteOpenHelper(context
         db.delete(TABLE_HISTORY, null, null)
     }
 
-    // --- SQLite Operations: Family Members ---
+    
     fun insertOrUpdateFamilyMember(member: FamilyMember): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
@@ -435,7 +435,7 @@ class BmiDatabaseHelper(private val context: Context) : SQLiteOpenHelper(context
         db.delete(TABLE_MEASUREMENTS, "$COL_PM_MEMBER_ID = ?", arrayOf(memberId.toString()))
     }
 
-    // --- SQLite Operations: Growth Records ---
+    
     fun insertGrowthRecord(record: GrowthRecord): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
@@ -447,7 +447,7 @@ class BmiDatabaseHelper(private val context: Context) : SQLiteOpenHelper(context
             put(COL_G_STATUS_TEXT, record.statusText)
         }
 
-        // Also mirror into unified measurements
+        
         insertProfileMeasurement(
             ProfileMeasurement(
                 memberId = record.memberId,
@@ -522,7 +522,7 @@ class BmiDatabaseHelper(private val context: Context) : SQLiteOpenHelper(context
         db.delete(TABLE_GROWTH_RECORDS, "$COL_G_ID = ?", arrayOf(recordId.toString()))
     }
 
-    // --- Auto Migration from SharedPreferences if existing ---
+    
     fun migrateFromSharedPreferencesIfNeeded() {
         try {
             val historyPrefs = context.getSharedPreferences("bmi_history_prefs", Context.MODE_PRIVATE)

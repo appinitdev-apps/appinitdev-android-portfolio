@@ -48,12 +48,12 @@ fun Route.addDLNA() {
 
                     EntityTagVersion(file.lastModified().hashCode().toString())
                     LastModifiedVersion(Date(file.lastModified()))
-                    status(HttpStatusCode.PartialContent) // some TV os only accepts 206
+                    status(HttpStatusCode.PartialContent) 
                 }
                 call.respondFile(file)
             }
         } catch (ex: Exception) {
-            // ex.printStackTrace()
+            
             call.respondText(
                 "File is expired or does not exist. $ex",
                 status = HttpStatusCode.Forbidden
@@ -65,7 +65,7 @@ fun Route.addDLNA() {
         handle {
             val xml = call.receiveText()
             LogCat.d(xml)
-            // the TV could send the callback twice in short time, the second one should be ignore if it has AVTransportURIMetaData field.
+            
             if (xml.contains("TransportState val=\"STOPPED\"") && !xml.contains("AVTransportURIMetaData")) {
                 withIO {
                     CastPlayer.isPlaying.value = false

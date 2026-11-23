@@ -1,8 +1,8 @@
 
-/**
- * Unified adapter for Album, Artist, and Genre pages
- * Handles different page types and adapts the header and sections accordingly
- */
+ 
+
+
+
 class PageAdapter(
         private var data: PageData,
         private val pageType: PageType
@@ -11,22 +11,22 @@ class PageAdapter(
     private var listener: GeneralAdapterCallbacks? = null
     private val items = mutableListOf<PageItem>()
 
-    /** Holds the artist info loaded from MusicBrainz. Set from outside via [setArtistInfo]. */
+     
     private var artistInfo: MusicBrainzArtistInfo? = null
 
-    /** Holds the album release info loaded from MusicBrainz. Set from outside via [setAlbumInfo]. */
+     
     private var albumInfo: MusicBrainzAlbumInfo? = null
 
-    /**
-     * Tracks the latest [Playlist] metadata for playlist pages. Updated reactively from
-     * the ViewModel so the sort label in the header always reflects the current DB value
-     * rather than a stale snapshot from when the adapter was first created.
-     */
+     
+
+
+
+
     private var livePlaylist: Playlist? = (pageType as? PageType.PlaylistPage)?.playlist
 
-    /**
-     * Sealed class to represent different page types
-     */
+     
+
+
     sealed class PageType {
         data class AlbumPage(val album: Album) : PageType()
         data class ArtistPage(val artist: Artist) : PageType()
@@ -41,10 +41,10 @@ class PageAdapter(
         buildItemsList()
     }
 
-    /**
-     * Update the adapter's data with new PageData using DiffUtil for efficiency.
-     * This prevents full list recreation and maintains scroll position.
-     */
+     
+
+
+
     fun updateData(newData: PageData) {
         Log.d(TAG, "updateData: Updating with ${newData.songs.size} songs, ${newData.albums.size} albums, ${newData.artists.size} artists")
 
@@ -59,9 +59,9 @@ class PageAdapter(
         Log.d(TAG, "updateData: DiffUtil updates dispatched")
     }
 
-    /**
-     * DiffUtil callback for efficient list updates
-     */
+     
+
+
     private class PageDiffCallback(
             private val oldList: List<PageItem>,
             private val newList: List<PageItem>
@@ -75,7 +75,7 @@ class PageAdapter(
             val oldItem = oldList[oldItemPosition]
             val newItem = newList[newItemPosition]
 
-            // Check if items are of the same type and represent the same data
+            
             return when {
                 oldItem is PageItem.Header && newItem is PageItem.Header -> true
                 oldItem is PageItem.SongItem && newItem is PageItem.SongItem ->
@@ -116,7 +116,7 @@ class PageAdapter(
     private fun buildItemsList() {
         items.clear()
 
-        // Add header based on page type
+        
         when (pageType) {
             is PageType.AlbumPage -> {
                 items.add(PageItem.Header(
@@ -213,7 +213,7 @@ class PageAdapter(
             }
         }
 
-        // Add all songs
+        
         data.songs.forEachIndexed { index, audio ->
             items.add(PageItem.SongItem(
                     audio = audio,
@@ -222,19 +222,19 @@ class PageAdapter(
             ))
         }
 
-        // Show the MusicBrainz profile block right below the header on artist and composer pages.
+        
         val currentArtistInfo = artistInfo
         if (currentArtistInfo != null && (pageType is PageType.ArtistPage || pageType is PageType.ComposerPage)) {
             items.add(1, PageItem.ArtistInfoSection(currentArtistInfo))
         }
 
-        // Show the MusicBrainz release info block right below the header on album pages.
+        
         val currentAlbumInfo = albumInfo
         if (currentAlbumInfo != null && pageType is PageType.AlbumPage) {
             items.add(1, PageItem.AlbumInfoSection(currentAlbumInfo))
         }
 
-        // Add albums section if available
+        
         if (data.albums.isNotEmpty()) {
             val artistName = when (pageType) {
                 is PageType.AlbumPage -> pageType.album.name
@@ -251,14 +251,14 @@ class PageAdapter(
             ))
         }
 
-        // Add artists section if available
+        
         if (data.artists.isNotEmpty()) {
             items.add(PageItem.ArtistsSection(
                     artists = data.artists
             ))
         }
 
-        // Add genres section if available
+        
         if (data.genres.isNotEmpty()) {
             items.add(PageItem.GenresSection(
                     genres = data.genres
@@ -392,7 +392,7 @@ class PageAdapter(
 
             binding.root.visibility = View.VISIBLE
 
-            // Set title based on page type
+            
             binding.title.text = when (pageType) {
                 is PageType.AlbumPage -> context.getString(
                         R.string.albums_from_artist,
@@ -457,7 +457,7 @@ class PageAdapter(
 
             binding.root.visibility = View.VISIBLE
 
-            // Set title based on page type
+            
             binding.title.text = when (pageType) {
                 is PageType.AlbumPage -> context.getString(R.string.album_artists)
                 is PageType.ArtistPage -> context.getString(
@@ -498,11 +498,11 @@ class PageAdapter(
 
             adapter?.setAdapterCarouselCallbacks(object : AdapterCarouselItems.Companion.AdapterCarouselCallbacks {
                 override fun onClicked(view: View, position: Int) {
-                    /**
-                     * Album pages list their album artists in this section, so we route
-                     * those taps through the dedicated album-artist callback. Every other
-                     * page type shows regular artists and uses the standard artist callback.
-                     */
+                     
+
+
+
+
                     if (pageType is PageType.AlbumPage) {
                         adapterListener?.onAlbumArtistClicked(item.artists, position, view)
                     } else {
@@ -575,7 +575,7 @@ class PageAdapter(
                     }
                 }
 
-                // Show art flow for albums and artists
+                
                 when (pageType) {
                     is PageType.AlbumPage, is PageType.ComposerPage, is PageType.FolderPage, is PageType.PlaylistPage -> {
                         artFlow.visibility = View.VISIBLE
@@ -632,7 +632,7 @@ class PageAdapter(
         }
     }
 
-    // TODO - the header can be merged too but for now keeping it until I am sure of the interface
+    
     inner class GenreHeader(val binding: AdapterHeaderArtistPageBinding) : VerticalListViewHolder(binding.root) {
         fun bind(item: PageItem.Header, pageData: PageData, pageType: PageType) {
             binding.apply {
@@ -683,13 +683,13 @@ class PageAdapter(
         }
     }
 
-    /**
-     * A lightweight [FelicityPager.PageAdapter] that loads artwork slides from an [ArtFlowData]
-     * source. Used exclusively in the page-header art-flow widget; click handling is left to
-     * the owning [Header] / [GenreHeader] view holders.
-     *
-     * @param data The section whose items are rendered as slides.
-     */
+     
+
+
+
+
+
+
     private inner class SliderAdapter(private val data: ArtFlowData<Any>) : FelicityPager.PageAdapter {
 
         override fun getCount(): Int = data.items.size.coerceAtMost(12)
@@ -728,28 +728,28 @@ class PageAdapter(
         this.listener = listener
     }
 
-    /**
-     * Pushes an updated [Playlist] to the adapter so the sort label in the header
-     * reflects the latest sort preference saved to the database. Only the header item
-     * (always at position 0) needs to be rebound, so a targeted [notifyItemChanged]
-     * is used instead of a full list refresh.
-     *
-     * @param playlist The newest version of the playlist from the database.
-     */
+     
+
+
+
+
+
+
+
     fun updatePlaylist(playlist: Playlist) {
         livePlaylist = playlist
         notifyItemChanged(0)
     }
 
-    /**
-     * Delivers the MusicBrainz artist info to the adapter. When called with a non-null
-     * value, a new [PageItem.ArtistInfoSection] is inserted at position 1 (right below
-     * the header) and the list is updated without a full rebind.
-     *
-     * This is called from the fragment once the artist info flow emits.
-     *
-     * @param info The artist profile to display, or null to remove the section.
-     */
+     
+
+
+
+
+
+
+
+
     fun setArtistInfo(info: MusicBrainzArtistInfo?) {
         artistInfo = info
         val oldItems = items.toList()
@@ -758,15 +758,15 @@ class PageAdapter(
         diff.dispatchUpdatesTo(this)
     }
 
-    /**
-     * Delivers the MusicBrainz album release info to the adapter. When called with a
-     * non-null value, a new [PageItem.AlbumInfoSection] is inserted at position 1 (right
-     * below the header) and the list is updated without a full rebind.
-     *
-     * This is called from the fragment once the album info flow emits.
-     *
-     * @param info The release profile to display, or null to remove the section.
-     */
+     
+
+
+
+
+
+
+
+
     fun setAlbumInfo(info: MusicBrainzAlbumInfo?) {
         albumInfo = info
         val oldItems = items.toList()
@@ -781,7 +781,7 @@ class PageAdapter(
 
         fun bind(info: MusicBrainzArtistInfo) {
             binding.apply {
-                // Artist type badge (Person, Group, Orchestra…)
+                
                 if (!info.type.isNullOrBlank()) {
                     typeBadge.text = info.type
                     typeBadge.visibility = View.VISIBLE
@@ -789,7 +789,7 @@ class PageAdapter(
                     typeBadge.visibility = View.GONE
                 }
 
-                // Country badge
+                
                 if (!info.country.isNullOrBlank()) {
                     countryBadge.text = info.country
                     countryBadge.visibility = View.VISIBLE
@@ -797,7 +797,7 @@ class PageAdapter(
                     countryBadge.visibility = View.GONE
                 }
 
-                // Active years badge — covers all three cases: open range, closed range, or single year
+                
                 val yearText = when {
                     info.beginYear != null && info.endYear != null ->
                         context.getString(R.string.active_years, info.beginYear, info.endYear)
@@ -814,7 +814,7 @@ class PageAdapter(
                     yearsBadge.visibility = View.GONE
                 }
 
-                // Genre/style tags — stored as a pipe-separated string in the entity
+                
                 val tagList = if (info.tags.isBlank()) emptyList()
                 else info.tags.split("|").filter { it.isNotBlank() }
 
@@ -833,13 +833,13 @@ class PageAdapter(
                     tagsScroll.visibility = View.GONE
                 }
 
-                // Bio text — show the toggle once the view has been laid out, and we can
-                // tell whether the text was actually truncated by the maxLines limit.
+                
+                
                 if (!info.bio.isNullOrBlank()) {
                     bio.text = info.bio
                     bio.visibility = View.VISIBLE
 
-                    // Always reset to collapsed state on bind so recycled holders are consistent.
+                    
                     bioExpanded = false
 
                     bio.post {
@@ -867,7 +867,7 @@ class PageAdapter(
 
         fun bind(info: MusicBrainzAlbumInfo) {
             binding.apply {
-                // Release date badge — show the year portion only if the full date is available
+                
                 val displayDate = info.releaseDate?.take(4)?.takeIf { it.isNotBlank() }
                 if (displayDate != null) {
                     dateBadge.text = context.getString(R.string.released_in, displayDate)
@@ -876,7 +876,7 @@ class PageAdapter(
                     dateBadge.visibility = View.GONE
                 }
 
-                // Country badge
+                
                 if (!info.country.isNullOrBlank()) {
                     countryBadge.text = info.country
                     countryBadge.visibility = View.VISIBLE
@@ -884,7 +884,7 @@ class PageAdapter(
                     countryBadge.visibility = View.GONE
                 }
 
-                // Status badge (Official, Bootleg, Promotional, etc.)
+                
                 if (!info.status.isNullOrBlank()) {
                     statusBadge.text = info.status
                     statusBadge.visibility = View.VISIBLE
@@ -892,7 +892,7 @@ class PageAdapter(
                     statusBadge.visibility = View.GONE
                 }
 
-                // Record label pills
+                
                 val labelList = if (info.labels.isBlank()) emptyList()
                 else info.labels.split("|").filter { it.isNotBlank() }
 
@@ -911,7 +911,7 @@ class PageAdapter(
                     labelsScroll.visibility = View.GONE
                 }
 
-                // Genre/style tags — stored as a pipe-separated string in the entity
+                
                 val tagList = if (info.tags.isBlank()) emptyList()
                 else info.tags.split("|").filter { it.isNotBlank() }
 
@@ -930,7 +930,7 @@ class PageAdapter(
                     tagsScroll.visibility = View.GONE
                 }
 
-                // Bio text with read more/less toggle
+                
                 if (!info.bio.isNullOrBlank()) {
                     bio.text = info.bio
                     bio.visibility = View.VISIBLE

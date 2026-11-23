@@ -4,7 +4,7 @@ class FtpService : Service() {
     private var ftpServer: FtpServer? = null
 
     companion object {
-        private const val TAG = "FTP_SERVICE_DEBUG" // Etiqueta para filtrar en Logcat
+        private const val TAG = "FTP_SERVICE_DEBUG" 
         private const val CHANNEL_ID = "secure_ftp_network_channel"
         private const val NOTIFICATION_ID = 9026
 
@@ -80,7 +80,7 @@ class FtpService : Service() {
         Log.d(TAG, "onStartCommand: Iniciando Foreground Service con la notificación activa")
         startForeground(NOTIFICATION_ID, buildNotification())
 
-        // Lanzamos el hilo de fondo para arrancar Apache FTP
+        
         Thread {
             try {
                 Log.d(TAG, "Hilo FTP: Configurando FtpServerFactory...")
@@ -90,7 +90,7 @@ class FtpService : Service() {
                     port = puertoActual
                     Log.d(TAG, "Hilo FTP: Puerto de comandos asignado a -> $port")
 
-                    // SOLUCIÓN AL BUG: Cambiado de "8080" a "2122" para evitar colisión de puertos
+                    
                     val dataConfigFactory = DataConnectionConfigurationFactory().apply {
                         passivePorts = "2122"
                     }
@@ -106,13 +106,13 @@ class FtpService : Service() {
                     name = usuarioActual
                     password = contrasenaActual
 
-                    homeDirectory =  File("/storage/emulated/0").absolutePath/* if (storageRoot.exists() && storageRoot.isDirectory) {
-                        Log.d(TAG, "Hilo FTP: Carpeta raíz global /storage detectada y accesible")
-                        storageRoot.absolutePath
-                    } else {
-                        Log.w(TAG, "Hilo FTP: Carpeta /storage no disponible. Usando fallback /storage/emulated/0")
-                        File("/storage/emulated/0").absolutePath
-                    }*/
+                    homeDirectory =  File("/storage/emulated/0").absolutePath 
+
+
+
+
+
+
 
                     authorities = listOf(WritePermission())
                 }

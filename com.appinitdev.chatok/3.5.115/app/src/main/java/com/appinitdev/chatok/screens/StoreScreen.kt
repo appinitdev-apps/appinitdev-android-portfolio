@@ -25,7 +25,7 @@ fun StoreScreen(navController: NavController, viewModel: ChatViewModel, state: A
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
-            // Balance Header
+            
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
@@ -55,7 +55,7 @@ fun StoreScreen(navController: NavController, viewModel: ChatViewModel, state: A
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // VIP Section
+            
             Text(
                 text = stringResource(R.string.suscripcion_vip),
                 color = Color(0xFFFF71FF),
@@ -72,7 +72,7 @@ fun StoreScreen(navController: NavController, viewModel: ChatViewModel, state: A
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Coins Grid
+            
             Text(
                 text = stringResource(R.string.paquetes_monedas),
                 color = Color(0xFF238CDD),

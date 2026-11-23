@@ -11,16 +11,16 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
     val coroutineScope = rememberCoroutineScope()
     var isRefreshing by remember { mutableStateOf(false) }
 
-    // Diálogo de subida
+    
     var showUploadDialog by remember { mutableStateOf(false) }
     var selectedAppForReview by remember { mutableStateOf<AppModel?>(null) }
     var showVideoTutorial by remember { mutableStateOf(false) }
     val activity = context as? android.app.Activity
-    // Cargamos las apps solo cuando entramos a la pantalla
+    
 
     val uiState by viewModel.uiState.collectAsState()
 
-    // Cargamos las apps al mostrar la sección
+    
 
     val mensajeExito = stringResource(R.string.paquete_de_30_puntos_0_25_rep_extra)
 
@@ -31,9 +31,9 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
         }
     }
 
-//    LaunchedEffect(Unit) {
-//        viewModel.loadProductionApps()
-//    }
+
+
+
 
     LaunchedEffect(Unit) {
         viewModel.loadFeaturedApps()
@@ -43,18 +43,18 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
     }
 
 
-    // Filtramos apps en producción
-//    val productionApps = remember(apps) {
-//        apps.filter { it.status == "produccion" /*&& it.idPropietario != currentUserId*/ }
-//    }
+    
+
+
+
 
     val productionApps = remember(apps) {
         val filtered = apps.filter { it.status == "produccion" }
 
-        // 1. Separamos las apps donde NO apareces y las mezclamos solo a ellas
+        
         val nuevasParaMi = filtered.filter { it.resenasProduccion[currentUserId] == null }.shuffled()
 
-        // 2. Filtramos el resto de las apps (donde sí apareces)
+        
         val gestionadasPorMi = filtered.filter { it.resenasProduccion[currentUserId] != null }
             .sortedWith(compareBy<AppModel> { app ->
                 val miResena = app.resenasProduccion[currentUserId]
@@ -66,11 +66,11 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
                 }
             })
 
-        // 3. Unimos ambas listas: Primero las aleatorias nuevas, luego las ordenadas por estado
+        
         val listaFinal = nuevasParaMi + gestionadasPorMi
         listaFinal
-        // 4. (Opcional) Si aún quieres que tu usuario VIP aparezca siempre primero:
-       // listaFinal.sortedByDescending { it.idPropietario == "TLaAvv2YGObm93iLGM8xqLZOETk2" }
+        
+       
     }
     val successMessage = stringResource(R.string.rese_a_enviada_a_revisi_n)
     if (showUploadDialog) {
@@ -121,13 +121,13 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            // --- ANUNCIO GRANDE ---
+            
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 8.dp), // Margen controlado por ti
+                .padding(horizontal = 8.dp, vertical = 8.dp), 
             colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF8E1)),
-            //  surfaceTint = Color(0xFFFFF8E1), // Para que el amarillo sea real
+            
             border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFFD54F))
         ) {
             Row(
@@ -150,7 +150,7 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
                     Text(
                         text = stringResource(R.string.por_cada_rese_a_verificada),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF5D4037) // Marrón oscuro balanceado
+                        color = Color(0xFF5D4037) 
                     )
                 }
             }
@@ -164,9 +164,9 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
                         viewModel.lanzarFlujoPago(it, "puntos_30_pack")
                     }
                 },
-            // Fondo ámbar muy suave para que no canse la vista
+            
             colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF8E1)),
-            // Borde dorado para dar sensación de calidad
+            
             border = BorderStroke(1.dp, Color(0xFFFFC107))
         ) {
             Row(
@@ -177,14 +177,14 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
                     modifier = Modifier
                         .size(44.dp)
                         .background(
-                            // Gradiente sutil o color ámbar sólido oscuro
+                            
                             Color(0xFFFFA000),
                             CircleShape
                         ),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        // WorkspacePremium es ideal para representar reputación/estrellas
+                        
                         imageVector = Icons.Default.WorkspacePremium,
                         contentDescription = null,
                         tint = Color.White,
@@ -198,18 +198,18 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
                     Text(
                         text = stringResource(R.string.paquete_de_30_puntos_0_25_rep_extra),
                         fontWeight = FontWeight.ExtraBold,
-                        color = Color(0xFF5D4037), // Un café muy oscuro para buen contraste
+                        color = Color(0xFF5D4037), 
                         fontSize = 16.sp
                     )
                     Text(
                         text = stringResource(R.string.consumible_compra_cuantas_veces_quieras_sube_tu_rep_y_aparrece_en_los_primeros_lugares),
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF795548), // Texto secundario suave
+                        color = Color(0xFF795548), 
                         lineHeight = 14.sp
                     )
                 }
 
-                // Precio destacado en una cápsula
+                
                 Surface(
                     color = Color(0xFFFFC107),
                     shape = RoundedCornerShape(12.dp)
@@ -272,7 +272,7 @@ fun ReviewAppsScreen(viewModel: AuthViewModel, navController: NavController, lis
 @Composable
 fun ProductionAppRewardCard(
     app: AppModel,
-    estadoResena: String?, // null si no ha subido nada
+    estadoResena: String?, 
     onDownload: () -> Unit,
     onUploadReview: () -> Unit,
 ) {
@@ -297,7 +297,7 @@ fun ProductionAppRewardCard(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // App Icon Container
+                
                 Surface(
                     modifier = Modifier.size(56.dp),
                     shape = RoundedCornerShape(16.dp),
@@ -339,7 +339,7 @@ fun ProductionAppRewardCard(
                         overflow = TextOverflow.Ellipsis
                     )
 
-                    // Subtitle / State pill badge
+                    
                     Row(
                         modifier = Modifier.padding(top = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -414,7 +414,7 @@ fun ProductionAppRewardCard(
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Action Buttons Logic
+            
             when (estadoResena) {
                 "aprobada" -> {
                     Surface(
@@ -482,7 +482,7 @@ fun ProductionAppRewardCard(
                     }
 
                     if (isInstalled) {
-                        // PRIMER CASO: SI YA ESTÁ DESCARGADA
+                        
                         Button(
                             onClick = onUploadReview,
                             modifier = Modifier.fillMaxWidth(),
@@ -504,7 +504,7 @@ fun ProductionAppRewardCard(
                             )
                         }
                     } else {
-                        // SEGUNDO CASO: NO ESTÁ DESCARGADA
+                        
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -693,7 +693,7 @@ fun UploadReviewDialog(
 }
 
 
-// Función openPlayStore (ya la tenías, asegúrate de mantenerla)
+
 fun openPlayStore(context: Context, packageName: String) {
     try {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))

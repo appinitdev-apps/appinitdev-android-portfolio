@@ -68,13 +68,13 @@ class BarcodeScannerActivity : AppCompatActivity() {
             }
 
             override fun possibleResultPoints(resultPoints: MutableList<com.google.zxing.ResultPoint>?) {
-                // Handle possible result points if needed
+                
             }
         })
     }
 
     private fun handleBarcodeResult(barcode: String) {
-        // Return the scanned barcode to the calling activity
+        
         val resultIntent = Intent().apply {
             putExtra(EXTRA_BARCODE_RESULT, barcode)
         }

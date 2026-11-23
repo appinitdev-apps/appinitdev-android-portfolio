@@ -1,14 +1,14 @@
 
-/** Coordinates the DLNA renderer: starts/stops the HTTP and SSDP servers. */
+ 
 object DlnaRenderer {
 
-    /** Stable UUID for this device's UPnP identity (regenerated per process). */
+     
     val deviceUuid: String by lazy { UUID.randomUUID().toString() }
 
     private val CANDIDATE_PORTS = listOf(7878, 7879, 7880)
     private var lastPort: Int? = null
     private var scope: CoroutineScope? = null
-    /** Held so stop() can close it immediately, unblocking accept() on the IO thread. */
+     
     private var activeServerSocket: ServerSocket? = null
 
     fun start(context: Context) {
@@ -40,8 +40,8 @@ object DlnaRenderer {
     }
 
     fun stop() {
-        // Close the socket first — this immediately unblocks the accept() call on the IO thread
-        // and causes the OS to release the port, so the next start() can reuse it at once.
+        
+        
         activeServerSocket?.close()
         activeServerSocket = null
         scope?.cancel()
@@ -51,11 +51,11 @@ object DlnaRenderer {
         LogCat.d("DlnaRenderer stopped")
     }
 
-    /**
-     * Opens a [ServerSocket] with SO_REUSEADDR enabled so the port can be reused
-     * immediately after the previous server socket is closed, without entering TIME_WAIT.
-     * Tries the last successfully used port first, then falls back to other candidates.
-     */
+     
+
+
+
+
     private fun openServerSocket(): ServerSocket? {
         val candidates = lastPort
             ?.let { listOf(it) + CANDIDATE_PORTS.filter { p -> p != it } }

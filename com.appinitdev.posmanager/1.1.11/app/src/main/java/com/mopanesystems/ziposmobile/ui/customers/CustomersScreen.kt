@@ -30,7 +30,7 @@ fun CustomersScreenCompose(
         modifier = Modifier
             .fillMaxSize()
             .padding(12.dp),
-        // verticalArrangement = Arrangement.spacedBy(12.dp)
+        
     ) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
@@ -101,7 +101,7 @@ fun CustomersScreenCompose(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Search Bar
+        
         OutlinedTextField(
             value = searchQuery,
             onValueChange = {
@@ -116,7 +116,7 @@ fun CustomersScreenCompose(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Filter Buttons
+        
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -164,7 +164,7 @@ fun CustomersScreenCompose(
         Spacer(modifier = Modifier.height(16.dp))
 
 
-        // Customers List
+        
         if (isLoading) {
             Box(
                 modifier = Modifier.fillMaxWidth(),
@@ -199,17 +199,17 @@ fun CustomersScreenCompose(
                         onSelect = {
                             showInfoCustomersDialog = true
                             customersToEdit = customer
-                            //viewModel.selectCustomer(customer) }
+                            
                         }
                     )
                 }
             }
         }
 
-        // Error message
+        
         errorMessage?.let { message ->
             LaunchedEffect(message) {
-                // Show error message
+                
             }
         }
     }
@@ -220,11 +220,11 @@ fun CustomersScreenCompose(
             onDismiss = { showCustomersDialogCreate = false },
             onSave = { customer ->
                 viewModel.addCustomer(customer)
-                // Aquí guardas el producto, por ejemplo en un ViewModel o lista
+                
                 Log.d("customer", "customer creado: $customer")
                 showCustomersDialogCreate = false
             },
-            initialCustomer = customersToEdit, // null porque es creación
+            initialCustomer = customersToEdit, 
 
         )
     }
@@ -245,11 +245,11 @@ fun CustomersScreenCompose(
             onDismiss = { showCustomersDialogUpdate = false },
             onSave = { customer ->
                 viewModel.updateCustomer(customer)
-                // Aquí guardas el producto, por ejemplo en un ViewModel o lista
+                
                 Log.d("Products", "Producto actualizado: $customer")
                 showCustomersDialogUpdate = false
             },
-            initialCustomer = customersToEdit, // null porque es creación
+            initialCustomer = customersToEdit, 
 
         )
     }
@@ -347,7 +347,7 @@ fun CustomerCardCompose(
                         Text(
                             text = stringResource(R.string.pointss) +" ${it}",
                             style = MaterialTheme.typography.bodyMedium.copy(
-                                fontWeight = FontWeight.Bold // 👈 fuerza negrita
+                                fontWeight = FontWeight.Bold 
                             ),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -363,7 +363,7 @@ fun CustomerCardCompose(
                         Text(
                             text = stringResource(R.string.balanceee) +" ${it}",
                             style = MaterialTheme.typography.bodyMedium.copy(
-                                fontWeight = FontWeight.Bold // 👈 fuerza negrita
+                                fontWeight = FontWeight.Bold 
                             ),
                             color = colorContainer
                         )
@@ -384,7 +384,7 @@ fun CustomerCardCompose(
                         Text(
                             text = stringResource(R.string.riskscore) +" ${emoji} ${it}",
                             style = MaterialTheme.typography.bodyMedium.copy(
-                                fontWeight = FontWeight.Bold // 👈 fuerza negrita
+                                fontWeight = FontWeight.Bold 
                             ),
                             color = colorContainer
                         )
@@ -397,7 +397,7 @@ fun CustomerCardCompose(
 
             }
 
-            // Botones de acción
+            
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)

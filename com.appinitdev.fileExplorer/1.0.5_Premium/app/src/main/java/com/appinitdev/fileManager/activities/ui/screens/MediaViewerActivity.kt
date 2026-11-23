@@ -112,7 +112,7 @@ fun MediaViewerScreen(
                 }
             }
 
-            // Capa superior de controles flotantes
+            
             AnimatedVisibility(
                 visible = controlsVisible,
                 enter = fadeIn(),
@@ -178,11 +178,11 @@ fun ImageViewer(
                     scaleX = if (mirrored) -1f else 1f
                 }
                 .zoomable(zoomState)
-//                .pointerInput(Unit) {
-//                    detectTransformGestures { _, _, _, rotationChange ->
-//                        rotation += rotationChange
-//                    }
-//                },
+
+
+
+
+
             ,onError = {
                 onError()
             }
@@ -235,16 +235,16 @@ fun MediaPlayer(
     var duration by remember { mutableStateOf(0L) }
     var playbackState by remember { mutableStateOf(Player.STATE_IDLE) }
 
-    // Estados de control para mejorar radicalmente la UX del Slider
+    
     var isUserDraggingSlider by remember { mutableStateOf(false) }
     var sliderTransientValue by remember { mutableStateOf(0f) }
 
-    // Estados para el Zoom (Pinch-to-Zoom)
+    
     var scale by remember { mutableStateOf(1f) }
     var offsetX by remember { mutableStateOf(0f) }
     var offsetY by remember { mutableStateOf(0f) }
 
-    // Instancia única y segura de ExoPlayer
+    
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
             setMediaItem(MediaItem.fromUri(uri))
@@ -253,7 +253,7 @@ fun MediaPlayer(
         }
     }
 
-    // Escuchador de estado del reproductor
+    
     DisposableEffect(exoPlayer) {
         val listener = object : Player.Listener {
             override fun onIsPlayingChanged(playing: Boolean) {
@@ -277,10 +277,10 @@ fun MediaPlayer(
         }
     }
 
-    // Hilo de actualización periódica del tiempo transcurrido
+    
     LaunchedEffect(isPlaying) {
         while (isPlaying) {
-            // No pisar el estado si el usuario está arrastrando activamente el control de progreso
+            
             if (!isUserDraggingSlider) {
                 currentPosition = exoPlayer.currentPosition
             }
@@ -306,7 +306,7 @@ fun MediaPlayer(
             },
         contentAlignment = Alignment.Center
     ) {
-        // --- CAPA DEL CONTENIDO MULTIMEDIA (CON ZOOM APLICADO) ---
+        
         if (isAudioOnly) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -354,7 +354,7 @@ fun MediaPlayer(
             )
         }
 
-        // --- UX STATE: INDICADOR DE CARGA / BUFFERING ---
+        
         if (playbackState == Player.STATE_BUFFERING) {
             CircularProgressIndicator(
                 color = MaterialTheme.colorScheme.primary,
@@ -363,14 +363,14 @@ fun MediaPlayer(
             )
         }
 
-        // --- CONTROLES CLÁSICOS CON DISEÑO REFINADO ---
+        
         AnimatedVisibility(
             visible = controlsVisible && playbackState != Player.STATE_BUFFERING,
             enter = fadeIn(),
             exit = fadeOut(),
             modifier = Modifier.fillMaxSize()
         ) {
-            // Fondo oscuro degradado estilo cinematográfico de alta legibilidad
+            
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -384,13 +384,13 @@ fun MediaPlayer(
                         )
                     )
             ) {
-                // Fila Central de Botones Estilizados Premium
+                
                 Row(
                     modifier = Modifier.align(Alignment.Center),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Botón de Retroceder 10s Estilo Vidrio Esmerilado
+                    
                     CustomControlButton(
                         icon = Icons.Default.Replay10,
                         onClick = { exoPlayer.seekTo((exoPlayer.currentPosition - 10000).coerceAtLeast(0L)) }
@@ -398,12 +398,12 @@ fun MediaPlayer(
 
                     Spacer(modifier = Modifier.width(36.dp))
 
-                    // Botón Central Elevado e Inteligente (Play / Pause / Replay)
+                    
                     Box(
                         modifier = Modifier
                             .size(64.dp)
                             .border(2.dp, Color.White.copy(alpha = 0.25f), CircleShape)
-                            .padding(4.dp) // Genera un anillo externo premium muy estético
+                            .padding(4.dp) 
                             .clip(CircleShape)
                             .background(Color.White)
                             .clickable(
@@ -429,21 +429,21 @@ fun MediaPlayer(
                         Icon(
                             imageVector = playStateIcon,
                             contentDescription = null,
-                            tint = Color.Black, // Contraste inverso muy elegante sobre fondo blanco
+                            tint = Color.Black, 
                             modifier = Modifier.size(40.dp)
                         )
                     }
 
                     Spacer(modifier = Modifier.width(36.dp))
 
-                    // Botón de Adelantar 10s Estilo Vidrio Esmerilado
+                    
                     CustomControlButton(
                         icon = Icons.Default.Forward10,
                         onClick = { exoPlayer.seekTo((exoPlayer.currentPosition + 10000).coerceAtMost(duration)) }
                     )
                 }
 
-                // Panel inferior de la línea de tiempo (Slider Optimizado)
+                
 
                 Column(
                     modifier = Modifier
@@ -451,7 +451,7 @@ fun MediaPlayer(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp, vertical = 32.dp)
                 ) {
-                    // Determinar qué valor pintar en la barra para que responda instantáneamente al dedo
+                    
                     val activeSliderValue = if (isUserDraggingSlider) sliderTransientValue else currentPosition.toFloat()
 
                     Slider(
@@ -467,16 +467,16 @@ fun MediaPlayer(
                         },
                         valueRange = 0f..duration.toFloat().coerceAtLeast(1f),
                         modifier = Modifier.fillMaxWidth(),
-                        // 1. Rediseñamos el círculo deslizante (Thumb) para que sea pequeño y elegante
+                        
                         thumb = {
                             SliderDefaults.Thumb(
                                 interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
                                 colors = SliderDefaults.colors(thumbColor = Color.White),
-                                // Al reducir el tamaño a 12.dp (el de defecto es 20.dp) se ve súper minimalista
+                                
                                 modifier = Modifier.size(12.dp)
                             )
                         },
-                        // 2. Rediseñamos la barra de progreso (Track) para que sea ultra delgada
+                        
                         track = { sliderState ->
                             SliderDefaults.Track(
                                 sliderState = sliderState,
@@ -484,7 +484,7 @@ fun MediaPlayer(
                                     activeTrackColor = MaterialTheme.colorScheme.primary,
                                     inactiveTrackColor = Color.White.copy(alpha = 0.24f)
                                 ),
-                                // Reducimos la altura a la mitad (4.dp) para darle ese aspecto refinado de cine
+                                
                                 modifier = Modifier.height(4.dp)
                             )
                         }
@@ -493,7 +493,7 @@ fun MediaPlayer(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
-                         // .padding(horizontal = 4.dp, top = 4.0.dp), // Espaciado sutil superior
+                         
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
@@ -511,54 +511,54 @@ fun MediaPlayer(
                         )
                     }
                 }
-                /*Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 32.dp)
-                ) {
-                    // Determinar qué valor pintar en la barra para que responda instantáneamente al dedo
-                    val activeSliderValue = if (isUserDraggingSlider) sliderTransientValue else currentPosition.toFloat()
+                 
 
-                    Slider(
-                        value = activeSliderValue,
-                        onValueChange = { newValue ->
-                            isUserDraggingSlider = true
-                            sliderTransientValue = newValue
-                        },
-                        onValueChangeFinished = {
-                            isUserDraggingSlider = false
-                            currentPosition = sliderTransientValue.toLong()
-                            exoPlayer.seekTo(currentPosition) // El salto en memoria ocurre solo al soltar el dedo
-                        },
-                        valueRange = 0f..duration.toFloat().coerceAtLeast(1f),
-                        colors = SliderDefaults.colors(
-                            thumbColor = Color.White,
-                            activeTrackColor = MaterialTheme.colorScheme.primary,
-                            inactiveTrackColor = Color.White.copy(alpha = 0.2f)
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    )
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = formatTime(activeSliderValue.toLong()),
-                            color = Color.White.copy(alpha = 0.9f),
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                        Text(
-                            text = formatTime(duration),
-                            color = Color.White.copy(alpha = 0.5f),
-                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp)
-                        )
-                    }
-                }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
         }
     }
@@ -573,7 +573,7 @@ fun CustomControlButton(
     Box(
         modifier = modifier
             .size(48.dp)
-            .border(1.dp, Color.White.copy(alpha = 0.15f), CircleShape) // Borde sutil estilo cristal
+            .border(1.dp, Color.White.copy(alpha = 0.15f), CircleShape) 
             .clip(CircleShape)
             .background(Color.White.copy(alpha = 0.08f))
             .clickable(
@@ -591,7 +591,7 @@ fun CustomControlButton(
         )
     }
 }
-// Componente flotante (HUD) para mostrar los cambios de volumen o seek en tiempo real
+
 @Composable
 fun VideoGestureHUD(icon: ImageVector, label: String) {
     Card(

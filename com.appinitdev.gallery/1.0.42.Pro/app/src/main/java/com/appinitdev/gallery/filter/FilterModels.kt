@@ -19,6 +19,6 @@ data class FilterCategory(
 
 data class TextureItem(
     val name: String,
-    val resId: Int? = null,      // Para las texturas locales predefinidas
-    val uriString: String? = null // Para las imágenes de la galería (guardado como String)
+    val resId: Int? = null,      
+    val uriString: String? = null 
 )

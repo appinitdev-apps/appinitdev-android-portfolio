@@ -1,8 +1,8 @@
 
-/**
- * Glide DataFetcher for loading audio cover artwork.
- * Delegates to AudioCover.load() for centralized audio cover loading logic.
- */
+ 
+
+
+
 class AudioCoverFetcher internal constructor(
         private val context: Context,
         private val audio: Audio
@@ -10,7 +10,7 @@ class AudioCoverFetcher internal constructor(
 
     override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in Bitmap>) {
         try {
-            // Delegate to AudioCover for centralized audio cover loading
+            
             val bitmap = AudioCover.load(context, audio)
                 ?: throw FileNotFoundException("Could not find audio artwork for: ${audio.title}")
 
@@ -22,11 +22,11 @@ class AudioCoverFetcher internal constructor(
     }
 
     override fun cleanup() {
-        // No cleanup needed - AudioUtils handles resource management
+        
     }
 
     override fun cancel() {
-        // No cancellation needed
+        
     }
 
     override fun getDataClass(): Class<Bitmap> {

@@ -1,11 +1,11 @@
 
-/**
- * Adapter for the Album Artists panel. Works exactly like [AdapterArtists] but respects
- * [AlbumArtistPreferences] for layout mode so the two panels can have independent display
- * settings. Nobody wants their album artists looking like their regular artists — or do they?
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 class AdapterAlbumArtists(initial: List<Artist>) : FastScrollAdapter<VerticalListViewHolder>() {
 
     private var generalAdapterCallbacks: GeneralAdapterCallbacks? = null
@@ -94,12 +94,12 @@ class AdapterAlbumArtists(initial: List<Artist>) : FastScrollAdapter<VerticalLis
         super.onViewRecycled(holder)
     }
 
-    /** Wires up click and long-click events from the outside world. */
+     
     fun setGeneralAdapterCallbacks(callbacks: GeneralAdapterCallbacks) {
         this.generalAdapterCallbacks = callbacks
     }
 
-    /** Replaces the current list smoothly using DiffUtil under the hood. */
+     
     fun updateList(newAlbumArtists: List<Artist>) {
         differ.submitList(newAlbumArtists.toList())
     }

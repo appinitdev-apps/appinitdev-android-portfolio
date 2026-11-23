@@ -8,7 +8,7 @@ fun openFile(
     itemState: TransformItemState,
     audioPlaylistVM: AudioPlaylistViewModel? = null,
 ) {
-    // For files inside a zip archive, extract to the cache dir first, then open normally.
+    
     if (ZipBrowserHelper.isZipPath(file.path)) {
         coMain {
             DialogHelper.showLoading()
@@ -22,8 +22,8 @@ fun openFile(
             val extracted = file.copy(path = tempPath)
             when {
                 tempPath.isImageFast() || tempPath.isVideoFast() -> {
-                    // itemState is registered via TransformImageView (using the cached path)
-                    // so we can use openTransform for the zoom-from-thumbnail animation.
+                    
+                    
                     withIO {
                         MediaPreviewData.setDataAsync(
                             context, itemState,
@@ -37,7 +37,7 @@ fun openFile(
                     )
                 }
                 else -> {
-                    // audio, text, PDF — real temp path works normally
+                    
                     openFile(context, listOf(extracted), extracted, navController, previewerState, itemState, audioPlaylistVM)
                 }
             }

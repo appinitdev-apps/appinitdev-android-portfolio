@@ -1,7 +1,7 @@
 
 class MdnsHostResponderTest {
 
-    // ── normalizeHostname ─────────────────────────────────────────────────────
+    
 
     @Test fun `already has dot local suffix — unchanged`() =
         assertEquals("plainapp.local", MdnsHostResponder.normalizeHostname("plainapp.local"))
@@ -24,7 +24,7 @@ class MdnsHostResponderTest {
     @Test fun `blank string returns empty`() =
         assertEquals("", MdnsHostResponder.normalizeHostname("   "))
 
-    // ── ipToInt ───────────────────────────────────────────────────────────────
+    
 
     @Test fun `192 168 1 1 converts correctly`() {
         val ip = ip4("192.168.1.1")
@@ -44,7 +44,7 @@ class MdnsHostResponderTest {
         assertEquals(0, ipToInt(ip4("0.0.0.0")))
     }
 
-    // ── MdnsPacketCodec round-trip ────────────────────────────────────────────
+    
 
     @Test fun `type A query for matching hostname yields non-null response`() {
         val query = mdnsQuery("plainapp.local", type = 1)
@@ -104,11 +104,11 @@ class MdnsHostResponderTest {
 
     @Test fun `response packet with QR bit set yields null — no reply loop`() {
         val q = mdnsQuery("plainapp.local", 1).copyOf()
-        q[2] = 0x84.toByte() // set QR=1 (response), AA=1 — simulate an incoming response
+        q[2] = 0x84.toByte() 
         assertNull(MdnsPacketCodec.buildResponseIfMatch(q, "plainapp.local", listOf(ip4("192.168.1.1"))))
     }
 
-    // ── extractInet4Address ───────────────────────────────────────────────────
+    
 
     @Test fun `extractInet4Address — plain IPv4 returned as-is`() {
         val ip = ip4("192.168.1.5")

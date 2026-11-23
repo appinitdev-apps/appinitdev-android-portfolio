@@ -8,7 +8,7 @@ object TitleBarAnimator {
         duration: Long = 200,
         visibleAlpha: Float = 1.0f
     ) {
-        // Cancel any running animation
+        
         view.animate().cancel()
 
         if (setVisible) {

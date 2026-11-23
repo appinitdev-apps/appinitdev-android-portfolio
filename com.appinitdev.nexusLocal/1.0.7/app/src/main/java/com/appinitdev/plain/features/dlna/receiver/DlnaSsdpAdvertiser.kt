@@ -1,5 +1,5 @@
 
-/** Advertises this device as a UPnP MediaRenderer via SSDP multicast. */
+ 
 object DlnaSsdpAdvertiser {
 
     private const val SSDP_ADDR = "239.255.255.250"

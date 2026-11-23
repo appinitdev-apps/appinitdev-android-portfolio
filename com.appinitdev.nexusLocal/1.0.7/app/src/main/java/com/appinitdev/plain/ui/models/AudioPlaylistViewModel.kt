@@ -44,9 +44,9 @@ class AudioPlaylistViewModel : ViewModel() {
         val newList = AudioPlaylistPreference.deleteAsync(setOf(path))
         playlistItems.value = newList
         if (path == selectedPath.value) {
-            // If removing currently playing item
+            
             if (newList.isNotEmpty()) {
-                // Play next item if available
+                
                 val nextItem = newList[0]
                 AudioPlayingPreference.putAsync(nextItem.path)
                 AudioPlayer.justPlay(context, nextItem)

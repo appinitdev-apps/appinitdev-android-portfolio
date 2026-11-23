@@ -7,7 +7,7 @@ data class PeerChatParseResult(
 )
 
 object PeerChatParser {
-    // Maximum allowed time difference for timestamp validation (5 minutes)
+    
     const val MAX_TIMESTAMP_DIFF_MS = 5 * 60 * 1000L
 
     suspend fun decrypt(
@@ -23,8 +23,8 @@ object PeerChatParser {
             return PeerChatParseResult(HttpStatusCode.Unauthorized)
         }
 
-        // Extract timestamp, signature and GraphQL JSON from decrypted string
-        // Format: "signature|timestamp|GraphQL_JSON"
+        
+        
         var timestamp = 0L
         var signature = ""
         var requestStr = ""
@@ -39,7 +39,7 @@ object PeerChatParser {
         LogCat.d("[Request] GraphQL: $requestStr")
 
         val currentTime = System.currentTimeMillis()
-        // Verify timestamp is within acceptable range, replay attacks are not allowed
+        
         if (abs(currentTime - timestamp) > MAX_TIMESTAMP_DIFF_MS) {
             LogCat.e("Message timestamp is too old or in the future: $timestamp - rejected")
             return PeerChatParseResult(HttpStatusCode.BadRequest)

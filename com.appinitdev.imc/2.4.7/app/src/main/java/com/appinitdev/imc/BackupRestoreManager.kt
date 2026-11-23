@@ -5,7 +5,7 @@ object BackupRestoreManager {
         val dbHelper = BmiDatabaseHelper(context)
         val root = JSONObject()
 
-        // 1. Export History
+        
         val historyArray = JSONArray()
         val historyRecords = dbHelper.getAllHistoryRecords()
         for (rec in historyRecords) {
@@ -24,7 +24,7 @@ object BackupRestoreManager {
         }
         root.put("history", historyArray)
 
-        // 2. Export Family Members
+        
         val membersArray = JSONArray()
         val members = dbHelper.getAllFamilyMembers()
         for (m in members) {
@@ -40,7 +40,7 @@ object BackupRestoreManager {
         }
         root.put("members", membersArray)
 
-        // 3. Export Growth Records
+        
         val growthArray = JSONArray()
         for (m in members) {
             val records = dbHelper.getGrowthRecordsForMember(m.id)

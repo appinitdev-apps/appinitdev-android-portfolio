@@ -126,7 +126,7 @@ class NotallyXApplication : Application(), Application.ActivityLifecycleCallback
         return try {
             WorkManager.getInstance(this)
         } catch (e: Exception) {
-            // TODO: Happens when ErrorActivity is launched
+            
             null
         }
     }

@@ -111,7 +111,7 @@ class DashboardFragment : Fragment() {
                         }
                     }
                 } catch (_: Exception) {
-                    // Mantiene los valores estimados locales si está sin conexión
+                    
                 }
             }
             withContext(Dispatchers.Main) {
@@ -135,7 +135,7 @@ class DashboardFragment : Fragment() {
     }
 
     private fun setupExtraActions() {
-        // Selector de Idioma
+        
         binding.btnLanguage.setOnClickListener {
             val opciones = arrayOf("Español 🇲🇽", "English 🇺🇸")
             MaterialAlertDialogBuilder(requireContext())
@@ -303,7 +303,7 @@ class DashboardFragment : Fragment() {
 
             recyclerView.adapter = tourAdapter
 
-            // Sincronización y descarga en segundo plano para uso Offline
+            
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     com.appinitdev.turismoOax.network.OfflineImageManager.syncImages(requireContext().applicationContext, listaCompleta)

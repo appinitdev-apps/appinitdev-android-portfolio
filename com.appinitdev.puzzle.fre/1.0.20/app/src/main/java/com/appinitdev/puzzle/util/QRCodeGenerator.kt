@@ -1,10 +1,10 @@
 
 object QRCodeGenerator {
 
-    /**
-     * Genera un Bitmap con la representación visual del Código QR de un texto.
-     * Utiliza una matriz de codificación y dibujo directo en Canvas.
-     */
+     
+
+
+
     fun generateQRCode(text: String, size: Int = 512): Bitmap {
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
@@ -17,22 +17,22 @@ object QRCodeGenerator {
         }
 
         val paintAccent = Paint().apply {
-            color = Color.parseColor("#3F51B5") // Indigo accent
+            color = Color.parseColor("#3F51B5") 
             isAntiAlias = true
             style = Paint.Style.FILL
         }
 
-        // Generamos una matriz de módulos determinista basada en el texto
+        
         val matrixSize = 25
         val cellSize = size.toFloat() / matrixSize
         val matrix = Array(matrixSize) { BooleanArray(matrixSize) }
 
-        // 1. Patrones de búsqueda (Finder patterns) en las 3 esquinas
+        
         drawFinderPattern(matrix, 0, 0)
         drawFinderPattern(matrix, matrixSize - 7, 0)
         drawFinderPattern(matrix, 0, matrixSize - 7)
 
-        // 2. Líneas de sincronización (Timing patterns)
+        
         for (i in 7 until matrixSize - 7) {
             if (i % 2 == 0) {
                 matrix[6][i] = true
@@ -40,13 +40,13 @@ object QRCodeGenerator {
             }
         }
 
-        // 3. Codificación de datos con hash determinista
+        
         val bytes = text.toByteArray(Charsets.UTF_8)
         var bitIndex = 0
 
         for (r in 0 until matrixSize) {
             for (c in 0 until matrixSize) {
-                // Saltar patrones reservados (esquinas y líneas)
+                
                 if (isReservedArea(r, c, matrixSize)) continue
 
                 val byteVal = if (bytes.isNotEmpty()) bytes[bitIndex % bytes.size].toInt() and 0xFF else 0
@@ -58,7 +58,7 @@ object QRCodeGenerator {
             }
         }
 
-        // Dibuja los celdas en el canvas
+        
         for (r in 0 until matrixSize) {
             for (c in 0 until matrixSize) {
                 if (matrix[r][c]) {
@@ -95,16 +95,16 @@ object QRCodeGenerator {
     }
 
     private fun isReservedArea(r: Int, c: Int, size: Int): Boolean {
-        if (r < 8 && c < 8) return true // Top-Left finder
-        if (r < 8 && c >= size - 8) return true // Top-Right finder
-        if (r >= size - 8 && c < 8) return true // Bottom-Left finder
-        if (r == 6 || c == 6) return true // Timing patterns
+        if (r < 8 && c < 8) return true 
+        if (r < 8 && c >= size - 8) return true 
+        if (r >= size - 8 && c < 8) return true 
+        if (r == 6 || c == 6) return true 
         return false
     }
 
-    /**
-     * Guarda el QR en caché y abre el Intent para compartir la imagen.
-     */
+     
+
+
     fun shareQRCodeImage(context: Context, qrBitmap: Bitmap, shareText: String) {
         try {
             val cachePath = File(context.cacheDir, "images")

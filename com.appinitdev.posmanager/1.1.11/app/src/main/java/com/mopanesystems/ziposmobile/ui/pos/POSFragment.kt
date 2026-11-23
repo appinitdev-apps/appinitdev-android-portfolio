@@ -6,7 +6,7 @@ class POSFragment : Fragment() {
     private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
     private lateinit var receiptService: ReceiptService
 
-    // Barcode scanner launcher
+    
     private val barcodeScannerLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -47,7 +47,7 @@ class POSFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // Initialize receipt service
+        
         receiptService = ReceiptService(requireContext())
     }
 
@@ -58,7 +58,7 @@ class POSFragment : Fragment() {
     }
 
     private fun handleScannedBarcode(barcode: String) {
-        // Search for product by barcode
+        
 
         viewModel.findProductByBarcode(barcode)
     }

@@ -1,16 +1,16 @@
 
-/**
- * A dedicated adapter for the Panel Visibility preferences screen. It knows how
- * to display three kinds of rows: a big title header at the top, section sub-headers
- * that divide the list into groups, and the actual on/off toggle rows.
- *
- * Think of this as a tightly focused crew — it does one job and does it well,
- * rather than being a jack-of-all-trades like the generic adapter.
- *
- * @param preferences The full ordered list of preference items, including the header
- *                    and all sub-headers, built by [PanelVisibility][com.appinitdev.musicpro.ui.preferences.sub.PanelVisibility].
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
 class AdapterPanelVisibility(
         private val preferences: List<Preference>
 ) : RecyclerView.Adapter<VerticalListViewHolder>() {
@@ -36,31 +36,31 @@ class AdapterPanelVisibility(
         val preference = preferences[position]
         when (holder) {
             is Header -> {
-                // The big friendly title at the very top of the screen.
+                
                 holder.binding.title.setText(preference.title)
                 holder.binding.summary.setText(R.string.panel_visibility_summary)
             }
             is SubHeader -> {
-                // A small label that groups related toggles together.
+                
                 holder.binding.title.setText(preference.title)
             }
             is Switch -> {
                 holder.binding.title.setText(preference.title)
 
-                // Icons are optional — skip setting one if the preference didn't supply it.
+                
                 if (preference.icon != 0) {
                     holder.binding.icon.setImageResource(preference.icon)
                 }
 
-                // Restore the saved state without triggering the listener — otherwise
-                // we'd accidentally write back the same value on every bind, which is wasteful.
+                
+                
                 holder.binding.switchToggle.setChecked(
                         preference.valueAsBooleanProvider ?: false,
                         animateThumb = false
                 )
 
                 holder.binding.switchToggle.setOnCheckedChangeListener { switch, _ ->
-                    preference.onPreferenceAction?.invoke(switch) { /* no-op */ }
+                    preference.onPreferenceAction?.invoke(switch) {   }
                 }
             }
         }
@@ -83,8 +83,8 @@ class AdapterPanelVisibility(
 
     inner class Switch(val binding: AdapterPanelVisibilityBinding) : VerticalListViewHolder(binding.root) {
         init {
-            // Clipping needs to be off so the switch thumb shadow doesn't get clipped
-            // at the row edges — a small detail that makes a big visual difference.
+            
+            
             binding.root.clipChildren = false
             binding.root.clipToPadding = false
         }

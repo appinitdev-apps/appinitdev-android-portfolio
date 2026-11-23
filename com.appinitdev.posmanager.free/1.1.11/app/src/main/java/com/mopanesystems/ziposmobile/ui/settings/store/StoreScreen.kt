@@ -50,7 +50,7 @@ fun StoreScreen(
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // Todos los campos ocupan todo el ancho
+                    
                     val fields = listOf(
                         stringResource(R.string.name) to name,
                         stringResource(R.string.address) to address,

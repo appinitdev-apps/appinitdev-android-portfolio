@@ -154,7 +154,7 @@ fun SettingsDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    // Estilo de Fichas (Skins)
+                    
                     Surface(
                         shape = RoundedCornerShape(16.dp),
                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
@@ -189,7 +189,7 @@ fun SettingsDialog(
                         }
                     }
 
-                    // Relieve 3D de Fichas
+                    
                     Surface(
                         shape = RoundedCornerShape(16.dp),
                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
@@ -236,7 +236,7 @@ fun SettingsDialog(
                         }
                     )
 
-                    // Fondo de Pantalla Personalizado
+                    
                     Surface(
                         shape = RoundedCornerShape(16.dp),
                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),

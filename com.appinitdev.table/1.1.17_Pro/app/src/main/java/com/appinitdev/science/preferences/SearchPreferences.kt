@@ -8,9 +8,9 @@ class SearchPreferences(context : Context) {
 
     fun getValue() : Int{
         return preference.getInt (PREFERENCE_VALUE, 0)
-        //0 == Element Number
-        //1 == Electronegativity
-        //2 == STP Phase
+        
+        
+        
     }
 
     fun setValue(count:Int) {

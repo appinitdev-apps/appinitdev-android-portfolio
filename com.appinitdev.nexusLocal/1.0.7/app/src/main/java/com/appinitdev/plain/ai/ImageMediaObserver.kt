@@ -1,8 +1,8 @@
 
-/**
- * Monitors MediaStore for image changes (add, delete, modify by any app).
- * Debounces rapid notifications into a single sync request.
- */
+ 
+
+
+
 class ImageMediaObserver(
     private val onChanged: () -> Unit,
 ) : ContentObserver(Handler(Looper.getMainLooper())) {

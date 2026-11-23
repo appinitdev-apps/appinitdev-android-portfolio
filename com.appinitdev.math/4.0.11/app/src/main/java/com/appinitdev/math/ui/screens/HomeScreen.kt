@@ -43,7 +43,7 @@ fun HomeScreen(
         )
     }
 
-    // Settings Dialog
+    
     if (showSettingsDialog) {
         var settingsTab by remember { mutableIntStateOf(0) }
 
@@ -125,7 +125,7 @@ fun HomeScreen(
                             }
                         }
                     } else {
-                        // Appearance Preset Selector
+                        
                         val themes = listOf(
                             Triple("SYSTEM", "📱 Sistema", Color(0xFF6200EE)),
                             Triple("DEFAULT", "🔵 Ocean Blue", Color(0xFF0284C7)),
@@ -227,7 +227,7 @@ fun HomeScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // App Header Title & Dedicated Settings Button
+            
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -294,7 +294,7 @@ fun HomeScreen(
                 }
             }
 
-            // Search Trigger Bar
+            
             item {
                 Box(
                     modifier = Modifier
@@ -322,13 +322,13 @@ fun HomeScreen(
                 }
             }
 
-            // Interactive Study Tools Shortcuts
+            
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    // Flashcards Card
+                    
                     Card(
                         onClick = { viewModel.navigateTo(Screen.FLASHCARDS) },
                         modifier = Modifier
@@ -371,7 +371,7 @@ fun HomeScreen(
                         }
                     }
 
-                    // Glosario Card
+                    
                     Card(
                         onClick = { viewModel.navigateTo(Screen.GLOSSARY) },
                         modifier = Modifier
@@ -414,7 +414,7 @@ fun HomeScreen(
                         }
                     }
 
-                    // Convertidor Card
+                    
                     Card(
                         onClick = { viewModel.navigateTo(Screen.UNIT_CONVERTER) },
                         modifier = Modifier
@@ -459,7 +459,7 @@ fun HomeScreen(
                 }
             }
 
-            // Pinned Formulas Section
+            
             if (pinnedTopics.isNotEmpty()) {
                 item {
                     Column {
@@ -485,7 +485,7 @@ fun HomeScreen(
                 }
             }
 
-            // Recent Topics Section
+            
             if (recentTopics.isNotEmpty()) {
                 item {
                     Column {
@@ -511,7 +511,7 @@ fun HomeScreen(
                 }
             }
 
-            // Favorites Quick Access Section
+            
             if (favoriteTopics.isNotEmpty()) {
                 item {
                     Column {
@@ -537,7 +537,7 @@ fun HomeScreen(
                 }
             }
 
-            // Category Area Filter Chips
+            
             item {
                 Column {
                     Text(
@@ -574,7 +574,7 @@ fun HomeScreen(
                 }
             }
 
-            // Main Category Cards List
+            
             items(categories) { category ->
                 CategoryCard(
                     category = category,

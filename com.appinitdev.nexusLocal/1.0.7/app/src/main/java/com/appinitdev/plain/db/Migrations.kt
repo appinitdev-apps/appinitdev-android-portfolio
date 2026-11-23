@@ -2,7 +2,7 @@
 object Migrations {
     val MIGRATION_5_6 = object : Migration(5, 6) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            // Ensure pomodoro_items exists in case it was missing from a prior incomplete migration
+            
             db.execSQL("""
                 CREATE TABLE IF NOT EXISTS `pomodoro_items` (
                     `id` TEXT NOT NULL,
@@ -16,7 +16,7 @@ object Migrations {
                 )
             """)
 
-            // Create new table with desired structure
+            
             db.execSQL("""
                 CREATE TABLE chats_new (
                     id TEXT PRIMARY KEY NOT NULL,
@@ -30,7 +30,7 @@ object Migrations {
                 )
             """)
             
-            // Copy and transform data
+            
             db.execSQL("""
                 INSERT INTO chats_new (id, from_id, to_id, group_id, status, content, created_at, updated_at)
                 SELECT id, 
@@ -42,7 +42,7 @@ object Migrations {
                 FROM chats
             """)
             
-            // Create new tables
+            
             db.execSQL("""
                 CREATE TABLE peers (
                     id TEXT PRIMARY KEY NOT NULL,
@@ -69,11 +69,11 @@ object Migrations {
                 )
             """)
             
-            // Replace old table
+            
             db.execSQL("DROP TABLE chats")
             db.execSQL("ALTER TABLE chats_new RENAME TO chats")
             
-            // Create indexes for chats table
+            
             db.execSQL("CREATE INDEX index_chats_from_id ON chats(from_id)")
             db.execSQL("CREATE INDEX index_chats_to_id ON chats(to_id)")
             db.execSQL("CREATE INDEX index_chats_group_id ON chats(group_id)")

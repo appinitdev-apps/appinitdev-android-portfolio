@@ -8,8 +8,8 @@ object PeerFileDownloader {
         val fileName = messageFile.fileName
         val downloadUrl = task.peer.getFileUrl(messageFile.parseFileId())
 
-        // Stage download into a temp file; imported into the content-addressable
-        // store only after a successful, complete download.
+        
+        
         val tempFile = File(context.cacheDir, "dl_${task.messageFile.id}_${System.currentTimeMillis()}")
         tempFile.parentFile?.mkdirs()
 
@@ -66,11 +66,11 @@ object PeerFileDownloader {
                 task.downloadedSize = downloadedBytes
                 task.downloadSpeed = 0
 
-                // Infer MIME type from file name extension
+                
                 val mimeType = MimeTypeMap.getSingleton()
                     .getMimeTypeFromExtension(fileName.getFilenameExtension()) ?: ""
 
-                // Import into content-addressable store (dedup, deleteSrc=true moves the temp file)
+                
                 val fidUri = ChatFileSaveHelper.importDownloadedFile(context, tempFile, mimeType)
                 val realPath = AppFileStore.resolveUri(context, fidUri)
 

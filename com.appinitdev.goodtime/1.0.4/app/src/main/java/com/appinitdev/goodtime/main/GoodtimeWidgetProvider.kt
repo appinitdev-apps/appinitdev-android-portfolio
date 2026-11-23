@@ -53,7 +53,7 @@ class GoodtimeWidgetProvider : AppWidgetProvider(), KoinComponent {
     ) {
         val views = RemoteViews(context.packageName, R.layout.widget_goodtime)
 
-        // Open app when tapping root layout or title
+        
         val mainIntent = Intent(context, MainActivity::class.java)
         val mainPendingIntent = PendingIntent.getActivity(
             context,
@@ -63,7 +63,7 @@ class GoodtimeWidgetProvider : AppWidgetProvider(), KoinComponent {
         )
         views.setOnClickPendingIntent(R.id.widget_root, mainPendingIntent)
 
-        // Toggle action intent
+        
         val toggleIntent = Intent(context, GoodtimeWidgetProvider::class.java).apply {
             action = ACTION_TOGGLE_TIMER
         }
@@ -75,7 +75,7 @@ class GoodtimeWidgetProvider : AppWidgetProvider(), KoinComponent {
         )
         views.setOnClickPendingIntent(R.id.widget_btn_toggle, togglePendingIntent)
 
-        // Reset action intent
+        
         val resetIntent = Intent(context, GoodtimeWidgetProvider::class.java).apply {
             action = ACTION_RESET_TIMER
         }

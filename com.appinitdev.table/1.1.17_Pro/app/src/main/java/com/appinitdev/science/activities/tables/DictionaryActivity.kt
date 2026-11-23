@@ -3,7 +3,7 @@ class DictionaryActivity : BaseActivity(), DictionaryAdapter.OnDictionaryClickLi
     private var dictionaryList = ArrayList<Dictionary>()
     var mAdapter = DictionaryAdapter(dictionaryList, this, this)
 
-    // back interception members
+    
     private var backCallback: OnBackPressedCallback? = null
     private var onBackInvokedCb: android.window.OnBackInvokedCallback? = null
 
@@ -20,7 +20,7 @@ class DictionaryActivity : BaseActivity(), DictionaryAdapter.OnDictionaryClickLi
         }
         if (themePrefValue == 0) { setTheme(R.style.AppTheme) }
         if (themePrefValue == 1) { setTheme(R.style.AppThemeDark) }
-        setContentView(R.layout.activity_dictionary) //REMEMBER: Never move any function calls above this
+        setContentView(R.layout.activity_dictionary) 
 
         val recyclerView = findViewById<RecyclerView>(R.id.rc_view)
         recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
@@ -32,13 +32,13 @@ class DictionaryActivity : BaseActivity(), DictionaryAdapter.OnDictionaryClickLi
         chipListeners(itemse, recyclerView)
         findViewById<Button>(R.id.clear_btn).visibility = View.GONE
 
-        //Set achievement
+        
         val achievements = java.util.ArrayList<Achievement>()
         AchievementModel.getList(this, achievements)
         val achievement6 = achievements.find { it.id == 6 }
         achievement6?.incrementProgress(this, 1)
 
-        //Add value to most used:
+        
         val mostUsedPreference = MostUsedPreference(this)
         val mostUsedPrefValue = mostUsedPreference.getValue()
         val targetLabel = "phi"
@@ -56,11 +56,11 @@ class DictionaryActivity : BaseActivity(), DictionaryAdapter.OnDictionaryClickLi
             this.onBackPressed()
         }
 
-        // Register lifecycle-aware OnBackPressedCallback in DISABLED state.
-        // We'll enable it when the search bar is shown.
+        
+        
         backCallback = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
-                // If search is open close it; otherwise forward to system behavior
+                
                 if (!handleBackPress()) {
                     backCallback?.isEnabled = false
                     try {
@@ -78,13 +78,13 @@ class DictionaryActivity : BaseActivity(), DictionaryAdapter.OnDictionaryClickLi
         onBackPressedDispatcher.addCallback(this, backCallback!!)
     }
 
-    // Helper: returns true if search bar overlay is open
+    
     private fun anyOverlayOpen(): Boolean {
         val searchBar = findViewById<FrameLayout?>(R.id.search_bar_iso)
         return searchBar?.visibility == View.VISIBLE
     }
 
-    // Centralized enabling/disabling and platform registration for predictive back
+    
     private fun setBackInterceptionEnabled(enabled: Boolean) {
         backCallback?.isEnabled = enabled
 
@@ -122,14 +122,14 @@ class DictionaryActivity : BaseActivity(), DictionaryAdapter.OnDictionaryClickLi
         }
     }
 
-    // If search overlay open, close it and return true (consumed)
+    
     private fun handleBackPress(): Boolean {
         val searchBar = findViewById<FrameLayout>(R.id.search_bar_iso)
         val titleBox = findViewById<FrameLayout>(R.id.title_box)
         val editIso = findViewById<EditText>(R.id.edit_iso)
 
         return if (searchBar.visibility == View.VISIBLE) {
-            // close search
+            
             Utils.fadeOutAnim(searchBar, 1)
 
             val delayClose = Handler()
@@ -137,14 +137,14 @@ class DictionaryActivity : BaseActivity(), DictionaryAdapter.OnDictionaryClickLi
                 Utils.fadeInAnim(titleBox, 150)
             }, 151)
 
-            // hide keyboard
+            
             val view = this.currentFocus
             if (view != null) {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
             }
 
-            // Keep interception enabled only if any overlays remain (none in current screen except search)
+            
             setBackInterceptionEnabled(anyOverlayOpen())
             true
         } else {
@@ -277,7 +277,7 @@ class DictionaryActivity : BaseActivity(), DictionaryAdapter.OnDictionaryClickLi
             val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(findViewById<EditText>(R.id.edit_iso), InputMethodManager.SHOW_IMPLICIT)
 
-            // search opened -> enable back interception
+            
             setBackInterceptionEnabled(true)
         }
         findViewById<ImageButton>(R.id.close_iso_search).setOnClickListener {
@@ -294,7 +294,7 @@ class DictionaryActivity : BaseActivity(), DictionaryAdapter.OnDictionaryClickLi
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
             }
 
-            // search closed -> disable interception
+            
             setBackInterceptionEnabled(false)
         }
     }

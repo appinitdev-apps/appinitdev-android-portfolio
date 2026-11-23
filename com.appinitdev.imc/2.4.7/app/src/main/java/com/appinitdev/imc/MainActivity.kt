@@ -75,7 +75,7 @@ fun MainAppNav(
         mutableStateOf(familyManager.getActiveMember())
     }
 
-    // First Time Onboarding: Prompt to create Main Profile if no profiles exist
+    
     var showOnboardingDialog by remember {
         mutableStateOf(allMembers.isEmpty())
     }
@@ -155,7 +155,7 @@ fun MainAppNav(
                     val categoryObj = Datos.categories.find { it.id == res.categoryId }
                     val categoryName = if (categoryObj != null) context.getString(categoryObj.descriptionResId) else ""
 
-                    // Save to General History
+                    
                     historyManager.saveRecord(
                         BmiRecord(
                             categoryId = res.categoryId,
@@ -168,7 +168,7 @@ fun MainAppNav(
                         )
                     )
 
-                    // Also save directly to Active Member Profile Timeline!
+                    
                     val member = activeMember
                     if (member != null) {
                         familyManager.saveGrowthRecord(
@@ -204,7 +204,7 @@ fun MainAppNav(
         }
     }
 
-    // First Time Onboarding Dialog
+    
     if (showOnboardingDialog) {
         var nameInput by remember { mutableStateOf("Mi Perfil") }
         var genderInput by remember { mutableStateOf(Gender.MALE) }
@@ -337,7 +337,7 @@ fun MainAppNav(
         )
     }
 
-    // Switch Profile Dialog
+    
     if (showProfileSwitchDialog) {
         AlertDialog(
             onDismissRequest = { showProfileSwitchDialog = false },
@@ -456,7 +456,7 @@ fun MainAppNav(
         )
     }
 
-    // Add Profile Dialog from Switcher
+    
     if (showAddProfileDialog) {
         var nameInput by remember { mutableStateOf("") }
         var relationshipInput by remember { mutableStateOf("Hijo/a") }
@@ -577,7 +577,7 @@ fun MainAppNav(
         )
     }
 
-    // Edit Profile Dialog from Main/Switcher
+    
     if (memberToEditInMain != null) {
         val target = memberToEditInMain!!
         val birthCal = Calendar.getInstance().apply { timeInMillis = target.birthTimestamp }
@@ -704,7 +704,7 @@ fun MainAppNav(
         )
     }
 
-    // Delete Profile Confirmation Dialog
+    
     if (memberToDeleteInMain != null) {
         val target = memberToDeleteInMain!!
         AlertDialog(
@@ -770,7 +770,7 @@ fun MainAppNav(
         )
     }
 
-    // 5 Color Themes & Dark/Light Mode Selector Dialog
+    
     if (showThemeDialog) {
         AlertDialog(
             onDismissRequest = { showThemeDialog = false },

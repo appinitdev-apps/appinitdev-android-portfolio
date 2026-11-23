@@ -1,12 +1,12 @@
 
-/**
- * Modern UI Components for ziPOS Mobile
- * Provides consistent, contemporary design patterns across the application
- */
+ 
 
-/**
- * Primary action button with proper scaling and modern design
- */
+
+
+
+ 
+
+
 @Composable
 fun ModernPrimaryButton(
     text: String,
@@ -61,9 +61,9 @@ fun ModernPrimaryButton(
     }
 }
 
-/**
- * Secondary action button with modern outlined design
- */
+ 
+
+
 @Composable
 fun ModernSecondaryButton(
     text: String,
@@ -108,9 +108,9 @@ fun ModernSecondaryButton(
     }
 }
 
-/**
- * Compact action button for tight spaces
- */
+ 
+
+
 @Composable
 fun ModernCompactButton(
     onClick: () -> Unit,
@@ -138,9 +138,9 @@ fun ModernCompactButton(
     }
 }
 
-/**
- * Modern floating action button with scaling
- */
+ 
+
+
 @Composable
 fun ModernFloatingActionButton(
     onClick: () -> Unit,
@@ -189,9 +189,9 @@ fun ModernFloatingActionButton(
     }
 }
 
-/**
- * Modern card with elevation and proper styling
- */
+ 
+
+
 @Composable
 fun ModernCard(
     modifier: Modifier = Modifier,
@@ -230,9 +230,9 @@ fun ModernCard(
     }
 }
 
-/**
- * Modern surface with consistent styling
- */
+ 
+
+
 @Composable
 fun ModernSurface(
     modifier: Modifier = Modifier,
@@ -260,9 +260,9 @@ fun ModernSurface(
     }
 }
 
-/**
- * Modern chip component with proper sizing
- */
+ 
+
+
 @Composable
 fun ModernChip(
     text: String,
@@ -297,9 +297,9 @@ fun ModernChip(
     )
 }
 
-/**
- * Status indicator chip with color coding
- */
+ 
+
+
 @Composable
 fun StatusChip(
     text: String,

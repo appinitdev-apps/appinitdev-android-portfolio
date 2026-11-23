@@ -6,7 +6,7 @@ fun WhoPercentileChart(
 ) {
     var selectedIndex by remember(records) { mutableStateOf<Int?>(null) }
 
-    // Pulsing Infinite Animation for Latest Data Point
+    
     val infiniteTransition = rememberInfiniteTransition(label = "PulseTransitionWHO")
     val pulseScale by infiniteTransition.animateFloat(
         initialValue = 1f,
@@ -74,7 +74,7 @@ fun WhoPercentileChart(
                 }
             }
 
-            // Interactive Selected Point Tooltip Box
+            
             val activeIndex = selectedIndex
             if (activeIndex != null && (activeIndex in records.indices)) {
                 val selRecord = records[activeIndex]
@@ -130,21 +130,21 @@ fun WhoPercentileChart(
                     val width = size.width
                     val height = size.height
 
-                    // Percentile Bands Coordinates (P3, P15, P50, P85, P97)
+                    
                     val p97Y = height * 0.10f
                     val p85Y = height * 0.28f
-                    val p50Y = height * 0.50f // OMS Median
+                    val p50Y = height * 0.50f 
                     val p15Y = height * 0.72f
                     val p3Y = height * 0.90f
 
-                    // Draw WHO Percentile Lines
+                    
                     drawLine(color = Color(0xFFEF4444).copy(alpha = 0.5f), start = Offset(0f, p97Y), end = Offset(width, p97Y), strokeWidth = 1.5.dp.toPx())
                     drawLine(color = Color(0xFFF59E0B).copy(alpha = 0.5f), start = Offset(0f, p85Y), end = Offset(width, p85Y), strokeWidth = 1.5.dp.toPx())
-                    drawLine(color = Color(0xFF10B981), start = Offset(0f, p50Y), end = Offset(width, p50Y), strokeWidth = 2.5.dp.toPx()) // P50 Median Line
+                    drawLine(color = Color(0xFF10B981), start = Offset(0f, p50Y), end = Offset(width, p50Y), strokeWidth = 2.5.dp.toPx()) 
                     drawLine(color = Color(0xFFF59E0B).copy(alpha = 0.5f), start = Offset(0f, p15Y), end = Offset(width, p15Y), strokeWidth = 1.5.dp.toPx())
                     drawLine(color = Color(0xFFEF4444).copy(alpha = 0.5f), start = Offset(0f, p3Y), end = Offset(width, p3Y), strokeWidth = 1.5.dp.toPx())
 
-                    // Child Record Points if available
+                    
                     if (records.isNotEmpty()) {
                         val weights = records.map { it.weightKg.toFloat() }
                         val minW = weights.minOrNull() ?: 0f
@@ -161,7 +161,7 @@ fun WhoPercentileChart(
                             childPoints.add(Offset(x, y))
                         }
 
-                        // Child Line Path
+                        
                         val childPath = Path().apply {
                             if (childPoints.isNotEmpty()) {
                                 moveTo(childPoints.first().x, childPoints.first().y)
@@ -177,7 +177,7 @@ fun WhoPercentileChart(
                             style = Stroke(width = 3.8.dp.toPx(), cap = StrokeCap.Round),
                         )
 
-                        // Live Pulse Effect on the Last Point
+                        
                         if (childPoints.isNotEmpty()) {
                             val lastPoint = childPoints.last()
                             drawCircle(
@@ -232,7 +232,7 @@ fun WhoPercentileChart(
                     }
                 }
 
-                // Percentile Legend Labels
+                
                 Column(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)

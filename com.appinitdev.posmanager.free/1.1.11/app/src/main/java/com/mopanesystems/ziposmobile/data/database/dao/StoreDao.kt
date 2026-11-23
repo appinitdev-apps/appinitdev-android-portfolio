@@ -3,7 +3,7 @@
 interface StoreDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(store: Store) // Ignora si ya existe
+    suspend fun insert(store: Store) 
 
     @Update
     suspend fun update(store: Store)
@@ -11,25 +11,25 @@ interface StoreDao {
     @Query("SELECT * FROM stores LIMIT 1")
     fun getStore(): Flow<Store?>
 
-    /*@Query("SELECT * FROM stores WHERE isActive = 1 ORDER BY name ASC")
-    fun getAllActiveStores(): Flow<List<Store>>
+     
 
-    @Query("SELECT * FROM stores WHERE id = :id")
-    suspend fun getStoreById(id: String): Store?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertStore(store: Store)
 
-    @Update
-    suspend fun updateStore(store: Store)
 
-    @Delete
-    suspend fun deleteStore(store: Store)
 
-    @Query("UPDATE stores SET isActive = 0 WHERE id = :storeId")
-    suspend fun deactivateStore(storeId: String)
 
-     */
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 @Dao

@@ -1,11 +1,11 @@
 
 object NsdHelper {
-    // Prevents concurrent starts from racing multicast lock/socket lifecycle.
+    
     private val registering = AtomicBoolean(false)
 
-    /**
-     * Start mDNS hostname responder for the active web service.
-     */
+     
+
+
     fun registerServices(context: Context, httpPort: Int?, httpsPort: Int?): Boolean {
         if (!registering.compareAndSet(false, true)) {
             LogCat.d("registerServices already in progress, skipping")
@@ -31,9 +31,9 @@ object NsdHelper {
         return MdnsHostResponder.start(context, hostname)
     }
 
-    /**
-     * Stop mDNS hostname responder.
-     */
+     
+
+
     fun unregisterService() {
         MdnsHostResponder.stop()
     }

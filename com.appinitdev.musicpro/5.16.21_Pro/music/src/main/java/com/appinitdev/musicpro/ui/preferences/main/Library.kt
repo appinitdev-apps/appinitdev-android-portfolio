@@ -29,7 +29,7 @@ class Library : PreferenceFragment() {
             LibraryPreferences.SKIP_HIDDEN_FILES,
             LibraryPreferences.SKIP_HIDDEN_FOLDERS -> {
                 postDelayed {
-                    // Any scanner-related preference change requires a fresh scan
+                    
                     AudioDatabaseService.refreshScan(requireContext())
                 }
             }

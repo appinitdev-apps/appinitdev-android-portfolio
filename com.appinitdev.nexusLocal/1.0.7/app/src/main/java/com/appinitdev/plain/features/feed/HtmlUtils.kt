@@ -35,25 +35,25 @@ object HtmlUtils {
     ): String {
         var c = content
 
-        // remove some ads
+        
         c = ADS_PATTERN.matcher(c).replaceAll("")
-        // take the first image in srcset links
+        
         c = SRCSET_PATTERN.matcher(c).replaceAll(" src='$1'")
-        // remove lazy loading images stuff
+        
         c = LAZY_LOADING_PATTERN.matcher(c).replaceAll(" src=$2")
 
-        // clean by JSoup
+        
         c = Jsoup.clean(c, baseUri, JSOUP_WHITELIST)
 
-        // remove empty or bad images
+        
         c = PIXEL_IMAGE_PATTERN.matcher(c).replaceAll("")
         c = BAD_IMAGE_PATTERN.matcher(c).replaceAll("")
         c = EMPTY_IMAGE_PATTERN.matcher(c).replaceAll("")
-        // remove empty links
+        
         c = EMPTY_LINK_PATTERN.matcher(c).replaceAll("")
-        // fix non http image paths
+        
         c = NON_HTTP_IMAGE_PATTERN.matcher(c).replaceAll(" $1=$2http://")
-        // remove trailing BR & too much BR
+        
         c = START_BR_PATTERN.matcher(c).replaceAll("")
         c = END_BR_PATTERN.matcher(c).replaceAll("")
         c = MULTIPLE_BR_PATTERN.matcher(c).replaceAll("<br><br>")
@@ -81,7 +81,7 @@ object HtmlUtils {
 
     fun getBaseUrl(link: String): String {
         var baseUrl = link
-        val index = link.indexOf('/', 8) // this also covers https://
+        val index = link.indexOf('/', 8) 
         if (index > -1) {
             baseUrl = link.substring(0, index)
         }

@@ -73,16 +73,16 @@ object ChatSender {
             }
 
             ChannelChatSender.Result.NoLeader -> {
-                // No joined member is reachable right now — trigger rediscovery for everyone
-                // so the next send / heartbeat can re-elect a leader.
+                
+                
                 channel.getRecipientIds().forEach { triggerPeerRediscovery(it) }
                 ChatDbHelper.updateChannelChatItemStatus(item, null)
             }
 
             is ChannelChatSender.Result.LeaderPeerMissing -> {
-                // We have a leader id from election but their peer record is gone locally
-                // (DB row was deleted / not yet cached). Refresh that peer first, then try
-                // the rest of the members.
+                
+                
+                
                 triggerPeerRediscovery(result.leaderId)
                 channel.getRecipientIds()
                     .filter { it != result.leaderId }

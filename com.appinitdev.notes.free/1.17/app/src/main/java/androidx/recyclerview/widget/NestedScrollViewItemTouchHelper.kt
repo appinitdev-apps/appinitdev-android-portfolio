@@ -21,13 +21,13 @@ class NestedScrollViewItemTouchHelper(
         }
     }
 
-    /**
-     * Scrolls [scrollView] when an item in [mRecyclerView] is dragged to the top or bottom of the
-     * [scrollView].
-     *
-     * Inspired by
-     * [https://stackoverflow.com/a/70699988/9748566](https://stackoverflow.com/a/70699988/9748566)
-     */
+     
+
+
+
+
+
+
     override fun scrollIfNecessary(): Boolean {
         if (mSelected == null) {
             dragScrollStartTimeInMs = Long.MIN_VALUE
@@ -43,25 +43,25 @@ class NestedScrollViewItemTouchHelper(
         var scrollY = 0
         val currentScrollY = scrollView.scrollY
 
-        // We need to use the height of NestedScrollView, not RecyclerView's!
+        
         val actualShowingHeight =
             scrollView.height - mRecyclerView.top - mRecyclerView.paddingBottom
 
         lm!!.calculateItemDecorationsForChild(mSelected.itemView, tmpRect!!)
         if (lm.canScrollVertically()) {
-            // Keep scrolling if the user didnt change the drag direction
+            
             if (lastScrollY != 0 && abs(lastmDy) >= abs(mDy)) {
                 scrollY = lastScrollY
             } else {
-                // The true current Y of the item in NestedScrollView, not in RecyclerView!
+                
                 val curY = (selectedStartY + mDy - currentScrollY).toInt()
-                // The true mDy should plus the initial scrollY and minus current scrollY of
-                // NestedScrollView
+                
+                
                 val checkDy = (mDy + selectedStartScrollY - currentScrollY).toInt()
                 val topDiff = curY - tmpRect!!.top - mRecyclerView.paddingTop
-                if (checkDy < 0 && topDiff < 0) { // User is draging the item out of the top edge.
+                if (checkDy < 0 && topDiff < 0) { 
                     scrollY = topDiff
-                } else if (checkDy > 0) { // User is draging the item out of the bottom edge.
+                } else if (checkDy > 0) { 
                     val bottomDiff = (curY + mSelected.itemView.height - actualShowingHeight) + 10
                     if (bottomDiff >= 0) {
                         scrollY = bottomDiff
@@ -85,7 +85,7 @@ class NestedScrollViewItemTouchHelper(
         }
         if (scrollY != 0) {
             val maxScrollY = scrollView.childrenHeightsSum - scrollView.height
-            // Check if we can scroll further before applying the scroll
+            
             if (
                 (scrollY < 0 && scrollView.scrollY > 0) ||
                     (scrollY > 0 && scrollView.scrollY < maxScrollY)
@@ -94,7 +94,7 @@ class NestedScrollViewItemTouchHelper(
                     dragScrollStartTimeInMs = now
                 }
                 scrollView.scrollBy(0, scrollY)
-                // Update the dragged item position as well
+                
                 selectedView?.translationY = selectedView!!.translationY + scrollY
                 return true
             }

@@ -28,7 +28,7 @@ class PlainTextImporter : ExternalImporter {
                     val timestamp = System.currentTimeMillis()
                     notes.add(
                         BaseNote(
-                            id = 0L, // Auto-generated
+                            id = 0L, 
                             type = if (listItems.isEmpty()) Type.NOTE else Type.LIST,
                             folder = Folder.NOTES,
                             color = BaseNote.COLOR_DEFAULT,

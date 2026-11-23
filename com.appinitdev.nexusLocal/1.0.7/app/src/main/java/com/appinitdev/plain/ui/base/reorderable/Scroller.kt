@@ -6,7 +6,7 @@ class Scroller internal constructor(
     private val pixelPerSecondProvider: () -> Float,
 ) {
     companion object {
-        // The maximum duration for a scroll animation in milliseconds.
+        
         private const val MaxScrollDuration = 100L
         private const val ZeroScrollWaitDuration = 100L
     }

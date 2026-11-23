@@ -1,19 +1,19 @@
 
-/**
- * Unit tests for ProPlusTimeUtil
- */
+ 
+
+
 class ProPlusTimeUtilTest {
     
     @Test
     fun testIsBeforeJanuary2026_returnsBoolean() {
-        // Test that the function returns a boolean value
+        
         val result = ProPlusTimeUtil.isBeforeJanuary2026()
         assertTrue(result is Boolean)
     }
     
     @Test
     fun testIsBeforeJanuary2026_currentLogic() {
-        // This test verifies the current date logic
+        
         val currentDate = Calendar.getInstance()
         val targetDate = Calendar.getInstance().apply {
             set(Calendar.YEAR, 2026)

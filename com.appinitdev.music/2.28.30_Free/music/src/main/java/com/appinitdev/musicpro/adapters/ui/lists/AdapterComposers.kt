@@ -1,11 +1,11 @@
 
-/**
- * Adapter for the Composers panel. Works just like [AdapterArtists] but reads
- * [ComposerPreferences] for layout mode so the panel has its own independent
- * display settings. Composers are represented using the [Artist] model.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 class AdapterComposers(initial: List<Artist>) : FastScrollAdapter<VerticalListViewHolder>() {
 
     private var generalAdapterCallbacks: GeneralAdapterCallbacks? = null

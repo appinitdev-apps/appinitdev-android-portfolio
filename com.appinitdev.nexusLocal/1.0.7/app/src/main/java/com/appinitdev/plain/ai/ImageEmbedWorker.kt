@@ -1,8 +1,8 @@
 
-/**
- * Independent inference worker with its own model instance and buffers.
- * Multiple workers can run in parallel for high-throughput indexing.
- */
+ 
+
+
+
 class ImageEmbedWorker(modelFile: File, private val inputSize: Int = 256) : AutoCloseable {
     private val model: CompiledModel = DelegateHelper.createModel(modelFile)
     private val inputBuffers: List<TensorBuffer> = model.createInputBuffers()

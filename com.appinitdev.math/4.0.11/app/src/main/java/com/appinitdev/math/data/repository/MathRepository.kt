@@ -151,7 +151,7 @@ class MathRepository(private val context: Context) {
                 }
             }
         } catch (_: Exception) {
-            // fallback
+            
         }
         return fileName.removeSuffix(".md").replace("-", " ").capitalizeWords()
     }
@@ -336,7 +336,7 @@ class MathRepository(private val context: Context) {
                 }
             }
         } catch (_: Exception) {
-            // ignore
+            
         }
         return FileAnalysis(snippet, exampleCount)
     }

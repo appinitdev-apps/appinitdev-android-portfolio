@@ -1,16 +1,16 @@
 
 object ImageSearchHelper {
-    /**
-     * Returns a combined list of images matching the query by filename (or other fields) and by semantic search.
-     * The returned list is deduplicated and ordered: filename matches first, then semantic-only matches.
-     * If the query is blank or the model is not ready, only filename search is used.
-     * @param queryText the user query (natural language or filename)
-     * @param extraQuery the full query string for filename search (e.g. with tags, trash, etc)
-     * @param context Android context
-     * @param limit max number of results
-     * @param offset offset for pagination
-     * @param sortBy sort order
-     */
+     
+
+
+
+
+
+
+
+
+
+
     suspend fun searchCombinedAsync(
         context: Context,
         queryText: String,

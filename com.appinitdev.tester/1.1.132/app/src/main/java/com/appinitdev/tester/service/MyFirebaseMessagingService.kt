@@ -1,17 +1,17 @@
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
-    // 1. Se ejecuta cuando llega una notificación y la app está abierta
+    
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
         handleIncomingMessage(remoteMessage)
     }
 
-    // 2. Se ejecuta cuando el token cambia (instalación nueva, borrado de datos)
+    
     override fun onNewToken(token: String) {
         super.onNewToken(token)
 
-        // Necesitamos actualizar Firestore directamente aquí porque no tenemos acceso al ViewModel
+        
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
         FirebaseFirestore.getInstance()
@@ -88,9 +88,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             val channelName = "Alertas de Test"
             val channelDescription = "Default Channel for notifications"
 
-            // Definir patrón de vibración
+            
 
-            // Establecer sonido
+            
             val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             val audioAttributes = AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION)

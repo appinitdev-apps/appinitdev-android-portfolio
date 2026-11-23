@@ -1,6 +1,6 @@
 
-// The SignatureKeyPreference object is defined in shared/commonMain.
-// This file contains Android-specific operations that require CryptoHelper and Base64.
+
+
 
 suspend fun SignatureKeyPreference.ensureKeyPairAsync(
     preferences: Preferences,

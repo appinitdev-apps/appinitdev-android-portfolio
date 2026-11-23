@@ -8,7 +8,7 @@ class FolderViewerViewModel @AssistedInject constructor(
     private val _data = MutableStateFlow<PageData?>(null)
     val data: StateFlow<PageData?> = _data.asStateFlow()
 
-    /** Raw unsorted songs fetched from the repository. Re-sorting does not require a DB trip. */
+     
     private var rawSongs: List<Audio> = emptyList()
 
     init {
@@ -40,10 +40,10 @@ class FolderViewerViewModel @AssistedInject constructor(
         }
     }
 
-    /**
-     * Re-sorts the cached song list using the current [com.appinitdev.musicpro.preferences.PagePreferences]
-     * and re-emits [PageData] without hitting the database.
-     */
+     
+
+
+
     fun resort() {
         val current = _data.value ?: return
         viewModelScope.launch(Dispatchers.Default) {

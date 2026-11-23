@@ -1,9 +1,9 @@
 
-/**
- * Panel fragment displaying the user's albums with sort, grid layout, and search support.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
 class Albums : BasePanelFragment() {
 
     private lateinit var binding: FragmentAlbumsBinding

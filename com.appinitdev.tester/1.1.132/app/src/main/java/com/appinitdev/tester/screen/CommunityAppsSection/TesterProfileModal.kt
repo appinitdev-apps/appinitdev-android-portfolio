@@ -7,7 +7,7 @@ fun TesterProfileModal(
 ) {
     var fullProfile by remember { mutableStateOf<UserProfile?>(null) }
 
-    // Cargamos el perfil completo al abrir el modal usando el idUser de TesterData
+    
     LaunchedEffect(testerData.idUser) {
         fullProfile = viewModel.getProfileById(testerData.idUser)
     }

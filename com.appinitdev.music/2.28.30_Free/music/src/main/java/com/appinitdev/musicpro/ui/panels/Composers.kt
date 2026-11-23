@@ -1,11 +1,11 @@
 
-/**
- * Panel fragment that shows all unique composers found in the user's library.
- * It supports sorting, alphabetical fast-scroll, and layout style switching —
- * just like the Artists panel, but grouped by the composer tag instead.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 class Composers : BasePanelFragment() {
 
     private lateinit var binding: FragmentComposersBinding
@@ -98,10 +98,10 @@ class Composers : BasePanelFragment() {
         )
     }
 
-    /**
-     * Builds the fast-scroller section map when the list is sorted alphabetically by name.
-     * Any other sort style returns an empty list so the scroller stays hidden.
-     */
+     
+
+
+
     private fun provideScrollPositions(composers: List<Artist>): List<SectionedFastScroller.Position> {
         when (ComposerPreferences.getComposerSort()) {
             CommonPreferencesConstants.BY_NAME -> {

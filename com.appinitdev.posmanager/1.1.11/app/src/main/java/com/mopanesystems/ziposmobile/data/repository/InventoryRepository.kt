@@ -7,7 +7,7 @@ class InventoryRepository @Inject constructor(
     private val purchaseOrderDao: PurchaseOrderDao,
     private val purchaseOrderItemDao: PurchaseOrderItemDao
 ) {
-    // Inventory Adjustments
+    
     fun getAllAdjustments(): Flow<List<InventoryAdjustment>> = inventoryAdjustmentDao.getAllAdjustments()
     
     fun getAdjustmentsByStore(storeId: String): Flow<List<InventoryAdjustment>> = inventoryAdjustmentDao.getAdjustmentsByStore(storeId)
@@ -24,7 +24,7 @@ class InventoryRepository @Inject constructor(
     
     suspend fun deleteAdjustment(adjustment: InventoryAdjustment) = inventoryAdjustmentDao.deleteAdjustment(adjustment)
     
-    // Stock Alerts
+    
     fun getActiveAlerts(): Flow<List<StockAlert>> = stockAlertDao.getActiveAlerts()
     
     fun getActiveAlertsByStore(storeId: String): Flow<List<StockAlert>> = stockAlertDao.getActiveAlertsByStore(storeId)
@@ -44,7 +44,7 @@ class InventoryRepository @Inject constructor(
     
     suspend fun deactivateAlertsForProduct(productId: String) = stockAlertDao.deactivateAlertsForProduct(productId)
     
-    // Suppliers
+    
     fun getAllActiveSuppliers(): Flow<List<Supplier>> = supplierDao.getAllActiveSuppliers()
     
     fun getSuppliersByStore(storeId: String): Flow<List<Supplier>> = supplierDao.getSuppliersByStore(storeId)
@@ -61,7 +61,7 @@ class InventoryRepository @Inject constructor(
     
     suspend fun deactivateSupplier(supplierId: String) = supplierDao.deactivateSupplier(supplierId)
     
-    // Purchase Orders
+    
     fun getAllOrders(): Flow<List<PurchaseOrder>> = purchaseOrderDao.getAllOrders()
     
     fun getOrdersByStore(storeId: String): Flow<List<PurchaseOrder>> = purchaseOrderDao.getOrdersByStore(storeId)
@@ -80,7 +80,7 @@ class InventoryRepository @Inject constructor(
     
     suspend fun updateOrderStatus(orderId: String, status: OrderStatus) = purchaseOrderDao.updateOrderStatus(orderId, status.name)
     
-    // Purchase Order Items
+    
     fun getOrderItems(orderId: String): Flow<List<PurchaseOrderItem>> = purchaseOrderItemDao.getOrderItems(orderId)
     
     suspend fun insertOrderItem(item: PurchaseOrderItem) = purchaseOrderItemDao.insertOrderItem(item)
@@ -93,7 +93,7 @@ class InventoryRepository @Inject constructor(
     
     suspend fun deleteOrderItems(orderId: String) = purchaseOrderItemDao.deleteOrderItems(orderId)
 
-    // Offline / Sync Operations
+    
     fun getQueuedAdjustments(): Flow<List<InventoryAdjustment>> = purchaseOrderItemDao.getQueuedAdjustments()
 
     fun getUnsyncedAdjustments(): Flow<List<InventoryAdjustment>> = purchaseOrderItemDao.getUnsyncedAdjustments()

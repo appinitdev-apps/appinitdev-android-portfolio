@@ -1,11 +1,11 @@
 
-/**
- * Keeps track of the composers list for the Composers panel. Loads data from the
- * repository, sorts it by the saved preference, and re-loads whenever the library
- * filter or sort order changes.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 @HiltViewModel
 class ComposersViewModel @Inject constructor(
         application: Application,

@@ -1,29 +1,29 @@
-/**
- *     Goodtime Productivity
- *     Copyright (C) 2025 Adrian Cotfas
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
+ 
 
-/**
- * Reusable UI for editing a [TimerProfile].
- *
- * @param timerProfile the current profile being edited
- * @param timerProfiles list of all saved profiles (used for the dropdown)
- * @param onTimerProfileChange invoked with an updated profile after any field change
- * @param onTimerProfileSelect invoked when the user selects a profile from the dropdown
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
 @Composable
 fun TimerProfileSettings(
     timerProfile: TimerProfile,
@@ -33,7 +33,7 @@ fun TimerProfileSettings(
     onEditProfiles: (() -> Unit)? = null,
     onBreakBudgetInfo: () -> Unit,
 ) {
-    // ---- Profile selector -------------------------------------------------
+    
     AnimatedVisibility(timerProfiles.isNotEmpty(), enter = expandVertically() + fadeIn(), exit = shrinkVertically() + fadeOut()) {
         Row(
             modifier =
@@ -68,7 +68,7 @@ fun TimerProfileSettings(
         }
     }
 
-    // ---- Countdown / Break‑budget switch ---------------------------------
+    
     TimerTypeRow(
         isCountDown = timerProfile.isCountdown,
         onCountDownEnabled = {
@@ -76,7 +76,7 @@ fun TimerProfileSettings(
         },
     )
 
-    // ---- Countdown mode ---------------------------------------------------
+    
     AnimatedVisibility(timerProfile.isCountdown, enter = expandVertically() + fadeIn(), exit = shrinkVertically() + fadeOut()) {
         Column {
             EditableNumberListItem(
@@ -130,7 +130,7 @@ fun TimerProfileSettings(
         }
     }
 
-    // ---- Break‑budget mode (non‑countdown) -------------------------------
+    
     AnimatedVisibility(!timerProfile.isCountdown, enter = expandVertically() + fadeIn(), exit = shrinkVertically() + fadeOut()) {
         Column {
             val toggleBreak = {
@@ -178,11 +178,11 @@ fun TimerProfileSettings(
     }
 }
 
-/**
- * A small wrapper around [InfoDialog] that shows the break‑budget information.
- *
- * @param onDismiss Called when the dialog is dismissed (e.g. user taps outside or presses OK).
- */
+ 
+
+
+
+
 @Composable
 fun BreakBudgetInfoDialog(onDismiss: () -> Unit) {
     InfoDialog(

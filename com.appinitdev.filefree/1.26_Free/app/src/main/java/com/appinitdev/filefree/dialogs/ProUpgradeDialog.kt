@@ -20,12 +20,12 @@ fun showProUpgradeDialog(context: Context) {
         .setMessage(message)
         .setPositiveButton(context.getString(C.string.upgrade_to_pro)) { dialogInterface, _ ->
             try {
-                // 👉 Abre la app PRO por su package name
+                
                 val intent = context.packageManager.getLaunchIntentForPackage("com.appinitdev.fileExplorer")
                 if (intent != null) {
                     context.startActivity(intent)
                 } else {
-                    // Si no está instalada, abre su Play Store
+                    
                     val playIntent = Intent(
                         Intent.ACTION_VIEW,
                         Uri.parse("https://play.google.com/store/apps/details?id=com.appinitdev.fileExplorer")

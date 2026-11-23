@@ -297,7 +297,7 @@ open class VideoPlayerActivity : SimpleActivity(), SeekBar.OnSeekBarChangeListen
                 newPosition: Player.PositionInfo,
                 @Player.DiscontinuityReason reason: Int
             ) {
-                // Reset progress views when video loops.
+                
                 if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION) {
                     binding.bottomVideoTimeHolder.videoSeekbar.progress = 0
                     binding.bottomVideoTimeHolder.videoCurrTime.text = 0.getFormattedDuration()

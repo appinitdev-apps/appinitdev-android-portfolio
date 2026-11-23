@@ -4,12 +4,12 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
 
     private lateinit var binding: ActivityMainBinding
 
-    /**
-     * The central lyrics' coordinator. Injected here so we can ask it to do a
-     * re-lookup whenever the app comes back to the foreground and the current
-     * song still has no lyrics — handy when the user manually dropped an .lrc
-     * file into the right folder while Felicity was in the background.
-     */
+     
+
+
+
+
+
     @Inject
     lateinit var lyricsManager: LyricsManager
 
@@ -20,9 +20,9 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        /**
-         * Initialize the crash reporter to intercept uncaught exceptions
-         */
+         
+
+
         CrashReporter(applicationContext).initialize()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -31,10 +31,10 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
 
         binding.miniPlayer.callbacks = object : MiniPlayer.Callbacks {
             override fun onPageSelected(position: Int, fromUser: Boolean) {
-                // Only forward to MediaPlaybackManager when the swipe originated from the
-                // user.  Programmatic setCurrentItem calls (fromUser = false) must
-                // be ignored; otherwise the position feedback loop causes the wrong
-                // song to be played.
+                
+                
+                
+                
                 if (fromUser) {
                     MediaPlaybackManager.updatePosition(position)
                 }
@@ -47,8 +47,8 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
             }
 
             override fun onPlayPauseClick() {
-                // Restart the service if it died while the app was in the foreground,
-                // then perform the play/pause action once the connection is back.
+                
+                
                 ensureServiceRunning {
                     MediaPlaybackManager.flipState()
                 }
@@ -63,7 +63,7 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
             }
         }
 
-        // Seek via long-press drag on the miniplayer
+        
         binding.miniPlayer.seekListener = { fraction ->
             val duration = MediaPlaybackManager.getDuration()
             if (duration > 0L) {
@@ -72,9 +72,9 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
         }
 
         if (savedInstanceState.isNull()) {
-            // Cold start: push the miniplayer off-screen immediately so it is not
-            // visible before the song queue and themes are fully restored.
-            // onStateReady() will reveal it once everything is ready.
+            
+            
+            
             binding.miniPlayer.hide(animated = false)
             setHomePanel()
 
@@ -83,12 +83,12 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
 
         lifecycleScope.launch {
             MediaPlaybackManager.songSeekPositionFlow.collect { position ->
-                // Skip external updates while the user is scrubbing to avoid
-                // the flow fighting the touch handler and causing jitter.
+                
+                
                 if (binding.miniPlayer.isSeeking) return@collect
                 val duration = MediaPlaybackManager.getDuration()
                 if (duration > 0L) {
-                    // animate = false: snap directly for real-time ticks; no tween lag.
+                    
                     binding.miniPlayer.setProgress(
                             fraction = position.toFloat() / duration.toFloat(),
                             animate = false
@@ -103,7 +103,7 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
                 if (currentPagerItem != position) {
                     binding.miniPlayer.setCurrentItem(
                             position = position,
-                            // Smooth scroll if the new position is within 5 items of the current position
+                            
                             smoothScroll = false)
                 }
             }
@@ -129,10 +129,10 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
                         if (songPosition < songs.size) songPosition else 0,
                         smoothScroll = false
                 )
-                // Reset the progress bar whenever the queue is replaced
+                
                 binding.miniPlayer.setProgress(0f)
 
-                // Show if allowed by fragment policy
+                
                 val fragment = supportFragmentManager.fragments.lastOrNull { it.isVisible }
                 val wantsVisible = (fragment as? MiniPlayerPolicy)?.wantsMiniPlayerVisible ?: true
                 if (wantsVisible) {
@@ -150,8 +150,8 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
             }
         }
 
-        // Watch the selection basket — when songs pile in, show the action bar above the card.
-        // When the basket empties, tuck it away again so things look clean.
+        
+        
         lifecycleScope.launch {
             SelectionManager.selectedAudios.collect { selected ->
                 updateActionBar(selected)
@@ -159,16 +159,16 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
             }
         }
 
-        // Keep the action bar perfectly above the mini player by mirroring its
-        // translationY every frame. This runs before every draw, so they always
-        // move as one unit — no manual syncing needed anywhere else.
+        
+        
+        
         binding.root.viewTreeObserver.addOnPreDrawListener {
             binding.miniPlayerActionBar.translationY = binding.miniPlayer.translationY
             true
         }
 
-        // Reposition the action bar whenever the mini player's layout changes —
-        // this handles both the initial placement AND nav-bar inset updates.
+        
+        
         binding.miniPlayer.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             val lp = binding.miniPlayer.layoutParams as? ViewGroup.MarginLayoutParams
             val totalMiniPlayerSpace = binding.miniPlayer.height + (lp?.bottomMargin ?: 0)
@@ -180,8 +180,8 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
             }
         }
 
-        // Wire up the three action bar buttons — delete, share, and the three-dots more menu.
-        // HighlightImageButton automatically handles its own icon tinting, so no manual tint needed.
+        
+        
         binding.actionDelete.setOnClickListener {
             deleteSelectedSongs()
         }
@@ -195,15 +195,15 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
         }
 
         binding.selectionCount.setOnClickListener {
-            // Open the full selections panel so the user can see and manage
-            // every song in the basket — much more comfortable than a tiny dialog.
+            
+            
             val topFragment = supportFragmentManager.fragments.lastOrNull() as? ScopedFragment
             topFragment?.openFragment(Selections.newInstance(), Selections.TAG)
         }
     }
 
     private fun startAudioDatabaseService() {
-        // MediaStore access is enough to start the scan.
+        
         if (applicationContext.isReadMediaAudioPermissionGranted()) {
             AudioDatabaseService.startScan(applicationContext)
         }
@@ -227,30 +227,30 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
 
         when {
             !allPermissionsGranted -> {
-                // Show Setup screen first to request permissions
+                
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, Setup.newInstance(), Setup.TAG)
                     .commit()
             }
             TrialPreferences.isTrialExpired() -> {
-                // Trial has expired — show the paywall screen instead of home
+                
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, TrialExpired.newInstance(), TrialExpired.TAG)
                     .commit()
             }
             else -> {
-                // All permissions granted and trial is still active, go directly to home
+                
                 showHome()
             }
         }
     }
 
-    /**
-     * Creates and returns the player fragment instance that corresponds to the
-     * currently selected player interface preference.
-     *
-     * @return a [BasePlayerFragment] subclass instance ready to be committed
-     */
+     
+
+
+
+
+
     private fun openPlayerForCurrentPreference(): BasePlayerFragment {
         return when (UserInterfacePreferences.getPlayerInterface()) {
             UserInterfacePreferences.PLAYER_INTERFACE_FADED -> PlayerFaded.newInstance()
@@ -283,13 +283,13 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
         }
     }
 
-    /**
-     * Shows or hides the action bar above the mini player based on how many songs
-     * are currently selected. When songs are selected, the bar slides into view with
-     * a gentle fade. When the basket is empty, it quietly disappears.
-     *
-     * @param selected The current list of selected tracks.
-     */
+     
+
+
+
+
+
+
     private fun updateActionBar(selected: List<Audio>) {
         val shouldShow = selected.isNotEmpty()
         if (shouldShow && !binding.miniPlayerActionBar.isVisible) {
@@ -302,13 +302,13 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
         }
     }
 
-    /**
-     * Shows the delete-confirmation dialog for all currently selected songs.
-     * The dialog tells the user exactly how many songs are about to be wiped and gives them
-     * a chance to back out before anything irreversible happens. If they confirm, every
-     * selected song gets removed from the playback queue (or playback skips forward if one
-     * is currently playing), then the physical files and database rows are deleted.
-     */
+     
+
+
+
+
+
+
     private fun deleteSelectedSongs() {
         val songsToDelete = SelectionManager.selectedAudios.value.toList()
         if (songsToDelete.isEmpty()) return
@@ -317,8 +317,8 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
                 container = binding.appContainer,
                 inflateBinding = DialogDeleteSongBinding::inflate)
             .onViewCreated { dialogBinding ->
-                // Show exactly how many songs are about to meet their maker.
-                // e.g. "4 Songs will be permanently deleted from storage."
+                
+                
                 val countLabel = getString(R.string.x_songs, songsToDelete.size)
                 dialogBinding.deleteSummary.text = getString(R.string.delete_audio_summary, countLabel)
             }
@@ -329,27 +329,27 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
                 }
                 dialogBinding.cancel.setOnClickListener { dismiss() }
             }
-            .onDismiss { /* nothing to clean up after a confirmation dialog */ }
+            .onDismiss {   }
             .build()
             .show()
     }
 
-    /**
-     * Does the actual heavy lifting of deleting every song in [songs].
-     * For each song we:
-     *   1. Pull it out of the playback queue (or skip forward if it is playing right now).
-     *   2. Delete the file via SAF using DocumentsContract — because the URI is a
-     *      content:// address, not a file-system path, so File.delete() won't work.
-     *   3. Remove its record from the database.
-     *   4. Optionally nuke the associated internally-stored lyrics sidecar files too.
-     *
-     * @param songs        The batch of tracks to permanently delete.
-     * @param deleteLyrics Whether to also remove any .lrc / .txt sidecar lyrics files.
-     */
+     
+
+
+
+
+
+
+
+
+
+
+
     private fun performBulkDelete(songs: List<Audio>, deleteLyrics: Boolean) {
         lifecycleScope.launch {
-            // Step 1: Kick every song out of the queue on the main thread first, so playback
-            // never tries to read a URI we are about to delete.
+            
+            
             songs.forEach { audio ->
                 val queueIndex = MediaPlaybackManager.getSongs().indexOfFirst { it.id == audio.id }
                 when {
@@ -358,7 +358,7 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
                 }
             }
 
-            // Step 2: Delete files + database rows on the IO thread.
+            
             withContext(Dispatchers.IO) {
                 val db = AudioDatabase.getInstance(applicationContext)
                 songs.forEach { audio ->
@@ -385,15 +385,15 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
                 }
             }
 
-            // Step 3: Clear the selection basket now that everything is gone.
+            
             SelectionManager.clear()
         }
     }
 
-    /**
-     * Opens a dialog showing how many songs are selected and what actions can be performed
-     * on the whole batch. The user gets to feel powerful — like a DJ with a big remote control.
-     */
+     
+
+
+
     private fun showSelectionMenu() {
         val selected = SelectionManager.selectedAudios.value
         SimpleDialog.Builder(
@@ -410,20 +410,20 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
                 }
                 dialogBinding.deleteAll.setOnClickListener {
                     dismiss()
-                    // Route through the same confirmation dialog used by the action bar button.
+                    
                     deleteSelectedSongs()
                 }
                 dialogBinding.shareAll.setOnClickListener {
                     shareSelectedAudios(selected)
                     dismiss()
                 }
-                // Drop all selected songs onto the end of the current playback queue in one shot.
+                
                 dialogBinding.addAllToQueue.setOnClickListener {
                     selected.forEach { MediaPlaybackManager.addToQueue(it) }
                     SelectionManager.clear()
                     dismiss()
                 }
-                // Open the batch add-to-playlist dialog so the user can pick which playlists to add them to.
+                
                 dialogBinding.addToPlaylist.setOnClickListener {
                     dismiss()
                     supportFragmentManager.showAddMultipleToPlaylistDialog(selected)
@@ -432,7 +432,7 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
                     SelectionManager.clear()
                     dismiss()
                 }
-                // Flag all selected songs as always-skip so they'll be auto-skipped during playback.
+                
                 dialogBinding.alwaysSkipAll.setOnClickListener {
                     lifecycleScope.launch {
                         audioRepository.setAlwaysSkipBatch(selected, skip = true)
@@ -440,7 +440,7 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
                     SelectionManager.clear()
                     dismiss()
                 }
-                // Remove the always-skip flag from all selected songs — welcome back to the queue!
+                
                 dialogBinding.neverSkipAll.setOnClickListener {
                     lifecycleScope.launch {
                         audioRepository.setAlwaysSkipBatch(selected, skip = false)
@@ -449,18 +449,18 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
                     dismiss()
                 }
             }
-            .onDismiss { /* nothing to clean up */ }
+            .onDismiss {   }
             .build()
             .show()
     }
 
-    /**
-     * Fires an Android share sheet containing all of the [songs] at once.
-     * Each audio URI is already a SAF content:// address with a persisted permission grant,
-     * so we pass them directly to the chooser — no FileProvider detour required.
-     *
-     * @param songs The tracks to share.
-     */
+     
+
+
+
+
+
+
     private fun shareSelectedAudios(songs: List<Audio>) {
         val uris = songs.map { it.uri.toUri() } as ArrayList<Uri>
         if (uris.isEmpty()) return
@@ -506,13 +506,13 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
         binding.miniPlayer.hide(animated = true)
     }
 
-    /**
-     * Called by [BaseActivity] once the media queue and playback state have been fully
-     * restored.  At this point it is safe to reveal the miniplayer without showing it
-     * while the screen is still loading.
-     *
-     * @author Hamza417
-     */
+     
+
+
+
+
+
+
     override fun onStateReady() {
         if (MediaPlaybackManager.getSongs().isEmpty()) return
         val fragment = supportFragmentManager.fragments.lastOrNull { it.isVisible }
@@ -583,18 +583,18 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
 
     override fun onStart() {
         super.onStart()
-        // Intentionally not starting the scan here — the scan is already kicked off
-        // from onCreate() via the permission observer, and running it again on every
-        // onStart() would re-trigger a full scan every time the user switches back to
-        // the app from any other screen. That is the exact behavior that was causing
-        // "why does the library refresh every time I resume?" — mystery solved!
+        
+        
+        
+        
+        
     }
 
     override fun onResume() {
         super.onResume()
-        // If the user stepped away, placed an .lrc file next to a song, and came back,
-        // we want the lyrics to show up immediately without forcing a full song reload.
-        // refreshIfNoLyrics() is smart enough to skip this when lyrics are already loaded.
+        
+        
+        
         lyricsManager.refreshIfNoLyrics()
         runDatabaseScanner()
     }
@@ -618,8 +618,8 @@ class MainActivity : BaseActivity(), MiniPlayerCallbacks {
         val seek = MediaPlaybackManager.getSeekPosition()
         val shuffleEnabled = ShufflePreferences.isShuffleEnabled()
 
-        // Save the original (unshuffled) queue with the index pointing to the current song
-        // inside that original order, so a restore can re-apply shuffle from a clean starting point.
+        
+        
         val queueToSave = MediaPlaybackManager.getOriginalQueue().takeIf { it.isNotEmpty() } ?: songs
         val currentSong = MediaPlaybackManager.getCurrentSong()
         val idx = if (currentSong != null) {

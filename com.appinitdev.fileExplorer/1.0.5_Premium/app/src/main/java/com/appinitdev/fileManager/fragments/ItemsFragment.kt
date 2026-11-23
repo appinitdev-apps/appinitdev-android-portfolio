@@ -204,7 +204,7 @@ class ItemsFragment(context: Context, attributeSet: AttributeSet) : MyViewPagerF
             }
         }
 
-        // send out the initial item list asap, get proper child count asynchronously as it can be slow
+        
         callback(path, items)
 
         if (getProperChildCount) {

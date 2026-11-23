@@ -48,11 +48,11 @@ class ReorderableLazyStaggeredGridState internal constructor(
     scope: CoroutineScope,
     onMoveState: State<suspend CoroutineScope.(from: LazyStaggeredGridItemInfo, to: LazyStaggeredGridItemInfo) -> Unit>,
 
-    /**
-     * The threshold in pixels for scrolling the grid when dragging an item.
-     * If the dragged item is within this threshold of the top or bottom of the grid, the grid will scroll.
-     * Must be greater than 0.
-     */
+     
+
+
+
+
     scrollThreshold: Float,
     scrollThresholdPadding: AbsolutePixelPadding,
     scroller: Scroller,
@@ -68,14 +68,14 @@ class ReorderableLazyStaggeredGridState internal constructor(
     lazyVerticalStaggeredGridRtlFix = true,
 )
 
-/**
- * A composable that allows an item in LazyVerticalStaggeredGrid or LazyHorizontalStaggeredGrid to be reordered by dragging.
- *
- * @param state The return value of [rememberReorderableLazyStaggeredGridState]
- * @param key The key of the item, must be the same as the key passed to [LazyStaggeredGridScope.item](androidx.compose.foundation.lazy.staggeredgrid.item), [LazyStaggeredGridScope.items](androidx.compose.foundation.lazy.staggeredgrid.items) or similar functions in [LazyStaggeredGridScope](androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope)
- * @param enabled Whether or this item is reorderable. If true, the item will not move for other items but may still be draggable. To make an item not draggable, set `enable = false` in [Modifier.draggable] or [Modifier.longPressDraggable] instead.
- * @param animateItemModifier The [Modifier] that will be applied to items that are not being dragged.
- */
+ 
+
+
+
+
+
+
+
 @Composable
 fun LazyStaggeredGridItemScope.ReorderableItem(
     state: ReorderableLazyStaggeredGridState,

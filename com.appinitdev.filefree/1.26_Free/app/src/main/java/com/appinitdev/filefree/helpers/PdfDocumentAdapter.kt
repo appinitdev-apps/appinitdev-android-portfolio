@@ -1,5 +1,5 @@
 
-// taken from https://github.com/HarshitaBambure/AndroidPDFPrint/blob/master/app/src/main/java/com/example/androidpdfprint/PdfDocumentAdapter.java
+
 class PdfDocumentAdapter(var context: Context, var path: String) : PrintDocumentAdapter() {
     override fun onLayout(
         oldAttributes: PrintAttributes,

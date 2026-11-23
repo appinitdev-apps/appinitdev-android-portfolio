@@ -10,10 +10,10 @@ data class GraphQLError(
 )
 
 object PeerGraphQLClient {
-    /**
-     * Send a chat message to a paired peer (peer-to-peer chat).
-     * Uses [DPeer.key] for encryption.
-     */
+     
+
+
+
     suspend fun createChatItem(
         peer: DPeer,
         clientId: String,
@@ -38,11 +38,11 @@ object PeerGraphQLClient {
         )
     }
 
-    /**
-     * Send a channel system message to a peer.
-     * If the peer is paired (peer.key is non-empty), uses the peer's shared key.
-     * Otherwise, uses [channelKey] with c-cid header for non-paired channel members.
-     */
+     
+
+
+
+
     suspend fun sendChannelSystemMessage(
         peer: DPeer,
         clientId: String,
@@ -62,7 +62,7 @@ object PeerGraphQLClient {
             "payload" to payload,
         )
 
-        // Use channel key if peer is not paired
+        
         val useChannelKey = peer.key.isEmpty() && channelKey.isNotEmpty()
         return if (useChannelKey) {
             execute(
@@ -78,11 +78,11 @@ object PeerGraphQLClient {
         }
     }
 
-    /**
-     * Send a chat message to a channel member.
-     * Uses [channelKey] for ChaCha20 encryption and includes [channelId] via the c-cid header
-     * so the receiver can look up the correct decryption key and member public keys.
-     */
+     
+
+
+
+
     suspend fun createChannelChatItem(
         peer: DPeer,
         channelId: String,
@@ -111,14 +111,14 @@ object PeerGraphQLClient {
         )
     }
 
-    /**
-     * Core execution: signs, encrypts and sends a GraphQL request to [peer].
-     *
-     * @param encryptionKey  ChaCha20 key – either [DPeer.key] (peer chat) or
-     *                       [DChatChannel.key] (channel chat).
-     * @param channelId      When non-empty the `c-cid` header is added so the
-     *                       receiver selects the channel-key path.
-     */
+     
+
+
+
+
+
+
+
     private suspend fun execute(
         peer: DPeer,
         encryptionKey: String = peer.key,
@@ -138,11 +138,11 @@ object PeerGraphQLClient {
                 put("variables", variablesJson)
             }.toString()
 
-            // Generate timestamp and signature
+            
             val timestamp = System.currentTimeMillis().toString()
             val signature = SignatureHelper.signTextAsync("$timestamp$requestJson")
 
-            // Format: signature|timestamp|GraphQL_JSON
+            
             val requestBody = "$signature|$timestamp|$requestJson".toRequestBody("application/json".toMediaType())
 
             val requestBuilder = Request.Builder()

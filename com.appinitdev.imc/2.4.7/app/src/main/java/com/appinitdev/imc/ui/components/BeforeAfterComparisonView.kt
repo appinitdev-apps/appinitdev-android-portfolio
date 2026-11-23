@@ -70,7 +70,7 @@ fun BeforeAfterComparisonView(
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 if (beforeBitmap != null && afterBitmap != null) {
-                    // Split Image Comparison View
+                    
                     Row(modifier = Modifier.fillMaxSize()) {
                         Box(
                             modifier = Modifier
@@ -131,7 +131,7 @@ fun BeforeAfterComparisonView(
                         }
                     }
 
-                    // Interactive Slider Handle
+                    
                     val draggableState = rememberDraggableState { deltaPx ->
                         val totalWidth = 300f
                         val deltaRatio = deltaPx / totalWidth

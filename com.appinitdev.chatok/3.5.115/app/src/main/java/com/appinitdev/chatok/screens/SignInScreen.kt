@@ -132,7 +132,7 @@ fun SignInScreen(
                     
                     Spacer(Modifier.height(24.dp))
 
-                    // Input for email
+                    
                     OutlinedTextField(
                         value = email,
                         textStyle = TextStyle(color = Color.White),
@@ -152,7 +152,7 @@ fun SignInScreen(
 
                     Spacer(Modifier.height(12.dp))
 
-                    // Input for password
+                    
                     OutlinedTextField(
                         value = password,
                         textStyle = TextStyle(color = Color.White),

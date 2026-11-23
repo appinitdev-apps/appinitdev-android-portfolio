@@ -2,7 +2,7 @@
 object GeologyModel {
     fun getList(geology: ArrayList<Geology>) {
 
-        //Minerals:
+        
         geology.add(Geology(
             "Plagioclase",
             "Mineral",

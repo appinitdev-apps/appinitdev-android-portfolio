@@ -48,7 +48,7 @@ class ActionMode {
 
     fun isEnabled() = enabled.value
 
-    // We assume selectedNotes.size is 1
+    
     fun getFirstNote() = selectedNotes.values.first()
 
     fun isEmpty() = selectedNotes.values.isEmpty()

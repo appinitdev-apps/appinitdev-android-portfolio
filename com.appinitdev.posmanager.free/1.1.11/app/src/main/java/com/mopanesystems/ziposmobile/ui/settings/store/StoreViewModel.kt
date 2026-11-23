@@ -16,21 +16,21 @@ class StoreViewModel @Inject constructor(
             repository.getStore().collect { currentStore ->
                 if (currentStore == null) {
                     val defaultStore = Store(
-                        id = "default_store", // solo tendrás un registro
+                        id = "default_store", 
                         name = "POS Manager",
                         address = "appinitdevgmail.com",
                         city = "Ciudad",
                         state = "Estado",
                         zipCode = "00000",
                         country = "México",
-                        phone = null, // opcional
-                        email = null, // opcional
-                        website = null, // opcional
-                        taxId = null, // opcional
+                        phone = null, 
+                        email = null, 
+                        website = null, 
+                        taxId = null, 
                         currency = "MXN",
                         timezone = "America/Mexico_City",
                         isActive = true,
-                        settings = null, // si no tienes StoreSettings todavía
+                        settings = null, 
                         createdAt = java.time.LocalDateTime.now(),
                         updatedAt = java.time.LocalDateTime.now()
                     )

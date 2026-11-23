@@ -10,14 +10,14 @@ object PdfReportGenerator {
         growthRecords: List<GrowthRecord>
     ) {
         val document = PdfDocument()
-        val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create() // Standard A4 Size
+        val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create() 
         val page = document.startPage(pageInfo)
         val canvas = page.canvas
 
         val paint = Paint()
         val dateStr = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date())
 
-        // 1. Header Banner
+        
         paint.color = Color.parseColor("#00B894")
         canvas.drawRect(0f, 0f, 595f, 90f, paint)
 
@@ -30,7 +30,7 @@ object PdfReportGenerator {
         paint.typeface = Typeface.DEFAULT
         canvas.drawText("Generado el: $dateStr • Estándar OMS 2024", 30f, 70f, paint)
 
-        // 2. Patient / Member Information Box
+        
         paint.color = Color.parseColor("#F4F9F8")
         canvas.drawRoundRect(30f, 110f, 565f, 180f, 15f, 15f, paint)
 
@@ -43,7 +43,7 @@ object PdfReportGenerator {
         paint.typeface = Typeface.DEFAULT
         canvas.drawText("Edad: $memberAge   |   Sexo: $memberGender", 45f, 160f, paint)
 
-        // 3. Current BMI Status Summary
+        
         var startY = 200f
         if (latestBmiResult != null) {
             paint.color = Color.parseColor("#E0F2FE")
@@ -69,14 +69,14 @@ object PdfReportGenerator {
             startY += 110f
         }
 
-        // 4. Growth History Table
+        
         paint.color = Color.parseColor("#0F172A")
         paint.textSize = 14f
         paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         canvas.drawText("HISTORIAL DE MEDICIONES RECIENTES", 30f, startY + 15f, paint)
         startY += 25f
 
-        // Table Header Row
+        
         paint.color = Color.parseColor("#00B894")
         canvas.drawRect(30f, startY, 565f, startY + 25f, paint)
 
@@ -111,14 +111,14 @@ object PdfReportGenerator {
             if (startY > 780f) break
         }
 
-        // Footer Note
+        
         paint.color = Color.GRAY
         paint.textSize = 9f
         canvas.drawText("Nota: Este informe es orientativo según las guías de la OMS. Consulte a un profesional de la salud o nutrición.", 30f, 820f, paint)
 
         document.finishPage(page)
 
-        // Save to File & Launch Share Intent
+        
         try {
             val cacheDir = File(context.cacheDir, "pdf_reports")
             if (!cacheDir.exists()) cacheDir.mkdirs()

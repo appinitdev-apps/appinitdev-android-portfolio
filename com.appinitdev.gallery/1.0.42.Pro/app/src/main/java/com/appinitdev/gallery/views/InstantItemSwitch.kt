@@ -1,5 +1,5 @@
 
-// handle only one finger clicks, pass other events to the parent view and ignore it when received again
+
 class InstantItemSwitch(context: Context, attrs: AttributeSet) : RelativeLayout(context, attrs) {
     private var mTouchDownTime = 0L
     private var mTouchDownX = 0f

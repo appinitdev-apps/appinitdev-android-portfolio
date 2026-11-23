@@ -97,7 +97,7 @@ fun ChatScreen(
             selectionMode = false
             imgUri = null
         } else {
-            // Si no hay nada abierto, salir de la app
+            
             (context as? android.app.Activity)?.finish()
         }
     }
@@ -111,7 +111,7 @@ fun ChatScreen(
                 modifier = Modifier.fillMaxHeight().width(300.dp)
             ) {
                 Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
-                    // Header
+                    
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -145,7 +145,7 @@ fun ChatScreen(
                     
                     Spacer(Modifier.height(32.dp))
                     
-                    // Menu Items
+                    
                     val chatsCount = viewModel.chats.size
                     val recibidasCount = viewModel.solicitudesRecibidas.size
                     val enviadasCount = viewModel.solicitudesEnviadas.size
@@ -245,12 +245,12 @@ fun ChatScreen(
                     contentScale = ContentScale.Crop
                 )
                 
-                // Dark overlay
+                
                 Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
 
                 Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
                     
-                    // Top Bar
+                    
                     Header(
                         state = state,
                         viewModel = viewModel,
@@ -273,7 +273,7 @@ fun ChatScreen(
                         onOpenDrawer = { scope.launch { drawerState.open() } }
                     )
 
-                    // Content Switcher
+                    
                     when (selectedScreen) {
                         "chats" -> {
                             if (isLoading) {
@@ -341,7 +341,7 @@ fun ChatScreen(
                 }
             }
 
-            // Dialogs
+            
             if (showDialog) {
                 DeleteDialog(
                     hideDialog = {
@@ -669,7 +669,7 @@ fun ChatListContent(
     onChatClick: (ChatUserData, String) -> Unit
 ) {
     Column {
-        // Stories
+        
         AnimatedVisibility(visible = !showSearch) {
             StoriesRow(
                 isUploading = isUploading,
@@ -686,7 +686,7 @@ fun ChatListContent(
 
         Spacer(modifier = Modifier.height(8.dp))
         
-        // Random User Button
+        
         Box(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             contentAlignment = Alignment.CenterEnd
@@ -700,7 +700,7 @@ fun ChatListContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Chats List Card
+        
         Card(
             modifier = Modifier.fillMaxSize(),
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
@@ -951,7 +951,7 @@ fun ChatItem(
                         chat.last?.vidUrl?.isNotEmpty() == true -> "🎥 ${stringResource(R.string.video_preview)}"
                         chat.last?.fileUrl?.isNotEmpty() == true -> "📄 ${stringResource(R.string.archivo_preview)}"
                         chat.last?.content?.isNotEmpty() == true -> chat.last.content
-                        else -> "👋 ${stringResource(R.string.hola)}" // Saludo inicial si está vacío
+                        else -> "👋 ${stringResource(R.string.hola)}" 
                     }
                     
                     Text(

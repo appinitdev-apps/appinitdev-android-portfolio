@@ -5,7 +5,7 @@ private val CART_KEY = stringPreferencesKey("cart_items")
 
 object CartItemSerializer {
 
-    // Adaptador para LocalDateTime
+    
     private val localDateTimeAdapter = object : JsonSerializer<LocalDateTime>, JsonDeserializer<LocalDateTime> {
         private val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
@@ -32,7 +32,7 @@ object CartItemSerializer {
     }
 }
 
-// Guardar carrito en DataStore
+
 suspend fun saveCart(context: Context, items: List<CartItem>) {
     val json = CartItemSerializer.toJson(items)
     context.cartDataStore.edit { prefs ->
@@ -40,7 +40,7 @@ suspend fun saveCart(context: Context, items: List<CartItem>) {
     }
 }
 
-// Cargar carrito desde DataStore
+
 fun loadCart(context: Context): Flow<List<CartItem>> {
     return context.cartDataStore.data.map { prefs ->
         prefs[CART_KEY]?.let { CartItemSerializer.fromJson(it) } ?: emptyList()

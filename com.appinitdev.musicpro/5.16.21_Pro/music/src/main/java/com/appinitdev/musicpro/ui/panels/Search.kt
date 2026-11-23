@@ -1,14 +1,14 @@
 
-/**
- * Search panel that performs a full-library search across songs, albums, artists,
- * and genres using a single [AdapterSearch] with multiple view types. Results are
- * separated by labeled section headers that are part of the same flat item list.
- * A filter button allows toggling which categories are searched.
- * Search queries are debounced by 300 ms in [SearchViewModel] to avoid excessive
- * database queries while the user is typing.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
 class Search : PanelFragment() {
 
     private lateinit var binding: FragmentSearchBinding
@@ -17,9 +17,9 @@ class Search : PanelFragment() {
     private var adapterSearch: AdapterSearch? = null
     private var gridLayoutManager: GridLayoutManager? = null
 
-    /**
-     * This will keep the query and search results until the activity is alive.
-     */
+     
+
+
     private val searchViewModel: SearchViewModel by viewModels({ requireActivity() })
 
     override fun onCreateView(
@@ -47,7 +47,7 @@ class Search : PanelFragment() {
         setupAdapters()
         setupClickListeners()
 
-        // Restore previous query to the EditText
+        
         viewLifecycleOwner.lifecycleScope.launch {
             searchViewModel.searchQuery.collect { query ->
                 if (headerBinding.editText.text.toString() != query) {
@@ -189,7 +189,7 @@ class Search : PanelFragment() {
             headerBinding.shuffle.gone()
         }
 
-        // Albums chip: show count and wire scroll, hide when empty.
+        
         if (results.albums.isNotEmpty()) {
             headerBinding.chipAlbums.visible()
             headerBinding.chipAlbums.text = getString(R.string.x_albums, results.albums.size)
@@ -200,7 +200,7 @@ class Search : PanelFragment() {
             headerBinding.chipAlbums.gone()
         }
 
-        // Artists chip: show count and wire scroll, hide when empty.
+        
         if (results.artists.isNotEmpty()) {
             headerBinding.chipArtists.visible()
             headerBinding.chipArtists.text = getString(R.string.x_artists, results.artists.size)
@@ -211,7 +211,7 @@ class Search : PanelFragment() {
             headerBinding.chipArtists.gone()
         }
 
-        // Genres chip: show count and wire scroll, hide when empty.
+        
         if (results.genres.isNotEmpty()) {
             headerBinding.chipGenres.visible()
             headerBinding.chipGenres.text = getString(R.string.x_genres, results.genres.size)
@@ -230,19 +230,19 @@ class Search : PanelFragment() {
         }
     }
 
-    /**
-     * Smoothly scrolls the RecyclerView to the section header whose title matches [headerTitle].
-     * If the section is not present in the current adapter list, this is a no-op.
-     *
-     * @param headerTitle The exact label used for the target section header.
-     */
+     
+
+
+
+
+
     private fun scrollToSection(headerTitle: String) {
         val position = adapterSearch?.getSectionPosition(headerTitle) ?: return
         if (position >= 0) {
             (binding.recyclerView.layoutManager as GridLayoutManager)
                 .scrollToPositionWithOffset(
                         position,
-                        /* offset = */
+                         
                         binding.appHeader.height + resources.getDimensionPixelSize(R.dimen.padding_8))
         }
     }

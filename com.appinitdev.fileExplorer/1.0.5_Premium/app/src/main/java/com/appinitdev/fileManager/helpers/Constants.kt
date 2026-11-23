@@ -1,7 +1,7 @@
 
 const val MAX_COLUMN_COUNT = 15
 
-// shared preferences
+
 const val SHOW_HIDDEN = "show_hidden"
 const val PRESS_BACK_TWICE = "press_back_twice"
 const val HOME_FOLDER = "home_folder"
@@ -16,7 +16,7 @@ const val DISPLAY_FILE_NAMES = "display_file_names"
 const val SHOW_TABS = "show_tabs"
 const val WAS_STORAGE_ANALYSIS_TAB_ADDED = "was_storage_analysis_tab_added"
 
-// open as
+
 const val OPEN_AS_DEFAULT = 0
 const val OPEN_AS_TEXT = 1
 const val OPEN_AS_IMAGE = 2
@@ -37,7 +37,7 @@ const val SHOW_MIMETYPE = "show_mimetype"
 const val VOLUME_NAME = "volume_name"
 const val PRIMARY_VOLUME_NAME = "external_primary"
 
-// what else should we count as an audio except "audio/*" mimetype
+
 val extraAudioMimeTypes = arrayListOf("application/ogg")
 val extraDocumentMimeTypes = arrayListOf(
     "application/pdf",

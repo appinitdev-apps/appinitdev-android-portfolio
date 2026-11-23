@@ -8,7 +8,7 @@ fun AdBanner(
     val context = LocalContext.current
     val isDebug = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
 
-    // Hide Ad Banner completely in DEBUG mode or if user is Premium
+    
     if (isDebug || isPremium) return
 
     AndroidView(

@@ -352,7 +352,7 @@ fun BaseSimpleActivity.restoreRecycleBinPaths(paths: ArrayList<String>, callback
 
             val destinationParent = destination.getParentPath()
             if (isRestrictedWithSAFSdk30(destinationParent) && !isInDownloadDir(destinationParent)) {
-                // if the file is not writeable on SDK30+, change it to Pictures
+                
                 val picturesDirectory = getPicturesDirectoryPath(destination)
                 destination = File(picturesDirectory, destination.getFilenameFromPath()).path
                 if (!shownRestoringToPictures) {
@@ -512,8 +512,8 @@ fun AppCompatActivity.fixDateTaken(
                     val dateTime: String = ExifInterface(path).getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL)
                         ?: ExifInterface(path).getAttribute(ExifInterface.TAG_DATETIME) ?: continue
 
-                    // some formats contain a "T" in the middle, some don't
-                    // sample dates: 2015-07-26T14:55:23, 2018:09:05 15:09:05
+                    
+                    
                     val t = if (dateTime.substring(10, 11) == "T") "\'T\'" else " "
                     val separator = dateTime.substring(4, 5)
                     val format = "yyyy${separator}MM${separator}dd${t}kk:mm:ss"
@@ -665,7 +665,7 @@ fun Activity.tryRotateByExif(path: String, degrees: Int, showToasts: Boolean, ca
             false
         }
     } catch (e: Exception) {
-        // lets not show IOExceptions, rotating is saved just fine even with them
+        
         if (showToasts && e !is IOException) {
             showErrorToast(e)
         }
@@ -680,7 +680,7 @@ fun Activity.fileRotatedSuccessfully(path: String, lastModified: Long) {
     }
 
     Picasso.get().invalidate(path.getFileKey(lastModified))
-    // we cannot refresh a specific image in Glide Cache, so just clear it all
+    
     val glide = Glide.get(applicationContext)
     glide.clearDiskCache()
     runOnUiThread {

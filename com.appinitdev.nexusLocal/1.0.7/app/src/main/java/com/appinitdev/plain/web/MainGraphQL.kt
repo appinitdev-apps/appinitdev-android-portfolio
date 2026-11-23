@@ -128,7 +128,7 @@ class MainGraphQL(val schema: Schema) {
 
                             val requestStr = call.receiveText()
                             LogCat.d("[Request] $requestStr")
-                            HttpServerManager.clientRequestTs[clientId] = System.currentTimeMillis() // record the api request time
+                            HttpServerManager.clientRequestTs[clientId] = System.currentTimeMillis() 
                             sendEvent(WebRequestReceivedEvent())
                             val r = executeGraphqlQL(schema, requestStr, call)
                             call.respondText(r, contentType = ContentType.Application.Json)
@@ -145,8 +145,8 @@ class MainGraphQL(val schema: Schema) {
                 } catch (e: Throwable) {
                     if (e is GraphQLError) {
                         val clientId = call.request.header("c-id") ?: ""
-                        val type = call.request.header("c-type") ?: "" // peer
-                        val channelId = call.request.header("c-cid") ?: "" // chat channel id
+                        val type = call.request.header("c-type") ?: "" 
+                        val channelId = call.request.header("c-cid") ?: "" 
                         if (clientId.isNotEmpty()) {
                             val token = if (channelId.isNotEmpty()) {
                                 ChatCacheManager.channelKeyCache[channelId]

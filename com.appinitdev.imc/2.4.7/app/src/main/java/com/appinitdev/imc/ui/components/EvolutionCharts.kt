@@ -14,7 +14,7 @@ fun WeightEvolutionChart(
 ) {
     var selectedIndex by remember(records) { mutableStateOf<Int?>(null) }
 
-    // Pulsing Infinite Animation for Latest Data Point
+    
     val infiniteTransition = rememberInfiniteTransition(label = "PulseTransitionWeight")
     val pulseScale by infiniteTransition.animateFloat(
         initialValue = 1f,
@@ -72,7 +72,7 @@ fun WeightEvolutionChart(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
-                    // Progress / Trend Delta Badge
+                    
                     if (records.size >= 2) {
                         val first = records.first().weightKg
                         val last = records.last().weightKg
@@ -124,7 +124,7 @@ fun WeightEvolutionChart(
                         }
                     }
 
-                    // Latest Value Badge
+                    
                     if (records.isNotEmpty()) {
                         val latest = records.last().weightKg
                         Surface(
@@ -178,7 +178,7 @@ fun WeightEvolutionChart(
                     color = lineColor,
                 )
 
-                // Interactive Selected Point Tooltip Box
+                
                 val activeIndex = selectedIndex
                 if (activeIndex != null && (activeIndex in records.indices)) {
                     val selRecord = records[activeIndex]
@@ -242,7 +242,7 @@ fun WeightEvolutionChart(
                             points.add(Offset(x, y))
                         }
 
-                        // Background Grid Lines
+                        
                         val gridCount = 3
                         for (g in 0..gridCount) {
                             val gy = height * (g / gridCount.toFloat())
@@ -254,7 +254,7 @@ fun WeightEvolutionChart(
                             )
                         }
 
-                        // Gradient Area Path under the curve
+                        
                         val areaPath = Path().apply {
                             if (points.isNotEmpty()) {
                                 moveTo(points.first().x, height)
@@ -277,7 +277,7 @@ fun WeightEvolutionChart(
                             ),
                         )
 
-                        // Connecting Line
+                        
                         val linePath = Path().apply {
                             if (points.isNotEmpty()) {
                                 moveTo(points.first().x, points.first().y)
@@ -293,7 +293,7 @@ fun WeightEvolutionChart(
                             style = Stroke(width = 3.8.dp.toPx(), cap = StrokeCap.Round),
                         )
 
-                        // Live Pulse Effect on the Last Point
+                        
                         if (points.isNotEmpty()) {
                             val lastPoint = points.last()
                             drawCircle(
@@ -303,13 +303,13 @@ fun WeightEvolutionChart(
                             )
                         }
 
-                        // Data Points Dots & Labels
+                        
                         for (i in points.indices) {
                             val p = points[i]
                             val isSelected = (i == activeIndex)
 
                             if (isSelected) {
-                                // Highlighting Vertical Guide Line
+                                
                                 drawLine(
                                     color = lineColor.copy(alpha = 0.4f),
                                     start = Offset(p.x, 0f),
@@ -334,7 +334,7 @@ fun WeightEvolutionChart(
                                 center = p,
                             )
 
-                            // Point Value Text Label
+                            
                             if (records.size <= 8 || isSelected || i == 0 || i == points.lastIndex) {
                                 val valueText = String.format(Locale.US, "%.1f", records[i].weightKg)
                                 val textLayoutResult = textMeasurer.measure(
@@ -352,7 +352,7 @@ fun WeightEvolutionChart(
                         }
                     }
 
-                    // Dates X-Axis Row
+                    
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -380,7 +380,7 @@ fun HeightEvolutionChart(
 ) {
     var selectedIndex by remember(records) { mutableStateOf<Int?>(null) }
 
-    // Pulsing Infinite Animation for Latest Data Point
+    
     val infiniteTransition = rememberInfiniteTransition(label = "PulseTransitionHeight")
     val pulseScale by infiniteTransition.animateFloat(
         initialValue = 1f,
@@ -438,7 +438,7 @@ fun HeightEvolutionChart(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
-                    // Growth Delta Badge
+                    
                     if (records.size >= 2) {
                         val first = records.first().heightCm
                         val last = records.last().heightCm
@@ -471,7 +471,7 @@ fun HeightEvolutionChart(
                         }
                     }
 
-                    // Latest Value Badge
+                    
                     if (records.isNotEmpty()) {
                         val latest = records.last().heightCm
                         Surface(
@@ -525,7 +525,7 @@ fun HeightEvolutionChart(
                     color = lineColor,
                 )
 
-                // Interactive Selected Point Tooltip Box
+                
                 val activeIndex = selectedIndex
                 if (activeIndex != null && (activeIndex in records.indices)) {
                     val selRecord = records[activeIndex]
@@ -604,7 +604,7 @@ fun HeightEvolutionChart(
                             style = Stroke(width = 3.8.dp.toPx(), cap = StrokeCap.Round),
                         )
 
-                        // Live Pulse Effect on the Last Point
+                        
                         if (points.isNotEmpty()) {
                             val lastPoint = points.last()
                             drawCircle(

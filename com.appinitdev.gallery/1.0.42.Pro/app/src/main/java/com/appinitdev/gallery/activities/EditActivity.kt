@@ -2,7 +2,7 @@
 class EditActivity : SimpleActivity() {
     companion object {
         init {
-            //System.loadLibrary("NativeImageProcessor")
+            
         }
 
         private const val TEMP_FOLDER_NAME = "images"
@@ -10,7 +10,7 @@ class EditActivity : SimpleActivity() {
         private const val ASPECT_Y = "aspectY"
         private const val CROP = "crop"
 
-        // constants for bottom primary action groups
+        
         private const val PRIMARY_ACTION_NONE = 0
         private const val PRIMARY_ACTION_FILTER = 1
         private const val PRIMARY_ACTION_CROP_ROTATE = 2
@@ -47,7 +47,7 @@ class EditActivity : SimpleActivity() {
             val editedUriString = result.data?.getStringExtra("EXTRA_EDITED_IMAGE_URI")
             if (editedUriString != null) {
                 uri = Uri.parse(editedUriString)
-                filterInitialBitmap = null // Reset so it reloads the new image
+                filterInitialBitmap = null 
                 loadDefaultImageView()
             }
         }
@@ -302,7 +302,7 @@ class EditActivity : SimpleActivity() {
             SaveAsDialog(this, filePathGetter.first, filePathGetter.second) {
                 toast(org.appinitdev.commons.R.string.saving)
 
-                // clean up everything to free as much memory as possible
+                
                 binding.defaultImageView.setImageResource(0)
                 binding.cropImageView.setImageBitmap(null)
                 binding.bottomEditorFilterActions.bottomActionsFilterList.adapter = null
@@ -649,13 +649,13 @@ class EditActivity : SimpleActivity() {
                     val filterThumbnailsManager = FilterThumbnailsManager()
                     filterThumbnailsManager.clearThumbs()
 
-                   // val noFilter = Filter(getString(org.appinitdev.commons.R.string.none))
-                   // filterThumbnailsManager.addThumb(FilterItem(bitmap, noFilter))
+                   
+                   
 
-                   // FilterPack.getFilterPack(this).forEach {
-//                        val filterItem = FilterItem(bitmap, it)
-//                        filterThumbnailsManager.addThumb(filterItem)
-//                    }
+                   
+
+
+
 
                     val filterItems = filterThumbnailsManager.processThumbs()
                     val adapter = FiltersAdapter(applicationContext, filterItems) {

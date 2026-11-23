@@ -1,11 +1,11 @@
 
-/**
- * Glide [DataFetcher] for loading folder cover artwork.
- * Delegates to [FolderCover.load] for centralized loading logic, including the
- * optional MediaStore fast path when the user preference is enabled.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 class FolderCoverFetcher internal constructor(
         private val context: Context,
         private val folder: Folder

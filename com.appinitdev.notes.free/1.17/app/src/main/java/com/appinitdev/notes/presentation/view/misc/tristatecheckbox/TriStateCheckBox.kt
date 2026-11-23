@@ -1,7 +1,7 @@
 
-/**
- * [AppCompatCheckBox] with 3 states ([State.UNCHECKED],[State.CHECKED],[State.PARTIALLY_CHECKED])
- */
+ 
+
+
 class TriStateCheckBox
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :

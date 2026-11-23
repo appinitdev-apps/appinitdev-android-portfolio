@@ -120,7 +120,7 @@ enum class ImportSource(
     ),
     EVERNOTE(
         R.string.evernote,
-        "*/*", // 'application/enex+xml' is not recognized
+        "*/*", 
         R.string.evernote_help,
         "",
         R.drawable.icon_evernote,

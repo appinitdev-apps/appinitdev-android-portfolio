@@ -133,7 +133,7 @@ interface PurchaseOrderItemDao {
     @Query("DELETE FROM purchase_order_items WHERE purchaseOrderId = :orderId")
     suspend fun deleteOrderItems(orderId: String)
 
-    // Offline Support
+    
     @Query("SELECT * FROM inventory_adjustments WHERE isSynced = 0 ORDER BY createdAt ASC")
     fun getQueuedAdjustments(): Flow<List<InventoryAdjustment>>
 

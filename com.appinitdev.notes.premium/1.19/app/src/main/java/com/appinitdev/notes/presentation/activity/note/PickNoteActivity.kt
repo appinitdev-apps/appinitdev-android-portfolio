@@ -66,24 +66,24 @@ open class PickNoteActivity : LockedActivity<ActivityPickNoteBinding>(), ItemLis
     }
 
     private fun configureEdgeToEdgeInsets() {
-        // 1. Enable edge-to-edge display for the activity window.
+        
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        // 3. Apply window insets to specific views to prevent content from being obscured.
-        // Set an OnApplyWindowInsetsListener on the root layout.
+        
+        
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
 
-            // Adjust the top margin of the Toolbar to account for the status bar.
+            
             binding.Toolbar.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
                 requestLayout()
             }
 
-            // Apply padding to the RecyclerView and EmptyView to account for the navigation bar and
-            // keyboard.
-            // Preserve existing horizontal padding.
+            
+            
+            
             binding.MainListView.apply {
                 setPadding(
                     paddingLeft,

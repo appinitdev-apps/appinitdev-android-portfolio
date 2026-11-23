@@ -27,7 +27,7 @@ fun DeleteProductButton(
         AlertDialog(
             onDismissRequest = { showDialog = false },
             title = { Text(stringResource(R.string.confirmar_eliminaci_n)) },
-            text = { Text(confirmationMessage) }, // mensaje dado por el usuario
+            text = { Text(confirmationMessage) }, 
             confirmButton = {
                 IconButton(
                     onClick = {
@@ -36,7 +36,7 @@ fun DeleteProductButton(
                     }
                 ) {
                     Icon(
-                        Icons.Default.Check, // ícono para confirmar
+                        Icons.Default.Check, 
                         contentDescription = stringResource(R.string.eliminar),
                         tint = MaterialTheme.colorScheme.error
                     )
@@ -45,7 +45,7 @@ fun DeleteProductButton(
             dismissButton = {
                 IconButton(onClick = { showDialog = false }) {
                     Icon(
-                        Icons.Default.Close, // ícono para cancelar
+                        Icons.Default.Close, 
                         contentDescription = stringResource(R.string.cancelar)
                     )
                 }

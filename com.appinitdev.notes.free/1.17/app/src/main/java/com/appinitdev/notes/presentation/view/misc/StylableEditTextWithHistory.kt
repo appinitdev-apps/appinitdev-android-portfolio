@@ -1,8 +1,8 @@
 
-/**
- * [AppCompatEditText] whose changes (text edits or span changes) are pushed to [changeHistory].
- * *
- */
+ 
+
+
+
 class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
     HighlightableEditText(context, attrs) {
 
@@ -10,11 +10,11 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
     private var changeHistory: ChangeHistory? = null
     private var updateModel: ((text: Editable) -> Unit)? = null
 
-    /**
-     * If this is called every future text or span change is pushed to [changeHistory].
-     *
-     * @param updateModel Function that is called when undo/redo of [changeHistory] is triggered *
-     */
+     
+
+
+
+
     fun initHistory(changeHistory: ChangeHistory, updateModel: (text: Editable) -> Unit) {
         this.textWatcher?.let { removeTextChangedListener(it) }
         this.changeHistory = changeHistory
@@ -110,11 +110,11 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
         UNDERLINE
     }
 
-    /**
-     * Removes [span] from `text`.
-     *
-     * @param removeText if this is `true` the text of the [span] is removed from `text`.
-     */
+     
+
+
+
+
     fun removeSpanWithHistory(
         span: CharacterStyle,
         removeText: Boolean = false,
@@ -179,11 +179,11 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
         }
     }
 
-    /**
-     * Replaces [oldSpan] with [newSpan].
-     *
-     * @param spanText if this is not `null`, the spans text is also updated,
-     */
+     
+
+
+
+
     fun updateSpan(oldSpan: CharacterStyle, newSpan: CharacterStyle, spanText: String?) {
         val (oldSpanStart, oldSpanEnd) = getSpanRange(oldSpan)
         changeTextWithHistory { text ->
@@ -217,10 +217,10 @@ class StylableEditTextWithHistory(context: Context, attrs: AttributeSet) :
         }
     }
 
-    /**
-     * Can be used to change `text` with according [EditTextWithHistoryChange] pushed automatically
-     * to [changeHistory]. This method is used by all other members functions.
-     */
+     
+
+
+
     fun changeTextWithHistory(callback: (text: Editable) -> Unit) {
         val cursorPosBefore = selectionStart
         val (textBefore, textAfter) = changeText(callback)

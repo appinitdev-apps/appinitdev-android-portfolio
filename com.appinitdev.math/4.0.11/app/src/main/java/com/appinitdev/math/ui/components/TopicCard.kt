@@ -22,7 +22,7 @@ fun TopicCard(
                 .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Icon Badge
+            
             Box(
                 modifier = Modifier
                     .size(42.dp)

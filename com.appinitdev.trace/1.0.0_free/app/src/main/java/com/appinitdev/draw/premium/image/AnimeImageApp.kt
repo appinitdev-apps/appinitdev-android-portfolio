@@ -9,7 +9,7 @@ fun AnimeImageApp(
     var selectedCategory by remember { mutableStateOf("cosplay") }
     var isLoading by remember { mutableStateOf(false) }
 
-    // Cache para almacenar las imágenes por categoría y página
+    
     val cache = remember { mutableMapOf<String, List<Image>>() }
 
     val categories = listOf("cosplay", "girl", "woman",  "anime", "draw", "manga", "illustration", "art")
@@ -35,7 +35,7 @@ fun AnimeImageApp(
             )
             Log.d("AnimeImageApp", "Pixabay response received: hits count=${response.hits.size}")
             images = response.hits
-            cache[cacheKey] = images // Guardar en cache
+            cache[cacheKey] = images 
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()?.string()
             Log.e("AnimeImageApp", "Pixabay HTTP Error code=${e.code()}, message=${e.message()}, body=$errorBody", e)
@@ -55,7 +55,7 @@ fun AnimeImageApp(
         isLoading = isLoading,
         onCategorySelected = { category ->
             selectedCategory = category
-            page = 1 // Reiniciar a la primera página al cambiar de categoría
+            page = 1 
         },
         onSearchQuery = { query ->
             selectedCategory = query
@@ -68,7 +68,7 @@ fun AnimeImageApp(
         },
         onPrevPage = {
             if (page > 1) page -= 1
-            else page = 15 // Ciclar a la última página si se retrocede desde la 1
+            else page = 15 
         },
         onImageClick = { url ->
             Log.d("AnimeImageApp", "Selected image: $url")

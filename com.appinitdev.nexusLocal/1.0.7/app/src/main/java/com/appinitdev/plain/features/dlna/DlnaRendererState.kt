@@ -11,25 +11,25 @@ object DlnaRendererState {
     val port = MutableStateFlow(7878)
     val currentPositionMs = MutableStateFlow(0L)
     val durationMs = MutableStateFlow(0L)
-    /** Non-null signals the player to seek to this position (milliseconds). */
+     
     val seekTargetMs = MutableStateFlow<Long?>(null)
 
-    /** Commands dispatched by the HTTP server; unlimited capacity to never drop. */
+     
     val commandChannel = Channel<DlnaCommand>(Channel.UNLIMITED)
 
-    /**
-     * Set by the HTTP server when a cast request arrives. The ViewModel checks rules against
-     * this and either silently handles it or promotes to [pendingCastRequest] for the UI.
-     */
+     
+
+
+
     val rawPendingCastRequest = MutableStateFlow<PendingCastRequest?>(null)
 
-    /** Non-null when a cast request is shown to the user for confirmation. */
+     
     val pendingCastRequest = MutableStateFlow<PendingCastRequest?>(null)
 
-    /** True when a Play command arrived while a cast request was pending. */
+     
     val pendingPlayQueued = MutableStateFlow(false)
 
-    /** Non-empty when the receiver failed to start on all attempted ports. */
+     
     val startError = MutableStateFlow("")
 
     fun reset() {

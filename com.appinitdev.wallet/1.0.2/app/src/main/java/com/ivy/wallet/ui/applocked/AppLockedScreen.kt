@@ -74,7 +74,7 @@ fun BoxWithConstraintsScope.AppLockedScreen(
         }
         Spacer(Modifier.height(24.dp))
 
-        // To automatically launch the biometric screen on load of this composable
+        
         LaunchedEffect(true) {
             osAuthentication(
                 context = context,

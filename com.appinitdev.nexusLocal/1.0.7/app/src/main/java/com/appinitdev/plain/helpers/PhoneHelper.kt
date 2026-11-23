@@ -33,19 +33,19 @@ object PhoneHelper {
     }
 
     fun getDeviceType(context: Context): DeviceType {
-        // Check if the device is a TV (based on UI mode or system feature)
+        
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION ||
             context.packageManager.hasSystemFeature("android.software.leanback")) {
             return DeviceType.TV
         }
 
-        // Check if the device is a tablet (based on smallest screen width in dp)
+        
         val config = context.resources.configuration
         if (config.smallestScreenWidthDp >= 600) {
             return DeviceType.TABLET
         }
 
-        // Optional: Check if the device resembles a computer (Chromebook, emulator, Android-x86, etc.)
+        
         val model = Build.MODEL.lowercase()
         val product = Build.PRODUCT.lowercase()
         val manufacturer = Build.MANUFACTURER.lowercase()
@@ -57,7 +57,7 @@ object PhoneHelper {
             return DeviceType.COMPUTER
         }
 
-        // Default to phone if no other conditions matched
+        
         return DeviceType.PHONE
     }
 

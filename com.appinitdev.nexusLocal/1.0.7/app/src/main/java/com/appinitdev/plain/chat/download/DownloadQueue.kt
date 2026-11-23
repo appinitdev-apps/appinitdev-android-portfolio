@@ -19,7 +19,7 @@ object DownloadQueue {
     val downloadProgress: StateFlow<Map<String, DownloadTask>> = _downloadProgress.asStateFlow()
 
     init {
-        // Start download workers
+        
         repeat(MAX_CONCURRENT) {
             scope.launch {
                 processDownloads()
@@ -152,7 +152,7 @@ object DownloadQueue {
 
     private fun updateProgressFlow() {
         val progressMap = tasks.mapValues { (_, task) ->
-            task.copy() // Create a new copy to trigger Flow update
+            task.copy() 
         }
         _downloadProgress.value = progressMap
         val items = progressMap.values.map { task ->

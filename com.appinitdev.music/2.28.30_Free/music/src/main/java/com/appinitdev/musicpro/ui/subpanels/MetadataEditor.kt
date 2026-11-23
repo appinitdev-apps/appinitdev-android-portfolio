@@ -1,25 +1,25 @@
 
-/**
- * Full-screen panel that allows the user to view and edit the embedded tag
- * metadata of a single audio track. Supported fields are title, artist,
- * album, album artist, year, genre, track number, total tracks, disc number,
- * compilation, composer, writer/lyricist, comment, and unsynchronized lyrics.
- *
- * Album artwork can be replaced by tapping the art thumbnail, which opens the
- * system image picker. The chosen image is copied to a temporary file and
- * passed to [com.appinitdev.musicpro.repository.metadata.MetadataWriter] for embedding.
- *
- * A "Search" button opens [MetadataSearch] which queries LrcLib and returns a
- * [MetadataSearchResult] via the Fragment Result API. All non-null fields in the
- * result are applied to the editor automatically, and any synced lyrics are saved
- * as a sidecar .lrc file alongside the audio file.
- *
- * On save, [com.appinitdev.musicpro.viewmodels.panels.MetadataEditorViewModel] writes the changes to disk via
- * TagLib, updates the Room database, and triggers a MediaStore rescan
- * so the changes are reflected in the app immediately.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @AndroidEntryPoint
 class MetadataEditor : MediaFragment() {
 
@@ -40,7 +40,7 @@ class MetadataEditor : MediaFragment() {
             }
     )
 
-    /** Temporary file to which the picked artwork is copied before embedding. */
+     
     private var pendingArtworkFile: File? = null
 
     private val pickArtwork = registerForActivityResult(
@@ -82,12 +82,12 @@ class MetadataEditor : MediaFragment() {
         }
     }
 
-    /**
-     * Registers a listener on [LyricsSearch.REQUEST_KEY_LYRICS_FOR_EDITOR] so that when
-     * the user picks a result in the lyrics search screen, the plain lyrics are pasted
-     * straight into the lyrics field. If the result also contains synced lyrics, they are
-     * saved as a sidecar `.lrc` file next to the audio file on a background thread.
-     */
+     
+
+
+
+
+
     private fun registerLyricsSearchResult() {
         parentFragmentManager.setFragmentResultListener(
                 LyricsSearch.REQUEST_KEY_LYRICS_FOR_EDITOR,
@@ -97,7 +97,7 @@ class MetadataEditor : MediaFragment() {
             val synced = bundle.getString(LyricsSearch.KEY_SYNCED_LYRICS)
 
             if (!plain.isNullOrBlank()) {
-                // binding.lyricsInput.setText(plain)
+                
             }
 
             if (!synced.isNullOrBlank()) {
@@ -110,11 +110,11 @@ class MetadataEditor : MediaFragment() {
         }
     }
 
-    /**
-     * Registers a one-time listener on [MetadataSearch.REQUEST_KEY_METADATA_RESULT] so that
-     * when the user picks a result in the search screen, we automatically fill in all the
-     * fields we received and navigate back here.
-     */
+     
+
+
+
+
     private fun registerMetadataSearchResult() {
         parentFragmentManager.setFragmentResultListener(
                 MetadataSearch.REQUEST_KEY_METADATA_RESULT,
@@ -127,11 +127,11 @@ class MetadataEditor : MediaFragment() {
         }
     }
 
-    /**
-     * Applies all available fields from [result] to the editor's input fields.
-     * Only non-null values overwrite the current text — fields absent from the
-     * result are left as they are so the user doesn't lose anything they typed.
-     */
+     
+
+
+
+
     private fun applySearchResult(result: MetadataSearchResult) {
         with(binding) {
             if (result.title.isNotBlank()) titleInput.setText(result.title)
@@ -142,9 +142,9 @@ class MetadataEditor : MediaFragment() {
         }
     }
 
-    /**
-     * Populates all input fields from the [audio] object passed via arguments.
-     */
+     
+
+
     private fun populateFields() {
         with(binding) {
             titleInput.setText(audio.title.orEmpty())
@@ -159,7 +159,7 @@ class MetadataEditor : MediaFragment() {
             writerInput.setText(audio.writer.orEmpty())
             compilationInput.setText(audio.compilation.orEmpty())
 
-            // Disc number is stored as "X/Y" — we split it into the two separate fields.
+            
             val discParts = audio.discNumber.orEmpty().split("/")
             discNumberInput.setText(discParts.getOrNull(0).orEmpty())
             discTotalInput.setText(discParts.getOrNull(1).orEmpty())
@@ -173,10 +173,10 @@ class MetadataEditor : MediaFragment() {
         binding.albumArt.loadArtCoverWithPayload(audio)
     }
 
-    /**
-     * Wires the album art thumbnail and the label overlay to launch the
-     * system image picker.
-     */
+     
+
+
+
     private fun setupAlbumArtPicker() {
         val launchPicker = View.OnClickListener {
             pickArtwork.launch(PickVisualMediaRequest(
@@ -186,13 +186,13 @@ class MetadataEditor : MediaFragment() {
         binding.albumArt.setOnClickListener(launchPicker)
     }
 
-    /**
-     * Copies the artwork selected by the user into a temporary file, decodes
-     * it into a Bitmap for preview, and stores the file reference in
-     * [pendingArtworkFile] for use at save time.
-     *
-     * @param uri The content URI returned by the image picker.
-     */
+     
+
+
+
+
+
+
     private fun handlePickedArtwork(uri: Uri) {
         runCatching {
             val inputStream = requireContext().contentResolver.openInputStream(uri)
@@ -213,10 +213,10 @@ class MetadataEditor : MediaFragment() {
         }
     }
 
-    /**
-     * Observes [MetadataEditorViewModel.isSaving] and [MetadataEditorViewModel.saveResult]
-     * to react to the outcome of save operations.
-     */
+     
+
+
+
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isSaving.collect { saving ->
@@ -240,13 +240,13 @@ class MetadataEditor : MediaFragment() {
         }
     }
 
-    /**
-     * Reads all input fields, builds a [com.appinitdev.musicpro.repository.metadata.MetadataWriter.Fields] instance, applies
-     * it to a copy of the original [Audio] to keep the Room row consistent, then
-     * delegates to [MetadataEditorViewModel.saveMetadata].
-     */
+     
+
+
+
+
     private fun saveMetadata() {
-        // Combine the two disc number inputs back into the "X/Y" format TagLib expects.
+        
         val discNum = binding.discNumberInput.text?.toString()?.trim().orEmpty()
         val discTotal = binding.discTotalInput.text?.toString()?.trim().orEmpty()
         val discString = when {
@@ -307,12 +307,12 @@ class MetadataEditor : MediaFragment() {
     companion object {
         const val TAG = "MetadataEditor"
 
-        /**
-         * Creates a new [MetadataEditor] instance with the given [audio] track.
-         *
-         * @param audio The [Audio] track whose metadata will be edited.
-         * @return A configured [MetadataEditor] fragment.
-         */
+         
+
+
+
+
+
         fun newInstance(audio: Audio): MetadataEditor {
             return MetadataEditor().apply {
                 arguments = Bundle().apply {

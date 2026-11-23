@@ -30,7 +30,7 @@ abstract class NotallyFragment : Fragment(), ItemListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-       // binding?.ImageView?.setImageResource(getBackground())
+       
 
         setupAdapter()
         setupRecyclerView()
@@ -55,8 +55,8 @@ abstract class NotallyFragment : Fragment(), ItemListener {
         openNoteActivityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == RESULT_OK) {
-                    // If a note has been moved inside of EditActivity
-                    // present snackbar to undo it
+                    
+                    
                     val data = result.data
                     val id = data?.getLongExtra(EXTRA_NOTE_ID, -1)
                     if (id != null) {
@@ -88,7 +88,7 @@ abstract class NotallyFragment : Fragment(), ItemListener {
         return binding?.root
     }
 
-    // See [RecyclerView.ViewHolder.getAdapterPosition]
+    
     override fun onClick(position: Int) {
         if (position != -1) {
             notesAdapter?.getItem(position)?.let { item ->
@@ -139,12 +139,12 @@ abstract class NotallyFragment : Fragment(), ItemListener {
             val navController = findNavController()
             navController.addOnDestinationChangedListener { controller, destination, arguments ->
                 if (destination.id == R.id.Search) {
-                    //                setText("")
+                    
                     visibility = View.VISIBLE
                     requestFocus()
                     activity?.showKeyboard(this)
                 } else {
-                    //                visibility = View.GONE
+                    
                     setText("")
                     clearFocus()
                     activity?.hideKeyboard(this)

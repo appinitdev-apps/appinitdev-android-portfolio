@@ -6,7 +6,7 @@ internal class RefreshLayoutNestedScrollConnection(
     private val orientationIsHorizontal: Boolean,
     private val refreshingCanScroll: Boolean = false,
 ) : NestedScrollConnection {
-    //处理子组件用不完的手势,返回消费的手势
+    
     override fun onPostScroll(
         consumed: Offset,
         available: Offset,
@@ -17,7 +17,7 @@ internal class RefreshLayoutNestedScrollConnection(
                 ComposePosition.Start -> {
                     val value = available.x
                     if (value > 0) {
-                        //过滤误差值(系统bug?)
+                        
                         if (value > 0.01f)
                             refreshLayoutState.offset(value * dragEfficiency)
                         return Offset(value, 0f)
@@ -52,9 +52,9 @@ internal class RefreshLayoutNestedScrollConnection(
         return Offset.Zero
     }
 
-    //预先处理手势,返回消费的手势
+    
     override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-        //如果是刷新中状态,并且刷新中不允许滚动,就拒绝对刷新区域和上下区域滚动
+        
         if (!refreshingCanScroll && refreshLayoutState.refreshContentState.value == RefreshContentState.Refreshing) {
             return if (orientationIsHorizontal)
                 Offset(available.x, 0f)
@@ -66,7 +66,7 @@ internal class RefreshLayoutNestedScrollConnection(
             when (composePosition) {
                 ComposePosition.Start -> {
                     if (available.x < 0 && refreshOffset > 0) {
-                        //消费的手势
+                        
                         var consumptive = available.x
                         if (-available.x > refreshOffset) {
                             consumptive = available.x - refreshOffset
@@ -77,7 +77,7 @@ internal class RefreshLayoutNestedScrollConnection(
                 }
                 ComposePosition.End -> {
                     if (available.x > 0 && refreshOffset < 0) {
-                        //消费的手势
+                        
                         var consumptive = available.x
                         if (-available.x > refreshOffset) {
                             consumptive = available.x - refreshOffset
@@ -87,9 +87,9 @@ internal class RefreshLayoutNestedScrollConnection(
                     }
                 }
                 ComposePosition.Top -> {
-//                    LogCat.d("ComposePosition.Top: ${available.y} ${refreshOffset}")
+
                     if (available.y < 0 && refreshOffset > 0) {
-                        //消费的手势
+                        
                         var consumptive = available.y
                         if (-available.y > refreshOffset) {
                             consumptive = available.y - refreshOffset
@@ -99,9 +99,9 @@ internal class RefreshLayoutNestedScrollConnection(
                     }
                 }
                 ComposePosition.Bottom -> {
-//                    LogCat.d("ComposePosition.Bottom: ${available.y} ${refreshOffset}")
+
                     if (available.y > 0 && refreshOffset < 0) {
-                        //消费的手势
+                        
                         var consumptive = available.y
                         if (-available.y < refreshOffset) {
                             consumptive = available.y - refreshOffset
@@ -115,9 +115,9 @@ internal class RefreshLayoutNestedScrollConnection(
         return Offset.Zero
     }
 
-    //手势惯性滑动前回调,返回消费的速度,可以当做action_up
+    
     override suspend fun onPreFling(available: Velocity): Velocity {
-        //如果是刷新中状态,并且刷新中不允许滚动,就拒绝对刷新区域和上下区域滚动
+        
         if (!refreshingCanScroll && refreshLayoutState.refreshContentState.value == RefreshContentState.Refreshing) {
             return available
         }

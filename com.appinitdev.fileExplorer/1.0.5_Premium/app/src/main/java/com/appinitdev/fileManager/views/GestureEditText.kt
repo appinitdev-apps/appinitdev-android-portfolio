@@ -1,6 +1,6 @@
 
-// inspired by
-// https://github.com/alexvasilkov/GestureViews/blob/f0a4c266e31dcad23bd0d9013531bc1c501b9c9f/sample/src/main/java/com/alexvasilkov/gestures/sample/ex/custom/text/GestureTextView.java
+
+
 class GestureEditText : AppCompatEditText, GestureView {
     constructor(context: Context) : super(context)
 

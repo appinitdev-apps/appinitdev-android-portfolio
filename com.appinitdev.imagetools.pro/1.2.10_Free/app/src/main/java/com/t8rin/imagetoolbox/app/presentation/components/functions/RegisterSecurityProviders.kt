@@ -1,4 +1,4 @@
-/* #AppInitDev -> Photo Utility Hub */
+ 
 
 internal fun registerSecurityProviders() {
     initBouncyCastle()

@@ -29,7 +29,7 @@ class BillingManager(private val context: Context) : PurchasesUpdatedListener {
             }
 
             override fun onBillingServiceDisconnected() {
-                // Retry connection if disconnected
+                
             }
         })
     }

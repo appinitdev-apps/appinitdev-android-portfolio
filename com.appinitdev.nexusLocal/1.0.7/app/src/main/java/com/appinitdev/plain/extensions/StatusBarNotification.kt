@@ -13,7 +13,7 @@ fun StatusBarNotification.toDNotification(): DNotification {
             }
 
             if (action.remoteInputs != null && action.remoteInputs.isNotEmpty()) {
-                // Reply action - collect separately
+                
                 replyActions.add(action.title.toString())
             } else {
                 actions.add(action.title.toString())

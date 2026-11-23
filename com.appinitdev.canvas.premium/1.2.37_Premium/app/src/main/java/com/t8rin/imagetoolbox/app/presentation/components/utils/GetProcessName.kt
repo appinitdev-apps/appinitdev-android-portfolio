@@ -1,4 +1,4 @@
-/* #AppInitDev -> Photo Utility Hub */
+ 
 
 internal fun Application.isMain(): Boolean =
     getProcessName().makeLog("Current Process") == packageName.makeLog("Current packageName")
@@ -10,7 +10,7 @@ internal fun Application.getProcessName(): String? {
         return Application.getProcessName()
     }
 
-    // Try using ActivityThread to determine the current process name.
+    
     try {
         val activityThread = Class.forName(
             "android.app.ActivityThread",
@@ -28,7 +28,7 @@ internal fun Application.getProcessName(): String? {
         exception.makeLog()
     }
 
-    // Fallback to the most expensive way
+    
     val pid: Int = android.os.Process.myPid()
     val am = getSystemService(ACTIVITY_SERVICE) as ActivityManager
 

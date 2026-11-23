@@ -4,7 +4,7 @@ fun AdvancedScientificCalculator(
     currentLang: String,
     modifier: Modifier = Modifier
 ) {
-    var calcMode by remember { mutableIntStateOf(0) } // 0: Scientific, 1: Polynomial, 2: Matrix, 3: Calculus
+    var calcMode by remember { mutableIntStateOf(0) } 
 
     Column(
         modifier = modifier
@@ -13,7 +13,7 @@ fun AdvancedScientificCalculator(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Mode Selector Chips
+        
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             val modes = listOf(
                 0 to if (currentLang == "en") "🧮 Scientific & Expression" else "🧮 Científica y Expresiones",
@@ -53,7 +53,7 @@ private fun ScientificExpressionCalculator(currentLang: String) {
                 .replace("π", "3.141592653589793")
                 .replace("e", "2.718281828459045")
 
-            // Format LaTeX preview
+            
             var latex = clean
                 .replace("*", " \\cdot ")
                 .replace("/", " / ")
@@ -65,7 +65,7 @@ private fun ScientificExpressionCalculator(currentLang: String) {
 
             latexPreview = "$$$latex$$"
 
-            // Simple evaluator logic for standard inputs
+            
             val valResult = evaluateSimpleMath(clean)
             resultText = if (valResult.isNaN()) "Error" else String.format(Locale.US, "%.6f", valResult)
         } catch (e: Exception) {
@@ -89,7 +89,7 @@ private fun ScientificExpressionCalculator(currentLang: String) {
                 color = MaterialTheme.colorScheme.primary
             )
 
-            // Live LaTeX Math Previewer
+            
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
@@ -111,7 +111,7 @@ private fun ScientificExpressionCalculator(currentLang: String) {
                 }
             }
 
-            // Expression Input
+            
             OutlinedTextField(
                 value = exprText,
                 onValueChange = {
@@ -123,7 +123,7 @@ private fun ScientificExpressionCalculator(currentLang: String) {
                 shape = RoundedCornerShape(12.dp)
             )
 
-            // Big Result Display
+            
             Surface(
                 shape = RoundedCornerShape(12.dp),
                 color = MaterialTheme.colorScheme.primaryContainer,
@@ -151,7 +151,7 @@ private fun ScientificExpressionCalculator(currentLang: String) {
                 }
             }
 
-            // Quick Scientific 1-Tap Buttons
+            
             val buttons = listOf(
                 "sin(", "cos(", "tan(", "sqrt(",
                 "ln(", "log(", "π", "e",
@@ -208,12 +208,12 @@ private fun CalculusNumericalCalculator(currentLang: String) {
     var xStr by remember { mutableStateOf("2.0") }
     val x = xStr.toDoubleOrNull() ?: 2.0
 
-    // Numerical derivative f'(x) = d/dx (x^3 - 4x + 1) at x
+    
     val h = 0.00001
     val f = { t: Double -> t * t * t - 4 * t + 1 }
     val df = (f(x + h) - f(x - h)) / (2 * h)
 
-    // Numerical Definite Integral ∫_0^x (t^2) dt
+    
     val numSteps = 100
     val aInt = 0.0
     val bInt = x

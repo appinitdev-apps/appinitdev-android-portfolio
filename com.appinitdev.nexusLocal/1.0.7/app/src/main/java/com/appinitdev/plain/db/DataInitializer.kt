@@ -64,8 +64,8 @@ class DataInitializer(val context: Context, val db: SupportSQLiteDatabase) {
                     put("id", StringHelper.shortUUID())
                     put("from_id", it.fromId)
                     put("to_id", it.toId)
-                    put("channel_id", "") // Empty string for local chat (not a channel chat)
-                    put("status", "sent") // Set status for welcome message
+                    put("channel_id", "") 
+                    put("status", "sent") 
                     put("content", it.content)
                     put("created_at", now)
                     put("updated_at", now)

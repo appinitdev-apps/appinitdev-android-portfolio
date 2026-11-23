@@ -5,7 +5,7 @@ class HttpServerService : LifecycleService() {
     private var serverJob: Job? = null
     private var lockManager: HttpServerLockManager? = null
 
-    // true when this instance was created by START_STICKY (system restart), not by user
+    
     private var isStickyRestart: Boolean = false
 
     override fun onCreate() {
@@ -31,10 +31,10 @@ class HttpServerService : LifecycleService() {
                         serverJob?.cancel()
                         serverJob = coIO {
                             if (isStickyRestart) {
-                                // Give previous Ktor instance time to release its TCP ports
-                                // before we try to bind again. Without this, the rapid
-                                // START_STICKY kill/restart cycle on OnePlus/ColorOS causes
-                                // a port-in-use loop that overwhelms the system.
+                                
+                                
+                                
+                                
                                 LogCat.d("START_STICKY restart — waiting 5s for port release")
                                 delay(5_000)
                                 isStickyRestart = false
@@ -59,8 +59,8 @@ class HttpServerService : LifecycleService() {
 
     @SuppressLint("InlinedApi")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // intent == null means the system restarted this service via START_STICKY after killing it.
-        // In that case we flag it so the startup coroutine can delay before binding ports.
+        
+        
         if (intent == null) isStickyRestart = true
         super.onStartCommand(intent, flags, startId)
 
@@ -109,8 +109,8 @@ class HttpServerService : LifecycleService() {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        // Keep the server running even if the app is swiped away from recents.
-        // User can still stop it via the notification action or inside the app.
+        
+        
         LogCat.d("App task removed — keeping HttpServerService alive")
     }
 
@@ -123,7 +123,7 @@ class HttpServerService : LifecycleService() {
         lockManager = null
         mdnsRegister?.stop()
         mdnsRegister = null
-        // Ensure mDNS responder is stopped
+        
         NsdHelper.unregisterService()
         PeerStatusManager.stop()
         try {
@@ -137,7 +137,7 @@ class HttpServerService : LifecycleService() {
     private suspend fun stopHttpServerAsync() {
         LogCat.d("stopHttpServer")
         try {
-            // Stop mDNS responder
+            
             NsdHelper.unregisterService()
 
             val client = HttpClientManager.httpClient()
@@ -147,7 +147,7 @@ class HttpServerService : LifecycleService() {
             }
         } catch (ex: Exception) {
             LogCat.e("Graceful shutdown failed: ${ex.message}")
-            // Fallback: force stop via stored server reference
+            
             try {
                 HttpServerManager.server?.stop(500, 1000)
                 LogCat.d("Server force-stopped via stored reference")

@@ -46,17 +46,17 @@ class CrystalStructureView @JvmOverloads constructor(
                 android.content.res.Configuration.UI_MODE_NIGHT_YES
     }
 
-    // Animator for slow rotation
+    
     private var animator: ValueAnimator? = null
 
     private fun startRotation() {
         if (animator?.isRunning == true) return
         animator = ValueAnimator.ofFloat(0f, 1f).apply {
-            duration = 10000L // 10 seconds per full cycle
+            duration = 10000L 
             repeatCount = ValueAnimator.INFINITE
             repeatMode = ValueAnimator.RESTART
             addUpdateListener {
-                val delta = 0.004f // radians per frame
+                val delta = 0.004f 
                 yaw += delta
                 invalidate()
             }
@@ -88,7 +88,7 @@ class CrystalStructureView @JvmOverloads constructor(
         val cy = h / 2f
         val scale = min(w, h) * 0.3f
 
-        // Set paint color based on theme
+        
         paint.color = if (isDarkTheme()) Color.WHITE else Color.BLACK
 
         val points2D = structure.vertices.map { v ->
@@ -96,7 +96,7 @@ class CrystalStructureView @JvmOverloads constructor(
             PointF(cx + r[0] * scale, cy - r[1] * scale)
         }
 
-        // Draw edges
+        
         for (edge in structure.edges) {
             val p1 = points2D[edge[0]]
             val p2 = points2D[edge[1]]
@@ -110,7 +110,7 @@ class CrystalStructureView @JvmOverloads constructor(
                 lastX = event.x
                 lastY = event.y
                 dragging = true
-                stopRotation() // Stop auto-rotation while dragging
+                stopRotation() 
             }
             MotionEvent.ACTION_MOVE -> {
                 if (dragging) {
@@ -125,7 +125,7 @@ class CrystalStructureView @JvmOverloads constructor(
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 dragging = false
-                startRotation() // Resume auto-rotation after drag
+                startRotation() 
             }
         }
         return true

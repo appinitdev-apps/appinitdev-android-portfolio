@@ -5,7 +5,7 @@ fun BmiGaugeView(
     isBabyCategory: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    // Dynamic scaling: Babies 2.0 to 15.0 kg, Adults/Children 12.0 to 42.0 BMI
+    
     val minScale = if (isBabyCategory) 2.0 else 12.0
     val maxScale = if (isBabyCategory) 15.0 else 42.0
 
@@ -19,12 +19,12 @@ fun BmiGaugeView(
     )
 
     val segments = listOf(
-        Pair(0.20f, UnderweightBlue),  // Underweight
-        Pair(0.25f, NormalGreen),      // Normal
-        Pair(0.20f, OverweightYellow), // Overweight
-        Pair(0.15f, ObesityOrange),    // Obesity I
-        Pair(0.10f, ObesityRed),       // Obesity II
-        Pair(0.10f, ObesityPurple)     // Obesity III
+        Pair(0.20f, UnderweightBlue),  
+        Pair(0.25f, NormalGreen),      
+        Pair(0.20f, OverweightYellow), 
+        Pair(0.15f, ObesityOrange),    
+        Pair(0.10f, ObesityRed),       
+        Pair(0.10f, ObesityPurple)     
     )
 
     val unitText = if (isBabyCategory) "kg" else "kg/m²"
@@ -56,7 +56,7 @@ fun BmiGaugeView(
                 var startAngle = 180f
                 val totalSweep = 180f
 
-                // Outer Background Shadow Arc
+                
                 drawArc(
                     color = Color.Black.copy(alpha = 0.12f),
                     startAngle = 180f,
@@ -67,13 +67,13 @@ fun BmiGaugeView(
                     style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
                 )
 
-                // Colored Arc Segments
+                
                 for ((weight, color) in segments) {
                     val sweepAngle = totalSweep * weight
                     drawArc(
                         color = color,
                         startAngle = startAngle,
-                        sweepAngle = sweepAngle - 3f, // Clean gap
+                        sweepAngle = sweepAngle - 3f, 
                         useCenter = false,
                         topLeft = topLeft,
                         size = arcSize,
@@ -82,7 +82,7 @@ fun BmiGaugeView(
                     startAngle += sweepAngle
                 }
 
-                // Needle Math
+                
                 val needleAngleRad = Math.toRadians((180f + (totalSweep * animatedFraction)).toDouble())
                 val needleLength = radius - 10.dp.toPx()
                 val needleEnd = Offset(
@@ -90,7 +90,7 @@ fun BmiGaugeView(
                     y = center.y + (needleLength * sin(needleAngleRad)).toFloat()
                 )
 
-                // Sleek High-Contrast Pointer Needle
+                
                 val needlePath = Path().apply {
                     val perpAngle = needleAngleRad + Math.PI / 2
                     val baseWidth = 8.dp.toPx()
@@ -116,7 +116,7 @@ fun BmiGaugeView(
                     )
                 )
 
-                // Needle Accent Line
+                
                 drawLine(
                     color = Color(0xFF0F172A),
                     start = center,
@@ -124,7 +124,7 @@ fun BmiGaugeView(
                     strokeWidth = 2.dp.toPx()
                 )
 
-                // Center Pin Base with High Contrast
+                
                 drawCircle(
                     color = Color(0xFF0F172A),
                     radius = 16.dp.toPx(),
@@ -142,7 +142,7 @@ fun BmiGaugeView(
                 )
             }
 
-            // Display Score Positioned High Above Pin (Zero Overlap!)
+            
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(bottom = 52.dp)

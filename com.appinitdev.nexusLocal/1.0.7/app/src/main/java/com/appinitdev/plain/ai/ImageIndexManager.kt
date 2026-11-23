@@ -1,14 +1,14 @@
 
-/**
- * Central coordinator for AI image search indexing.
- * All index operations are queued and processed serially to prevent race conditions.
- *
- * Entry points:
- *  - [enqueueAdd]    – after upload, restore from trash
- *  - [enqueueRemove] – after delete, move to trash
- *  - [enqueueSync]   – ContentObserver change, app startup
- *  - [fullScan]      – user-triggered full rescan
- */
+ 
+
+
+
+
+
+
+
+
+
 object ImageIndexManager {
     private const val SYNC_THRESHOLD = 50
 
@@ -24,7 +24,7 @@ object ImageIndexManager {
     private var processorJob: Job? = null
     private var observer: ImageMediaObserver? = null
 
-    /** Start the processor and ContentObserver. Call when model becomes READY. */
+     
     fun startup() {
         if (processorJob?.isActive == true) return
         processorJob = scope.launch { processOps() }
@@ -32,7 +32,7 @@ object ImageIndexManager {
         enqueueSync()
     }
 
-    /** Stop the processor and ContentObserver. Call when model is disabled. */
+     
     fun shutdown() {
         unregisterObserver()
         processorJob?.cancel()
@@ -78,7 +78,7 @@ object ImageIndexManager {
                     is Op.Sync -> doSync()
                 }
             } catch (e: Exception) {
-                // Check if our own processor job was cancelled (by shutdown())
+                
                 coroutineContext.ensureActive()
                 LogCat.e("ImageIndexManager op failed", e)
             }
@@ -115,11 +115,11 @@ object ImageIndexManager {
         val dao = AppDatabase.instance.imageEmbeddingDao()
         val existingIds = dao.getAllIds().toSet()
 
-        // Remove stale embeddings
+        
         val staleIds = existingIds - currentIds
         if (staleIds.isNotEmpty()) dao.deleteByIds(staleIds.toList())
 
-        // Index new images – delegate to FullScan for large batches
+        
         val newImages = allImages.filter { it.id !in existingIds }
         if (newImages.size > SYNC_THRESHOLD) {
             LogCat.d("ImageIndexManager: doSync: ${newImages.size} new images, delegating to FullScan")

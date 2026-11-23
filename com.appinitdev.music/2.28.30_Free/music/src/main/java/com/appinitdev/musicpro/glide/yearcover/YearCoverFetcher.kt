@@ -1,11 +1,11 @@
 
-/**
- * Glide [DataFetcher] for loading year group cover artwork.
- * Delegates to [YearCover.load] for centralized loading logic, including the
- * optional MediaStore fast path when the user preference is enabled.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 class YearCoverFetcher internal constructor(
         private val context: Context,
         private val yearGroup: YearGroup

@@ -1,9 +1,9 @@
 
-/**
- * Manages audio focus for the video previewer using AUDIOFOCUS_GAIN_TRANSIENT.
- * This ensures the background music player receives AUDIOFOCUS_LOSS_TRANSIENT
- * (not the permanent AUDIOFOCUS_LOSS), so it auto-resumes when we release focus.
- */
+ 
+
+
+
+
 class VideoAudioFocusManager(private val audioManager: AudioManager) {
     private var focusRequest: AudioFocusRequest? = null
 

@@ -24,14 +24,14 @@ class ThumbnailDecoder(
     }
 
 
-    /** Return [inBitmap] or a copy of [inBitmap] that is valid for the input [options] and [size]. */
+     
     private fun normalizeBitmap(inBitmap: Bitmap, size: Size): Bitmap {
-        // Fast path: if the input bitmap is valid, return it.
+        
         if (isConfigValid(inBitmap, options) && isSizeValid(inBitmap, options, size)) {
             return inBitmap
         }
 
-        // Slow path: re-render the bitmap with the correct size + config.
+        
         val scale = DecodeUtils.computeSizeMultiplier(
             srcWidth = inBitmap.width,
             srcHeight = inBitmap.height,
@@ -63,9 +63,9 @@ class ThumbnailDecoder(
     }
 
     private fun isSizeValid(bitmap: Bitmap, options: Options, size: Size): Boolean {
-        // Thumbnails from ContentResolver.loadThumbnail() are already scaled to the requested
-        // size. Accept any bitmap that already fits within the requested bounds (multiplier <= 1.0)
-        // to avoid an unnecessary slow-path software canvas redraw.
+        
+        
+        
         val multiplier = DecodeUtils.computeSizeMultiplier(
             srcWidth = bitmap.width,
             srcHeight = bitmap.height,

@@ -3,7 +3,7 @@
 fun LanguageSettingsButton() {
     val context = LocalContext.current
 
-    // Condicional de versión: Solo aparece en Android 13 (API 33) o más
+    
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         OutlinedButton(
             onClick = {
@@ -13,7 +13,7 @@ fun LanguageSettingsButton() {
                     }
                     context.startActivity(intent)
                 } catch (e: Exception) {
-                    // Fallback silencioso en caso de error de sistema
+                    
                 }
             },
             modifier = Modifier.padding(horizontal = 2.dp).height(34.dp),

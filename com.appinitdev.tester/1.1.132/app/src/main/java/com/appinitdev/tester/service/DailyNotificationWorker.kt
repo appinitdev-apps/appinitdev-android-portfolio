@@ -16,7 +16,7 @@ class DailyNotificationWorker(
         val manager =
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        // Canal obligatorio Android 8+
+        
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
@@ -24,8 +24,8 @@ class DailyNotificationWorker(
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = applicationContext.getString(R.string.recordatorios_diarios_de_la_app)
-                enableVibration(true) // <-- AGREGA ESTO
-                vibrationPattern = longArrayOf(0, 100, 50, 100, 50, 100) // <-- AGREGA ESTO
+                enableVibration(true) 
+                vibrationPattern = longArrayOf(0, 100, 50, 100, 50, 100) 
             }
             manager.createNotificationChannel(channel)
         }
@@ -47,7 +47,7 @@ class DailyNotificationWorker(
             .setContentTitle(applicationContext.getString(R.string.hoy_puedes_ganar_puntos))
             .setContentText(applicationContext.getString(R.string.sigue_probando_apps_y_sube_tu_reputaci_n))
             .setContentIntent(pendingIntent)
-            .setPriority(NotificationCompat.PRIORITY_HIGH) // Importante para que vibre/suene
+            .setPriority(NotificationCompat.PRIORITY_HIGH) 
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setVibrate(longArrayOf(0, 100, 50, 100, 50, 100))
             .setAutoCancel(true)

@@ -34,32 +34,32 @@ class CalculatorActivity : BaseActivity() {
 
         updateStats()
 
-        // Initialize SharedPreferences
+        
         sharedPreferences = getSharedPreferences("CalculatorPrefs", Context.MODE_PRIVATE)
 
-        //Title Controller
-//        findViewById<FrameLayout>(R.id.common_title_back_cal_color).visibility = View.INVISIBLE
-//        findViewById<TextView>(R.id.calculator_title).visibility = View.INVISIBLE
-//        findViewById<FrameLayout>(R.id.common_title_back_cal).elevation = resources.getDimension(R.dimen.zero_elevation)
-//        findViewById<ScrollView>(R.id.calculator_scroll).viewTreeObserver
-//            .addOnScrollChangedListener {
-//                val scrollY = findViewById<ScrollView>(R.id.calculator_scroll).scrollY.toFloat()
-//                if (scrollY > 150f) {
-//                    findViewById<FrameLayout>(R.id.common_title_back_cal_color).visibility = View.VISIBLE
-//                    findViewById<TextView>(R.id.calculator_title).visibility = View.VISIBLE
-//                    findViewById<TextView>(R.id.calculator_title_downstate).visibility = View.INVISIBLE
-//                    findViewById<FrameLayout>(R.id.common_title_back_cal).elevation = resources.getDimension(R.dimen.one_elevation)
-//                } else {
-//                    findViewById<FrameLayout>(R.id.common_title_back_cal_color).visibility = View.INVISIBLE
-//                    findViewById<TextView>(R.id.calculator_title).visibility = View.INVISIBLE
-//                    findViewById<TextView>(R.id.calculator_title_downstate).visibility = View.VISIBLE
-//                    findViewById<FrameLayout>(R.id.common_title_back_cal).elevation = resources.getDimension(R.dimen.zero_elevation)
-//                }
-//            }
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         inputController()
 
-        //Add value to most used:
+        
         val mostUsedPreference = MostUsedToolPreference(this)
         val mostUsedPrefValue = mostUsedPreference.getValue()
         val targetLabel = "cal"
@@ -79,10 +79,10 @@ class CalculatorActivity : BaseActivity() {
 
         findViewById<ImageButton>(R.id.back_btn_cal).setOnClickListener { this.onBackPressed() }
 
-        //Show hint text at start:
+        
         findViewById<TextView>(R.id.hint_calc_text).visibility = View.VISIBLE
 
-        // Check if favorite list should be shown or not (PRO)
+        
         val proPref = ProVersion(this)
         val proPrefValue = proPref.getValue()
         if (proPrefValue == 1) {
@@ -103,24 +103,24 @@ class CalculatorActivity : BaseActivity() {
             startActivity(intent)
         }
 
-        // Initialize RecyclerView for included elements
+        
         includedElementsAdapter = IncludedElementsAdapter()
         findViewById<RecyclerView>(R.id.inc_weight_list).apply {
             layoutManager = LinearLayoutManager(this@CalculatorActivity)
             adapter = includedElementsAdapter
         }
 
-        // Initialize RecyclerView for favorite compounds
+        
         favoriteCompoundsAdapter = FavoriteCompoundsAdapter({ compound -> removeFavorite(compound) }, { compound -> copyToClipboard(compound) })
         findViewById<RecyclerView>(R.id.fav_rec_list).apply {
             layoutManager = LinearLayoutManager(this@CalculatorActivity)
             adapter = favoriteCompoundsAdapter
         }
 
-        // Load saved favorite compounds
+        
         loadFavorites()
 
-        // Set up favorite button
+        
         findViewById<ImageButton>(R.id.fav_star_btn).setOnClickListener {
             val compound = findViewById<EditText>(R.id.edit_text_cal).text.toString()
             val molarWeight = findViewById<TextView>(R.id.out_text).text.toString()
@@ -317,7 +317,7 @@ class CalculatorActivity : BaseActivity() {
     private fun updateStats() {
         val statistics = java.util.ArrayList<Statistics>()
         StatisticsModel.getList(this, statistics)
-        val stat2 = statistics.find { it.id == 2 } //calculation stat
+        val stat2 = statistics.find { it.id == 2 } 
         stat2?.incrementProgress(this, 1)
     }
 }

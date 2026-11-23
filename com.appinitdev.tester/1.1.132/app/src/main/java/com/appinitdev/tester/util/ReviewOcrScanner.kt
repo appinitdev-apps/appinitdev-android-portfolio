@@ -8,7 +8,7 @@ object ReviewOcrScanner {
             recognizer.process(image)
                 .addOnSuccessListener { result ->
                     val text = result.text.lowercase()
-                    // Verificamos si contiene al menos el 70% de las palabras del nombre de la app para mayor flexibilidad
+                    
                     val appNameWords = appName.lowercase().split(" ").filter { it.length > 2 }
                     val foundWords = appNameWords.count { text.contains(it) }
                     

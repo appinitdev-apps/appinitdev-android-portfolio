@@ -1,7 +1,7 @@
 
-/**
- * Downloads AI model files from HuggingFace with progress tracking and cancellation support.
- */
+ 
+
+
 object ModelDownloader {
     @Volatile private var cancelled = false
     @Volatile private var activeConn: HttpURLConnection? = null
@@ -11,11 +11,11 @@ object ModelDownloader {
         activeConn?.disconnect()
     }
 
-    /**
-     * Downloads all model files to [destDir].
-     * @param onProgress called with 0..99 during download
-     * @return true if all files downloaded successfully, false if cancelled or failed
-     */
+     
+
+
+
+
     suspend fun download(
         files: List<ModelFile>,
         destDir: File,

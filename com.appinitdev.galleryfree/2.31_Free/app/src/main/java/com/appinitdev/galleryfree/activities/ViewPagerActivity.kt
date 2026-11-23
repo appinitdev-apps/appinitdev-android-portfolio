@@ -154,7 +154,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
     }
 
     private fun setupOptionsMenu() {
-        //(binding.mediumViewerAppbar.layoutParams as RelativeLayout.LayoutParams).topMargin = statusBarHeight
+        
         binding.mediumViewerToolbar.apply {
             setTitleTextColor(Color.WHITE)
             overflowIcon = resources.getColoredDrawableWithColor(org.appinitdev.commons.R.drawable.ic_three_dots_vector, Color.WHITE)
@@ -243,7 +243,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
             try {
                 mPath = savedPath.ifEmpty { intent.getStringExtra(PATH).orEmpty() }
 
-                // make sure "Open Recycle Bin" works well with "Show all folders content"
+                
                 mShowAll = config.showAll && (mPath.isNotEmpty() && !mPath.startsWith(recycleBinPath))
             } catch (e: Exception) {
                 showErrorToast(e)
@@ -322,7 +322,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
             }
         }
 
-        // show the selected image asap, while loading the rest in the background to allow swiping between them. Might be needed at third party intents
+        
         if (mMediaFiles.isEmpty() && mPath.isNotEmpty() && mDirectory != FAVORITES) {
             val filename = mPath.getFilenameFromPath()
             val folder = mPath.getParentPath()
@@ -414,7 +414,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
         if (!isDestroyed) {
             pagerAdapter.shouldInitFragment = mPos < 5
             binding.viewPager.apply {
-                // must remove the listener before changing adapter, otherwise it might cause `mPos` to be set to 0
+                
                 removeOnPageChangeListener(this@ViewPagerActivity)
                 adapter = pagerAdapter
                 pagerAdapter.shouldInitFragment = true
@@ -767,7 +767,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
     }
 
     private fun initBottomActionsLayout() {
-        // binding.bottomActions.root.layoutParams.height = resources.getDimension(R.dimen.bottom_actions_height).toInt() + navigationBarHeight
+        
         if (config.bottomActions) {
             binding.bottomActions.root.beVisible()
         } else {

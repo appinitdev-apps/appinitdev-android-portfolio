@@ -55,64 +55,64 @@ class PlayAudioActivity : LockedActivity<ActivityPlayAudioBinding>() {
             }
     }
 
-    /**
-     * Configures the activity for edge-to-edge display, handling status bar and navigation bar
-     * colors, and applying appropriate insets to layout elements.
-     */
+     
+
+
+
     private fun configureEdgeToEdgeInsets() {
-        // 1. Enable edge-to-edge display for the activity window.
-        // This makes the content draw behind the system bars (status bar and navigation bar).
+        
+        
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        // 4. Apply window insets to specific views to prevent content from being obscured.
-        // Set an OnApplyWindowInsetsListener on the root layout.
-        // This listener will be called whenever the system insets change (e.g., status bar, nav
-        // bar, keyboard).
+        
+        
+        
+        
         ViewCompat.setOnApplyWindowInsetsListener(binding.rootLayout) { view, insets ->
-            // Get the system bars insets (status bar and navigation bar).
+            
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            // Get the IME (Input Method Editor - keyboard) insets.
+            
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
 
-            // Adjust the top margin of the Toolbar to account for the status bar.
-            // This pushes the toolbar down so it's not hidden behind the status bar.
+            
+            
             binding.Toolbar.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
-                requestLayout() // Request a layout pass to apply the new margin
+                requestLayout() 
             }
 
-            // Adjust the bottom margins of elements aligned to the bottom of the screen.
-            // This ensures they are pushed up above the navigation bar and the software keyboard.
+            
+            
 
-            // Convert original 32dp margins to pixels
+            
             val originalPlayButtonBottomMarginPx = 32.dp
             val originalAudioControlViewBottomMarginPx = 32.dp
 
-            // Calculate the total bottom inset (navigation bar + keyboard)
+            
             val totalBottomInset = systemBarsInsets.bottom + imeInsets.bottom
 
-            // Apply adjusted bottom margin to the Play button
+            
             binding.Play.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin =
                     originalPlayButtonBottomMarginPx + totalBottomInset
-                requestLayout() // Request a layout pass to apply the new margin
+                requestLayout() 
             }
 
-            // AudioControlView is above Play button, its margin needs to consider Play button's new
-            // position
-            // Its own bottom margin is also increased by the totalBottomInset
+            
+            
+            
             binding.AudioControlView.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin =
                     originalAudioControlViewBottomMarginPx + totalBottomInset
-                requestLayout() // Request a layout pass to apply the new margin
+                requestLayout() 
             }
 
-            // The Error TextView will naturally adjust its height due to layout_above and
-            // layout_below
-            // its bottom will be correctly above AudioControlView, which is now inset-aware.
-            // No explicit padding for Error TextView needed here unless it's scrollable content.
+            
+            
+            
+            
 
-            // Return the insets to allow them to be dispatched to child views if necessary.
+            
             insets
         }
     }

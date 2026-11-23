@@ -1,7 +1,7 @@
 
-/**
- * Pure computation for video sizing within a container.
- */
+ 
+
+
 data class MediaVideoSizing(
     val containerSize: IntSize,
     val videoIntrinsicSize: IntSize,

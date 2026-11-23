@@ -13,7 +13,7 @@ fun RefreshLayout(
 ) {
     val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
-    //更新状态
+    
     val orientationIsHorizontal = remember(
         refreshLayoutState,
         composePosition,
@@ -51,7 +51,7 @@ fun RefreshLayout(
     ) { measurableList, constraints ->
         val contentPlaceable =
             measurableList[0].measure(constraints.copy(minWidth = 0, minHeight = 0))
-        //宽或高不能超过content(根据方向来定)
+        
         val refreshContentPlaceable = measurableList[1].measure(
             Constraints(
                 maxWidth = if (orientationIsHorizontal) Constraints.Infinity else contentPlaceable.width,

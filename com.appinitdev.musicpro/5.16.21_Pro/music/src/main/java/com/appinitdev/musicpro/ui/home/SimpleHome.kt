@@ -1,13 +1,13 @@
 
-/**
- * Simple home screen that displays all library panels in a scrollable list or grid.
- *
- * The header is managed by [AppHeader] and hides on downward scroll. The layout type
- * (list vs. grid) and grid span count are driven by [HomePreferences] and update live
- * when the user changes them through [SimpleHomeMenu].
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
 class SimpleHome : BaseHomeFragment() {
 
     private lateinit var binding: FragmentHomeSimpleBinding
@@ -31,7 +31,7 @@ class SimpleHome : BaseHomeFragment() {
         binding.appHeader.setContentView(headerBinding.root)
         binding.appHeader.attachTo(binding.recyclerView, AppHeader.ScrollMode.PINNED )
         binding.recyclerView.requireAttachedMiniPlayer()
-        //headerBinding.label.setAppLabel()
+        
 
         gridLayoutManager = GridLayoutManager(requireContext(), 1)
         updateGridLayoutSpanCount()
@@ -69,20 +69,20 @@ class SimpleHome : BaseHomeFragment() {
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        /**
-         * When the view is recreated (back navigation, rotation, or process restore), the
-         * [AppHeader] restores its hidden state via [android.os.Parcelable] in its own
-         * [android.view.View.onRestoreInstanceState], which uses a [android.view.View.post]
-         * internally. We must post our reset AFTER that runnable so it wins the ordering
-         * race and leaves the header fully visible.
-         *
-         * We always reset regardless of [savedInstanceState] because [SimpleHome] always
-         * creates a fresh [com.appinitdev.musicpro.adapters.home.main.AdapterSimpleHome] in its
-         * LiveData observer, which resets the RecyclerView scroll offset to 0 in every
-         * scenario — including rotation. Preserving a hidden header state while the list is
-         * at position 0 would leave the header permanently stuck off-screen with no way to
-         * scroll it back into view.
-         */
+         
+
+
+
+
+
+
+
+
+
+
+
+
+
         binding.appHeader.post {
             binding.appHeader.resetScrollingState()
         }
@@ -125,11 +125,11 @@ class SimpleHome : BaseHomeFragment() {
     }
 
     companion object {
-        /**
-         * Creates a new instance of [SimpleHome].
-         *
-         * @return A fresh [SimpleHome] fragment.
-         */
+         
+
+
+
+
         fun newInstance(): SimpleHome {
             val args = Bundle()
             val fragment = SimpleHome()

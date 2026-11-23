@@ -25,7 +25,7 @@ class ArtFlow : MediaFragment() {
             )
         }
 
-        // Observe StateFlow with proper lifecycle handling for immediate updates
+        
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 songsViewModel.songs.collect { audioList ->
@@ -34,28 +34,28 @@ class ArtFlow : MediaFragment() {
             }
         }
 
-        // Set up scroll listeners once (outside the collect block)
+        
         binding.coverflow.addScrollListener(object : ArtFlowRenderer.ScrollListener {
             override fun onCenteredIndexChanged(index: Int) {
                 songsViewModel.setCarouselPosition(index)
-                // Preload covers around the new position - reduced radius and size for memory efficiency
+                
                 coverCache.preloadAround(index, radius = 8, maxDimension = 512)
             }
 
             override fun onScrollOffsetChanged(offset: Float) {
-                // No-op
+                
             }
 
             override fun onSnapFinished(finalIndex: Int) {
-                // No-op
+                
             }
 
             override fun onSnapStarted(targetIndex: Int) {
-                // No-op
+                
             }
         })
 
-        // Set up cover click listener once
+        
         binding.coverflow.setOnCoverClickListener(object : OnCoverClickListener {
             override fun onCenteredCoverClick(index: Int, itemId: Any?) {
                 songsViewModel.setCarouselPosition(index)
@@ -71,7 +71,7 @@ class ArtFlow : MediaFragment() {
             }
         })
 
-        // Set up all click listeners once
+        
         binding.arrowLeft.setOnClickListener {
             binding.coverflow.scrollToIndex(binding.coverflow.getCenteredIndex() - 10)
         }
@@ -94,11 +94,11 @@ class ArtFlow : MediaFragment() {
         coverCache.release()
     }
 
-    /**
-     * Updates the carousel with a new list of audio items
-     */
+     
+
+
     private fun updateCarousel(audioList: List<Audio>) {
-        // Update cache with new audio list
+        
         coverCache.setAudioList(audioList)
 
         val provider = AlbumArtProvider(audioList)
@@ -109,7 +109,7 @@ class ArtFlow : MediaFragment() {
             }
         }
 
-        // Start preloading covers around the current position - reduced for memory efficiency
+        
         coverCache.preloadAround(songsViewModel.getCarouselPosition(), radius = 8, maxDimension = 512, debounceMs = 0L)
     }
 
@@ -140,13 +140,13 @@ class ArtFlow : MediaFragment() {
         }
 
         override fun loadArtwork(index: Int, maxDimension: Int): Bitmap? {
-            // Return only what is already in the memory cache.
-            // loadSync is intentionally NOT used here: calling synchronous disk I/O from
-            // inside the renderer's decode thread for every item that passes through the
-            // viewport during a fast scroll causes the observable freeze (every passed-by
-            // index would be loaded regardless of whether it is still visible).
-            // The debounced preloadAround jobs populate the cache in the background;
-            // the renderer will pick up each bitmap on the next frame after it arrives.
+            
+            
+            
+            
+            
+            
+            
             return coverCache.getOrNull(index)
         }
     }

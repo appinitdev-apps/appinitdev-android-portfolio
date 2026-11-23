@@ -17,11 +17,11 @@ sealed class WebSocketData {
     }
 }
 
-// The events sent to the web client via WebSocket
+
 class WebSocketEvent(
     val type: EventType,
     val data: WebSocketData,
-) : ChannelEvent() // Event will be sent to web client
+) : ChannelEvent() 
 {
     constructor(type: EventType, data: String) : this(type, WebSocketData.Text(data))
     constructor(type: EventType, data: ByteArray) : this(type, WebSocketData.Binary(data))
@@ -60,7 +60,7 @@ data class PomodoroActionData(
     val action: String, val timeLeft: Int,
     val totalTime: Int, val completedCount: Int,
     val round: Int, val state: PomodoroState
-) // action: "start", "pause",  "stop"
+) 
 
 @Serializable
 data class PeerStatusData(

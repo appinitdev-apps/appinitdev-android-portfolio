@@ -14,13 +14,13 @@ class phActivity : BaseActivity()  {
         }
         if (themePrefValue == 0) { setTheme(R.style.AppTheme) }
         if (themePrefValue == 1) { setTheme(R.style.AppThemeDark) }
-        setContentView(R.layout.activity_ph) //REMEMBER: Never move any function calls above this
+        setContentView(R.layout.activity_ph) 
 
         indicatorListener()
         findViewById<FrameLayout>(R.id.view_ph).systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        //Title Controller
+        
 
-        //Add value to most used:
+        
         val mostUsedPreference = MostUsedPreference(this)
         val mostUsedPrefValue = mostUsedPreference.getValue()
         val targetLabel = "phi"
@@ -32,7 +32,7 @@ class phActivity : BaseActivity()  {
             mostUsedPreference.setValue(mostUsedPrefValue.replace("$targetLabel=$value", "$targetLabel=$newValue"))
         }
 
-        //Set-up for back button
+        
         findViewById<ImageButton>(R.id.back_btn_ph).setOnClickListener {
             this.onBackPressed()
         }

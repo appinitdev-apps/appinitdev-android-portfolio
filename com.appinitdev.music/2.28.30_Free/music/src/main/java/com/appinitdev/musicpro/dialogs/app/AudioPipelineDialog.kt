@@ -1,25 +1,25 @@
 
-/**
- * Centered morph-dialog that displays a real-time [AudioPipelineSnapshot] for the
- * currently playing audio track.
- *
- * Extends [SharedDialogPopup] so the full [androidx.lifecycle.Lifecycle] and
- * [lifecycleScope] are available for collecting [AudioPipelineManager.snapshotFlow]
- * without requiring a Fragment or a bottom sheet.
- *
- * The dialog observes [AudioPipelineManager.snapshotFlow] and re-binds its views
- * whenever the service pushes an updated snapshot — e.g., on track change, decoder
- * initialization, output-device change, or the 3-second periodic pulse.
- *
- * Each pipeline stage is presented in order:
- *  1. Track Info (format, bit depth, sample rate, bitrate, channels)
- *  2. Decoder (active codec name)
- *  3. Resampler (input rate, output rate, quality)
- *  4. DSP (PCM format, sample rate, EQ preset, stereo expand, buffers, latency)
- *  5. Output Device (device name, bit depth in/out, hardware sample rate)
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class AudioPipelineDialog(container: ViewGroup, anchorView: View) : SharedDialogPopup(container, anchorView) {
 
     private lateinit var binding: DialogAudioStateSnapshotBinding
@@ -27,12 +27,12 @@ class AudioPipelineDialog(container: ViewGroup, anchorView: View) : SharedDialog
     companion object {
         private const val TAG = "AudioPipelineDialog"
 
-        /**
-         * Convenience extension that shows the audio pipeline dialog from any [Fragment].
-         * The dialog morphs from [anchorView] and is placed at the center of the screen.
-         *
-         * @param anchorView The view this dialog card morphs from.
-         */
+         
+
+
+
+
+
         fun Fragment.showAudioPipeline(anchorView: View) {
             AudioPipelineDialog(
                     container = requireActivity().findViewById(R.id.app_container),
@@ -47,14 +47,14 @@ class AudioPipelineDialog(container: ViewGroup, anchorView: View) : SharedDialog
     }
 
     override fun onDialogCreated() {
-        // Immediately show whatever the service last pushed so the dialog never
-        // opens blank when a snapshot is already available.
+        
+        
         AudioPipelineManager.snapshotFlow.value?.let {
             bindSnapshot(it)
         }
 
-        // Ask the service to push a fresh snapshot right now. This is needed when
-        // the dialog opens between periodic pulses, or when the player is paused.
+        
+        
         AudioPipelineManager.requestRefresh()
 
         lifecycleScope.launch {
@@ -67,22 +67,22 @@ class AudioPipelineDialog(container: ViewGroup, anchorView: View) : SharedDialog
         }
     }
 
-    /**
-     * Populates every consolidated [com.appinitdev.musicpro.decorations.typeface.TypeFaceTextView]
-     * in the layout with the data from [snapshot].
-     *
-     * Every field is rendered as a [Spanned] string produced by [createSpannedString]:
-     * the label part uses the theme primary text color and the value part uses the
-     * secondary text color. All labels are loaded from string resources; dynamic numeric
-     * or compound values are formatted via string-resource format strings so the display
-     * text never contains hard-coded English literals.
-     *
-     * @param snapshot The latest fully-populated pipeline snapshot from [AudioPipelineManager].
-     */
+     
+
+
+
+
+
+
+
+
+
+
+
     private fun bindSnapshot(snapshot: AudioPipelineSnapshot) {
         val b = binding
 
-        // Track Info
+        
         b.valueFormat.text = createSpannedString(
                 context.getString(R.string.format),
                 snapshot.trackFormat.ifBlank { "—" })
@@ -108,12 +108,12 @@ class AudioPipelineDialog(container: ViewGroup, anchorView: View) : SharedDialog
                     else -> "${snapshot.channels}"
                 })
 
-        // Decoder
+        
         b.valueDecoderName.text = createSpannedString(
                 context.getString(R.string.decoder_name),
                 snapshot.decoderName.ifBlank { "—" })
 
-        // Resampler — I/O rates are merged into one value using a format string
+        
         val inRateStr = if (snapshot.effectiveInputSampleRate > 0) context.getString(R.string.format_hz, snapshot.effectiveInputSampleRate) else "—"
         val outRateStr = if (snapshot.effectiveOutputSampleRate > 0) context.getString(R.string.format_hz, snapshot.effectiveOutputSampleRate) else "—"
 
@@ -139,7 +139,7 @@ class AudioPipelineDialog(container: ViewGroup, anchorView: View) : SharedDialog
                 context.getString(R.string.quality),
                 snapshot.resamplerQuality)
 
-        // DSP
+        
         b.valueDspFormat.text = createSpannedString(
                 context.getString(R.string.pcm_format),
                 snapshot.dspFormat.ifBlank { "—" })
@@ -172,7 +172,7 @@ class AudioPipelineDialog(container: ViewGroup, anchorView: View) : SharedDialog
                 context.getString(R.string.audio_output_mode),
                 snapshot.audioOutputMode.ifBlank { "—" })
 
-        // Output Device — bit depths are merged into one value using a format string
+        
         b.valueDeviceName.text = createSpannedString(
                 context.getString(R.string.device_name),
                 snapshot.deviceName.ifBlank { "—" })
@@ -186,20 +186,20 @@ class AudioPipelineDialog(container: ViewGroup, anchorView: View) : SharedDialog
                 if (snapshot.deviceSampleRate > 0) context.getString(R.string.format_hz, snapshot.deviceSampleRate) else "—")
     }
 
-    /**
-     * Builds a two-tone [Spanned] string in the form `"label: value"`.
-     *
-     * The label (including the `": "` separator) is colored with the theme's primary
-     * text color so it reads as a subtle heading. The value is colored with the
-     * secondary text color to visually distinguish it from the label.
-     *
-     * Colors are read from [ThemeManager.theme] at call time so they always reflect
-     * the currently active theme without requiring any caching.
-     *
-     * @param label The descriptor shown before the colon (e.g., `"Sample Rate"`).
-     * @param value The dynamic value shown after the colon (e.g., `"44100 Hz"`).
-     * @return A fully-spanned [Spanned] ready to assign to any [android.widget.TextView].
-     */
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
     private fun createSpannedString(label: String, value: String): Spanned {
         val separator = ": "
         val full = "$label$separator$value"

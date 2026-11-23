@@ -22,10 +22,10 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
     private var mLatestMediaId = 0L
     private var mLatestMediaDateId = 0L
 
-    // used at "Group direct subfolders" for navigation
+    
     private var mCurrentPathPrefix = ""
 
-    // used at "Group direct subfolders" for navigating Up with the back button
+    
     private var mOpenedSubfolders = arrayListOf("")
 
     private var mDateFormat = ""
@@ -84,7 +84,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
         updateMaterialActivityViews(
             mainCoordinatorLayout = binding.directoriesCoordinator,
             nestedView = binding.directoriesGrid,
-            useTransparentNavigation = false ,//!config.scrollHorizontally,
+            useTransparentNavigation = false ,
             useTopSearchMenu = false
         )
         ViewCompat.setOnApplyWindowInsetsListener(binding.directoriesHolder) { view, insets ->
@@ -93,7 +93,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
                 view.paddingLeft,
                 view.paddingTop,
                 view.paddingRight,
-                systemBars.bottom // 👈 respeta la barra de navegación
+                systemBars.bottom 
             )
             insets
         }
@@ -135,7 +135,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
             launchSearchActivity()
         }
 
-        // just request the permission, tryLoadGallery will then trigger in onResume
+        
         handleMediaPermissions()
         onBackPressedDispatcher.addCallback(this) {
             when {
@@ -145,11 +145,11 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
 
                 config.groupDirectSubfolders -> {
                     if (mCurrentPathPrefix.isEmpty()) {
-                        // Comportamiento normal del botón atrás (cerrar la Activity)
+                        
                         isEnabled = false
                         onBackPressedDispatcher.onBackPressed()
                     } else {
-                        // Retrocede en la jerarquía de carpetas
+                        
                         mOpenedSubfolders.removeAt(mOpenedSubfolders.lastIndex)
                         mCurrentPathPrefix = mOpenedSubfolders.last()
                         setupAdapter(mDirs)
@@ -157,23 +157,23 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
                 }
 
                 else -> {
-                    // Bloquea la app y luego deja continuar el back
+                    
                     appLockManager.lock()
                     isEnabled = false
                     onBackPressedDispatcher.onBackPressed()
                 }
             }
         }
-        // Mostrar al iniciar la app
+        
         showProUpgradeDialog(this)
 
-        // Configurar repetición cada 2 minutos
+        
         dialogRunnable = Runnable {
             showProUpgradeDialog(this)
-            handler.postDelayed(dialogRunnable, 2 * 60 * 1000) // 2 minutos
+            handler.postDelayed(dialogRunnable, 2 * 60 * 1000) 
         }
 
-        // Iniciar el ciclo
+        
         handler.postDelayed(dialogRunnable, 2 * 60 * 1000)
 
     }
@@ -298,22 +298,22 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
         handler.removeCallbacks(dialogRunnable)
     }
 
-//    override fun onBackPressed() {
-//        if (binding.mainMenu.isSearchOpen) {
-//            binding.mainMenu.closeSearch()
-//        } else if (config.groupDirectSubfolders) {
-//            if (mCurrentPathPrefix.isEmpty()) {
-//                super.onBackPressed()
-//            } else {
-//                mOpenedSubfolders.removeAt(mOpenedSubfolders.lastIndex)
-//                mCurrentPathPrefix = mOpenedSubfolders.last()
-//                setupAdapter(mDirs)
-//            }
-//        } else {
-//            appLockManager.lock()
-//            super.onBackPressed()
-//        }
-//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         if (resultCode == RESULT_OK) {
@@ -497,7 +497,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
     }
 
     private fun tryLoadGallery() {
-        // avoid calling anything right after granting the permission, it will be called from onResume()
+        
         val wasMissingPermission =
             config.appRunCount == 1 && !hasAllPermissions(getPermissionsToRequest())
         handleMediaPermissions {
@@ -998,7 +998,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
         mIsGettingDirs = false
         mShouldStopFetching = false
 
-        // if hidden item showing is disabled but all Favorite items are hidden, hide the Favorites folder
+        
         if (!config.shouldShowHidden) {
             val favoritesFolder = newDirs.firstOrNull { it.areFavorites() }
             if (
@@ -1021,7 +1021,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
             setupAdapter(dirs.clone() as ArrayList<Directory>)
         }
 
-        // cached folders have been loaded, recheck folders one by one starting with the first displayed
+        
         mLastMediaFetcher?.shouldStop = true
         mLastMediaFetcher = MediaFetcher(applicationContext)
         val getImages = mIsPickImageIntent || mIsGetImageContentIntent
@@ -1070,7 +1070,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
             }
         }
 
-        // fetch files from MediaStore only, unless the app has the MANAGE_EXTERNAL_STORAGE permission on Android 11+
+        
         val android11Files = mLastMediaFetcher?.getAndroid11FolderMedia(
             isPickImage = getImagesOnly,
             isPickVideo = getVideosOnly,
@@ -1129,7 +1129,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
                     )
                 }
 
-                // we are looping through the already displayed folders looking for changes, do not do anything if nothing changed
+                
                 if (directory.copy(subfoldersCount = 0, subfoldersMediaCount = 0) == newDir) {
                     continue
                 }
@@ -1147,7 +1147,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
 
                 setupAdapter(dirs)
 
-                // update directories and media files in the local db, delete invalid items. Intentionally creating a new thread
+                
                 updateDBDirectory(directory)
                 if (!directory.isRecycleBin() && !directory.areFavorites()) {
                     Thread {
@@ -1204,7 +1204,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
             foldersToScan.remove(it.path)
         }
 
-        // check the remaining folders which were not cached at all yet
+        
         for (folder in foldersToScan) {
             if (mShouldStopFetching || isDestroyed || isFinishing) {
                 return
@@ -1261,7 +1261,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
             dirs.add(newDir)
             setupAdapter(dirs)
 
-            // make sure to create a new thread for these operations, dont just use the common bg thread
+            
             Thread {
                 try {
                     directoryDB.insert(newDir)
@@ -1291,18 +1291,18 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
         val excludedFolders = config.excludedFolders
         val everShownFolders = config.everShownFolders.toMutableSet() as HashSet<String>
 
-        // do not add excluded folders and their subfolders at everShownFolders
+        
         dirs.filter { dir ->
             return@filter !excludedFolders.any { dir.path.startsWith(it) }
         }.mapTo(everShownFolders) { it.path }
 
         try {
-            // scan the internal storage from time to time for new folders
+            
             if (config.appRunCount == 1 || config.appRunCount % 30 == 0) {
                 everShownFolders.addAll(getFoldersWithMedia(config.internalStoragePath))
             }
 
-            // catch some extreme exceptions like too many everShownFolders for storing, shouldnt really happen
+            
             config.everShownFolders = everShownFolders
         } catch (e: Exception) {
             config.everShownFolders = kotlin.collections.HashSet()
@@ -1435,7 +1435,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
             }
         }
 
-        // recyclerview sometimes becomes empty at init/update, triggering an invisible refresh like this seems to work fine
+        
         binding.directoriesGrid.postDelayed({
             binding.directoriesGrid.scrollBy(0, 0)
         }, 500)
@@ -1454,7 +1454,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
             if (!getDoesFilePathExist(it.path, OTGPath)) {
                 invalidDirs.add(it)
             } else if (it.path != config.tempFolderPath && (!isRPlus() || isExternalStorageManager())) {
-                // avoid calling file.list() or listfiles() on Android 11+, it became way too slow
+                
                 val children = if (isPathOnOTG(it.path)) {
                     getOTGFolderChildrenNames(it.path)
                 } else {
@@ -1559,9 +1559,9 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
         }
     }
 
-    // exclude probably unwanted folders, for example facebook stickers are split between hundreds of separate folders like
-    // /storage/emulated/0/Android/data/com.facebook.orca/files/stickers/175139712676531/209575122566323
-    // /storage/emulated/0/Android/data/com.facebook.orca/files/stickers/497837993632037/499671223448714
+    
+    
+    
     private fun excludeSpamFolders() {
         ensureBackgroundThread {
             try {

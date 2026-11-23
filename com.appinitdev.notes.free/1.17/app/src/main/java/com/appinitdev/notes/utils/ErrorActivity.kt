@@ -1,8 +1,8 @@
 
-/**
- * Activity used when the app is about to crash. Implicitly used by
- * `cat.ereza:customactivityoncrash`.
- */
+ 
+
+
+
 class ErrorActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

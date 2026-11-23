@@ -17,12 +17,12 @@ object MdEditorLineHelper {
 
         var i = 0
 
-        // for every line on the edittext
+        
         while (i < lineCount) {
-            // check if this line contains "\n" or it is the last line
-            // hasNewLineArray[i] = text.substring(layout.getLineStart(i), layout.getLineEnd(i)).endsWith("\n");
+            
+            
             hasNewLineArray[i] = text[layout.getLineEnd(i) - 1] == '\n' || i == lineCount - 1
-            // if true
+            
             if (hasNewLineArray[i]) {
                 var j = i - 1
                 while (j > -1 && !hasNewLineArray[j]) {
@@ -33,7 +33,7 @@ object MdEditorLineHelper {
             i++
         }
 
-        var realLine = 0 // the first line is not 0, is 1. We start counting from 1
+        var realLine = 0 
         i = 0
         while (i < goodLines.size) {
             if (goodLines[i]) {

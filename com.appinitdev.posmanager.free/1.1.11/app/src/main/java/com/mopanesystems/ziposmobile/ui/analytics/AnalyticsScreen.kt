@@ -46,7 +46,7 @@ fun AnalyticsScreenCompose(
             .fillMaxSize()
             .padding(12.dp)
     ) {
-        // Header
+        
 
         Surface(
             modifier = Modifier.fillMaxWidth(),
@@ -78,7 +78,7 @@ fun AnalyticsScreenCompose(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Period Selection
+        
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -96,16 +96,16 @@ fun AnalyticsScreenCompose(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Sales Summary
+        
 
-        /* if (isLoading) {
-             Box(
-                 modifier = Modifier.fillMaxWidth(),
-                 contentAlignment = Alignment.Center
-             ) {
-                 CircularProgressIndicator()
-             }
-         } else {*/
+         
+
+
+
+
+
+
+
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -201,29 +201,29 @@ fun AnalyticsScreenCompose(
             }
             num=0
 
-            /*item {
-                Text(
-                    text = "Customer Analytics",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+             
 
-            items(customerAnalytics) { customer ->
-                CustomerAnalyticsCardCompose(customer)
-            }*/
+
+
+
+
+
+
+
+
+
         }
-        //}
+        
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Customer Analytics
+        
 
 
-        // Error message
+        
         errorMessage?.let { message ->
             LaunchedEffect(message) {
-                // Show error message
+                
             }
         }
 
@@ -315,7 +315,7 @@ fun CustomerAnalyticsCard(customer: com.mopanesystems.ziposmobile.data.model.Cus
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = customer.customerId, // TODO: Fetch customer name from Customer entity
+                    text = customer.customerId, 
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -364,7 +364,7 @@ fun TopProductCardCompose(
         ) {
 
             Text(
-                text = number, // TODO: Fetch product name from Product entity
+                text = number, 
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.secondary
@@ -374,7 +374,7 @@ fun TopProductCardCompose(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = product.data, // TODO: Fetch product name from Product entity
+                    text = product.data, 
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -411,7 +411,7 @@ fun CustomerAnalyticsCardCompose(customer: com.mopanesystems.ziposmobile.data.mo
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = customer.customerId, // TODO: Get actual customer name from Customer entity
+                    text = customer.customerId, 
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -441,4 +441,3 @@ fun formatCurrency(amount: BigDecimal): String {
     return formatter.format(amount)
 }
 
-// CustomerAnalytics data class is defined in data.model package

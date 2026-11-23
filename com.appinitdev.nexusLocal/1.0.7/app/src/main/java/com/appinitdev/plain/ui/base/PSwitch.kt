@@ -26,7 +26,7 @@ fun PSwitch(
             uncheckedThumbColor = iosThumbWhite,
             uncheckedTrackColor = iosTrackGray,
 
-            // Disabled states
+            
             disabledCheckedThumbColor = disabledThumbColor,
             disabledCheckedTrackColor = disabledCheckedTrack,
             disabledUncheckedThumbColor = disabledThumbColor,

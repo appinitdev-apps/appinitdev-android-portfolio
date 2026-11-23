@@ -6,10 +6,10 @@ data class ListState(
     val cursorPos: Int? = null,
 )
 
-/**
- * Should be used for all changes to the items list. Notifies the [RecyclerView.Adapter] and pushes
- * according changes to the [ChangeHistory]
- */
+ 
+
+
+
 class ListManager(
     private val recyclerView: RecyclerView,
     private val changeHistory: ChangeHistory,
@@ -58,7 +58,7 @@ class ListManager(
     }
 
     private fun focusItem(itemPos: Int, cursorPos: Int?) {
-        // Focus item's EditText and set cursor position
+        
         recyclerView.post {
             if (itemPos in 0..items.size) {
                 recyclerView.smoothScrollToPosition(itemPos)
@@ -122,15 +122,15 @@ class ListManager(
         }
     }
 
-    /**
-     * Deletes item and its children at given position.
-     *
-     * @param force if false, deletion can be rejected, e.g. if trying to delete the first item
-     * @param childrenToDelete can be used when a [ListAddChange] is undone to pass the item at the
-     *   state before the insertion
-     * @param allowFocusChange if true the UI will focus the last valid ListItem's EditText
-     * @return the removed [ListItem] or null if deletion was rejected
-     */
+     
+
+
+
+
+
+
+
+
     fun delete(
         position: Int = items.lastIndex,
         inCheckedList: Boolean = false,
@@ -138,8 +138,8 @@ class ListManager(
         pushChange: Boolean = true,
         allowFocusChange: Boolean = true,
     ): Boolean {
-        // TODO
-        //        endSearch?.invoke()
+        
+        
         val stateBefore = getState()
         val items = this.items.toMutableList()
         var result = false
@@ -173,12 +173,12 @@ class ListManager(
         return result
     }
 
-    /** @return position of the moved item afterwards and the moved item count. */
+     
     fun move(positionFrom: Int, positionTo: Int): Pair<Int, Int> {
         val itemsCheckedBefore = itemsChecked?.toMutableList()?.cloneList()
         val list = items.toMutableList()
         val movedItem = list[positionFrom]
-        // Do not allow to move parent into its own children
+        
         if (
             !movedItem.isChild &&
                 positionTo in (positionFrom..positionFrom + movedItem.children.size)
@@ -212,7 +212,7 @@ class ListManager(
         return Pair(insertIdx, count)
     }
 
-    /** Finishes a drag movement by updating [ListItem.isChild] accordingly. */
+     
     fun finishMove(
         positionTo: Int,
         count: Int,
@@ -252,15 +252,15 @@ class ListManager(
 
     fun changeText(position: Int, value: EditTextState, pushChange: Boolean = true) {
         val stateBefore = getState()
-        //        if(!pushChange) {
+        
         endSearch?.invoke()
-        //        }
+        
         val item = items[position]
         item.body = value.text.toString()
         if (pushChange) {
             changeHistory.push(ListEditTextChange(stateBefore, getState(), this))
-            // TODO: fix focus change
-            // refreshSearch?.invoke(editText)
+            
+            
         }
     }
 
@@ -395,7 +395,7 @@ class ListManager(
         items: MutableList<ListItem> = this@ListManager.items,
     ) {
         if (checked) {
-            // A parent from unchecked is checked
+            
             if (preferences.autoSortByCheckedEnabled) {
                 checkWithAutoSort(parent, items)
             } else {
@@ -505,7 +505,7 @@ class ListManager(
         }
     }
 
-    /** Adds [valueToAdd] to all [ListItem.order] that are higher than [threshold] */
+     
     private fun shiftItemOrdersHigher(
         threshold: Int,
         valueToAdd: Int,
@@ -515,7 +515,7 @@ class ListManager(
         itemsChecked?.shiftItemOrdersHigher(threshold, valueToAdd)
     }
 
-    /** Adds [valueToAdd] to all [ListItem.order] that are in [orderRange] */
+     
     private fun shiftItemOrders(
         orderRange: IntRange,
         valueToAdd: Int,
@@ -527,7 +527,7 @@ class ListManager(
 
     private fun MutableList<ListItem>.notifyPreviousFirstItem(position: Int, count: Int) {
         if (position == 0 && size > count) {
-            // To trigger enabling isChild swiping for the item that was previously at pos 0
+            
             adapter.notifyItemChanged(count)
         }
     }

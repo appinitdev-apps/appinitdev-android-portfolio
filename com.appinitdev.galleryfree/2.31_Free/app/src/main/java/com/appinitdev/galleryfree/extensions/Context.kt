@@ -121,7 +121,7 @@ fun Context.getSortedDirectories(source: ArrayList<Directory>): ArrayList<Direct
                 }
             }
 
-            // SORT_BY_SIZE, SORT_BY_COUNT, SORT_BY_DATE_MODIFIED are numerical
+            
             else -> (o1.sortValue.toLongOrNull() ?: 0).compareTo(o2.sortValue.toLongOrNull() ?: 0)
         }
 
@@ -149,7 +149,7 @@ fun Context.getDirsToShow(
         val parentDirs = getDirectParentSubfolders(filledDirs, currentPathPrefix)
         updateSubfolderCounts(filledDirs, parentDirs)
 
-        // show the current folder as an available option too, not just subfolders
+        
         if (currentPathPrefix.isNotEmpty()) {
             val currentFolder = allDirs.firstOrNull {
                 parentDirs.firstOrNull {
@@ -268,10 +268,10 @@ fun Context.getDirectParentSubfolders(
                         || File(it).parent.equals(File(path).parent, true))
             }
         ) {
-            // if we have folders like
-            // /storage/emulated/0/Pictures/Images and
-            // /storage/emulated/0/Pictures/Screenshots,
-            // but /storage/emulated/0/Pictures is empty, still Pictures with the first folders thumbnails and proper other info
+            
+            
+            
+            
             val parent = File(path).parent
             if (
                 parent != null
@@ -345,7 +345,7 @@ fun Context.updateSubfolderCounts(
             }
         }
 
-        // make sure we count only the proper direct subfolders, grouped the same way as on the main screen
+        
         parentDirs.firstOrNull { it.path == longestSharedPath }?.apply {
             if (
                 path.equals(child.path, true)
@@ -577,13 +577,13 @@ fun Context.loadImageBase(
         options.optionalTransform(WebpDrawable::class.java, WebpDrawableTransformation(FitCenter()))
     }
 
-    // animation is only supported without rounded corners and the file must be a GIF or WEBP.
+    
     if (animate && roundCorners == ROUNDED_CORNERS_NONE && (path.isGif() || path.isWebP())) {
-        // this is required to make glide cache aware of changes
+        
         options.decode(Drawable::class.java)
     } else {
         options.dontAnimate()
-        // don't animate is not enough for webp files, decode as bitmap forces first frame use in animated webps
+        
         options.decode(Bitmap::class.java)
     }
 
@@ -602,11 +602,11 @@ fun Context.loadImageBase(
         )
     }
 
-    WebpBitmapFactory.sUseSystemDecoder = false // CVE-2023-4863
+    WebpBitmapFactory.sUseSystemDecoder = false 
     var builder = Glide.with(applicationContext)
         .load(path)
         .apply(options)
-        .set(WebpDownsampler.USE_SYSTEM_DECODER, false) // CVE-2023-4863
+        .set(WebpDownsampler.USE_SYSTEM_DECODER, false) 
         .transition(getOptionalCrossFadeTransition(crossFadeDuration))
 
     builder = builder.listener(object : RequestListener<Drawable> {
@@ -672,7 +672,7 @@ fun Context.loadSVG(
     builder.into(target)
 }
 
-// intended mostly for Android 11 issues, that fail loading PNG files bigger than 10 MB
+
 fun Context.tryLoadingWithPicasso(
     path: String,
     view: MySquareImageView,
@@ -865,7 +865,7 @@ fun Context.getCachedMedia(
 
         try {
             val mediaToDelete = ArrayList<Medium>()
-            // creating a new thread intentionally, do not reuse the common background thread
+            
             Thread {
                 media.filter { !getDoesFilePathExist(it.path, OTGPath) }.forEach {
                     if (it.path.startsWith(recycleBinPath)) {
@@ -963,7 +963,7 @@ fun Context.updateFavorite(path: String, isFavorite: Boolean) {
     }
 }
 
-// remove the "recycle_bin" from the file path prefix, replace it with real bin path /data/user...
+
 fun Context.getUpdatedDeletedMedia(): ArrayList<Medium> {
     val media = try {
         mediaDB.getDeletedMedia() as ArrayList<Medium>
@@ -1002,7 +1002,7 @@ fun Context.updateWidgets() {
     }
 }
 
-// based on https://github.com/sannies/mp4parser/blob/master/examples/src/main/java/com/google/code/mp4parser/example/PrintStructure.java
+
 fun Context.parseFileChannel(
     path: String,
     fc: FileChannel,
@@ -1021,7 +1021,7 @@ fun Context.parseFileChannel(
         }
 
         while (currEnd - fc.position() > 8) {
-            // just a check to avoid deadloop at some videos
+            
             if (iteration++ > 50) {
                 return
             }

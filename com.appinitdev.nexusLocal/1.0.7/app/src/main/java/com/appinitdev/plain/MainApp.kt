@@ -4,7 +4,7 @@ class MainApp : Application() {
         super.onCreate()
 
         instance = this
-        // Register BouncyCastle provider for cryptography (BKS, Ed25519, etc.)
+        
         Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME)
         Security.addProvider(BouncyCastleProvider())
 
@@ -41,12 +41,12 @@ class MainApp : Application() {
         HttpServerManager.warmUp()
         NetworkMonitor.init(this)
 
-        // https://stackoverflow.com/questions/77683434/the-getnextentry-method-of-zipinputstream-throws-a-zipexception-invalid-zip-ent
+        
         if (isUPlus()) {
             ZipPathValidator.clearCallback()
         }
 
-        // Disable Smart Text Selection to avoid framework crash in SmartSelectSprite
+        
         try {
             val manager = getSystemService(TextClassificationManager::class.java)
             manager?.setTextClassifier(TextClassifier.NO_OP)
@@ -88,7 +88,7 @@ class MainApp : Application() {
             if (FeedAutoRefreshPreference.get(preferences)) {
                 FeedFetchWorker.startRepeatWorkerAsync(instance)
             }
-            // Start Nearby service (always listen regardless of discoverable setting)
+            
             sendEvent(StartNearbyServiceEvent())
             HttpServerManager.clientTsInterval()
             ImageSearchManager.restoreIfEnabled()

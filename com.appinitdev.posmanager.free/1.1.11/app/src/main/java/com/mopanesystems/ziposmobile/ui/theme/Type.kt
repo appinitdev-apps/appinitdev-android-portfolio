@@ -1,7 +1,7 @@
 
-// Modern Material Design 3 Typography Scale
+
 val Typography = Typography(
-    // Display styles (largest text)
+    
     displayLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -24,7 +24,7 @@ val Typography = Typography(
         letterSpacing = 0.sp
     ),
     
-    // Headline styles (prominent headings)
+    
     headlineLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.SemiBold,
@@ -47,7 +47,7 @@ val Typography = Typography(
         letterSpacing = 0.sp
     ),
     
-    // Title styles (medium emphasis headings)
+    
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.SemiBold,
@@ -70,7 +70,7 @@ val Typography = Typography(
         letterSpacing = 0.1.sp
     ),
     
-    // Body styles (main content text)
+    
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -93,7 +93,7 @@ val Typography = Typography(
         letterSpacing = 0.4.sp
     ),
     
-    // Label styles (small text elements)
+    
     labelLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Medium,

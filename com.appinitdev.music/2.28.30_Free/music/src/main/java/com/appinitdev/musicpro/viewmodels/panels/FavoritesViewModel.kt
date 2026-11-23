@@ -1,11 +1,11 @@
 
-/**
- * ViewModel for the Favorites panel.
- * Loads favorite songs from the repository and applies [FavoritesPreferences]-driven
- * sort/order without a round-trip to the database when only the sort changes.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
         application: Application,
@@ -15,7 +15,7 @@ class FavoritesViewModel @Inject constructor(
     private val _favorites = MutableStateFlow<List<Audio>>(emptyList())
     val favorites: StateFlow<List<Audio>> = _favorites.asStateFlow()
 
-    /** Raw list from the database kept for cheap in-memory re-sorts. */
+     
     private var rawFavoriteList: List<Audio> = emptyList()
 
     private var loadJob: Job? = null
@@ -41,10 +41,10 @@ class FavoritesViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Re-sorts the cached list without querying the database again.
-     * Called when only the sort field or direction changes.
-     */
+     
+
+
+
     private fun resort() {
         viewModelScope.launch(Dispatchers.Default) {
             _favorites.value = rawFavoriteList.sortedFavorites()

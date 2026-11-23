@@ -83,7 +83,7 @@ private fun DlnaVideoControls(
 ) {
     val darkOverlay = Color.Black.copy(alpha = 0.55f)
     Column(modifier = Modifier.fillMaxSize()) {
-        // Top bar
+        
         Row(
             modifier = Modifier.fillMaxWidth().background(darkOverlay).statusBarsPadding().padding(4.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -93,9 +93,9 @@ private fun DlnaVideoControls(
             }
             Text(text = mediaTitle, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Medium, color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f).padding(end = 8.dp))
         }
-        // Center spacer
+        
         Box(modifier = Modifier.weight(1f))
-        // Bottom controls
+        
         Column(
             modifier = Modifier.fillMaxWidth().background(darkOverlay).navigationBarsPadding().padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),

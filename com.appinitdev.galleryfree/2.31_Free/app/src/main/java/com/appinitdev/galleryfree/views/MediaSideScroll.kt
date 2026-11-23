@@ -1,5 +1,5 @@
 
-// allow horizontal swipes through the layout, else it can cause glitches at zoomed in images
+
 class MediaSideScroll(context: Context, attrs: AttributeSet) : RelativeLayout(context, attrs) {
     private val SLIDE_INFO_FADE_DELAY = 1000L
     private var mTouchDownX = 0f

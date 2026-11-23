@@ -3,30 +3,30 @@ fun Activity.sharePaths(paths: ArrayList<String>) {
     sharePathsIntent(paths, BuildConfig.APPLICATION_ID)
 }
 
-//fun Activity.tryOpenPathIntent(path: String, forceChooser: Boolean, openAsType: Int = OPEN_AS_DEFAULT, finishActivity: Boolean = false) {
-//    if (!forceChooser && path.endsWith(".apk", true)) {
-//        val uri = FileProvider.getUriForFile(
-//            this, "${BuildConfig.APPLICATION_ID}.provider", File(path)
-//        )
-//
-//        Intent().apply {
-//            action = Intent.ACTION_VIEW
-//            setDataAndType(uri, getMimeTypeFromUri(uri))
-//            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-//            launchActivityIntent(this)
-//        }
-//    } else {
-//        openPath(path, forceChooser, openAsType)
-//
-//        if (finishActivity) {
-//            finish()
-//        }
-//    }
-//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 fun Activity.tryOpenPathIntent(path: String, forceChooser: Boolean, openAsType: Int = OPEN_AS_DEFAULT, finishActivity: Boolean = false) {
 
-    // 1. Filtro rápido de APKs
+    
     if (!forceChooser && path.endsWith(".apk", true)) {
         val uri = FileProvider.getUriForFile(this, "${BuildConfig.APPLICATION_ID}.provider", File(path))
         Intent(Intent.ACTION_VIEW).apply {
@@ -38,7 +38,7 @@ fun Activity.tryOpenPathIntent(path: String, forceChooser: Boolean, openAsType: 
         return
     }
 
-    // 2. Filtrado para Visor Local
+    
     if (!forceChooser && openAsType != OPEN_AS_TEXT) {
         val uri = FileProvider.getUriForFile(this, "${BuildConfig.APPLICATION_ID}.provider", File(path))
         val forcedMimeType = getMimeType(openAsType)
@@ -61,12 +61,12 @@ fun Activity.tryOpenPathIntent(path: String, forceChooser: Boolean, openAsType: 
         }
     }
 
-    // 3. Fallback Único (Si no cumple las condiciones multimedia o la activity no existe en el manifest)
+    
     openPath(path, forceChooser, openAsType)
     handleActivityFinishing(finishActivity)
 }
 
-// Función de ayuda privada para eliminar la duplicación de código de cierre sin penalización de rendimiento
+
 private inline fun Activity.handleActivityFinishing(finishActivity: Boolean) {
     if (finishActivity) {
         finish()

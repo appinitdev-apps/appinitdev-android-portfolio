@@ -125,7 +125,7 @@ object Funciones {
         val mediaType = "application/json; charset=utf-8".toMediaType()
         val body = jsonObj.toString().toRequestBody(mediaType)
 
-        // 1. Usamos el scope del ViewModel o uno controlado, NO GlobalScope
+        
         scope.launch(Dispatchers.IO) {
             try {
                 val jsonString = """
@@ -141,16 +141,16 @@ object Funciones {
               "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
               "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-49tfb%40appinitdev-android.iam.gserviceaccount.com",
               "universe_domain": "googleapis.com"
-            }""" // Tu JSON de credenciales
+            }""" 
 
                 val googleCredentials = GoogleCredentials.fromStream(jsonString.byteInputStream())
                     .createScoped(listOf("https://www.googleapis.com/auth/firebase.messaging"))
 
-                // 2. refreshIfExpired() es propenso a SocketException si la red falla
+                
                 googleCredentials.refreshIfExpired()
                 val accessToken = googleCredentials.accessToken.tokenValue
 
-                // 3. Evitar crear un OkHttpClient por cada mensaje (consume muchos sockets)
+                
                 val client = OkHttpClient.Builder()
                     .retryOnConnectionFailure(true)
                     .build()
@@ -161,7 +161,7 @@ object Funciones {
                     .header("Authorization", "")
                     .build()
 
-                // Ejecución síncrona dentro de Dispatchers.IO para mejor control de errores
+                
                 val response = client.newCall(request).execute()
 
                 if (response.isSuccessful) {
@@ -169,7 +169,7 @@ object Funciones {
                 } else {
                     Log.e("chatoknoti", "Error code: ${response.code} - ${response.message}")
                 }
-                response.close() // Siempre cerrar la respuesta
+                response.close() 
 
             } catch (e: java.net.SocketException) {
                 Log.e("chatoknoti", "Socket cerrado inesperadamente: ${e.message}")
@@ -179,64 +179,64 @@ object Funciones {
                 Log.e("chatoknoti", "Error desconocido: ${e.message}")
             }
         }
-        // Configurar el endpoint V1
-        /*   val url = "https://fcm.googleapis.com/v1/projects/appinitdev-android/messages:send"
-           val mediaType = "application/json; charset=utf-8".toMediaType()
-           val body = jsonObj.toString().toRequestBody(mediaType)
+        
+         
 
-           // Ejecutar la obtención del token en un hilo de fondo
-           GlobalScope.launch(Dispatchers.IO) {
-               // Asegúrate de tener el JSON de credenciales correcto
-               val jsonString = """
-               {
-                 "type": "service_account",
-                 "project_id": "appinitdev-android",
-                 "private_key_id": "",
-                 "private_key": "",
-                 "client_email": "firebase-adminsdk-49tfb@appinitdev-android.iam.gserviceaccount.com",
-                 "client_id": "109080808800224325648",
-                 "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                 "token_uri": "",
-                 "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-                 "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-49tfb%40appinitdev-android.iam.gserviceaccount.com",
-                 "universe_domain": "googleapis.com"
-               }"""
 
-               val googleCredentials = GoogleCredentials.fromStream(jsonString.byteInputStream())
-                   .createScoped(listOf("https://www.googleapis.com/auth/firebase.messaging"))
-               googleCredentials.refreshIfExpired() // Esto se ejecuta en IO
-               val accessToken = googleCredentials.accessToken.tokenValue
 
-               val client = OkHttpClient()
-               val request = Request.Builder()
-                   .url(url)
-                   .post(body)
-                   .header("Authorization", "")
-                   .build()
 
-               client.newCall(request).enqueue(object : Callback {
-                   override fun onFailure(call: Call, e: IOException) {
-                       println("Request failed: ${e.message}")
-                       Log.i("chatoknoti", "Request failed: ${e.message}")
-                       e.printStackTrace()
-                   }
 
-                   override fun onResponse(call: Call, response: Response) {
-                       val responseBody = response.body?.string()
-                       if (response.isSuccessful) {
-                           println("Notification sent successfully: $responseBody")
-                           Log.i("chatoknoti", "Notification sent successfully: $responseBody")
-                       } else {
-                           println("Failed to send notification. Response code: ${response.code}")
-                           Log.i(
-                               "chatoknoti",
-                               "Failed to send notification. Response code: ${response.code}"
-                           )
 
-                       }
-                   }
-               })
-           }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
 
@@ -246,7 +246,7 @@ object Funciones {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val token = task.result
-                // Guardar en Firestore
+                
                 FirebaseFirestore.getInstance()
                     .collection("users")
                     .document(uid)
@@ -264,14 +264,14 @@ object Funciones {
 
     fun formatLongToDate(time: Long): String {
         return try {
-            // Validamos que el tiempo sea una fecha coherente (mayor a 0)
+            
             if (time <= 0) return ""
 
             val date = Date(time)
             val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             format.format(date)
         } catch (e: Exception) {
-            // Si algo falla (error de formato, fecha nula, etc.), retorna vacío
+            
             ""
         }
     }
@@ -285,7 +285,7 @@ object Funciones {
         val explorar = mutableListOf<AppModel>()
         apps.forEach { app ->
 
-            // Si soy el dueño, la app va directamente a mis grupos de chat (aceptadas)
+            
             if (app.idPropietario == userId) {
                 aceptadas.add(app)
                 return@forEach
@@ -299,7 +299,7 @@ object Funciones {
                 estado == "Solicitud" -> pendientes.add(app)
                 estado == "Rechazado" -> rechazadas.add(app)
 
-                // Si no hay estado (no ha solicitado), va a explorar
+                
                 else -> {
                     explorar.add(app)
                 }

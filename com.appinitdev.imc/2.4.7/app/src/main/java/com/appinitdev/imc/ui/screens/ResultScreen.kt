@@ -94,7 +94,7 @@ fun ResultScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Animated BMI Arc Gauge Card
+            
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -132,7 +132,7 @@ fun ResultScreen(
                 }
             }
 
-            // High-Contrast Status Banner Card
+            
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -189,7 +189,7 @@ fun ResultScreen(
                 }
             }
 
-            // Key Metrics Grid (Weight & Height)
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -206,7 +206,7 @@ fun ResultScreen(
                 )
             }
 
-            // Expected Healthy Weight Card
+            
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
@@ -248,7 +248,7 @@ fun ResultScreen(
                 }
             }
 
-            // Age-Appropriate WHO Health Recommendations Card
+            
             val rec = result.healthRecommendation
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -269,7 +269,7 @@ fun ResultScreen(
                         color = MaterialTheme.colorScheme.onSurface
                     )
 
-                    // Hydration Recommendation
+                    
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.Top
@@ -312,7 +312,7 @@ fun ResultScreen(
                         }
                     }
 
-                    // Energy / Calorie Recommendation
+                    
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.Top
@@ -357,7 +357,7 @@ fun ResultScreen(
                 }
             }
 
-            // Reference Thresholds Table (WHO / OPS)
+            
             if (result.referenceTable.isNotEmpty()) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -383,7 +383,7 @@ fun ResultScreen(
                 }
             }
 
-            // Action Buttons
+            
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -486,7 +486,7 @@ fun ReferenceTableContent(table: DoubleArray, categoryId: Int) {
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         when (categoryId) {
-            1, 2 -> { // Babies
+            1, 2 -> { 
                 if (table.size >= 4) {
                     TableRowItem(stringResource(id = R.string.desnutricion), "< ${table[0]}")
                     TableRowItem(stringResource(id = R.string.normal), "${table[1]} - ${table[2]}")
@@ -494,7 +494,7 @@ fun ReferenceTableContent(table: DoubleArray, categoryId: Int) {
                     TableRowItem(stringResource(id = R.string.obesidad), "> ${table[3]}")
                 }
             }
-            3, 4 -> { // Children & Teens
+            3, 4 -> { 
                 if (table.size >= 4) {
                     TableRowItem("${stringResource(id = R.string.desnutricion)} (IMC)", "<= ${table[0]}")
                     TableRowItem("${stringResource(id = R.string.normal)} (IMC)", "${table[0]} - ${table[2]}")
@@ -502,7 +502,7 @@ fun ReferenceTableContent(table: DoubleArray, categoryId: Int) {
                     TableRowItem("${stringResource(id = R.string.obesidad)} (IMC)", ">= ${table[3]}")
                 }
             }
-            6 -> { // Older Adults 65+ (OPS / Lipschitz / OMS Geriatric)
+            6 -> { 
                 TableRowItem("${stringResource(id = R.string.bajo_peso_desnutricion)} (Geriatría)", "< 22.0")
                 TableRowItem(stringResource(id = R.string.peso_normal), "22.0 - 26.9")
                 TableRowItem(stringResource(id = R.string.sobrepeso_table), "27.0 - 29.9")
@@ -510,7 +510,7 @@ fun ReferenceTableContent(table: DoubleArray, categoryId: Int) {
                 TableRowItem(stringResource(id = R.string.obesidad_grado_ii), "35.0 - 39.9")
                 TableRowItem(stringResource(id = R.string.obesidad_grado_iii), ">= 40.0")
             }
-            else -> { // Adults 20-64
+            else -> { 
                 TableRowItem(stringResource(id = R.string.bajo_peso_desnutricion), "< 18.5")
                 TableRowItem(stringResource(id = R.string.peso_normal), "18.5 - 24.9")
                 TableRowItem(stringResource(id = R.string.sobrepeso_table), "25.0 - 29.9")

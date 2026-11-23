@@ -45,7 +45,7 @@ fun SchemaBuilder.addContactSchema() {
             val groups = GroupHelper.getAll().map { it.toModel() }
             val fields = node.getFields()
             if (fields.contains(ContactGroup::contactCount.name)) {
-                // TODO support contactsCount
+                
             }
             groups
         }

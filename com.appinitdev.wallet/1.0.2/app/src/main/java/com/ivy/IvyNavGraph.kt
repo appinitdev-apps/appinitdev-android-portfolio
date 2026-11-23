@@ -6,7 +6,7 @@
 fun BoxWithConstraintsScope.IvyNavGraph(screen: Screen?) {
     when (screen) {
         null -> {
-            // show nothing
+            
         }
 
         is MainScreen -> MainScreen(screen = screen)

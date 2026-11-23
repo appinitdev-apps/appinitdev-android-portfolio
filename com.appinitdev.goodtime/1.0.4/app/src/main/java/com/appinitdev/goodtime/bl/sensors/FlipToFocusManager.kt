@@ -27,14 +27,14 @@ class FlipToFocusManager(
     override fun onSensorChanged(event: SensorEvent?) {
         if (event == null || event.sensor.type != Sensor.TYPE_ACCELEROMETER) return
 
-        val zAxis = event.values[2] // Z-axis acceleration
+        val zAxis = event.values[2] 
 
-        // Face down condition: Z-axis is strongly negative (~ -9.8 m/s²)
+        
         if (zAxis < -8.5f && !isFaceDown) {
             isFaceDown = true
             onDeviceFlippedFaceDown()
         }
-        // Face up condition: Z-axis is positive (> 8.0 m/s²)
+        
         else if (zAxis > 8.0f && isFaceDown) {
             isFaceDown = false
             onDeviceFlippedFaceUp()
@@ -51,7 +51,7 @@ class FlipToFocusManager(
     private fun onDeviceFlippedFaceUp() {
         val timerData = timerManager.timerData.value
         if (timerData.state.isRunning) {
-            timerManager.toggle() // Pauses the running timer
+            timerManager.toggle() 
         }
     }
 

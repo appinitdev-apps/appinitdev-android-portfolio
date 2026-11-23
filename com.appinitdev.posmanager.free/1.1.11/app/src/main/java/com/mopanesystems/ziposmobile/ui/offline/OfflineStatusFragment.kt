@@ -1,6 +1,6 @@
 
 class OfflineStatusFragment : Fragment() {
-    // private val viewModel: OfflineStatusViewModel by viewModels() // Temporarily disabled - depends on disabled services
+    
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -14,7 +14,7 @@ class OfflineStatusFragment : Fragment() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        OfflineStatusScreenCompose() // Temporarily disabled ViewModel
+                        OfflineStatusScreenCompose() 
                     }
                 }
             }

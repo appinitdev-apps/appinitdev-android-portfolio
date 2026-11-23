@@ -60,7 +60,7 @@ fun AdBanner(modifier: Modifier = Modifier) {
     val isDebug = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
 
     if (isDebug) {
-        // Hide ad banner during DEBUG builds
+        
         return
     }
 

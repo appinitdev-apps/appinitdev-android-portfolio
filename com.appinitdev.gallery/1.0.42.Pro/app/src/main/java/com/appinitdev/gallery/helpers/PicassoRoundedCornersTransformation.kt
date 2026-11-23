@@ -1,5 +1,5 @@
 
-// taken from https://stackoverflow.com/a/35241525/1967672
+
 class PicassoRoundedCornersTransformation(private val radius: Float) : Transformation {
 
     override fun transform(source: Bitmap): Bitmap {

@@ -1,5 +1,5 @@
-// Compile-only stubs for F-Droid — the real LiteRT is excluded from this flavor.
-// These satisfy the compiler; the AI code paths are never reached at runtime on F-Droid.
+
+
 
 enum class Accelerator { CPU, GPU, NPU }
 

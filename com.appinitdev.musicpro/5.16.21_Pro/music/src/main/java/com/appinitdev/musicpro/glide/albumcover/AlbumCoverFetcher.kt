@@ -1,8 +1,8 @@
 
-/**
- * Glide DataFetcher for loading album cover artwork.
- * Delegates to AlbumCover.load() for centralized album cover loading logic.
- */
+ 
+
+
+
 class AlbumCoverFetcher internal constructor(
         private val context: Context,
         private val album: Album
@@ -10,7 +10,7 @@ class AlbumCoverFetcher internal constructor(
 
     override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in Bitmap>) {
         try {
-            // Delegate to AlbumCover for centralized album cover loading
+            
             val bitmap = AlbumCover.load(context, album)
                 ?: throw FileNotFoundException("Could not find album artwork for: ${album.name}")
 
@@ -22,11 +22,11 @@ class AlbumCoverFetcher internal constructor(
     }
 
     override fun cleanup() {
-        // No cleanup needed - AlbumUtils handles resource management
+        
     }
 
     override fun cancel() {
-        // No cancellation needed
+        
     }
 
     override fun getDataClass(): Class<Bitmap> {

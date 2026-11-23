@@ -37,14 +37,14 @@ internal fun computeCaptureSize(
     return Triple(targetWidth, targetHeight, context.resources.displayMetrics.densityDpi)
 }
 
-/**
- * Get the real physical screen dimensions including system bars.
- *
- * Primary: DisplayManager.getDisplay(DEFAULT_DISPLAY).getRealMetrics() — reliable
- * from a Service context and correctly reflects the active display on foldable devices.
- *
- * Fallback: WindowManager-based logic for devices where DisplayManager reports 0×0.
- */
+ 
+
+
+
+
+
+
+
 internal fun getRealScreenSize(context: Context): Point {
     val dm = context.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
     val display = dm.getDisplay(Display.DEFAULT_DISPLAY)

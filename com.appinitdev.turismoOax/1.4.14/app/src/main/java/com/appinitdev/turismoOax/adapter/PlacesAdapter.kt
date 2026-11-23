@@ -16,6 +16,6 @@ class PlacesAdapter(private val places: List<String>) :
     override fun getItemCount() = places.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textView: TextView = itemView.findViewById(R.id.place) // Asegúrate de usar el ID correcto
+        val textView: TextView = itemView.findViewById(R.id.place) 
     }
 }

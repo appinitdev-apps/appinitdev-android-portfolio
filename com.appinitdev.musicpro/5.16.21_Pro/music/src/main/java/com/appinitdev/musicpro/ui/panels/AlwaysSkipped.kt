@@ -1,25 +1,25 @@
 
-/**
- * Shows every song the user has condemned to the "always skip" list —
- * a graveyard of tracks that committed some offense against the listener's ears.
- *
- * Tapping a song plays just that one track (no queue flooding with songs
- * that are supposed to be skipped anyway — that would be a bit self-defeating).
- * Long-pressing opens the familiar song menu so you can pardon a song and
- * remove it from this list if you've had a change of heart.
- *
- * The list stays live via a Flow, so it instantly reflects any changes
- * made from the song menu elsewhere in the app.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
 @AndroidEntryPoint
 class AlwaysSkipped : BasePanelFragment() {
 
     private lateinit var binding: FragmentAlwaysSkippedBinding
     private lateinit var headerBinding: HeaderAlwaysSkippedBinding
 
-    /** Reuse the same songs adapter — no need to reinvent the wheel. */
+     
     private var adapterSongs: AdapterSongs? = null
 
     private val alwaysSkippedViewModel: AlwaysSkippedViewModel by viewModels()
@@ -37,10 +37,10 @@ class AlwaysSkipped : BasePanelFragment() {
         binding.appHeader.setContentView(headerBinding.root)
         binding.appHeader.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
 
-        // Single-column list — nice and clean, no grid needed for this panel.
+        
         binding.recyclerView.setupGridLayoutManager(1)
 
-        // Watch the database for changes so the list stays perfectly in sync.
+        
         alwaysSkippedViewModel.skippedSongs.collectListWhenStarted({ adapterSongs != null }) { songs ->
             updateList(songs)
         }
@@ -51,26 +51,26 @@ class AlwaysSkipped : BasePanelFragment() {
         super.onDestroyView()
     }
 
-    /**
-     * Refreshes the list and header chips when the always-skipped set changes.
-     * First call creates the adapter; subsequent calls diff the new data in smoothly.
-     *
-     * @param songs The latest list of always-skipped [Audio] tracks.
-     */
+     
+
+
+
+
+
     private fun updateList(songs: List<Audio>) {
         if (adapterSongs == null) {
             adapterSongs = AdapterSongs(songs)
             adapterSongs?.setHasStableIds(true)
             adapterSongs?.setGeneralAdapterCallbacks(object : GeneralAdapterCallbacks {
                 override fun onSongClicked(songs: MutableList<Audio>, position: Int, view: View) {
-                    // Play only the tapped song — we definitely don't want to flood the queue
-                    // with songs that are marked to always be skipped. That would be a comedy of errors.
+                    
+                    
                     val tappedSong = songs.getOrNull(position) ?: return
                     setMediaItems(listOf(tappedSong), 0)
                 }
 
                 override fun onSongLongClicked(audios: MutableList<Audio>, position: Int, imageView: ImageView?) {
-                    // Full song menu — this is where they can pardon a song and remove the skip flag.
+                    
                     openSongsMenu(audios, position, imageView)
                 }
             })

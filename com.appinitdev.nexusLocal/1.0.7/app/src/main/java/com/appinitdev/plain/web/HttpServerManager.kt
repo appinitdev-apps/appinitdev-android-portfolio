@@ -1,8 +1,8 @@
 
 object HttpServerManager {
     private const val SSL_KEY_ALIAS = Constants.SSL_NAME
-    val tokenCache = mutableMapOf<String, ByteArray>() // cache the session token, format: <client_id>:<token>
-    val clientIpCache = mutableMapOf<String, String>() // format: <client_id>:<client_ip>
+    val tokenCache = mutableMapOf<String, ByteArray>() 
+    val clientIpCache = mutableMapOf<String, String>() 
     val wsSessions = Collections.synchronizedSet<WebSocketSession>(LinkedHashSet())
     val wsSessionCount = kotlinx.coroutines.flow.MutableStateFlow(0)
     val clientRequestTs = mutableMapOf<String, Long>()
@@ -33,7 +33,7 @@ object HttpServerManager {
             }
         } ?: return true
 
-        // Opportunistic cleanup of stale entries
+        
         if (loginAttemptsByKey.size > 5_000) {
             val threshold = nowMs - (LOGIN_RATE_LIMIT_WINDOW_MS * 2)
             loginAttemptsByKey.entries.removeIf { it.value.startMs < threshold }
@@ -70,8 +70,8 @@ object HttpServerManager {
         val context: Context = MainApp.instance
         try {
             val intent = Intent(context, MainActivity::class.java).apply {
-                // SINGLE_TOP evita recrear la actividad si ya está al frente, invocando onNewIntent
-                // NEW_TASK es obligatorio al lanzar una actividad fuera de una interfaz gráfica activa
+                
+                
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 putExtra("EXTRA_PC_ACTION", actionFromPc ?: "OPEN_APP")
             }
@@ -108,10 +108,10 @@ object HttpServerManager {
         }
     }
 
-    /**
-     * Wait for ports to become available after stopping a previous server.
-     * Returns true if both ports are free within the timeout.
-     */
+     
+
+
+
     suspend fun waitForPortsAvailable(httpPort: Int, httpsPort: Int, maxWaitMs: Long = 3000): Boolean {
         val interval = 200L
         var elapsed = 0L
@@ -180,9 +180,9 @@ object HttpServerManager {
 
     fun generateSSLKeyStore(file: File, password: String) {
         val keyStore = JksHelper.genJksFile(SSL_KEY_ALIAS, password, Constants.SSL_NAME)
-        // Write to a temp file first, then atomically rename to the target.
-        // This prevents a partially-written (corrupted) keystore if the process
-        // is killed mid-write (OOM, force-stop, reboot, etc.).
+        
+        
+        
         val tmp = File(file.parent, "${file.name}.tmp")
         try {
             FileOutputStream(tmp).use {
@@ -210,13 +210,13 @@ object HttpServerManager {
             } catch (ex: Exception) {
                 LogCat.e("Failed to load keystore: ${ex.message}, regenerating...")
                 ex.printStackTrace()
-                // Delete corrupted file and regenerate
+                
                 if (file.exists()) {
                     file.delete()
                 }
                 try {
                     generateSSLKeyStore(file, password)
-                    // Reload the newly generated keystore
+                    
                     file.inputStream().use {
                         load(it, password.toCharArray())
                     }
@@ -268,7 +268,7 @@ object HttpServerManager {
     fun clientTsInterval() {
         if (clientTsJob?.isActive == true) return
 
-        // When there are active sessions/clients we update frequently, otherwise we back off.
+        
         val activeIntervalMs = 5_000L
         val idleIntervalMs = 60_000L
         var lastSyncTs = 0L

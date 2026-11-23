@@ -72,7 +72,7 @@ fun ProfileScreen(
             contentScale = ContentScale.Crop,
         )
         
-        // Overlay
+        
         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)))
 
         Column(
@@ -199,7 +199,7 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Balance and VIP Badge
+            
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
                     onClick = { navController.navigate("store") },
@@ -313,17 +313,17 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-           /* MainGradientButton(
-                text = stringResource(R.string.desconectar),
-                onClick = {
-                    viewModel.updateStatus(false)
-                    viewModel.removeL()
-                    viewModel.removeFCMToken(user?.userId.toString())
-                    onSignOut()
-                },
-                modifier = Modifier.fillMaxWidth(0.7f),
-                icon = Icons.Default.Logout
-            )*/
+            
+
+
+
+
+
+
+
+
+
+
 
             Spacer(modifier = Modifier.height(32.dp))
             
@@ -339,7 +339,7 @@ fun ProfileScreen(
         }
     }
 
-    // Image upload logic
+    
     imgUri?.let { uri ->
         StoryPreview(
             uri = uri, 
@@ -404,7 +404,7 @@ fun ProfileScreen(
     if (showDeleteAccountDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteAccountDialog = false },
-            title = { Text(stringResource(R.string.borrar_chat)) }, // reused similar key if appropriate or create new one
+            title = { Text(stringResource(R.string.borrar_chat)) }, 
             text = { Text(stringResource(R.string.esta_accion_es_permanente)) },
             confirmButton = {
                 TextButton(

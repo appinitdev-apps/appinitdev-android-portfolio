@@ -14,8 +14,8 @@ open class PanelFragment : MediaFragment() {
         sectionedFastScroller.setOnPositionSelectedListener { position ->
             val layoutManager = this.layoutManager as? GridLayoutManager ?: return@setOnPositionSelectedListener
             layoutManager.scrollToPositionWithOffset(
-                    /* position = */ position.index,
-                    /* offset = */ resources.getDimensionPixelSize(R.dimen.padding_8) + header.height + paddingTop)
+                      position.index,
+                      resources.getDimensionPixelSize(R.dimen.padding_8) + header.height + paddingTop)
 
             if (position.index > 10) {
                 header.hideHeader()
@@ -39,13 +39,13 @@ open class PanelFragment : MediaFragment() {
                         itemView?.let { view ->
                             val blink = AlphaAnimation(1f, 0f).apply {
                                 duration = 300
-                                repeatCount = 3 // 2 blinks
+                                repeatCount = 3 
                                 repeatMode = Animation.REVERSE
                             }
                             view.startAnimation(blink)
                         }
                     } catch (_: IndexOutOfBoundsException) {
-                        // Ignore
+                        
                     }
                 }
             }
@@ -79,7 +79,7 @@ open class PanelFragment : MediaFragment() {
                 setStartDrawable(R.drawable.ic_grid_16dp)
             }
             else -> {
-                text = getString(R.string.list) // Default to list
+                text = getString(R.string.list) 
                 setStartDrawable(R.drawable.ic_list_16dp)
             }
         }
@@ -101,9 +101,9 @@ open class PanelFragment : MediaFragment() {
         }
     }
 
-    /**
-     * Attaches a SlideFastScroller to the RecyclerView.
-     */
+     
+
+
     protected fun RecyclerView.attachSlideFastScroller() {
         SlideFastScroller.attach(this).apply {
             setFadeToIdleMode(enabled = BehaviourPreferences.getFastScrollBehavior() == BehaviourPreferences.FADE_FAST_SCROLLBAR)

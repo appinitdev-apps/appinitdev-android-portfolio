@@ -86,7 +86,7 @@ fun HistoryScreen(
             } else {
                 val avgBmi = records.map { it.bmiValue }.average()
 
-                // Summary Stats Card
+                
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()

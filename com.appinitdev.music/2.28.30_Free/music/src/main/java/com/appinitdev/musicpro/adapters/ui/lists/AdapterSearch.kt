@@ -1,34 +1,34 @@
 
-/**
- * A unified search results adapter that replaces the previous multi-[RecyclerView.Adapter] /
- * [androidx.recyclerview.widget.ConcatAdapter] approach. Songs, albums, artists, genres, and
- * their section headers are all rendered as distinct view types within this single adapter,
- * eliminating the position out-of-bounds crashes that are inherent to
- * [androidx.recyclerview.widget.ConcatAdapter] + [androidx.recyclerview.widget.GridLayoutManager]
- * combinations.
- *
- * Call [submitResults] to push new search results; [AsyncListDiffer] handles efficient
- * diffing so only the changed rows are animated.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
 
     private var generalAdapterCallbacks: GeneralAdapterCallbacks? = null
 
-    /** Backing song list used as the parameter for song-click callbacks. */
+     
     private var songs: MutableList<Audio> = mutableListOf()
 
-    /** Backing album list used as the parameter for album-click callbacks. */
+     
     private var albums: MutableList<Album> = mutableListOf()
 
-    /** Backing artist list used as the parameter for artist-click callbacks. */
+     
     private var artists: MutableList<Artist> = mutableListOf()
 
-    /** Backing genre list kept for consistency; genres are passed individually to callbacks. */
+     
     private var genres: MutableList<Genre> = mutableListOf()
 
-    /** Current layout mode that determines which song view type is inflated. */
+     
     var layoutMode: CommonPreferencesConstants.LayoutMode = SearchPreferences.getGridSize()
 
     private val diffCallback = object : DiffUtil.ItemCallback<SearchAdapterItem>() {
@@ -157,16 +157,16 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
         }
     }
 
-    /**
-     * Builds a flat item list from [results] — with section headers for non-empty categories —
-     * then submits it to [AsyncListDiffer] for efficient, animated diffing.
-     *
-     * @param results The latest [SearchResults] from the search view-model.
-     * @param songsHeader Label used for the songs section header.
-     * @param albumsHeader Label used for the albums section header.
-     * @param artistsHeader Label used for the artists section header.
-     * @param genresHeader Label used for the genres section header.
-     */
+     
+
+
+
+
+
+
+
+
+
     fun submitResults(
             results: SearchResults,
             songsHeader: String,
@@ -201,31 +201,31 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
         differ.submitList(newItems)
     }
 
-    /**
-     * Returns the adapter position of the section header whose title matches [headerTitle],
-     * or -1 if no such header exists in the current list (e.g., the section is empty).
-     *
-     * @param headerTitle The exact label string used for the section header.
-     * @return Zero-based adapter position, or -1 when not found.
-     */
+     
+
+
+
+
+
+
     fun getSectionPosition(headerTitle: String): Int {
         return items.indexOfFirst { it is SearchAdapterItem.Header && it.title == headerTitle }
     }
 
-    /**
-     * Sets the general adapter callbacks used for item click and long-click handling.
-     *
-     * @param callbacks The [GeneralAdapterCallbacks] implementation to receive events.
-     */
+     
+
+
+
+
     fun setGeneralAdapterCallbacks(callbacks: GeneralAdapterCallbacks) {
         this.generalAdapterCallbacks = callbacks
     }
 
-    /**
-     * ViewHolder for labeled section separator rows (Songs, Albums, Artists, Genres).
-     *
-     * @param binding The view binding for the section header layout.
-     */
+     
+
+
+
+
     inner class HeaderHolder(val binding: AdapterSearchSectionHeaderBinding) :
             VerticalListViewHolder(binding.root) {
 
@@ -234,11 +234,11 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
         }
     }
 
-    /**
-     * ViewHolder for song items rendered in list mode.
-     *
-     * @param binding The view binding for the list item layout.
-     */
+     
+
+
+
+
     inner class SongListHolder(val binding: AdapterStyleListBinding) :
             VerticalListViewHolder(binding.root) {
 
@@ -267,11 +267,11 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
         }
     }
 
-    /**
-     * ViewHolder for song items rendered in grid mode.
-     *
-     * @param binding The view binding for the grid item layout.
-     */
+     
+
+
+
+
     inner class SongGridHolder(val binding: AdapterStyleGridBinding) :
             VerticalListViewHolder(binding.root) {
 
@@ -300,11 +300,11 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
         }
     }
 
-    /**
-     * ViewHolder for song items rendered in label mode.
-     *
-     * @param binding The view binding for the label item layout.
-     */
+     
+
+
+
+
     inner class SongLabelHolder(val binding: AdapterStyleLabelsBinding) :
             VerticalListViewHolder(binding.root) {
 
@@ -332,11 +332,11 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
         }
     }
 
-    /**
-     * ViewHolder for album result rows.
-     *
-     * @param binding The view binding for the list item layout.
-     */
+     
+
+
+
+
     inner class AlbumHolder(val binding: AdapterStyleListBinding) :
             VerticalListViewHolder(binding.root) {
 
@@ -365,11 +365,11 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
         }
     }
 
-    /**
-     * ViewHolder for artist result rows.
-     *
-     * @param binding The view binding for the list item layout.
-     */
+     
+
+
+
+
     inner class ArtistHolder(val binding: AdapterStyleListBinding) :
             VerticalListViewHolder(binding.root) {
 
@@ -400,11 +400,11 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
         }
     }
 
-    /**
-     * ViewHolder for genre result rows.
-     *
-     * @param binding The view binding for the list item layout.
-     */
+     
+
+
+
+
     inner class GenreHolder(val binding: AdapterStyleListBinding) :
             VerticalListViewHolder(binding.root) {
 
@@ -423,67 +423,67 @@ class AdapterSearch : FastScrollAdapter<VerticalListViewHolder>() {
     }
 
     companion object {
-        /** View type for section header rows (Songs, Albums, Artists, Genres). */
+         
         const val VIEW_TYPE_HEADER = 0
 
-        /** View type for song items in list mode. */
+         
         const val VIEW_TYPE_SONG_LIST = 1
 
-        /** View type for song items in grid mode. */
+         
         const val VIEW_TYPE_SONG_GRID = 2
 
-        /** View type for song items in label mode. */
+         
         const val VIEW_TYPE_SONG_LABEL = 3
 
-        /** View type for album result rows. */
+         
         const val VIEW_TYPE_ALBUM = 4
 
-        /** View type for artist result rows. */
+         
         const val VIEW_TYPE_ARTIST = 5
 
-        /** View type for genre result rows. */
+         
         const val VIEW_TYPE_GENRE = 6
     }
 }
 
-/**
- * Represents a single entry in the flattened search results list consumed by [AdapterSearch].
- * Each subtype maps to a distinct view type and [RecyclerView.ViewHolder].
- */
+ 
+
+
+
 sealed class SearchAdapterItem {
 
-    /**
-     * A labeled section separator row shown above each result category.
-     *
-     * @param title The human-readable category label displayed in the header row.
-     */
+     
+
+
+
+
     data class Header(val title: String) : SearchAdapterItem()
 
-    /**
-     * A song result row.
-     *
-     * @param audio The [Audio] data to display.
-     */
+     
+
+
+
+
     data class SongItem(val audio: Audio) : SearchAdapterItem()
 
-    /**
-     * An album result row.
-     *
-     * @param album The [Album] data to display.
-     */
+     
+
+
+
+
     data class AlbumItem(val album: Album) : SearchAdapterItem()
 
-    /**
-     * An artist result row.
-     *
-     * @param artist The [Artist] data to display.
-     */
+     
+
+
+
+
     data class ArtistItem(val artist: Artist) : SearchAdapterItem()
 
-    /**
-     * A genre result row.
-     *
-     * @param genre The [Genre] data to display.
-     */
+     
+
+
+
+
     data class GenreItem(val genre: Genre) : SearchAdapterItem()
 }

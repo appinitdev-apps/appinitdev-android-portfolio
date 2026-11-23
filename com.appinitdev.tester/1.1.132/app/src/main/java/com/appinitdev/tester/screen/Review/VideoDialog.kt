@@ -28,19 +28,19 @@ fun VideoDialog(onDismiss: () -> Unit) {
         onDispose { exoPlayer.release() }
     }
 
-    // Usamos DialogProperties para permitir que el modal use todo el ancho
+    
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
-            usePlatformDefaultWidth = false // Permite expandir el modal más allá de los márgenes estándar
+            usePlatformDefaultWidth = false 
         )
     ) {
         Surface(
             shape = RoundedCornerShape(16.dp),
             color = MaterialTheme.colorScheme.surface,
             modifier = Modifier
-                .fillMaxWidth(0.9f) // Ocupa el 90% del ancho de la pantalla
-                .fillMaxHeight(0.85f) // Ocupa el 85% de la altura de la pantalla
+                .fillMaxWidth(0.9f) 
+                .fillMaxHeight(0.85f) 
         ) {
             Column(
                 modifier = Modifier
@@ -55,7 +55,7 @@ fun VideoDialog(onDismiss: () -> Unit) {
 
                 Box(
                     modifier = Modifier
-                        .weight(1f) // Hace que el video ocupe todo el espacio disponible
+                        .weight(1f) 
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color.Black),
@@ -66,7 +66,7 @@ fun VideoDialog(onDismiss: () -> Unit) {
                             PlayerView(ctx).apply {
                                 player = exoPlayer
                                 useController = true
-                                // Ajusta el video para que mantenga su proporción dentro del contenedor
+                                
                                 resizeMode = androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
                             }
                         },

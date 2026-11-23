@@ -77,7 +77,7 @@ private fun XmlPullParser.parseBaseNote(rootTag: String, folder: Folder): BaseNo
         }
     }
 
-    // Can be either `note` or `list`
+    
     val type =
         if (rootTag == "note") {
             Type.NOTE

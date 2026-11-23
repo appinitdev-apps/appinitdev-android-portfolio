@@ -326,7 +326,7 @@ fun Chat(navController: NavController,
         }
     ) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize()) {
-            // Background logic
+            
             if (state.userData?.pref?.customImg.isNullOrBlank()) {
                 Image(
                     painter = painterResource(R.drawable.blurry_gradient_haikei),
@@ -354,7 +354,7 @@ fun Chat(navController: NavController,
                     .padding(innerPadding)
                     .fillMaxSize()
             ) {
-                // Messages List
+                
                 val orderedMessages = remember(messages) {
                     messages.sortedWith(
                         compareBy<Message> { it.time == null }
@@ -452,7 +452,7 @@ fun Chat(navController: NavController,
                     AdBanner(modifier = Modifier.padding(vertical = 2.dp), isVip = false)
                 }
 
-                // Input Area
+                
                 val isInitiator = tp.user1?.userId == state.userData?.userId
                 val isRecipient = tp.user2?.userId == state.userData?.userId
 
@@ -473,7 +473,7 @@ fun Chat(navController: NavController,
                         fileSize = size
                     )
                 } else if (isRecipient) {
-                    // Soy el que recibe la solicitud y aún no he aceptado
+                    
                     AcceptChatPanel(
                         onAccept = { viewModel.acceptChat(chatId) },
                         onReject = { viewModel.deleteChat(listOf(chatId)); onBack() }
@@ -482,19 +482,19 @@ fun Chat(navController: NavController,
             }
         }
 
-        // Overlays & Dialogs
+        
         ChatOverlays(viewModel, chatId, userData, dState, tState, cal, schedule, state, context, selectedItem)
 
         if (viewModel.msg != Message()) {
             if (viewModel.msg.isEphemeral && viewModel.msg.senderId != state.userData?.userId && viewModel.msg.viewedAt != null) {
-                // If already viewed, don't show the image ever again
+                
                 viewModel.msg = Message()
             } else if (viewModel.msg.imgUrl.isNotEmpty()) {
                 ImageViewer(
                     userData = userData,
                     hideDialog = { 
                         if (viewModel.msg.isEphemeral && viewModel.msg.senderId != state.userData?.userId) {
-                            // Automatically mark as viewed if ephemeral when closing
+                            
                             viewModel.markMessageAsViewed(chatId, viewModel.msg.msgId)
                         }
                         viewModel.msg = Message() 
@@ -502,10 +502,10 @@ fun Chat(navController: NavController,
                     message = viewModel.msg
                 )
             } else if (viewModel.msg.audioUrl.isNotEmpty()) {
-                // Handled in Item
+                
                 viewModel.msg = Message()
             } else if (viewModel.msg.vidUrl.isNotEmpty()) {
-                // Handled in Item
+                
                 viewModel.msg = Message()
             } else if (viewModel.msg.vidUrl.isNotEmpty()) {
                 VideoPlayer(
@@ -602,7 +602,7 @@ fun ChatInputBar(
             .imePadding()
             .navigationBarsPadding()
     ) {
-        // Previews (Reply, Edit, File) with modern style
+        
         AnimatedVisibility(viewModel.replyMessage.msgId.isNotEmpty()) {
             ReplyPreview(viewModel.replyMessage, state) {
                 viewModel.replyMessage = Message()
@@ -616,17 +616,17 @@ fun ChatInputBar(
             }
         }
 
-        /*AnimatedVisibility(viewModel.fileUri != null) {
-            FilePreview(fileName, fileSize) {
-                viewModel.fileUri = null
-            }
-        }*/
+         
+
+
+
+
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.Bottom // Bottom aligned for multi-line text
+            verticalAlignment = Alignment.Bottom 
         ) {
-            // Camera or Stop Recording
+            
             if (isRecording) {
                 SmallGradientIconButton(
                     icon = Icons.Rounded.Stop,
@@ -655,7 +655,7 @@ fun ChatInputBar(
 
             Spacer(modifier = Modifier.width(10.dp))
 
-            // Main Input Pill
+            
             Surface(
                 modifier = Modifier
                     .weight(1f)
@@ -668,7 +668,7 @@ fun ChatInputBar(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(horizontal = 4.dp)
                 ) {
-                    // Emoji Button
+                    
                     IconButton(onClick = { viewModel.isModalBottomSheetVisible = true }) {
                         Icon(
                             imageVector = Icons.Rounded.EmojiEmotions,
@@ -707,7 +707,7 @@ fun ChatInputBar(
                         )
                     }
                     
-                    // Attachment Button (Always visible if not recording)
+                    
                     if (!isRecording) {
                         Box {
                             IconButton(onClick = { viewModel.showOptions = !viewModel.showOptions }) {
@@ -726,7 +726,7 @@ fun ChatInputBar(
                 }
             }
 
-            // Mic or Send Button
+            
             Spacer(modifier = Modifier.width(10.dp))
             val isTyping = (viewModel.reply.trim().isNotEmpty() || viewModel.fileUri != null) && !isRecording
 
@@ -741,13 +741,13 @@ fun ChatInputBar(
                     SmallGradientIconButton(
                         icon = Icons.AutoMirrored.Rounded.Send,
                         onClick = {
-                            /*if (viewModel.fileUri != null) {
-                                val id = viewModel.sendReply(chatId, viewModel.reply.trim(), fileUrl = "uploadingFile", fileName = fileName, fileSize = "$fileSize MB")
-                                viewModel.uploadFile(viewModel.fileUri!!, chatId, id) { url ->
-                                    viewModel.addUrl(chatId, id, fileUrl = url)
-                                }
-                                viewModel.fileUri = null
-                            } else */if (viewModel.editMsgId.isEmpty()) {
+                             
+
+
+
+
+
+if (viewModel.editMsgId.isEmpty()) {
                                 viewModel.sendReply(chatId, viewModel.reply.trim(), replyMsg = viewModel.replyMessage)
                                 viewModel.reply = ""
                                 viewModel.replyMessage = Message()
@@ -769,7 +769,7 @@ fun ChatInputBar(
                                 isRecording = true
                                 voiceRecorder.startRecording()
                             } else {
-                                // Request permission behavior
+                                
                             }
                         },
                         modifier = Modifier.padding(bottom = 4.dp)
@@ -986,7 +986,7 @@ fun ChatOverlays(
                     onSuccess = {
                         viewModel.showTransferDialog = false
                         Toast.makeText(context, context.getString(R.string.transferencia_exitosa), Toast.LENGTH_SHORT).show()
-                        // Send a system message to the chat
+                        
                         viewModel.sendReply(chatId, context.getString(R.string.regalo_monedas, amount))
                     },
                     onError = { error ->
@@ -1011,7 +1011,7 @@ fun ChatOverlays(
     }
 
     if (viewModel.msg.isEphemeral && viewModel.msg.senderId != state.userData?.userId && viewModel.msg.viewedAt == null && viewModel.msg.msgId.isNotEmpty()) {
-        // Overlay for ephemeral content
+        
         var remainingTime by remember { mutableLongStateOf(viewModel.msg.ephemeralDuration) }
         val isTimer = viewModel.msg.ephemeralDuration > 0
         var hasStarted by remember { mutableStateOf(false) }
@@ -1052,7 +1052,7 @@ fun ChatOverlays(
                             onClick = { 
                                 hasStarted = true
                                 if (!isTimer) {
-                                    // mark as viewed immediately if no timer, but allow looking until closed
+                                    
                                 }
                             }
                         )
@@ -1061,7 +1061,7 @@ fun ChatOverlays(
                             Text(stringResource(R.string.cancelarw), color = Color.White)
                         }
                     } else {
-                        // Display the image with the timer
+                        
                         Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
                             AsyncImage(
                                 model = viewModel.msg.imgUrl,

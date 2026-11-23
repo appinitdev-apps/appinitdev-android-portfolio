@@ -1,5 +1,5 @@
 
-// https://developer.android.com/training/data-storage/shared/photopicker
+
 object FilePickHelper {
 
     fun getPickFileIntent(multiple: Boolean): Intent {
@@ -41,8 +41,8 @@ object FilePickHelper {
                 }
             }
         }
-        // Fallback: on Android 13+, clipData may be non-null but empty while
-        // the actual URI is still in intent.data (seen on some OEM file pickers).
+        
+        
         if (uris.isEmpty() && intent.data != null) {
             uris.add(intent.data!!)
         }

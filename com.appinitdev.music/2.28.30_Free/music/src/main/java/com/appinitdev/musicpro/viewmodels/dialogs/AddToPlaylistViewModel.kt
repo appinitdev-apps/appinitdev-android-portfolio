@@ -1,30 +1,30 @@
 
-/**
- * ViewModel for the [com.appinitdev.musicpro.dialogs.playlists.AddToPlaylistDialog].
- *
- * <p>Observes all playlists together with their songs via a single reactive
- * [PlaylistRepository.getAllPlaylistsWithSongs] stream. Because that query carries a
- * [androidx.room.Transaction] annotation, Room re-emits whenever either the
- * {@code playlists} or the {@code playlist_song_cross_ref} table changes — so playlist
- * additions, song insertions, and song removals all surface automatically without extra
- * polling. Pre-checked IDs and per-playlist song counts are derived in-memory from the
- * emitted list, avoiding additional per-playlist round-trips.</p>
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 @HiltViewModel(assistedFactory = AddToPlaylistViewModel.Factory::class)
 class AddToPlaylistViewModel @AssistedInject constructor(
         @Assisted val audio: Audio,
         private val playlistRepository: PlaylistRepository
 ) : ViewModel() {
 
-    /**
-     * Immutable snapshot of the data required to render the playlist-checkbox list.
-     *
-     * @param playlists     All available playlists ordered alphabetically.
-     * @param preCheckedIds Set of playlist IDs that already contain the target audio.
-     * @param songCounts    Map of playlist ID to its current song count.
-     */
+     
+
+
+
+
+
+
     data class PlaylistDialogState(
             val playlists: List<Playlist>,
             val preCheckedIds: Set<Long>,
@@ -33,29 +33,29 @@ class AddToPlaylistViewModel @AssistedInject constructor(
 
     private val _state = MutableStateFlow<PlaylistDialogState?>(null)
 
-    /**
-     * Reactive UI state for the dialog. Emits {@code null} until the first database load
-     * completes, then re-emits on every playlist or cross-ref table change.
-     */
+     
+
+
+
     val state: StateFlow<PlaylistDialogState?> = _state.asStateFlow()
 
     private val _saveComplete = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
-    /**
-     * Emits [Unit] exactly once after [saveMembership] has finished persisting all changes.
-     * The dialog should dismiss itself in response to this event.
-     */
+     
+
+
+
     val saveComplete: SharedFlow<Unit> = _saveComplete.asSharedFlow()
 
     init {
         observePlaylists()
     }
 
-    /**
-     * Subscribes to [PlaylistRepository.getAllPlaylistsWithSongs] and maps each emission
-     * into a [PlaylistDialogState]. The pre-checked IDs and song counts are derived in-memory
-     * from the returned [com.appinitdev.musicpro.repository.models.PlaylistWithSongs] projections.
-     */
+     
+
+
+
+
     private fun observePlaylists() {
         viewModelScope.launch {
             val audioHash = audio.hash
@@ -72,13 +72,13 @@ class AddToPlaylistViewModel @AssistedInject constructor(
         }
     }
 
-    /**
-     * Persists the updated playlist membership by diffing [checkedIds] against the current
-     * database state. Songs are added to newly checked playlists and removed from unchecked
-     * ones. Emits [saveComplete] on the IO dispatcher after all changes have been committed.
-     *
-     * @param checkedIds The set of playlist IDs the user has checked in the dialog.
-     */
+     
+
+
+
+
+
+
     fun saveMembership(checkedIds: Set<Long>) {
         val audioHash = audio.hash
         viewModelScope.launch(Dispatchers.IO) {
@@ -95,15 +95,15 @@ class AddToPlaylistViewModel @AssistedInject constructor(
         }
     }
 
-    /** Factory interface required by the Hilt assisted-injection mechanism. */
+     
     @AssistedFactory
     interface Factory {
-        /**
-         * Creates an [AddToPlaylistViewModel] bound to the given [audio] track.
-         *
-         * @param audio The audio track whose playlist membership is being edited.
-         * @return A new [AddToPlaylistViewModel] instance.
-         */
+         
+
+
+
+
+
         fun create(audio: Audio): AddToPlaylistViewModel
     }
 

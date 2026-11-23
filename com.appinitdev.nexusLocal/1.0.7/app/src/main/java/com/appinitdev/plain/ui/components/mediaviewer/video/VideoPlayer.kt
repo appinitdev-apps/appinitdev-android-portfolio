@@ -15,7 +15,7 @@ fun VideoPlayer(
         usePlayerController = false,
     )
 
-    // because the video player is in pager, we need to manually pause the player when it's not visible
+    
     if (videoState.isFullscreenMode && videoState.player == player) {
         VideoPlayerFullScreenDialog(
             player = player,
@@ -39,7 +39,7 @@ fun rememberVideoPlayer(context: Context, playerInstance: ExoPlayer.() -> Unit =
                     .setContentType(AUDIO_CONTENT_TYPE_MOVIE)
                     .setUsage(C.USAGE_MEDIA)
                     .build(),
-                false, // VideoAudioFocusManager handles focus manually with AUDIOFOCUS_GAIN_TRANSIENT
+                false, 
             )
             .apply {
                 val cache = VideoPlayerCacheManager.getCache()

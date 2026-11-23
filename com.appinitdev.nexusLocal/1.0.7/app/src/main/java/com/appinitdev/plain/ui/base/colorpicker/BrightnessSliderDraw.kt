@@ -10,10 +10,10 @@ internal fun Canvas.drawBrightnessSliderContent(
     wheelPaint: Paint,
     density: Float,
 ) {
-    // draw background bitmap
+    
     drawImage(backgroundBitmap, Offset.Zero, Paint())
 
-    // draw a linear gradient color shader
+    
     val startColor = controller.pureSelectedColor.value.copy(alpha = 0f)
     val endColor = controller.pureSelectedColor.value.copy(alpha = 1f)
     val shader = LinearGradientShader(
@@ -30,7 +30,7 @@ internal fun Canvas.drawBrightnessSliderContent(
         paint = colorPaint,
     )
 
-    // draw wheel on the canvas
+    
     val position = controller.brightness.value
     val point = (bitmapSize.width * position).coerceIn(0f, bitmapSize.width.toFloat())
     if (wheelImageBitmap == null) {

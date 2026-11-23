@@ -18,7 +18,7 @@ internal fun candidateInterfaces(): List<Pair<NetworkInterface, Inet4Address>> {
     }.getOrElse { emptyList() }
 }
 
-/** Returns true for mobile-data-only bearer interface names (never LAN). */
+ 
 internal fun isMobileDataInterface(name: String): Boolean =
     name.startsWith("rmnet") || name.startsWith("ccmni") ||
         name.startsWith("v4-rmnet") || name.startsWith("v6-rmnet") ||
@@ -37,7 +37,7 @@ internal fun findResponseIface(
     return candidates.first()
 }
 
-/** Converts an [Inet4Address] to a 32-bit big-endian integer for subnet arithmetic. */
+ 
 internal fun ipToInt(ip: Inet4Address): Int {
     val b = ip.address
     return ((b[0].toInt() and 0xFF) shl 24) or ((b[1].toInt() and 0xFF) shl 16) or

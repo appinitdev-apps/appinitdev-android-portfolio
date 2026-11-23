@@ -14,7 +14,7 @@ fun CircularTimer(
         val radius = (size.minDimension - strokeWidthPx) / 2
         val centerOffset = Offset(size.width / 2f, size.height / 2f)
 
-        // Background circle
+        
         drawCircle(
             color = trackColor,
             radius = radius,
@@ -22,7 +22,7 @@ fun CircularTimer(
             style = Stroke(width = strokeWidthPx)
         )
 
-        // Progress arc
+        
         val sweepAngle = 360f * progress.coerceIn(0f, 1f)
 
         if (sweepAngle > 0) {

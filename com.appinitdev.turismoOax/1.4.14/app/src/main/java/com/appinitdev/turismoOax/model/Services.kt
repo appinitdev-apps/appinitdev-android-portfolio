@@ -21,7 +21,7 @@ data class Services(
     )
 
     override fun describeContents(): Int {
-        return 0 // Usualmente se retorna 0
+        return 0 
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {

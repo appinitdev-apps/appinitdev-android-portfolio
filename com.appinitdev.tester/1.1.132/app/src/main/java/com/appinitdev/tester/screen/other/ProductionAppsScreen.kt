@@ -6,12 +6,12 @@ fun ProductionAppsScreen(viewModel: AuthViewModel, navController: NavController)
     val context = LocalContext.current
 
 
-    // Cargamos todas las apps; el filtrado lo hacemos en la UI
+    
     LaunchedEffect(Unit) {
         viewModel.loadProductionApps()
     }
 
-    // Filtramos solo las que están en producción
+    
     val productionApps = remember(apps) {
         apps.filter { it.status == "produccion" }
             .sortedBy { it.nombre.lowercase() }
@@ -69,13 +69,13 @@ fun ProductionAppItem(app: AppModel, onClick: () -> Unit) {
         app.nombre.lowercase().replaceFirstChar { it.uppercase() }
     }
 
-    // Usamos OutlinedCard para un diseño más limpio y moderno típico de M3
+    
     OutlinedCard(
-        onClick = onClick, // El ripple ahora se adapta perfectamente al shape
+        onClick = onClick, 
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
-        shape = RoundedCornerShape(16.dp), // Esquinas más redondeadas según M3
+        shape = RoundedCornerShape(16.dp), 
         colors = CardDefaults.outlinedCardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
@@ -87,10 +87,10 @@ fun ProductionAppItem(app: AppModel, onClick: () -> Unit) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // --- 1. Icono con mejor redondeo ---
+            
             Box(
                 modifier = Modifier
-                    .size(56.dp) // Un poco más grande para destacar
+                    .size(56.dp) 
                     .clip(MaterialTheme.shapes.small)
             ) {
                 if (app.icono != null) {
@@ -114,7 +114,7 @@ fun ProductionAppItem(app: AppModel, onClick: () -> Unit) {
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // --- 2. Información de la App ---
+            
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = formattedName,
@@ -128,19 +128,19 @@ fun ProductionAppItem(app: AppModel, onClick: () -> Unit) {
                 Text(
                     text = app.paquete,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant, // Color secundario estándar M3
+                    color = MaterialTheme.colorScheme.onSurfaceVariant, 
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
             }
 
-            // --- 3. Acción (Solo si el icono no es nulo o según tu lógica de negocio) ---
+            
             if (app.icono != null) {
                 Spacer(modifier = Modifier.width(8.dp))
                 FilledTonalButton(
                     onClick = onClick,
                     contentPadding = PaddingValues(horizontal = 12.dp),
-                    modifier = Modifier.height(36.dp) // Altura compacta
+                    modifier = Modifier.height(36.dp) 
                 ) {
                     Icon(
                         imageVector = Icons.Default.Star,
@@ -158,14 +158,14 @@ fun ProductionAppItem(app: AppModel, onClick: () -> Unit) {
     }
 }
 
-// Función auxiliar para abrir la Play Store
+
 fun openPlayStore(context: Context, packageName: String) {
     try {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
     } catch (e: Exception) {
-        // Si no tiene la Play Store instalada, abre el navegador
+        
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName"))
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)

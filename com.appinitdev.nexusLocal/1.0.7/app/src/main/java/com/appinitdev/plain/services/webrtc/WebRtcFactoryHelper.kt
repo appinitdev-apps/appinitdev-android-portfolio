@@ -9,8 +9,8 @@ internal fun createWebRtcFactory(
     onAudioRecordStop: () -> Unit,
 ): Pair<PeerConnectionFactory, JavaAudioDeviceModule> {
     if (!webrtcInitialized) {
-        // Use applicationContext so that the NetworkMonitorAutoDetect BroadcastReceiver
-        // registered by WebRTC is tied to the app lifetime, not the service context.
+        
+        
         PeerConnectionFactory.initialize(
             PeerConnectionFactory.InitializationOptions.builder(context.applicationContext)
                 .setEnableInternalTracer(false)
@@ -30,15 +30,15 @@ internal fun createWebRtcFactory(
 
     val encoderFactory = DefaultVideoEncoderFactory(eglBase.eglBaseContext, true, true)
     val decoderFactory = DefaultVideoDecoderFactory(eglBase.eglBaseContext)
-    // Skip VPN adapter (ADAPTER_TYPE_VPN = 1 << 3) so that WebRTC binds UDP
-    // sockets directly to Wi-Fi. VPN apps typically tunnel all UDP through the
-    // VPN, making LAN WebRTC unreachable even with the correct ICE candidate IP.
+    
+    
+    
     val options = PeerConnectionFactory.Options().apply {
         networkIgnoreMask = 1 shl 3
-        // Use basic getifaddrs() enumeration instead of Android's ConnectivityManager.
-        // ConnectivityManager doesn't list the hotspot AP interface, so WebRTC can't
-        // create UDP candidates for it. disableNetworkMonitor forces BasicNetworkManager
-        // which discovers ALL interfaces including the Wi-Fi AP (hotspot).
+        
+        
+        
+        
         disableNetworkMonitor = true
     }
     val factory = PeerConnectionFactory.builder()

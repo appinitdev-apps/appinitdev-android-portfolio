@@ -9,7 +9,7 @@ class AllFilesPermissionDialog(
         view.findViewById<TextView>(R.id.message).text = message
 
         activity.getAlertDialogBuilder().setPositiveButton(R.string.media_only) { dialog, which ->  neutralPressed()  }
-            /*.setNeutralButton(R.string.all_files) { dialog, which -> positivePressed() }*/
+             
             .apply {
                 activity.setupDialogStuff(view, this) { alertDialog ->
                     dialog = alertDialog

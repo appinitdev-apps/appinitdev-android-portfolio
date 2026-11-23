@@ -1,7 +1,7 @@
 
-/**
- * Handles the HTTP server start sequence with retry logic and port conflict handling.
- */
+ 
+
+
 object HttpServerStartHelper {
 
     suspend fun startServer(service: HttpServerService, onStateChanged: (HttpServerState) -> Unit) {
@@ -41,8 +41,8 @@ object HttpServerStartHelper {
                 HttpServerManager.server = newServer
                 break
             } catch (ex: Exception) {
-                // The engine may have partially started (thread pools created) before
-                // throwing — always stop it to prevent thread/memory leaks on each failed attempt.
+                
+                
                 try { newServer?.stop(0, 0) } catch (_: Exception) {}
                 LogCat.e(ex, "Server start attempt $attempt/$maxRetries failed: ${ex.message}")
                 if (ex is java.net.BindException || ex.cause is java.net.BindException) {
@@ -75,13 +75,13 @@ object HttpServerStartHelper {
     ) {
         val serverWasRunning = HttpServerManager.server != null
 
-        // Stop the server before checking ports — otherwise our own running
-        // server is detected as the "occupier", causing a false positive on
-        // every restart (common on rooted ROMs with firewall apps like AFWall+).
+        
+        
+        
         HttpServerManager.stopPreviousServer()
 
         if (!serverWasRunning) {
-            // Server never started — check if ports are occupied by another process.
+            
             if (PortHelper.isPortInUse(TempData.httpPort.value)) HttpServerManager.portsInUse.add(TempData.httpPort.value)
             if (PortHelper.isPortInUse(TempData.httpsPort.value)) HttpServerManager.portsInUse.add(TempData.httpsPort.value)
         }

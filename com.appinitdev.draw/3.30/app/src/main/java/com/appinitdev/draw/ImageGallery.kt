@@ -2,7 +2,7 @@
 @Composable
 fun ImageGallery(images: List<Image>, onImageClick: (String) -> Unit) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2), // Dos columnas
+        columns = GridCells.Fixed(2), 
         modifier = Modifier.fillMaxHeight(0.90f),
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -15,7 +15,7 @@ fun ImageGallery(images: List<Image>, onImageClick: (String) -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp).clickable {
-                        // Aquí pasas la URL cuando se hace clic
+                        
                         onImageClick(image.webformatURL)
                     },
 
@@ -39,38 +39,38 @@ fun ShowGalleryDialog(
             color = Color.White,
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.9f) // Ajusta el tamaño de la ventana emergente
+                .fillMaxHeight(0.9f) 
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                // Mostrar las imágenes
+                
                 ImageGallery(images, onImageClick)
 
-                // Espaciado para empujar los botones hacia el fondo
+                
                 Spacer(modifier = Modifier.weight(1f))
 
-                // Fila de botones para navegar entre las páginas
+                
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    // Botón para ir a la página anterior
+                    
                     Button(
                         onClick = onPrevPage,
                         modifier = Modifier
                             .weight(1f)
-                            .padding(end = 4.dp) // Espaciado entre los botones
+                            .padding(end = 4.dp) 
                     ) {
                         Text("<")
                     }
 
-                    // Botón para ir a la siguiente página
+                    
                     Button(
                         onClick = onNextPage,
                         modifier = Modifier
                             .weight(1f)
-                            .padding(start = 4.dp) // Espaciado entre los botones
+                            .padding(start = 4.dp) 
                     ) {
                         Text(">")
                     }

@@ -1,19 +1,19 @@
 
-/**
- * A dedicated panel that allows users to search across all application preferences in real time.
- *
- * On opening, the panel merges the preference items from every category panel (Appearance,
- * User Interface, Behavior, Engine, Library, Accessibility, and About) into a single flat list.
- * Structural items such as [com.appinitdev.musicpro.enums.PreferenceType.HEADER] and [com.appinitdev.musicpro.enums.PreferenceType.SUB_HEADER] are excluded
- * because they carry no actionable content of their own.
- *
- * As the user types in the search field the list is filtered instantly against the resolved
- * title and summary strings of each preference item. Every result remains fully interactive,
- * so users can toggle switches, move sliders, or open sub-panels without ever leaving the
- * search screen.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class PreferenceSearch : PreferenceFragment() {
 
     private lateinit var binding: FragmentPreferenceSearchBinding
@@ -21,11 +21,11 @@ class PreferenceSearch : PreferenceFragment() {
 
     private val viewModel: PreferenceSearchViewModel by viewModels()
 
-    /**
-     * The complete, merged list of all actionable preference items built once in
-     * [onViewCreated] by combining every category panel. HEADER and SUB_HEADER types
-     * are removed at construction time so the filter never has to re-check them.
-     */
+     
+
+
+
+
     private var allPreferences: List<Preference> = emptyList()
 
     override fun onCreateView(
@@ -52,15 +52,15 @@ class PreferenceSearch : PreferenceFragment() {
     override val wantsMiniPlayerVisible: Boolean
         get() = false
 
-    /**
-     * Builds and returns the merged list of all searchable preference items.
-     *
-     * Items whose type is [com.appinitdev.musicpro.enums.PreferenceType.HEADER] or [com.appinitdev.musicpro.enums.PreferenceType.SUB_HEADER]
-     * are stripped out because they serve only as visual section dividers inside
-     * individual category screens and carry no actionable information of their own.
-     *
-     * @return a flat list of every searchable preference item across all categories.
-     */
+     
+
+
+
+
+
+
+
+
     private fun buildAllPreferences(): List<Preference> {
         val all = mutableListOf<Preference>()
         all.addAll(createAppearancePanel())
@@ -77,10 +77,10 @@ class PreferenceSearch : PreferenceFragment() {
         }
     }
 
-    /**
-     * Initializes the search field with the last known query from the [viewModel]
-     * and attaches a [android.text.TextWatcher] that forwards every keystroke to the ViewModel.
-     */
+     
+
+
+
     private fun setupSearchBox() {
         val currentQuery = viewModel.searchQuery.value
         if (currentQuery.isNotEmpty()) {
@@ -97,11 +97,11 @@ class PreferenceSearch : PreferenceFragment() {
         })
     }
 
-    /**
-     * Starts collecting [PreferenceSearchViewModel.searchQuery] and applies the filter
-     * each time the query changes. Collection is tied to the [androidx.lifecycle.Lifecycle.State.STARTED]
-     * state so it automatically pauses when the fragment is not on screen.
-     */
+     
+
+
+
+
     private fun observeSearchQuery() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -112,16 +112,16 @@ class PreferenceSearch : PreferenceFragment() {
         }
     }
 
-    /**
-     * Filters [allPreferences] against [query] and updates the RecyclerView adapter
-     * and result count label.
-     *
-     * Matching is case-insensitive and checks both the resolved title string and the
-     * resolved summary string. When [query] is blank the list is cleared and the count
-     * label is hidden so users start with a clean slate.
-     *
-     * @param query the current text typed by the user; may be blank.
-     */
+     
+
+
+
+
+
+
+
+
+
     private fun applyFilter(query: String) {
         if (query.isBlank()) {
             binding.recyclerView.adapter = null
@@ -145,11 +145,11 @@ class PreferenceSearch : PreferenceFragment() {
     }
 
     companion object {
-        /**
-         * Creates a new instance of [PreferenceSearch].
-         *
-         * @return a fresh [PreferenceSearch] fragment ready to be added to the back stack.
-         */
+         
+
+
+
+
         fun newInstance(): PreferenceSearch {
             val args = Bundle()
             val fragment = PreferenceSearch()

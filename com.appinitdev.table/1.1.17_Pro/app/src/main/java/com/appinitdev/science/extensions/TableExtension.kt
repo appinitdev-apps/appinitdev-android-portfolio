@@ -166,7 +166,7 @@ abstract class TableExtension : BaseActivity(), View.OnApplyWindowInsetsListener
                             btn.background.setTint(Color.argb(255, 255, 225.div(item.electro).toInt(), 0))
                         } else {
                             val btn = findViewById<TextView>(resIDB)
-                            // Produce un Amarillo Dorado Vibrante pero denso (#D4C037)
+                            
                             btn.background.setTint(Color.argb(255, 212, 192, 55))
                         }
                     }
@@ -232,11 +232,11 @@ abstract class TableExtension : BaseActivity(), View.OnApplyWindowInsetsListener
         }, 10)
     }
 
-    //New functions for updating tables. Trying to minimize code
+    
     fun initTableChange(list: ArrayList<Element>, jsonName: String) {
-        initName(list) //Retrieving all elements to use in for-loop
+        initName(list) 
         closeHover()
-        val delay = Handler(Looper.getMainLooper()) //Using new Looper.getMainLooper() as Handler() is deprecated in java
+        val delay = Handler(Looper.getMainLooper()) 
         delay.postDelayed({
             for (item in list) {
                 val name = item.elementKey

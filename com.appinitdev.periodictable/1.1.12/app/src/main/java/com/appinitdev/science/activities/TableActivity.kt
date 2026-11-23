@@ -18,50 +18,50 @@ class TableActivity : BaseActivity() {
 
         findViewById<FrameLayout>(R.id.view_sub).systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 
-        /// Title Controller with animated visibility
-        /*findViewById<FrameLayout>(R.id.common_title_table_color).visibility = View.INVISIBLE
-        findViewById<TextView>(R.id.tables_title).visibility = View.INVISIBLE
-        findViewById<FrameLayout>(R.id.common_title_back_tab).elevation = (resources.getDimension(R.dimen.zero_elevation))
-        findViewById<ScrollView>(R.id.table_scroll).viewTreeObserver
-            .addOnScrollChangedListener(object : ViewTreeObserver.OnScrollChangedListener {
-                private var isTitleVisible = false // Track animation state
+        
+         
 
-                override fun onScrollChanged() {
-                    val scrollY = findViewById<ScrollView>(R.id.table_scroll).scrollY
-                    val threshold = 150
 
-                    val titleColorBackground = findViewById<FrameLayout>(R.id.common_title_table_color)
-                    val titleText = findViewById<TextView>(R.id.tables_title)
-                    val titleDownstateText = findViewById<TextView>(R.id.tables_title_downstate)
-                    val titleBackground = findViewById<FrameLayout>(R.id.common_title_back_tab)
 
-                    if (scrollY > threshold) {
-                        if (!isTitleVisible) {
-                            TitleBarAnimator.animateVisibility(titleColorBackground, true, visibleAlpha = 0.11f)
-                            TitleBarAnimator.animateVisibility(titleText, true)
-                            TitleBarAnimator.animateVisibility(titleDownstateText, false)
-                            titleBackground.elevation = resources.getDimension(R.dimen.one_elevation)
-                            isTitleVisible = true
-                        }
-                    } else {
-                        if (isTitleVisible) {
-                            TitleBarAnimator.animateVisibility(titleColorBackground, false)
-                            TitleBarAnimator.animateVisibility(titleText, false)
-                            TitleBarAnimator.animateVisibility(titleDownstateText, true)
-                            titleBackground.elevation = resources.getDimension(R.dimen.zero_elevation)
-                            isTitleVisible = false
-                        }
-                    }
-                }
-            })
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         tableListeners()
         mostUsedBar()
 
         findViewById<ImageButton>(R.id.back_btn).setOnClickListener {
             this.onBackPressed()
         }
-        //Update tables depending on PRO or Not:
+        
         val proPref = ProVersion(this)
         val proPrefValue = proPref.getValue()
         if (proPrefValue == 1) {
@@ -117,7 +117,7 @@ class TableActivity : BaseActivity() {
 
         sortedValues.forEachIndexed { index, pair ->
             if (index < textViewList.size) {
-                //Setup TextViews
+                
                 if (pair.first == "geo") {textViewList[index].text = getString(R.string.geo)}
                 if (pair.first == "phi") {textViewList[index].text = getString(R.string.phi)}
                 if (pair.first == "eqe") {textViewList[index].text = getString(R.string.eqe)}
@@ -130,7 +130,7 @@ class TableActivity : BaseActivity() {
                 if (pair.first == "iso") {textViewList[index].text = getString(R.string.iso)}
                 if (pair.first == "emi") {textViewList[index].text = getString(R.string.emi)}
 
-                //Setup clickListener for non-pro
+                
                 if (proPrefValue==1) {
                     textViewList[index].setOnClickListener {
                         if (pair.first == "iso") {
@@ -190,7 +190,7 @@ class TableActivity : BaseActivity() {
                         }
                     }
                 }
-                //Setup clickListener for pro
+                
                 if (proPrefValue==100) {
                     textViewList[index].setOnClickListener {
                         if (pair.first == "iso") {

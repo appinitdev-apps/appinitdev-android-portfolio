@@ -1,9 +1,9 @@
 
-/**
- * This transformation adds padding intrinsically to the bitmap.
- * This is used to add a coloured border to the image, or create
- * transparent padding to prevent clipping when drawing shadows.
- */
+ 
+
+
+
+
 @Suppress("unused")
 class Padding : BitmapTransformation {
     private var paddingLeft: Int
@@ -27,10 +27,10 @@ class Padding : BitmapTransformation {
         paddingBottom = 0
     }
 
-    /**
-     * Padding ration should be from 0 to 100 divided by 100.
-     * Higher values will make the image disappear
-     */
+     
+
+
+
     constructor(paddingRatio: Float) {
         this.paddingRatio = paddingRatio
         paddingLeft = 0

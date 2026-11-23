@@ -8,8 +8,8 @@ object SmsHelper {
     private const val MMS_ADDR_TYPE_TO = 151
     private const val MMS_INSERT_ADDRESS_TOKEN = ""
 
-    // Only include actual content PDUs; exclude notification/delivery-report frames.
-    // 128 = m-send-req (outgoing), 130 = m-retrieve-conf (incoming with content)
+    
+    
     private const val MMS_CONTENT_FILTER = "m_type IN (128, 130)"
 
     fun sendText(to: String, message: String, subscriptionId: Int? = null) {
@@ -112,7 +112,7 @@ object SmsHelper {
         val where = buildWhere(conditions, archivedRecords)
         val hasTextOrIdsFilter = conditions.any { it.name == "text" || it.name == "ids" }
 
-        // When filtering by text/ids (SMS-specific columns), skip MMS, use normal paging
+        
         if (hasTextOrIdsFilter) {
             return context.contentResolver.getPagingCursorWithSql(
                 smsUri, getProjection(), where,
@@ -122,7 +122,7 @@ object SmsHelper {
             } ?: emptyList()
         }
 
-        // Cap each sub-query so we never load the entire table into memory
+        
         val fetchCap = offset + limit
         val smsItems = context.contentResolver.queryCursor(
             smsUri, getProjection(), where.toSelection(), where.args.toTypedArray(),
@@ -131,11 +131,11 @@ object SmsHelper {
             cursorToSmsMessage(cursor, cache)
         } ?: emptyList()
 
-        // Also query MMS and merge
+        
         val mmsWhere = ContentWhere()
         val typeCondition = conditions.firstOrNull { it.name == "type" }
         if (typeCondition != null) {
-            // SMS type 1=inbox, 2=sent; MMS MESSAGE_BOX 1=inbox, 2=sent
+            
             mmsWhere.add("${Telephony.Mms.MESSAGE_BOX} = ?", typeCondition.value)
         }
         mmsWhere.add(MMS_CONTENT_FILTER)
@@ -203,12 +203,12 @@ object SmsHelper {
         val dateArgs = if (archivedConversation != null) {
             arrayOf(threadId, archivedConversation.conversationDate.toString())
         } else arrayOf(threadId)
-        // MMS DATE is in seconds, SMS DATE is in milliseconds
+        
         val mmsDateArgs = if (archivedConversation != null) {
             arrayOf(threadId, (archivedConversation.conversationDate / 1000).toString())
         } else arrayOf(threadId)
 
-        // Query SMS and MMS separately — this is reliable across all devices.
+        
         val smsItems = context.contentResolver.queryCursor(
             smsUri,
             getProjection(),
@@ -248,7 +248,7 @@ object SmsHelper {
 
         val allItems = smsItems.plus(mmsItems).sortedByDescending { it.date }
 
-        // Fill empty addresses from canonical_addresses (e.g., for failed SMS type=5)
+        
         val canonicalAddress = if (allItems.any { it.address.isEmpty() }) {
             getCanonicalAddressForThread(context, threadId)
         } else ""
@@ -409,14 +409,14 @@ object SmsHelper {
 
         val where = buildWhere(conditions, archivedRecords)
 
-        // Count SMS (date filter for archived conversations applied in buildWhereAsync)
+        
         val smsCount = queryCount(context, smsUri, where.toSelection(), where.args.toTypedArray())
 
-        // Count MMS (only when no text/ids filter which are SMS-specific)
+        
         val mmsCount = if (query.isEmpty() || (!query.contains("text") && !query.contains("ids"))) {
             val typeCondition = conditions.firstOrNull { it.name == "type" }
             if (typeCondition != null) {
-                // Map SMS type to MMS msg_box (1=inbox, 2=sent, 3=drafts, 4=outbox)
+                
                 queryCount(context, mmsUri, "${Telephony.Mms.MESSAGE_BOX} = ? AND $MMS_CONTENT_FILTER", arrayOf(typeCondition.value))
             } else {
                 queryCount(context, mmsUri, MMS_CONTENT_FILTER, null)

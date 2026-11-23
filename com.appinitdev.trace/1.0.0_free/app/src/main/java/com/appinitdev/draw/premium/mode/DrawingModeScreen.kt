@@ -5,11 +5,11 @@ fun DrawingModeScreen(
     onModeSelected: (startWithCameraOn: Boolean, useGridByDefault: Boolean, useSketchByDefault: Boolean) -> Unit,
     onBack: () -> Unit
 ) {
-    var selectedModeIndex by remember { mutableIntStateOf(0) } // 0: Cámara, 1: Pantalla, 2: Cuadrícula, 3: Boceto
+    var selectedModeIndex by remember { mutableIntStateOf(0) } 
     var modalData by remember { mutableStateOf<ModeModalData?>(null) }
     val activeColor = Color(0xFFFF4081)
 
-    // Modal para ver imagen grande
+    
     modalData?.let { data ->
         AlertDialog(
             onDismissRequest = { modalData = null },
@@ -93,7 +93,7 @@ fun DrawingModeScreen(
                 .padding(horizontal = 24.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // --- HEADER ---
+            
             Text(
                 text = stringResource(R.string.seleccionar_el_modo_de_dibujo),
                 style = MaterialTheme.typography.headlineMedium,
@@ -104,7 +104,7 @@ fun DrawingModeScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // --- CARDS CONTAINER ---
+            
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -180,7 +180,7 @@ fun DrawingModeScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // --- CTA BUTTON ---
+            
             Button(
                 onClick = { 
                     when(selectedModeIndex) {
@@ -239,7 +239,7 @@ fun ModernModeCard(
             ),
         shape = RoundedCornerShape(24.dp),
         color = backgroundColor,
-      //  shadowElevation = 2.dp
+      
     ) {
         Row(
             modifier = Modifier
@@ -247,7 +247,7 @@ fun ModernModeCard(
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Preview Image
+            
             Box(
                 modifier = Modifier
                     .size(130.dp)
@@ -275,7 +275,7 @@ fun ModernModeCard(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Text Content
+            
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.Center

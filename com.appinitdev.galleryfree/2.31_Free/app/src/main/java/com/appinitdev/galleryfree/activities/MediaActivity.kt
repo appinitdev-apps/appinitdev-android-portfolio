@@ -63,7 +63,7 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
         updateMaterialActivityViews(
             mainCoordinatorLayout = binding.mediaCoordinator,
             nestedView = binding.mediaGrid,
-            useTransparentNavigation = false,//!config.scrollHorizontally,
+            useTransparentNavigation = false,
             useTopSearchMenu = false
         )
 
@@ -73,7 +73,7 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                 view.paddingLeft,
                 view.paddingTop,
                 view.paddingRight,
-                systemBars.bottom // 👈 respeta la barra de navegación
+                systemBars.bottom 
             )
             insets
         }
@@ -97,8 +97,8 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                 if (config.showAll) {
                     appLockManager.lock()
                 }
-                // Si quieres permitir el comportamiento normal de "volver"
-                // después de cerrar o bloquear:
+                
+                
                 isEnabled = false
                 onBackPressedDispatcher.onBackPressed()
             }
@@ -164,7 +164,7 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
         binding.mediaEmptyTextPlaceholder2.setTextColor(getProperPrimaryColor())
         binding.mediaEmptyTextPlaceholder2.bringToFront()
 
-        // do not refresh Random sorted files after opening a fullscreen image and going Back
+        
         val isRandomSorting = config.getFolderSorting(mPath) and SORT_BY_RANDOM != 0
         if (mMedia.isEmpty() || !isRandomSorting || (isRandomSorting && !mWasFullscreenViewOpen)) {
             if (shouldSkipAuthentication()) {
@@ -220,17 +220,17 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
         mTempShowHiddenHandler.removeCallbacksAndMessages(null)
     }
 
-//    override fun onBackPressed() {
-//        if (binding.mediaMenu.isSearchOpen) {
-//            binding.mediaMenu.closeSearch()
-//        } else {
-//            if (config.showAll) {
-//                appLockManager.lock()
-//            }
-//
-//            super.onBackPressed()
-//        }
-//    }
+
+
+
+
+
+
+
+
+
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         if (requestCode == REQUEST_EDIT_IMAGE) {
@@ -609,7 +609,7 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
                 try {
                     gotMedia(newMedia, false)
 
-                    // remove cached files that are no longer valid for whatever reason
+                    
                     val newPaths = newMedia.mapNotNull { it as? Medium }.map { it.path }
                     oldMedia
                         .mapNotNull { it as? Medium }

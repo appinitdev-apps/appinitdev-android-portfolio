@@ -1,31 +1,31 @@
 
-/**
- * Abstract base [Fragment] that presents content as a centered dialog card while
- * supporting the same morph (shared-element container transform) animation used by
- * [com.appinitdev.musicpro.decorations.views.SharedScrollViewPopup].
- *
- * Unlike [ScopedBottomSheetFragment], this class is a plain [Fragment] added to
- * [R.id.app_container] at the activity level, which means the full Fragment
- * lifecycle — including [androidx.lifecycle.ViewModel] scoping via
- * [androidx.fragment.app.viewModels] — is available to subclasses.
- *
- * Subclasses must:
- * - Implement [onCreateDialogContentView] to supply their themed card view.
- * - Override [onDialogViewCreated] to bind data and observe ViewModels.
- * - Call [show] with the activity-level [FragmentManager] (not [Fragment.getChildFragmentManager]).
- *
- * Optionally set [anchorView] before calling [show] to enable the morph-in animation.
- * If [anchorView] is null or detached, the card simply fades in without morphing.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 abstract class ScopedMorphDialogFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    /**
-     * The view this dialog morphs from and collapses back to on dismiss.
-     * Must be set before [show] is called. If null or detached from the window,
-     * the dialog opens without a morph animation.
-     */
+     
+
+
+
+
     var anchorView: View? = null
 
     private var dialogContentView: View? = null
@@ -46,37 +46,37 @@ abstract class ScopedMorphDialogFragment : Fragment(), SharedPreferences.OnShare
         private val INTERPOLATOR = DecelerateInterpolator(3F)
     }
 
-    /**
-     * Called to supply the content view that becomes the dialog card.
-     *
-     * The returned view should be a themed, rounded-corner container such as
-     * [com.appinitdev.musicpro.decorations.corners.DynamicCornerLinearLayout] so that the
-     * morph animation transitions cleanly between the anchor shape and the card shape.
-     *
-     * The base class handles positioning, transition-name tagging, and the wiggle
-     * touch listener — subclasses only need to inflate and return their layout.
-     *
-     * @param inflater The [LayoutInflater] provided by the framework.
-     * @param container The parent [ViewGroup] used only for layout-param generation.
-     * @return The fully-inflated content view for this dialog.
-     */
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
     abstract fun onCreateDialogContentView(inflater: LayoutInflater, container: ViewGroup): View
 
-    /**
-     * Called immediately after the full view hierarchy is ready.
-     * This is the correct place for subclasses to look up child views,
-     * start [androidx.lifecycle.ViewModel] observations, and wire click listeners.
-     *
-     * @param view The root view returned by [onCreateView].
-     * @param savedInstanceState Saved state bundle, if any.
-     */
+     
+
+
+
+
+
+
+
     open fun onDialogViewCreated(view: View, savedInstanceState: Bundle?) {}
 
-    /**
-     * Builds the full-screen overlay: a semi-transparent scrim behind the
-     * centered dialog card returned by [onCreateDialogContentView].
-     * Subclasses must NOT override this method; use [onCreateDialogContentView] instead.
-     */
+     
+
+
+
+
     final override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -137,7 +137,7 @@ abstract class ScopedMorphDialogFragment : Fragment(), SharedPreferences.OnShare
         val card = dialogContentView ?: return
         val anchor = anchorView
 
-        // Always animate the scrim in regardless of whether a morph is used.
+        
         scrimView?.animate()
             ?.alpha(1f)
             ?.setInterpolator(INTERPOLATOR)
@@ -145,7 +145,7 @@ abstract class ScopedMorphDialogFragment : Fragment(), SharedPreferences.OnShare
             ?.start()
 
         if (anchor == null || !anchor.isAttachedToWindow) {
-            // No anchor available — simply reveal the card without a morph.
+            
             card.visibility = View.VISIBLE
             return
         }
@@ -153,8 +153,8 @@ abstract class ScopedMorphDialogFragment : Fragment(), SharedPreferences.OnShare
         ViewCompat.setTransitionName(anchor, TRANSITION_NAME)
         val appContainer: ViewGroup = requireActivity().findViewById(R.id.app_container)
 
-        // Wait until the card is fully laid out so MaterialContainerTransform can read the
-        // correct target bounds before the animation begins.
+        
+        
         card.doOnLayout {
             val transform = MaterialContainerTransform().apply {
                 startView = anchor
@@ -169,18 +169,18 @@ abstract class ScopedMorphDialogFragment : Fragment(), SharedPreferences.OnShare
                 interpolator = INTERPOLATOR
             }
 
-            // Capture the before-state first (anchor visible, card invisible),
-            // then flip visibility to trigger the morph.
+            
+            
             TransitionManager.beginDelayedTransition(appContainer, transform)
             anchor.visibility = View.INVISIBLE
             card.visibility = View.VISIBLE
         }
     }
 
-    /**
-     * Dismisses the dialog with a reverse morph animation that collapses the card back
-     * to [anchorView]. If the anchor is unavailable, falls back to [simplyDismiss].
-     */
+     
+
+
+
     fun dismiss() {
         if (isDismissing) return
         isDismissing = true
@@ -235,31 +235,31 @@ abstract class ScopedMorphDialogFragment : Fragment(), SharedPreferences.OnShare
             override fun onTransitionResume(t: Transition) {}
         })
 
-        // Capture the before-state (card visible, anchor invisible), then flip to trigger
-        // the reverse morph toward the anchor's exact on-screen bounds.
+        
+        
         TransitionManager.beginDelayedTransition(appContainer, reverseTransform)
         card.visibility = View.INVISIBLE
         anchor.visibility = View.VISIBLE
     }
 
-    /**
-     * Immediately removes this fragment without playing any morph animation.
-     * The anchor view visibility is restored synchronously.
-     */
+     
+
+
+
     fun simplyDismiss() {
         isDismissing = false
         anchorView?.visibility = View.VISIBLE
         removeFromBackStack()
     }
 
-    /**
-     * Adds this fragment to [R.id.app_container] via [fragmentManager].
-     * Pass the activity-level [FragmentManager] (i.e., [androidx.fragment.app.FragmentActivity.getSupportFragmentManager])
-     * so the overlay renders above all other fragments.
-     *
-     * @param fragmentManager The activity-level [FragmentManager].
-     * @param tag A unique tag used both for deduplication and later lookup.
-     */
+     
+
+
+
+
+
+
+
     fun show(fragmentManager: FragmentManager, tag: String) {
         if (fragmentManager.findFragmentByTag(tag) == null) {
             fragmentManager.beginTransaction()
@@ -270,8 +270,8 @@ abstract class ScopedMorphDialogFragment : Fragment(), SharedPreferences.OnShare
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Defensive restore: if the fragment is torn down before dismiss() completes
-        // (e.g., configuration change or system-initiated removal), make the anchor visible.
+        
+        
         anchorView?.let { anchor ->
             if (anchor.isInvisible) {
                 anchor.visibility = View.VISIBLE

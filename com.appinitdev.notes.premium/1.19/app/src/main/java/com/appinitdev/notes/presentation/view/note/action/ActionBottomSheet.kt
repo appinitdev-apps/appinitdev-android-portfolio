@@ -1,5 +1,5 @@
 
-/** Helper to create [BottomSheetDialogFragment] to display actions. */
+ 
 open class ActionBottomSheet(
     private val actions: Collection<Action>,
     @ColorInt private val color: Int? = null,
@@ -94,7 +94,7 @@ open class ActionBottomSheet(
                 BottomSheetBehavior.from(bottomSheet).apply {
                     state = BottomSheetBehavior.STATE_EXPANDED
                     isHideable = false
-                    // Disable dragging changes to allow nested scroll
+                    
                     setBottomSheetCallback(
                         object : BottomSheetCallback() {
                             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -123,10 +123,10 @@ data class Action(
     val labelResId: Int,
     val drawableResId: Int,
     val showDividerAbove: Boolean = false,
-    /**
-     * On click callback.
-     *
-     * @returns whether or not the BottomSheet should be hidden
-     */
+     
+
+
+
+
     val callback: (actionBottomSheet: ActionBottomSheet) -> Boolean,
 )

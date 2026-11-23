@@ -13,7 +13,7 @@ class OrderActivity : BaseActivity()  {
         }
         if (themePrefValue == 0) { setTheme(R.style.AppTheme) }
         if (themePrefValue == 1) { setTheme(R.style.AppThemeDark) }
-        setContentView(R.layout.activity_order_settings_page) //REMEMBER: Never move any function calls above this
+        setContentView(R.layout.activity_order_settings_page) 
         val dataSet = listOf("Item 1", "Item 2", "Item 3", "Item 4", "Item 5")
         val mAdapter = OrderAdapter(dataSet)
         val mList = findViewById<DragDropSwipeRecyclerView>(R.id.ord_recycler)
@@ -29,7 +29,7 @@ class OrderActivity : BaseActivity()  {
 
     private val onItemDragListener = object : OnItemDragListener<String> {
         override fun onItemDragged(previousPosition: Int, newPosition: Int, item: String) {
-            // Handle action of item being dragged from one position to another
+            
         }
 
         override fun onItemDropped(initialPosition: Int, finalPosition: Int, item: String) {

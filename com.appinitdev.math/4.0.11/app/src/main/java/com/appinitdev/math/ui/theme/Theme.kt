@@ -1,5 +1,5 @@
 
-// 1. Pitch Black OLED Scheme
+
 private val OledColorScheme = darkColorScheme(
     primary = Color(0xFF60A5FA),
     onPrimary = Color(0xFF000000),
@@ -13,7 +13,7 @@ private val OledColorScheme = darkColorScheme(
     onSurface = Color(0xFFE6EDF3)
 )
 
-// 2. Electric Blue Scheme
+
 private val ElectricBlueColorScheme = darkColorScheme(
     primary = Color(0xFF3B82F6),
     primaryContainer = Color(0xFF1E3A8A),
@@ -24,7 +24,7 @@ private val ElectricBlueColorScheme = darkColorScheme(
     surfaceVariant = Color(0xFF334155)
 )
 
-// 3. Emerald Green Scheme
+
 private val EmeraldGreenColorScheme = darkColorScheme(
     primary = Color(0xFF10B981),
     primaryContainer = Color(0xFF064E3B),
@@ -35,7 +35,7 @@ private val EmeraldGreenColorScheme = darkColorScheme(
     surfaceVariant = Color(0xFF047857)
 )
 
-// 4. Deep Purple Scheme
+
 private val DeepPurpleColorScheme = darkColorScheme(
     primary = Color(0xFF8B5CF6),
     primaryContainer = Color(0xFF4C1D95),
@@ -46,7 +46,7 @@ private val DeepPurpleColorScheme = darkColorScheme(
     surfaceVariant = Color(0xFF581C87)
 )
 
-// 5. Flame Orange Scheme
+
 private val FlameOrangeColorScheme = darkColorScheme(
     primary = Color(0xFFF59E0B),
     primaryContainer = Color(0xFF78350F),
@@ -57,7 +57,7 @@ private val FlameOrangeColorScheme = darkColorScheme(
     surfaceVariant = Color(0xFF44403C)
 )
 
-// 6. Crimson Red Scheme
+
 private val CrimsonRedColorScheme = darkColorScheme(
     primary = Color(0xFFEF4444),
     primaryContainer = Color(0xFF7F1D1D),
@@ -68,7 +68,7 @@ private val CrimsonRedColorScheme = darkColorScheme(
     surfaceVariant = Color(0xFF450A0A)
 )
 
-// 7. Cyberpunk Pink Scheme
+
 private val CyberpunkPinkColorScheme = darkColorScheme(
     primary = Color(0xFFEC4899),
     primaryContainer = Color(0xFF831843),
@@ -79,7 +79,7 @@ private val CyberpunkPinkColorScheme = darkColorScheme(
     surfaceVariant = Color(0xFF500724)
 )
 
-// 8. Cyan Teal Scheme
+
 private val CyanTealColorScheme = darkColorScheme(
     primary = Color(0xFF06B6D4),
     primaryContainer = Color(0xFF134E4A),
@@ -90,7 +90,7 @@ private val CyanTealColorScheme = darkColorScheme(
     surfaceVariant = Color(0xFF0E4A4E)
 )
 
-// 9. Solar Gold Scheme
+
 private val SolarGoldColorScheme = darkColorScheme(
     primary = Color(0xEAEAB308),
     primaryContainer = Color(0xFF713F12),
@@ -101,7 +101,7 @@ private val SolarGoldColorScheme = darkColorScheme(
     surfaceVariant = Color(0xFF42320D)
 )
 
-// 10. Forest Green Scheme
+
 private val ForestGreenColorScheme = darkColorScheme(
     primary = Color(0xFF22C55E),
     primaryContainer = Color(0xFF14532D),
@@ -112,7 +112,7 @@ private val ForestGreenColorScheme = darkColorScheme(
     surfaceVariant = Color(0xFF114723)
 )
 
-// 11. Vintage Sepia Scheme
+
 private val VintageSepiaColorScheme = lightColorScheme(
     primary = Color(0xFF8B4513),
     onPrimary = Color(0xFFFFFFFF),

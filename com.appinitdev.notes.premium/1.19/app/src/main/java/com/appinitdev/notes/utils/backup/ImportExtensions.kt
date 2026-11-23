@@ -1,10 +1,10 @@
 
 private const val TAG = "ImportExtensions"
 
-/**
- * We only import the images/files referenced in notes. e.g If someone has added garbage to the ZIP
- * file, like a 100 MB image, ignore it.
- */
+ 
+
+
+
 suspend fun ContextWrapper.importZip(
     zipFileUri: Uri,
     databaseFolder: File,
@@ -296,11 +296,11 @@ suspend fun Context.importFile(
         val displayName = document.name ?: getString(R.string.unknown_name)
         try {
 
-            /*
-            If we have reached this point, an SD card (emulated or real) exists and externalRoot
-            is not null. externalRoot.exists() can be false if the folder `Images` has been deleted after
-            the previous line, but externalRoot itself can't be null
-            */
+             
+
+
+
+
             val temp = File(directory, "Temp")
 
             val inputStream = requireNotNull(contentResolver.openInputStream(uri))
@@ -324,8 +324,8 @@ suspend fun Context.importFile(
                                     null,
                                 )
                             } else {
-                                // I don't expect this error to ever happen but just in
-                                // case
+                                
+                                
                                 return@withContext Pair(
                                     null,
                                     FileError(displayName, getString(errorWhileRenaming), fileType),
@@ -357,7 +357,7 @@ suspend fun Context.importFile(
                             null,
                         )
                     } else {
-                        // I don't expect this error to ever happen but just in case
+                        
                         return@withContext Pair(
                             null,
                             FileError(displayName, getString(errorWhileRenaming), fileType),
@@ -399,18 +399,18 @@ suspend fun ContextWrapper.importImage(
 
 suspend fun ContextWrapper.importAudio(original: File, deleteOriginalFile: Boolean): Audio {
     return withContext(Dispatchers.IO) {
-        /*
-        Regenerate because the directory may have been deleted between the time of activity creation
-        and audio recording
-        */
+         
+
+
+
         val audioRoot = getExternalAudioDirectory()
         requireNotNull(audioRoot) { "audioRoot is null" }
 
-        /*
-        If we have reached this point, an SD card (emulated or real) exists and audioRoot
-        is not null. audioRoot.exists() can be false if the folder `Audio` has been deleted after
-        the previous line, but audioRoot itself can't be null
-        */
+         
+
+
+
+
         val name = "${UUID.randomUUID()}.m4a"
         val final = File(audioRoot, name)
         val input = FileInputStream(original)

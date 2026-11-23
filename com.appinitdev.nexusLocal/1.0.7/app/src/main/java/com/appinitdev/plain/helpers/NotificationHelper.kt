@@ -121,8 +121,8 @@ object NotificationHelper {
                 },
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
             )
-        // Android 14+ allows FGS notifications to be swiped away (OS-enforced policy).
-        // When dismissed, the deleteIntent restarts onStartCommand to re-post the notification.
+        
+        
         val repostPendingIntent =
             PendingIntent.getBroadcast(
                 context,
@@ -146,7 +146,7 @@ object NotificationHelper {
             setOngoing(true)
             setDeleteIntent(repostPendingIntent)
             if (isSPlus()) {
-                // https://issuetracker.google.com/issues/229000935
+                
                 foregroundServiceBehavior = NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
             }
             setContentIntent(createContentIntent(context))

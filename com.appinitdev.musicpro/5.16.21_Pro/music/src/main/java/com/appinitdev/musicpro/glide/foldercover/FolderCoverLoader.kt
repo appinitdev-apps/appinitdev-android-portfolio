@@ -1,10 +1,10 @@
 
-/**
- * Glide [ModelLoader] for [Folder] → [Bitmap] that wires a [Context] into
- * [FolderCoverFetcher] so it can query the MediaStore album art cache.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
 class FolderCoverLoader(private val context: Context) : ModelLoader<Folder, Bitmap> {
     override fun buildLoadData(model: Folder, width: Int, height: Int, options: Options): ModelLoader.LoadData<Bitmap?>? {
         return ModelLoader.LoadData(ObjectKey(model), FolderCoverFetcher(context, model))

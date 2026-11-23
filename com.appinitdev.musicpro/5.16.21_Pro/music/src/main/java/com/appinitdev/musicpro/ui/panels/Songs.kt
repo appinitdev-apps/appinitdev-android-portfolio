@@ -59,10 +59,10 @@ class Songs : BasePanelFragment() {
         }
     }
 
-    /**
-     * Updates the songs list and header information.
-     * This method is called whenever the Flow emits new data.
-     */
+     
+
+
+
     private fun updateSongsList(songs: List<Audio>) {
         if (adapterSongs == null) {
             adapterSongs = AdapterSongs(songs)

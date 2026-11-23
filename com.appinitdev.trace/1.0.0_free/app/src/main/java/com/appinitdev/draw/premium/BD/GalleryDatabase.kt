@@ -1,12 +1,12 @@
 
-// 1. Entidad de la Base de Datos
+
 @Entity(
     tableName = "my_gallery",
     indices = [Index(value = ["localPath"], unique = true)]
 )
 data class GalleryImage(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val localPath: String, // Ruta del archivo guardado internamente en la app
+    val localPath: String, 
     val addedAt: Long = System.currentTimeMillis()
 )
 
@@ -16,17 +16,17 @@ data class GalleryImage(
 )
 data class CapturedWork(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val workPath: String, // Ruta de la foto final tomada (Cámara + Dibujo)
-    val templatePath: String? = null, // Opcional: El dibujo que se usó
+    val workPath: String, 
+    val templatePath: String? = null, 
     val addedAt: Long = System.currentTimeMillis(),
-    val isTimeLapse: Boolean = false, // NUEVO v4
-    val sessionId: String? = null     // NUEVO v4 (UUID para agrupar fotos de una misma sesión)
+    val isTimeLapse: Boolean = false, 
+    val sessionId: String? = null     
 )
 
-// 2. DAO (Data Access Object)
+
 @Dao
 interface GalleryDao {
-    // --- Lógica para Plantillas ---
+    
     @Query("SELECT * FROM my_gallery ORDER BY addedAt DESC")
     fun getAllImages(): Flow<List<GalleryImage>>
 
@@ -39,7 +39,7 @@ interface GalleryDao {
     @Delete
     suspend fun deleteImage(image: GalleryImage)
 
-    // --- Lógica para Fotos Capturadas (NUEVO) ---
+    
     @Query("SELECT * FROM captured_works ORDER BY addedAt DESC")
     fun getAllCapturedWorks(): Flow<List<CapturedWork>>
     
@@ -53,7 +53,7 @@ interface GalleryDao {
     suspend fun deleteCapturedWork(work: CapturedWork)
 }
 
-// 3. Clase Base de Datos
+
 @Database(entities = [GalleryImage::class, CapturedWork::class], version = 4, exportSchema = false)
 abstract class GalleryDatabase : RoomDatabase() {
     abstract fun galleryDao(): GalleryDao

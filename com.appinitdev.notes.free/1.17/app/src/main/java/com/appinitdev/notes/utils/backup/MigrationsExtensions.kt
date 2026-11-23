@@ -1,5 +1,5 @@
 
-// Backwards compatibility from v3.2 to v3.3
+
 
 fun Context.clearAllLabels() = getLabelsPreferences().edit().clear().commit()
 

@@ -17,7 +17,7 @@ class LyricsMenu : MediaBottomDialogFragment() {
         updateLyricsAlignmentState()
         audio = MediaPlaybackManager.getCurrentSong()
 
-        // Restore the auto-download switch to whatever the user last chose.
+        
         binding.autoDownloadToggle.isChecked = LyricsPreferences.isAutoDownloadLyrics()
         binding.autoDownloadToggle.setOnCheckedChangeListener { _, isChecked ->
             LyricsPreferences.setAutoDownloadLyrics(isChecked)

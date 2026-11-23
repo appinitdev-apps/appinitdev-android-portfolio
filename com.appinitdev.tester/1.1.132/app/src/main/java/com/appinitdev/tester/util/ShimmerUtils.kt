@@ -98,7 +98,7 @@ fun ShimmerUserProfileCard() {
                 .padding(20.dp)
                 .fillMaxWidth()
         ) {
-            // Cabecera: Avatar circular + Nombre y subtexto
+            
             Row(
                 verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -130,7 +130,7 @@ fun ShimmerUserProfileCard() {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Estadísticas en fila: Nivel, Puntos, Racha
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)

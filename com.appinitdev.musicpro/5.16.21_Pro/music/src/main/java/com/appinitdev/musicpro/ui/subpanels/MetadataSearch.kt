@@ -1,17 +1,17 @@
 
-/**
- * Panel that lets the user look up metadata for a track using the LrcLib API and
- * pick one result to auto-fill the metadata editor's fields.
- *
- * When opened, the search box is pre-filled with the track's title and artist so the
- * most relevant results appear immediately. The user can edit the keyword and press
- * the search button (or the IME Search key) to run a custom query.
- *
- * Tapping a result packages it into a [MetadataSearchResult] and delivers it back to
- * [MetadataEditor] via the Fragment Result API, then navigates back automatically.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 @AndroidEntryPoint
 class MetadataSearch : MediaFragment() {
 
@@ -20,9 +20,9 @@ class MetadataSearch : MediaFragment() {
 
     private var adapter: AdapterMetadataSearch? = null
 
-    /**
-     * Guards against the [TextWatcher] firing when text is set programmatically.
-     */
+     
+
+
     private var isProgrammaticTextSet = false
 
     private val audio: Audio by lazy {
@@ -146,18 +146,18 @@ class MetadataSearch : MediaFragment() {
     private fun ensureAdapterCreated() {
         if (adapter == null) {
             adapter = AdapterMetadataSearch { recording ->
-                // Pull the credited artist names into one display string.
+                
                 val artist = recording.artistCredit
                     ?.mapNotNull { it.name?.takeIf { n -> n.isNotBlank() } }
                     ?.joinToString(", ")
                     .orEmpty()
 
-                // Use the first linked release for album and year info.
+                
                 val firstRelease = recording.releases?.firstOrNull()
                 val album = firstRelease?.title?.takeIf { it.isNotBlank() }
                 val year = firstRelease?.date?.take(4)?.takeIf { it.isNotBlank() }
 
-                // Pick the highest-voted genre tag if the recording has any.
+                
                 val genre = recording.tags
                     ?.maxByOrNull { it.count }
                     ?.name
@@ -183,21 +183,21 @@ class MetadataSearch : MediaFragment() {
     companion object {
         const val TAG = "MetadataSearch"
 
-        /**
-         * Fragment Result API key that [MetadataEditor] listens on. The bundle always
-         * contains a [MetadataSearchResult] under [KEY_RESULT].
-         */
+         
+
+
+
         const val REQUEST_KEY_METADATA_RESULT = "metadata_search_result"
 
-        /** Bundle key for the [MetadataSearchResult] parcelable inside the result bundle. */
+         
         const val KEY_RESULT = "result"
 
-        /**
-         * Creates a new [MetadataSearch] fragment pre-loaded with the given [audio]'s
-         * title and artist so the first search runs automatically on open.
-         *
-         * @param audio The track whose metadata is being edited.
-         */
+         
+
+
+
+
+
         fun newInstance(audio: Audio): MetadataSearch {
             return MetadataSearch().apply {
                 arguments = Bundle().apply {

@@ -42,7 +42,7 @@ class ProductRepository @Inject constructor(
         return BigDecimal.valueOf(value)
     }
 
-    // Valor de inventario por producto
+    
     suspend fun getProductsInventoryValue(): List<ProductWithValue> {
         return productDao.getProductsInventoryValue()
     }

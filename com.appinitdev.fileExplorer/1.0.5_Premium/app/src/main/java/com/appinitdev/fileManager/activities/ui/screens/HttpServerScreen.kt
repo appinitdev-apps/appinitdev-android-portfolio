@@ -4,12 +4,12 @@
 fun HttpServerScreen(onBack: () -> Unit) {
     val context = LocalContext.current
 
-    // Estados Reactivos de la UI vinculados al Backend de HTTP
+    
     var isServerRunning by remember { mutableStateOf(HttpService.isRunning) }
     var ipAddress by remember { mutableStateOf(HttpService.obtenerIpLocal(context)) }
     var currentPort by remember { mutableStateOf(HttpService.puertoActual) }
 
-    // Estado de Permisos de Almacenamiento y Notificaciones
+    
     var hasStoragePermission by remember {
         mutableStateOf(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -44,7 +44,7 @@ fun HttpServerScreen(onBack: () -> Unit) {
         }
     }
 
-    // Animación de colores de estado según Material Design 3
+    
     val statusColor by animateColorAsState(
         targetValue = when {
             !hasStoragePermission || !hasNotificationPermission -> MaterialTheme.colorScheme.tertiary
@@ -60,11 +60,11 @@ fun HttpServerScreen(onBack: () -> Unit) {
     )
 
 
-    // Animación de respiración (escala) para el icono central cuando está conectado
+    
     val infiniteTransition = rememberInfiniteTransition(label = "IconAnimation")
     val iconScale by infiniteTransition.animateFloat(
         initialValue = 1f,
-        targetValue = if (isServerRunning) 1.2f else 1f, // Agranda un 20% si está activo
+        targetValue = if (isServerRunning) 1.2f else 1f, 
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 1200, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
@@ -72,7 +72,7 @@ fun HttpServerScreen(onBack: () -> Unit) {
         label = "IconScale"
     )
 
-// Opcional: Animación de parpadeo (alfa) para que brille
+
     val iconAlpha by infiniteTransition.animateFloat(
         initialValue = 0.6f,
         targetValue = if (isServerRunning) 1f else 1f,
@@ -109,7 +109,7 @@ fun HttpServerScreen(onBack: () -> Unit) {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
 
-            // ================= VISUALIZADOR CENTRAL DE ESTADO =================
+            
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(1f),
@@ -132,13 +132,13 @@ fun HttpServerScreen(onBack: () -> Unit) {
                         Icon(
                             imageVector = when {
                                 !hasStoragePermission || !hasNotificationPermission -> Icons.Default.NewReleases
-                                isServerRunning -> Icons.Default.Language // Icono Web/Navegador global
+                                isServerRunning -> Icons.Default.Language 
                                 else -> Icons.Default.Lock
                             },
                             contentDescription = null,
                             tint = statusColor,
                             modifier = Modifier.size(56.dp).graphicsLayer {
-                                // Aplicamos la animación solo si el servidor está corriendo
+                                
                                 if (isServerRunning) {
                                     scaleX = iconScale
                                     scaleY = iconScale
@@ -172,7 +172,7 @@ fun HttpServerScreen(onBack: () -> Unit) {
                 )
             }
 
-            // ================= TARJETA DE CONEXIÓN HTTP PARA EL NAVEGADOR =================
+            
             if (isServerRunning) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -216,7 +216,7 @@ fun HttpServerScreen(onBack: () -> Unit) {
                 Spacer(modifier = Modifier.height(28.dp))
             }
 
-            // ================= BOTÓN DE ACCIÓN (CONECTAR / DESCONECTAR) =================
+            
             Button(
                 onClick = {
                     if (!hasNotificationPermission && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -233,10 +233,10 @@ fun HttpServerScreen(onBack: () -> Unit) {
 
                     val intent = Intent(context, HttpService::class.java)
                     if (!isServerRunning) {
-                        // Lanzamos el servicio HTTP en primer plano
+                        
                         context.startForegroundService(intent)
 
-                        // Sincronizamos los estados locales de Compose inmediatamente
+                        
                         isServerRunning = true
                         currentPort = HttpService.puertoActual
                         ipAddress = HttpService.obtenerIpLocal(context)

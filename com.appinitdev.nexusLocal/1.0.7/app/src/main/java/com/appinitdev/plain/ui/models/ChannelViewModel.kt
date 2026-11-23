@@ -38,8 +38,8 @@ class ChannelViewModel : ViewModel() {
 
     fun renameChannel(channelId: String, newName: String, onDone: () -> Unit = {}) {
         viewModelScope.launch(Dispatchers.IO) {
-            // renameChannel throws if the channel is missing — surface the
-            // message but still call onDone so the dialog can dismiss.
+            
+            
             runHandling { ChannelManager.renameChannel(channelId, newName) }
             withContext(Dispatchers.Main) { onDone() }
         }

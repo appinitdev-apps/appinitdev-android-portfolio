@@ -1,7 +1,7 @@
 
 object BookmarkHelper {
 
-    // ─── Bookmark Group CRUD ──────────────────────────────────────────────────
+    
 
     fun getAllGroups(): List<DBookmarkGroup> {
         return AppDatabase.instance.bookmarkGroupDao().getAll()
@@ -27,7 +27,7 @@ object BookmarkHelper {
 
     fun deleteGroup(id: String) {
         AppDatabase.instance.bookmarkGroupDao().delete(setOf(id))
-        // Move all bookmarks in this group to ungrouped
+        
         val bookmarks = AppDatabase.instance.bookmarkDao().getByGroupId(id)
         bookmarks.forEach { b ->
             b.groupId = ""
@@ -36,7 +36,7 @@ object BookmarkHelper {
         }
     }
 
-    // ─── Bookmark CRUD ────────────────────────────────────────────────────────
+    
 
     fun getAll(): List<DBookmark> {
         return AppDatabase.instance.bookmarkDao().getAll()
@@ -46,10 +46,10 @@ object BookmarkHelper {
         return AppDatabase.instance.bookmarkDao().getById(id)
     }
 
-    /**
-     * Batch-add bookmarks from a list of URLs.
-     * Returns the newly created bookmarks so callers can trigger metadata fetch.
-     */
+     
+
+
+
     fun addBookmarks(urls: List<String>, groupId: String = ""): List<DBookmark> {
         val created = mutableListOf<DBookmark>()
         urls.forEach { url ->
@@ -57,7 +57,7 @@ object BookmarkHelper {
             if (trimmed.isEmpty()) return@forEach
             val bookmark = DBookmark().apply {
                 this.url = trimmed
-                this.title = trimmed          // placeholder until metadata arrives
+                this.title = trimmed          
                 this.groupId = groupId
             }
             AppDatabase.instance.bookmarkDao().insert(bookmark)
@@ -92,13 +92,13 @@ object BookmarkHelper {
         AppDatabase.instance.bookmarkDao().update(bookmark)
     }
 
-    // ─── Metadata fetching ────────────────────────────────────────────────────
+    
 
-    /**
-     * Fetch title and favicon for a single bookmark (called via FetchBookmarkMetadataEvent).
-     * Returns the updated DBookmark if any field changed so the caller can push a WebSocket event,
-     * or null if nothing changed.
-     */
+     
+
+
+
+
     suspend fun fetchAndUpdateSingle(context: Context, bookmarkId: String): DBookmark? {
         val b = AppDatabase.instance.bookmarkDao().getById(bookmarkId) ?: return null
         return try {
@@ -120,10 +120,10 @@ object BookmarkHelper {
         }
     }
 
-    /**
-     * Fetch title and favicon for each newly created bookmark.
-     * Mirrors the pattern used in FetchLinkPreviewsEvent / ChatHelper.
-     */
+     
+
+
+
     suspend fun fetchMetadataAsync(context: Context, bookmarkIds: List<String>) {
         if (bookmarkIds.isEmpty()) return
         try {
@@ -144,7 +144,7 @@ object BookmarkHelper {
         }
     }
 
-    /** Returns Pair(title, localFaviconPath) */
+     
     private suspend fun fetchPageMeta(context: Context, url: String): Pair<String?, String?> {
         return withIO {
             try {
@@ -174,7 +174,7 @@ object BookmarkHelper {
     }
 
     private fun extractTitle(html: String): String? {
-        // og:title takes priority
+        
         val ogTitle = Regex("<meta[^>]+property=[\"']og:title[\"'][^>]+content=[\"']([^\"']+)[\"']", RegexOption.IGNORE_CASE).find(html)
         if (ogTitle != null) return ogTitle.groupValues[1].trim().take(200)
         val tag = Regex("<title[^>]*>([^<]+)</title>", RegexOption.IGNORE_CASE).find(html)
@@ -250,7 +250,7 @@ object BookmarkHelper {
                 File(dir.parent ?: return, rel).delete()
             }
         } catch (e: Exception) {
-            // ignore
+            
         }
     }
 

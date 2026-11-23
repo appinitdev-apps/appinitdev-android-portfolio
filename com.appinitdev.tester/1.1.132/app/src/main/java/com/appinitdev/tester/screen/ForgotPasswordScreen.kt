@@ -4,7 +4,7 @@ fun ForgotPasswordScreen(navController: NavController, viewModel: AuthViewModel)
     var email by remember { mutableStateOf("") }
     val uiState by viewModel.uiState.collectAsState()
 
-    // Variable local para saber si se envió el correo exitosamente y mostrar mensaje
+    
     var showSuccessMessage by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -14,7 +14,7 @@ fun ForgotPasswordScreen(navController: NavController, viewModel: AuthViewModel)
     LaunchedEffect(uiState) {
         if (uiState is AuthUiState.Success) {
             showSuccessMessage = true
-            viewModel.clearState() // Limpiamos para evitar re-disparos
+            viewModel.clearState() 
         }
     }
 
@@ -81,11 +81,11 @@ fun ForgotPasswordScreen(navController: NavController, viewModel: AuthViewModel)
             Text(stringResource(R.string.cancelar_volver))
         }
 
-        // Manejo de Mensajes (Éxito o Error)
+        
         if (showSuccessMessage) {
             Text(
                 text = stringResource(R.string.correo_enviado_revisa_tu_bandeja_de_entrada_revisa_la_seccionde_spam),
-                color = Color(0xFF4CAF50), // Verde
+                color = Color(0xFF4CAF50), 
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 16.dp)
             )

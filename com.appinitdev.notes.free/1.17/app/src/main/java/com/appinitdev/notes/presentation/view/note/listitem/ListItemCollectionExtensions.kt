@@ -123,7 +123,7 @@ fun SortedList<ListItem>.removeWithChildren(item: ListItem) {
 fun SortedList<ListItem>.setItems(list: MutableList<ListItem>) {
     clear()
     val (children, parents) = list.partition { it.isChild }
-    //  Need to use replaceAll for auto-sorting checked items
+    
     replaceAll(parents.toTypedArray(), false)
     addAll(children.toTypedArray(), false)
 }
@@ -172,7 +172,7 @@ private fun initChildren(list: List<ListItem>) {
     }
 }
 
-/** Makes sure every [ListItem.order] is valid and correct */
+ 
 private fun initOrders(list: List<ListItem>): Boolean {
     var orders = list.map { it.order }.toMutableList()
     var invalidOrderFound = false
@@ -190,7 +190,7 @@ private fun initOrders(list: List<ListItem>): Boolean {
 }
 
 private fun shiftAllOrdersAfterItem(list: List<ListItem>, item: ListItem) {
-    // Move all orders after the item to ensure no duplicate orders
+    
     val sortedByOrders = list.sortedBy { it.order }
     val position = sortedByOrders.indexOfFirst { it.id == item.id }
     for (i in position + 1..sortedByOrders.lastIndex) {
@@ -262,11 +262,11 @@ fun MutableList<ListItem>.deleteCheckedItems(): Set<Int> {
         .toSet()
 }
 
-/**
- * Find correct parent for `childPosition` and update it's `children`.
- *
- * @return Correct parent
- */
+ 
+
+
+
+
 fun List<ListItem>.refreshParent(childPosition: Int): ListItem? {
     val item = this[childPosition]
     findParent(item)?.let { (pos, parent) -> parent.children.removeWithChildren(item) }

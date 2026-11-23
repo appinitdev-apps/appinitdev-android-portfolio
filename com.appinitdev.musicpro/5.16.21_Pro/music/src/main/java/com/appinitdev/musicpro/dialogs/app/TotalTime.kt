@@ -22,21 +22,21 @@ class TotalTime : ScopedBottomSheetFragment() {
         }
     }
 
-    /**
-     * Converts milliseconds into a clean, macro-level readable string.
-     * Example: "3 days 7 hours" or "2 hours 15 mins"
-     */
-    /**
-     * Converts milliseconds into an exact localized string.
-     * Example: "3d 7h 16m 44s" or "3 days 7 hours 16 mins 44 secs"
-     */
+     
+
+
+
+     
+
+
+
     fun Long.toLocalizedExactDuration(): String {
         val days = TimeUnit.MILLISECONDS.toDays(this)
         val hours = TimeUnit.MILLISECONDS.toHours(this) % 24
         val minutes = TimeUnit.MILLISECONDS.toMinutes(this) % 60
         val seconds = TimeUnit.MILLISECONDS.toSeconds(this) % 60
 
-        // FormatWidth.NARROW gives "3d", FormatWidth.SHORT gives "3 days" or "3 hrs"
+        
         val formatter = MeasureFormat.getInstance(Locale.getDefault(), MeasureFormat.FormatWidth.WIDE)
         val parts = mutableListOf<String>()
 
@@ -44,7 +44,7 @@ class TotalTime : ScopedBottomSheetFragment() {
         if (hours > 0) parts.add(formatter.format(Measure(hours, MeasureUnit.HOUR)))
         if (minutes > 0) parts.add(formatter.format(Measure(minutes, MeasureUnit.MINUTE)))
 
-        // Always add seconds if it's the only unit we have, or if we want absolute precision
+        
         if (seconds > 0 || parts.isEmpty()) {
             parts.add(formatter.format(Measure(seconds, MeasureUnit.SECOND)))
         }

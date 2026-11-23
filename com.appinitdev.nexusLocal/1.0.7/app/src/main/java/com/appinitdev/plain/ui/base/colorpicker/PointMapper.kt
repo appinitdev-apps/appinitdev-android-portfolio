@@ -1,7 +1,7 @@
 
-/**
- * PointMapper calculates correct coordinates corresponding to bitmap ratio and size.
- */
+ 
+
+
 internal object PointMapper {
 
   internal fun getColorPoint(controller: ColorPickerController, point: PointF): PointF {

@@ -44,7 +44,7 @@ class MathUserDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         onCreate(db)
     }
 
-    // --- FLASHCARD CRUD ---
+    
     fun insertFlashcard(card: Flashcard): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
@@ -108,7 +108,7 @@ class MathUserDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         return list
     }
 
-    // --- GLOSSARY CRUD ---
+    
     fun insertGlossaryTerm(term: SymbolItem): Long {
         val db = writableDatabase
         val values = ContentValues().apply {

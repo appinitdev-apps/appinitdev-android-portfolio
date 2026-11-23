@@ -17,7 +17,7 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
             val barcode = result.data?.getStringExtra(BarcodeScannerActivity.EXTRA_BARCODE_RESULT)
             if (!barcode.isNullOrEmpty()) {
                 Log.e("codelab", barcode)
-                // 2. Llama al ViewModel para manejar el código de barras
+                
                 viewModelPOS.findProductByBarcode(barcode)
             }
         }
@@ -39,8 +39,8 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                         badge = {
                             if ((lowStockCount+outOfStockCount) > 0) {
                                 Badge(
-                                    containerColor = MaterialTheme.colorScheme.primary,  // 👈 color de fondo
-                                    contentColor = MaterialTheme.colorScheme.onPrimary   // 👈 color del texto
+                                    containerColor = MaterialTheme.colorScheme.primary,  
+                                    contentColor = MaterialTheme.colorScheme.onPrimary   
                                 ) {
                                     Text((lowStockCount+outOfStockCount).toString())
                                 }
@@ -60,8 +60,8 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
                         badge = {
                             if (itemCount > 0) {
                                 Badge(
-                                    containerColor = MaterialTheme.colorScheme.primary,  // 👈 color de fondo
-                                    contentColor = MaterialTheme.colorScheme.onPrimary   // 👈 color del texto
+                                    containerColor = MaterialTheme.colorScheme.primary,  
+                                    contentColor = MaterialTheme.colorScheme.onPrimary   
                                 ) {
                                     Text(itemCount.toString())
                                 }
@@ -131,7 +131,7 @@ fun MainNavigation(navController: NavHostController = rememberNavController()) {
 
             composable("pos") {
                 POSScreenCompose(
-                    viewModel = viewModelPOS,//hiltViewModel(),
+                    viewModel = viewModelPOS,
                     onScanBarcode = startBarcodeScanner,
                     onProcessPayment = { result ->
                         viewModelPOS.processTransaction(

@@ -55,11 +55,11 @@ class ScreenMirrorService : LifecycleService() {
                 LocaleHelper.getString(Res.string.screen_mirror_service_is_running),
             )
 
-        // On AOSP/Pixel: the consent dialog already sets the project_media AppOp, so
-        // startForeground succeeds immediately and we call getMediaProjection() after.
-        // On Android 16 OEM devices (Honor/Oppo/Samsung/Xiaomi): the consent dialog does NOT set
-        // the AppOp, so startForeground throws SecurityException. We recover by calling
-        // getMediaProjection() first (which sets the AppOp) and then retrying startForeground.
+        
+        
+        
+        
+        
         var mMediaProjection: MediaProjection? = null
         try {
             ServiceCompat.startForeground(this, notificationId, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION)
@@ -78,8 +78,8 @@ class ScreenMirrorService : LifecycleService() {
             }
         }
 
-        // AOSP/Pixel path: getMediaProjection must be called AFTER startForeground so the system
-        // can bind it to the running FGS (making it the "current" projection for createVirtualDisplay).
+        
+        
         if (mMediaProjection == null && resultCode == -1 && resultData != null) {
             mMediaProjection = runCatching { mediaProjectionManager.getMediaProjection(resultCode, resultData) }.getOrElse {
                 LogCat.e("screen mirror: getMediaProjection failed: ${it.message}")

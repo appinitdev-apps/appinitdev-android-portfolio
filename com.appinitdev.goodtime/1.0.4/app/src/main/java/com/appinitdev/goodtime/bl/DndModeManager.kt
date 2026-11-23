@@ -19,7 +19,7 @@ class DndModeManager(
                     if (!wasPaused) {
                         maybeEnterDndMode()
                     }
-                } else { // break session
+                } else { 
                     maybeExitDndMode()
                 }
                 wasPaused = false
@@ -34,7 +34,7 @@ class DndModeManager(
                 wasPaused = false
             }
 
-            else -> { // do nothing
+            else -> { 
             }
         }
     }
@@ -50,7 +50,7 @@ class DndModeManager(
                 dndEnabledBeforeStart = wasDndEnabled
                 if (!wasDndEnabled) {
                     withContext(Dispatchers.Main) {
-                        delay(2500) // don't enter immediately to not affect ongoing sounds/vibrations
+                        delay(2500) 
                         notificationManager.toggleDndMode(true)
                     }
                 }

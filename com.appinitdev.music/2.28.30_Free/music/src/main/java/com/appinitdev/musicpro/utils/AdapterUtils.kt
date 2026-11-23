@@ -3,7 +3,7 @@ object AdapterUtils {
     fun TextView.addAudioQualityIcon(audio: Audio) {
         when (audio.audioQuality) {
             Audio.AUDIO_QUALITY_LQ -> {
-                // setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_lq_12dp, 0)
+                
                 setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
             }
             Audio.AUDIO_QUALITY_HQ -> {
@@ -32,18 +32,18 @@ object AdapterUtils {
         }
     }
 
-    /**
-     * Highlights every case-insensitive occurrence of [searchKeyword] inside [textView]
-     * using the current accent color in bold.
-     *
-     * Uses [String.indexOf] for substring scanning instead of regex compilation, which is
-     * significantly faster when called repeatedly inside a RecyclerView adapter.
-     * The [ColorStateList] is created once per call rather than once per match so that
-     * object allocation stays constant regardless of how many occurrences are found.
-     *
-     * @param textView     the view whose current text will be spanned.
-     * @param searchKeyword the substring to highlight; no-op when blank.
-     */
+     
+
+
+
+
+
+
+
+
+
+
+
     fun searchHighlighter(textView: TextView, searchKeyword: String) {
         if (searchKeyword.isBlank()) return
         val original = textView.text.toString()
@@ -67,17 +67,17 @@ object AdapterUtils {
         textView.text = spannable
     }
 
-    /**
-     * Highlights every occurrence of [searchKeyword] inside [textView] using the current
-     * accent color in bold.
-     *
-     * When [ignoreCasing] is `true` the match is case-insensitive. Uses [String.indexOf]
-     * for substring scanning and creates [ColorStateList] once per call rather than per match.
-     *
-     * @param textView      the view whose current text will be spanned.
-     * @param searchKeyword the substring to highlight; no-op when blank.
-     * @param ignoreCasing  whether the match should ignore letter case.
-     */
+     
+
+
+
+
+
+
+
+
+
+
     fun searchHighlighter(textView: TextView, searchKeyword: String, ignoreCasing: Boolean) {
         if (searchKeyword.isBlank()) return
         val original = textView.text.toString()

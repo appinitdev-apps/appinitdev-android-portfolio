@@ -1,7 +1,7 @@
 
 data class NearbyDeviceFoundEvent(val device: DNearbyDevice) : ChannelEvent()
 
-// Pairing events
+
 data class PairingRequestReceivedEvent(val request: DPairingRequest) : ChannelEvent()
 data class PairingSuccessEvent(val deviceId: String, val deviceName: String, val deviceIp: String, val key: String) : ChannelEvent()
 data class PairingFailedEvent(val deviceId: String, val reason: String) : ChannelEvent()
@@ -9,7 +9,7 @@ data class PairingCanceledEvent(val fromId: String) : ChannelEvent()
 
 class FolderKanbanSelectEvent(val data: FolderOption) : ChannelEvent()
 
-// The events raised by the app
+
 class StartHttpServerEvent : ChannelEvent()
 
 class HttpServerStateChangedEvent(val state: HttpServerState) : ChannelEvent()
@@ -41,7 +41,7 @@ data class PeerUpdatedEvent(val peer: DPeer) : ChannelEvent()
 
 data class PeerOnlineStatusChangedEvent(val peerId: String, val online: Boolean) : ChannelEvent()
 
-/** Fired when a channel invite is received from a remote peer. UI shows accept/decline dialog. */
+ 
 data class ChannelInviteReceivedEvent(
     val channelId: String,
     val channelName: String,
@@ -49,7 +49,7 @@ data class ChannelInviteReceivedEvent(
     val ownerPeerName: String,
 ) : ChannelEvent()
 
-/** Fired when channel membership/metadata changes so UI can refresh. */
+ 
 class ChannelUpdatedEvent : ChannelEvent()
 
 class ConfirmToAcceptLoginEvent(
@@ -255,7 +255,7 @@ object AppEvents {
                     is HStartMmsPollingEvent -> {
                         coIO {
                             val context = MainApp.instance
-                            repeat(150) { // 2 s × 150 = 5 minutes max
+                            repeat(150) { 
                                 delay(2000)
                                 val found = context.contentResolver.query(
                                     Uri.parse("content://mms"),

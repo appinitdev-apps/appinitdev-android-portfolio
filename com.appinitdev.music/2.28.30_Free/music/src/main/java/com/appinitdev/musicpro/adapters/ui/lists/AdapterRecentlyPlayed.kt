@@ -1,12 +1,12 @@
 
-/**
- * Recycler adapter for the Recently Played panel. Displays each song's relative last-played
- * time on the tertiary detail line as {@code "Album \u2022 2 minutes ago"}. Uses
- * [RecentlyPlayedPreferences.getGridSize] so the Recently Played layout mode is fully
- * independent from other song panels.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
 class AdapterRecentlyPlayed(initial: List<AudioWithStat>) : FastScrollAdapter<VerticalListViewHolder>() {
 
     private var generalAdapterCallbacks: GeneralAdapterCallbacks? = null
@@ -51,10 +51,10 @@ class AdapterRecentlyPlayed(initial: List<AudioWithStat>) : FastScrollAdapter<Ve
 
     private val songs: List<AudioWithStat> get() = differ.currentList
 
-    /** Extracted [Audio] list used when passing items to media or callback consumers. */
+     
     private val audioList: List<Audio> get() = songs.map { it.audio }
 
-    /** Current layout mode; update this when the preference changes to trigger a view-type refresh. */
+     
     var layoutMode: CommonPreferencesConstants.LayoutMode = RecentlyPlayedPreferences.getGridSize()
 
     init {
@@ -102,22 +102,22 @@ class AdapterRecentlyPlayed(initial: List<AudioWithStat>) : FastScrollAdapter<Ve
         }
     }
 
-    /** Registers the callback that handles click and long-click events on song items. */
+     
     fun setGeneralAdapterCallbacks(callbacks: GeneralAdapterCallbacks) {
         this.generalAdapterCallbacks = callbacks
     }
 
-    /** Submits an updated list, triggering diff calculation on a background thread. */
+     
     fun updateSongs(newSongs: List<AudioWithStat>) {
         differ.submitList(newSongs.toList())
     }
 
-    /**
-     * Builds the combined album + relative-time string for the tertiary detail line.
-     * If the album name is absent the time text is shown on its own.
-     *
-     * @param item the [AudioWithStat] whose tertiary text is being built
-     */
+     
+
+
+
+
+
     private fun buildTertiaryText(item: AudioWithStat): CharSequence {
         val album = item.audio.getProperAlbum().takeIf { it.isNotEmpty() }
         val stat = formatRelativeTime(item.lastPlayed)
@@ -184,12 +184,12 @@ class AdapterRecentlyPlayed(initial: List<AudioWithStat>) : FastScrollAdapter<Ve
     }
 
     companion object {
-        /**
-         * Returns a human-readable relative time string for [timestamp], such as
-         * "2 minutes ago", "Yesterday", "3 weeks ago", or "Last month".
-         *
-         * @param timestamp the epoch-millisecond timestamp to format
-         */
+         
+
+
+
+
+
         fun formatRelativeTime(timestamp: Long): CharSequence {
             return DateUtils.getRelativeTimeSpanString(
                     timestamp,

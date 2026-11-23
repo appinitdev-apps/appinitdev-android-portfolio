@@ -9,7 +9,7 @@ class SongsViewModel @Inject constructor(
     private val _songs = MutableStateFlow<List<Audio>>(emptyList())
     val songs: StateFlow<List<Audio>> = _songs.asStateFlow()
 
-    /** Raw unordered list from the database, kept so we can re-sort without a DB round-trip. */
+     
     private var rawAudioList: List<Audio> = emptyList()
 
     private var loadJob: Job? = null
@@ -58,12 +58,12 @@ class SongsViewModel @Inject constructor(
         when (s) {
             SongsPreferences.SONG_SORT,
             SongsPreferences.SORTING_STYLE -> {
-                // Only the sort order changed — re-sort the cached list, no DB query needed.
+                
                 resort()
             }
             LibraryPreferences.MINIMUM_AUDIO_SIZE,
             LibraryPreferences.MINIMUM_AUDIO_LENGTH -> {
-                // Filter criteria changed — need a fresh query from the database.
+                
                 loadData()
             }
         }

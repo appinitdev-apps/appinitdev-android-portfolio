@@ -44,7 +44,7 @@ class DlnaReceiverViewModel : ViewModel() {
                 val denied = DlnaDeniedSendersPreference.getAsync()
                 when {
                     DlnaAllowedSendersPreference.containsIp(allowed, pending.senderIp) -> {
-                        // Auto-accept: send commands directly without showing dialog
+                        
                         DlnaRendererState.pendingCastRequest.value = null
                         DlnaRendererState.rawPendingCastRequest.value = null
                         val playQueued = DlnaRendererState.pendingPlayQueued.value
@@ -53,12 +53,12 @@ class DlnaReceiverViewModel : ViewModel() {
                         if (playQueued) DlnaRendererState.commandChannel.trySend(DlnaCommand.Play)
                     }
                     DlnaDeniedSendersPreference.containsIp(denied, pending.senderIp) -> {
-                        // Auto-reject: silently discard, no dialog shown
+                        
                         DlnaRendererState.rawPendingCastRequest.value = null
                         DlnaRendererState.pendingPlayQueued.value = false
                     }
                     else -> {
-                        // Unknown sender: promote to UI-visible state for user decision
+                        
                         DlnaRendererState.pendingCastRequest.value = pending
                         DlnaRendererState.rawPendingCastRequest.value = null
                     }

@@ -1,12 +1,12 @@
 
-/**
- * A bottom-sheet dialog that shows how a specific song has been interacted with —
- * how many times it was played, how many times it was skipped, and when it was
- * last played. There's also a handy "clear" button if you want to wipe the slate
- * clean and pretend the song is brand new.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
 @AndroidEntryPoint
 class PlaybackInfo : ScopedBottomSheetFragment() {
 
@@ -56,7 +56,7 @@ class PlaybackInfo : ScopedBottomSheetFragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.stat.collect { stat ->
                     if (stat != null) {
-                        // Fill in the stats we fetched from the database
+                        
                         binding.playCount.text = resources.getQuantityString(R.plurals.total_times, stat.playCount, stat.playCount)
                         binding.skipCount.text = resources.getQuantityString(R.plurals.total_times, stat.skipCount, stat.skipCount)
                         binding.replayCount.text = resources.getQuantityString(R.plurals.total_times, stat.replayCount, stat.replayCount)
@@ -68,7 +68,7 @@ class PlaybackInfo : ScopedBottomSheetFragment() {
                         binding.lastPlayedRelative.text = TimeUtils.getLocalizedRelativeTime(
                                 stat.lastPlayed, LocaleUtils.getAppLocale())
                     } else {
-                        // If there are no stats yet (or they were just cleared), show zeroes
+                        
                         binding.playCount.text = 0.toString()
                         binding.skipCount.text = 0.toString()
                         binding.replayCount.text = 0.toString()
@@ -79,7 +79,7 @@ class PlaybackInfo : ScopedBottomSheetFragment() {
             }
         }
 
-        // Tapping the cross button clears all stats and resets the display
+        
         binding.clearStats.setOnClickListener {
             viewModel.clearStats()
         }

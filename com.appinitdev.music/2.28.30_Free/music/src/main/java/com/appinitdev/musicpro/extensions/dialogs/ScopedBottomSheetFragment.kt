@@ -21,28 +21,28 @@ abstract class ScopedBottomSheetFragment : BottomSheetDialogFragment(),
         dialog?.window?.setDimAmount(ViewUtils.DIM_AMOUNT)
 
         dialog?.setOnShowListener { dialog ->
-            /**
-             * In a previous life I used this method to get handles to the positive and negative buttons
-             * of a dialog in order to change their Typeface. Good ol' days.
-             */
+             
+
+
+
             val sheetDialog = dialog as BottomSheetDialog
 
-            /**
-             * This is gotten directly from the source of BottomSheetDialog
-             * in the wrapInBottomSheet() method
-             */
+             
+
+
+
             val bottomSheet = sheetDialog.findViewById<View>(design_bottom_sheet) as FrameLayout
 
-            /**
-             *  Right here!
-             *  Make sure the dialog pops up being fully expanded
-             */
+             
+
+
+
             BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
 
-            /**
-             * Also make sure the dialog doesn't half close when we don't want
-             * it to be, so we close them
-             */
+             
+
+
+
             BottomSheetBehavior.from(bottomSheet).addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     if (newState == BottomSheetBehavior.STATE_HALF_EXPANDED) {
@@ -51,7 +51,7 @@ abstract class ScopedBottomSheetFragment : BottomSheetDialogFragment(),
                 }
 
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    // do nothing
+                    
                 }
             })
         }
@@ -68,17 +68,17 @@ abstract class ScopedBottomSheetFragment : BottomSheetDialogFragment(),
         handler.removeCallbacksAndMessages(null)
     }
 
-    /**
-     * Called when any preferences are changed using [com.appinitdev.musicpro.manager.SharedPreferences.getSharedPreferences]
-     *
-     * Override this to get any preferences change events inside
-     * the fragment
-     */
+     
+
+
+
+
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {}
 
-    /**
-     * Return the {@link Application} this fragment is currently associated with.
-     */
+     
+
+
     @Suppress("unused")
     protected fun requireApplication(): Application {
         return requireActivity().application
@@ -96,14 +96,14 @@ abstract class ScopedBottomSheetFragment : BottomSheetDialogFragment(),
         handler.postDelayed(pendingRunnable!!, delayMillis)
     }
 
-    /**
-     * Make sure the dialog is launched using childFragmentManager not parentFragmentManager.
-     */
+     
+
+
     protected fun openAppSettings() {
         try {
             (parentFragment as ScopedFragment).openPreferencesPanel().also {
-                // May mess with the predictive back if the dialog is left alive in the back stack
-                // so we dismiss the dialog immediately after opening the settings.
+                
+                
                 dismiss()
             }
         } catch (e: Exception) {

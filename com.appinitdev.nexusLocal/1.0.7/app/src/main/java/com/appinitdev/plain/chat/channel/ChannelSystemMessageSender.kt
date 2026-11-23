@@ -1,11 +1,11 @@
 
 object ChannelSystemMessageSender {
 
-    /**
-     * Build lightweight peer info for all channel members from the local peers table.
-     * This is included in ChannelInvite/ChannelUpdate so receivers can create
-     * peer records for members they don't already know.
-     */
+     
+
+
+
+
     private suspend fun buildMemberPeers(channel: DChatChannel): List<ChannelSystemMessages.MemberPeerInfo> {
         return channel.getPeersAsync().map { peer ->
             ChannelSystemMessages.MemberPeerInfo(
@@ -19,15 +19,15 @@ object ChannelSystemMessageSender {
         }
     }
 
-    /**
-     * Send a [ChannelSystemMessages.ChannelInvite] to a single peer.
-     * The channel key is sent as-is because the PeerGraphQL transport layer
-     * already encrypts the entire payload with the peer's shared key and
-     * verifies the Ed25519 signature.
-     *
-     * Includes [MemberPeerInfo] for all current members so the invitee can
-     * create peer records for members it doesn't already have locally.
-     */
+     
+
+
+
+
+
+
+
+
     suspend fun sendInvite(channel: DChatChannel, peer: DPeer): Boolean {
         val payload = jsonEncode(
             ChannelSystemMessages.ChannelInvite(
@@ -43,9 +43,9 @@ object ChannelSystemMessageSender {
         return sendToPeer(peer, ChannelSystemMessages.TYPE_INVITE, payload)
     }
 
-    /** Send accept response to the channel owner.
-     *  Includes the accepter's publicKey, name, and deviceType so the owner
-     *  can create/update a peer record. */
+     
+
+
     suspend fun sendInviteAccept(channelId: String, ownerPeer: DPeer): Boolean {
         val context = MainApp.instance
         val publicKey = SignatureHelper.getRawPublicKeyBase64Async()
@@ -61,14 +61,14 @@ object ChannelSystemMessageSender {
         return sendToPeer(ownerPeer, ChannelSystemMessages.TYPE_INVITE_ACCEPT, payload)
     }
 
-    /** Send decline response to the channel owner. */
+     
     suspend fun sendInviteDecline(channelId: String, ownerPeer: DPeer): Boolean {
         val payload = jsonEncode(ChannelSystemMessages.ChannelInviteDecline(channelId))
         return sendToPeer(ownerPeer, ChannelSystemMessages.TYPE_INVITE_DECLINE, payload)
     }
 
-    /** Broadcast a [ChannelSystemMessages.ChannelUpdate] to all members (joined + pending).
-     *  Includes [MemberPeerInfo] so receivers can create peer records for new members. */
+     
+
     suspend fun broadcastUpdate(channel: DChatChannel) {
         val payload = jsonEncode(
             ChannelSystemMessages.ChannelUpdate(
@@ -82,19 +82,19 @@ object ChannelSystemMessageSender {
         sendToMultiplePeers(channel.memberIdsNotMe(TempData.clientId), ChannelSystemMessages.TYPE_UPDATE, payload, channel.id, channel.key)
     }
 
-    /** Send kick notification to a single peer. */
+     
     suspend fun sendKick(channelId: String, peer: DPeer, channelKey: String = ""): Boolean {
         val payload = jsonEncode(ChannelSystemMessages.ChannelKick(channelId))
         return sendToPeer(peer, ChannelSystemMessages.TYPE_KICK, payload, channelId, channelKey)
     }
 
-    /** Broadcast kick to all members (used when owner deletes the channel). */
+     
     suspend fun broadcastKick(channel: DChatChannel) {
         val payload = jsonEncode(ChannelSystemMessages.ChannelKick(channel.id))
         sendToMultiplePeers(channel.memberIdsNotMe(TempData.clientId), ChannelSystemMessages.TYPE_KICK, payload, channel.id, channel.key)
     }
 
-    /** Send leave notification to the channel owner. */
+     
     suspend fun sendLeave(channelId: String, ownerPeer: DPeer, channelKey: String = ""): Boolean {
         val payload = jsonEncode(ChannelSystemMessages.ChannelLeave(channelId))
         return sendToPeer(ownerPeer, ChannelSystemMessages.TYPE_LEAVE, payload, channelId, channelKey)

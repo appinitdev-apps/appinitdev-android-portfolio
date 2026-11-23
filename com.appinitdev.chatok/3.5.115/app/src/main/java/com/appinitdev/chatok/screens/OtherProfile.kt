@@ -33,7 +33,7 @@ fun OtherProfile(
             contentScale = ContentScale.Crop,
         )
         
-        // Overlay
+        
         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
 
         Column(

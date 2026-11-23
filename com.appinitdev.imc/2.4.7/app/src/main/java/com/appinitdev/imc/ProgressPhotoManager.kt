@@ -13,7 +13,7 @@ object ProgressPhotoManager {
             val photoFile = File(photoDir, "photo_${memberId}_${System.currentTimeMillis()}.jpg")
             val outputStream = FileOutputStream(photoFile)
 
-            // Compress to 85% JPEG for optimal storage and quality
+            
             bitmap.compress(Bitmap.CompressFormat.JPEG, 85, outputStream)
             outputStream.flush()
             outputStream.close()

@@ -181,7 +181,7 @@ fun MainNavigationSheetContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 1.dp, vertical = 1.dp),
-            horizontalArrangement = Arrangement.End, // 👈 texto a la derecha
+            horizontalArrangement = Arrangement.End, 
         ) {
             Text(
                 text = "v${context.getVersionName()}",

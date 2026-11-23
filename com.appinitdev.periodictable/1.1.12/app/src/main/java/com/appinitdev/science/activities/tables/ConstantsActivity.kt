@@ -3,7 +3,7 @@ class ConstantsActivity : BaseActivity(), ConstantsAdapter.OnConstantsClickListe
     private var constantsList = ArrayList<Constants>()
     var mAdapter = ConstantsAdapter(constantsList, this, this)
 
-    // Unified back handling fields
+    
     private var backCallback: OnBackPressedCallback? = null
     private var onBackInvokedCb: android.window.OnBackInvokedCallback? = null
     private val uiHandler = Handler(Looper.getMainLooper())
@@ -20,14 +20,14 @@ class ConstantsActivity : BaseActivity(), ConstantsAdapter.OnConstantsClickListe
         }
         if (themePrefValue == 0) { setTheme(R.style.AppTheme) }
         if (themePrefValue == 1) { setTheme(R.style.AppThemeDark) }
-        setContentView(R.layout.activity_constants) //REMEMBER: Never move any function calls above this
+        setContentView(R.layout.activity_constants) 
 
-        // Register lifecycle-aware OnBackPressedCallback (disabled by default).
+        
         backCallback = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
                 val consumed = handleBackPress()
                 if (!consumed) {
-                    // Not consumed by overlays -> fallback to default behavior.
+                    
                     isEnabled = false
                     try {
                         onBackPressedDispatcher.onBackPressed()
@@ -39,7 +39,7 @@ class ConstantsActivity : BaseActivity(), ConstantsAdapter.OnConstantsClickListe
         }
         onBackPressedDispatcher.addCallback(this, backCallback!!)
 
-        // Start with platform OnBackInvoked interception disabled; enable on overlays.
+        
         setBackInterceptionEnabled(false)
 
         val recyclerView = findViewById<RecyclerView>(R.id.con_view)
@@ -47,7 +47,7 @@ class ConstantsActivity : BaseActivity(), ConstantsAdapter.OnConstantsClickListe
         val itemCon = ArrayList<Constants>()
         ConstantsModel.getList(itemCon)
 
-        //Add value to most used:
+        
         val mostUsedPreference = MostUsedPreference(this)
         val mostUsedPrefValue = mostUsedPreference.getValue()
         val targetLabel = "con"
@@ -100,7 +100,7 @@ class ConstantsActivity : BaseActivity(), ConstantsAdapter.OnConstantsClickListe
         })
     }
 
-    // Overrides the clickListener from ConstantsAdapter (no-op currently)
+    
     override fun constantsClickListener(item: Constants, position: Int) {
     }
 
@@ -113,7 +113,7 @@ class ConstantsActivity : BaseActivity(), ConstantsAdapter.OnConstantsClickListe
             val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(findViewById<EditText>(R.id.edit_con), InputMethodManager.SHOW_IMPLICIT)
 
-            // Search bar shown -> enable back interception so gestures/back close it first
+            
             setBackInterceptionEnabled(true)
         }
         findViewById<ImageButton>(R.id.close_con_search).setOnClickListener {
@@ -130,12 +130,12 @@ class ConstantsActivity : BaseActivity(), ConstantsAdapter.OnConstantsClickListe
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
             }
 
-            // closed -> update interception state
+            
             setBackInterceptionEnabled(anyOverlayOpen())
         }
     }
 
-    // listen to button presses in filter
+    
     private fun chipListeners(list: ArrayList<Constants>, recyclerView: RecyclerView) {
         val constantsPreference = ConstantsPreference(this)
         findViewById<Button>(R.id.mathematic_btn_con).setOnClickListener {
@@ -158,7 +158,7 @@ class ConstantsActivity : BaseActivity(), ConstantsAdapter.OnConstantsClickListe
         }
     }
 
-    // Update colors of buttons after filtering
+    
     private fun updateButtonColor(btn: String) {
         findViewById<Button>(R.id.mathematic_btn_con).background = getDrawable(R.drawable.chip)
         findViewById<Button>(R.id.physics_btn_con).background = getDrawable(R.drawable.chip)
@@ -184,7 +184,7 @@ class ConstantsActivity : BaseActivity(), ConstantsAdapter.OnConstantsClickListe
         }
     }
 
-    // Filters
+    
     private fun filter(text: String, list: ArrayList<Constants>, recyclerView: RecyclerView) {
         val filteredList: ArrayList<Constants> = ArrayList()
         for (item in list) {
@@ -212,17 +212,17 @@ class ConstantsActivity : BaseActivity(), ConstantsAdapter.OnConstantsClickListe
         recyclerView.adapter = ConstantsAdapter(filteredList, this, this)
     }
 
-    // Centralized overlay detection
+    
     private fun anyOverlayOpen(): Boolean {
         val searchBarVisible = findViewById<FrameLayout>(R.id.search_bar_con).visibility == View.VISIBLE
         return searchBarVisible
     }
 
-    // Close overlays if visible; return true when consumed.
+    
     private fun handleBackPress(): Boolean {
         val searchBar = findViewById<FrameLayout>(R.id.search_bar_con)
 
-        // If search bar visible, close it
+        
         if (searchBar.visibility == View.VISIBLE) {
             Utils.fadeOutAnim(searchBar, 1)
             Handler(Looper.getMainLooper()).postDelayed({
@@ -235,7 +235,7 @@ class ConstantsActivity : BaseActivity(), ConstantsAdapter.OnConstantsClickListe
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
             }
 
-            // update interception state after closing
+            
             setBackInterceptionEnabled(anyOverlayOpen())
             return true
         }
@@ -244,19 +244,19 @@ class ConstantsActivity : BaseActivity(), ConstantsAdapter.OnConstantsClickListe
     }
 
     override fun onBackPressed() {
-        // Centralized back handling
+        
         if (!handleBackPress()) {
             super.onBackPressed()
         }
     }
 
-    /**
-     * Centralized management of platform back interception for Android 14+.
-     * We forward platform back invocations to the OnBackPressedDispatcher to ensure
-     * gestures and hardware back buttons call the same callbacks.
-     */
+     
+
+
+
+
     private fun setBackInterceptionEnabled(enabled: Boolean) {
-        // Keep OnBackPressedCallback state in sync
+        
         backCallback?.isEnabled = enabled
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -269,7 +269,7 @@ class ConstantsActivity : BaseActivity(), ConstantsAdapter.OnConstantsClickListe
                             } catch (e: Exception) {
                                 val consumed = handleBackPress()
                                 if (!consumed) {
-                                    // fallback to finishing
+                                    
                                     finish()
                                 }
                             }
@@ -281,7 +281,7 @@ class ConstantsActivity : BaseActivity(), ConstantsAdapter.OnConstantsClickListe
                             onBackInvokedCb!!
                         )
                     } catch (_: Exception) {
-                        // ignore registration errors on some devices
+                        
                     }
                 }
             } else {
@@ -289,7 +289,7 @@ class ConstantsActivity : BaseActivity(), ConstantsAdapter.OnConstantsClickListe
                     try {
                         onBackInvokedDispatcher.unregisterOnBackInvokedCallback(onBackInvokedCb!!)
                     } catch (_: Exception) {
-                        // ignore
+                        
                     }
                     onBackInvokedCb = null
                 }
@@ -299,7 +299,7 @@ class ConstantsActivity : BaseActivity(), ConstantsAdapter.OnConstantsClickListe
 
     override fun onDestroy() {
         super.onDestroy()
-        // Cleanup back interception hooks
+        
         backCallback?.remove()
         backCallback = null
         if (onBackInvokedCb != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {

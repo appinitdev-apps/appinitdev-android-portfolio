@@ -79,7 +79,7 @@ class DegreePreference(context : Context) {
     val preference = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
 
     fun getValue() : Int{
-        return preference.getInt (PREFERENCE_VALUE, 0) //0 = Kelving, 1 == Celsius, 2 = Fahrenheit
+        return preference.getInt (PREFERENCE_VALUE, 0) 
     }
 
     fun setValue(count:Int) {

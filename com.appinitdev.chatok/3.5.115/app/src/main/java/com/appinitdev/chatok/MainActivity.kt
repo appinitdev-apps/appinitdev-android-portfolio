@@ -1,7 +1,7 @@
 
 class MainActivity : FragmentActivity() {
     private val handler = Handler(Looper.getMainLooper())
-    private val delayMillis: Long = 10 * 60 * 1000 // 10 minutos
+    private val delayMillis: Long = 10 * 60 * 1000 
     private val viewModel: ChatViewModel by viewModels()
     lateinit var billingManager: BillingManager
     private lateinit var networkCallback: ConnectivityManager.NetworkCallback
@@ -33,7 +33,7 @@ class MainActivity : FragmentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        setIntent(intent) // Update intent for Deep Linking
+        setIntent(intent) 
     }
 
     override fun onPause() {
@@ -58,7 +58,7 @@ class MainActivity : FragmentActivity() {
             Firebase.auth.currentUser?.uid?.let { userId ->
                 viewModel.getUserData(userId)
                 
-                // Check for suspension
+                
                 viewModel.state.value.userData?.suspendedUntil?.let { suspendedUntil ->
                     if (suspendedUntil.toDate().after(Date())) {
                         val formattedDate = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(suspendedUntil.toDate())
@@ -90,8 +90,8 @@ class MainActivity : FragmentActivity() {
         val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         connectivityManager.unregisterNetworkCallback(networkCallback)
         
-        // El estado offline se maneja en AppLifecycleObserver.onStop()
-        // pero podemos programar una alarma o tarea final si es necesario.
+        
+        
     }
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -101,7 +101,7 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         billingManager = BillingManager(this, viewModel)
 
-        // Biometric Lock
+        
         val prefs = getSharedPreferences("privacy_prefs", Context.MODE_PRIVATE)
         val isLockEnabled = prefs.getBoolean("biometric_lock", false)
         
@@ -117,7 +117,7 @@ class MainActivity : FragmentActivity() {
             isAuthenticated.value = true
         }
 
-        // Prevent screenshots in Release mode
+        
         if (!BuildConfig.DEBUG) {
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_SECURE,
@@ -125,7 +125,7 @@ class MainActivity : FragmentActivity() {
             )
         }
 
-        // Prevent screenshots in Release mode
+        
         if (!BuildConfig.DEBUG) {
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_SECURE,
@@ -137,22 +137,22 @@ class MainActivity : FragmentActivity() {
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancelAll()
-        /*try {
-           // ProcessLifecycleOwner.get().lifecycle.addObserver(AppLifecycleTracker(viewModel, handler))
-        }catch (e:Exception){}*/
+         
 
 
-        /*  try {
-              InterstitialAdManager.loadAd(this)
-              window.decorView.postDelayed({
-              try {
-                  InterstitialAdManager.showAd(this)
-              } catch (_: Exception) {
-              }
-              }, 10000)
 
-          } catch (_: Exception) {
-          }*/
+
+         
+
+
+
+
+
+
+
+
+
+
         preferencesManager = PreferencesManager(this)
 
         if (!BuildConfig.DEBUG && preferencesManager.isAdsRemoved() == false && viewModel.state.value.userData?.isVip == false) {
@@ -183,10 +183,10 @@ class MainActivity : FragmentActivity() {
 
                     val context = LocalContext.current
 
-                    // Deep Linking Handler
+                    
                     LaunchedEffect(intent) {
                         intent?.getStringExtra("chatId")?.let { chatId ->
-                            // Find user data for this chat to navigate correctly
+                            
                             viewModel.chats.find { it.chatId == chatId }?.let { chat ->
                                 val chatUser = if (chat.user1?.userId == Firebase.auth.currentUser?.uid) chat.user2 else chat.user1
                                 if (chatUser != null) {
@@ -244,7 +244,7 @@ class MainActivity : FragmentActivity() {
                                     val userData = googleAuthUiClient.getSignedInUser()
                                     userData?.run {
                                         viewModel.getFCMToken(userData.userId)
-                                        // NO sobreescribir datos en el login de Google, solo recuperarlos
+                                        
                                         viewModel.getUserData(userData.userId)
                                         viewModel.showChats(userData.userId)
                                         viewModel.popStory()
@@ -256,29 +256,29 @@ class MainActivity : FragmentActivity() {
                             }
 
                             Scaffold(
-                                contentWindowInsets = WindowInsets.ime, // Ajusta la UI al teclado
+                                contentWindowInsets = WindowInsets.ime, 
                                 content = {
                                     SignInScreen(
                                         state = state,
                                         onSignUpClick = { email, pw, user, age, gender, profileUri, isVendedora, instagram, facebook, telegram ->
                                             lifecycleScope.launch {
-                                                // 1. Detectar si es una imagen de la galería o un avatar de la web
+                                                
                                                 val isLocalImage = profileUri.startsWith("content://") || profileUri.startsWith("file://")
 
                                                 if (isLocalImage) {
-                                                    // --- CASO IMAGEN DE GALERÍA (Requiere subir a Storage) ---
+                                                    
                                                     val uri = android.net.Uri.parse(profileUri)
 
-                                                    // Usamos la función UploadImage1 que ya tienes en tu ChatViewModel
+                                                    
                                                     viewModel.uploadMedia(uri = uri, folder = "photos") { downloadedUrl ->
                                                         if (downloadedUrl.isNotEmpty()) {
-                                                            // Una vez subida, procedemos al registro con la URL de descarga de Firebase
+                                                            
                                                             lifecycleScope.launch {
                                                                 val result = googleAuthUiClient.createUserWithEmailPassword(
                                                                     email, pw, user, age, gender, downloadedUrl
                                                                 )
 
-                                                                // Lógica de guardado en Firestore y Navegación
+                                                                
                                                                 if (result.data != null) {
                                                                     try {
                                                                         val userDataWithImage = result.data.copy(
@@ -307,7 +307,7 @@ class MainActivity : FragmentActivity() {
                                                         }
                                                     }
                                                 } else {
-                                                    // --- CASO AVATAR (URL de internet, registro directo) ---
+                                                    
                                                     val result = googleAuthUiClient.createUserWithEmailPassword(
                                                         email, pw, user, age, gender, profileUri
                                                     )
@@ -345,7 +345,7 @@ class MainActivity : FragmentActivity() {
                                                             pw
                                                         )
                                                     if (result.data != null) {
-                                                        // NO sobreescribir datos en el login, solo recuperarlos
+                                                        
                                                         viewModel.getFCMToken(result.data.userId)
                                                         viewModel.getUserData(result.data.userId)
                                                         viewModel.showChats(result.data.userId)
@@ -544,7 +544,7 @@ class MainActivity : FragmentActivity() {
                             com.appinitdev.chatok.screens.StoreScreen(navController, viewModel, state)
                         }
                     }
-                    NetworkErrorDialog(showDialog = false) // Dialog disabled, replaced by icon
+                    NetworkErrorDialog(showDialog = false) 
                     }
                 }
             }
@@ -557,16 +557,16 @@ class MainActivity : FragmentActivity() {
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             Log.e("CRASH", "App crasheó: ${throwable.message}", throwable)
 
-            /*
-            // Intento de reinicio (Comentado a solicitud)
-            val intent = packageManager.getLaunchIntentForPackage(packageName)
-            intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
+             
 
-            // Matar el proceso actual para que el SO lo limpie
-            android.os.Process.killProcess(android.os.Process.myPid())
-            System.exit(1)
-            */
+
+
+
+
+
+
+
+
 
             defaultHandler?.uncaughtException(thread, throwable)
         }
@@ -605,14 +605,14 @@ class MainActivity : FragmentActivity() {
 fun SolicitarPermisoNotificaciones() {
     val context = LocalContext.current
 
-    // Launcher del permiso
+    
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            // Permiso concedido ✅
+            
         } else {
-            // Permiso denegado ❌
+            
         }
     }
 

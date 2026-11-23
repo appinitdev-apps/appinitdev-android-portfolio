@@ -3,7 +3,7 @@ object ChatCacheManager {
     val peerKeyCache = mutableMapOf<String, ByteArray>()
     val peerPublicKeyCache = mutableMapOf<String, ByteArray>()
     val channelKeyCache = mutableMapOf<String, ByteArray>()
-    /** Cache of peer id → DPeer used by chat UI to resolve sender info (name, avatar, etc.). */
+     
     val peerMap = mutableMapOf<String, DPeer>()
 
     var activeToId = ""
@@ -13,8 +13,8 @@ object ChatCacheManager {
         peerPublicKeyCache.clear()
         channelKeyCache.clear()
 
-        // Load keys from peers table (paired AND channel peers).
-        // Channel-status peers have key="" but carry a publicKey for signature verification.
+        
+        
         val peers = AppDatabase.instance.peerDao().getAllWithPublicKey()
         peers.forEach { peer ->
             if (peer.key.isNotEmpty()) {
@@ -25,10 +25,10 @@ object ChatCacheManager {
             }
         }
 
-        // Load keys from chat_channels table (only active channels)
+        
         val channels = AppDatabase.instance.chatChannelDao().getAll()
         channels.forEach { channel ->
-            // Exclude left/kicked channels so we reject incoming messages
+            
             if (channel.status == "joined") {
                 channelKeyCache[channel.id] = Base64.decode(channel.key, Base64.NO_WRAP)
             }
@@ -43,7 +43,7 @@ object ChatCacheManager {
         }
     }
 
-    /** Rebuild [peerMap] from the latest [peers] data. */
+     
     fun refreshPeerMap(peers: List<DPeer>) {
         val cache = mutableMapOf<String, DPeer>()
         peers.forEach { peer ->
@@ -53,7 +53,7 @@ object ChatCacheManager {
         peerMap.putAll(cache)
     }
 
-    /** Update a single entry in [peerMap]. */
+     
     fun updatePeer(peer: DPeer) {
         peerMap[peer.id] = peer
     }

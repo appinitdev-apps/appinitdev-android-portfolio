@@ -12,7 +12,7 @@ fun AppNavigation(
         if (isLoggedIn) {
             viewModel.fetchUserProfile()
             if (!startAppId.isNullOrBlank()) {
-                // Navegar al detalle si venimos de una notificación
+                
                 navController.navigate("app_detail/$startAppId")
             }
         }
@@ -54,7 +54,7 @@ fun AppNavigation(
         }
 
         composable("ranking_screen") {
-            // Usamos el componente que creamos anteriormente
+            
             ReputationRankingScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() }
@@ -76,9 +76,9 @@ fun AppNavigation(
             )
         }
 
-//        composable("review_apps") {
-//            ReviewAppsScreen(viewModel, navController)
-//        }
+
+
+
 
         composable(
             route = "autorizar_resenas/{appId}",
@@ -86,7 +86,7 @@ fun AppNavigation(
         ) { backStackEntry ->
             val appId = backStackEntry.arguments?.getString("appId") ?: ""
 
-            // Llamamos al componente modificado
+            
             PanelAutorizacionPropietario(
                 appId = appId,
                 viewModel = viewModel,

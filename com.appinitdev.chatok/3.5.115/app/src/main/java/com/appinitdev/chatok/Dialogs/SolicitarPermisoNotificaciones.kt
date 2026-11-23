@@ -7,7 +7,7 @@ fun SolicitarPermisoNotificaciones() {
     ) { isGranted ->
         if (isGranted) {
         } else {
-           // Toast.makeText(context, "Permiso de notificaciones denegado", Toast.LENGTH_SHORT).show()
+           
         }
     }
 

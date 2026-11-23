@@ -35,7 +35,7 @@ fun File.rename(newName: String): Boolean {
         val source = toPath()
         val destination = source.resolveSibling(newName)
         Files.move(source, destination)
-        true // If move failed, an exception would have been thrown
+        true 
     } else {
         val destination = resolveSibling(newName)
         renameTo(destination)
@@ -59,16 +59,16 @@ fun File.decodeToBitmap(): Bitmap? {
 fun File.isAudioFile(context: Context): Boolean {
     val retriever = MediaMetadataRetriever()
     return try {
-        retriever.setDataSource(context, toUri()) // Try to set the file path
+        retriever.setDataSource(context, toUri()) 
         val hasAudio = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO)
         val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
         val mimeType = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE)
         mimeType != null && hasAudio != null ||
-            duration != null // If it has audio metadata, it's a valid audio file
+            duration != null 
     } catch (e: Exception) {
-        false // An exception means it’s not a valid audio file
+        false 
     } finally {
-        retriever.release() // Always release retriever to free resources
+        retriever.release() 
     }
 }
 

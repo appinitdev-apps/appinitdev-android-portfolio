@@ -4,7 +4,7 @@ data class VChat(
     val fromId: String,
     val createdAt: Instant,
     val type: String,
-    val status: String, // pending, sent, partial, failed
+    val status: String, 
     val statusData: DMessageStatusData? = null,
     var value: Any? = null,
 ) : IData {

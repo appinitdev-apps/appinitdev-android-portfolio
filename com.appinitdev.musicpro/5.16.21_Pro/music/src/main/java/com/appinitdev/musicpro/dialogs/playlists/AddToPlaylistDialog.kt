@@ -1,23 +1,23 @@
 
-/**
- * Bottom-sheet dialog that allows the user to add one or more [Audio] tracks to
- * existing playlists via a checkbox list, or create a brand-new playlist inline.
- *
- * <p>Usage: call [show] from any [FragmentManager] and pass the target audio via
- * [newInstance]. The dialog observes [AddToPlaylistViewModel.state] to keep the checkbox
- * list reactive — playlist additions and song-count changes surface automatically without
- * manual reload calls. Pre-checked state reflects actual database membership so the user
- * can clearly see which playlists already contain the track.</p>
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
 @AndroidEntryPoint
 class AddToPlaylistDialog : ScopedBottomSheetFragment() {
 
     private lateinit var binding: DialogAddToPlaylistBinding
     private var adapter: AdapterPlaylistCheckbox? = null
 
-    /** Whether the adapter has been created from the first ViewModel state emission. */
+     
     private var adapterInitialized = false
 
     private val audio: Audio by lazy {
@@ -58,12 +58,12 @@ class AddToPlaylistDialog : ScopedBottomSheetFragment() {
         observeViewModel()
     }
 
-    /**
-     * Subscribes to [AddToPlaylistViewModel.state] and [AddToPlaylistViewModel.saveComplete].
-     * The first non-null state emission initializes the adapter; subsequent emissions call
-     * [AdapterPlaylistCheckbox.updateData] so the user's checkbox selections are preserved
-     * across playlist-list or song-count changes.
-     */
+     
+
+
+
+
+
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -91,11 +91,11 @@ class AddToPlaylistDialog : ScopedBottomSheetFragment() {
         }
     }
 
-    /**
-     * Shows the "Create Playlist" bottom-sheet via [parentFragmentManager] so it sits on top
-     * of this dialog. Because [AddToPlaylistViewModel] observes [PlaylistRepository.getAllPlaylistsWithSongs]
-     * reactively, the new playlist appears in the list automatically — no manual reload is needed.
-     */
+     
+
+
+
+
     private fun showCreatePlaylistDialog() {
         parentFragmentManager.showCreatePlaylistDialog()
     }
@@ -111,12 +111,12 @@ class AddToPlaylistDialog : ScopedBottomSheetFragment() {
             }
         }
 
-        /**
-         * Shows the "Add to Playlist" dialog for the given [audio] track.
-         *
-         * @param audio The audio track to add to playlists.
-         * @return The shown [AddToPlaylistDialog] instance.
-         */
+         
+
+
+
+
+
         fun FragmentManager.showAddToPlaylistDialog(audio: Audio): AddToPlaylistDialog {
             val dialog = newInstance(audio)
             dialog.show(this, TAG)

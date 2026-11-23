@@ -12,7 +12,7 @@ object DlnaDeviceScanner {
         val wifi = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val lock = runCatching {
             wifi.createMulticastLock("DlnaDeviceScanner").apply {
-                // Keep the lock lifecycle one-acquire/one-release per scan instance.
+                
                 setReferenceCounted(false)
                 acquire()
             }
@@ -44,7 +44,7 @@ object DlnaDeviceScanner {
                         }
                     }
                 } catch (_: SocketTimeoutException) {
-                    // No response in 5s — resend M-SEARCH to pick up newly started servers
+                    
                     socket.send(DatagramPacket(searchQuery.toByteArray(), searchQuery.length, group, SSDP_PORT))
                 }
             }

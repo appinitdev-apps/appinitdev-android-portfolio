@@ -1,39 +1,39 @@
 
-// ==================== COMPOSABLE PRINCIPAL ====================
+
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CameraPaintScreen(
     startWithCameraOn: Boolean,
     initialImageUri: Uri? = null,
-    initialGridType: String = "NONE", // 👈 NUEVO PARÁMETRO
-    initialFilter: String = "NONE", // 👈 NUEVO PARÁMETRO
-    initialTab: Int = -1, // 👈 NUEVO PARÁMETRO: -1 ninguna, 4 filtros
+    initialGridType: String = "NONE", 
+    initialFilter: String = "NONE", 
+    initialTab: Int = -1, 
     onBack: () -> Unit,
     onChangeMode: () -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    // Saver personalizado para Offset
+    
     val OffsetSaver = listSaver<MutableState<Offset>, Float>(
         save = { listOf(it.value.x, it.value.y) },
         restore = { mutableStateOf(Offset(it[0], it[1])) }
     )
 
-    // --- Estados principales con rememberSaveable para mayor estabilidad ---
+    
     var permissionsGranted by rememberSaveable { mutableStateOf(false) }
     var showCamera by rememberSaveable { mutableStateOf(startWithCameraOn) }
     var isFlashOn by rememberSaveable { mutableStateOf(false) }
     var previewViewRef by remember { mutableStateOf<PreviewView?>(null) }
     var scale by rememberSaveable { mutableStateOf(1f) }
     var rotation by rememberSaveable { mutableStateOf(0f) }
-    var flipX by rememberSaveable { mutableStateOf(1f) } // 1f normal, -1f invertido
-    var flipY by rememberSaveable { mutableStateOf(1f) } // 1f normal, -1f invertido
+    var flipX by rememberSaveable { mutableStateOf(1f) } 
+    var flipY by rememberSaveable { mutableStateOf(1f) } 
     var offset by rememberSaveable(saver = OffsetSaver) { mutableStateOf(Offset.Zero) }
     var isLocked by rememberSaveable { mutableStateOf(false) }
     
-    // Uris como String para rememberSaveable
+    
     var imageUriStr by rememberSaveable { mutableStateOf(initialImageUri?.toString()) }
     var originalImageUriStr by rememberSaveable { mutableStateOf(initialImageUri?.toString()) }
     
@@ -55,11 +55,11 @@ fun CameraPaintScreen(
     var isProcessingBg by remember { mutableStateOf(false) }
     var isRecordingTimeLapse by rememberSaveable { mutableStateOf(false) } 
     var timeLapseCount by rememberSaveable { mutableIntStateOf(0) } 
-    var currentTimeLapseSessionId by rememberSaveable { mutableStateOf<String?>(null) } // NUEVO v4
+    var currentTimeLapseSessionId by rememberSaveable { mutableStateOf<String?>(null) } 
     
-    // --- NUEVAS FUNCIONALIDADES ---
+    
     var showPip by rememberSaveable { mutableStateOf(false) }
-    var pipOffset by rememberSaveable(saver = OffsetSaver) { mutableStateOf(Offset(20f, 600f)) } // Inicial abajo-izquierda
+    var pipOffset by rememberSaveable(saver = OffsetSaver) { mutableStateOf(Offset(20f, 600f)) } 
     var pipSize by rememberSaveable { mutableFloatStateOf(160f) }
     
     var isWorldLockActive by rememberSaveable { mutableStateOf(false) }
@@ -76,15 +76,15 @@ fun CameraPaintScreen(
     var showColorGuide by remember { mutableStateOf(false) }
     var selectedColorForGuide by remember { mutableStateOf<Color?>(null) }
 
-    var showSidePanel by remember { mutableStateOf(true) } // Control de visibilidad del panel
+    var showSidePanel by remember { mutableStateOf(true) } 
     val activeColor = Color(0xFFFF4081)
-    var showCaptureDialog by remember { mutableStateOf(false) } // NUEVO
-    var capturedBitmapForPreview by remember { mutableStateOf<Bitmap?>(null) } // NUEVO: Para la vista previa
-    var showRealTimeCapturePreview by remember { mutableStateOf(false) } // NUEVO: Ventana de tiempo real
-    var captureModeSelected by remember { mutableStateOf("NONE") } // "SIDE_BY_SIDE" o "CAMERA_ONLY"
-    var capturePreviewViewRef by remember { mutableStateOf<PreviewView?>(null) } // NUEVO: Referencia local para la captura
+    var showCaptureDialog by remember { mutableStateOf(false) } 
+    var capturedBitmapForPreview by remember { mutableStateOf<Bitmap?>(null) } 
+    var showRealTimeCapturePreview by remember { mutableStateOf(false) } 
+    var captureModeSelected by remember { mutableStateOf("NONE") } 
+    var capturePreviewViewRef by remember { mutableStateOf<PreviewView?>(null) } 
 
-    // Si iniciamos en modo boceto, debemos ejecutar el proceso de IA una vez al cargar
+    
     LaunchedEffect(initialFilter, originalImageUriStr) {
         if (initialFilter == "SKETCH" && originalImageUriStr != null) {
             val uriActual = originalImageUri ?: return@LaunchedEffect
@@ -92,7 +92,7 @@ fun CameraPaintScreen(
 
             scope.launch(Dispatchers.IO) {
                 try {
-                    // Decodificación segura de bitmap para evitar OOM
+                    
                     val options = BitmapFactory.Options().apply {
                         inJustDecodeBounds = true
                     }
@@ -100,7 +100,7 @@ fun CameraPaintScreen(
                         BitmapFactory.decodeStream(it, null, options)
                     }
                     
-                    // Calculamos escala si es muy grande (máx 2048px para estabilidad)
+                    
                     var inSampleSize = 1
                     while (options.outWidth / inSampleSize > 2048 || options.outHeight / inSampleSize > 2048) {
                         inSampleSize *= 2
@@ -135,7 +135,7 @@ fun CameraPaintScreen(
                         val r = (p shr 16) and 0xFF
                         val g = (p shr 8) and 0xFF
                         val b = p and 0xFF
-                        // Optimizamos la eliminación del fondo blanco
+                        
                         if (r > 220 && g > 220 && b > 220) {
                             pixels[i] = 0x00000000
                         }
@@ -150,9 +150,9 @@ fun CameraPaintScreen(
                     }
                     val nuevoUri = Uri.fromFile(archivoTemporal)
 
-                    // Limpieza: liberar bitmaps
+                    
                     bitmapOriginal.recycle()
-                    // bitmapProcesado es administrado por gpuImage
+                    
 
                     withContext(Dispatchers.Main) {
                         imageUriStr = nuevoUri.toString()
@@ -217,14 +217,14 @@ fun CameraPaintScreen(
         }
     }
 
-    // ==================== PERMISOS ====================
+    
     val permissionLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perms ->
             permissionsGranted = perms[Manifest.permission.CAMERA] == true
         }
     LaunchedEffect(Unit) { permissionLauncher.launch(arrayOf(Manifest.permission.CAMERA)) }
 
-    // --- LÓGICA DE TIME-LAPSE (Captura silenciosa cada 5 segundos) ---
+    
     LaunchedEffect(isRecordingTimeLapse) {
         if (isRecordingTimeLapse) {
             val sessionId = java.util.UUID.randomUUID().toString()
@@ -246,7 +246,7 @@ fun CameraPaintScreen(
             }
 
             while (isActive && isRecordingTimeLapse) {
-                delay(5000) // Cada 5 segundos
+                delay(5000) 
                 val bitmap = withContext(Dispatchers.Main) { previewViewRef?.bitmap }
                 if (bitmap != null) {
                     GalleryStorageManager.saveCapturedWork(
@@ -272,7 +272,7 @@ fun CameraPaintScreen(
             .fillMaxSize()
             .background(Color(0xFFF7F8FA))
     ) {
-        // --- 1. Cámara de fondo ---
+        
         if (permissionsGranted && showCamera) {
             CameraPreviewComposable(
                 modifier = Modifier.fillMaxSize(),
@@ -282,7 +282,7 @@ fun CameraPaintScreen(
             )
         }
 
-        // --- 2. Imagen + Lienzo ---
+        
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -299,7 +299,7 @@ fun CameraPaintScreen(
                 .pointerInput(isLocked, isRefPointsActive) {
                     detectTapGestures(
                         onLongPress = { tapOffset ->
-                            // Agregar punto de referencia cuando el modo está activo (Máximo 4)
+                            
                             if (!isLocked && isRefPointsActive) {
                                 if (referencePoints.size < 4) {
                                     referencePoints = referencePoints + tapOffset
@@ -358,7 +358,7 @@ fun CameraPaintScreen(
                     }
                 )
 
-                // --- Puntos de Referencia Pro ---
+                
                 referencePoints.forEachIndexed { index, point ->
                     Box(
                         modifier = Modifier
@@ -380,25 +380,25 @@ fun CameraPaintScreen(
                             .pointerInput(index) {
                                 detectTapGestures(
                                     onTap = {
-                                        // Toque simple para eliminar
+                                        
                                         referencePoints = referencePoints.filterIndexed { i, _ -> i != index }
                                     }
                                 )
                             },
                         contentAlignment = Alignment.Center
                     ) {
-                        // Cruz de precisión (+)
+                        
                         androidx.compose.foundation.Canvas(modifier = Modifier.size(24.dp)) {
                             val lineLength = size.width * 0.6f
                             val stroke = 2.dp.toPx()
-                            // Sombra sutil para la cruz
+                            
                             drawLine(
                                 color = Color.Black.copy(alpha = 0.3f),
                                 start = Offset(size.width / 2 - lineLength / 2 + 1, size.height / 2 + 1),
                                 end = Offset(size.width / 2 + lineLength / 2 + 1, size.height / 2 + 1),
                                 strokeWidth = stroke
                             )
-                            // Cruz Blanca principal
+                            
                             drawLine(
                                 color = Color.White,
                                 start = Offset(size.width / 2 - lineLength / 2, size.height / 2),
@@ -416,7 +416,7 @@ fun CameraPaintScreen(
                 }
             }
 
-            // --- 2.1 Malla de Referencia (Maya) ---
+            
             if (gridType != "NONE") {
                 GridOverlay(
                     type = gridType,
@@ -426,7 +426,7 @@ fun CameraPaintScreen(
             }
         }
 
-        // --- 2.2 Ventana PiP (Referencia Flotante) ---
+        
         if (showPip && imageUri != null) {
             val pipPainter = rememberAsyncImagePainter(imageUri)
             val intrinsicSize = pipPainter.intrinsicSize
@@ -459,7 +459,7 @@ fun CameraPaintScreen(
                     contentScale = ContentScale.Fit
                 )
                 
-                // Botón cerrar PiP (Arriba Derecha)
+                
                 IconButton(
                     onClick = { showPip = false },
                     modifier = Modifier
@@ -471,7 +471,7 @@ fun CameraPaintScreen(
                     Icon(Icons.Default.Close, null, tint = Color.White, modifier = Modifier.size(14.dp))
                 }
 
-                // Icono para Redimensionar (Abajo Derecha)
+                
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
@@ -490,7 +490,7 @@ fun CameraPaintScreen(
             }
         }
 
-        // --- 2.3 Guía de Mezcla de Colores ---
+        
         if (showColorGuide) {
             ColorMixingDialog(
                 onDismiss = { showColorGuide = false },
@@ -498,13 +498,13 @@ fun CameraPaintScreen(
             )
         }
 
-        // --- CARGANDO / PROCESANDO (Círculo de carga) ---
+        
         if (isProcessingBg) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.4f))
-                    .pointerInput(Unit) {}, // Evita que se interactúe con el fondo mientras carga
+                    .pointerInput(Unit) {}, 
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -523,7 +523,7 @@ fun CameraPaintScreen(
             }
         }
 
-        // --- 3. PANEL LATERAL (A la derecha) ---
+        
         Box(
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {
@@ -549,7 +549,7 @@ fun CameraPaintScreen(
                     currentColor = currentColor,
                     onImageUriChange = { 
                         imageUriStr = it.toString()
-                        originalImageUriStr = it.toString() // Al cambiar la imagen, actualizamos el original
+                        originalImageUriStr = it.toString() 
                     },
                     onTabSelected = {},
                     onRemoveBackground = {
@@ -560,7 +560,7 @@ fun CameraPaintScreen(
 
                             scope.launch(Dispatchers.IO) {
                                 try {
-                                    // 1. Decodificar de forma segura
+                                    
                                     val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
                                     context.contentResolver.openInputStream(uriActual)?.use { BitmapFactory.decodeStream(it, null, options) }
                                     
@@ -575,10 +575,10 @@ fun CameraPaintScreen(
                                         BitmapFactory.decodeStream(it, null, decodeOptions)
                                     } ?: throw Exception("No se pudo cargar la imagen")
 
-                                    // 2. Ejecutar la función de remoción de fondo
+                                    
                                     val bitmapSinFondo = bitmapOriginal.removeBackground(context = context)
 
-                                    // 3. Guardar el resultado
+                                    
                                     val archivoTemporal = File(context.cacheDir, "nobg_${System.currentTimeMillis()}.png")
                                     FileOutputStream(archivoTemporal).use { stream ->
                                         bitmapSinFondo.compress(Bitmap.CompressFormat.PNG, 90, stream)
@@ -587,7 +587,7 @@ fun CameraPaintScreen(
                                     
                                     bitmapOriginal.recycle()
 
-                                    // 4. Actualizar la interfaz
+                                    
                                     withContext(Dispatchers.Main) {
                                         imageUriStr = nuevoUri.toString()
                                         isProcessingBg = false
@@ -614,7 +614,7 @@ fun CameraPaintScreen(
 
                             scope.launch(Dispatchers.IO) {
                                 try {
-                                    // Decodificación segura
+                                    
                                     val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
                                     context.contentResolver.openInputStream(uriActual)?.use { BitmapFactory.decodeStream(it, null, options) }
                                     
@@ -631,7 +631,7 @@ fun CameraPaintScreen(
 
                                     val gpuImage = com.appinitdev.gpuimage.GPUImage(context)
                                     
-                                    // 🚀 MEJORA INTELIGENTE: Suavizado previo para reducir ruido antes de detectar bordes
+                                    
                                     val blurFilter = com.appinitdev.gpuimage.filter.GPUImageBilateralBlurFilter()
                                     blurFilter.setDistanceNormalizationFactor(0.8f)
                                     gpuImage.setImage(bitmapOriginal)
@@ -640,7 +640,7 @@ fun CameraPaintScreen(
 
                                     gpuImage.setImage(bitmapBlurred)
                                     val filterSketch = GPUImageThresholdEdgeDetectionFilter()
-                                    // Ajuste de grosor más agresivo y dinámico
+                                    
                                     filterSketch.setLineSize(lineSize * 1.5f) 
                                     filterSketch.setThreshold(threshold)
 
@@ -657,11 +657,11 @@ fun CameraPaintScreen(
                                         val r = (p shr 16) and 0xFF
                                         val g = (p shr 8) and 0xFF
                                         val b = p and 0xFF
-                                        // Limpieza de transparencia mejorada para un trazo más puro
+                                        
                                         if (r > 215 && g > 215 && b > 215) {
                                             pixels[i] = 0x00000000
                                         } else {
-                                            // Oscurecemos el trazo para que sea más visible (detalle inteligente)
+                                            
                                             pixels[i] = (p and 0xFF000000.toInt()) or 0x00000000
                                         }
                                     }
@@ -712,14 +712,14 @@ fun CameraPaintScreen(
                     onFlipVertical = { flipY *= -1f },
                     currentFilter = currentFilter,
                     onFilterChange = { nuevoFiltro ->
-                        // Si estábamos en un filtro procesado y cambiamos, restauramos la foto base primero
+                        
                         val processedFilters = listOf("SKETCH", "POSTERIZE", "SHARPEN", "GAMMA")
                         if (processedFilters.contains(currentFilter) && !processedFilters.contains(nuevoFiltro)) {
                             imageUriStr = originalImageUriStr
                         }
                         currentFilter = nuevoFiltro 
                         
-                        // Disparar procesamiento para nuevos filtros si es necesario
+                        
                         when (nuevoFiltro) {
                             "POSTERIZE" -> applyGpuFilterDebounced(0L) { GPUImagePosterizeFilter(posterizeLevels.toInt()) }
                             "SHARPEN" -> applyGpuFilterDebounced(0L) { GPUImageSharpenFilter(sharpnessValue) }
@@ -767,12 +767,12 @@ fun CameraPaintScreen(
                     onToggleWorldLock = { isWorldLockActive = !isWorldLockActive },
                     onShowColorGuide = { showColorGuide = true },
                     onClearReferencePoints = { referencePoints = emptyList() },
-                    initialTab = initialTab // 👈 PASA LA PESTAÑA INICIAL
+                    initialTab = initialTab 
                 )
             }
         }
 
-        // --- 4. Controles Superiores (Volver, Título, Visibilidad y Candado) ---
+        
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -780,7 +780,7 @@ fun CameraPaintScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Top
         ) {
-            // Botón Atrás
+            
             IconButton(
                 onClick = onBack,
                 modifier = Modifier.size(48.dp).clip(CircleShape).background(Color.Black.copy(alpha = 0.25f))
@@ -788,14 +788,14 @@ fun CameraPaintScreen(
                 Icon(Icons.Filled.ArrowBack, null, tint = Color.White)
             }
 
-            // Título App
+            
             Row(verticalAlignment = Alignment.CenterVertically) {
 
             }
 
-                // Botones Derecha
+                
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    // Indicador de Time-Lapse (Solo si está grabando)
+                    
                     if (isRecordingTimeLapse) {
                         Surface(
                             color = Color.Red.copy(alpha = 0.8f),
@@ -822,7 +822,7 @@ fun CameraPaintScreen(
                         }
                     }
 
-                    // Ocultar/Mostrar todo el panel lateral
+                    
                     IconButton(
                         onClick = { showSidePanel = !showSidePanel },
                         modifier = Modifier.size(48.dp).clip(CircleShape).background(Color.Black.copy(alpha = 0.25f))
@@ -830,7 +830,7 @@ fun CameraPaintScreen(
                         Icon(if (showSidePanel) Icons.Filled.Visibility else Icons.Filled.VisibilityOff, null, tint = Color.White)
                     }
 
-                // Candado
+                
                 IconButton(
                     onClick = { isLocked = !isLocked },
                     modifier = Modifier.size(48.dp).clip(CircleShape).background(Color.Black.copy(alpha = 0.25f))
@@ -840,9 +840,9 @@ fun CameraPaintScreen(
             }
         }
 
-        // --- 5. ELIMINADO: DIALOGO DE CAPTURA ---
+        
 
-        // --- 6. VENTANA EMERGENTE DE CAPTURA EN TIEMPO REAL ---
+        
         if (showRealTimeCapturePreview) {
             Box(
                 modifier = Modifier
@@ -855,7 +855,7 @@ fun CameraPaintScreen(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Header
+                    
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -872,7 +872,7 @@ fun CameraPaintScreen(
                         )
                     }
 
-                    // Visualización en Tiempo Real
+                    
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -881,7 +881,7 @@ fun CameraPaintScreen(
                             .background(Color.DarkGray)
                     ) {
                         if (captureModeSelected == "CAMERA_ONLY") {
-                            // Solo cámara en tiempo real
+                            
                             CameraPreviewComposable(
                                 modifier = Modifier.fillMaxSize(),
                                 showCamera = true,
@@ -889,9 +889,9 @@ fun CameraPaintScreen(
                                 onPreviewReady = { capturePreviewViewRef = it }
                             )
                         } else {
-                            // Lado a Lado en tiempo real (Simulado con Row)
+                            
                             Row(modifier = Modifier.fillMaxSize()) {
-                                // Mitad Izquierda: Cámara
+                                
                                 Box(modifier = Modifier.weight(1f)) {
                                     CameraPreviewComposable(
                                         modifier = Modifier.fillMaxSize(),
@@ -900,7 +900,7 @@ fun CameraPaintScreen(
                                         onPreviewReady = { capturePreviewViewRef = it }
                                     )
                                 }
-                                // Mitad Derecha: Plantilla Original
+                                
                                 Box(modifier = Modifier.weight(1f).background(Color.White)) {
                                     if (imageUri != null) {
                                         Image(
@@ -915,7 +915,7 @@ fun CameraPaintScreen(
                         }
                     }
 
-                    // Botones de control de la captura
+                    
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -923,11 +923,11 @@ fun CameraPaintScreen(
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // Botón Cancelar
+                        
                         IconButton(
                             onClick = { 
                                 showRealTimeCapturePreview = false 
-                                // Re-enlazar la cámara al visor principal
+                                
                                 showCamera = true 
                             },
                             modifier = Modifier.size(60.dp).background(Color.White.copy(alpha = 0.2f), CircleShape)
@@ -935,13 +935,13 @@ fun CameraPaintScreen(
                             Icon(Icons.Default.Close, null, tint = Color.White)
                         }
 
-                        // Botón DISPARADOR (Capturar de verdad)
+                        
                         FloatingActionButton(
                             onClick = {
                                 isProcessingBg = true
                                 scope.launch(Dispatchers.IO) {
                                     try {
-                                        // 1. CAPTURAR CÁMARA PRIMERO (Para evitar lag visual)
+                                        
                                         val cameraBitmap = withContext(Dispatchers.Main) { 
                                             capturePreviewViewRef?.bitmap 
                                         }
@@ -952,7 +952,7 @@ fun CameraPaintScreen(
                                         }
 
                                         val resultBitmap = if (captureModeSelected == "SIDE_BY_SIDE") {
-                                            // 2. AGREGAR IMAGEN DESPUÉS (Composición Lado a Lado)
+                                            
                                             val templateBitmap = imageUri?.let { uri ->
                                                 val source = ImageDecoder.createSource(context.contentResolver, uri)
                                                 ImageDecoder.decodeBitmap(source)
@@ -964,18 +964,18 @@ fun CameraPaintScreen(
                                             val rb = Bitmap.createBitmap(totalWidth, camH, Bitmap.Config.ARGB_8888)
                                             val canvas = android.graphics.Canvas(rb)
                                             
-                                            // Dibujar Cámara
+                                            
                                             canvas.drawBitmap(cameraBitmap, 0f, 0f, null)
                                             
-                                            // Dibujar Plantilla a la derecha sobre fondo blanco
+                                            
                                             templateBitmap?.let { tb ->
                                                 val paint = android.graphics.Paint().apply { isFilterBitmap = true }
                                                 
-                                                // Rellenar fondo blanco para la parte derecha
+                                                
                                                 val bgPaint = android.graphics.Paint().apply { color = android.graphics.Color.WHITE }
                                                 canvas.drawRect(android.graphics.RectF(camW.toFloat(), 0f, totalWidth.toFloat(), camH.toFloat()), bgPaint)
 
-                                                // Ajustar imagen
+                                                
                                                 val scale = camH.toFloat() / tb.height.toFloat()
                                                 val finalW = tb.width * scale
                                                 val left = camW + (camW - finalW) / 2f
@@ -1004,14 +1004,14 @@ fun CameraPaintScreen(
                             Icon(Icons.Default.CameraAlt, null, tint = Color.White, modifier = Modifier.size(40.dp))
                         }
 
-                        // Espacio vacío para balancear el Row
+                        
                         Box(modifier = Modifier.size(60.dp))
                     }
                 }
             }
         }
 
-        // --- 7. VISTA PREVIA DE CAPTURA (Decidir si guardar o no) ---
+        
         if (capturedBitmapForPreview != null) {
             Box(
                 modifier = Modifier
@@ -1024,7 +1024,7 @@ fun CameraPaintScreen(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Header de la Vista Previa
+                    
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -1040,7 +1040,7 @@ fun CameraPaintScreen(
                         )
                     }
 
-                    // Imagen capturada
+                    
                     Surface(
                         modifier = Modifier
                             .weight(1f)
@@ -1057,14 +1057,14 @@ fun CameraPaintScreen(
                         )
                     }
 
-                    // Botones de acción (Más modernos y estilo píldora)
+                    
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp, vertical = 32.dp),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        // Botón Descartar
+                        
                         Button(
                             onClick = { capturedBitmapForPreview = null },
                             modifier = Modifier
@@ -1079,7 +1079,7 @@ fun CameraPaintScreen(
                             Text(stringResource(R.string.cerrar), color = Color.White, fontWeight = FontWeight.Bold)
                         }
 
-                        // Botón Confirmar Guardado
+                        
                         Button(
                             onClick = {
                                 val bitmapToSave = capturedBitmapForPreview
@@ -1123,7 +1123,7 @@ fun CameraPaintScreen(
 }
 
 
-// ==================== COMPOSABLE DE CÁMARA ====================
+
 @Composable
 fun CameraPreviewComposable(
     modifier: Modifier = Modifier,
@@ -1179,7 +1179,7 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
         fontWeight = FontWeight.Bold
     )
 
-    // Seguridad: Evitar bucles infinitos o espaciados minúsculos
+    
     val safeSpacing = gridSpacing.coerceAtLeast(20f)
 
     androidx.compose.foundation.Canvas(modifier = modifier) {
@@ -1188,7 +1188,7 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
 
         when (type) {
             "GRID" -> {
-                // Líneas verticales (LETRAS)
+                
                 var x = safeSpacing
                 var col = 0
                 while (x < width) {
@@ -1199,7 +1199,7 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
                         strokeWidth = strokeWidth.toPx()
                     )
                     
-                    // Solo dibujar texto si hay espacio suficiente para evitar el crash de Constraints
+                    
                     val textPosX = x + 4.dp.toPx()
                     if (textPosX < width - 10.dp.toPx()) {
                         drawText(
@@ -1207,7 +1207,7 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
                             text = getGridLetter(col),
                             topLeft = Offset(textPosX, 4.dp.toPx()),
                             style = textStyle,
-                            size = androidx.compose.ui.geometry.Size(100f, 100f) // Tamaño fijo para evitar cálculos negativos
+                            size = androidx.compose.ui.geometry.Size(100f, 100f) 
                         )
                     }
                     
@@ -1215,7 +1215,7 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
                     col++
                 }
                 
-                // Líneas horizontales (NÚMEROS)
+                
                 var y = safeSpacing
                 var row = 1
                 while (y < height) {
@@ -1233,7 +1233,7 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
                             text = row.toString(),
                             topLeft = Offset(4.dp.toPx(), textPosY),
                             style = textStyle,
-                            size = androidx.compose.ui.geometry.Size(100f, 100f) // Tamaño fijo para evitar cálculos negativos
+                            size = androidx.compose.ui.geometry.Size(100f, 100f) 
                         )
                     }
                     
@@ -1242,7 +1242,7 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
                 }
             }
             "TRIANGLES" -> {
-                // Líneas diagonales
+                
                 var x = -height
                 while (x < width) {
                     drawLine(
@@ -1268,11 +1268,11 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
                 val center = Offset(width / 2f, height / 2f)
                 val maxDimension = kotlin.math.max(width, height)
                 
-                // 1. Círculos concéntricos con opacidad variable
+                
                 var radius = safeSpacing
                 var index = 1
                 while (radius < maxDimension) {
-                    val alpha = if (index % 5 == 0) 0.6f else 0.3f // Círculos principales y secundarios
+                    val alpha = if (index % 5 == 0) 0.6f else 0.3f 
                     drawCircle(
                         color = gridColor.copy(alpha = alpha),
                         radius = radius,
@@ -1285,7 +1285,7 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
                     index++
                 }
 
-                // 2. Líneas radiales dinámicas
+                
                 val radialLines = when {
                     safeSpacing < 100 -> 16
                     safeSpacing < 200 -> 12
@@ -1306,7 +1306,7 @@ fun GridOverlay(type: String, gridSpacing: Float, modifier: Modifier = Modifier)
                     )
                 }
 
-                // 3. Cruz central de precisión
+                
                 val crossSize = 20.dp.toPx()
                 drawLine(
                     color = gridColor,

@@ -1,5 +1,5 @@
 
-// Modern Material Design 3 Color Schemes
+
 private val LightColorScheme = lightColorScheme(
     primary = Primary,
     onPrimary = OnPrimary,

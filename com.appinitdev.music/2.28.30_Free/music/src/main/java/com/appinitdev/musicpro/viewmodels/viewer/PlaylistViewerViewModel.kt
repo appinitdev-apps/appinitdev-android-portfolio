@@ -1,18 +1,18 @@
 
-/**
- * ViewModel that builds and exposes [PageData] for a single [Playlist].
- *
- * Combines two reactive streams: one for the playlist's own metadata row (which carries
- * the per-playlist sort preference) and one for the ordered song list. Whenever either
- * stream emits — a song is added/removed, or the user picks a new sort via the sort
- * dialog — the songs are re-sorted and pushed to [data] automatically.
- *
- * Sort order is read from [Playlist.sortOrder] and [Playlist.sortStyle] stored in the DB,
- * so each playlist remembers its own sort independently. A [sortOrder] of {@code -1} means
- * "As Added", which preserves the position-based insertion order from the database.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
 @HiltViewModel(assistedFactory = PlaylistViewerViewModel.Factory::class)
 class PlaylistViewerViewModel @AssistedInject constructor(
         @Assisted val playlist: Playlist,
@@ -21,12 +21,12 @@ class PlaylistViewerViewModel @AssistedInject constructor(
 
     private val _data = MutableStateFlow<PageData?>(null)
 
-    /** Reactive [PageData] for the playlist page, re-emitted on song or sort changes. */
+     
     val data: StateFlow<PageData?> = _data.asStateFlow()
 
     private val _currentPlaylist = MutableStateFlow(playlist)
 
-    /** Reflects the latest playlist metadata from the DB, including any sort preference changes. */
+     
     val currentPlaylist: StateFlow<Playlist> = _currentPlaylist.asStateFlow()
 
     init {
@@ -56,11 +56,11 @@ class PlaylistViewerViewModel @AssistedInject constructor(
         }
     }
 
-    /**
-     * Sorts the raw song list according to [playlist]'s stored sort preference.
-     * When [Playlist.sortOrder] is {@code -1} the songs stay in their "As Added"
-     * position order exactly as they came from the database.
-     */
+     
+
+
+
+
     private fun List<Audio>.sortedByPlaylist(playlist: Playlist): List<Audio> {
         if (playlist.sortOrder == -1) return this
         val asc = playlist.sortStyle == CommonPreferencesConstants.ASCENDING
@@ -79,20 +79,20 @@ class PlaylistViewerViewModel @AssistedInject constructor(
         }
     }
 
-    /**
-     * No-op kept for API compatibility. Sort changes are now driven automatically by
-     * the DB flow, so an explicit resort call is no longer necessary.
-     */
+     
+
+
+
     fun resort() = Unit
 
-    /** Factory interface required by the Hilt assisted-injection mechanism. */
+     
     @AssistedFactory
     interface Factory {
-        /**
-         * Creates a [PlaylistViewerViewModel] scoped to the given [playlist].
-         *
-         * @param playlist The playlist whose page data will be loaded.
-         */
+         
+
+
+
+
         fun create(playlist: Playlist): PlaylistViewerViewModel
     }
 

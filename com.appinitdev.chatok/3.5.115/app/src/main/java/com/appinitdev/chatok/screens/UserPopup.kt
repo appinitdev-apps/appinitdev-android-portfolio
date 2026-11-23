@@ -22,7 +22,7 @@ fun UserPopup(
                 .padding(vertical = 24.dp),
             shape = RoundedCornerShape(32.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xFF1A1C1E) // Dark elegant background
+                containerColor = Color(0xFF1A1C1E) 
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
         ) {
@@ -99,7 +99,7 @@ fun UserPopup(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // Info Rows
+                
                 InfoRow(icon = Icons.Default.Cake, text = user.age ?: stringResource(R.string.na))
                 InfoRow(icon = Icons.Default.Person, text = user.gender ?: stringResource(R.string.na))
                 
@@ -167,7 +167,7 @@ fun UserPopup(
                     val isSeller = user.pref.verificada
                     val isVerified = user.pref.isVerified
                     val needsUnlock = isSeller && isVerified && !(state.userData?.unlockedChats?.contains(user.userId) ?: false) && state.userData?.userId != user.userId
-                    val unlockCost = 20 // Platform fixed price for chat unlock
+                    val unlockCost = 20 
 
                     if (needsUnlock) {
                         Text(

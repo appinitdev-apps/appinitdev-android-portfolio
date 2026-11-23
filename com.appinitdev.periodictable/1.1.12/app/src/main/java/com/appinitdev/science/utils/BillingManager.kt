@@ -46,21 +46,21 @@ class BillingManager(
         billingClient?.endConnection()
     }
 
-    // --- Accessors used by UI / adapter ---
+    
     fun getProductDetail(productId: String): ProductDetails? = productDetailMap[productId]
     fun isOwnsProVersion(): Boolean = ownsProVersion
     fun isOwnsProPlusVersion(): Boolean = ownsProPlusVersion
     fun isReady(): Boolean = billingClient?.isReady == true
 
-    // --- BillingClientStateListener ---
+    
     override fun onBillingServiceDisconnected() {
-        // try to reconnect
+        
         billingClient?.startConnection(this)
     }
 
     override fun onBillingSetupFinished(billingResult: BillingResult) {
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-            // Query products and purchases when ready
+            
             queryProducts()
             queryPurchases()
         } else {
@@ -68,24 +68,24 @@ class BillingManager(
         }
     }
 
-    // --- PurchasesUpdatedListener ---
+    
     private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
             if (purchases?.isNotEmpty() == true) {
                 for (purchase in purchases) {
-                    // Handle each purchase
+                    
                     scope.launch {
                         handlePurchase(purchase)
                     }
                 }
             }
         } else {
-            // pass other response codes back to listener if needed
+            
             listener.onError("Purchase update: ${billingResult.responseCode}")
         }
     }
 
-    // --- Product and Purchase queries ---
+    
     private fun queryProducts() {
         scope.launch {
             queryProductsAsync(BillingClient.ProductType.INAPP, productIds)
@@ -140,7 +140,7 @@ class BillingManager(
                             if (productId == PRO_VERSION_ID) ownsProVersion = true
                             if (productId == PRO_PLUS_VERSION_ID || productId == PRO_PLUS_UPGRADE_ID) ownsProPlusVersion = true
                         } catch (e: Exception) {
-                            // ignore parse error
+                            
                         }
                     }
                 }
@@ -153,7 +153,7 @@ class BillingManager(
         }
     }
 
-    // --- Purchase handling / acknowledgement ---
+    
     private suspend fun handlePurchase(purchase: Purchase) {
         val productId = try {
             val jsonObject = JSONObject(purchase.originalJson)
@@ -170,7 +170,7 @@ class BillingManager(
             withContext(Dispatchers.IO) {
                 billingClient?.acknowledgePurchase(params) { result ->
                     if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-                        // update flags on main thread
+                        
                         Handler(Looper.getMainLooper()).post {
                             updateOwnershipFlags(productId)
                             listener.onPurchaseCompleted(productId)
@@ -181,7 +181,7 @@ class BillingManager(
                 }
             }
         } else {
-            // already acknowledged or not PURCHASED yet; update ownership anyway
+            
             Handler(Looper.getMainLooper()).post {
                 updateOwnershipFlags(productId)
                 listener.onPurchaseCompleted(productId)
@@ -202,7 +202,7 @@ class BillingManager(
         }
     }
 
-    // --- Launch purchase flow ---
+    
     fun launchPurchase(productDetails: ProductDetails) {
         if (billingClient?.isReady != true) {
             listener.onError("Billing client not ready")

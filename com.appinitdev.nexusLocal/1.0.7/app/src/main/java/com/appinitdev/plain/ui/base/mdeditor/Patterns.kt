@@ -1,6 +1,6 @@
 
 object Patterns {
-    // Strings
+    
     val GENERAL_STRINGS = Pattern.compile("\"(.*?)\"|'(.*?)'")
     val HTML_TAGS =
         Pattern.compile(
@@ -11,8 +11,8 @@ object Patterns {
             "(\\S+)=[\"']?((?:.(?![\"']?\\s+(?:\\S+)=|[>\"']))+.)[\"']?",
         )
 
-    // static final Pattern CSS_STYLE_NAME= Pattern.compile(
-    //    "[ \\t\\n\\r\\f](.+?)\\{([^\\)]+)\\}");
+    
+    
     val CSS_ATTRS =
         Pattern.compile(
             "(.+?):(.+?);",
@@ -26,8 +26,8 @@ object Patterns {
             "(\\b(\\d*[.]?\\d+)\\b)",
         )
 
-    // public static final Pattern CSS_NUMBERS = Pattern.compile(
-    //        "/^auto$|^[+-]?[0-9]+\\.?([0-9]+)?(px|em|ex|%|in|cm|mm|pt|pc)?$/ig");
+    
+    
     val SYMBOLS =
         Pattern.compile(
             "(!|,|\\(|\\)|\\+|\\-|\\*|<|>|=|\\.|\\?|;|\\{|\\}|\\[|\\]|\\|)",
@@ -61,14 +61,14 @@ object Patterns {
         )
     val PHP_VARIABLES = Pattern.compile("\\$\\s*(\\w+)")
 
-    // Comments
+    
     val XML_COMMENTS = Pattern.compile("(?s)<!--.*?-->")
     val GENERAL_COMMENTS =
         Pattern.compile(
             "/\\*(?:.|[\\n\\r])*?\\*/|(?<!:)//.*|#.*",
         )
 
-    // same as GENERAL_COMMENTS but without -> //
+    
     val GENERAL_COMMENTS_NO_SLASH =
         Pattern.compile(
             "/\\*(?:.|[\\n\\r])*?\\*/|#.*",

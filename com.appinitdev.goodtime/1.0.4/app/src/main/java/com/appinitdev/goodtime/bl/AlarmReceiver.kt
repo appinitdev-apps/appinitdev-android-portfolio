@@ -23,7 +23,7 @@ class AlarmReceiver :
         if (isCountdown) {
             timerManager.finish()
         } else {
-            // hard limit was reached for count-up
+            
             timerManager.reset()
         }
     }

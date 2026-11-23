@@ -1,14 +1,14 @@
 
-/**
- * ViewModel responsible for loading and exposing per-second amplitude data
- * for the currently playing audio track.
- *
- * Uses [Amplituda] to decode the raw PCM waveform and then downsamples the
- * result so that each element of the output array represents the peak amplitude
- * within a single one-second window. Values are normalized to [0.0, 1.0].
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
 @HiltViewModel
 class WaveformViewModel @Inject constructor(
         application: Application
@@ -19,10 +19,10 @@ class WaveformViewModel @Inject constructor(
     private var loadJob: Job? = null
     private var amplitudaInstance: Amplituda? = null
 
-    /**
-     * Returns a [LiveData] stream of normalized amplitude arrays.
-     * Each emission contains one [Float] value per second of audio, in [0.0, 1.0].
-     */
+     
+
+
+
     fun getWaveformData(): LiveData<FloatArray> = waveformData
 
     fun loadWaveform(audio: Audio) {
@@ -30,17 +30,17 @@ class WaveformViewModel @Inject constructor(
             amplitudaInstance = Amplituda(getApplication())
         }
 
-        // Prevent redundant loading
+        
         if (audio.uri == currentUri && waveformData.value?.isNotEmpty() == true) return
 
-        // Track the current request to handle stale extractions
+        
         currentUri = audio.uri
 
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
                 if (currentUri != audio.uri) return@launch
 
-                postFlatData(audio) // Show the ghost waveform immediately while we load the real one in the background
+                postFlatData(audio) 
 
                 val parcelFileDescriptor = getApplication<Application>()
                     .contentResolver.openFileDescriptor(audio.uri.toUri(), "r")
@@ -54,7 +54,7 @@ class WaveformViewModel @Inject constructor(
                                 Compress.withParams(Compress.AVERAGE, BARS_PER_SECOND),
                                 Cache.withParams(Cache.REUSE, audio.hash.toString())
                         )
-                        .get() // Blocking call
+                        .get() 
                         .amplitudesAsList()
 
                     parcelFileDescriptor.close()
@@ -62,11 +62,11 @@ class WaveformViewModel @Inject constructor(
                     if (currentUri != audio.uri) return@launch
 
                     if (rawAmplitudes.isEmpty()) {
-                        waveformData.postValue(getRandomGhostData(audio.duration)) // Fallback to ghost data if extraction yields nothing
+                        waveformData.postValue(getRandomGhostData(audio.duration)) 
                         return@launch
                     }
 
-                    // --- Deterministic Time-Based Downsampling ---
+                    
 
                     val expectedBars = ((audio.duration / 1000f) * BARS_PER_SECOND).toInt().coerceAtLeast(1)
 
@@ -86,7 +86,7 @@ class WaveformViewModel @Inject constructor(
                         chunkedAmplitudes[i] = peakInChunk.toFloat()
                     }
 
-                    // --- Final Normalization ---
+                    
 
                     val maxPeak = chunkedAmplitudes.maxOrNull() ?: 1f
                     val sampled = if (maxPeak > 0f) {
@@ -94,16 +94,16 @@ class WaveformViewModel @Inject constructor(
                             chunkedAmplitudes[i] / maxPeak
                         }
                     } else {
-                        getRandomGhostData(audio.duration) // If all peaks are zero, return random ghost data to avoid a flatline
+                        getRandomGhostData(audio.duration) 
                     }
 
-                    // Push the perfectly scaled array safely to the UI thread
+                    
                     waveformData.postValue(sampled)
 
                 } catch (e: Exception) {
                     Log.e(TAG, "Amplituda extraction failed on IO thread for ${audio.title}", e)
                     if (currentUri == audio.uri) {
-                        postFlatData(audio) // Show the ghost waveform if extraction fails
+                        postFlatData(audio) 
                     }
                 } finally {
                     try {
@@ -115,16 +115,16 @@ class WaveformViewModel @Inject constructor(
             }.getOrElse {
                 Log.e(TAG, "Unexpected error in loadWaveform for ${audio.title}", it)
                 if (currentUri == audio.uri) {
-                    postFlatData(audio) // Show the ghost waveform on any unexpected error
+                    postFlatData(audio) 
                 }
             }
         }
     }
 
-    /**
-     * Clears the current waveform data and cancels any pending load.
-     * Call this when the user navigates to a song whose waveform has not yet been decoded.
-     */
+     
+
+
+
     fun resetWaveform() {
         loadJob?.cancel()
         currentUri = null
@@ -141,23 +141,23 @@ class WaveformViewModel @Inject constructor(
     }
 
     private fun getRandomGhostData(durationMs: Long): FloatArray {
-        // MUST MATCH the density of your actual extraction function
+        
         val expectedBars = ((durationMs / 1000f) * BARS_PER_SECOND).toInt().coerceAtLeast(1)
 
         return FloatArray(expectedBars) { i ->
-            // Calculate normalized progress through the song (0.0 to 1.0)
+            
             val progress = i.toFloat() / expectedBars
 
-            // Create the "Song Shape" envelope using a Sine wave
-            // sin(0) = 0.0 (Intro) -> sin(PI/2) = 1.0 (Middle) -> sin(PI) = 0.0 (Outro)
+            
+            
             val envelope = sin(progress * PI).toFloat()
 
-            // Generate the random spikes (Noise)
-            // We use a floor of 0.2f so the middle doesn't randomly have dead-silent spikes
+            
+            
             val noise = (nextFloat() * 0.8f) + 0.2f
 
-            // Multiply the noise by the envelope
-            // To keep it looking "ghostly" and subtle, we cap the absolute max height at 0.4f (40%)
+            
+            
             (envelope * noise) * 0.4f
         }
     }

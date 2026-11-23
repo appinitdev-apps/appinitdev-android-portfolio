@@ -12,14 +12,14 @@ fun MyGalleryScreen(
     val imagesList by database.galleryDao().getAllImages().collectAsState(initial = emptyList())
     val capturedWorksFull by database.galleryDao().getAllCapturedWorks().collectAsState(initial = emptyList())
     
-    // Agrupar trabajos por sesión o por individual
+    
     val capturedWorks = remember(capturedWorksFull) {
         capturedWorksFull.filter { !it.isTimeLapse || it.sessionId == null }
             .plus(
                 capturedWorksFull.filter { it.isTimeLapse && it.sessionId != null }
                     .groupBy { it.sessionId }
                     .values
-                    .map { it.first() } // Mostramos la miniatura del primer fotograma
+                    .map { it.first() } 
             ).sortedByDescending { it.addedAt }
     }
 
@@ -178,12 +178,12 @@ fun MyGalleryScreen(
             }
         }
 
-        // --- MODAL DE VISUALIZACIÓN DE FOTO UNICA ---
+        
         viewerImageUri?.let { uri ->
             ImageViewerModal(uri = uri, onDismiss = { viewerImageUri = null })
         }
 
-        // --- MODAL REPRODUCTOR DE TIMELAPSE (SECUENCIA COMPLETA) ---
+        
         selectedTimeLapseFrames?.let { frames ->
             TimeLapseViewerModal(
                 frames = frames,
@@ -205,10 +205,10 @@ fun TimeLapseViewerModal(
     var currentIndex by remember { mutableIntStateOf(0) }
     var isPlaying by remember { mutableStateOf(true) }
 
-    // Bucle de reproducción automática
+    
     LaunchedEffect(isPlaying, frames.size, currentIndex) {
         if (isPlaying && frames.size > 1) {
-            delay(400) // 400ms por fotograma para simular video TimeLapse
+            delay(400) 
             currentIndex = (currentIndex + 1) % frames.size
         }
     }
@@ -238,7 +238,7 @@ fun TimeLapseViewerModal(
                     contentScale = ContentScale.Fit
                 )
 
-                // Header superior: Botón cerrar + Titulo TimeLapse
+                
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -274,7 +274,7 @@ fun TimeLapseViewerModal(
                     }
                 }
 
-                // Barra inferior de reproducción y controles
+                
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -283,7 +283,7 @@ fun TimeLapseViewerModal(
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Slider de fotogramas
+                    
                     if (frames.size > 1) {
                         Slider(
                             value = currentIndex.toFloat(),
@@ -305,7 +305,7 @@ fun TimeLapseViewerModal(
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // Anterior
+                        
                         IconButton(
                             onClick = {
                                 isPlaying = false
@@ -315,7 +315,7 @@ fun TimeLapseViewerModal(
                             Icon(Icons.Default.SkipPrevious, null, tint = Color.White, modifier = Modifier.size(28.dp))
                         }
 
-                        // Reproducir / Pausar
+                        
                         FloatingActionButton(
                             onClick = { isPlaying = !isPlaying },
                             containerColor = Color(0xFFFF4081),
@@ -329,7 +329,7 @@ fun TimeLapseViewerModal(
                             )
                         }
 
-                        // Siguiente
+                        
                         IconButton(
                             onClick = {
                                 isPlaying = false
@@ -339,7 +339,7 @@ fun TimeLapseViewerModal(
                             Icon(Icons.Default.SkipNext, null, tint = Color.White, modifier = Modifier.size(28.dp))
                         }
 
-                        // Compartir fotograma actual
+                        
                         IconButton(
                             onClick = { onShareFrame(currentWork) }
                         ) {
@@ -515,7 +515,7 @@ fun CapturedWorkCard(
                         contentScale = ContentScale.Crop
                     )
                     
-                    // Indicador de Time-Lapse (Sesión)
+                    
                     if (sessionCount > 1) {
                         Surface(
                             modifier = Modifier.padding(10.dp).align(Alignment.TopStart),
@@ -553,7 +553,7 @@ fun CapturedWorkCard(
                 }
             }
 
-            // Badge miniatura de la plantilla
+            
             work.templatePath?.let { path ->
                 Surface(
                     modifier = Modifier

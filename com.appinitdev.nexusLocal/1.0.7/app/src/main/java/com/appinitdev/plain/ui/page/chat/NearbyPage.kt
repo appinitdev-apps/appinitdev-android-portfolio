@@ -12,25 +12,25 @@ fun NearbyPage(
     var showQrSheet by remember { mutableStateOf(false) }
     var qrData by remember { mutableStateOf<DQrPairData?>(null) }
 
-    // Auto start discovering when entering the page
+    
     LaunchedEffect(Unit) {
         if (!isDiscovering) {
             nearbyVM.toggleDiscovering()
         }
 
-        // Handle incoming pair request from QR scan (navigated from ScanPage)
+        
         if (pairDeviceJson.isNotEmpty()) {
             try {
                 val device = JsonHelper.jsonDecode<DQrPairData>(pairDeviceJson).toDNearbyDevice()
                 nearbyVM.startPairingFromDevice(device)
             } catch (e: Exception) {
-                // ignore parse errors
+                
             }
         }
 
     }
 
-    // Load QR data when the sheet is about to be shown
+    
     LaunchedEffect(showQrSheet) {
         if (showQrSheet && qrData == null) {
             withIO {
@@ -39,7 +39,7 @@ fun NearbyPage(
         }
     }
 
-    // Stop discovering when leaving the page
+    
     DisposableEffect(Unit) {
         onDispose {
             if (isDiscovering) {

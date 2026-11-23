@@ -1,7 +1,7 @@
 
 object HttpModule {
-    // Limit concurrent zip operations to 1 to prevent resource exhaustion
-    // when the web UI triggers multiple download requests (e.g. double-click).
+    
+    
 
 
     @SuppressLint("SuspiciousIndentation")
@@ -31,7 +31,7 @@ object HttpModule {
 
         install(ConditionalHeaders)
         install(WebSockets)
-//        install(Compression) // this will slow down the download speed
+
         install(ForwardedHeaders)
         install(PartialContent)
         install(AutoHeadResponse)
@@ -56,8 +56,8 @@ object HttpModule {
         }
 
         routing {
-            // SPA: serve all resources from classpath "web/", inject __SERVER_TIME__ into index.html
-            // for every non-file path (no extension) so the Vue SPA can boot with a clock-sync value.
+            
+            
             staticResources("/", "web", index = null) {
                 cacheControl {
                     arrayListOf(
@@ -67,10 +67,10 @@ object HttpModule {
                 }
                 fallback { requestedPath, call ->
                     if (requestedPath.contains('.')) {
-                        // Real static asset that doesn't exist → 404
+                        
                         call.respond(HttpStatusCode.NotFound)
                     } else {
-                        // SPA route (no extension) → serve index.html with injected server time
+                        
                         val classLoader = call.application.environment.classLoader
                         val html = classLoader.getResourceAsStream("web/index.html")
                             ?.bufferedReader()?.readText() ?: ""
@@ -127,7 +127,7 @@ object HttpModule {
             addFiles()
             addUploads()
 
-            // this api is to fix the websocket takes 10s to get remoteAddress on some phones.
+            
             post("/init") {
                 val clientId = call.request.headers["c-id"] ?: ""
                 if (clientId.isEmpty()) {
@@ -139,8 +139,8 @@ object HttpModule {
                     return@post
                 }
                 HttpServerManager.clientIpCache[clientId] = call.request.origin.remoteAddress
-                // If request body is not empty, try to decrypt with the token corresponding to c-id.
-                // If decrypt succeeds, return 200; otherwise continue with the original handling.
+                
+                
                 val bodyBytes = runCatching { call.receive<ByteArray>() }.getOrNull()
                 if (bodyBytes != null && bodyBytes.isNotEmpty()) {
                     val token = HttpServerManager.tokenCache[clientId]

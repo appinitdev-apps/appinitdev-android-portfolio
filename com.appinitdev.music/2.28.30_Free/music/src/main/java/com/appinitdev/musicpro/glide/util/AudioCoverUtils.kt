@@ -28,7 +28,7 @@ object AudioCoverUtils {
 
         val glideRequest = Glide.with(this)
             .asBitmap()
-            .dontTransform() // This way we can apply our own transformations and skip the module specific ones
+            .dontTransform() 
             .transform(*transformations.toTypedArray())
             .load(item)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -88,7 +88,7 @@ object AudioCoverUtils {
 
         val glideRequest = Glide.with(this)
             .asBitmap()
-            .dontTransform() // This way we can apply our own transformations and skip the module specific ones
+            .dontTransform() 
             .transform(*transformations.toTypedArray())
             .load(item)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -97,13 +97,13 @@ object AudioCoverUtils {
         return glideRequest.submit(width, height).get()
     }
 
-    /**
-     * Loads album art for [item] into a plain [Bitmap] delivered via [onBitmap].
-     * Designed for canvas-drawn views such as [MiniPlayerView] that do not hold
-     * an [ImageView] reference.  Cancellation is caller-managed — call
-     * [Glide.with(context).clear(target)] with the returned target if needed;
-     * here we simply pass `null` on clear.
-     */
+     
+
+
+
+
+
+
     fun Context.loadArtIntoBitmap(item: Any, onBitmap: (Bitmap?) -> Unit) {
         Glide.with(this)
             .asBitmap()

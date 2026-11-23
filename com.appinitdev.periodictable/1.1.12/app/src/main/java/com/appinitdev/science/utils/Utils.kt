@@ -39,10 +39,10 @@ object Utils {
 
 
     fun jsonTransition(view: View, time: Long) {
-        //Fade out
+        
         view.animate().setDuration(time)
         view.animate().alpha(0.0f)
-        //Fade In
+        
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
             view.animate().setDuration(time)

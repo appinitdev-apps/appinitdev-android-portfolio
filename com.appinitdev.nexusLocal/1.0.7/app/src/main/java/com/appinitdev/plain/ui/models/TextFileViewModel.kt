@@ -21,18 +21,18 @@ class TextFileViewModel : ViewModel() {
                 file.value = FileMediaStoreHelper.getByIdAsync(context, mediaId)
             }
             
-            // Set external file flag
+            
             isExternalFile.value = path.startsWith("content://")
             
-            // Handle content:// URIs and regular file paths
+            
             content.value = if (path.startsWith("content://")) {
-                // For content:// URIs, use ContentResolver
+                
                 val uri = Uri.parse(path)
                 context.contentResolver.openInputStream(uri)?.use { inputStream ->
                     inputStream.bufferedReader().readText()
                 } ?: ""
             } else {
-                // For regular file paths, use File.readText()
+                
                 File(path).readText()
             }
         } catch (e: Exception) {

@@ -4,10 +4,10 @@ object SmsConversationHelper {
     private val smsUri = Telephony.Sms.CONTENT_URI
     private val mmsUri = Telephony.Mms.CONTENT_URI
 
-    /**
-     * Returns the set of archived conversation IDs that have NO new messages
-     * after the archive date (i.e., still effectively archived).
-     */
+     
+
+
+
     private suspend fun getActiveArchivedIds(context: Context): Set<String> {
         val archivedRecords = AppDatabase.instance.archivedConversationDao().getAll()
         if (archivedRecords.isEmpty()) return emptySet()
@@ -18,9 +18,9 @@ object SmsConversationHelper {
         }.map { it.conversationId }.toSet()
     }
 
-    /**
-     * Returns the latest SMS snippet before the given date for a conversation.
-     */
+     
+
+
     private fun getSnippetBeforeDate(context: Context, threadId: String, beforeDate: Long): String? {
         return context.contentResolver.queryCursor(
             smsUri,
@@ -33,10 +33,10 @@ object SmsConversationHelper {
         }
     }
 
-    /**
-     * Returns archived conversations sorted by archive date descending,
-     * with snippet/date adjusted to reflect state at archive time.
-     */
+     
+
+
+
     suspend fun getArchivedConversations(context: Context): List<DMessageConversation> {
         val archivedRecords = AppDatabase.instance.archivedConversationDao().getAll()
             .sortedByDescending { it.conversationDate }
@@ -198,7 +198,7 @@ object SmsConversationHelper {
         val where = buildWhereAsync(query)
         val ids = linkedSetOf<String>()
 
-        // Query SMS table for matching thread IDs
+        
         context.contentResolver.queryCursor(
             smsUri,
             arrayOf(Telephony.Sms.THREAD_ID),
@@ -212,7 +212,7 @@ object SmsConversationHelper {
             }
         }
 
-        // Also query MMS table for matching thread IDs (SMS type maps to MMS msg_box)
+        
         val hasTextOrIdsFilter = conditions.any { it.name == "text" || it.name == "ids" }
         if (!hasTextOrIdsFilter) {
             val mmsWhere = ContentWhere()
@@ -265,21 +265,21 @@ object SmsConversationHelper {
             return threadIds.mapNotNull { conversationMap[it] }
         }
 
-        // Single-pass: read conversations with full data, filter archived, paginate, resolve addresses
+        
         val archivedRecords = AppDatabase.instance.archivedConversationDao().getAll()
         val archivedMap = archivedRecords.associateBy { it.conversationId }
 
         val conversations = mutableListOf<DMessageConversation>()
-        val recipientMap = mutableMapOf<String, String>() // threadId -> recipientId
+        val recipientMap = mutableMapOf<String, String>() 
         var skip = 0
 
-        // Use SQL LIMIT when no archived conversations to skip (common case)
+        
         val sortOrder = if (archivedMap.isEmpty() && offset == 0) {
             "${Telephony.Threads.DATE} DESC LIMIT $limit"
         } else if (archivedMap.isEmpty()) {
             "${Telephony.Threads.DATE} DESC LIMIT ${offset + limit}"
         } else {
-            // Need full scan to filter archived conversations
+            
             "${Telephony.Threads.DATE} DESC LIMIT ${offset + limit + archivedMap.size}"
         }
 
@@ -296,7 +296,7 @@ object SmsConversationHelper {
             while (cursor.moveToNext() && conversations.size < limit) {
                 val id = cursor.getStringValue(BaseColumns._ID, cache)
                 val date = cursor.getTimeValue(Telephony.Threads.DATE, cache)
-                // Check if this conversation is actively archived
+                
                 val archived = archivedMap[id]
                 if (archived != null && date.toEpochMilliseconds() <= archived.conversationDate) continue
                 if (skip < offset) { skip++; continue }
@@ -317,7 +317,7 @@ object SmsConversationHelper {
 
         if (conversations.isEmpty()) return emptyList()
 
-        // Batch resolve addresses
+        
         val addressMap = batchGetCanonicalAddresses(context, recipientMap.values.toSet())
         return conversations.map { conv ->
             val recipientId = recipientMap[conv.id]
@@ -335,12 +335,12 @@ object SmsConversationHelper {
             return getMatchedThreadIdsAsync(context, query).count { !activeArchivedIds.contains(it) }
         }
 
-        // Count all conversations properly, minus truly archived ones.
-        // Note: avoid using "COUNT(*) as count" projection because some vendors
-        // (e.g. vivo) rewrite the projection in their MmsSmsProvider and inject
-        // extra columns like "snippet_financial_info as snippet", which corrupts
-        // aggregate expressions and produces a SQLite syntax error
-        // (near "as": syntax error). Use a plain projection and read cursor.count.
+        
+        
+        
+        
+        
+        
         var count = 0
         context.contentResolver.queryCursor(
             conversationsUri,

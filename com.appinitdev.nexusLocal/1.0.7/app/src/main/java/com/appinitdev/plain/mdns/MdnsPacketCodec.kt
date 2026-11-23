@@ -21,7 +21,7 @@ internal object MdnsPacketCodec {
         if (query.size < 12 || ips.isEmpty()) return null
 
         val flags = readU16(query, 2)
-        // Bit 15 (QR) = 1 means this is a response, not a query. Ignore it.
+        
         if (flags and 0x8000 != 0) return null
 
         val qdCount = readU16(query, 4)

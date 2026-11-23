@@ -20,7 +20,7 @@ fun FunctionPlotter(
     )
 
     var selectedFunc by remember { mutableStateOf(availableFunctions.first()) }
-    var scale by remember { mutableFloatStateOf(40f) } // Pixels per unit
+    var scale by remember { mutableFloatStateOf(40f) } 
 
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -38,7 +38,7 @@ fun FunctionPlotter(
                 color = MaterialTheme.colorScheme.primary
             )
 
-            // Function Selector Chips
+            
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(availableFunctions) { func ->
                     FilterChip(
@@ -49,7 +49,7 @@ fun FunctionPlotter(
                 }
             }
 
-            // Canvas Plotter
+            
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -70,7 +70,7 @@ fun FunctionPlotter(
                     val gridColor = Color.Gray.copy(alpha = 0.2f)
                     val curveColor = Color(0xFF3B82F6)
 
-                    // Draw Grid Lines
+                    
                     val step = scale
                     var xGrid = centerX % step
                     while (xGrid < width) {
@@ -84,11 +84,11 @@ fun FunctionPlotter(
                         yGrid += step
                     }
 
-                    // Draw Main Axes X and Y
+                    
                     drawLine(axisColor, Offset(0f, centerY), Offset(width, centerY), strokeWidth = 3f)
                     drawLine(axisColor, Offset(centerX, 0f), Offset(centerX, height), strokeWidth = 3f)
 
-                    // Plot Function Curve
+                    
                     val path = Path()
                     var isFirst = true
 
@@ -121,7 +121,7 @@ fun FunctionPlotter(
                 }
             }
 
-            // Zoom Controls
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,

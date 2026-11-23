@@ -24,7 +24,7 @@ class ZoomLayout @JvmOverloads constructor(
     private inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(detector: ScaleGestureDetector): Boolean {
             scaleFactor *= detector.scaleFactor
-            scaleFactor = scaleFactor.coerceIn(0.1f, 5.0f) // Limit zoom range
+            scaleFactor = scaleFactor.coerceIn(0.1f, 5.0f) 
             invalidate()
             return true
         }

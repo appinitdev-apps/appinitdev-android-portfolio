@@ -69,7 +69,7 @@ class AdapterAccentColors : RecyclerView.Adapter<VerticalListViewHolder>() {
     fun reloadAlbumArt() {
         val albumArtAccentIndex = colors.indexOfFirst { it.identifier == AlbumArt.IDENTIFIER }
         if (albumArtAccentIndex != -1) {
-            notifyItemChanged(albumArtAccentIndex + 1) // +1 for header
+            notifyItemChanged(albumArtAccentIndex + 1) 
         }
     }
 

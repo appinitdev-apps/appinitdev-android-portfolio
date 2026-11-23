@@ -18,7 +18,7 @@ class ServiceStopBroadcastReceiver : BroadcastReceiver() {
                 val callerUid = Binder.getCallingUid()
                 val appUid = context.applicationInfo.uid
                 if (callerUid != appUid) {
-                    // External caller (ADB, third-party app) — require token
+                    
                     val storedToken = AdbTokenPreference.getAsync()
                     if (intent.getStringExtra("token") != storedToken) return@coIO
                 }
@@ -30,7 +30,7 @@ class ServiceStopBroadcastReceiver : BroadcastReceiver() {
                 ScreenMirrorService.instance?.stop()
                 ScreenMirrorService.instance = null
             }
-            // Android 14+ allows FGS notifications to be swiped. Re-post via onStartCommand.
+            
             Constants.ACTION_REPOST_HTTP_NOTIFICATION -> {
                 if (HttpServerService.isRunning()) {
                     ContextCompat.startForegroundService(context, Intent(context, HttpServerService::class.java))

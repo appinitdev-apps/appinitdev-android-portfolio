@@ -1,18 +1,18 @@
 
-/**
- * Handles button taps from the home screen widget.
- *
- * When the user taps a control button, we connect to [FelicityPlayerService] using
- * [MediaController.Builder]. The magic here is that building the controller automatically
- * starts the service if it isn't already running — so tapping Play four days after the
- * app was last open will wake everything back up, restore the queue from the database,
- * and start playing. Pretty neat for just tapping a button.
- *
- * We also handle the case where the service was killed while the app is still active.
- * The [MediaController.Builder.buildAsync] call will restart it transparently.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
 @OptIn(UnstableApi::class)
 class WidgetActionReceiver : BroadcastReceiver() {
 
@@ -21,9 +21,9 @@ class WidgetActionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action ?: return
 
-        // goAsync() gives us a bit more time to finish our async work before Android
-        // recycles the receiver. Without it we'd get a strict-mode violation (or worse,
-        // a crash) because MediaController.buildAsync is not instant.
+        
+        
+        
         val pendingResult = goAsync()
 
         val sessionToken = SessionToken(
@@ -39,8 +39,8 @@ class WidgetActionReceiver : BroadcastReceiver() {
         Futures.addCallback(controllerFuture, object : FutureCallback<MediaController> {
             override fun onSuccess(controller: MediaController) {
                 handleAction(context, controller, action) {
-                    // Release the controller a moment after the command was sent so ExoPlayer
-                    // has time to process it before we let go of the connection.
+                    
+                    
                     Handler(Looper.getMainLooper()).postDelayed({
                                                                     controller.release()
                                                                     pendingResult.finish()
@@ -55,24 +55,24 @@ class WidgetActionReceiver : BroadcastReceiver() {
         }, MoreExecutors.directExecutor())
     }
 
-    /**
-     * Dispatches the correct playback command based on [action].
-     *
-     * For play/pause specifically, we check whether the player's queue is empty.
-     * An empty queue means the service was just cold-started from a dead state —
-     * in that case we restore the saved queue from the database first, then play.
-     *
-     * [onDone] is called when the command has been issued so the caller can clean up.
-     */
+     
+
+
+
+
+
+
+
+
     private fun handleAction(context: Context, controller: MediaController, action: String, onDone: () -> Unit) {
         when (action) {
             ACTION_PLAY_PAUSE -> {
                 if (controller.mediaItemCount == 0) {
-                    // Queue is empty — the service just started from scratch and doesn't know
-                    // what to play yet. Dig up the last session from the database and load it.
+                    
+                    
                     restoreQueueAndPlay(context, controller, onDone)
                 } else {
-                    // There is already something loaded — just flip the play/pause state.
+                    
                     if (controller.isPlaying) {
                         controller.pause()
                     } else {
@@ -104,13 +104,13 @@ class WidgetActionReceiver : BroadcastReceiver() {
         }
     }
 
-    /**
-     * Loads the last saved queue from the database, hands it to [MediaPlaybackManager] so
-     * the whole app state is consistent, and starts playback.
-     *
-     * This is exactly what [BaseActivity.restoreLastSongStateFromDatabase] does for the UI path —
-     * we mirror the same logic here for the headless widget path.
-     */
+     
+
+
+
+
+
+
     private fun restoreQueueAndPlay(context: Context, controller: MediaController, onDone: () -> Unit) {
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             try {
@@ -130,8 +130,8 @@ class WidgetActionReceiver : BroadcastReceiver() {
                     }
 
                     withContext(Dispatchers.Main) {
-                        // Tell MediaPlaybackManager about the restored queue. This also
-                        // calls controller.setMediaItems and controller.play via autoPlay=true.
+                        
+                        
                         MediaPlaybackManager.setMediaController(controller)
                         MediaPlaybackManager.setSongs(
                                 audios = savedQueue,

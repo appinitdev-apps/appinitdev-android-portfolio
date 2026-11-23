@@ -1,13 +1,13 @@
 
-/**
- * Adapter for the panel navigation grid shown in the dashboard browse section.
- *
- * Displays all [panels] at once using the same grid item layout as the Simple Home
- * screen. There is no expand/collapse button; every panel is always visible.
- *
- * @param panels The complete list of [Panel] items to display in the grid.
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
 class AdapterDashboardPanels(
         private val panels: List<Panel>
 ) : RecyclerView.Adapter<AdapterDashboardPanels.PanelHolder>() {
@@ -31,11 +31,11 @@ class AdapterDashboardPanels(
         }
     }
 
-    /**
-     * Sets the callbacks used to respond to panel item clicks.
-     *
-     * @param callbacks The callback implementation to attach.
-     */
+     
+
+
+
+
     fun setCallbacks(callbacks: AdapterDashboardPanelsCallbacks) {
         this.callbacks = callbacks
     }
@@ -44,11 +44,11 @@ class AdapterDashboardPanels(
             VerticalListViewHolder(binding.root)
 
     companion object {
-        /**
-         * Callback interface for panel grid interactions.
-         */
+         
+
+
         interface AdapterDashboardPanelsCallbacks {
-            /** Called when the user taps a panel navigation item. */
+             
             fun onPanelClicked(panel: Panel)
         }
     }

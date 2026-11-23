@@ -1,11 +1,11 @@
 
-/**
- * Keeps track of the album artists list for the Album Artists panel.
- * Loads data from the repository, sorts it by the saved preference,
- * and re-loads whenever something relevant changes (library filter, sort order, etc.).
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 @HiltViewModel
 class AlbumArtistsViewModel @Inject constructor(
         application: Application,

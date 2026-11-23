@@ -64,7 +64,7 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
         commonDao = database.getCommonDao()
 
         labels = labelDao.getAll()
-        //        colors = baseNoteDao.getAllColorsAsync()
+        
         reminders = baseNoteDao.getAllRemindersAsync()
 
         allNotes?.removeObserver(allNotesObserver!!)
@@ -172,7 +172,7 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
                 NotallyDatabase.getInternalDatabaseFiles(app).forEach {
                     it.copyTo(File(directory, it.name), overwrite = true)
                 }
-                //                database.close()
+                
             }
             savePreference(preferences.dataInPublicFolder, true)
             callback?.invoke()
@@ -187,7 +187,7 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
                 val directory = NotallyDatabase.getInternalDatabaseFile(app).parentFile
                 val oldFiles = NotallyDatabase.getExternalDatabaseFiles(app)
                 oldFiles.forEach { it.copyTo(File(directory, it.name), overwrite = true) }
-                //                database.close()
+                
                 oldFiles.forEach {
                     if (it.exists()) {
                         it.delete()
@@ -200,30 +200,30 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
     }
 
     fun enableBiometricLock(cipher: Cipher) {
-        // Guardar IV generado por el Cipher (opcional si lo usas en tu lógica)
+        
         savePreference(preferences.iv, cipher.iv)
-        // Guardar estado de BiometricLock
+        
         savePreference(preferences.biometricLock, BiometricLock.ENABLED)
-        // Si quieres mantener la llave de cifrado local, puedes guardarla en preferences
+        
         val passphrase = preferences.databaseEncryptionKey.init(cipher)
         savePreference(preferences.fallbackDatabaseEncryptionKey, passphrase)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun disableBiometricLock(cipher: Cipher? = null, callback: (() -> Unit)? = null) {
-        // Obtener passphrase guardada, si es necesario para tu lógica
+        
         val passphrase =
             cipher?.doFinal(preferences.databaseEncryptionKey.value)
                 ?: preferences.fallbackDatabaseEncryptionKey.value
-                ?: ByteArray(0) // fallback si no hay valor
+                ?: ByteArray(0) 
 
-        // Solo cerramos la base de datos sin descifrar, ya que no hay SQLCipher
+        
         database.close()
 
-        // Guardar estado de BiometricLock
+        
         savePreference(preferences.biometricLock, BiometricLock.DISABLED)
 
-        // Ejecutar callback si se proporciona
+        
         callback?.invoke()
     }
 
@@ -232,11 +232,11 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
         viewModelScope.launch(Dispatchers.IO) { preference.save(value) }
     }
 
-    /**
-     * Release previously persisted permissions, if any There is a hard limit of 128 before Android
-     * 11, 512 after Check ->
-     * https://commonsware.com/blog/2020/06/13/count-your-saf-uri-permission-grants.html
-     */
+     
+
+
+
+
     private fun clearPersistedUriPermissions(folderPath: String) {
         val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         app.contentResolver.persistedUriPermissions.forEach { permission ->
@@ -397,10 +397,10 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
     fun moveBaseNotes(ids: LongArray, folder: Folder) {
         viewModelScope.launch(
             Dispatchers.IO
-        ) { // Only reminders of notes in NOTES folder are active
+        ) { 
             baseNoteDao.move(ids, folder)
             val notes = baseNoteDao.getByIds(ids).toNoteIdReminders()
-            // Only reminders of notes in NOTES folder are active
+            
             when (folder) {
                 Folder.NOTES -> app.scheduleNoteReminders(notes)
                 else -> app.cancelNoteReminders(notes)

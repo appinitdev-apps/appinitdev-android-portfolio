@@ -8,14 +8,14 @@ data class UserProfile(
     val redes: String = "",
     val enlaces: String = "",
     val web: String = "",
-    // Puntajes y Nivel
+    
     val puntos: Int = 0,
     val nivel: Double = 1.0,
     val puntosExtra: Double = 0.0,
     val calificaciones: Map<String, Int> = emptyMap(),
     val perfilCompletado: Boolean = false,
     val fcmToken: String = "",
-    // Nuevas funcionalidades
+    
     val streaks: Int = 0,
     val lastActive: Long = 0L,
     val achievements: List<String> = emptyList(),
@@ -27,16 +27,16 @@ data class UserProfile(
         get() = if (calificaciones.isEmpty()) 0f else calificaciones.values.average().toFloat()
     val reputacion: Double
         get() {
-            // Escala 1-5 basada en el nivel (peso 40%)
+            
             val scoreNivel = nivel.coerceIn(1.0, 5.0)
 
-            // Escala 1-5 basada en puntos (0-200) (peso 30%)
+            
             val scorePuntos = (puntos.toDouble() / 200.0 * 5.0).coerceIn(0.0, 5.0)
 
-            // Escala 1-5 basada en estrellas (peso 30%)
+            
             val scoreEstrellas = promedioEstrellas.toDouble()
 
-            // Aplicación de pesos: 0.4 + 0.3 + 0.3 = 1.0 (Total)
+            
             return (scoreNivel * 0.4) + (scorePuntos * 0.3) + (scoreEstrellas * 0.3)
         }
 

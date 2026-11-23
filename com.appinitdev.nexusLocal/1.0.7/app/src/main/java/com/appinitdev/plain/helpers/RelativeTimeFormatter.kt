@@ -1,11 +1,11 @@
 
-/**
- * Modern, cross-platform relative time formatter.
- *
- * RelativeTimeFormatter.format(timestamp, now, style)
- *
- * All display strings live in strings_relative_time.xml — no hardcoded text.
- */
+ 
+
+
+
+
+
+
 object RelativeTimeFormatter {
 
     enum class Style { SHORT, LONG }

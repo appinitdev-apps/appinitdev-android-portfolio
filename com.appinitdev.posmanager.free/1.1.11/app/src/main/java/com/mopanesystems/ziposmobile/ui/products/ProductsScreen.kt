@@ -1,13 +1,13 @@
 
-/*
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ProductsScreen(
-    viewModel: ProductViewModel = hiltViewModel(),
-) {
-    ProductsScreenCompose(viewModel = viewModel)
-}
-*/
+ 
+
+
+
+
+
+
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductsScreenCompose(
@@ -38,7 +38,7 @@ fun ProductsScreenCompose(
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Modern Header Section
+        
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
@@ -108,7 +108,7 @@ fun ProductsScreenCompose(
             }
         }
 
-        // Modern Search and Filter Section
+        
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
@@ -119,7 +119,7 @@ fun ProductsScreenCompose(
                 modifier = Modifier.padding(10.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Enhanced Search Bar
+                
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = {
@@ -156,7 +156,7 @@ fun ProductsScreenCompose(
                     )
                 )
 
-                // Modern Category Filter Chips
+                
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
@@ -164,9 +164,9 @@ fun ProductsScreenCompose(
                         FilterChip(
                             onClick = {
                                 if (category.equals("All", ignoreCase = true)) {
-                                    viewModel.clearFilters() // Mostrar todos los productos
+                                    viewModel.clearFilters() 
                                 } else {
-                                    viewModel.filterByCategory(category) // Filtrar por categoría seleccionada
+                                    viewModel.filterByCategory(category) 
                                 }
                                 selectedCategory = category
                             },
@@ -202,11 +202,11 @@ fun ProductsScreenCompose(
                 onDismiss = { showProductDialogCreate = false },
                 onSave = { product ->
                     viewModel.addProduct(product)
-                    // Aquí guardas el producto, por ejemplo en un ViewModel o lista
+                    
                     Log.d("Products", "Producto creado: $product")
                     showProductDialogCreate = false
                 },
-                initialProduct = productToEdit, // null porque es creación
+                initialProduct = productToEdit, 
                 categories = categories
             )
         }
@@ -217,17 +217,17 @@ fun ProductsScreenCompose(
                 onDismiss = { showProductDialogUpdate = false },
                 onSave = { product ->
                     viewModel.updateProduct(product)
-                    // Aquí guardas el producto, por ejemplo en un ViewModel o lista
+                    
                     Log.d("Products", "Producto actualizado: $product")
                     showProductDialogUpdate = false
                 },
-                initialProduct = productToEdit, // null porque es creación
+                initialProduct = productToEdit, 
                 categories = categories
             )
         }
 
 
-        // Modern Products List
+        
         if (isLoading) {
             Surface(
                 modifier = Modifier
@@ -315,7 +315,7 @@ fun ProductsScreenCompose(
                         edit = productEdit,
                         onDelete = {
                             productToDelete = product
-                            //viewModel.deleteProduct(product)
+                            
                                    },
                         onAddToCart = { viewModelPOS.addProductToCart(product) }
                     )
@@ -323,10 +323,10 @@ fun ProductsScreenCompose(
             }
         }
 
-        // Error message
+        
         errorMessage?.let { message ->
             LaunchedEffect(message) {
-                // Show error message
+                
             }
         }
 
@@ -386,7 +386,7 @@ fun ProductsScreenCompose(
     }
 }
 
-// Modern Product Card Component
+
 @Composable
 fun ModernProductCard(
     product: com.mopanesystems.ziposmobile.data.model.Product,
@@ -425,7 +425,7 @@ fun ModernProductCard(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Product avatar/icon
+            
             Surface(
                 modifier = Modifier.size(64.dp),
                 shape = MaterialTheme.shapes.large,
@@ -441,7 +441,7 @@ fun ModernProductCard(
                 }
             }
 
-            // Product information
+            
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -470,7 +470,7 @@ fun ModernProductCard(
                         fontWeight = FontWeight.Bold
                     )
 
-                    // Stock indicator
+                    
                     Surface(
                         shape = MaterialTheme.shapes.small,
                         color = if (product.stockQuantity < product.minStockLevel) {
@@ -501,21 +501,21 @@ fun ModernProductCard(
                 }
             }
 
-            // Modern action buttons with proper scaling
+            
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.End
             ) {
-                // Primary action - Add to cart
+                
                 if (!edit)
                     Button(
                         onClick = {
-                            isAdded = true           // <-- activa el rebote
+                            isAdded = true           
                             onAddToCart()
                             coroutineScope.launch {
                                 delay(300)
-                                isAdded = false      // <-- vuelve a la normalidad
+                                isAdded = false      
                             }
                                   },
                         enabled = product.stockQuantity > 0,
@@ -545,12 +545,12 @@ fun ModernProductCard(
                         }
                     }
 
-                // Secondary actions
+                
                 if (edit)
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        // Edit button
+                        
                         FilledTonalButton(
 
                             onClick = onEdit,
@@ -569,7 +569,7 @@ fun ModernProductCard(
                             )
                         }
 
-                        // Delete button
+                        
                         FilledTonalButton(
                             onClick = onDelete,
                             modifier = Modifier.size(42.dp),
@@ -595,123 +595,122 @@ fun ModernProductCard(
 }
 
 
-/*
-@Composable
-fun ProductCard(
-    product: Product,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit,
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = product.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = product.category,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = "$${String.format("%.2f", product.price)}",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    text = "Stock: ${product.stock}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (product.stock < 10) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+ 
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                IconButton(onClick = onEdit) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit")
-                }
-                IconButton(onClick = onDelete) {
-                IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete")
-                }
-            }
-        }
-    }
-}
 
-@Composable
-fun ProductCardCompose(
-    product: com.mopanesystems.ziposmobile.data.model.Product,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit,
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = product.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = product.categoryId ?: "No Category",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = "$${String.format("%.2f", product.price)}",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    text = "Stock: ${product.stockQuantity}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (product.stockQuantity < 10) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                IconButton(onClick = onEdit) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit")
-                }
-                IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete")
-                }
-            }
-        }
-    }
-}
-*/
-/*
-data class Product(
-    val id: String,
-    val name: String,
-    val category: String,
-    val price: Double,
-    val stock: Int,
-)*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+

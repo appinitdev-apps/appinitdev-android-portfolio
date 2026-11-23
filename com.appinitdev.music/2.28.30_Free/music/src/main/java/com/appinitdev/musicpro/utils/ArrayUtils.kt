@@ -1,16 +1,16 @@
 
 object ArrayUtils {
 
-    /**
-     * Convert [MutableList] to [ArrayList]
-     */
+     
+
+
     fun <T> MutableList<T>.toArrayList(): ArrayList<T> {
         return ArrayList(this)
     }
 
-    /**
-     * Swap two elements in the array
-     */
+     
+
+
     fun <T> ArrayList<T>.swap(index1: Int, index2: Int) {
         val temp = this[index1]
         this[index1] = this[index2]

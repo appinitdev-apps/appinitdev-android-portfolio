@@ -17,7 +17,7 @@ internal fun MainActivity.initEvents() {
                 }
 
                 is PermissionsResultEvent -> {
-                    // handled by individual feature flows
+                    
                 }
 
                 is HStartScreenMirrorEvent -> {
@@ -63,23 +63,23 @@ internal fun MainActivity.initEvents() {
                     }
                 }
 
-//                is HOpenWebSettingsEvent -> {
-//                    try {
-//                        val nav = navControllerState.value
-//                        val alreadyThere = nav?.currentBackStackEntry?.destination?.hasRoute<Routing.WebSettings>() == true
-//                        if (AppHelper.foregrounded()) {
-//                            if (!alreadyThere) nav?.navigate(Routing.WebSettings)
-//                        } else {
-//                            val intent = Intent(this@initEvents, MainActivity::class.java).apply {
-//                                addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-//                                putExtra("navigate_to_web_settings", true)
-//                            }
-//                            startActivity(intent)
-//                        }
-//                    } catch (e: Exception) {
-//                        LogCat.e("Error navigating to WebSettings: ${e.message}")
-//                    }
-//                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 is HOpenWebSettingsEvent -> {
                     try {
@@ -89,16 +89,16 @@ internal fun MainActivity.initEvents() {
                         if (AppHelper.foregrounded()) {
                             if (!alreadyThere) nav?.navigate(Routing.WebSettings)
                         } else {
-                            // En lugar de hacer startActivity directo (bloqueado por Android),
-                            // enviamos una notificación interactiva.
-                            val context = this@initEvents // o MainApp.instance
+                            
+                            
+                            val context = this@initEvents 
 
                             val intent = Intent(context, MainActivity::class.java).apply {
                                 addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                                 putExtra("navigate_to_web_settings", true)
                             }
 
-                            // Creamos un PendingIntent para la notificación
+                            
                             val pendingIntent = android.app.PendingIntent.getActivity(
                                 context,
                                 1001,
@@ -106,15 +106,15 @@ internal fun MainActivity.initEvents() {
                                 android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
                             )
 
-                            // Usas tu Helper de notificaciones para enviarla
-                            // Si no tienes una función específica, puedes construirla rápido:
+                            
+                            
                             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
-                            val channelId = "web_access_channel" // Asegúrate de que el canal exista
+                            val channelId = "web_access_channel" 
 
                             val notification = androidx.core.app.NotificationCompat.Builder(context, channelId)
                                 .setContentTitle(getString(Res.string.permission_required))
                                 .setContentText(getString(Res.string.web_settings))
-                                .setSmallIcon(android.R.drawable.ic_dialog_info) // Cambia por tu icono
+                                .setSmallIcon(android.R.drawable.ic_dialog_info) 
                                 .setAutoCancel(true)
                                 .setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)
                                 .setContentIntent(pendingIntent)

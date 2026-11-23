@@ -32,11 +32,11 @@ class DescriptorCoverFetcher(private val descriptorCoverModel: DescriptorCoverMo
     }
 
     override fun cleanup() {
-        /* no-op */
+         
     }
 
     override fun cancel() {
-        /* no-op */
+         
     }
 
     override fun getDataClass(): Class<InputStream> {

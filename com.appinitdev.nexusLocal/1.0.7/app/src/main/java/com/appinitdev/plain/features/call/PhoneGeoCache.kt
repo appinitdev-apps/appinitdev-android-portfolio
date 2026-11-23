@@ -1,16 +1,16 @@
 
-/**
- * LRU cache for phone-number -> PhoneGeo lookups.
- *
- * `PhoneNumberLookup` does an in-memory binary search on a 4MB phone.dat
- * (avg ~19 comparisons, 1-5ms per call). For a 200-row calls page the
- * same numbers repeat heavily, so caching by raw number string —
- * including misses for short or unknown numbers — collapses that cost
- * to one lookup per unique number.
- *
- * `LruCache` rejects nullable value types, so a single shared sentinel
- * stands in for the "not found" case.
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
 object PhoneGeoCache {
     private const val MAX_SIZE = 1024
     private val MISS: PhoneGeo = PhoneGeo("", "", "", "", 0)

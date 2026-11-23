@@ -1,7 +1,7 @@
 
-/**
- * Cross fade transition option that disabled fading when loading from cache.
- */
+ 
+
+
 fun getOptionalCrossFadeTransition(duration: Int): DrawableTransitionOptions {
     return DrawableTransitionOptions.with(
         TransitionFactory { dataSource, isFirstResource ->

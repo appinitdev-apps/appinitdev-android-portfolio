@@ -15,11 +15,11 @@ class BaseApplication : Application(), ImageLoaderFactory {
         super.onCreate()
         instance = this
         
-        // Initialize Firestore Settings early to avoid "already started" crash
+        
         val settings = firestoreSettings {
             setLocalCacheSettings(
                 persistentCacheSettings {
-                    setSizeBytes(100L * 1024 * 1024) // 100MB
+                    setSizeBytes(100L * 1024 * 1024) 
                 }
             )
         }

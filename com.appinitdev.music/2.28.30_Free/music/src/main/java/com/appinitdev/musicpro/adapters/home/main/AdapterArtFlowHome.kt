@@ -1,13 +1,13 @@
 
-/**
- * Top-level [RecyclerView.Adapter] for the ArtFlow home screen.
- *
- * <p>Each row renders an [ArtFlowData] section as a [com.appinitdev.musicpro.decorations.pager.FelicitySlider]
- * backed by the private [SliderAdapter] inner class. The auto-slide is started immediately after
- * the adapter is attached and paused when the view is recycled.</p>
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
 class AdapterArtFlowHome(private var data: List<ArtFlowData<Any>>) : RecyclerView.Adapter<VerticalListViewHolder>() {
 
     private var adapterArtFlowHomeCallbacks: AdapterArtFlowHomeCallbacks? = null
@@ -69,15 +69,15 @@ class AdapterArtFlowHome(private var data: List<ArtFlowData<Any>>) : RecyclerVie
 
     inner class Holder(val binding: AdapterHomeArtflowBinding) : VerticalListViewHolder(binding.root)
 
-    /**
-     * Drives the [com.appinitdev.musicpro.decorations.pager.FelicitySlider] for a single
-     * [ArtFlowData] section row. Loads artwork via Glide and surfaces per-slide click and
-     * long-click events via optional lambdas.
-     *
-     * @param data The section whose items are displayed as slides.
-     *
-     * TODO - check for memory leaks here, I think the pager is not releasing the adapter
-     */
+     
+
+
+
+
+
+
+
+
     private inner class SliderAdapter(private val data: ArtFlowData<Any>) : FelicityPager.PageAdapter {
 
         private var onItemClick: ((position: Int, imageView: ImageView) -> Unit)? = null
@@ -116,7 +116,7 @@ class AdapterArtFlowHome(private var data: List<ArtFlowData<Any>>) : RecyclerVie
                 val iv = view as ImageView
                 Glide.with(iv.context).clear(iv)
             } catch (e: IllegalArgumentException) {
-                // View was already detached from window, ignore.
+                
                 e.printStackTrace()
             }
         }
@@ -130,15 +130,15 @@ class AdapterArtFlowHome(private var data: List<ArtFlowData<Any>>) : RecyclerVie
         }
     }
 
-    /**
-     * Replaces the entire data set and dispatches granular change notifications computed by
-     * [DiffUtil]. Sections are identified by their [ArtFlowData.title] string resource, so a
-     * section that gains or loses items triggers a targeted [notifyItemChanged] rather than a
-     * full rebind. This preserves the [RecyclerView] scroll position and keeps running
-     * [com.appinitdev.musicpro.decorations.pager.FelicitySlider] animations alive on untouched rows.
-     *
-     * @param newData The updated list of [ArtFlowData] sections.
-     */
+     
+
+
+
+
+
+
+
+
     fun updateData(newData: List<ArtFlowData<Any>>) {
         val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun getOldListSize() = data.size
@@ -153,44 +153,44 @@ class AdapterArtFlowHome(private var data: List<ArtFlowData<Any>>) : RecyclerVie
         diff.dispatchUpdatesTo(this)
     }
 
-    /**
-     * Returns the [ArtFlowData] section at [rowPosition], or `null` if the position is
-     * out of bounds. Callbacks should use this instead of closing over a stale list
-     * reference so they always operate on the latest data after a [updateData] call.
-     *
-     * @param rowPosition Zero-based row index.
-     * @return The section at that position, or `null`.
-     */
+     
+
+
+
+
+
+
+
     fun getSection(rowPosition: Int): ArtFlowData<Any>? = data.getOrNull(rowPosition)
 
-    /**
-     * Registers a callback for slider-row and panel-title interaction events.
-     *
-     * @param adapterArtFlowHomeCallbacks The callback implementation to attach.
-     */
+     
+
+
+
+
     fun setAdapterArtFlowHomeCallbacks(adapterArtFlowHomeCallbacks: AdapterArtFlowHomeCallbacks) {
         this.adapterArtFlowHomeCallbacks = adapterArtFlowHomeCallbacks
     }
 
     companion object {
         interface AdapterArtFlowHomeCallbacks : GeneralAdapterCallbacks {
-            /**
-             * Fired when the user taps a slide image (normal click = play).
-             *
-             * @param imageView    The [ImageView] that was tapped.
-             * @param rowPosition  Zero-based index of the [ArtFlowData] section row.
-             * @param itemPosition Zero-based index of the tapped item within that section.
-             */
+             
+
+
+
+
+
+
             fun onItemClicked(imageView: ImageView, rowPosition: Int, itemPosition: Int)
 
-            /**
-             * Fired when the user long-presses a slide image (long press = open menu).
-             *
-             * @param imageView    The [ImageView] that was long-pressed; use as the
-             *                     shared-element source for {@code openSongsMenu}.
-             * @param rowPosition  Zero-based index of the [ArtFlowData] section row.
-             * @param itemPosition Zero-based index of the long-pressed item within that section.
-             */
+             
+
+
+
+
+
+
+
             fun onItemLongClicked(imageView: ImageView, rowPosition: Int, itemPosition: Int)
 
             fun onClicked(view: View, position: Int, itemPosition: Int)

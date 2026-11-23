@@ -1,12 +1,12 @@
 
-/**
- * Loads and manages all data displayed on the Composer page. It fetches songs,
- * albums, and genres associated with the given composer from the repository and
- * keeps the list sorted according to the current page sort preference. Re-sorting
- * happens in memory without touching the database again.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
 @HiltViewModel(assistedFactory = ComposerViewerViewModel.Factory::class)
 class ComposerViewerViewModel @AssistedInject constructor(
         @Assisted private val composer: Artist,
@@ -19,14 +19,14 @@ class ComposerViewerViewModel @AssistedInject constructor(
 
     private val _artistInfo = MutableStateFlow<MusicBrainzArtistInfo?>(null)
 
-    /**
-     * Profile fetched from MusicBrainz for this composer — bio, genre tags,
-     * country, active years, etc. Stays null while the fetch is running or when
-     * no matching entry exists in MusicBrainz.
-     */
+     
+
+
+
+
     val artistInfo: StateFlow<MusicBrainzArtistInfo?> = _artistInfo.asStateFlow()
 
-    /** Unsorted songs stored so re-sorting never needs a database round-trip. */
+     
     private var rawSongs: List<Audio> = emptyList()
 
     init {
@@ -58,10 +58,10 @@ class ComposerViewerViewModel @AssistedInject constructor(
         }
     }
 
-    /**
-     * Re-sorts the cached song list using the current [com.appinitdev.musicpro.preferences.PagePreferences]
-     * and re-emits [PageData] without hitting the database.
-     */
+     
+
+
+
     fun resort() {
         val current = _data.value ?: return
         viewModelScope.launch(Dispatchers.Default) {
@@ -70,11 +70,11 @@ class ComposerViewerViewModel @AssistedInject constructor(
         }
     }
 
-    /**
-     * Kicks off a background fetch of the composer's MusicBrainz profile.
-     * The result lands in [artistInfo] once ready; until then it stays null.
-     * If the user has disabled MusicBrainz in Library preferences, no request is made.
-     */
+     
+
+
+
+
     private fun loadArtistInfo() {
         if (!LibraryPreferences.isMusicBrainzEnabled()) {
             Log.d(TAG, "MusicBrainz is disabled, skipping fetch for: ${composer.name}")

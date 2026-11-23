@@ -98,7 +98,7 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            // Active Profile Selector Banner Card
+            
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -158,7 +158,7 @@ fun HomeScreen(
                                 }
                             }
 
-                            // Action buttons: Edit active profile and Switch Profile Pill
+                            
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -201,7 +201,7 @@ fun HomeScreen(
                             }
                         }
 
-                        // Direct CTA to calculate for active profile
+                        
                         Button(
                             onClick = onCalculateForActiveProfile,
                             modifier = Modifier.fillMaxWidth().height(48.dp),
@@ -226,7 +226,7 @@ fun HomeScreen(
                 }
             }
 
-            // Quick Access Modules Row
+            
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

@@ -1,11 +1,11 @@
 
-/**
- * Recycler adapter for the Most Played panel. Displays each song's play count on the
- * tertiary detail line as {@code "Album \u2022 N times"}. Uses [MostPlayedPreferences.getGridSize]
- * so the Most Played layout mode is fully independent from other song panels.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 class AdapterMostPlayed(initial: List<AudioWithStat>) : FastScrollAdapter<VerticalListViewHolder>() {
 
     private var generalAdapterCallbacks: GeneralAdapterCallbacks? = null
@@ -50,10 +50,10 @@ class AdapterMostPlayed(initial: List<AudioWithStat>) : FastScrollAdapter<Vertic
 
     private val songs: List<AudioWithStat> get() = differ.currentList
 
-    /** Extracted [Audio] list used when passing items to media or callback consumers. */
+     
     private val audioList: List<Audio> get() = songs.map { it.audio }
 
-    /** Current layout mode; update this when the preference changes to trigger a view-type refresh. */
+     
     var layoutMode: CommonPreferencesConstants.LayoutMode = MostPlayedPreferences.getGridSize()
 
     init {
@@ -101,22 +101,22 @@ class AdapterMostPlayed(initial: List<AudioWithStat>) : FastScrollAdapter<Vertic
         }
     }
 
-    /** Registers the callback that handles click and long-click events on song items. */
+     
     fun setGeneralAdapterCallbacks(callbacks: GeneralAdapterCallbacks) {
         this.generalAdapterCallbacks = callbacks
     }
 
-    /** Submits an updated list, triggering diff calculation on a background thread. */
+     
     fun updateSongs(newSongs: List<AudioWithStat>) {
         differ.submitList(newSongs.toList())
     }
 
-    /**
-     * Builds the combined play count + album string for the tertiary detail line.
-     * If the album name is absent the count text is shown on its own.
-     *
-     * @param item the [AudioWithStat] whose tertiary text is being built
-     */
+     
+
+
+
+
+
     private fun Context.buildTertiaryText(item: AudioWithStat): String {
         val album = item.audio.getProperAlbum().takeIf { it.isNotEmpty() }
         val stat = resources.getQuantityString(R.plurals.total_times, item.playCount, item.playCount)

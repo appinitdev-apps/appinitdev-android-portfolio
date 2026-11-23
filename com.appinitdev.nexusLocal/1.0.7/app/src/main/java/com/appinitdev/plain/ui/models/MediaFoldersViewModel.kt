@@ -45,13 +45,13 @@ class MediaFoldersViewModel : ViewModel() {
         var sizeValue = 0L
         val subItems = mutableSetOf<String>()
 
-        // Take one top item from each folder until we have 4 items
+        
         for (bucket in _itemsFlow.value) {
             totalValue += bucket.itemCount
             sizeValue += bucket.size
 
             if (subItems.size < 4) {
-                // Add the first item from each folder's topItems if available
+                
                 val validTopItems = bucket.topItems.filter { File(it).exists() }
                 if (validTopItems.isNotEmpty()) {
                     subItems.add(validTopItems.first())
@@ -59,13 +59,13 @@ class MediaFoldersViewModel : ViewModel() {
             }
         }
 
-        // If we have fewer than 4 items and there's at least one folder with more items
-        // take additional items from the first folder that has multiple items
+        
+        
         if (subItems.size < 4 && _itemsFlow.value.isNotEmpty()) {
             for (bucket in _itemsFlow.value) {
                 val validTopItems = bucket.topItems.filter { File(it).exists() }
                 if (validTopItems.size > 1) {
-                    // Start from the second item (index 1) since we've already added the first one
+                    
                     for (i in 1 until validTopItems.size) {
                         if (subItems.size < 4) {
                             subItems.add(validTopItems[i])
@@ -90,13 +90,13 @@ class MediaFoldersViewModel : ViewModel() {
         )
     }
 
-    /**
-     * 异步预验证文件存在性，可以在后台线程中调用
-     * 这样可以提前过滤掉不存在的文件，减少UI线程的负担
-     */
+     
+
+
+
     suspend fun preValidateFilesAsync() = withContext(Dispatchers.IO) {
         _itemsFlow.value.forEach { bucket ->
-            // 过滤掉不存在的文件
+            
             bucket.topItems.removeAll { !File(it).exists() }
         }
     }

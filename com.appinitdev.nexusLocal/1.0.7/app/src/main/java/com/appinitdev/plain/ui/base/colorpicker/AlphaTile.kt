@@ -1,14 +1,14 @@
 
-/**
- * AlphaTile allows you to display ARGB colors including transparency with tiles.
- *
- * @param modifier [Modifier] to decorate the internal Canvas.
- * @param controller Allows you to control and interacts with color pickers and all relevant subcomponents.
- * @param selectedColor Color to be displayed over the tiles if the [controller] is not registered.
- * @param tileOddColor Color of the odd tiles.
- * @param tileEvenColor Color of the even tiles.
- * @param tileSize DP size of tiles.
- */
+ 
+
+
+
+
+
+
+
+
+
 @Composable
 public fun AlphaTile(
   modifier: Modifier,

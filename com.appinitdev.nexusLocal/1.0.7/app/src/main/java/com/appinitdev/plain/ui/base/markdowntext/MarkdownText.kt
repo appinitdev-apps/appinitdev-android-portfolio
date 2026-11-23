@@ -24,8 +24,8 @@ fun MarkdownText(
 
                 setTextIsSelectable(isTextSelectable)
 
-                // Disable smart text selection to prevent SmartSelectSprite crash
-                // when the view has scrolled and bounding rectangles become invalid
+                
+                
                 setTextClassifier(TextClassifier.NO_OP)
 
                 movementMethod = LinkMovementMethod.getInstance()

@@ -1,112 +1,112 @@
 
-/**
- * This transformation applies a shadow intrinsically to the bitmap.
- * This is useful for images with complex shapes where Android does
- * not support elevation shadows. The colour of the shadow, its blur
- * radius, and offset from the image can all be configured.
- *
- *
- * Images should be padded with transparent pixels by at least the
- * blur radius plus the elevation in order for the drawn shadow to
- * display properly without clipping. See: [Padding]
- */
+ 
+
+
+
+
+
+
+
+
+
+
 @Suppress("unused")
 
-/**
- * Default constructor.
- * The shadow is set at 0 elevation and 0 blur, with black colour at 50%
- * opacity, by default.
- *
- * @param context current context
- */
+ 
+
+
+
+
+
+
 class BlurShadow(private val context: Context) : BitmapTransformation() {
     private var blurRadius = 0f
     private var elevation = 0f
     private var angle = 0f
     private var colour: Int
 
-    /**
-     * Snapshot of [AppearancePreferences.isShadowEffectOn] taken at construction time.
-     *
-     * Capturing it here ensures that the rendered output and the disk/memory cache key are always
-     * derived from the same value — preventing a stale cache hit when the preference is toggled
-     * between two requests.
-     */
+     
+
+
+
+
+
+
     private var shadowEffectEnabled: Boolean = false
 
     @IntDef(EAST, NORTHEAST, NORTH, NORTHWEST, WEST, SOUTHWEST, SOUTH, SOUTHEAST)
     @Retention(AnnotationRetention.SOURCE)
     annotation class Direction
 
-    /**
-     * Sets the blur radius of the shadow.
-     * It is advised to pad the image by at least this amount plus the
-     * elevation to prevent clipping of the shadow.
-     *
-     * @param  blurRadius  elevation in pixels
-     * @return      returns self
-     */
+     
+
+
+
+
+
+
+
     fun setBlurRadius(blurRadius: Float): BlurShadow {
         this.blurRadius = blurRadius
         return this
     }
 
-    /**
-     * Sets the elevation, or how much the shadow is offset from the image.
-     * It is advised to pad the image by at least this amount plus the
-     * blur radius to prevent clipping of the shadow.
-     *
-     * @param  elevation  elevation in pixels
-     * @return      returns self
-     */
+     
+
+
+
+
+
+
+
     fun setElevation(elevation: Float): BlurShadow {
         this.elevation = elevation
         return this
     }
 
-    /**
-     * Sets the angle in which the shadow is offset from the image.
-     * Zero degrees indicates due west, and angles progress counter-clockwise.
-     * Angles larger than 360° or smaller than 0° simply indicate wraps around the circle.
-     *
-     * @param  angle  the angle in degrees
-     * @return      returns self
-     */
+     
+
+
+
+
+
+
+
     fun setAngle(angle: Float): BlurShadow {
         this.angle = angle
         return this
     }
 
-    /**
-     * Sets the cardinal direction in which the shadow is offset from the image.
-     *
-     * @param d the cardinal direction as a @Direction
-     * @return returns self
-     */
+     
+
+
+
+
+
     fun setDirection(@Direction d: Int): BlurShadow {
         angle = getAngle(d)
         return this
     }
 
-    /**
-     * Sets the shadow's colour.
-     * Shadow is drawn black with 50% opacity by default.
-     *
-     * @param colour the colour as a @ColorInt
-     * @return returns self
-     */
+     
+
+
+
+
+
+
     fun setShadowColour(@ColorInt colour: Int): BlurShadow {
         this.colour = colour
         return this
     }
 
-    /**
-     * Sets the shadow's colour by colour resource.
-     * Shadow is drawn black with 50% opacity by default.
-     *
-     * @param  res  the colour resource as a @ColorRes
-     * @return      returns self
-     */
+     
+
+
+
+
+
+
     fun setShadowColourRes(@ColorRes res: Int): BlurShadow {
         colour = ContextCompat.getColor(context, res)
         return this
@@ -130,11 +130,11 @@ class BlurShadow(private val context: Context) : BitmapTransformation() {
         val bitmap = createBitmap(source.width, source.height)
         val shadow: Bitmap
 
-        //Calculate Shadow Offset
+        
         val shadowX = elevation * cos(Math.toRadians(angle.toDouble())).toFloat()
         val shadowY = -(elevation * sin(Math.toRadians(angle.toDouble())).toFloat())
 
-        //Create Shadow Paint
+        
         val shadowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             colorFilter = if (shadowEffectEnabled) {
                 ColorMatrixColorFilter(ColorMatrix().apply {
@@ -147,40 +147,40 @@ class BlurShadow(private val context: Context) : BitmapTransformation() {
         }
 
         if (blurRadius <= MAX_BLUR_RADIUS) {
-            //Apply Blur
+            
             shadow = if (shadowEffectEnabled) {
                 Toolkit.blur(source, blurRadius.toInt())
             } else {
                 createBitmap(source.width, source.height)
             }
 
-            //Draw to Canvas
+            
             val canvas = Canvas(bitmap)
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
             canvas.drawBitmap(shadow, 0F, 0F, shadowPaint)
             canvas.drawBitmap(source, 0f, 0f, null)
         } else {
-            //Scale
+            
             val scaleFactor = MAX_BLUR_RADIUS / blurRadius
             @Suppress("UNUSED_VARIABLE") val scaledWidth = 1.coerceAtLeast((source.width.toFloat() * scaleFactor).roundToInt())
             @Suppress("UNUSED_VARIABLE") val scaledHeight = 1.coerceAtLeast((source.height.toFloat() * scaleFactor).roundToInt())
             val scaled = source.scale(source.width, source.height)
 
-            //Apply Blur
+            
             shadow = if (shadowEffectEnabled) {
                 Toolkit.blur(scaled, MAX_BLUR_RADIUS.toInt())
             } else {
                 createBitmap(source.width, source.height)
             }
 
-            //Draw to Canvas
+            
             val canvas = Canvas(bitmap)
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
             canvas.drawBitmap(shadow, shadowX, shadowY, shadowPaint)
             canvas.drawBitmap(source, 0f, 0f, null)
         }
 
-        //Output
+        
         shadow.recycle()
         return bitmap
     }

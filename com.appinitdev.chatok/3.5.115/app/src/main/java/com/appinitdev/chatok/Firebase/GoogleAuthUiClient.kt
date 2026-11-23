@@ -11,7 +11,7 @@ class GoogleAuthUiClient(
 
         val result = try {
 
-            // oneTapClient.signOut().await()
+            
             oneTapClient.beginSignIn(
                 buildSignInRequest()
             ).await()
@@ -21,7 +21,7 @@ class GoogleAuthUiClient(
             try {
 
                 if (e.toString().contains("Cannot find a matching credential")) {
-                    // Si no hay cuentas, solicitar al usuario que agregue una
+                    
                     solicitarAgregarCuentaGoogle(context)
                     return null
                 }
@@ -93,7 +93,7 @@ class GoogleAuthUiClient(
     fun solicitarAgregarCuentaGoogle(context: Context) {
         val intent = Intent(Settings.ACTION_ADD_ACCOUNT).apply {
             putExtra(Settings.EXTRA_ACCOUNT_TYPES, arrayOf("com.google"))
-            //addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // Añadir esta línea
+            
         }
         context.startActivity(intent)
     }
@@ -112,7 +112,7 @@ class GoogleAuthUiClient(
             .setGoogleIdTokenRequestOptions(
                 BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                     .setSupported(true)
-                    // .setFilterByAuthorizedAccounts(false)
+                    
                     .setServerClientId("198138863757-4mfj32o3b8gcvdc6lhu06rkca1et23qf.apps.googleusercontent.com")
                     .setFilterByAuthorizedAccounts(false)
                     .build()
@@ -124,15 +124,15 @@ class GoogleAuthUiClient(
     suspend fun sendPasswordResetEmail(email: String): Boolean {
         return try {
             auth.sendPasswordResetEmail(email).await()
-            true // Éxito
+            true 
         } catch (e: Exception) {
             Log.e("ResetPassword", "", e)
-            false // Fallo
+            false 
         }
     }
 
 
-    // Método de autenticación con correo y contraseña
+    
     suspend fun signInWithEmailPassword(email: String, password: String): SignInResult {
         return try {
             val result = auth.signInWithEmailAndPassword(email, password).await()
@@ -154,7 +154,7 @@ class GoogleAuthUiClient(
             Log.e("EmailPasswordAuthx", "", e)
             return if (e.message?.contains("There is no user record corresponding to this identifier") == true) {
                 Log.d("EmailPasswordAuthx", "")
-                //createUserWithEmailPassword(email, password)
+                
                 SignInResult(data = null, errmsg = e.message)
             } else {
                 SignInResult(data = null, errmsg = e.message)
@@ -165,7 +165,7 @@ class GoogleAuthUiClient(
         }
     }
 
-    // Método para crear un nuevo usuario con correo y contraseña
+    
     suspend fun createUserWithEmailPassword(
         email: String,
         password: String,
@@ -208,7 +208,7 @@ class GoogleAuthUiClient(
                     .collection("users")
                     .document(uid)
                     .set(datosAEnviar)
-                    .await() // Esperamos a que se guarde en la BD
+                    .await() 
             }
             SignInResult(
                 data = user?.run {

@@ -3,7 +3,7 @@
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MessageItem(search: String,
-                viewModel: ChatViewModel, // Añadido
+                viewModel: ChatViewModel, 
                 searchIndx: Int,
                 message: Message,
                 state: AppState,
@@ -33,7 +33,7 @@ fun MessageItem(search: String,
     var isTranslating by remember { mutableStateOf(false) }
     var linkMetadata by remember { mutableStateOf<LinkMetadata?>(null) }
 
-    // Auto Translate logic
+    
     LaunchedEffect(message.content, isAutoTranslateEnabled) {
         if (isAutoTranslateEnabled && !message.isDeleted && message.content != null && message.senderId != state.userData?.userId) {
             isTranslating = true
@@ -42,7 +42,7 @@ fun MessageItem(search: String,
         }
     }
 
-    // Link Preview logic
+    
     LaunchedEffect(message.content) {
         if (!message.isDeleted && message.content != null) {
             val url = LinkPreviewUtils.containsUrl(message.content)
@@ -78,7 +78,7 @@ fun MessageItem(search: String,
     }
     var offset by remember { mutableStateOf(0.dp) }
     
-    // Haptic when drag reaches reply threshold
+    
     LaunchedEffect(offset) {
         if (offset > 70.dp && !released) {
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -130,7 +130,7 @@ fun MessageItem(search: String,
         mutableStateOf(false)
     }
     
-    // Floating reactions bar state
+    
     var showFloatingReactions by remember { mutableStateOf(false) }
 
     var showReactions by remember {
@@ -484,7 +484,7 @@ fun MessageItem(search: String,
                     Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(4.dp)) {
                         if (message.imgUri.isNotEmpty()) {
                             AsyncImage(
-                                model = message.imgUri, // Using local thumbnail if available
+                                model = message.imgUri, 
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
@@ -573,7 +573,7 @@ fun MessageItem(search: String,
                     }
 
                     if (isViewed) {
-                        // Show "Opened" status for viewed ephemeral messages
+                        
                         Row(
                             modifier = Modifier
                                 .padding(8.dp)
@@ -813,12 +813,12 @@ fun MessageItem(search: String,
 
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp),
         modifier = Modifier.padding(end = 8.dp, bottom = if(message.reaction.isNotEmpty()) 10.dp else 5.dp, start = 8.dp, top = 2.dp)) {
-        val time = message.time?.toDate()//adrian if de mas
+        val time = message.time?.toDate()
         Text(
             text = if (time != null) {
                 formatter.format(time)
             } else {
-                ""  // o algún texto alternativo como "Sin hora"
+                ""  
             },
             style = MaterialTheme.typography.labelSmall,
             color = Color.White,

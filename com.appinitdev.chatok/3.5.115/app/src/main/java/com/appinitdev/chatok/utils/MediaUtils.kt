@@ -2,13 +2,13 @@
 object MediaUtils {
     
     fun compressImage(context: Context, uri: Uri, maxWidth: Int = 1080, maxHeight: Int = 1920, quality: Int = 70): ByteArray {
-        // 1. Decodificar solo límites para medir dimensiones sin cargar imagen a RAM
+        
         val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
         context.contentResolver.openInputStream(uri)?.use { stream ->
             BitmapFactory.decodeStream(stream, null, options)
         }
         
-        // 2. Calular el inSampleSize para submuestreo eficiente
+        
         var inSampleSize = 1
         val (origWidth, origHeight) = options.outWidth to options.outHeight
         if (origHeight > maxHeight || origWidth > maxWidth) {
@@ -19,7 +19,7 @@ object MediaUtils {
             }
         }
         
-        // 3. Decodificar el bitmap optimizado directamente en memoria
+        
         val decodeOptions = BitmapFactory.Options().apply {
             this.inSampleSize = inSampleSize
             this.inPreferredConfig = Bitmap.Config.ARGB_8888
@@ -29,7 +29,7 @@ object MediaUtils {
             BitmapFactory.decodeStream(stream, null, decodeOptions)
         } ?: return ByteArray(0)
         
-        // 4. Escalar si es necesario
+        
         val ratio = originalBitmap.width.toFloat() / originalBitmap.height.toFloat()
         var width = originalBitmap.width
         var height = originalBitmap.height
@@ -53,7 +53,7 @@ object MediaUtils {
         val outputStream = ByteArrayOutputStream()
         resizedBitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
         
-        // Limpieza explícita de Bitmaps para evitar picos de memoria/GC
+        
         if (resizedBitmap != originalBitmap) {
             resizedBitmap.recycle()
         }

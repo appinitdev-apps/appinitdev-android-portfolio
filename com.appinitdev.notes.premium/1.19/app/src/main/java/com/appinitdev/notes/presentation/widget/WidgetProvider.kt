@@ -69,7 +69,7 @@ class WidgetProvider : AppWidgetProvider() {
         val childrenPositions = note.items.findChildrenPositions(parentPosition)
         if (parent.checked != checked) {
             if (checked) {
-                // If the last unchecked child is being checked also check parent
+                
                 if (childrenPositions.none { !note.items[it].checked && it != childPosition }) {
                     baseNoteDao.updateChecked(noteId, listOf(childPosition, parentPosition), true)
                 } else {
@@ -77,7 +77,7 @@ class WidgetProvider : AppWidgetProvider() {
                 }
             } else {
                 if (parent.checked) {
-                    // If any child is unchecked the parent is unchecked too
+                    
                     baseNoteDao.updateChecked(noteId, listOf(childPosition, parentPosition), false)
                 } else {
                     baseNoteDao.updateChecked(noteId, childPosition, false)
@@ -139,8 +139,8 @@ class WidgetProvider : AppWidgetProvider() {
             noteType: Type?,
             locked: Boolean = false,
         ) {
-            // Widgets displaying the same note share the same factory since only the noteId is
-            // embedded
+            
+            
             val intent = Intent(context, WidgetService::class.java)
             intent.putExtra(EXTRA_SELECTED_BASE_NOTE, noteId)
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)

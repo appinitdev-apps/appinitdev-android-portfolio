@@ -1,8 +1,8 @@
 
 object CrystalStructures {
     data class Structure(
-        val vertices: Array<FloatArray>, // [x, y, z]
-        val edges: Array<IntArray>,      // [i, j]
+        val vertices: Array<FloatArray>, 
+        val edges: Array<IntArray>,      
         val displayName: String
     )
 

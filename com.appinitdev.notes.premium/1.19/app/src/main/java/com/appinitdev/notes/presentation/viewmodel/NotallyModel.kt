@@ -69,20 +69,20 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
     }
 
     fun addImages(uris: Array<Uri>) {
-        /*
-        Regenerate because the directory may have been deleted between the time of activity creation
-        and image addition
-         */
+         
+
+
+
         imageRoot = app.getExternalImagesDirectory()
         requireNotNull(imageRoot) { "imageRoot is null" }
         addFiles(uris, imageRoot!!, FileType.IMAGE)
     }
 
     fun addFiles(uris: Array<Uri>) {
-        /*
-        Regenerate because the directory may have been deleted between the time of activity creation
-        and image addition
-         */
+         
+
+
+
         filesRoot = app.getExternalFilesDirectory()
         requireNotNull(filesRoot) { "filesRoot is null" }
         addFiles(uris, filesRoot!!, FileType.ANY)
@@ -273,7 +273,7 @@ class NotallyModel(private val app: Application) : AndroidViewModel(app) {
         val spans = getFilteredSpans(body)
         val body = this.body.toString()
         val nonEmptyItems = this.items.filter { item -> item.body.isNotEmpty() }
-        //val color = if (color== BaseNote.COLOR_DEFAULT) Color.random().toColorString() else color
+        
             return BaseNote(
             id,
             type,

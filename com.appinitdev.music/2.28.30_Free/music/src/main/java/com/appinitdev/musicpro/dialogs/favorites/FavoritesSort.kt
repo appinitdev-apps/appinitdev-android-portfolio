@@ -1,11 +1,11 @@
 
-/**
- * Bottom-sheet dialog for choosing the sort field and direction of the Favorites list.
- * Reuses the [DialogSortSongsBinding] layout but binds exclusively to [FavoritesPreferences]
- * so that the Favorites sort is independent from the Songs sort.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 class FavoritesSort : ScopedBottomSheetFragment() {
 
     private lateinit var binding: DialogSortSongsBinding
@@ -67,9 +67,9 @@ class FavoritesSort : ScopedBottomSheetFragment() {
             return fragment
         }
 
-        /**
-         * Shows a [FavoritesSort] bottom-sheet from the given [FragmentManager].
-         */
+         
+
+
         fun FragmentManager.showFavoritesSort(): FavoritesSort {
             val dialog = newInstance()
             dialog.show(this, TAG)

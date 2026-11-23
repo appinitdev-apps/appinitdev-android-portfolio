@@ -1,8 +1,8 @@
 
-/**
- * Dispatcher that routes to [PeerChatInfoPage] or [ChannelChatInfoPage]
- * depending on the current chat type held in [chatVM].
- */
+ 
+
+
+
 @Composable
 fun ChatInfoPage(
     navController: NavHostController,

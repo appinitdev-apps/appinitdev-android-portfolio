@@ -1,9 +1,9 @@
 
 object DescriptorCoverUtils {
 
-    /**
-     * Load original artwork directly from file using file descriptor.
-     */
+     
+
+
     fun ImageView.loadFromDescriptor(
             uri: Uri?,
             roundedCorners: Boolean = true,
@@ -33,7 +33,7 @@ object DescriptorCoverUtils {
 
         var glideRequest = Glide.with(this)
             .asBitmap()
-            .dontTransform() // This way we can apply our own transformations and skip the module specific ones
+            .dontTransform() 
             .transform(*transformations.toTypedArray())
             .load(DescriptorCoverModel(this.context, uri ?: Uri.EMPTY))
             .error(R.drawable.ic_felicity)

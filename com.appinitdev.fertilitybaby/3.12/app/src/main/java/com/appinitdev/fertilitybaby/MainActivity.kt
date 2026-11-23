@@ -56,10 +56,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         ads()
-        // Inicializa la LiveData de conectividad
+        
         networkStatusLiveData = NetworkStatusLiveData(this)
 
-        // Carga el anuncio en el AdView cuando haya conectividad
+        
         networkStatusLiveData.observe(this, Observer { isConnected ->
             if (isConnected) {
                 ads()
@@ -95,9 +95,9 @@ class MainActivity : AppCompatActivity() {
             popupView.findViewById<AdView>(R.id.adView2).loadAd(adRequest)
 
             val lastPeriodDate =
-                sdf.parse(FechaUltimoPeriodo.text.toString()) // Fecha del último período
-            val averageMenstruationDays = DuracionMenstrual.value // Promedio de días de menstruación
-            val averageCycleLength = CicloMenstrual.value // Longitud promedio del ciclo menstrual
+                sdf.parse(FechaUltimoPeriodo.text.toString()) 
+            val averageMenstruationDays = DuracionMenstrual.value 
+            val averageCycleLength = CicloMenstrual.value 
 
             val fertilityInfo =
                 calculateFertility(
@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
                 "Mostrando Resultados", Toast.LENGTH_SHORT).show()
 
         }
-        //  calendarView.calendarView.addDecorators(EventDecorator(color, fechaInicial, fechaFinal))
+        
     }
 
     private fun showDatePickerDialog(view: View) {
@@ -229,26 +229,26 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        // Calculate next period start date
-       /* val nextPeriodStartDate = if (calendar.get(Calendar.MONTH) == Calendar.DECEMBER) {
-            calendar.add(Calendar.YEAR, 1)
-            calendar.set(Calendar.MONTH, Calendar.JANUARY)
-            calendar.set(Calendar.DAY_OF_MONTH, 1)
-            calendar.time
-        } else {
-            calendar.add(Calendar.MONTH, 1)
-            calendar.set(Calendar.DAY_OF_MONTH, 1)
-            calendar.time
-        }*/
+        
+        
+
+
+
+
+
+
+
+
+
 
         calendar.add(Calendar.DAY_OF_MONTH,averageCycleLength+1)
         val nextPeriodStartDate=calendar.time
-        // Calculate next period end date
-       // calendar.time = nextPeriodStartDate
+        
+       
         calendar.add(Calendar.DAY_OF_MONTH, averageMenstruationDays - 1)
         val nextPeriodEndDate = calendar.time
 
-        // Calculate ovulation day
+        
         calendar.time = nextPeriodStartDate
         calendar.add(Calendar.DAY_OF_MONTH, averageCycleLength - 14)
         val ovulationDay = calendar.time
@@ -257,8 +257,8 @@ class MainActivity : AppCompatActivity() {
 
         calendar.add(Calendar.DAY_OF_MONTH, -1)
         val nena1 = calendar.time
-        // Calculate pre-ovulation range
-        // calendar.time = nextPeriodStartDate
+        
+        
         calendar.add(Calendar.DAY_OF_MONTH, -3)
         val preOvulationStartDate = calendar.time
         calendar.time = ovulationDay
@@ -266,7 +266,7 @@ class MainActivity : AppCompatActivity() {
         val preOvulationEndDate = calendar.time
 
 
-        // Calculate post-ovulation range
+        
         calendar.time = ovulationDay
         calendar.add(Calendar.DAY_OF_MONTH, 1)
         val postOvulationStartDate = calendar.time
@@ -292,10 +292,10 @@ class MainActivity : AppCompatActivity() {
 
     fun ads() {
 
-        // Ejecuta la carga de anuncios en un hilo secundario
+        
 
-        // Set tag for under age of consent. false means users are not under age
-        // of consent.
+        
+        
         val params = ConsentRequestParameters
             .Builder()
             .setTagForUnderAgeOfConsent(false)
@@ -309,7 +309,7 @@ class MainActivity : AppCompatActivity() {
                 UserMessagingPlatform.loadAndShowConsentFormIfRequired(
                     this@MainActivity,
                     ConsentForm.OnConsentFormDismissedListener { loadAndShowError ->
-                        // Consent gathering failed.
+                        
                         if (loadAndShowError != null) {
                             Log.w(
                                 ContentValues.TAG, String.format(
@@ -320,7 +320,7 @@ class MainActivity : AppCompatActivity() {
                             )
                         }
 
-                        // Consent has been gathered.
+                        
                         if (consentInformation.canRequestAds()) {
                             initializeMobileAdsSdk()
                         }
@@ -328,7 +328,7 @@ class MainActivity : AppCompatActivity() {
                 )
             },
             ConsentInformation.OnConsentInfoUpdateFailureListener { requestConsentError ->
-                // Consent gathering failed.
+                
                 Log.w(
                     ContentValues.TAG, String.format(
                         "%s: %s",
@@ -338,9 +338,9 @@ class MainActivity : AppCompatActivity() {
                 )
             })
 
-        // Check if you can initialize the Google Mobile Ads SDK in parallel
-        // while checking for new consent information. Consent obtained in
-        // the previous session can be used to request ads.
+        
+        
+        
         if (consentInformation.canRequestAds()) {
             initializeMobileAdsSdk()
         }
@@ -355,7 +355,7 @@ class MainActivity : AppCompatActivity() {
         }
         isMobileAdsInitializeCalled.set(true)
 
-        // Initialize the Google Mobile Ads SDK.
+        
         MobileAds.initialize(this)
 
         val adRequest = AdRequest.Builder().build()
@@ -363,7 +363,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-// Decorator para colorear los rangos de fechas
+
 class EventDecorator(
     private val color: Int,
     private val startDate: Date,
@@ -383,7 +383,7 @@ class EventDecorator(
                 year,
                 month - 1,
                 dayOfMonth
-            ) // Mes en Calendar es 0-based, por eso restamos 1
+            ) 
             val dayDate = calendar.time
             return dayDate in startDate..endDate
         }
@@ -391,12 +391,12 @@ class EventDecorator(
     }
 
     override fun decorate(view: com.prolificinteractive.materialcalendarview.DayViewFacade?) {
-        //view?.addSpan(DotSpan(5f, color)) // Agrega un punto con el color especificado
+        
 
-        //view?.setBackgroundDrawable(ColorDrawable(color)) // Establece un fondo coloreado
-        // Obtener el Drawable del recurso de icono
+        
+        
 
-        //view?.addSpan(DotSpan(25f, color))
+        
 
         when (band) {
             1 -> {
@@ -430,7 +430,7 @@ class EventDecorator(
     }
 }
 
-// Decorator para marcar fechas específicas
+
 class MarkedDateDecorator(private val date: Date) :
     com.prolificinteractive.materialcalendarview.DayViewDecorator {
     private val calendar = Calendar.getInstance()
@@ -444,13 +444,13 @@ class MarkedDateDecorator(private val date: Date) :
                 year,
                 month - 1,
                 dayOfMonth
-            ) // Mes en Calendar es 0-based, por eso restamos 1
+            ) 
             val dayDate = calendar.time
             dayDate == date
         } ?: false
     }
 
     override fun decorate(view: com.prolificinteractive.materialcalendarview.DayViewFacade?) {
-        view?.addSpan(DotSpan(10f, Color.GREEN)) // Puedes personalizar el estilo de marcado aquí
+        view?.addSpan(DotSpan(10f, Color.GREEN)) 
     }
 }

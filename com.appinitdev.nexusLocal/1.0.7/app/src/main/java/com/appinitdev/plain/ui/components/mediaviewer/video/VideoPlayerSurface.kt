@@ -60,7 +60,7 @@ internal fun VideoPlayerSurface(
                 }
 
                 Lifecycle.Event.ON_STOP -> {
-                   // player.stop()
+                   
                 }
 
                 else -> {}

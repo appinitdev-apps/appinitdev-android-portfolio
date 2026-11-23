@@ -1,13 +1,13 @@
 
-/**
- * Adapter for the recommended spanned art grid on the dashboard.
- *
- * Renders each [Audio] item as a full-bleed square image with an overlaid title.
- * Supports tap to play and long-press to open the song context menu.
- *
- * @param list The initial list of recommended [Audio] items to display.
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
 class AdapterRecommended(private var list: List<Audio>) :
         RecyclerView.Adapter<AdapterRecommended.Holder>() {
 
@@ -56,7 +56,7 @@ class AdapterRecommended(private var list: List<Audio>) :
 
     fun randomize() {
         for (i in 0 until itemCount) {
-            // Notify position change
+            
             notifyItemChanged(i)
         }
     }
@@ -65,13 +65,13 @@ class AdapterRecommended(private var list: List<Audio>) :
         notifyItemChanged(position)
     }
 
-    /**
-     * Replaces the current data set with [newList] and dispatches granular change notifications
-     * computed by [DiffUtil]. Items are identified by [Audio.id] so additions, removals, and
-     * moves are animated individually without a full rebind.
-     *
-     * @param newList The updated list of recommended songs.
-     */
+     
+
+
+
+
+
+
     fun updateData(newList: List<Audio>) {
         val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun getOldListSize() = list.size
@@ -92,21 +92,21 @@ class AdapterRecommended(private var list: List<Audio>) :
     companion object {
 
         interface AdapterRecommendedCallbacks {
-            /**
-             * Called when the user taps a recommended item.
-             *
-             * @param items    The full recommended list.
-             * @param position The index of the tapped item.
-             */
+             
+
+
+
+
+
             fun onItemClicked(items: List<Audio>, position: Int)
 
-            /**
-             * Called when the user long-presses a recommended item.
-             *
-             * @param items     The full recommended list.
-             * @param position  The index of the long-pressed item.
-             * @param imageView The album art [ImageView] used as a shared-element source for the menu.
-             */
+             
+
+
+
+
+
+
             fun onItemLongClicked(items: List<Audio>, position: Int, imageView: ImageView)
         }
     }

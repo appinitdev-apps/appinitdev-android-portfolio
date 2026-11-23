@@ -11,13 +11,13 @@ class ArtistViewerViewModel @AssistedInject constructor(
 
     private val _artistInfo = MutableStateFlow<MusicBrainzArtistInfo?>(null)
 
-    /**
-     * Artist profile fetched from MusicBrainz — bio, genre tags, country, active years, etc.
-     * Emits null while the fetch is in progress or when no data is available.
-     */
+     
+
+
+
     val artistInfo: StateFlow<MusicBrainzArtistInfo?> = _artistInfo.asStateFlow()
 
-    /** Raw unsorted songs fetched from the repository. Re-sorting does not require a DB trip. */
+     
     private var rawSongs: List<Audio> = emptyList()
 
     init {
@@ -49,10 +49,10 @@ class ArtistViewerViewModel @AssistedInject constructor(
         }
     }
 
-    /**
-     * Re-sorts the cached song list using the current [com.appinitdev.musicpro.preferences.PagePreferences]
-     * and re-emits [PageData] without hitting the database.
-     */
+     
+
+
+
     fun resort() {
         val current = _data.value ?: return
         viewModelScope.launch(Dispatchers.Default) {
@@ -61,11 +61,11 @@ class ArtistViewerViewModel @AssistedInject constructor(
         }
     }
 
-    /**
-     * Kicks off a background fetch of the artist's MusicBrainz profile.
-     * The result lands in [artistInfo] once ready; until then it stays null.
-     * If the user has disabled MusicBrainz in Library preferences, no request is made.
-     */
+     
+
+
+
+
     private fun loadArtistInfo() {
         if (!LibraryPreferences.isMusicBrainzEnabled()) {
             Log.d(TAG, "MusicBrainz is disabled in preferences, skipping fetch for: ${artist.name}")

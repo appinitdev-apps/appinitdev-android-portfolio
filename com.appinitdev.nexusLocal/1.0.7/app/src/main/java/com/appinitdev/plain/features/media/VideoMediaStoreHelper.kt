@@ -1,6 +1,6 @@
 
 object VideoMediaStoreHelper : BaseMediaContentHelper() {
-    // https://stackoverflow.com/questions/63111091/java-lang-illegalargumentexception-volume-external-primary-not-found-in-android
+    
     override val uriExternal: Uri = if (isQPlus()) MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL) else MediaStore.Video.Media.EXTERNAL_CONTENT_URI
     override val mediaType: MediaType = MediaType.VIDEO
 
@@ -28,7 +28,7 @@ object VideoMediaStoreHelper : BaseMediaContentHelper() {
 
     override fun buildBaseWhere(filterFields: List<FilterField>): ContentWhere {
         val where = ContentWhere()
-        // where.add("${MediaStore.Video.Media.DURATION}>0")
+        
         filterFields.forEach {
             if (it.name == "text") {
                 where.add("${MediaStore.Video.Media.TITLE} LIKE ?", "%${it.value}%")

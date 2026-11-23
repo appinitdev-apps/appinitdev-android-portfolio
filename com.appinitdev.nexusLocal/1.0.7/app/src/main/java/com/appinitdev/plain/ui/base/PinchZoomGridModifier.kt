@@ -1,17 +1,17 @@
 
-/**
- * Adds a two-finger pinch gesture to a LazyVerticalGrid that adjusts
- * [cellsPerRow] by ±1 when the accumulated zoom crosses a threshold.
- * Single-finger events are never consumed, so scrolling and drag-select
- * continue to work normally.
- */
+ 
+
+
+
+
+
 fun Modifier.pinchZoomGrid(
     cellsPerRow: MutableState<Int>,
     hapticFeedback: HapticFeedback,
     scope: CoroutineScope,
     onCellsChanged: suspend (Int) -> Unit,
 ): Modifier = this.pointerInput("pinchZoomGrid") {
-    // zoomAccumulator lives inside the gesture loop so it resets per touch session
+    
     var zoomAccumulator = 1f
     awaitEachGesture {
         awaitFirstDown(requireUnconsumed = false)
@@ -51,8 +51,8 @@ fun Modifier.pinchZoomGrid(
                     }
                 }
                 prevDistance = dist
-                // Consume two-finger events to prevent HorizontalPager from
-                // interpreting the pinch as a page swipe.
+                
+                
                 pointers.forEach { it.consume() }
             } else {
                 if (pinchActive) zoomAccumulator = 1f
@@ -63,11 +63,11 @@ fun Modifier.pinchZoomGrid(
     }
 }
 
-/**
- * A fling behavior that multiplies the initial velocity by [velocityMultiplier]
- * before handing off to the spline-based decay, giving a smoother / faster
- * iOS-like fling when the grid has many small cells.
- */
+ 
+
+
+
+
 @Composable
 fun rememberBoostFlingBehavior(velocityMultiplier: Float): FlingBehavior {
     val decaySpec: DecayAnimationSpec<Float> = rememberSplineBasedDecay()

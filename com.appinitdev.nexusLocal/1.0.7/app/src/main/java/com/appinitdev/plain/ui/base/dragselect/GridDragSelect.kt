@@ -27,9 +27,9 @@ fun Modifier.gridDragSelect(
         return@composed this
     }
     pointerInput(Unit) {
-        // Helper: find the items-list index of the data item at a touch point.
-        // Uses the grid item's key to look up the item in the items list, so it
-        // works correctly even when non-data items (e.g. group headers) are in the grid.
+        
+        
+        
         fun findItemIndex(gridState: LazyGridState, position: Offset): Int? {
             val found = gridState.layoutInfo.visibleItemsInfo.find { itemInfo ->
                 itemInfo.size.toIntRect().contains(position.round() - itemInfo.offset)
@@ -39,7 +39,7 @@ fun Modifier.gridDragSelect(
                 val idx = items.indexOfFirst { it.id == key }
                 return if (idx >= 0) idx else null
             }
-            // If past the last item, select to the end of the data list
+            
             val lastItem = gridState.layoutInfo.visibleItemsInfo.lastOrNull()
                 ?.takeIf { it.index == gridState.layoutInfo.totalItemsCount - 1 }
             if (lastItem != null && position.y > lastItem.offset.y) {

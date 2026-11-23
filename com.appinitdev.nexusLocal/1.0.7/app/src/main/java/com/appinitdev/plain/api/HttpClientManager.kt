@@ -23,8 +23,8 @@ object HttpClientManager {
 
     fun downloadClient(): OkHttpClient =
         OkHttpClient.Builder()
-            // Force HTTP/1.1 — GitHub's CDN returns "Required SETTINGS preface not received"
-            // when OkHttp attempts an HTTP/2 upgrade handshake.
+            
+            
             .protocols(listOf(Protocol.HTTP_1_1))
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
@@ -58,7 +58,7 @@ object HttpClientManager {
         val insecureSocketFactory =
             SSLContext.getInstance("TLSv1.2").apply {
                 val trustAllCerts = arrayOf<TrustManager>(naiveTrustManager)
-                // Avoid triggering default KeyManager lookup (which can require BKS on some devices)
+                
                 init(arrayOf<KeyManager>(), trustAllCerts, SecureRandom())
             }.socketFactory
 
@@ -113,7 +113,7 @@ object HttpClientManager {
             override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
         })
         val sslContext = SSLContext.getInstance("TLS")
-        // Avoid default KeyManager to prevent KeyStoreException: BKS not found
+        
         sslContext.init(arrayOf<KeyManager>(), trustAllCerts, SecureRandom())
         val sslSocketFactory = sslContext.socketFactory
 

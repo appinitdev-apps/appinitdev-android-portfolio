@@ -167,12 +167,12 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         topBar = {
-           /* TopAppBar(
-                title = { Text(stringResource(R.string.app_name), fontWeight = FontWeight.Black) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                )
-            )*/
+            
+
+
+
+
+
         },
         floatingActionButton = {
             if (selectedTab != 2)
@@ -536,7 +536,7 @@ fun ActiveAppsRecommendationsDialog(
     onDismiss: () -> Unit
 ) {
     AlertDialog(
-        onDismissRequest = { /* No-op: user must manually click Cerrar */ },
+        onDismissRequest = {   },
         properties = androidx.compose.ui.window.DialogProperties(
             dismissOnBackPress = false,
             dismissOnClickOutside = false,

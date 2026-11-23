@@ -53,7 +53,7 @@ internal fun FilesViewModel.rebuildBreadcrumbsInternal(targetPath: String) {
         return
     }
     if (ZipBrowserHelper.isZipPath(targetPath)) {
-        // Build filesystem breadcrumbs up to the zip file
+        
         val zipFilePath = ZipBrowserHelper.getZipFilePath(targetPath)
         val relativeToRoot = zipFilePath.removePrefix(rootPath).trimStart('/')
         if (relativeToRoot.isNotEmpty()) {
@@ -61,7 +61,7 @@ internal fun FilesViewModel.rebuildBreadcrumbsInternal(targetPath: String) {
             relativeToRoot.split("/").forEach { segment ->
                 if (segment.isNotEmpty()) {
                     currentPath += "/$segment"
-                    // Zip file breadcrumb navigates to the zip root
+                    
                     val bcPath = if (currentPath == zipFilePath) {
                         ZipBrowserHelper.joinPath(zipFilePath, "")
                     } else {
@@ -71,7 +71,7 @@ internal fun FilesViewModel.rebuildBreadcrumbsInternal(targetPath: String) {
                 }
             }
         }
-        // Build breadcrumbs for each internal directory component
+        
         val internalPath = ZipBrowserHelper.getInternalPath(targetPath)
         val segments = internalPath.trimEnd('/').split("/").filter { it.isNotEmpty() }
         var currentInternalPath = ZipBrowserHelper.joinPath(zipFilePath, "")

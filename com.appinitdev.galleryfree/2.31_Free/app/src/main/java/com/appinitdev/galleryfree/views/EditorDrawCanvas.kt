@@ -87,7 +87,7 @@ class EditorDrawCanvas(context: Context, attrs: AttributeSet) : View(context, at
         if (!mWasMultitouch) {
             mPath.lineTo(mCurX, mCurY)
 
-            // draw a dot on click
+            
             if (mStartX == mCurX && mStartY == mCurY) {
                 mPath.lineTo(mCurX, mCurY + 2)
                 mPath.lineTo(mCurX + 1, mCurY + 2)

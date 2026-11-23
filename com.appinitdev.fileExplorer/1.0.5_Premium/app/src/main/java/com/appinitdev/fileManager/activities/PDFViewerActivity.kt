@@ -87,7 +87,7 @@ class PDFViewerActivity : SimpleActivity() {
             .onTap { toggleFullScreen() }
             .onError {
                 if (it is PdfPasswordException) {
-                    // already entered a password and it was wrong
+                    
                     if (filePassword != null) {
                         toast(getString(R.string.invalid_password))
                         passwordDialog?.clearPassword()
@@ -150,7 +150,7 @@ class PDFViewerActivity : SimpleActivity() {
             }
         }.start()
 
-        // return false to also toggle scroll handle
+        
         return true
     }
 

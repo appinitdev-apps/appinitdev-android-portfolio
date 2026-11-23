@@ -22,7 +22,7 @@ fun InteractiveCalculator(
     }
 }
 
-// 1. Quadratic Equation Calculator: ax^2 + bx + c = 0
+
 @Composable
 fun QuadraticCalculator() {
     var aStr by remember { mutableStateOf("1") }
@@ -130,7 +130,7 @@ fun QuadraticCalculator() {
     }
 }
 
-// 2. Pythagorean Theorem Calculator
+
 @Composable
 fun PythagoreanCalculator() {
     var aStr by remember { mutableStateOf("3") }
@@ -199,7 +199,7 @@ fun PythagoreanCalculator() {
     }
 }
 
-// 3. Triangle Law of Sines & Cosines Solver
+
 @Composable
 fun TriangleCalculator() {
     var aStr by remember { mutableStateOf("5") }
@@ -284,7 +284,7 @@ fun TriangleCalculator() {
     }
 }
 
-// 4. Complex Number Calculator
+
 @Composable
 fun ComplexCalculator() {
     var real1Str by remember { mutableStateOf("3") }
@@ -301,7 +301,7 @@ fun ComplexCalculator() {
     val argRad1 = atan2(i1, r1)
     val argDeg1 = Math.toDegrees(argRad1)
 
-    // Operations z1 + z2, z1 * z2, z1 / z2
+    
     val sumR = r1 + r2
     val sumI = i1 + i2
 
@@ -389,7 +389,7 @@ fun ComplexCalculator() {
     }
 }
 
-// 5. Matrix 2x2 Calculator
+
 @Composable
 fun MatrixCalculator() {
     var aStr by remember { mutableStateOf("1") }
@@ -490,7 +490,7 @@ fun MatrixCalculator() {
     }
 }
 
-// 6. Generic Evaluator Calculator
+
 @Composable
 fun GenericFunctionCalculator() {
     var xStr by remember { mutableStateOf("2") }

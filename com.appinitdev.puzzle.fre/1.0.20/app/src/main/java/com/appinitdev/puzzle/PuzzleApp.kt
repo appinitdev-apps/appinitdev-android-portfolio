@@ -39,7 +39,7 @@ fun PuzzleApp(
     var hasStartedMSM by remember { mutableStateOf(false) }
     var showPreview by remember { mutableStateOf(false) }
 
-    // Innovative Game Modes States
+    
     var isMemoryMode by remember { mutableStateOf(false) }
     var memoryPreviewTimer by remember { mutableIntStateOf(0) }
     var revealedIndex by remember { mutableStateOf<Int?>(null) }
@@ -58,7 +58,7 @@ fun PuzzleApp(
     val timeLimit = appSettings.timeAttackLimitSeconds
     val displaySeconds = if (isTimeAttack) maxOf(0, timeLimit - timeSeconds) else timeSeconds
 
-    // Replay System
+    
     var moveHistory by remember { mutableStateOf(listOf<Int>()) }
     var initialPiecesState by remember { mutableStateOf<List<Piece>>(emptyList()) }
     var isReplaying by remember { mutableStateOf(false) }
@@ -465,7 +465,7 @@ fun PuzzleApp(
                 }
             }
 
-            // Seleccion de Modos Especiales
+            
             LazyRow(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),

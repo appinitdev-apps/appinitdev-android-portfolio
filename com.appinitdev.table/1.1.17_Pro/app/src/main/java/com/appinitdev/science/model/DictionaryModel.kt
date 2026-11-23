@@ -84,7 +84,7 @@ object DictionaryModel {
         dictionary.add(Dictionary("math", "Calculus", "Calculus, originally called infinitesimal calculus or \"the calculus of infinitesimals\", is the mathematical study of continuous change, in the same way that geometry is the study of shape and algebra is the study of generalizations of arithmetic operations.", "https://en.wikipedia.org/wiki/Calculus"))
         dictionary.add(Dictionary("chemistry", "Solid-Water Distribution Coefficient", "To assess the extent to which a compound is associated with solid phases in a given system at equilibrium (see below), we need to know the ratio of the compound s total equilibrium concentrations in the solids and in the aqueous solution.", "https://chempedia.info/info/solid_water_distribution_coefficient/#:~:text=To%20assess%20the%20extent%20to%20which%20a%20compound,in%20the%20solids%20and%20in%20the%20aqueous%20solution."))
 
-        // Added for 4.3.0
+        
         dictionary.add(Dictionary("chemistry, physics", "Avogadro constant", "The Avogadro constant (NA) is the number of constituent particles, usually atoms or molecules, contained in one mole of a substance. Its fixed value in SI units is approximately 6.02214076×10^23 mol^−1.", "https://en.wikipedia.org/wiki/Avogadro_constant"))
         dictionary.add(Dictionary("physics", "Planck constant", "The Planck constant (h) is a fundamental physical constant that relates the energy of a photon to its frequency via E = hν. It is central to quantum mechanics.", "https://en.wikipedia.org/wiki/Planck_constant"))
         dictionary.add(Dictionary("physics", "Boltzmann constant", "The Boltzmann constant (k or kB) relates the average kinetic energy of particles in a gas with the thermodynamic temperature; it appears in statistical mechanics and thermodynamics.", "https://en.wikipedia.org/wiki/Boltzmann_constant"))
@@ -131,5 +131,4 @@ object DictionaryModel {
         dictionary.add(Dictionary("chemistry", "Ionic strength", "Ionic strength is a measure of the total concentration of ions in solution, weighted by the square of their charges; it affects activity coefficients and reaction rates in electrolyte solutions.", "https://en.wikipedia.org/wiki/Ionic_strength"))
     }
 }
-//Template
-//dictionary.add(Dictionary("category", "headingText", "contentText", "wikiLink"))
+

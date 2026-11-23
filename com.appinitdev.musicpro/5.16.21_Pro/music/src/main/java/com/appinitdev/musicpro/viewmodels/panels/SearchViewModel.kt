@@ -1,13 +1,13 @@
 
-/**
- * ViewModel for the Search panel. Searches all audio fields (title, artist, album,
- * genre, composer) and groups results into [SearchResults] by category.
- * A 300 ms debounce prevents excessive queries while the user is typing.
- * Category visibility is driven by [SearchCategoryFilter] which is persisted
- * through [SearchPreferences].
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
 @HiltViewModel
 class SearchViewModel @Inject constructor(
         application: Application,
@@ -60,10 +60,10 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Aggregates raw per-field query results into a [SearchResults] instance,
-     * applying the current [SearchCategoryFilter] to suppress disabled categories.
-     */
+     
+
+
+
     private fun buildSearchResults(
             byTitle: List<Audio>,
             artists: List<Artist>,
@@ -130,10 +130,10 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Updates the active search query. The 300 ms debounce is applied internally
-     * before any database queries are issued.
-     */
+     
+
+
+
     fun setSearchQuery(query: String) {
         _searchQuery.value = query
     }

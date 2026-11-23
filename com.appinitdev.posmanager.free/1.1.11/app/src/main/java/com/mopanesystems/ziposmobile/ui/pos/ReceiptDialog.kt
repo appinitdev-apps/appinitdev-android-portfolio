@@ -24,7 +24,7 @@ fun ReceiptDialog(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
-                // PDF Viewer (mostrar PDF como imagen)
+                
                 val bitmap = remember(pdfPath) { pdfToBitmap(File(pdfPath)) }
                 bitmap?.let {
                     Image(
@@ -84,9 +84,9 @@ fun printPdf(file: File, context: Context) {
     val printManager = context.getSystemService(Context.PRINT_SERVICE) as android.print.PrintManager
     val printAdapter = PdfDocumentAdapter(context, file)
 
-    // Tamaño sugerido, pero el usuario podrá cambiarlo
+    
     val attributes = PrintAttributes.Builder()
-        .setMediaSize(PrintAttributes.MediaSize("CUSTOM", "TICKET", 165, 5000)) // 80mm ancho
+        .setMediaSize(PrintAttributes.MediaSize("CUSTOM", "TICKET", 165, 5000)) 
         .setMinMargins(PrintAttributes.Margins.NO_MARGINS)
         .build()
 

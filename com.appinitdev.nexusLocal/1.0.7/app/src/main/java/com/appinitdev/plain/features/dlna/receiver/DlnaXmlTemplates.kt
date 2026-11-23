@@ -1,5 +1,5 @@
 
-/** Static XML templates for the DLNA receiver's HTTP server. */
+ 
 object DlnaXmlTemplates {
 
     fun deviceDescription(ip: String, port: Int, uuid: String): String = """<?xml version="1.0"?>

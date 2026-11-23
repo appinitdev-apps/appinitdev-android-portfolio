@@ -1,13 +1,13 @@
 
-/**
- * Accessibility Service for injecting touch/gesture events during screen mirror remote control.
- *
- * This service uses AccessibilityService.dispatchGesture() to inject:
- * - Tap, long press, swipe (via gesture paths)
- * - Back, Home, Recents (via performGlobalAction)
- *
- * The user must manually enable this service in Android Settings > Accessibility.
- */
+ 
+
+
+
+
+
+
+
+
 class PlainAccessibilityService : AccessibilityService() {
 
     override fun onServiceConnected() {
@@ -17,11 +17,11 @@ class PlainAccessibilityService : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        // Not used — we only need gesture injection
+        
     }
 
     override fun onInterrupt() {
-        // Required override
+        
     }
 
     override fun onDestroy() {
@@ -30,12 +30,12 @@ class PlainAccessibilityService : AccessibilityService() {
         LogCat.d("PlainAccessibilityService destroyed")
     }
 
-    /**
-     * Dispatch a screen mirror control event.
-     * @param control The control event with normalized coordinates [0, 1]
-     * @param screenWidth The actual screen width in pixels
-     * @param screenHeight The actual screen height in pixels
-     */
+     
+
+
+
+
+
     fun dispatchControl(control: ScreenMirrorControlInput, screenWidth: Int, screenHeight: Int) {
         when (control.action) {
             ScreenMirrorControlAction.TAP -> {
@@ -64,7 +64,7 @@ class PlainAccessibilityService : AccessibilityService() {
                 val x = (control.x ?: return) * screenWidth
                 val y = (control.y ?: return) * screenHeight
                 val deltaY = control.deltaY ?: 0f
-                // Convert scroll delta to a swipe: positive deltaY = scroll down = swipe up
+                
                 val scrollDistance = deltaY.coerceIn(-500f, 500f)
                 dispatchSwipe(x, y, x, y + scrollDistance, 200L)
             }
@@ -86,7 +86,7 @@ class PlainAccessibilityService : AccessibilityService() {
             }
 
             ScreenMirrorControlAction.KEY -> {
-                // Key injection requires InputManager or root; skip for now
+                
                 LogCat.d("Key action not yet supported: ${control.key}")
             }
         }
@@ -121,25 +121,25 @@ class PlainAccessibilityService : AccessibilityService() {
         @Volatile
         var instance: PlainAccessibilityService? = null
 
-        /**
-         * Check if the accessibility service is currently enabled.
-         */
+         
+
+
         fun isEnabled(context: Context = MainApp.instance): Boolean {
             return instance != null
         }
 
-        /**
-         * Cached screen size to avoid repeated DisplayMetrics lookups on every control event.
-         * Invalidated on configuration changes (rotation, display changes).
-         */
+         
+
+
+
         @Volatile
         private var cachedScreenSize: Point? = null
 
-        /**
-         * Get the real physical screen size for coordinate mapping (cached).
-         * Uses real display size to include navigation bar and status bar areas,
-         * which are visible in the screen mirror video captured by MediaProjection.
-         */
+         
+
+
+
+
         fun getScreenSize(context: Context): Point {
             return cachedScreenSize ?: run {
                 val size = getRealScreenSize(context)
@@ -148,25 +148,25 @@ class PlainAccessibilityService : AccessibilityService() {
             }
         }
 
-        /**
-         * Get the real physical screen dimensions including system bars (nav bar, status bar).
-         * On Android <= 11, displayMetrics.widthPixels/heightPixels may exclude the navigation
-         * bar, causing coordinate mapping errors for screen mirror touch control.
-         */
+         
+
+
+
+
         private fun getRealScreenSize(context: Context): Point {
             return getMirrorRealScreenSize(context)
         }
 
-        /**
-         * Invalidate the cached screen size. Call on configuration changes.
-         */
+         
+
+
         fun invalidateScreenSizeCache() {
             cachedScreenSize = null
         }
 
-        /**
-         * Open the system Accessibility Settings page so the user can enable this service.
-         */
+         
+
+
         fun openAccessibilitySettings(context: Context) {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

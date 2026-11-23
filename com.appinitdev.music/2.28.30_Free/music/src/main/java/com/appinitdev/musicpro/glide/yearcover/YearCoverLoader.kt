@@ -1,10 +1,10 @@
 
-/**
- * Glide [ModelLoader] for [YearGroup] → [Bitmap] that wires a [Context] into
- * [YearCoverFetcher] so it can query the MediaStore album art cache.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
 class YearCoverLoader(private val context: Context) : ModelLoader<YearGroup, Bitmap> {
     override fun buildLoadData(model: YearGroup, width: Int, height: Int, options: Options): ModelLoader.LoadData<Bitmap?>? {
         return ModelLoader.LoadData(ObjectKey(model), YearCoverFetcher(context, model))

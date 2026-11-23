@@ -10,26 +10,26 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel) {
     val scrollState = rememberScrollState()
     val EmptyClipboardManager = object : ClipboardManager {
         override fun setText(annotatedString: AnnotatedString) {
-            // No hace nada al intentar copiar
+            
         }
         override fun getText(): AnnotatedString? {
-            // Devuelve null al intentar pegar
+            
             return null
         }
     }
-    // Limpiar errores previos al entrar a la pantalla
+    
     LaunchedEffect(uiState) {
         if (uiState is AuthUiState.RegisterSuccess) {
-            // Al detectar el éxito del registro, navegamos a Login
+            
             navController.navigate("login") {
-                // Limpiamos la pila para que no regrese al registro al darle atrás
+                
                 popUpTo("register") { inclusive = true }
             }
-            //viewModel.clearState() // Importante limpiar el estado
+            
         }
     }
 
-    // Navegar al Home si el registro es exitoso
+    
     LaunchedEffect(uiState) {
         if (uiState is AuthUiState.Success) {
             navController.navigate("home") {

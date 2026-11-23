@@ -1,12 +1,12 @@
 
-/**
- * Default player interface. Inflates [FragmentDefaultPlayerBinding] and wires each
- * abstract view property in [BasePlayerFragment] to the corresponding binding field.
- * All playback, seekbar, visualizer, and album-art-pager logic is inherited from the
- * base class.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
 @AndroidEntryPoint
 class DefaultPlayer : BasePlayerFragment() {
 
@@ -82,11 +82,11 @@ class DefaultPlayer : BasePlayerFragment() {
     }
 
     companion object {
-        /**
-         * Creates a new instance of [DefaultPlayer] with an empty argument bundle.
-         *
-         * @return a fresh [DefaultPlayer] fragment instance
-         */
+         
+
+
+
+
         fun newInstance(): DefaultPlayer {
             val args = Bundle()
             val fragment = DefaultPlayer()

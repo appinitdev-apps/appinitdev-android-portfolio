@@ -68,13 +68,13 @@ fun TextView.markdown(content: String, previewerState: MediaPreviewerState) {
 fun extractImageLinksFromHtml(htmlContent: String): List<String> {
     val imageLinks = mutableListOf<String>()
 
-    // Parse the HTML content using Jsoup
+    
     val doc = Jsoup.parse(htmlContent)
 
-    // Select all <img> tags
+    
     val imgTags = doc.select("img")
 
-    // Extract src attributes from <img> tags
+    
     for (imgTag in imgTags) {
         val imageUrl = imgTag.attr("src")
         imageLinks.add(imageUrl)

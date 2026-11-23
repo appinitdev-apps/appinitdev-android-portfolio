@@ -383,34 +383,34 @@ abstract class PreferenceFragment : MediaFragment() {
     protected fun createBehaviorPanel(): List<Preference> {
         val preferences = mutableListOf<Preference>()
 
-        // List Preference
+        
         val listHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.list)
 
-//        val fastScrollBehavior = Preference(
-//                title = R.string.fast_scroll_behavior,
-//                summary = R.string.fast_scroll_behavior_summary,
-//                icon = R.drawable.ic_swipe_vertical,
-//                type = PreferenceType.BUTTON_GROUP,
-//                valueProvider = {
-//                    ButtonGroupState(
-//                            buttons = listOf(
-//                                    Button(textResId = R.string.hide),
-//                                    Button(textResId = R.string.fade),
-//                            ),
-//                            selectedIndex = when (BehaviourPreferences.getFastScrollBehavior()) {
-//                                BehaviourPreferences.HIDE_FAST_SCROLLBAR -> 0
-//                                else -> 1
-//                            }
-//                    )
-//                },
-//                onPreferenceAction = { view, _ ->
-//                    val behavior = when ((view as FelicityButtonGroup).getSelectedIndex()) {
-//                        0 -> BehaviourPreferences.HIDE_FAST_SCROLLBAR
-//                        else -> BehaviourPreferences.FADE_FAST_SCROLLBAR
-//                    }
-//                    BehaviourPreferences.setFastScrollBehavior(behavior)
-//                }
-//        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         val fastScrollBehavior = Preference(
                 title = R.string.fast_scroll_behavior,
                 summary = R.string.fast_scroll_behavior_summary,
@@ -473,34 +473,34 @@ abstract class PreferenceFragment : MediaFragment() {
                 }
         )
 
-//        val fragmentTransition = Preference(
-//                title = R.string.transition,
-//                summary = R.string.transition_summary,
-//                icon = -1,
-//                type = PreferenceType.BUTTON_GROUP,
-//                valueProvider = {
-//                    ButtonGroupState(
-//                            buttons = listOf(
-//                                    Button(textResId = R.string.depth),
-//                                    Button(textResId = R.string.drift),
-//                                    Button(textResId = R.string.fade),
-//                            ),
-//                            selectedIndex = when (BehaviourPreferences.getFragmentTransition()) {
-//                                BehaviourPreferences.TRANSITION_Z -> 0
-//                                BehaviourPreferences.TRANSITION_X -> 1
-//                                else -> 2
-//                            }
-//                    )
-//                },
-//                onPreferenceAction = { view, _ ->
-//                    val transition = when ((view as FelicityButtonGroup).getSelectedIndex()) {
-//                        0 -> BehaviourPreferences.TRANSITION_Z
-//                        1 -> BehaviourPreferences.TRANSITION_X
-//                        else -> BehaviourPreferences.TRANSITION_FADE
-//                    }
-//                    BehaviourPreferences.setFragmentTransition(transition)
-//                }
-//        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         val fragmentTransition = Preference(
                 title = R.string.transition,
                 summary = R.string.transition_summary,
@@ -727,11 +727,11 @@ abstract class PreferenceFragment : MediaFragment() {
 
         val outputHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.output)
 
-        /**
-         * Toggle that routes the post-DSP float32 PCM stream through the AAudio
-         * direct-to-HAL path instead of the standard AudioTrack pipeline.
-         * Requires API 26 (Android 8.0) or higher.
-         */
+         
+
+
+
+
         val aaudioToggle = Preference(
                 title = R.string.aaudio_enabled,
                 summary = R.string.aaudio_enabled_summary,
@@ -752,12 +752,12 @@ abstract class PreferenceFragment : MediaFragment() {
 
         val replayGainHeader = Preference(type = PreferenceType.SUB_HEADER, title = R.string.replay_gain)
 
-        /**
-         * Master switch for tag-based ReplayGain. When turned on, the player reads the
-         * REPLAYGAIN_TRACK_GAIN or REPLAYGAIN_ALBUM_GAIN tag from each file and applies
-         * the encoded gain automatically every time a new track starts. The manual preamp
-         * knob on the equalizer screen still works on top of this.
-         */
+         
+
+
+
+
+
         val autoReplayGainToggle = Preference(
                 title = R.string.auto_replay_gain,
                 summary = R.string.auto_replay_gain_summary,
@@ -771,12 +771,12 @@ abstract class PreferenceFragment : MediaFragment() {
                 }
         )
 
-        /**
-         * Selects which embedded tag to read when auto ReplayGain is active.
-         * Track mode is the safer default for shuffle playlists because each
-         * song was analyzed independently. Album mode keeps the loudness relationship
-         * between tracks intact when you listen to a full album in order.
-         */
+         
+
+
+
+
+
         val replayGainMode = Preference(
                 title = R.string.replay_gain_mode,
                 summary = R.string.replay_gain_mode_summary,
@@ -977,7 +977,7 @@ abstract class PreferenceFragment : MediaFragment() {
                 valueProvider = Supplier {
                     SeekbarState(
                             position = LibraryPreferences.getMinimumAudioLength().toFloat(),
-                            max = 600F, // 10 minutes max
+                            max = 600F, 
                             min = 0F,
                             default = 0F,
                             leftLabel = false,
@@ -1000,7 +1000,7 @@ abstract class PreferenceFragment : MediaFragment() {
                 valueProvider = Supplier {
                     SeekbarState(
                             position = LibraryPreferences.getMinimumAudioSize().toFloat(),
-                            max = 1024 * 20F, // 20 MB max
+                            max = 1024 * 20F, 
                             min = 0F,
                             default = 0F,
                             leftLabel = false,
@@ -1051,11 +1051,11 @@ abstract class PreferenceFragment : MediaFragment() {
                     withSureDialog {
                         if (it) {
                             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
-                                Glide.get(requireContext()).clearDiskCache() // Requires bg thread
+                                Glide.get(requireContext()).clearDiskCache() 
 
                                 withContext(Dispatchers.Main) {
-                                    Glide.get(requireContext()).clearMemory() // Requires main thread
-                                    showWarning(R.string.done) // Obviously main thread as well
+                                    Glide.get(requireContext()).clearMemory() 
+                                    showWarning(R.string.done) 
                                 }
                             }
                         }

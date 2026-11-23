@@ -1,8 +1,8 @@
 
-/**
- * Inspired by https://github.com/saket/Better-Link-Movement-Method Intercepts touch events on links
- * and dispatches them accordingly
- */
+ 
+
+
+
 class LinkMovementMethod(private val onClick: (span: URLSpan) -> Unit) : ArrowKeyMovementMethod() {
 
     private val touchedLineBounds = RectF()

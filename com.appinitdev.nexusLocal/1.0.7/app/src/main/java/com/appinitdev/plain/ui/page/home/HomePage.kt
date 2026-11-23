@@ -65,20 +65,20 @@ fun HomePage(
                                 AlertType.WARNING,
                             )
                         }
-//                        if (!systemAlertWindow) {
-//                            PAlert(
-//                                description = stringResource(Res.string.system_alert_window_warning),
-//                                AlertType.WARNING,
-//                            ) {
-//                                PFilledButton(
-//                                    text = stringResource(Res.string.grant_permission),
-//                                    buttonSize = ButtonSize.SMALL,
-//                                    onClick = {
-//                                        sendEvent(RequestPermissionsEvent(Permission.SYSTEM_ALERT_WINDOW))
-//                                    },
-//                                )
-//                            }
-//                        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     }
                 }
 

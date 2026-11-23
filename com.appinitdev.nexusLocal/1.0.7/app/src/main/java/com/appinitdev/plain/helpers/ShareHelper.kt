@@ -113,23 +113,23 @@ object ShareHelper {
         }
     }
 
-    /**
-     * Check if a file can be accessed by the FileProvider
-     */
+     
+
+
     private fun isFileAccessibleByProvider(file: File): Boolean {
         if (!file.exists() || !file.canRead()) {
             return false
         }
         
         val path = file.absolutePath
-        // Files in /apex/ directory are modular system components and cannot be shared via FileProvider
+        
         if (path.startsWith("/apex/")) {
             return false
         }
         
-        // Files in other system directories may also be inaccessible
+        
         if (path.startsWith("/system/") || path.startsWith("/vendor/") || path.startsWith("/product/")) {
-            // Try to access the file to see if it's readable
+            
             try {
                 file.inputStream().use { it.read() }
                 return true
@@ -154,7 +154,7 @@ object ShareHelper {
         } else {
             file
         }
-        // Check if the file can be accessed by FileProvider
+        
         if (!isFileAccessibleByProvider(fileToShare)) {
             val errorMessage = if (fileToShare.absolutePath.startsWith("/apex/")) {
                 LocaleHelper.getString(Res.string.cannot_share_system_component)

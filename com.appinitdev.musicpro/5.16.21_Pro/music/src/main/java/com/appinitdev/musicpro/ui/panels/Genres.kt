@@ -1,9 +1,9 @@
 
-/**
- * Panel fragment displaying the user's genres with sort, grid layout, and search support.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
 @AndroidEntryPoint
 class Genres : BasePanelFragment() {
 

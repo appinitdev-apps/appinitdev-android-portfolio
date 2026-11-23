@@ -1,24 +1,24 @@
 
-/**
- * [ScopedFragment] is lifecycle aware [CoroutineScope] fragment
- * used to bind independent coroutines with the lifecycle of
- * the given fragment. All [Fragment] extension classes must extend
- * this class instead.
- *
- * It is recommended to read this code before implementing to know
- * its purpose and importance
- */
+ 
+
+
+
+
+
+
+
+
 abstract class ScopedFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    /**
-     * [ScopedFragment]'s own [Handler] instance
-     */
+     
+
+
     val handler = Handler(Looper.getMainLooper())
 
-    /**
-     * [postponeEnterTransition] here and initialize all the
-     * views in [onCreateView] with proper transition names
-     */
+     
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         applyFragmentTransition()
@@ -44,12 +44,12 @@ abstract class ScopedFragment : Fragment(), SharedPreferences.OnSharedPreference
         unregisterSharedPreferenceChangeListener()
     }
 
-    /**
-     * Called when any preferences is changed using [com.appinitdev.musicpro.manager.SharedPreferences.getSharedPreferences]
-     *
-     * Override this to get any preferences change events inside
-     * the fragment
-     */
+     
+
+
+
+
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             BehaviourPreferences.FRAGMENT_TRANSITION -> {
@@ -59,28 +59,28 @@ abstract class ScopedFragment : Fragment(), SharedPreferences.OnSharedPreference
         }
     }
 
-    /**
-     * Open fragment using linear animation for shared element
-     *
-     * If the fragment does not need to be pushed into backstack
-     * leave the [tag] unattended
-     *
-     * @param fragment [Fragment]
-     * @param view [View] that needs to be animated
-     * @param tag back stack tag for fragment
-     */
+     
+
+
+
+
+
+
+
+
+
     fun openFragment(fragment: ScopedFragment, tag: String? = null) {
-        // Get the transition type of the next fragment
+        
         val nextTransitionType = fragment.getTransitionType()
 
-        // Apply the same transition to the current fragment
+        
         when (nextTransitionType) {
             TransitionType.SHARED_AXIS -> setTransitions()
             TransitionType.SLIDE -> setSlideTransitions()
             TransitionType.DRIFT -> setDriftTransitions()
         }
 
-        // Apply transition to the next fragment
+        
         fragment.applyFragmentTransition()
 
         try {
@@ -102,11 +102,11 @@ abstract class ScopedFragment : Fragment(), SharedPreferences.OnSharedPreference
         }
     }
 
-    /**
-     * clears the [setExitTransition] for the current fragment in support
-     * for making the custom animations work for the fragments that needs
-     * to originate from the current fragment
-     */
+     
+
+
+
+
     internal fun clearExitTransition() {
         exitTransition = null
     }
@@ -129,10 +129,10 @@ abstract class ScopedFragment : Fragment(), SharedPreferences.OnSharedPreference
         clearReEnterTransition()
     }
 
-    /**
-     * Sets fragment transitions prior to creating a new fragment.
-     * The specific transition class used is determined by [BehaviourPreferences.getFragmentTransition].
-     */
+     
+
+
+
     open fun setTransitions() {
         when (BehaviourPreferences.getFragmentTransition()) {
             BehaviourPreferences.TRANSITION_X -> {
@@ -184,40 +184,40 @@ abstract class ScopedFragment : Fragment(), SharedPreferences.OnSharedPreference
             var endBottom = 0
 
             override fun onPrepare(animation: WindowInsetsAnimation) {
-                /**
-                 * #1: First up, onPrepare is called which allows apps to record any
-                 * view state from the current layout
-                 */
-                // endBottom = view.calculateBottomInWindow()
+                 
+
+
+
+                
             }
 
-            /**
-             * #2: After onPrepare, the normal WindowInsets will be dispatched to
-             * the view hierarchy, containing the end state. This means that your
-             * view's OnApplyWindowInsetsListener will be called, which will cause
-             * a layout pass to reflect the end state.
-             */
+             
+
+
+
+
+
             override fun onStart(animation: WindowInsetsAnimation, bounds: WindowInsetsAnimation.Bounds): WindowInsetsAnimation.Bounds {
-                /**
-                 * #3: Next up is onStart, which is called at the start of the animation.
-                 * This allows apps to record the view state of the target or end state.
-                 */
+                 
+
+
+
                 return bounds
             }
 
             override fun onProgress(insets: WindowInsets, runningAnimations: List<WindowInsetsAnimation>): WindowInsets {
-                /** #4: Next up is the important call: onProgress. This is called every time
-                 * the insets change in the animation. In the case of the keyboard, which
-                 * would be as it slides on screen.
-                 */
+                 
+
+
+
                 return insets
             }
 
             override fun onEnd(animation: WindowInsetsAnimation) {
-                /**
-                 * #5: And finally onEnd is called when the animation has finished. Use this
-                 * to clear up any old state.
-                 */
+                 
+
+
+
             }
         }
     }
@@ -230,21 +230,21 @@ abstract class ScopedFragment : Fragment(), SharedPreferences.OnSharedPreference
         requireActivity().supportFragmentManager.showWarning(warning)
     }
 
-    /**
-     * Sets up a [FragmentManager.OnBackStackChangedListener] on the activity's support
-     * fragment manager to observe predictive back gesture events for this fragment.
-     * <p>
-     * Unlike registering an [androidx.activity.OnBackPressedCallback], this approach does
-     * not intercept the back press, so the seekable transition mechanism in
-     * [com.appinitdev.musicpro.decorations.transitions.BaseSeekableTransition] continues to
-     * work unimpeded.
-     * <p>
-     * The listener is automatically removed when this fragment's view is destroyed.
-     */
+     
+
+
+
+
+
+
+
+
+
+
     private fun setupPredictiveBackObserver() {
         val backStackListener = object : FragmentManager.OnBackStackChangedListener {
             override fun onBackStackChanged() {
-                // no-op — we only care about the predictive back event callbacks below
+                
             }
 
             override fun onBackStackChangeStarted(fragment: Fragment, pop: Boolean) {
@@ -304,43 +304,43 @@ abstract class ScopedFragment : Fragment(), SharedPreferences.OnSharedPreference
         requireActivity().supportFragmentManager.popBackStack()
     }
 
-    /**
-     * Called when the predictive back gesture starts and this fragment begins transitioning
-     * away. Override to snapshot or pre-adjust any UI state that needs to change during the
-     * gesture. The fragment's lifecycle remains in the RESUMED state until the gesture is
-     * either committed or canceled, so this is the right place for pre-gesture setup.
-     */
+     
+
+
+
+
+
     open fun onStartPredictiveBack() {
 
     }
 
-    /**
-     * Called each frame while the predictive back gesture is in progress.
-     *
-     * @param progress A normalized value in the range [0.0, 1.0] indicating how far the
-     *                 user has dragged. Use this to drive any custom gesture-driven UI
-     *                 changes such as dimming overlays or secondary animations.
-     */
+     
+
+
+
+
+
+
     open fun onProgressPredictiveBack(progress: Float) {
 
     }
 
-    /**
-     * Called when the user abandons the predictive back gesture before committing.
-     * Override to restore any UI state that was changed speculatively during
-     * [onStartPredictiveBack] or [onProgressPredictiveBack]. The fragment remains the
-     * current visible fragment after this call, and its lifecycle stays at RESUMED.
-     */
+     
+
+
+
+
+
     open fun onCancelPredictiveBack() {
 
     }
 
-    /**
-     * Called when the user commits the predictive back gesture and back navigation proceeds.
-     * The fragment's lifecycle will subsequently move through PAUSED, STOPPED, and DESTROYED.
-     * In most cases no action is needed here because the lifecycle events handle cleanup,
-     * but this hook is available for any commit-specific one-time work.
-     */
+     
+
+
+
+
+
     open fun onConfirmPredictiveBack() {
 
     }
@@ -366,9 +366,9 @@ abstract class ScopedFragment : Fragment(), SharedPreferences.OnSharedPreference
         return requireActivity().contentResolver
     }
 
-    /**
-     * Sets the light bar icons for the current fragment.
-     */
+     
+
+
     protected fun requireLightBarIcons() {
         ThemeUtils.setDarkBars(
                 lifecycleOwner = viewLifecycleOwner,
@@ -383,18 +383,18 @@ abstract class ScopedFragment : Fragment(), SharedPreferences.OnSharedPreference
                 resources = requireContext().resources)
     }
 
-    /**
-     * Hides the status bar and navigation bar for as long as this fragment is on screen,
-     * but only when the user has immersive mode turned on in settings.
-     *
-     * Think of it as a "do not disturb" sign for the system bars — they vanish when
-     * this fragment shows up and politely come back the moment the user navigates away.
-     * A swipe from any edge temporarily peeks them back in.
-     *
-     * If immersive mode is disabled in settings, this function does nothing, so you can
-     * safely call it unconditionally on any fragment that should go full-screen when the
-     * setting is on.
-     */
+     
+
+
+
+
+
+
+
+
+
+
+
     protected fun requireImmersiveMode() {
         if (!UserInterfacePreferences.isImmersiveMode()) return
 

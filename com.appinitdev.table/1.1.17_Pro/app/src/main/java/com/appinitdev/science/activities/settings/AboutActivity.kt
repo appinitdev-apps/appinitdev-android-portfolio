@@ -27,7 +27,7 @@ class AboutActivity : BaseActivity() {
     }
 
     private fun setupLinks() {
-    //empty
+    
     }
 }
 

@@ -1,28 +1,28 @@
 
-/**
- * Base fragment shared by all home screen variants.
- *
- * Provides a single implementation of:
- *  - Wi-Fi server toggle button setup and state synchronization.
- *  - Panel navigation routing for every panel available in the app.
- *
- * Subclasses should call [setupServerToggle] in [onViewCreated] to activate the
- * server toggle button, and [navigateToPanel] inside adapter callbacks to open
- * the correct panel fragment.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 abstract class BaseHomeFragment : PanelFragment() {
 
-    /**
-     * Attaches a click listener and a lifecycle-aware state observer to [button].
-     *
-     * Tapping [button] starts or stops the Wi-Fi server via [ServerModeService].
-     * The button's tint tracks the server's running state for the lifetime of
-     * the current fragment view — no manual observation is required in subclasses.
-     *
-     * @param button The image button that triggers the server toggle action.
-     */
+     
+
+
+
+
+
+
+
+
     protected fun setupServerToggle(button: DynamicRippleImageButton) {
         button.setOnClickListener {
             if (ServerModeService.isRunning.value) {
@@ -31,8 +31,8 @@ abstract class BaseHomeFragment : PanelFragment() {
                 try {
                     ServerModeService.start(requireContext())
                 } catch (e: Exception) {
-                    // Starting the server can fail for various reasons (e.g. port in use, missing permissions).
-                    // Just show a toast and keep the toggle off if that happens — no need to crash the app.
+                    
+                    
                     e.printStackTrace()
                     showWarning("failed to start server: ${e.message ?: "unknown error"}")
                 }
@@ -56,12 +56,12 @@ abstract class BaseHomeFragment : PanelFragment() {
         }
     }
 
-    /**
-     * Applies the accent tint when the server is running, or clears it when stopped.
-     *
-     * @param button  The button whose tint to update.
-     * @param running `true` if the HTTP server is currently active.
-     */
+     
+
+
+
+
+
     private fun applyServerToggleTint(button: DynamicRippleImageButton, running: Boolean) {
         button.imageTintList = if (running) {
             ThemeManager.accent.primaryAccentColor.toColorStateList()
@@ -70,12 +70,12 @@ abstract class BaseHomeFragment : PanelFragment() {
         }
     }
 
-    /**
-     * Opens the panel fragment that corresponds to [Panel.titleResId].
-     * Covers every panel exposed in [SimpleHomeViewModel] and [DashboardViewModel].
-     *
-     * @param panel The [Panel] item the user tapped.
-     */
+     
+
+
+
+
+
     protected fun navigateToPanel(panel: Panel) {
         when (panel.titleResId) {
             R.string.songs -> openFragment(Songs.newInstance(), Songs.TAG)

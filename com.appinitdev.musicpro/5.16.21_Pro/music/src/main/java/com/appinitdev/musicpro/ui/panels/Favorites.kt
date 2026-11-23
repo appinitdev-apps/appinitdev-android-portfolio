@@ -1,9 +1,9 @@
 
-/**
- * Panel fragment that displays the user's favorite songs with full sort, grid, and shuffle support.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
 @AndroidEntryPoint
 class Favorites : BasePanelFragment() {
 
@@ -64,12 +64,12 @@ class Favorites : BasePanelFragment() {
         }
     }
 
-    /**
-     * Updates the favorites list and refreshes all header chips.
-     * Initializes the adapter on first call and diffs subsequent updates.
-     *
-     * @param songs The latest sorted list of favorite [Audio] entries.
-     */
+     
+
+
+
+
+
     private fun updateFavoritesList(songs: List<Audio>) {
         if (adapterSongs == null) {
             adapterSongs = AdapterFavorites(songs)

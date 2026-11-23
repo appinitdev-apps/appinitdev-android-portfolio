@@ -5,7 +5,7 @@ class NuclideActivity : BaseActivity() {
     lateinit var mScaleDetector: ScaleGestureDetector
     lateinit var gestureDetector: GestureDetector
 
-    // Unified back handling fields
+    
     private var backCallback: OnBackPressedCallback? = null
     private var onBackInvokedCb: android.window.OnBackInvokedCallback? = null
     private val uiHandler = Handler(Looper.getMainLooper())
@@ -19,12 +19,12 @@ class NuclideActivity : BaseActivity() {
 
         findViewById<ViewStub>(R.id.viewStub).inflate()
 
-        // Setup centralized back handling (disabled by default)
+        
         backCallback = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
                 val consumed = handleBackPress()
                 if (!consumed) {
-                    // Not consumed by overlays -> fallback to default behaviour
+                    
                     isEnabled = false
                     try {
                         onBackPressedDispatcher.onBackPressed()
@@ -36,10 +36,10 @@ class NuclideActivity : BaseActivity() {
         }
         onBackPressedDispatcher.addCallback(this, backCallback!!)
 
-        // Register platform callback on Android 14+ but start disabled
+        
         setBackInterceptionEnabled(false)
 
-        // Run initial UI setup
+        
         runOnUiThread {
             findViewById<FrameLayout>(R.id.ldn_place).visibility = View.VISIBLE
             findViewById<ZoomLayout>(R.id.nuclideZoomView).visibility = View.GONE
@@ -48,12 +48,12 @@ class NuclideActivity : BaseActivity() {
             }
         }
 
-        // Load JSON in the background and update UI in lifecycleScope
+        
         lifecycleScope.launch {
             loadAndDisplayElements()
         }
 
-        //Add value to most used:
+        
         val mostUsedPreference = MostUsedPreference(this)
         val mostUsedPrefValue = mostUsedPreference.getValue()
         val targetLabel = "nuc"
@@ -143,7 +143,7 @@ class NuclideActivity : BaseActivity() {
         return mScaleDetector.onTouchEvent(event)
     }
 
-    @SuppressLint("SetTextI18n") //suppresses as it's only showing number and therefore no attr needed
+    @SuppressLint("SetTextI18n") 
     private suspend fun loadAndDisplayElements() {
         val context = this@NuclideActivity
         withContext(Dispatchers.IO) {
@@ -198,7 +198,7 @@ class NuclideActivity : BaseActivity() {
         }
     }
 
-    //add isotopes to the parent layout
+    
     private fun addIsotopesToLayout(item: Element, jsonObject: JSONObject) {
         for (i in 1..item.isotopes) {
             val n = jsonObject.optString("iso_N_$i", "-")
@@ -216,7 +216,7 @@ class NuclideActivity : BaseActivity() {
         val params = RelativeLayout.LayoutParams(
             resources.getDimensionPixelSize(R.dimen.item_nuclide),
             resources.getDimensionPixelSize(R.dimen.item_nuclide)
-        ).apply { //margin depending on where in the coordinate system
+        ).apply { 
             leftMargin = resources.getDimensionPixelSize(R.dimen.item_nuclide) * z
             topMargin = resources.getDimensionPixelSize(R.dimen.item_nuclide) * n
         }
@@ -257,11 +257,11 @@ class NuclideActivity : BaseActivity() {
 
         frame.setOnClickListener {
             val isoPreference = ElementSendAndLoad(this)
-            isoPreference.setValue(item.elementKey) //Send element number
+            isoPreference.setValue(item.elementKey) 
             val isoSend = sendIso(this)
-            isoSend.setValue("true") //Set flag for sent
+            isoSend.setValue("true") 
             val intent = Intent(this, IsotopesActivityExperimental::class.java)
-            startActivity(intent) //Send intent
+            startActivity(intent) 
         }
 
         decay.text = when (decayTypeResult) {
@@ -273,7 +273,7 @@ class NuclideActivity : BaseActivity() {
             "e- capture", "e-capture", "EC", "ε" -> "ε-capture"
             else -> decayTypeResult
         }
-        dLayout.addView(myLayout, params) //inflates view after data has been parsed from json
+        dLayout.addView(myLayout, params) 
     }
 
 
@@ -285,19 +285,19 @@ class NuclideActivity : BaseActivity() {
     private fun showInfoPanel() {
         Anim.fadeIn(findViewById<ConstraintLayout>(R.id.nuc_info_panel), 300)
 
-        //setting up clickListeners that closes infoPanel
+        
         findViewById<TextView>(R.id.nuc_panel_background).setOnClickListener {
             closeInfoPanel()
-            // update interception after hiding
+            
             setBackInterceptionEnabled(anyOverlayOpen())
         }
         findViewById<FloatingActionButton>(R.id.nuc_info_close_btn).setOnClickListener {
             closeInfoPanel()
-            // update interception after hiding
+            
             setBackInterceptionEnabled(anyOverlayOpen())
         }
 
-        // Info panel shown -> enable back interception
+        
         setBackInterceptionEnabled(true)
     }
 
@@ -305,36 +305,36 @@ class NuclideActivity : BaseActivity() {
         Anim.fadeOutAnim(findViewById<ConstraintLayout>(R.id.nuc_info_panel), 300)
     }
 
-    // Centralized back handling: prefer overlay-first closing
+    
     override fun onBackPressed() {
         if (!handleBackPress()) {
             super.onBackPressed()
         }
     }
 
-    // Centralized overlay detection
+    
     private fun anyOverlayOpen(): Boolean {
         val infoVisible = findViewById<ConstraintLayout>(R.id.nuc_info_panel).visibility == View.VISIBLE
         return infoVisible
     }
 
-    // Close overlays if visible; return true when consumed.
+    
     private fun handleBackPress(): Boolean {
         val infoPanel = findViewById<ConstraintLayout>(R.id.nuc_info_panel)
         if (infoPanel.visibility == View.VISIBLE) {
             closeInfoPanel()
-            // update interception state after hiding
+            
             setBackInterceptionEnabled(anyOverlayOpen())
             return true
         }
         return false
     }
 
-    /**
-     * Centralized management of platform back interception for Android 14+.
-     * We forward platform back invocations to the OnBackPressedDispatcher to ensure
-     * gestures and hardware back buttons call the same callbacks.
-     */
+     
+
+
+
+
     private fun setBackInterceptionEnabled(enabled: Boolean) {
         backCallback?.isEnabled = enabled
 
@@ -357,7 +357,7 @@ class NuclideActivity : BaseActivity() {
                             onBackInvokedCb!!
                         )
                     } catch (_: Exception) {
-                        // ignore registration errors on some devices
+                        
                     }
                 }
             } else {
@@ -365,7 +365,7 @@ class NuclideActivity : BaseActivity() {
                     try {
                         onBackInvokedDispatcher.unregisterOnBackInvokedCallback(onBackInvokedCb!!)
                     } catch (_: Exception) {
-                        // ignore
+                        
                     }
                     onBackInvokedCb = null
                 }
@@ -388,7 +388,7 @@ class NuclideActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        // Cleanup back interception hooks
+        
         backCallback?.remove()
         backCallback = null
         if (onBackInvokedCb != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {

@@ -27,7 +27,7 @@ open class EditTextWithWatcher(context: Context, attrs: AttributeSet) :
             clearFocus()
         }
         keyListener?.let { keyListenerInstance = it }
-        keyListener = if (value) keyListenerInstance else null // Disables text editing
+        keyListener = if (value) keyListenerInstance else null 
         isCursorVisible = true
         isFocusable = value
         isFocusableInTouchMode = value

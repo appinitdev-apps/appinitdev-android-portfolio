@@ -15,7 +15,7 @@ fun MainScreen(
     val updateAvailable = mainUiState.isUpdateAvailable
     val wasNotificationPermissionDenied = mainUiState.wasNotificationPermissionDenied
 
-    var chosenColor by remember { mutableStateOf(Color.Gray) } // 👉 aquí guardas el color
+    var chosenColor by remember { mutableStateOf(Color.Gray) } 
     var showDialog by remember { mutableStateOf(false) }
 
     if (uiState.isLoading) return
@@ -27,7 +27,7 @@ fun MainScreen(
     LifecycleResumeEffect(Unit) {
         viewModel.refreshStartOfToday()
         onPauseOrDispose {
-            // do nothing
+            
         }
     }
 
@@ -168,8 +168,8 @@ fun MainScreen(
                             painter = rememberAsyncImagePainter(
                                 model = ImageRequest.Builder(context)
                                     .data(File(imagePath!!))
-                                    .diskCachePolicy(CachePolicy.DISABLED) // 🔴 desactiva caché disco
-                                    .memoryCachePolicy(CachePolicy.DISABLED) // 🔴 desactiva caché memoria
+                                    .diskCachePolicy(CachePolicy.DISABLED) 
+                                    .memoryCachePolicy(CachePolicy.DISABLED) 
                                     .build()
                             ),
                             contentDescription = null,
@@ -183,7 +183,7 @@ fun MainScreen(
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .background(it.copy(alpha = 0.6f)) // usa el color guardado
+                                    .background(it.copy(alpha = 0.6f)) 
                             )
                         }
 
@@ -192,7 +192,7 @@ fun MainScreen(
                     if (!hideBottomBar)
                         Row(
                             modifier = Modifier
-                                .align(Alignment.TopEnd) // o TopEnd si quieres a la derecha
+                                .align(Alignment.TopEnd) 
                                 .padding(top = 16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -325,11 +325,11 @@ fun MainScreen(
             text = {
                 ColorPickerDialog(
                     onColorSelected = { color ->
-                        chosenColor = color   // 👉 aquí lo obtienes
+                        chosenColor = color   
                         coroutineScope.launch {
                             BackgroundPrefs.setColor(context, chosenColor)
                         }
-                        showDialog = false    // cerrar dialog
+                        showDialog = false    
                     }
                 )
             }
@@ -361,7 +361,7 @@ fun MainScreen(
             onHideSheet = { showFinishedSessionSheet = false },
             onNext = { updateWorkTime ->
                 viewModel.next(updateWorkTime)
-                // ask for in app review if the user just started a break session
+                
                 if (context.installIsOlderThan10Days() && !timerUiState.isBreak) {
                     viewModel.setShouldAskForReview()
                 }

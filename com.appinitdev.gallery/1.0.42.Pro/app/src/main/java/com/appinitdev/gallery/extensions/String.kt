@@ -5,7 +5,7 @@ fun String.isThisOrParentIncluded(includedPaths: MutableSet<String>) =
 fun String.isThisOrParentExcluded(excludedPaths: MutableSet<String>) =
     excludedPaths.any { equals(it, true) } || excludedPaths.any { "$this/".startsWith("$it/", true) }
 
-// cache which folders contain .nomedia files to avoid checking them over and over again
+
 fun String.shouldFolderBeVisible(
     excludedPaths: MutableSet<String>, includedPaths: MutableSet<String>, showHidden: Boolean,
     folderNoMediaStatuses: HashMap<String, Boolean>, callback: (path: String, hasNoMedia: Boolean) -> Unit
@@ -73,7 +73,7 @@ fun String.shouldFolderBeVisible(
     }
 }
 
-// recognize /sdcard/DCIM as the same folder as /storage/emulated/0/DCIM
+
 fun String.getDistinctPath(): String {
     return try {
         File(this).canonicalPath.lowercase(Locale.getDefault())

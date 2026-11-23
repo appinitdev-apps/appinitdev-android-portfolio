@@ -1,9 +1,9 @@
 
-/**
- * Manager for scheduling and canceling auto backup operations.
- * It observes the BackupSettings from SettingsRepository and schedules or cancels
- * the backup work accordingly.
- */
+ 
+
+
+
+
 class AutoBackupManager(
     context: Context,
     private val settingsRepository: SettingsRepository,

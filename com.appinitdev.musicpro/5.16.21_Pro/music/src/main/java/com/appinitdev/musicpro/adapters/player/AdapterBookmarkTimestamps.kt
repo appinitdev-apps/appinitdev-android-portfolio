@@ -1,14 +1,14 @@
 
-/**
- * Shows a flat list of bookmarks for a single song inside the bookmarks' dialog.
- *
- * Each row displays the bookmark's formatted timestamp. When [showDeleteButton] is true, a
- * small trash icon appears at the end of every row. Tapping a row fires [onTimestampClicked],
- * and tapping the trash icon fires [onDeleteClicked]. Removing an item calls
- * [notifyItemRemoved] so the default RecyclerView transition plays smoothly.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
 class AdapterBookmarkTimestamps(
         private val items: MutableList<AudioBookmark>,
         private val showDeleteButton: Boolean,
@@ -27,10 +27,10 @@ class AdapterBookmarkTimestamps(
         holder.bind(items[position])
     }
 
-    /**
-     * Removes a bookmark from the list at the given adapter position and plays
-     * the default item-removal animation provided by RecyclerView.
-     */
+     
+
+
+
     fun removeAt(position: Int) {
         items.removeAt(position)
         notifyItemRemoved(position)

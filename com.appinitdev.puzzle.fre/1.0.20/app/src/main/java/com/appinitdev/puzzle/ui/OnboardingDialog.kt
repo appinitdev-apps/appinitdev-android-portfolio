@@ -86,7 +86,7 @@ fun OnboardingDialog(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Indicadores de página
+                
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically

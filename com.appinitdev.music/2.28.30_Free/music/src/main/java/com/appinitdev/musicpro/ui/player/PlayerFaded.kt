@@ -1,12 +1,12 @@
 
-/**
- * Faded player interface. Inflates [FragmentPlayerFadedWaveformBinding] and wires each
- * abstract view property in [BasePlayerFragment] to the corresponding binding field.
- * All playback, seekbar, visualizer, and album-art-pager logic is inherited from the
- * base class.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
 @AndroidEntryPoint
 class PlayerFaded : BasePlayerFragment() {
 
@@ -75,11 +75,11 @@ class PlayerFaded : BasePlayerFragment() {
     }
 
     companion object {
-        /**
-         * Creates a new instance of [PlayerFaded] with an empty argument bundle.
-         *
-         * @return a fresh [PlayerFaded] fragment instance
-         */
+         
+
+
+
+
         fun newInstance(): PlayerFaded {
             val args = Bundle()
             val fragment = PlayerFaded()

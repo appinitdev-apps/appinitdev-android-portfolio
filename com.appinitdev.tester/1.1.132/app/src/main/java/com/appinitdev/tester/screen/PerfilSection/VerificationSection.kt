@@ -8,7 +8,7 @@ fun VerificationSection(
     val context = LocalContext.current
     val profile by viewModel.userProfile.collectAsState()
     val icons by viewModel.fixedAppsIcons.collectAsState()
-    // Verificamos el estado de instalación de cada app de la lista
+    
     val appsStatus = remember(profile) {
         DevAppsConfig.developerApps.shuffled().map { app ->
             val instalada = com.appinitdev.tester.Funciones.isAppInstalled(context, app.paquete)
@@ -21,8 +21,8 @@ fun VerificationSection(
     }
 
     LaunchedEffect(appsStatus) {
-        // Esto se ejecutará cada vez que appsStatus cambie
-        // o al entrar a la pantalla por primera vez.
+        
+        
         viewModel.actualizarNivelPorInstalacionesFijas(context)
     }
 
@@ -64,7 +64,7 @@ fun VerificationSection(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Card de Estado de Nivel
+                
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
@@ -133,14 +133,14 @@ fun AppVerificationItem(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // --- NUEVO: Icono de la App o Logo de Letra ---
+            
             Box(
                 modifier = Modifier
                     .size(44.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
-                // Dentro de ProductionAppItem en ProductionAppsScreen.kt
+                
 
                 SubcomposeAsyncImage(
 
@@ -148,7 +148,7 @@ fun AppVerificationItem(
 
                         .data(iconoUrl)
 
-                        .crossfade(true) // Hace que el cambio de letra a icono sea suave
+                        .crossfade(true) 
 
                         .build(),
 
@@ -169,25 +169,25 @@ fun AppVerificationItem(
 
                 )
 
-                // Overlay: Si está instalada, mostramos un check pequeño en la esquina
+                
                 if (estaInstalada) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize(),
-                        contentAlignment = Alignment.BottomEnd // <--- Mueve la paloma a la esquina inferior derecha
+                        contentAlignment = Alignment.BottomEnd 
                     ) {
                         Surface(
                             shape = CircleShape,
                             color = Color.White,
                             modifier = Modifier
-                                .size(18.dp) // Círculo un poco más pequeño para la esquina
-                                .offset(x = -1.dp, y = -1.dp), // Sobresale un poquito para que se vea más moderno
-                            shadowElevation = 2.dp // Sombra pequeña para que resalte del icono
+                                .size(18.dp) 
+                                .offset(x = -1.dp, y = -1.dp), 
+                            shadowElevation = 2.dp 
                         ) {
                             Icon(
-                                imageVector = Icons.Default.CheckCircle, // CheckCircle se ve más limpio en esquinas
+                                imageVector = Icons.Default.CheckCircle, 
                                 contentDescription = null,
-                                tint = Color(0xFF2E7D32), // Verde intenso
+                                tint = Color(0xFF2E7D32), 
                                 modifier = Modifier.fillMaxSize()
                             )
                         }

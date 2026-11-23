@@ -1,9 +1,9 @@
 
 object CalendarExportHelper {
 
-    /**
-     * Launches calendar app with pre-filled event details for a finished session.
-     */
+     
+
+
     fun addSessionToCalendar(context: Context, session: Session) {
         val startMs = session.timestamp
         val endMs = startMs + (session.duration * 60 * 1000)

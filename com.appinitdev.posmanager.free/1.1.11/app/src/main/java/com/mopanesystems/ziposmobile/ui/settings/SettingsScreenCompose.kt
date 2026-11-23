@@ -1,20 +1,20 @@
 
-// ⚠️ NOTA IMPORTANTE: Para que esta pantalla compile, debes definir SettingsEntryPoint
-// y el BackupModule, como se indicó en la respuesta anterior.
-// El siguiente código asume que esas definiciones existen.
+
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreenCompose(
-    onBack: (() -> Unit)? = null, // opcional, para volver atrás
+    onBack: (() -> Unit)? = null, 
     onNavigateToCategories: (() -> Unit)? = null,
     onNavigateToStore: (() -> Unit)? = null,
     onNavigateToExplorer: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
 
-    // 🛑 Obtener la instancia del Helper usando el Entry Point
-    // Nota: Necesitarías un EntryPoint llamado SettingsEntryPoint definido en otro archivo
+    
+    
     val entryPoint = remember(context) {
         EntryPointAccessors.fromApplication(context.applicationContext, SettingsEntryPoint::class.java)
     }
@@ -27,7 +27,7 @@ fun SettingsScreenCompose(
     ) { uri: Uri? ->
         uri?.let {
             try {
-                // USAR LA INSTANCIA OBTENIDA
+                
                 databaseBackupHelper.exportDatabase(context, it)
                 Toast.makeText(context,"Exported Database", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
@@ -42,33 +42,33 @@ fun SettingsScreenCompose(
     ) { uri: Uri? ->
         uri?.let {
             try {
-                // 1. Llama al helper para que haga la importación
+                
                 databaseBackupHelper.importDatabase(context, it)
 
-                // 2. SI LLEGA AQUÍ, LA IMPORTACIÓN TUVO ÉXITO
+                
                 Toast.makeText(context, "Importación Exitosa. Reiniciando...", Toast.LENGTH_LONG).show()
                 android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
                     val activity = (context as? android.app.Activity)
 
-                    // Obtenemos el intent principal de la app
+                    
                     val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
 
-                    // Creamos un intent de reinicio que limpia todo lo anterior
+                    
                     val mainIntent = Intent.makeRestartActivityTask(intent?.component)
 
-                    // Ejecutamos el reinicio
+                    
                     context.startActivity(mainIntent)
 
-                    // Cerramos todas las activities actuales
+                    
                     activity?.finishAffinity()
 
-                    // Forzamos la salida del proceso actual
+                    
                     System.exit(0)
 
-                }, 1000) // 1 segundo de espera
+                }, 1000) 
 
             } catch (e: Exception) {
-                // 3. Si la importación falla, solo muestra el error
+                
                 Log.e("Settings", "Import Error: ${e.message}")
                 Toast.makeText(context,"Import Failed: ${e.message}", Toast.LENGTH_LONG).show()
             }
@@ -99,7 +99,7 @@ fun SettingsScreenCompose(
         ) {
 
             TextButton(onClick = {
-                // LÍNEA CORREGIDA: Usar 'context' directamente ya que es el LocalContext.current (Activity context)
+                
                 val contextToUse = context
 
                 val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -134,9 +134,9 @@ fun SettingsScreenCompose(
                 }
             }
             HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp), // espacio arriba y abajo
-                thickness = 1.dp,         // grosor de la línea
-                color = Color.Gray       // color de la línea
+                modifier = Modifier.padding(vertical = 8.dp), 
+                thickness = 1.dp,         
+                color = Color.Gray       
             )
             TextButton(onClick = { onNavigateToCategories?.invoke() }) {
                 Row {
@@ -155,9 +155,9 @@ fun SettingsScreenCompose(
                 }
             }
             HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp), // espacio arriba y abajo
-                thickness = 1.dp,         // grosor de la línea
-                color = Color.Gray       // color de la línea
+                modifier = Modifier.padding(vertical = 8.dp), 
+                thickness = 1.dp,         
+                color = Color.Gray       
             )
 
 
@@ -178,9 +178,9 @@ fun SettingsScreenCompose(
                 }
             }
             HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp), // espacio arriba y abajo
-                thickness = 1.dp,         // grosor de la línea
-                color = Color.Gray       // color de la línea
+                modifier = Modifier.padding(vertical = 8.dp), 
+                thickness = 1.dp,         
+                color = Color.Gray       
             )
 
             TextButton(onClick = { onNavigateToExplorer?.invoke() }) {
@@ -201,17 +201,17 @@ fun SettingsScreenCompose(
             }
 
             HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp), // espacio arriba y abajo
-                thickness = 1.dp,         // grosor de la línea
-                color = Color.Gray       // color de la línea
+                modifier = Modifier.padding(vertical = 8.dp), 
+                thickness = 1.dp,         
+                color = Color.Gray       
             )
 
             TextButton(onClick = {
                 try {
                     exportLauncher.launch("backup_pos.db")
                 } catch (e: Exception) {
-                    // Asegura que los errores lanzados por el Helper (si no lo manejas internamente)
-                    // sean capturados y mostrados aquí.
+                    
+                    
                     Toast.makeText(context, "Fallo de Exportación: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }) {
@@ -232,9 +232,9 @@ fun SettingsScreenCompose(
             }
 
             HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp), // espacio arriba y abajo
-                thickness = 1.dp,         // grosor de la línea
-                color = Color.Gray       // color de la línea
+                modifier = Modifier.padding(vertical = 8.dp), 
+                thickness = 1.dp,         
+                color = Color.Gray       
             )
 
             TextButton(onClick = {

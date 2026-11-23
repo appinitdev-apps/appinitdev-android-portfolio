@@ -46,7 +46,7 @@ interface TransactionDao {
     @Query("UPDATE transactions SET completedAt = :completedAt WHERE id = :transactionId")
     suspend fun markTransactionCompleted(transactionId: String, completedAt: LocalDateTime)
 
-    // Transaction Items
+    
     @Query("SELECT * FROM transaction_items WHERE transactionId = :transactionId")
     fun getTransactionItems(transactionId: String): Flow<List<TransactionItem>>
 
@@ -65,7 +65,7 @@ interface TransactionDao {
     @Query("DELETE FROM transaction_items WHERE transactionId = :transactionId")
     suspend fun deleteTransactionItems(transactionId: String)
 
-    // Payments
+    
     @Query("SELECT * FROM payments WHERE transactionId = :transactionId")
     fun getPayments(transactionId: String): Flow<List<Payment>>
 
@@ -78,7 +78,7 @@ interface TransactionDao {
     @Delete
     suspend fun deletePayment(payment: Payment)
 
-    // Analytics Queries
+    
     @Query("SELECT SUM(totalAmount) FROM transactions WHERE status = 'COMPLETED' AND DATE(createdAt) = DATE(:date)")
     suspend fun getDailySalesTotal(date: LocalDateTime): BigDecimal?
 
@@ -97,7 +97,7 @@ interface TransactionDao {
     @Query("SELECT SUM(totalAmount) FROM transactions WHERE status = 'COMPLETED' AND paymentMethod = :paymentMethod AND createdAt BETWEEN :startDate AND :endDate")
     suspend fun getSalesByPaymentMethod(paymentMethod: PaymentMethod, startDate: LocalDateTime, endDate: LocalDateTime): BigDecimal?
 
-    // Offline Support
+    
     @Query("SELECT * FROM transactions WHERE status = 'PENDING' ORDER BY createdAt ASC")
     fun getQueuedTransactions(): Flow<List<Transaction>>
 

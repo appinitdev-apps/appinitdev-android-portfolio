@@ -18,7 +18,7 @@ object AudioPlayer {
     }
 
     private var player: Player? = null
-    var playerProgress: Long = 0 // player progress in milliseconds
+    var playerProgress: Long = 0 
         get() {
             val currentPlayer = player
             if (currentPlayer == null) {
@@ -26,7 +26,7 @@ object AudioPlayer {
             }
 
             val currentPosition = currentPlayer.currentPosition
-            // Keep UI stable right after seek when player may briefly report 0.
+            
             if (currentPosition == 0L && TempData.audioPlayPosition > 0L) {
                 return TempData.audioPlayPosition
             }

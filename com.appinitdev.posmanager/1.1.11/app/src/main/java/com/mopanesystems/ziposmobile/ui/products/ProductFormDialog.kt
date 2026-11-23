@@ -49,7 +49,7 @@ fun ProductFormDialog(
     Dialog(
         onDismissRequest = { onDismiss() },
         properties = DialogProperties(
-            //usePlatformDefaultWidth = false,
+            
 
             decorFitsSystemWindows = false
         ),
@@ -58,15 +58,15 @@ fun ProductFormDialog(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 6.dp, bottom = 6.dp), // <- margen externo real
-        contentAlignment = Alignment.Center // o TopCenter si prefieres que quede arriba
+            .padding(top = 6.dp, bottom = 6.dp), 
+        contentAlignment = Alignment.Center 
     ) {
 
             Surface(
                 modifier = Modifier
-                    .fillMaxWidth()        // ancho completo (dentro del Box con padding)
-                    .wrapContentHeight()   // que no se estire a toda la altura
-                    .imePadding(),         // evita que el teclado tape contenido
+                    .fillMaxWidth()        
+                    .wrapContentHeight()   
+                    .imePadding(),         
                 shape = MaterialTheme.shapes.large,
                 tonalElevation = 8.dp
             ) {
@@ -76,7 +76,7 @@ fun ProductFormDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .verticalScroll(scrollState)
-                        .fillMaxSize() // El Column debe tomar todo el espacio disponible
+                        .fillMaxSize() 
                         .imePadding()
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -88,7 +88,7 @@ fun ProductFormDialog(
                         style = MaterialTheme.typography.headlineSmall
                     )
 
-                    // Campos básicos
+                    
                     listOf(
                         Triple(stringResource(R.string.nombrep), name) { value: String -> name = value },
                         Triple(stringResource(R.string.sku), sku) { value: String -> sku = value },
@@ -115,7 +115,7 @@ fun ProductFormDialog(
                         onCategorySelected = { categoryId = it }
                     )
 
-                    // Código de barras
+                    
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         OutlinedTextField(
                             value = barcode,
@@ -136,7 +136,7 @@ fun ProductFormDialog(
                         }
                     }
 
-                    // Otros campos
+                    
                     listOf(
                         Triple(stringResource(R.string.descripci_np), description) { value: String -> description = value },
                         Triple(stringResource(R.string.costop), cost) { value: String ->
@@ -179,7 +179,7 @@ fun ProductFormDialog(
                         )
                     }
 
-                    // Botones
+                    
                     Row(
                         horizontalArrangement = Arrangement.End,
                         modifier = Modifier.fillMaxWidth()

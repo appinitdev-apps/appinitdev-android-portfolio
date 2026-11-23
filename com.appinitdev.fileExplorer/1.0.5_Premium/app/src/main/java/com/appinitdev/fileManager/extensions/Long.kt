@@ -1,5 +1,5 @@
 
-// use 1000 instead of 1024 at dividing
+
 fun Long.formatSizeThousand(): String {
     if (this <= 0) {
         return "0 B"

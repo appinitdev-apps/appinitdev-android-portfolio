@@ -8,7 +8,7 @@ fun SchemaBuilder.addFileUploadSchema() {
             if (!chunkDir.exists()) return@resolver emptyList<String>()
 
             chunkDir.listFiles()
-                ?.filter { it.name.startsWith("chunk_") } // Exclude temp files (.tmp_chunk_*)
+                ?.filter { it.name.startsWith("chunk_") } 
                 ?.mapNotNull { file ->
                     val index = file.name.removePrefix("chunk_").toIntOrNull()
                     if (index != null) "${index}:${file.length()}" else null
@@ -33,7 +33,7 @@ fun SchemaBuilder.addFileUploadSchema() {
                 throw GraphQLError("No chunks found for $fileId")
             }
 
-            // Pre-calculate expected merged size from chunk files
+            
             var expectedMergedSize = 0L
             for (i in 0 until totalChunks) {
                 val chunkFile = File(chunkDir, "chunk_$i")
@@ -55,8 +55,8 @@ fun SchemaBuilder.addFileUploadSchema() {
             }
             outputFile.parentFile?.mkdirs()
 
-            // Merge into a temp file first, then rename atomically.
-            // This prevents the file from appearing in listings with a partial size.
+            
+            
             val tempMergeFile = File(outputFile.parentFile, ".merge_tmp_${fileId}_${System.currentTimeMillis()}")
             try {
                 FileOutputStream(tempMergeFile).use { fos ->
@@ -71,7 +71,7 @@ fun SchemaBuilder.addFileUploadSchema() {
                                 val transferred = inputChannel.transferTo(position, size - position, outputChannel)
                                 if (transferred < 0) throw IOException("transferTo failed at position $position")
                                 if (transferred == 0L) {
-                                    // transferTo can transiently return 0; yield and retry
+                                    
                                     Thread.sleep(1)
                                     continue
                                 }
@@ -79,25 +79,25 @@ fun SchemaBuilder.addFileUploadSchema() {
                             }
                         }
                     }
-                    // Force all data to disk before checking size
+                    
                     fos.fd.sync()
                 }
 
                 val mergedSize = tempMergeFile.length()
 
-                // Cross-check: merged file must equal sum of all chunk sizes
+                
                 if (mergedSize != expectedMergedSize) {
                     tempMergeFile.delete()
                     throw GraphQLError("Merge integrity failed: expected $expectedMergedSize, got $mergedSize")
                 }
 
-                // Atomic rename: file appears with correct size instantly
+                
                 if (outputFile.exists() && replace) {
                     outputFile.delete()
                 }
                 if (!tempMergeFile.renameTo(outputFile)) {
-                    // renameTo can move the file but still return false on some
-                    // Android file systems. Only use copyTo when source still exists.
+                    
+                    
                     if (tempMergeFile.exists()) {
                         tempMergeFile.copyTo(outputFile, overwrite = true)
                         tempMergeFile.delete()
@@ -114,13 +114,13 @@ fun SchemaBuilder.addFileUploadSchema() {
 
             chunkDir.deleteRecursively()
             if (isAppFile) {
-                // Import into content-addressable store; returns "{hash}.{ext}" as fid suffix
+                
                 val dFile = AppFileStore.importFile(MainApp.instance, outputFile, "", deleteSrc = true)
-                val fidSuffix = java.io.File(dFile.realPath).name  // "{hash}.{ext}"
+                val fidSuffix = java.io.File(dFile.realPath).name  
                 "${fidSuffix}:$mergedSize"
             } else {
                 MainApp.instance.scanFileByConnection(outputFile, null)
-                // Return base filename (consistent with /upload) + merged size
+                
                 "${outputFile.name}:$mergedSize"
             }
         }

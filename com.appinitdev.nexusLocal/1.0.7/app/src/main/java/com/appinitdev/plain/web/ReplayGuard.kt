@@ -1,14 +1,14 @@
 
-/**
- * Anti-replay protection for GraphQL API requests.
- *
- * After decryption, new-format requests look like: "TIMESTAMP|NONCE|{...json...}"
- */
+ 
+
+
+
+
 object ReplayGuard {
-    private const val MAX_TIMESTAMP_DIFF_MS = 30_000L // 30-second window
+    private const val MAX_TIMESTAMP_DIFF_MS = 30_000L 
     private const val CLEANUP_INTERVAL_MS = 60_000L
 
-    // Per-session nonce sets: clientId -> set of (timestamp:nonce) strings
+    
     private val nonceCache = ConcurrentHashMap<String, MutableSet<String>>()
     private var lastCleanupMs = System.currentTimeMillis()
 
@@ -18,9 +18,9 @@ object ReplayGuard {
         val body: String,
     )
 
-    /**
-     * Parse a decrypted request string.
-     */
+     
+
+
     fun parse(decrypted: String): ParsedRequest? {
         val parts = decrypted.split("|", limit = 3)
         if (parts.size != 3) return null
@@ -28,9 +28,9 @@ object ReplayGuard {
         return ParsedRequest(ts, parts[1], parts[2])
     }
 
-    /**
-     * Validate a parsed request. Returns an error message or null if valid.
-     */
+     
+
+
     fun validate(clientId: String, req: ParsedRequest): String? {
         val now = System.currentTimeMillis()
         val diff = kotlin.math.abs(now - req.timestamp)
@@ -57,8 +57,8 @@ object ReplayGuard {
     private fun cleanupIfNeeded(now: Long) {
         if (now - lastCleanupMs < CLEANUP_INTERVAL_MS) return
         lastCleanupMs = now
-        // Remove nonce entries older than the window.
-        // Since nonceKey = "", parse timestamp to check age.
+        
+        
         nonceCache.forEach { (_, nonces) ->
             nonces.removeIf { key ->
                 val ts = key.substringBefore(':').toLongOrNull() ?: 0L

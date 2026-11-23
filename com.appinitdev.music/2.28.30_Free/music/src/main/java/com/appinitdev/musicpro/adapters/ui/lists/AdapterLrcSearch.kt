@@ -1,15 +1,15 @@
 
-/**
- * RecyclerView adapter for displaying a list of [LrcLibResponse] search results in
- * the [com.appinitdev.musicpro.ui.subpanels.LyricsSearch] panel.
- *
- * Each item shows the track name, artist name, and album with duration. Tapping an item
- * invokes [onItemClick] so the panel can download and save the selected LRC entry.
- *
- * @param onItemClick callback invoked with the tapped [LrcLibResponse].
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
 class AdapterLrcSearch(
         private val onItemClick: (LrcLibResponse) -> Unit
 ) : RecyclerView.Adapter<AdapterLrcSearch.LrcViewHolder>() {
@@ -69,12 +69,12 @@ class AdapterLrcSearch(
 
     override fun getItemCount(): Int = results.size
 
-    /**
-     * Submits a new list of [LrcLibResponse] items using [AsyncListDiffer] for efficient
-     * diff-based updates.
-     *
-     * @param newResults the updated list of search results to display.
-     */
+     
+
+
+
+
+
     fun updateResults(newResults: List<LrcLibResponse>) {
         differ.submitList(newResults.toList())
     }
@@ -82,11 +82,11 @@ class AdapterLrcSearch(
     inner class LrcViewHolder(private val binding: AdapterLrcSearchBinding) :
             VerticalListViewHolder(binding.root) {
 
-        /**
-         * Binds a [LrcLibResponse] to the item views and wires up the click listener.
-         *
-         * @param response the LRC search result to display.
-         */
+         
+
+
+
+
         fun bind(response: LrcLibResponse) {
             binding.trackName.text = response.trackName
             binding.artistName.text = response.artistName
@@ -99,7 +99,7 @@ class AdapterLrcSearch(
                 else -> duration
             }
 
-            // Show the badge whenever this result carries LRC timestamps.
+            
             binding.syncedBadge.visibility =
                 if (!response.syncedLyrics.isNullOrBlank()) View.VISIBLE else View.GONE
 

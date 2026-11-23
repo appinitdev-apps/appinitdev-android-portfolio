@@ -35,7 +35,7 @@ fun CameraControlsPanel(
                 stringResource(R.string.c_mara_y_flash),
                 style = MaterialTheme.typography.labelMedium
             )
-            // --- Cámara y flash ---
+            
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -44,13 +44,13 @@ fun CameraControlsPanel(
             ) {
                 IconButton(
                     onClick = onToggleCamera,
-                    modifier = Modifier.size(72.dp) // tamaño más grande del botón
+                    modifier = Modifier.size(72.dp) 
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Camera,
                         contentDescription = if (showCamera) "Desactivar cámara" else "Activar cámara",
                         tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(32.dp) // tamaño del ícono dentro
+                        modifier = Modifier.size(32.dp) 
                     )
                 }
                 if (showCamera) {
@@ -68,14 +68,14 @@ fun CameraControlsPanel(
                     }
                 }
 
-                // --- Galería y color ---
+                
                 GalleryPicker { uri -> onImageUriChange(uri) }
 
                 IconButton(onClick = {
                     showAnimeDialog = true
                 }, modifier = Modifier.size(72.dp)) {
                     Icon(
-                        imageVector = Icons.Filled.Search, // El ícono de lupa de material design
+                        imageVector = Icons.Filled.Search, 
                         contentDescription = "Buscar",
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(32.dp)
@@ -91,7 +91,7 @@ fun CameraControlsPanel(
             )
 
 
-            // --- Slider opacidad ---
+            
             imageUri?.let {
                 Text(
                     stringResource(R.string.opacidad_de_imagen),
@@ -119,7 +119,7 @@ fun CameraControlsPanel(
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
-                        showAnimeDialog = false // cerrar el buscador al seleccionar
+                        showAnimeDialog = false 
                     },
                     onDismissRequest = { showAnimeDialog = false }
                 )
@@ -136,10 +136,10 @@ fun GalleryPicker(onImageSelected: (Uri) -> Unit) {
     ) { uri -> uri?.let { onImageSelected(it) } }
     IconButton(onClick = { launcher.launch("image/*") }, modifier = Modifier.size(72.dp)) {
         Icon(
-            imageVector = Icons.Filled.AddPhotoAlternate, // Puedes usar otro ícono como Icons.Outlined.Photo
+            imageVector = Icons.Filled.AddPhotoAlternate, 
             contentDescription = "Seleccionar imagen",
-            modifier = Modifier.size(32.dp), // tamaño del ícono
-            tint = MaterialTheme.colorScheme.primary // color del ícono
+            modifier = Modifier.size(32.dp), 
+            tint = MaterialTheme.colorScheme.primary 
         )
     }
 }

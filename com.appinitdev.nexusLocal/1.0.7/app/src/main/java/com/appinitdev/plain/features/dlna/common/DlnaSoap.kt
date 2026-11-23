@@ -1,5 +1,5 @@
 
-/** Shared UPnP/SOAP namespaces and envelope builders used by both sender and receiver. */
+ 
 object DlnaSoap {
     const val ENVELOPE_NS = "http://schemas.xmlsoap.org/soap/envelope/"
     const val ENCODING_NS = "http://schemas.xmlsoap.org/soap/encoding/"

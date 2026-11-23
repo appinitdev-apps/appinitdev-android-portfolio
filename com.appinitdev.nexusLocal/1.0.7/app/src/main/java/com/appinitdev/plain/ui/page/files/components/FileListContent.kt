@@ -46,7 +46,7 @@ fun FileListContent(
                             if (file.isDir) {
                                 filesVM.navigateToDirectory(context, file.path)
                             } else if (!ZipBrowserHelper.isZipPath(file.path) && file.extension.lowercase() == "zip") {
-                                // Enter the zip as a virtual directory
+                                
                                 filesVM.navigateToDirectory(context, ZipBrowserHelper.joinPath(file.path, ""))
                             } else {
                                 openFile(context, files, file, navController, previewerState, itemState, audioPlaylistVM)
@@ -54,7 +54,7 @@ fun FileListContent(
                         }
                     },
                     onLongClick = {
-                        // Disable select-mode for entries inside a zip archive (read-only)
+                        
                         if (ZipBrowserHelper.isZipPath(file.path)) return@FileListItem
                         if (!filesVM.selectMode.value) {
                             filesVM.selectedFile.value = file

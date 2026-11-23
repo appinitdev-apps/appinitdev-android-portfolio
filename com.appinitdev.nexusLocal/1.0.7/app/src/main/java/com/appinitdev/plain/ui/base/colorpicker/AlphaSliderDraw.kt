@@ -10,10 +10,10 @@ internal fun Canvas.drawAlphaSliderContent(
     wheelPaint: Paint,
     density: Float,
 ) {
-    // draw background bitmap
+    
     drawImage(backgroundBitmap, Offset.Zero, Paint())
 
-    // draw a linear gradient color shader
+    
     val startColor = controller.pureSelectedColor.value.copy(alpha = 0f)
     val endColor = controller.pureSelectedColor.value.copy(alpha = 1f)
     val shader = LinearGradientShader(
@@ -33,7 +33,7 @@ internal fun Canvas.drawAlphaSliderContent(
         paint = colorPaint,
     )
 
-    // draw wheel on the canvas
+    
     val position = controller.alpha.value
     val point = (bitmapSize.width * position).coerceIn(
         minimumValue = 0f,

@@ -1,23 +1,23 @@
 
-/**
- * Holds all of the media-aware drawing and state logic shared between
- * [MediaAwareRippleConstraintLayout] and [MediaAwareRippleLinearLayout].
- *
- * Both layouts own one instance of this and forward their lifecycle and draw
- * calls here, so any change to the indicator behavior only needs to be made once.
- *
- * In **list mode** a cubic-ease-in gradient strip grows from the right edge
- * to indicate that a song is playing or selected, with icons drawn on top.
- *
- * In **grid mode** no padding is added. Instead, when the song is active the
- * child views are faded out by drawing them into a translucent canvas layer,
- * and the icons are drawn on top at full opacity so they always pop.
- *
- * @param view the host [View] — used to read dimensions, apply padding, and invalidate.
- * @param context the context used to load drawable resources.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class MediaAwareDelegate(private val view: View, context: Context) : MediaStateListener {
 
     private var audioID: Long = -1L
@@ -28,10 +28,10 @@ class MediaAwareDelegate(private val view: View, context: Context) : MediaStateL
     var isInSelection: Boolean = false
         private set
 
-    /**
-     * When true, a drag-grip icon is drawn at the far-right edge in list mode and the
-     * play / check icons shift one slot to the left to make room.
-     */
+     
+
+
+
     var enableDragHandle: Boolean = false
         set(value) {
             if (field == value) return
@@ -41,11 +41,11 @@ class MediaAwareDelegate(private val view: View, context: Context) : MediaStateL
             view.invalidate()
         }
 
-    /**
-     * When true, the host view behaves as a grid cell. No right padding is ever applied.
-     * If the song is active, child views are rendered at reduced opacity and the play /
-     * check icons float in the center at full opacity so they're always legible.
-     */
+     
+
+
+
+
     var enableGridMode: Boolean = false
         set(value) {
             if (field == value) return
@@ -61,7 +61,7 @@ class MediaAwareDelegate(private val view: View, context: Context) : MediaStateL
     private val checkDrawable = AppCompatResources.getDrawable(context, R.drawable.ic_check)
     private val dragHandleDrawable = AppCompatResources.getDrawable(context, R.drawable.ic_drag_indicator)
 
-    /** Paint for the cubic-ease-in gradient strip shown in list mode. */
+     
     private val selectionBgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
     }
@@ -76,13 +76,13 @@ class MediaAwareDelegate(private val view: View, context: Context) : MediaStateL
     private var cachedIsInSelection = false
     private var cachedDragHandle = false
 
-    /** Tracks the last padding we applied so we don't trigger unnecessary layout passes. */
+     
     private var appliedIconCount = -1
 
-    /**
-     * Binds an audio ID to the host view. Playing and selection state are resolved
-     * immediately so a recycled view never shows stale indicators.
-     */
+     
+
+
+
     fun setAudioID(audioID: Long) {
         if (audioID == -1L) return
         this.audioID = audioID
@@ -93,10 +93,10 @@ class MediaAwareDelegate(private val view: View, context: Context) : MediaStateL
         view.invalidate()
     }
 
-    /**
-     * Returns true if the given x coordinate is over the drag handle region (rightmost
-     * slot). Only meaningful when [enableDragHandle] is true.
-     */
+     
+
+
+
     fun isDragHandleRegion(x: Float): Boolean {
         if (!enableDragHandle) return false
         return x >= view.width - view.height
@@ -110,22 +110,22 @@ class MediaAwareDelegate(private val view: View, context: Context) : MediaStateL
         view.invalidate()
     }
 
-    /** Should be called from the host's [View.onSizeChanged]. */
+     
     fun onSizeChanged(w: Int, h: Int) {
         rebuildSelectionGeometry(w.toFloat(), h.toFloat(), isPlaying, isInSelection)
         updateRightPadding()
     }
 
-    /** Should be called from the host's [View.onLayout]. */
+     
     fun onLayout() {
         updateRightPadding()
     }
 
-    /**
-     * Applies right padding equal to the total width of all visible icons so that child
-     * views in list mode are never hidden behind the drawn indicators. In grid mode this
-     * is skipped entirely because the icons float centered and don't displace content.
-     */
+     
+
+
+
+
     fun updateRightPadding() {
         if (enableGridMode) return
         if (view.height == 0) return
@@ -138,13 +138,13 @@ class MediaAwareDelegate(private val view: View, context: Context) : MediaStateL
         if (iconCount == appliedIconCount) return
         appliedIconCount = iconCount
         view.setPadding(view.paddingLeft, view.paddingTop, iconCount * (iconSize + iconPadding), view.paddingBottom)
-        // WARN: do not call invalidate here
+        
     }
 
-    /**
-     * Pre-computes the gradient shader and clip path for the list-mode icon strip.
-     * Doing this outside of the draw pass keeps [onDraw] and [dispatchDraw] allocation-free.
-     */
+     
+
+
+
     fun rebuildSelectionGeometry(w: Float, h: Float, playing: Boolean, inSelection: Boolean) {
         if (w <= 0f || h <= 0f) return
 
@@ -166,8 +166,8 @@ class MediaAwareDelegate(private val view: View, context: Context) : MediaStateL
 
         val indicatorW = h * slotCount
 
-        // Cubic ease-in color stops — alpha ramps up quickly near the right edge,
-        // giving the strip a smooth, intentional feel rather than a hard cut.
+        
+        
         val positions = floatArrayOf(0f, 0.15f, 0.30f, 0.45f, 0.65f, 0.80f, 1f)
         val colors = positions.map { t ->
             val alpha = (maxAlpha * t * t * t).toInt().coerceIn(0, maxAlpha)
@@ -195,11 +195,11 @@ class MediaAwareDelegate(private val view: View, context: Context) : MediaStateL
         cachedDragHandle = enableDragHandle
     }
 
-    /**
-     * Should be called from the host's [View.onDraw]. Draws the gradient strip
-     * background in list mode. In grid mode the active-state effect is handled
-     * entirely in [dispatchDraw] so this is a no-op.
-     */
+     
+
+
+
+
     fun onDraw(canvas: Canvas) {
         if (enableGridMode) return
         if (!isPlaying && !isInSelection && !enableDragHandle) return
@@ -221,17 +221,17 @@ class MediaAwareDelegate(private val view: View, context: Context) : MediaStateL
         }
     }
 
-    /**
-     * Should be called from the host's [View.dispatchDraw], passing a lambda that
-     * invokes the real `super.dispatchDraw(canvas)`.
-     *
-     * In **list mode** the super call happens first (drawing children), then the
-     * indicators are drawn on top.
-     *
-     * In **grid mode** the children are rendered into a translucent layer so they
-     * appear faded, then the play / check icons are drawn at full opacity on top.
-     * No extra paint or rectangle is needed — the alpha layer does all the work.
-     */
+     
+
+
+
+
+
+
+
+
+
+
     fun dispatchDraw(canvas: Canvas, superDispatch: () -> Unit) {
         val w = view.width.toFloat()
         val h = view.height.toFloat()
@@ -249,7 +249,7 @@ class MediaAwareDelegate(private val view: View, context: Context) : MediaStateL
         if (needsGeometry) rebuildSelectionGeometry(w, h, isPlaying, isInSelection)
 
         if (enableGridMode && hasActiveState) {
-            // Draw children faded so the icons on top feel like they're in the spotlight.
+            
             canvas.saveLayerAlpha(0f, 0f, w, h, GRID_CONTENT_ALPHA)
             superDispatch()
             canvas.restore()
@@ -264,10 +264,10 @@ class MediaAwareDelegate(private val view: View, context: Context) : MediaStateL
         updateRightPadding()
     }
 
-    /**
-     * Draws play and check icons centered on the host view. Called after the children
-     * have already been rendered at reduced alpha, so the icons always sit on top.
-     */
+     
+
+
+
     private fun drawGridModeIcons(canvas: Canvas, w: Float, h: Float) {
         val accentColor = ThemeManager.accent.secondaryAccentColor
         val iconSize = (h * 0.30f).toInt()
@@ -303,10 +303,10 @@ class MediaAwareDelegate(private val view: View, context: Context) : MediaStateL
         }
     }
 
-    /**
-     * Draws play, check, and drag-handle icons packed from the right edge in list mode.
-     * The drag handle occupies the rightmost slot when enabled, pushing the others left.
-     */
+     
+
+
+
     private fun drawListModeIcons(canvas: Canvas, w: Float, h: Float) {
         val accentColor = ThemeManager.accent.secondaryAccentColor
         val iconSize = (h * 0.45f).toInt()
@@ -348,7 +348,7 @@ class MediaAwareDelegate(private val view: View, context: Context) : MediaStateL
         }
     }
 
-    /** Should be called from the host's [View.onAttachedToWindow]. */
+     
     fun onAttachedToWindow() {
         MediaPlaybackManager.registerListener(this)
 
@@ -365,7 +365,7 @@ class MediaAwareDelegate(private val view: View, context: Context) : MediaStateL
         }
     }
 
-    /** Should be called from the host's [View.onDetachedFromWindow]. */
+     
     fun onDetachedFromWindow() {
         MediaPlaybackManager.unregisterListener(this)
         selectionScope?.cancel()
@@ -373,11 +373,11 @@ class MediaAwareDelegate(private val view: View, context: Context) : MediaStateL
     }
 
     companion object {
-        /**
-         * Alpha applied to the child layer in grid mode when the song is active.
-         * 80 out of 255 is about 31% — dim enough for the icons to pop but not so
-         * dark that you can't recognize the album art at all.
-         */
+         
+
+
+
+
         const val GRID_CONTENT_ALPHA = 80
     }
 }

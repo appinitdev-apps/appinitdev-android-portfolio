@@ -14,7 +14,7 @@ object TickingSoundPlayer {
         playThread = thread(start = true) {
             val sampleRate = 44100
             val intervalMs = (60.0 / bpm * 1000).toInt()
-            val tickLengthSamples = (sampleRate * 0.015).toInt() // 15ms sharp tick click
+            val tickLengthSamples = (sampleRate * 0.015).toInt() 
 
             val bufferSize = AudioTrack.getMinBufferSize(
                 sampleRate,
@@ -44,7 +44,7 @@ object TickingSoundPlayer {
             val tickBuffer = ShortArray(tickLengthSamples)
             for (i in tickBuffer.indices) {
                 val decay = 1.0 - (i.toDouble() / tickLengthSamples)
-                val freq = 1200.0 // 1.2 kHz click frequency
+                val freq = 1200.0 
                 val sample = Math.sin(2.0 * Math.PI * freq * i / sampleRate) * decay * 0.4
                 tickBuffer[i] = (sample * 32767).toInt().toShort()
             }

@@ -35,22 +35,22 @@ class POSViewModel @Inject constructor(
     private val _outOfStockCount = MutableLiveData<Int>()
     val outOfStockCount: LiveData<Int> = _outOfStockCount
 
-    // Cart calculations
-    /*val subtotal: StateFlow<BigDecimal>
-        get() = MutableStateFlow(_cartItems.value.sumOf { it.totalPrice })
+    
+     
 
-    val taxAmount: StateFlow<BigDecimal>
-        get() = MutableStateFlow(_cartItems.value.sumOf { it.taxAmount })
 
-    val totalAmount: StateFlow<BigDecimal>
-        get() = MutableStateFlow(_cartItems.value.sumOf { it.totalPrice + it.taxAmount })
 
-    val itemCount: StateFlow<Int>
-        get() = MutableStateFlow(_cartItems.value.sumOf { it.quantity })*/
+
+
+
+
+
+
+
 
 
     init {
-        // Restaurar carrito al iniciar
+        
         viewModelScope.launch {
             loadCart(context).collect { items ->
              _cartItems.value = items
@@ -127,7 +127,7 @@ class POSViewModel @Inject constructor(
             val existingItemIndex = currentItems.indexOfFirst { it.product.id == product.id }
 
             if (existingItemIndex != -1) {
-                // Update existing item
+                
                 val existingItem = currentItems[existingItemIndex]
                 val newQuantity = existingItem.quantity + quantity
                 currentItems[existingItemIndex] = existingItem.copy(
@@ -136,7 +136,7 @@ class POSViewModel @Inject constructor(
                     taxAmount = calculateTax(product.price.multiply(BigDecimal(newQuantity)), product.taxRate)
                 )
             } else {
-                // Add new item
+                
                 val totalPrice = product.price.multiply(BigDecimal(quantity))
                 val taxAmount = calculateTax(totalPrice, product.taxRate)
                 val newItem = CartItem(
@@ -204,7 +204,7 @@ class POSViewModel @Inject constructor(
 
     fun clearCart() {
         viewModelScope.launch {
-            // Restore stock quantities
+            
           _cartItems.value.forEach { item ->
                 updateStockQuantity(item.product.id, item.quantity)
             }
@@ -217,10 +217,10 @@ class POSViewModel @Inject constructor(
     }
     fun clearCartComplete() {
         viewModelScope.launch {
-            // Restore stock quantities
-            /*_cartItems.value.forEach { item ->
-                updateStockQuantity(item.product.id, item.quantity)
-            }*/
+            
+             
+
+
             _cartItems.value = emptyList()
             saveCart(context, emptyList())
             _selectedCustomer.value = null
@@ -240,69 +240,69 @@ class POSViewModel @Inject constructor(
                 if (product != null) {
                     addProductToCart(product, 1)
                 } else {
-                    // TODO: Show error message - product not found
+                    
                 }
             } catch (e: Exception) {
-                // TODO: Handle error
+                
             }
         }
     }
 
-    /*fun processTransaction(paymentMethod: PaymentMethod, paidAmount: BigDecimal? = null) {
-        viewModelScope.launch {
-            if (_cartItems.value.isEmpty()) return@launch
+     
 
-            _isProcessing.value = true
-            _transactionStatus.value = TransactionStatus.IN_PROGRESS
 
-            try {
-                val transaction = createTransaction(paymentMethod, paidAmount)
-                val transactionId = transaction.id
 
-                // Insert transaction
-                transactionRepository.insertTransaction(transaction)
 
-                // Insert transaction items
-                val transactionItems = _cartItems.value.map { cartItem ->
-                    TransactionItem(
-                        id = UUID.randomUUID().toString(),
-                        transactionId = transactionId,
-                        productId = cartItem.product.id,
-                        quantity = cartItem.quantity,
-                        unitPrice = cartItem.unitPrice,
-                        totalPrice = cartItem.totalPrice,
-                        taxAmount = cartItem.taxAmount
-                    )
-                }
-                transactionRepository.insertTransactionItems(transactionItems)
 
-                // Insert payment
-                val payment = Payment(
-                    id = UUID.randomUUID().toString(),
-                    transactionId = transactionId,
-                    amount = transaction.totalAmount,
-                    method = paymentMethod,
-                    status = PaymentStatus.COMPLETED,
-                    processedAt = LocalDateTime.now()
-                )
-                transactionRepository.insertPayment(payment)
 
-                // Update customer if selected
-                _selectedCustomer.value?.let { customer ->
-                    updateCustomerAfterTransaction(customer, transaction)
-                }
 
-                _transactionStatus.value = TransactionStatus.COMPLETED
-                _currentTransaction.value = transaction
 
-            } catch (e: Exception) {
-                _transactionStatus.value = TransactionStatus.CANCELLED
-                // Handle error
-            } finally {
-                _isProcessing.value = false
-            }
-        }
-    }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     fun processTransaction(paymentMethod: PaymentMethod, paidAmount: BigDecimal? = null, paymentResultInfo: PaymentResultInfo) {
         viewModelScope.launch {
             if (_cartItems.value.isEmpty()) {
@@ -345,7 +345,7 @@ class POSViewModel @Inject constructor(
                     processedAt = LocalDateTime.now()
                 )
 
-                // Ejecutar todo en IO para evitar bloqueos
+                
                 withContext(Dispatchers.IO) {
                     Log.d("POS", "Inserting transaction into DB...")
                     transactionRepository.insertTransaction(transaction)
@@ -404,7 +404,7 @@ class POSViewModel @Inject constructor(
 
                 updateDailySalesAnalytics(transaction, transactionItems)
 
-                // Actualizar cliente si hay seleccionado
+                
                 _selectedCustomer.value?.let { customer ->
                     Log.d("POS", "Updating customer ${customer.id} after transaction")
                     updateCustomerAfterTransaction(customer, transaction,paymentResultInfo)
@@ -419,7 +419,7 @@ class POSViewModel @Inject constructor(
                 try {
                     when (val result = generateReceipt(transaction, transactionItems)) {
                         is ReceiptResult.Success -> {
-                        _receiptPath.value = result.filePath // aquí sí es la ruta al PDF
+                        _receiptPath.value = result.filePath 
                             try {
                                 transactionRepository.updateTransaction(transaction.copy(
                                     notes = result.filePath
@@ -449,7 +449,7 @@ class POSViewModel @Inject constructor(
             Log.d("POS", "Completing transaction")
             _transactionStatus.value = TransactionStatus.COMPLETED
 
-            // ✅ Aquí solo vacías carrito, no muevas stock
+            
             clearCartComplete()
             Log.d("POS", "Cart cleared and transaction marked as COMPLETED")
         }
@@ -463,7 +463,7 @@ class POSViewModel @Inject constructor(
         viewModelScope.launch {
             Log.d("POS", "Cancelling transaction, restoring stock quantities")
 
-            // ✅ Revertir cambios de stock (sumar lo quitado en addProductToCart)
+            
             _cartItems.value.forEach { item ->
                 withContext(Dispatchers.IO) {
                     updateStockQuantity(item.product.id, item.quantity)
@@ -478,20 +478,20 @@ class POSViewModel @Inject constructor(
 
 
 
-    /*fun completeTransaction() {
-        _transactionStatus.value = TransactionStatus.COMPLETED
-        clearCart()
-    }
+     
 
-    fun cancelTransaction() {
-        viewModelScope.launch {
-            // Restore stock quantities
-            _cartItems.value.forEach { item ->
-                updateStockQuantity(item.product.id, item.quantity)
-            }
-            clearCart()
-        }
-    }*/
+
+
+
+
+
+
+
+
+
+
+
+
 
     private suspend fun updateStockQuantity(productId: String, quantityChange: Int) {
         val product = productRepository.getProductById(productId)
@@ -539,7 +539,7 @@ class POSViewModel @Inject constructor(
             )
             customerRepository.updateCustomer(updatedCustomer)
 
-            // Add customer transaction record
+            
             val customerTransaction = CustomerTransaction(
                 id = UUID.randomUUID().toString(),
                 customerId = customer.id,
@@ -564,23 +564,23 @@ class POSViewModel @Inject constructor(
     fun generateReceipt(transaction: Transaction, transactionItems: List<TransactionItem>): ReceiptResult {
         return try {
             val receiptService = ReceiptService(context)
-            /*val transactionItems = _cartItems.value.map { cartItem ->
-                TransactionItem(
-                    id = UUID.randomUUID().toString(),
-                    transactionId = transaction.id,
-                    productId = cartItem.product.id,
-                    quantity = cartItem.quantity,
-                    unitPrice = cartItem.unitPrice,
-                    totalPrice = cartItem.totalPrice,
-                    taxAmount = cartItem.taxAmount,
-                    notes ="${cartItem.product.name} ${cartItem.product.sku}".replace(Regex("\\s{2,}")," ")
-                )
-            }*/
+             
+
+
+
+
+
+
+
+
+
+
+
 
             receiptService.generateReceipt(
                 transaction = transaction,
                 transactionItems = transactionItems,
-                store = _currentStore.value, // TODO: Get current store
+                store = _currentStore.value, 
                 customer = _selectedCustomer.value
             )
         } catch (e: Exception) {
@@ -605,7 +605,7 @@ class POSViewModel @Inject constructor(
         return receiptService.generateReceiptBitmap(
             transaction = transaction,
             transactionItems = transactionItems,
-            store = _currentStore.value, // TODO: Get current store
+            store = _currentStore.value, 
             customer = _selectedCustomer.value
         )
     }
@@ -651,7 +651,7 @@ class POSViewModel @Inject constructor(
                 averagePrice =  if (quantitySold != 0) {
                     revenue.divide(BigDecimal(quantitySold), 2, java.math.RoundingMode.HALF_UP)
                 } else BigDecimal.ZERO,
-                rank = 0 // opcional
+                rank = 0 
             )
 
             analyticsRepository.insertProductPerformance(newPerformance)

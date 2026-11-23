@@ -39,7 +39,7 @@ class InterruptionDetector(
         val delta = currentAcceleration - lastAcceleration
         val now = System.currentTimeMillis()
 
-        // Significant movement delta (> 3.5 m/s²) indicates the phone was picked up
+        
         if (delta > 3.5f && (now - lastPickupTime > 5000)) {
             lastPickupTime = now
             onInterruptionDetected()

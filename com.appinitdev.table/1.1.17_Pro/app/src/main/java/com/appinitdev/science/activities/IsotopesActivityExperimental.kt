@@ -3,7 +3,7 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
     private var elementList = ArrayList<Element>()
     var mAdapter = IsotopeAdapter(elementList, this, this)
 
-    // Unified back handling fields
+    
     private var backCallback: OnBackPressedCallback? = null
     private var onBackInvokedCb: android.window.OnBackInvokedCallback? = null
     private val uiHandler = Handler(Looper.getMainLooper())
@@ -21,20 +21,20 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
         }
         if (themePrefValue == 0) { setTheme(R.style.AppTheme) }
         if (themePrefValue == 1) { setTheme(R.style.AppThemeDark) }
-        setContentView(R.layout.activity_isotopes_experimental) //Don't move down (Needs to be before we call our functions)
+        setContentView(R.layout.activity_isotopes_experimental) 
 
-        // Register a lifecycle-aware OnBackPressedCallback (disabled by default).
+        
         backCallback = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
                 val consumed = handleBackPress()
                 if (!consumed) {
-                    // Not consumed by overlays -> fall back to default behaviour.
-                    // Temporarily disable the callback to avoid recursion, then dispatch.
+                    
+                    
                     isEnabled = false
                     try {
                         onBackPressedDispatcher.onBackPressed()
                     } finally {
-                        // Keep disabled by default; will be enabled when overlays open.
+                        
                         isEnabled = false
                     }
                 }
@@ -42,8 +42,8 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
         }
         onBackPressedDispatcher.addCallback(this, backCallback!!)
 
-        // Register platform callback for Android 14+ to forward gestures to the dispatcher when enabled.
-        // Start with interception disabled (we only need it when overlays are visible).
+        
+        
         setBackInterceptionEnabled(false)
 
         val recyclerView = findViewById<RecyclerView>(R.id.r_view)
@@ -67,7 +67,7 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
                     Utils.fadeOutAnim(findViewById<TextView>(R.id.background_i2), 300)
                     Utils.fadeOutAnim(findViewById<FrameLayout>(R.id.slid_panel), 300)
                 }
-                // Update back interception state whenever panel state changes
+                
                 setBackInterceptionEnabled(anyOverlayOpen())
             }
         })
@@ -82,11 +82,11 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
                 Utils.fadeOutAnim(findViewById<TextView>(R.id.background_i2), 300)
                 findViewById<SlidingUpPanelLayout>(R.id.sliding_layout_i).panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
             }
-            // Update back interception state after click closes overlays
+            
             setBackInterceptionEnabled(anyOverlayOpen())
         }
 
-        //Add value to most used:
+        
         val mostUsedPreference = MostUsedPreference(this)
         val mostUsedPrefValue = mostUsedPreference.getValue()
         val targetLabel = "iso"
@@ -109,13 +109,13 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
         findViewById<FloatingActionButton>(R.id.filter_btn2).setOnClickListener {
             Utils.fadeInAnim(findViewById<ConstraintLayout>(R.id.iso_filter_box), 150)
             Utils.fadeInAnim(findViewById<TextView>(R.id.filter_background), 150)
-            // show overlay -> enable back interception
+            
             setBackInterceptionEnabled(true)
         }
         findViewById<TextView>(R.id.filter_background).setOnClickListener {
             Utils.fadeOutAnim(findViewById<ConstraintLayout>(R.id.iso_filter_box), 150)
             Utils.fadeOutAnim(findViewById<TextView>(R.id.filter_background), 150)
-            // update interception after closing
+            
             setBackInterceptionEnabled(anyOverlayOpen())
         }
         findViewById<TextView>(R.id.iso_alphabet_btn).setOnClickListener {
@@ -162,7 +162,7 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
             val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(findViewById<EditText>(R.id.edit_iso), InputMethodManager.SHOW_IMPLICIT)
 
-            // Search bar shown -> enable back interception
+            
             setBackInterceptionEnabled(true)
         }
         findViewById<ImageButton>(R.id.close_iso_search).setOnClickListener {
@@ -175,7 +175,7 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
             }
 
-            // closed -> update interception state
+            
             setBackInterceptionEnabled(anyOverlayOpen())
         }
     }
@@ -218,7 +218,7 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
         Utils.fadeInAnim(findViewById<FrameLayout>(R.id.slid_panel), 300)
         findViewById<SlidingUpPanelLayout>(R.id.sliding_layout_i).panelState = SlidingUpPanelLayout.PanelState.EXPANDED
 
-        // Panel expanded -> enable back interception
+        
         setBackInterceptionEnabled(true)
     }
 
@@ -231,13 +231,13 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
             findViewById<SlidingUpPanelLayout>(R.id.sliding_layout_i).panelState = SlidingUpPanelLayout.PanelState.EXPANDED
             isoSent.setValue("false")
 
-            // Panel expanded -> enable back interception
+            
             setBackInterceptionEnabled(true)
         }
     }
 
     override fun onBackPressed() {
-        // Legacy/explicit back - prefer our centralized handler
+        
         if (!handleBackPress()) {
             super.onBackPressed()
         }
@@ -323,7 +323,7 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
         findViewById<LinearLayout>(R.id.empty_search_box_iso).layoutParams = searchEmptyImgPrm
     }
 
-    // Basic handler for in-activity overlays
+    
     private fun anyOverlayOpen(): Boolean {
         val panelExpanded = findViewById<SlidingUpPanelLayout>(R.id.sliding_layout_i).panelState == SlidingUpPanelLayout.PanelState.EXPANDED
         val backgroundVisible = findViewById<TextView>(R.id.background_i2).visibility == View.VISIBLE
@@ -333,7 +333,7 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
         return panelExpanded || backgroundVisible || filterVisible || searchBarVisible || panelInfoVisible
     }
 
-    // Close overlays if visible; return true when consumed.
+    
     private fun handleBackPress(): Boolean {
         val slidingLayout = findViewById<SlidingUpPanelLayout>(R.id.sliding_layout_i)
         val background = findViewById<TextView>(R.id.background_i2)
@@ -341,7 +341,7 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
         val searchBar = findViewById<FrameLayout>(R.id.search_bar_iso)
         val panelInfo = findViewById<ConstraintLayout>(R.id.panel_info)
 
-        // If panel info is visible, hide it
+        
         if (panelInfo.visibility == View.VISIBLE) {
             Utils.fadeOutAnim(panelInfo, 300)
             Utils.fadeOutAnim(background, 300)
@@ -349,7 +349,7 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
             return true
         }
 
-        // If sliding panel expanded, collapse
+        
         if (slidingLayout.panelState == SlidingUpPanelLayout.PanelState.EXPANDED) {
             slidingLayout.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
             Utils.fadeOutAnim(background, 300)
@@ -358,7 +358,7 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
             return true
         }
 
-        // If filter overlay visible, hide it
+        
         if (filterBackground.visibility == View.VISIBLE) {
             Utils.fadeOutAnim(findViewById<ConstraintLayout>(R.id.iso_filter_box), 150)
             Utils.fadeOutAnim(filterBackground, 150)
@@ -366,7 +366,7 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
             return true
         }
 
-        // If search bar visible, close it
+        
         if (searchBar.visibility == View.VISIBLE) {
             Utils.fadeOutAnim(searchBar, 300)
             Utils.fadeInAnim(findViewById<FrameLayout>(R.id.title_box), 300)
@@ -382,13 +382,13 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
         return false
     }
 
-    /**
-     * Centralized management of platform back interception for Android 14+.
-     * We forward platform back invocations to the OnBackPressedDispatcher to ensure
-     * gestures and hardware back buttons call the same callbacks.
-     */
+     
+
+
+
+
     private fun setBackInterceptionEnabled(enabled: Boolean) {
-        // Keep OnBackPressedCallback state in sync
+        
         backCallback?.isEnabled = enabled
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -401,7 +401,7 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
                             } catch (e: Exception) {
                                 val consumed = handleBackPress()
                                 if (!consumed) {
-                                    // fallback to finishing
+                                    
                                     finish()
                                 }
                             }
@@ -413,7 +413,7 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
                             onBackInvokedCb!!
                         )
                     } catch (_: Exception) {
-                        // ignore registration errors on some devices
+                        
                     }
                 }
             } else {
@@ -421,7 +421,7 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
                     try {
                         onBackInvokedDispatcher.unregisterOnBackInvokedCallback(onBackInvokedCb!!)
                     } catch (_: Exception) {
-                        // ignore
+                        
                     }
                     onBackInvokedCb = null
                 }
@@ -431,7 +431,7 @@ class IsotopesActivityExperimental : BaseActivity(), IsotopeAdapter.OnElementCli
 
     override fun onDestroy() {
         super.onDestroy()
-        // Cleanup back interception hooks
+        
         backCallback?.remove()
         backCallback = null
         if (onBackInvokedCb != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {

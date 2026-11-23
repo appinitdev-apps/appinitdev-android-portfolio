@@ -1,4 +1,4 @@
-/* #AppInitDev -> Photo Utility Hub */
+ 
 
 
 @HiltAndroidApp
@@ -32,11 +32,11 @@ class ImageToolboxApplication : ComposeApplication() {
             initOpenCV()
             initNeuralTool()
             initColorNames()
-            //initQrScanner()
+            
             attachLogWriter()
             applyGlobalExceptionHandler()
             registerSecurityProviders()
-            //initPdfBox()
+            
             injectBaseComponent()
             initCollages()
 

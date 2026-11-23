@@ -4,7 +4,7 @@ class PhotoFragment : ViewPagerFragment() {
     private val ZOOMABLE_VIEW_LOAD_DELAY = 100L
     private val SAME_ASPECT_RATIO_THRESHOLD = 0.01
 
-    // devices with good displays, but the rest of the hardware not good enough for them
+    
     private val WEIRD_DEVICES = arrayListOf(
         "motorola xt1685",
         "google nexus 5x"
@@ -15,7 +15,7 @@ class PhotoFragment : ViewPagerFragment() {
     private var mIsFullscreen = false
     private var mWasInit = false
     private var mIsPanorama = false
-    private var mIsSubsamplingVisible = false    // checking view.visibility is unreliable, use an extra variable for it
+    private var mIsSubsamplingVisible = false    
     private var mShouldResetImage = false
     private var mCurrentPortraitPhotoPath = ""
     private var mOriginalPath = ""
@@ -151,10 +151,10 @@ class PhotoFragment : ViewPagerFragment() {
         mWasInit = true
         updateInstantSwitchWidths()
 
-        // TODO: Implement panorama using a FOSS library
-        // ensureBackgroundThread {
-        //      checkIfPanorama()
-        // }
+        
+        
+        
+        
 
         return mView
     }
@@ -226,7 +226,7 @@ class PhotoFragment : ViewPagerFragment() {
             return
         }
 
-        // avoid GIFs being skewed, played in wrong aspect ratio
+        
         if (mMedium.isGIF()) {
             mView.onGlobalLayout {
                 if (activity != null) {
@@ -481,8 +481,8 @@ class PhotoFragment : ViewPagerFragment() {
                     if (mMedium.path != mOriginalPath) {
                         mMedium.path = mOriginalPath
                         loadImage()
-                        // TODO: Implement panorama using a FOSS library
-                        // checkIfPanorama()
+                        
+                        
                     } else {
                         binding.errorMessageHolder.errorMessage.apply {
                             setTextColor(if (context.config.blackBackground) Color.WHITE else context.getProperTextColor())
@@ -687,7 +687,7 @@ class PhotoFragment : ViewPagerFragment() {
                     mCurrentRotationDegrees = (mCurrentRotationDegrees + degrees) % 360
                     loadBitmap(false)
 
-                    // ugly, but it works
+                    
                     (activity as? ViewPagerActivity)?.refreshMenuItems()
                     (activity as? PhotoVideoActivity)?.refreshMenuItems()
                 }
@@ -801,7 +801,7 @@ class PhotoFragment : ViewPagerFragment() {
     private fun initExtendedDetails() {
         if (requireContext().config.showExtendedDetails) {
             binding.photoDetails.apply {
-                beInvisible()   // make it invisible so we can measure it, but not show yet
+                beInvisible()   
                 text = getMediumExtendedDetails(mMedium)
                 onGlobalLayout {
                     if (isAdded) {

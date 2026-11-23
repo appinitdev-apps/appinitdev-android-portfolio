@@ -18,7 +18,7 @@ class BmiAppWidgetProvider : AppWidgetProvider() {
             val todayStr = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             dbHelper.addWaterIntake(todayStr, 250, 2000)
 
-            // Update Widget Views
+            
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val componentName = ComponentName(context, BmiAppWidgetProvider::class.java)
             val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
@@ -52,7 +52,7 @@ class BmiAppWidgetProvider : AppWidgetProvider() {
         views.setTextViewText(R.id.widget_bmi_status, statusText)
         views.setTextViewText(R.id.widget_water_text, "${waterPair.first} ml / ${waterPair.second} ml")
 
-        // Action Intent for +250 ml Water Button
+        
         val intent = Intent(context, BmiAppWidgetProvider::class.java).apply {
             action = ACTION_ADD_WATER
         }
@@ -66,7 +66,7 @@ class BmiAppWidgetProvider : AppWidgetProvider() {
 
         views.setOnClickPendingIntent(R.id.widget_btn_add_water, pendingIntent)
 
-        // Launch MainActivity on Header Tap
+        
         val mainIntent = Intent(context, MainActivity::class.java)
         val mainPendingIntent = PendingIntent.getActivity(
             context,

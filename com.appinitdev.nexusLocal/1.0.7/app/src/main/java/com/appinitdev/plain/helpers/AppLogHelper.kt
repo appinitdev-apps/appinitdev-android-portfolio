@@ -1,12 +1,12 @@
 
 object AppLogHelper {
-    private const val READ_BLOCK_SIZE = 65536  // 64 KB
+    private const val READ_BLOCK_SIZE = 65536  
 
-    /**
-     * Read log lines from [file] in newest-first order without loading the whole file.
-     * Reads backwards in [READ_BLOCK_SIZE]-byte blocks so only [offset]+[limit] lines
-     * are ever in memory at once — no OOM risk.
-     */
+     
+
+
+
+
     fun getLogLines(file: File, offset: Int, limit: Int): List<String> {
         if (!file.exists() || file.length() == 0L || limit <= 0) return emptyList()
         val needed = offset + limit

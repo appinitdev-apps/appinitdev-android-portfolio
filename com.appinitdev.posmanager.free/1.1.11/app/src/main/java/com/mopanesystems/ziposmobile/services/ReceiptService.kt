@@ -1,7 +1,7 @@
 
 class ReceiptService(private val context: Context) {
 
-    // private val receiptGenerator = ReceiptGenerator(context) // Temporarily disabled - ReceiptGenerator needs iText 7 API update
+    
     private val dateFormatter = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
 
     fun generateReceipt(
@@ -27,7 +27,7 @@ class ReceiptService(private val context: Context) {
 
                 val calendar = Calendar.getInstance()
                 val year = calendar.get(Calendar.YEAR)
-                val month = String.format("%02d", calendar.get(Calendar.MONTH) + 1) // 0-based
+                val month = String.format("%02d", calendar.get(Calendar.MONTH) + 1) 
                 val day = String.format("%02d", calendar.get(Calendar.DAY_OF_MONTH))
 
 
@@ -56,7 +56,7 @@ class ReceiptService(private val context: Context) {
                     canvas.drawBitmap(bitmap, 0f, 0f, null)
                     pdfDocument.finishPage(page)
 
-                    // 4️⃣ Guardar PDF en almacenamiento
+                    
                     FileOutputStream(pdfFile).use { out ->
                         pdfDocument.writeTo(out)
                     }
@@ -88,8 +88,8 @@ class ReceiptService(private val context: Context) {
         width: Int = 400,
         height: Int = 600,
     ): Bitmap? {
-        // TODO: Re-enable when ReceiptGenerator is updated for iText 7
-        return null // receiptGenerator.generateReceiptBitmap(...)
+        
+        return null 
     }
 
     fun getReceiptsDirectory(): File {

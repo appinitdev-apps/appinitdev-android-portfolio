@@ -97,7 +97,7 @@ class UnitConversionActivity : BaseActivity() {
     private lateinit var favoritesAdapter: FavoriteRecyclerAdapter
     private val favoritesKey = ""
 
-    // Back handling fields (new unified logic used across activities)
+    
     private var backCallback: OnBackPressedCallback? = null
     private var onBackInvokedCb: android.window.OnBackInvokedCallback? = null
     private val handler = Handler(Looper.getMainLooper())
@@ -128,56 +128,56 @@ class UnitConversionActivity : BaseActivity() {
         findViewById<FrameLayout>(R.id.view_unit).systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 
-        /*findViewById<FrameLayout>(R.id.common_title_back_unit_color).visibility = View.INVISIBLE
-        findViewById<TextView>(R.id.unit_title).visibility = View.INVISIBLE
-        findViewById<FrameLayout>(R.id.common_title_back_unit).elevation =
-            (resources.getDimension(R.dimen.zero_elevation))
-        findViewById<ScrollView>(R.id.unit_scroll).viewTreeObserver
-            .addOnScrollChangedListener(object : ViewTreeObserver.OnScrollChangedListener {
-                override fun onScrollChanged() {
-                    if (findViewById<ScrollView>(R.id.unit_scroll).scrollY > 150f) {
-                        findViewById<FrameLayout>(R.id.common_title_back_unit_color).visibility =
-                            View.VISIBLE
-                        findViewById<TextView>(R.id.unit_title).visibility = View.VISIBLE
-                        findViewById<TextView>(R.id.unit_title_downstate).visibility =
-                            View.INVISIBLE
-                        findViewById<FrameLayout>(R.id.common_title_back_unit).elevation =
-                            (resources.getDimension(R.dimen.one_elevation))
-                    } else {
-                        findViewById<FrameLayout>(R.id.common_title_back_unit_color).visibility =
-                            View.INVISIBLE
-                        findViewById<TextView>(R.id.unit_title).visibility = View.INVISIBLE
-                        findViewById<TextView>(R.id.unit_title_downstate).visibility = View.VISIBLE
-                        findViewById<FrameLayout>(R.id.common_title_back_unit).elevation =
-                            (resources.getDimension(R.dimen.zero_elevation))
-                    }
-                }
-            })
-*/
+         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         findViewById<ImageButton>(R.id.back_btn).setOnClickListener {
             this.onBackPressed()
         }
 
-        // Setup unified back handling: register a lifecycle-aware OnBackPressedCallback (disabled by default).
+        
         backCallback = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
-                // default behavior: no overlays in this activity; allow normal back navigation
+                
                 if (!handleBackPress()) {
-                    // if not consumed, fall back to normal back action
+                    
                     isEnabled = false
-                    // call framework onBackPressedDispatcher to let system handle (or finish)
+                    
                     onBackPressedDispatcher.onBackPressed()
-                    // restore enabled state as appropriate (disabled by default for this activity)
+                    
                     isEnabled = false
                 }
             }
         }
         onBackPressedDispatcher.addCallback(this, backCallback!!)
 
-        // Register platform OnBackInvoked callback on Android 14+ to forward gestures to dispatcher
+        
         setBackInterceptionEnabled(true)
 
-        // Check if favorite list should be shown or not (PRO)
+        
         val proPref = ProVersion(this)
         val proPrefValue = proPref.getValue()
         if (proPrefValue == 1) {
@@ -198,7 +198,7 @@ class UnitConversionActivity : BaseActivity() {
             startActivity(intent)
         }
 
-        //Add value to most used:
+        
         val mostUsedPreference = MostUsedToolPreference(this)
         val mostUsedPrefValue = mostUsedPreference.getValue()
         val targetLabel = "uni"
@@ -215,7 +215,7 @@ class UnitConversionActivity : BaseActivity() {
             )
         }
 
-        //Setting up views from activity
+        
         categorySpinner = findViewById(R.id.category_spinner)
         fromUnitSpinner = findViewById(R.id.from_unit_spinner)
         toUnitSpinner = findViewById(R.id.to_unit_spinner)
@@ -225,7 +225,7 @@ class UnitConversionActivity : BaseActivity() {
         addFavoriteButton = findViewById(R.id.add_favorite_button)
         favoritesList = findViewById(R.id.favorites_list)
 
-        // Disable input in outputValue (plan is to later let user input here as well)
+        
         outputValue.isFocusable = false
         outputValue.isFocusableInTouchMode = false
         outputValue.isClickable = false
@@ -241,46 +241,46 @@ class UnitConversionActivity : BaseActivity() {
         loadFavorites()
         updateFavoriteButtonState()
 
-        /*findViewById<ScrollView>(R.id.unit_scroll).viewTreeObserver
-            .addOnScrollChangedListener(object : ViewTreeObserver.OnScrollChangedListener {
-                private var isTitleVisible = false
+         
 
-                override fun onScrollChanged() {
-                    val scrollY = findViewById<ScrollView>(R.id.unit_scroll).scrollY
-                    val threshold = 150f
 
-                    val titleColorBackground =
-                        findViewById<FrameLayout>(R.id.common_title_back_unit_color)
-                    val titleText = findViewById<TextView>(R.id.unit_title)
-                    val titleDownstateText = findViewById<TextView>(R.id.unit_title_downstate)
-                    val titleBackground = findViewById<FrameLayout>(R.id.common_title_back_unit)
 
-                    if (scrollY > threshold) {
-                        if (!isTitleVisible) {
-                            TitleBarAnimator.animateVisibility(
-                                titleColorBackground,
-                                true,
-                                visibleAlpha = 0.11f
-                            )
-                            TitleBarAnimator.animateVisibility(titleText, true)
-                            TitleBarAnimator.animateVisibility(titleDownstateText, false)
-                            titleBackground.elevation =
-                                resources.getDimension(R.dimen.one_elevation)
-                            isTitleVisible = true
-                        }
-                    } else {
-                        if (isTitleVisible) {
-                            TitleBarAnimator.animateVisibility(titleColorBackground, false)
-                            TitleBarAnimator.animateVisibility(titleText, false)
-                            TitleBarAnimator.animateVisibility(titleDownstateText, true)
-                            titleBackground.elevation =
-                                resources.getDimension(R.dimen.zero_elevation)
-                            isTitleVisible = false
-                        }
-                    }
-                }
-            })
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     private fun setupSpinners() {
@@ -510,25 +510,25 @@ class UnitConversionActivity : BaseActivity() {
         findViewById<TextView>(R.id.unit_title_downstate).layoutParams = params2
     }
 
-    // Basic handler for in-activity overlays (none for this activity currently)
+    
     private fun anyOverlayOpen(): Boolean {
-        // No overlays in this activity right now; return false.
+        
         return false
     }
 
-    // Close overlays if visible; return true when consumed.
+    
     private fun handleBackPress(): Boolean {
-        // No overlays to close for this activity. Return false so default behavior occurs.
+        
         return false
     }
 
-    /**
-     * Centralized management of platform back interception for Android 14+.
-     * We forward platform back invocations to the OnBackPressedDispatcher to ensure
-     * gestures and hardware back buttons call the same callbacks.
-     */
+     
+
+
+
+
     private fun setBackInterceptionEnabled(enabled: Boolean) {
-        // Keep the OnBackPressedCallback enabled state in sync when requested.
+        
         backCallback?.isEnabled = enabled
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -537,13 +537,13 @@ class UnitConversionActivity : BaseActivity() {
                     onBackInvokedCb = android.window.OnBackInvokedCallback {
                         handler.post {
                             try {
-                                // Forward to the OnBackPressedDispatcher which will invoke registered callbacks.
+                                
                                 onBackPressedDispatcher.onBackPressed()
                             } catch (e: Exception) {
-                                // Fallback if dispatcher fails
+                                
                                 val consumed = handleBackPress()
                                 if (!consumed) {
-                                    // Default fallback: finish activity
+                                    
                                     finish()
                                 }
                             }
@@ -555,7 +555,7 @@ class UnitConversionActivity : BaseActivity() {
                             onBackInvokedCb!!
                         )
                     } catch (_: Exception) {
-                        // ignore registration errors on some devices
+                        
                     }
                 }
             } else {
@@ -563,7 +563,7 @@ class UnitConversionActivity : BaseActivity() {
                     try {
                         onBackInvokedDispatcher.unregisterOnBackInvokedCallback(onBackInvokedCb!!)
                     } catch (_: Exception) {
-                        // ignore
+                        
                     }
                     onBackInvokedCb = null
                 }
@@ -573,7 +573,7 @@ class UnitConversionActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        // Cleanup back interception hooks
+        
         backCallback?.remove()
         backCallback = null
         if (onBackInvokedCb != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -586,7 +586,7 @@ class UnitConversionActivity : BaseActivity() {
     }
 }
 
-// RecyclerView Adapter for favorites
+
 class FavoriteRecyclerAdapter(
     private val favorites: List<UnitConversionFavorite>,
     private val onItemClick: (UnitConversionFavorite) -> Unit,

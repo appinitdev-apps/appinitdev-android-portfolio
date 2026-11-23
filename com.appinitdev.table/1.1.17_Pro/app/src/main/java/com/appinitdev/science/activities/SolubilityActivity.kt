@@ -1,7 +1,7 @@
 
 class SolubilityActivity : BaseActivity() {
 
-    // Unified back handling fields
+    
     private var backCallback: OnBackPressedCallback? = null
     private var onBackInvokedCb: android.window.OnBackInvokedCallback? = null
     private val uiHandler = Handler(Looper.getMainLooper())
@@ -19,15 +19,15 @@ class SolubilityActivity : BaseActivity() {
         }
         if (themePrefValue == 0) { setTheme(R.style.AppTheme) }
         if (themePrefValue == 1) { setTheme(R.style.AppThemeDark) }
-        setContentView(R.layout.activity_solubility) //Don't move down (Needs to be before we call our functions)
+        setContentView(R.layout.activity_solubility) 
         findViewById<FrameLayout>(R.id.view_sub).systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 
-        // Register lifecycle-aware OnBackPressedCallback (disabled by default).
+        
         backCallback = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
                 val consumed = handleBackPress()
                 if (!consumed) {
-                    // Not consumed by overlays -> fallback to default behavior.
+                    
                     isEnabled = false
                     try {
                         onBackPressedDispatcher.onBackPressed()
@@ -39,13 +39,13 @@ class SolubilityActivity : BaseActivity() {
         }
         onBackPressedDispatcher.addCallback(this, backCallback!!)
 
-        // Register platform OnBackInvoked callback for Android 14+ (forward gestures to dispatcher).
-        // Start with interception disabled; enable when overlays appear.
+        
+        
         setBackInterceptionEnabled(false)
 
         infoPanel()
 
-        //Add value to most used:
+        
         val mostUsedPreference = MostUsedPreference(this)
         val mostUsedPrefValue = mostUsedPreference.getValue()
         val targetLabel = "sol"
@@ -77,53 +77,53 @@ class SolubilityActivity : BaseActivity() {
             Anim.fadeIn(findViewById<ConstraintLayout>(R.id.info_panel), 300)
             findViewById<TextView>(R.id.info_title).text = resources.getString(R.string.solubility_info_t)
             findViewById<TextView>(R.id.info_text).text = resources.getString(R.string.solubility_info_c)
-            // Info panel is shown -> enable back interception
+            
             setBackInterceptionEnabled(true)
         }
         findViewById<FloatingActionButton>(R.id.info_back_btn).setOnClickListener {
             Anim.fadeOutAnim(findViewById<ConstraintLayout>(R.id.info_panel), 300)
-            // Update interception after hiding
+            
             setBackInterceptionEnabled(anyOverlayOpen())
         }
         findViewById<TextView>(R.id.info_background).setOnClickListener {
             Anim.fadeOutAnim(findViewById<ConstraintLayout>(R.id.info_panel), 300)
-            // Update interception after hiding
+            
             setBackInterceptionEnabled(anyOverlayOpen())
         }
     }
 
     override fun onBackPressed() {
-        // Use centralized handler so gestures and hardware back behave consistently.
+        
         if (!handleBackPress()) {
             super.onBackPressed()
         }
     }
 
-    // Basic handler for in-activity overlays
+    
     private fun anyOverlayOpen(): Boolean {
         val infoVisible = findViewById<ConstraintLayout>(R.id.info_panel).visibility == View.VISIBLE
         return infoVisible
     }
 
-    // Close overlays if visible; return true when consumed.
+    
     private fun handleBackPress(): Boolean {
         val infoPanel = findViewById<ConstraintLayout>(R.id.info_panel)
         if (infoPanel.visibility == View.VISIBLE) {
             Anim.fadeOutAnim(infoPanel, 300)
-            // update interception state after hiding
+            
             setBackInterceptionEnabled(anyOverlayOpen())
             return true
         }
         return false
     }
 
-    /**
-     * Centralized management of platform back interception for Android 14+.
-     * We forward platform back invocations to the OnBackPressedDispatcher to ensure
-     * gestures and hardware back buttons call the same callbacks.
-     */
+     
+
+
+
+
     private fun setBackInterceptionEnabled(enabled: Boolean) {
-        // Keep OnBackPressedCallback state in sync
+        
         backCallback?.isEnabled = enabled
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -136,7 +136,7 @@ class SolubilityActivity : BaseActivity() {
                             } catch (e: Exception) {
                                 val consumed = handleBackPress()
                                 if (!consumed) {
-                                    // fallback to finishing
+                                    
                                     finish()
                                 }
                             }
@@ -148,7 +148,7 @@ class SolubilityActivity : BaseActivity() {
                             onBackInvokedCb!!
                         )
                     } catch (_: Exception) {
-                        // ignore registration errors on some devices
+                        
                     }
                 }
             } else {
@@ -156,7 +156,7 @@ class SolubilityActivity : BaseActivity() {
                     try {
                         onBackInvokedDispatcher.unregisterOnBackInvokedCallback(onBackInvokedCb!!)
                     } catch (_: Exception) {
-                        // ignore
+                        
                     }
                     onBackInvokedCb = null
                 }
@@ -166,7 +166,7 @@ class SolubilityActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        // Cleanup back interception hooks
+        
         backCallback?.remove()
         backCallback = null
         if (onBackInvokedCb != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {

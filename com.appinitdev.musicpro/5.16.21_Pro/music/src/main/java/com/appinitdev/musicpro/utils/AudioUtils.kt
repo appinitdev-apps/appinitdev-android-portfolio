@@ -1,16 +1,16 @@
 
 object AudioUtils {
-    /**
-     * Calculates the sampling of the given audio file in
-     * kHz and returns the appended string
-     *
-     * @throws IOException
-     * @throws IllegalArgumentException
-     * @throws NullPointerException
-     * @param context a context of the calling region
-     * @param fileUri Uri of the file
-     * @return Sampling of the given audio file as String
-     */
+     
+
+
+
+
+
+
+
+
+
+
     fun getSampling(context: Context, fileUri: Uri): String {
         val mex = MediaExtractor()
         try {

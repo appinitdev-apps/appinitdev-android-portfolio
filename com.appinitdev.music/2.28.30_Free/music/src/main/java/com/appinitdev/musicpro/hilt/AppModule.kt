@@ -20,12 +20,12 @@ object AppModule {
         return AudioDatabaseLoader(context)
     }
 
-    /**
-     * Provides the singleton [PlaylistDatabaseLoader] so Hilt can inject it into the
-     * [com.appinitdev.musicpro.repository.services.AudioDatabaseService]. It lives next
-     * to the audio loader because the two always run together — audio first, then
-     * playlists on top of whatever tracks were just scanned.
-     */
+     
+
+
+
+
+
     @Provides
     @Singleton
     fun providePlaylistDatabaseLoader(@ApplicationContext context: Context): PlaylistDatabaseLoader {

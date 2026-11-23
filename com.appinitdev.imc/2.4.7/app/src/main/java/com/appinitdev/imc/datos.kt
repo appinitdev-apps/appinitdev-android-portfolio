@@ -10,7 +10,7 @@ object Datos {
         AgeCategory(6, R.string.adulto_mayor, R.drawable.seis, R.string.adulto_mayor, R.string.cat_65y_desc)
     )
 
-    // Bebés 0-11 meses (femenino) - OMS Estándares de Crecimiento
+    
     val nina011 = arrayOf(
         doubleArrayOf(2.8, 3.2, 3.7, 4.2, 47.3, 49.1),
         doubleArrayOf(3.6, 4.2, 4.8, 5.5, 51.7, 53.7),
@@ -26,7 +26,7 @@ object Datos {
         doubleArrayOf(7.7, 8.7, 9.9, 11.2, 70.3, 72.8)
     )
 
-    // Bebés 0-11 meses (masculino) - OMS Estándares de Crecimiento
+    
     val nino011 = arrayOf(
         doubleArrayOf(2.9, 3.3, 3.9, 4.4, 48.0, 49.9),
         doubleArrayOf(3.9, 4.5, 5.1, 5.8, 52.8, 54.7),
@@ -42,7 +42,7 @@ object Datos {
         doubleArrayOf(8.4, 9.4, 10.5, 11.7, 72.2, 74.5)
     )
 
-    // Niños 1-5 años (femenino) - OMS Crecimiento Infantil
+    
     val nina15 = arrayOf(
         doubleArrayOf(7.9, 8.9, 10.1, 11.5, 71.4, 74.0),
         doubleArrayOf(9.1, 10.2, 11.6, 13.2, 77.8, 80.7),
@@ -55,7 +55,7 @@ object Datos {
         doubleArrayOf(15.8, 18.2, 21.2, 24.9, 104.7, 109.4)
     )
 
-    // Niños 1-5 años (masculino) - OMS Crecimiento Infantil
+    
     val nino15 = arrayOf(
         doubleArrayOf(8.6, 9.6, 10.8, 12.0, 73.4, 75.7),
         doubleArrayOf(9.8, 10.9, 12.2, 13.7, 79.6, 82.3),
@@ -68,7 +68,7 @@ object Datos {
         doubleArrayOf(16.0, 18.3, 21.0, 24.2, 105.3, 110.0)
     )
 
-    // Niños 5-9 años (femenino) - OMS Referencia 2007 (IMC por Edad)
+    
     val nina69 = arrayOf(
         doubleArrayOf(12.7, 15.2, 16.9, 19.0),
         doubleArrayOf(12.7, 15.3, 17.0, 19.2),
@@ -81,7 +81,7 @@ object Datos {
         doubleArrayOf(13.3, 16.3, 18.7, 22.0)
     )
 
-    // Niños 5-9 años (masculino) - OMS Referencia 2007 (IMC por Edad)
+    
     val nino69 = arrayOf(
         doubleArrayOf(13.0, 15.3, 16.7, 18.4),
         doubleArrayOf(13.0, 15.3, 16.8, 18.5),
@@ -94,7 +94,7 @@ object Datos {
         doubleArrayOf(13.6, 16.2, 18.2, 20.9)
     )
 
-    // Adolescentes (femenino) - OMS Referencia 2007 (IMC por Edad)
+    
     val adolesMujer = arrayOf(
         doubleArrayOf(13.5, 16.6, 19.0, 22.6),
         doubleArrayOf(13.9, 17.2, 19.9, 23.7),
@@ -108,7 +108,7 @@ object Datos {
         doubleArrayOf(16.5, 21.4, 25.0, 29.7)
     )
 
-    // Adolescentes (masculino) - OMS Referencia 2007 (IMC por Edad)
+    
     val adolesHombre = arrayOf(
         doubleArrayOf(13.7, 16.4, 18.5, 21.4),
         doubleArrayOf(14.1, 16.9, 19.2, 22.5),
@@ -122,12 +122,12 @@ object Datos {
         doubleArrayOf(17.6, 22.3, 25.9, 31.0)
     )
 
-    // Adultos (20 - 64 años) - Clasificación Oficial OMS
+    
     val adulto = arrayOf(
         doubleArrayOf(18.5, 24.9, 25.0, 29.9, 30.0, 34.9, 35.0, 39.9, 40.0)
     )
 
-    // Adultos Mayores (65+ años) - Criterios Geriátricos OPS / OMS (Lipschitz)
+    
     val adultoMayor = arrayOf(
         doubleArrayOf(22.0, 26.9, 27.0, 29.9, 30.0, 34.9, 35.0, 39.9, 40.0)
     )

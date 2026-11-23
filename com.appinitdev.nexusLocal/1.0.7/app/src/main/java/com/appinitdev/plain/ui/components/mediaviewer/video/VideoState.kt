@@ -92,7 +92,7 @@ class VideoState {
 
     fun updateTime() {
         if (isSeeking) return
-        isPlaying = player?.isPlaying ?: false // Hacky way to update isPlaying
+        isPlaying = player?.isPlaying ?: false 
         currentTime = player?.currentPosition?.coerceAtLeast(0L) ?: 0L
         totalTime = player?.duration?.coerceAtLeast(0L) ?: 0L
         bufferedPercentage = player?.bufferedPercentage ?: 0

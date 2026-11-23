@@ -5,31 +5,31 @@ class IdealGasCalculatorActivity : BaseActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private val FAVORITES_KEY = "ideal_gas_favorites"
     
-    // Gas constant R in different units
-    private val R_ATM = 0.08206 // L·atm/(mol·K)
-    private val R_JOULE = 8.314 // J/(mol·K)
     
-    // Input fields
+    private val R_ATM = 0.08206 
+    private val R_JOULE = 8.314 
+    
+    
     private lateinit var pressureInput: EditText
     private lateinit var volumeInput: EditText
     private lateinit var molesInput: EditText
     private lateinit var temperatureInput: EditText
     
-    // Spinners for units
+    
     private lateinit var pressureUnitSpinner: Spinner
     private lateinit var volumeUnitSpinner: Spinner
     private lateinit var temperatureUnitSpinner: Spinner
     
-    // Output text
+    
     private lateinit var outputText: TextView
     
-    // Selected units
+    
     private var pressureUnit = "atm"
     private var volumeUnit = "L"
     private var temperatureUnit = "K"
     
-    // Which field to calculate
-    private var calculateField = "pressure" // pressure, volume, moles, or temperature
+    
+    private var calculateField = "pressure" 
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,33 +57,33 @@ class IdealGasCalculatorActivity : BaseActivity() {
 
         updateStats()
 
-        // Initialize SharedPreferences
+        
         sharedPreferences = getSharedPreferences("IdealGasCalculatorPrefs", Context.MODE_PRIVATE)
 
-        //Title Controller
-//        findViewById<FrameLayout>(R.id.common_title_back_ideal_gas_color).visibility = View.INVISIBLE
-//        findViewById<TextView>(R.id.ideal_gas_calculator_title).visibility = View.INVISIBLE
-//        findViewById<FrameLayout>(R.id.common_title_back_ideal_gas).elevation = resources.getDimension(R.dimen.zero_elevation)
-//        findViewById<ScrollView>(R.id.ideal_gas_calculator_scroll).viewTreeObserver
-//            .addOnScrollChangedListener {
-//                val scrollY = findViewById<ScrollView>(R.id.ideal_gas_calculator_scroll).scrollY.toFloat()
-//                if (scrollY > 150f) {
-//                    findViewById<FrameLayout>(R.id.common_title_back_ideal_gas_color).visibility = View.VISIBLE
-//                    findViewById<TextView>(R.id.ideal_gas_calculator_title).visibility = View.VISIBLE
-//                    findViewById<TextView>(R.id.ideal_gas_calculator_title_downstate).visibility = View.INVISIBLE
-//                    findViewById<FrameLayout>(R.id.common_title_back_ideal_gas).elevation = resources.getDimension(R.dimen.one_elevation)
-//                } else {
-//                    findViewById<FrameLayout>(R.id.common_title_back_ideal_gas_color).visibility = View.INVISIBLE
-//                    findViewById<TextView>(R.id.ideal_gas_calculator_title).visibility = View.INVISIBLE
-//                    findViewById<TextView>(R.id.ideal_gas_calculator_title_downstate).visibility = View.VISIBLE
-//                    findViewById<FrameLayout>(R.id.common_title_back_ideal_gas).elevation = resources.getDimension(R.dimen.zero_elevation)
-//                }
-//            }
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         initializeViews()
         setupInputListeners()
 
-        //Add value to most used:
+        
         val mostUsedPreference = MostUsedToolPreference(this)
         val mostUsedPrefValue = mostUsedPreference.getValue()
         val targetLabel = "gas"
@@ -94,20 +94,20 @@ class IdealGasCalculatorActivity : BaseActivity() {
             val newValue = value + 1
             mostUsedPreference.setValue(mostUsedPrefValue.replace("$targetLabel=$value", "$targetLabel=$newValue"))
         } else {
-            // Add new entry if it doesn't exist
+            
             val newValue = "$mostUsedPrefValue gas=1.0"
             mostUsedPreference.setValue(newValue)
         }
 
         findViewById<ImageButton>(R.id.back_btn_ideal_gas).setOnClickListener { this.onBackPressed() }
 
-        // Check if favorite list should be shown or not (PRO or PRO+)
+        
         val proPref = ProVersion(this)
         val proPrefValue = proPref.getValue()
         val proPlusPref = ProPlusVersion(this)
         val proPlusPrefValue = proPlusPref.getValue()
         
-        // Show favorites if user has either PRO or PRO+
+        
         val hasProAccess = proPrefValue == 100 || proPlusPrefValue == 100
         
         if (!hasProAccess) {
@@ -127,17 +127,17 @@ class IdealGasCalculatorActivity : BaseActivity() {
             startActivity(intent)
         }
 
-        // Initialize RecyclerView for favorite calculations
+        
         favoriteCalculationsAdapter = FavoriteIdealGasAdapter({ calculation -> removeFavorite(calculation) }, { calculation -> copyToClipboard(calculation) })
         findViewById<RecyclerView>(R.id.fav_rec_list_ideal_gas).apply {
             layoutManager = LinearLayoutManager(this@IdealGasCalculatorActivity)
             adapter = favoriteCalculationsAdapter
         }
 
-        // Load saved favorite calculations
+        
         loadFavorites()
 
-        // Set up favorite button
+        
         findViewById<ImageButton>(R.id.fav_star_btn_ideal_gas).setOnClickListener {
             val result = findViewById<TextView>(R.id.out_text_ideal_gas).text.toString()
             if (result.isNotEmpty() && !result.contains("---")) {
@@ -161,7 +161,7 @@ class IdealGasCalculatorActivity : BaseActivity() {
         
         outputText = findViewById(R.id.out_text_ideal_gas)
         
-        // Setup spinners
+        
         setupSpinner(pressureUnitSpinner, arrayOf("atm", "Pa", "kPa", "bar", "mmHg")) { unit ->
             pressureUnit = unit
             calculateResult()
@@ -177,7 +177,7 @@ class IdealGasCalculatorActivity : BaseActivity() {
             calculateResult()
         }
         
-        // Setup calculate field selector
+        
         val calculateFieldSpinner: Spinner = findViewById(R.id.calculate_field_spinner)
         setupSpinner(calculateFieldSpinner, arrayOf("Pressure", "Volume", "Moles", "Temperature")) { field ->
             calculateField = field.lowercase()
@@ -214,7 +214,7 @@ class IdealGasCalculatorActivity : BaseActivity() {
     }
     
     private fun updateInputFieldsState() {
-        // Enable all fields first
+        
         pressureInput.isEnabled = true
         volumeInput.isEnabled = true
         molesInput.isEnabled = true
@@ -228,7 +228,7 @@ class IdealGasCalculatorActivity : BaseActivity() {
         molesInput.alpha = 1.0f
         temperatureInput.alpha = 1.0f
         
-        // Disable the field we're calculating
+        
         when (calculateField) {
             "pressure" -> {
                 pressureInput.isEnabled = false
@@ -259,13 +259,13 @@ class IdealGasCalculatorActivity : BaseActivity() {
     
     private fun calculateResult() {
         try {
-            // Get values and convert to standard units (atm, L, K)
+            
             val P = if (calculateField != "pressure") convertPressureToAtm(pressureInput.text.toString().toDoubleOrNull()) else null
             val V = if (calculateField != "volume") convertVolumeToL(volumeInput.text.toString().toDoubleOrNull()) else null
             val n = if (calculateField != "moles") molesInput.text.toString().toDoubleOrNull() else null
             val T = if (calculateField != "temperature") convertTemperatureToK(temperatureInput.text.toString().toDoubleOrNull()) else null
             
-            // Calculate the missing value using PV = nRT
+            
             val result = when (calculateField) {
                 "pressure" -> {
                     if (n != null && T != null && V != null && V > 0) {
@@ -316,7 +316,7 @@ class IdealGasCalculatorActivity : BaseActivity() {
         }
     }
     
-    // Conversion functions
+    
     private fun convertPressureToAtm(value: Double?): Double? {
         if (value == null) return null
         return when (pressureUnit) {
@@ -435,7 +435,7 @@ class IdealGasCalculatorActivity : BaseActivity() {
     private fun updateStats() {
         val statistics = java.util.ArrayList<Statistics>()
         StatisticsModel.getList(this, statistics)
-        val stat2 = statistics.find { it.id == 2 } //calculation stat
+        val stat2 = statistics.find { it.id == 2 } 
         stat2?.incrementProgress(this, 1)
     }
 }

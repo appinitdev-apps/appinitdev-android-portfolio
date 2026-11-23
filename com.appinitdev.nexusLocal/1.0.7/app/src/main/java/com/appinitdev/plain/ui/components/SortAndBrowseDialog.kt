@@ -20,7 +20,7 @@ fun <T : IData> SortAndBrowseDialog(
         title = null,
         text = {
             LazyColumn {
-                // View Mode section (only for docs)
+                
                 if (isDocs && docsVM != null) {
                     item {
                         Text(
@@ -30,7 +30,7 @@ fun <T : IData> SortAndBrowseDialog(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
-                    // Browse by tags option
+                    
                     item {
                         PDialogRadioRow(
                             selected = docsVM.tabsShowTags.value,
@@ -47,7 +47,7 @@ fun <T : IData> SortAndBrowseDialog(
                             text = stringResource(Res.string.browse_by_tags)
                         )
                     }
-                    // Browse by file type option
+                    
                     item {
                         PDialogRadioRow(
                             selected = !docsVM.tabsShowTags.value,
@@ -64,13 +64,13 @@ fun <T : IData> SortAndBrowseDialog(
                             text = stringResource(Res.string.browse_by_file_type)
                         )
                     }
-                    // Spacing between sections
+                    
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
 
-                // Sort rules section
+                
                 item {
                     Text(
                         text = stringResource(Res.string.sort),
@@ -80,7 +80,7 @@ fun <T : IData> SortAndBrowseDialog(
                     Spacer(modifier = Modifier.height(8.dp))
                 }
 
-                // Sort options
+                
                 items(sortByEntries) { sortByOption ->
                     PDialogRadioRow(
                         selected = mediaVM.sortBy.value == sortByOption,

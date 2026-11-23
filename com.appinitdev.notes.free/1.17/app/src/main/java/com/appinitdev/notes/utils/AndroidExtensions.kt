@@ -369,7 +369,7 @@ fun Uri.toReadablePath(): String {
 val isBeforeVanillaIceCream
     get() = Build.VERSION.SDK_INT <= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
 
-/** Source: https://stackoverflow.com/a/79286411/9748566 */
+ 
 @Suppress("Deprecation")
 fun Activity.changeStatusAndNavigationBarColor(@ColorInt color: Int) {
     window.statusBarColor = color

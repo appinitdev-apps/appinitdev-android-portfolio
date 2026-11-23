@@ -241,7 +241,7 @@ class StorageFragment(context: Context, attributeSet: AttributeSet) : MyViewPage
             val freeStorageSpace: Long
             val storageVolume = storageManager.getStorageVolume(file) ?: return
             if (storageVolume.isPrimary) {
-                // internal storage
+                
                 volumeName = PRIMARY_VOLUME_NAME
                 val storageStatsManager = context.getSystemService(AppCompatActivity.STORAGE_STATS_SERVICE) as StorageStatsManager
                 val uuid = StorageManager.UUID_DEFAULT

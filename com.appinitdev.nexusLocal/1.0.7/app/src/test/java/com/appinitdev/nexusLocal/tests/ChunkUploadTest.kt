@@ -1,22 +1,22 @@
 
-/**
- * Unit tests for file chunk upload logic: atomic writes, chunk listing,
- * merge integrity, and concurrent write safety.
- *
- * These tests verify the patterns used in HttpModule.kt and FileUploadGraphQL.kt
- * without requiring an Android environment.
- */
+ 
+
+
+
+
+
+
 class ChunkUploadTest {
 
     @get:Rule
     val tmp = TemporaryFolder()
 
-    // ── Atomic chunk write ────────────────────────────────────────────────────
+    
 
     @Test
     fun `atomic chunk write produces correct file`() {
         val chunkDir = tmp.newFolder("upload_tmp", "file123")
-        val bytes = ByteArray(5 * 1024 * 1024) { (it % 256).toByte() } // 5MB
+        val bytes = ByteArray(5 * 1024 * 1024) { (it % 256).toByte() } 
         val chunkFile = File(chunkDir, "chunk_0")
         val tempFile = File(chunkDir, ".tmp_chunk_0_${System.nanoTime()}")
 
@@ -54,12 +54,12 @@ class ChunkUploadTest {
     fun `atomic rename overwrites existing chunk`() {
         val chunkDir = tmp.newFolder("upload_tmp", "file789")
 
-        // Write an old (corrupt) chunk
+        
         val chunkFile = File(chunkDir, "chunk_0")
         chunkFile.writeBytes(ByteArray(100) { 0xFF.toByte() })
         assertEquals(100L, chunkFile.length())
 
-        // Write new chunk atomically
+        
         val newBytes = ByteArray(5000) { (it % 256).toByte() }
         val tempFile = File(chunkDir, ".tmp_chunk_0_${System.nanoTime()}")
         FileOutputStream(tempFile).use { fos ->
@@ -67,20 +67,20 @@ class ChunkUploadTest {
             fos.fd.sync()
         }
 
-        // Atomic replace
+        
         chunkFile.delete()
         assertTrue(tempFile.renameTo(chunkFile))
         assertEquals(5000L, chunkFile.length())
     }
 
-    // ── Chunk listing (uploadedChunks query pattern) ──────────────────────────
+    
 
     @Test
     fun `chunk listing returns correct index and size`() {
         val chunkDir = tmp.newFolder("upload_tmp", "fileabc")
 
-        // Create 3 chunks of various sizes
-        val sizes = longArrayOf(5242880, 5242880, 2097152) // 5MB, 5MB, 2MB
+        
+        val sizes = longArrayOf(5242880, 5242880, 2097152) 
         for (i in sizes.indices) {
             File(chunkDir, "chunk_$i").writeBytes(ByteArray(sizes[i].toInt()))
         }
@@ -105,7 +105,7 @@ class ChunkUploadTest {
         val chunkDir = tmp.newFolder("upload_tmp", "filedef")
 
         File(chunkDir, "chunk_0").writeBytes(ByteArray(5242880))
-        File(chunkDir, ".tmp_chunk_1_12345").writeBytes(ByteArray(1000)) // in-progress
+        File(chunkDir, ".tmp_chunk_1_12345").writeBytes(ByteArray(1000)) 
 
         val result = chunkDir.listFiles()
             ?.filter { it.name.startsWith("chunk_") }
@@ -153,14 +153,14 @@ class ChunkUploadTest {
         assertEquals(0, result.size)
     }
 
-    // ── Merge integrity ───────────────────────────────────────────────────────
+    
 
     @Test
     fun `merge produces correct file from chunks`() {
         val chunkDir = tmp.newFolder("upload_tmp", "merge1")
         val totalChunks = 3
 
-        // Create chunks with distinct content
+        
         val chunkContents = arrayOf(
             ByteArray(5242880) { 0xAA.toByte() },
             ByteArray(5242880) { 0xBB.toByte() },
@@ -170,14 +170,14 @@ class ChunkUploadTest {
             File(chunkDir, "chunk_$i").writeBytes(chunkContents[i])
         }
 
-        // Calculate expected size
+        
         var expectedSize = 0L
         for (i in 0 until totalChunks) {
             expectedSize += File(chunkDir, "chunk_$i").length()
         }
-        assertEquals(12582912L, expectedSize) // 5+5+2 MB
+        assertEquals(12582912L, expectedSize) 
 
-        // Merge
+        
         val outputFile = File(tmp.root, "output.bin")
         val tempMergeFile = File(tmp.root, ".merge_tmp_${System.currentTimeMillis()}")
 
@@ -201,17 +201,17 @@ class ChunkUploadTest {
         val mergedSize = tempMergeFile.length()
         assertEquals(expectedSize, mergedSize)
 
-        // Atomic rename
+        
         assertTrue(tempMergeFile.renameTo(outputFile))
         assertEquals(expectedSize, outputFile.length())
 
-        // Verify content
+        
         val merged = outputFile.readBytes()
         assertTrue(merged.slice(0 until 5242880).all { it == 0xAA.toByte() })
         assertTrue(merged.slice(5242880 until 10485760).all { it == 0xBB.toByte() })
         assertTrue(merged.slice(10485760 until 12582912).all { it == 0xCC.toByte() })
 
-        // Cleanup
+        
         chunkDir.deleteRecursively()
     }
 
@@ -219,13 +219,13 @@ class ChunkUploadTest {
     fun `merge detects size mismatch`() {
         val chunkDir = tmp.newFolder("upload_tmp", "merge2")
 
-        // Create 2 chunks
+        
         File(chunkDir, "chunk_0").writeBytes(ByteArray(5242880))
         File(chunkDir, "chunk_1").writeBytes(ByteArray(3000000))
 
         val expectedSize = File(chunkDir, "chunk_0").length() + File(chunkDir, "chunk_1").length()
 
-        // Merge to temp file
+        
         val tempFile = File(tmp.root, ".merge_tmp")
         FileOutputStream(tempFile).use { fos ->
             for (i in 0 until 2) {
@@ -252,13 +252,13 @@ class ChunkUploadTest {
         val chunkDir = tmp.newFolder("upload_tmp", "merge3")
 
         File(chunkDir, "chunk_0").writeBytes(ByteArray(5242880))
-        // chunk_1 is missing
+        
 
         val missingChunk = File(chunkDir, "chunk_1")
         assertFalse(missingChunk.exists())
     }
 
-    // ── Size verification ─────────────────────────────────────────────────────
+    
 
     @Test
     fun `channel position matches written bytes`() {
@@ -278,13 +278,13 @@ class ChunkUploadTest {
 
     @Test
     fun `size check catches truncated write`() {
-        // Simulate: declare size=5MB but only write 3MB
+        
         val declaredSize = 5242880L
         val actualData = ByteArray(3000000)
 
         val savedSize: Long = actualData.size.toLong()
 
-        // This is the check from HttpModule.kt
+        
         assertFalse(savedSize == declaredSize)
     }
 }

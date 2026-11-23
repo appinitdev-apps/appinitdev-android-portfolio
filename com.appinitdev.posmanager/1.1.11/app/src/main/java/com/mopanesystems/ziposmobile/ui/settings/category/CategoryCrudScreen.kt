@@ -94,7 +94,7 @@ fun CategoryCrudScreen(onBack: (() -> Unit)? = null,viewModel: CategoryViewModel
                 onDismiss = { showDialog = false },
                 onSave = { name, description ->
                     if (editingCategory == null) {
-                        // Nuevo
+                        
                         val newCategory = Category(
                             id = UUID.randomUUID().toString(),
                             name = name,
@@ -102,7 +102,7 @@ fun CategoryCrudScreen(onBack: (() -> Unit)? = null,viewModel: CategoryViewModel
                         )
                         viewModel.insertCategory(newCategory)
                     } else {
-                        // Editar
+                        
                         val updated = editingCategory!!.copy(
                             name = name,
                             description = description,

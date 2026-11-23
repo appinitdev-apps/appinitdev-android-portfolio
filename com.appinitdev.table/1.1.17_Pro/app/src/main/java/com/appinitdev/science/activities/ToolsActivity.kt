@@ -18,43 +18,43 @@ class ToolsActivity : BaseActivity() {
 
         findViewById<FrameLayout>(R.id.view_tools).systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 
-        // Title Controller with animated visibility
-        /*findViewById<FrameLayout>(R.id.common_title_tool_color).visibility = View.INVISIBLE
-        findViewById<TextView>(R.id.tools_title).visibility = View.INVISIBLE
-        findViewById<FrameLayout>(R.id.common_title_back_tab).elevation = (resources.getDimension(R.dimen.zero_elevation))
-        findViewById<ScrollView>(R.id.tools_scroll).viewTreeObserver
-            .addOnScrollChangedListener(object : ViewTreeObserver.OnScrollChangedListener {
-                private var isTitleVisible = false // Track animation state
+        
+         
 
-                override fun onScrollChanged() {
-                    val scrollY = findViewById<ScrollView>(R.id.tools_scroll).scrollY
-                    val threshold = 150
 
-                    val titleColorBackground = findViewById<FrameLayout>(R.id.common_title_tool_color)
-                    val titleText = findViewById<TextView>(R.id.tools_title)
-                    val titleDownstateText = findViewById<TextView>(R.id.tools_title_downstate)
-                    val titleBackground = findViewById<FrameLayout>(R.id.common_title_back_tab)
 
-                    if (scrollY > threshold) {
-                        if (!isTitleVisible) {
-                            TitleBarAnimator.animateVisibility(titleColorBackground, true, visibleAlpha = 0.11f)
-                            TitleBarAnimator.animateVisibility(titleText, true)
-                            TitleBarAnimator.animateVisibility(titleDownstateText, false)
-                            titleBackground.elevation = resources.getDimension(R.dimen.one_elevation)
-                            isTitleVisible = true
-                        }
-                    } else {
-                        if (isTitleVisible) {
-                            TitleBarAnimator.animateVisibility(titleColorBackground, false)
-                            TitleBarAnimator.animateVisibility(titleText, false)
-                            TitleBarAnimator.animateVisibility(titleDownstateText, true)
-                            titleBackground.elevation = resources.getDimension(R.dimen.zero_elevation)
-                            isTitleVisible = false
-                        }
-                    }
-                }
-            })
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         toolListeners()
         mostUsedBar()
         updateProPlusBadge()
@@ -80,7 +80,7 @@ class ToolsActivity : BaseActivity() {
         val proPlusPrefValue = proPlusPref.getValue()
         val isBeforeDeadline = ProPlusTimeUtil.isBeforeJanuary2026()
         
-        // Show badge if user is not PRO+ and we're still before the deadline
+        
         if (proPlusPrefValue != 100 && isBeforeDeadline) {
             findViewById<TextView>(R.id.pro_plus_gas_text).visibility = View.VISIBLE
         } else {
@@ -94,7 +94,7 @@ class ToolsActivity : BaseActivity() {
         val proPlusPrefValue = proPlusPref.getValue()
         val isBeforeDeadline = ProPlusTimeUtil.isBeforeJanuary2026()
         
-        val regex = Regex("(\\w{3})=(\\d\\.\\d)") // Corrected regex pattern
+        val regex = Regex("(\\w{3})=(\\d\\.\\d)") 
         val matches = regex.findAll(mostUsedToolPreference.getValue())
             .map { it.groups[1]!!.value to it.groups[2]!!.value.toDouble() }
             .toList()
@@ -108,7 +108,7 @@ class ToolsActivity : BaseActivity() {
 
         sortedValues.forEachIndexed { index, pair ->
             if (index < textViewList.size) {
-                // Setup TextViews
+                
                 when (pair.first) {
                     "cal" -> textViewList[index].text = getString(R.string.cal)
                     "uni" -> textViewList[index].text = getString(R.string.uni)
@@ -117,9 +117,9 @@ class ToolsActivity : BaseActivity() {
                 }
 
                 textViewList[index].setOnClickListener {
-                    // Check if gas calculator requires PRO+
+                    
                     if (pair.first == "gas" && proPlusPrefValue != 100 && isBeforeDeadline) {
-                        // Open ProActivity if user doesn't have PRO+
+                        
                         val intent = Intent(this, ProActivity::class.java)
                         startActivity(intent)
                     } else {
@@ -145,7 +145,7 @@ class ToolsActivity : BaseActivity() {
         val proPlusPrefValue = proPlusPref.getValue()
         val isBeforeDeadline = ProPlusTimeUtil.isBeforeJanuary2026()
         
-        //Calculator
+        
         findViewById<FrameLayout>(R.id.tool_calculator).setOnClickListener {
             val intent = Intent(this, CalculatorActivity::class.java)
             startActivity(intent)
@@ -155,7 +155,7 @@ class ToolsActivity : BaseActivity() {
             startActivity(intent)
         }
 
-        //Unit converter
+        
         findViewById<FrameLayout>(R.id.tool_unit_converter).setOnClickListener {
             val intent = Intent(this, UnitConversionActivity::class.java)
             startActivity(intent)
@@ -165,7 +165,7 @@ class ToolsActivity : BaseActivity() {
             startActivity(intent)
         }
 
-        //Unit converter
+        
         findViewById<FrameLayout>(R.id.flashcards).setOnClickListener {
             val intent = Intent(this, FlashCardActivity::class.java)
             startActivity(intent)
@@ -175,10 +175,10 @@ class ToolsActivity : BaseActivity() {
             startActivity(intent)
         }
 
-        //Ideal Gas Calculator
+        
         findViewById<FrameLayout>(R.id.tool_ideal_gas_calculator).setOnClickListener {
             if (proPlusPrefValue != 100 && isBeforeDeadline) {
-                // Open ProActivity if user doesn't have PRO+
+                
                 val intent = Intent(this, ProActivity::class.java)
                 startActivity(intent)
             } else {
@@ -188,7 +188,7 @@ class ToolsActivity : BaseActivity() {
         }
         findViewById<TextView>(R.id.ideal_gas_calculator_btn).setOnClickListener {
             if (proPlusPrefValue != 100 && isBeforeDeadline) {
-                // Open ProActivity if user doesn't have PRO+
+                
                 val intent = Intent(this, ProActivity::class.java)
                 startActivity(intent)
             } else {

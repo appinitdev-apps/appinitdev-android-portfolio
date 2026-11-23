@@ -33,7 +33,7 @@ data class ProductPerformance(
     val data: String,
     val productId: String,
     override val storeId: String,
-    val period: String, // daily, weekly, monthly
+    val period: String, 
     val periodStart: LocalDateTime,
     val periodEnd: LocalDateTime,
     val quantitySold: Int,
@@ -73,8 +73,8 @@ data class RefundAnalytics(
     val totalRefunds: BigDecimal,
     val refundCount: Int,
     val averageRefundAmount: BigDecimal,
-    val topRefundReasons: String, // JSON string of reasons
-    val refundRate: Double, // percentage
+    val topRefundReasons: String, 
+    val refundRate: Double, 
     val createdAt: LocalDateTime = LocalDateTime.now()
 ) : Identifiable, StoreScoped
 

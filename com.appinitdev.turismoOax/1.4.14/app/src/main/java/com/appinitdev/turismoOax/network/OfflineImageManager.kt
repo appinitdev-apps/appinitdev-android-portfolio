@@ -48,11 +48,11 @@ object OfflineImageManager {
         }
     }
 
-    /**
-     * Sincroniza y descarga las imágenes de la lista de tours.
-     * 1. Descarga imágenes que no existan aún en el almacenamiento local.
-     * 2. Elimina archivos locales de imágenes que YA NO ESTÉN presentes en los tours activos (p.ej. al modificar tours.json).
-     */
+     
+
+
+
+
     suspend fun syncImages(context: Context, tours: List<Tour>) = withContext(Dispatchers.IO) {
         val activeUrls = mutableSetOf<String>()
 
@@ -67,7 +67,7 @@ object OfflineImageManager {
         val dir = getImagesDir(context)
         val activeFileNames = activeUrls.map { getFileNameForUrl(it) }.toSet()
 
-        // 1. Limpieza de imágenes obsoletas que ya no existen en los tours activos
+        
         val existingFiles = dir.listFiles()
         existingFiles?.forEach { file ->
             if (file.isFile && file.name !in activeFileNames) {
@@ -76,7 +76,7 @@ object OfflineImageManager {
             }
         }
 
-        // 2. Descarga de imágenes nuevas (únicamente se descargan una vez)
+        
         for (imageUrl in activeUrls) {
             val file = File(dir, getFileNameForUrl(imageUrl))
             if (!file.exists() || file.length() == 0L) {

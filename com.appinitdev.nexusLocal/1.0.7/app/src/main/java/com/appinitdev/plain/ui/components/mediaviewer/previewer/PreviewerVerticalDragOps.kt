@@ -1,7 +1,7 @@
 
-/**
- * Shrink and close viewer container
- */
+ 
+
+
 internal suspend fun PreviewerVerticalDragState.viewerContainerShrinkDown() {
     stateCloseStart()
     viewerContainerState?.cancelOpenTransform()
@@ -15,9 +15,9 @@ internal suspend fun PreviewerVerticalDragState.viewerContainerShrinkDown() {
     transformState?.setExitState()
 }
 
-/**
- * Respond to downward drag to close
- */
+ 
+
+
 internal suspend fun PreviewerVerticalDragState.dragDownClose() {
     transformState?.notifyEnterChanged()
     viewerContainerState?.showLoading = false

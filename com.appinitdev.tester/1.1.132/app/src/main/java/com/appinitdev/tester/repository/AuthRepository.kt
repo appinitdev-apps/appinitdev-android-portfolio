@@ -4,7 +4,7 @@ class AuthRepository {
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
 
-    // Login
+    
     suspend fun login(email: String, pass: String): Result<String> {
         return try {
             auth.signInWithEmailAndPassword(email, pass).await()
@@ -14,10 +14,10 @@ class AuthRepository {
         }
     }
 
-    // Registro
+    
     suspend fun register(email: String, pass: String): Result<String> {
         return try {
-            // Ahora 'auth' ya será reconocido aquí
+            
             val result = auth.createUserWithEmailAndPassword(email, pass).await()
 
             result.user?.sendEmailVerification()?.await()
@@ -32,14 +32,14 @@ class AuthRepository {
     suspend fun isEmailVerified(): Boolean {
         val user = auth.currentUser
         return try {
-            user?.reload()?.await() // Actualiza el estado desde el servidor
+            user?.reload()?.await() 
             user?.isEmailVerified ?: false
         } catch (e: Exception) {
             false
         }
     }
 
-    // Recuperar Contraseña
+    
     suspend fun resetPassword(email: String): Result<String> {
         return try {
             auth.sendPasswordResetEmail(email).await()
@@ -85,8 +85,8 @@ class AuthRepository {
             val watcherUid = auth.currentUser?.uid ?: throw Exception("No logueado")
             val userRef = db.collection("users").document(targetUid)
 
-            // Actualizamos solo el campo 'calificaciones' dentro del mapa
-            // Esto añade el UID del que califica o actualiza su nota si ya existía
+            
+            
             userRef.update("calificaciones.$watcherUid", rating).await()
 
             Result.success(Unit)
@@ -99,19 +99,19 @@ class AuthRepository {
         return try {
             val snapshot = db.collection("apps")
                 .whereEqualTo("paquete", paquete)
-                .limit(1) // Solo necesitamos saber si hay al menos una
+                .limit(1) 
                 .get()
                 .await()
 
-            !snapshot.isEmpty // Devuelve true si el paquete YA EXISTE
+            !snapshot.isEmpty 
         } catch (e: Exception) {
-            false // En caso de error de conexión, asumimos que no existe o manejamos el error
+            false 
         }
     }
-    // Añade esto a AuthRepository.kt
+    
     suspend fun createApp(app: AppModel): Result<Unit> {
         return try {
-            // Validar si el paquete ya existe
+            
             val query = db.collection("apps")
                 .whereEqualTo("paquete", app.paquete)
                 .get().await()
@@ -149,7 +149,7 @@ class AuthRepository {
                 }
                 val apps = snapshot?.toObjects(AppModel::class.java) ?: emptyList()
 
-                // Ordenar localmente por estatus: 1. test, 2. produccion, 3. oculta
+                
                 val sortedApps = apps.sortedWith(
                     compareBy<AppModel> {
                         when (it.status) {
@@ -191,18 +191,18 @@ class AuthRepository {
         return try {
             val nuevaFecha = System.currentTimeMillis()
 
-            // Creamos un mapa con los datos básicos
+            
             val updates = mutableMapOf<String, Any>(
                 "status" to newStatus,
                 "fechaActualizacion" to nuevaFecha
             )
 
-            // SI el icono no es nulo, lo agregamos al mapa de actualización
+            
             if (iconUrl != null) {
                 updates["icono"] = iconUrl
             }
 
-            // Enviamos todo el mapa a Firestore en una sola operación
+            
             db.collection("apps").document(appId)
                 .update(updates)
                 .await()
@@ -213,7 +213,7 @@ class AuthRepository {
         }
     }
 
-    // Para que un usuario se postule como tester
+    
     suspend fun applyAsTester(appId: String, testerData: TesterData): Result<Unit> {
         return try {
             val uid = testerData.idUser
@@ -235,7 +235,7 @@ class AuthRepository {
         }
     }
 
-    // Para que un usuario deje de ser tester de una app
+    
     suspend fun leaveAppAsTester(appId: String, testerId: String): Result<Unit> {
         return try {
             val updates = mapOf<String, Any>(
@@ -270,7 +270,7 @@ class AuthRepository {
                         com.google.firebase.firestore.FieldValue.arrayUnion(testerId)
                 }
                 else -> {
-                    // Para Rechazado, Solicitud, removido, etc.
+                    
                     updates["testerIds"] =
                         com.google.firebase.firestore.FieldValue.arrayRemove(testerId)
                 }
@@ -309,19 +309,19 @@ class AuthRepository {
     }
 
 
-//    suspend fun getAllTestApps(): List<AppModel> {
-//        return try {
-//            val currentUid = auth.currentUser?.uid ?: ""
-//            val snapshot = db.collection("apps")
-//                .whereEqualTo("status", "test")
-//                .orderBy("reputacion", Query.Direction.DESCENDING)
-//                .get().await()
-//
-//            snapshot.toObjects(AppModel::class.java)//Adrian.filter { it.idPropietario != currentUid }
-//        } catch (e: Exception) {
-//            emptyList()
-//        }
-//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     fun getAllTestAppsRealtime(): Flow<Pair<List<AppModel>, Boolean>> = callbackFlow {
         val listener = db.collection("apps")
@@ -391,13 +391,13 @@ class AuthRepository {
             val snapshot = db.collection("apps")
                 .whereEqualTo("status", "test")
                 .whereArrayContains("allParticipants", uid)
-                //.whereArrayContains("testerIds", uid)
+                
                 .get()
                 .await()
 
             snapshot.toObjects(AppModel::class.java)
                 .filter {
-//                    it.testers[uid]?.validado == "Aceptado" &&
+
                             it.testers[uid]?.idUser == uid
                 }
 
@@ -406,7 +406,7 @@ class AuthRepository {
         }
     }
 
-    // Agregar un link a una subcolección dentro de la App
+    
     fun getGlobalLinks(): Flow<List<ComunidadLink>> = callbackFlow {
         val collection = db.collection("links_comunidad")
         val subscription = collection.addSnapshotListener { snapshot, _ ->
@@ -438,7 +438,7 @@ class AuthRepository {
         }
     }
 
-    // --- NUEVAS FUNCIONALIDADES ---
+    
 
     suspend fun submitBugReport(bugReport: BugReport): Result<Unit> {
         return try {
@@ -547,7 +547,7 @@ class AuthRepository {
     }
 
 
-// En AuthRepository.kt
+
 
     suspend fun updateTesterDaysAndPoints(
         appId: String,
@@ -560,7 +560,7 @@ class AuthRepository {
             val appRef = db.collection("apps").document(appId)
             val userRef = db.collection("users").document(userId)
 
-            // Actualizar los días en la aplicación
+            
             appRef.update(
                 mapOf(
                     "testers.$userId.dias" to nuevosDias,
@@ -568,7 +568,7 @@ class AuthRepository {
                 )
             ).await()
 
-            // Si ganoPunto es true, incrementamos el contador en el perfil del usuario
+            
             if (otorgarPunto) {
                 userRef.update(
                     "puntos",
@@ -602,17 +602,17 @@ class AuthRepository {
             if (!appsSnapshot.isEmpty) {
 
                 for (document in appsSnapshot.documents) {
-                    // 2. Preparamos las actualizaciones en un mapa para mayor claridad
+                    
                     val updates = mapOf(
                         "reputacion" to nuevaReputacion,
-                        "fcmToken" to fcmToken // Se actualiza el token recibido por parámetro
+                        "fcmToken" to fcmToken 
                     )
 
-                    // 3. Agregamos la actualización al batch
+                    
                     batch.update(document.reference, updates)
                 }
 
-                // 4. Ejecutamos todas las operaciones de forma atómica
+                
 
             }
             batch.commit().await()
@@ -673,13 +673,13 @@ class AuthRepository {
     }
 
 
-    // En AuthRepository.kt
+    
 
     suspend fun updateFcmToken(token: String): Result<Unit> {
         return try {
             val uid = auth.currentUser?.uid ?: throw Exception("No user logged in")
 
-            // Actualizamos solo el campo 'fcmToken'
+            
             db.collection("users").document(uid)
                 .update("fcmToken", token)
                 .await()
@@ -690,9 +690,9 @@ class AuthRepository {
         }
     }
 
-    // En AuthRepository.kt
+    
 
-    // En AuthRepository.kt
+    
     fun getProductionAppsRealtime(): Flow<List<AppModel>> = callbackFlow {
         val listener = db.collection("apps")
             .whereEqualTo("status", "produccion")
@@ -719,7 +719,7 @@ class AuthRepository {
     suspend fun getProductionApps(): List<AppModel> = withContext(Dispatchers.IO) {
         try {
             val snapshot = db.collection("apps")
-                .whereEqualTo("status", "produccion") // Filtro por producción
+                .whereEqualTo("status", "produccion") 
                 .orderBy("reputacion", Query.Direction.DESCENDING)
                 .get().await()
 
@@ -749,7 +749,7 @@ class AuthRepository {
         val priorityOwnerId = "TLaAvv2YGObm93iLGM8xqLZOETk2"
 
         return@withContext try {
-            // CONSULTA 1: Solo las apps del dueño prioritario
+            
             val prioritySnapshot = db.collection("apps")
                 .whereEqualTo("status", "produccion")
                 .whereEqualTo("idPropietario", priorityOwnerId)
@@ -805,7 +805,7 @@ class AuthRepository {
         }
     }
 
-    // 1. Estado: Aceptado (Mis Chats)
+    
     fun getAppsAcceptedRealtime(): Flow<List<AppModel>> = callbackFlow {
         val uid = auth.currentUser?.uid ?: return@callbackFlow
         val listener = db.collection("apps")
@@ -831,7 +831,7 @@ class AuthRepository {
         } catch (e: Exception) { emptyList() }
     }
 
-    // 2. Estado: Solicitud (Pendientes)
+    
     fun getAppsPendingRealtime(): Flow<List<AppModel>> = callbackFlow {
         val uid = auth.currentUser?.uid ?: return@callbackFlow
         val listener = db.collection("apps")
@@ -856,7 +856,7 @@ class AuthRepository {
         } catch (e: Exception) { emptyList() }
     }
 
-    // 3. Estado: Rechazado
+    
     suspend fun getAppsRejected(): List<AppModel> {
         val uid = auth.currentUser?.uid ?: return emptyList()
         return try {
@@ -868,7 +868,7 @@ class AuthRepository {
         } catch (e: Exception) { emptyList() }
     }
 
-    // 4. Estado: Explorar
+    
     fun getAppsToExploreRealtime(): Flow<List<AppModel>> = callbackFlow {
         val uid = auth.currentUser?.uid ?: return@callbackFlow
         val listener = db.collection("apps")
@@ -877,7 +877,7 @@ class AuthRepository {
             .addSnapshotListener { snapshot, error ->
                 if (error != null) { close(error); return@addSnapshotListener }
                 val apps = snapshot?.toObjects(AppModel::class.java) ?: emptyList()
-                // Filtramos localmente solo para no ver nuestras propias apps y ordenamos
+                
                 val filtered = apps.filter { it.idPropietario != uid }
                     .sortedByDescending { it.reputacion }
                 trySend(filtered)
@@ -890,18 +890,18 @@ class AuthRepository {
         return try {
             val snapshot = db.collection("apps")
                 .whereEqualTo("status", "test")
-                //.whereNotEqualTo("idPropietario", uid)
+                
                 .whereNotIn("testerIds", listOf(uid))
                 .orderBy("reputacion", Query.Direction.DESCENDING)
-                //.whereNotEqualTo("idPropietario", uid)
+                
                 .get().await()
 
-            // Filtramos localmente solo para no ver nuestras propias apps
+            
             snapshot.toObjects(AppModel::class.java).filter { it.idPropietario != uid }
         } catch (e: Exception) { emptyList() }
     }
 
-    // --- NOTIFICACIONES IN-APP ---
+    
     fun getUserNotificationsRealtime(userId: String): Flow<List<com.appinitdev.tester.model.UserNotification>> = callbackFlow {
         if (userId.isBlank()) {
             trySend(emptyList())
@@ -982,7 +982,7 @@ class AuthRepository {
         }
     }
 
-    // --- REPORTES DE FEEDBACK DE 14 DÍAS ---
+    
     suspend fun submit14DayFeedback(appId: String, feedback: com.appinitdev.tester.model.FeedbackReport14Days): Result<Unit> {
         return try {
             val docId = if (feedback.id.isBlank()) java.util.UUID.randomUUID().toString() else feedback.id

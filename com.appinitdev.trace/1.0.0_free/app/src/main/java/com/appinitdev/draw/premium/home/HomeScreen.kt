@@ -10,7 +10,7 @@ fun HomeScreen(
     val database = remember { GalleryDatabase.getDatabase(context) }
     val recentTemplates by database.galleryDao().getAllImages().collectAsState(initial = emptyList())
 
-    val activeColor = Color(0xFFFF4081) // Fucsia Pro
+    val activeColor = Color(0xFFFF4081) 
     var showAnimeDialog by remember { mutableStateOf(false) }
 
     val galleryLauncher = rememberLauncherForActivityResult(
@@ -66,10 +66,10 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
         ) {
-            // --- 1. BANNER DE BIENVENIDA (Profesional y Compacto) ---
+            
             WelcomeBanner(activeColor)
 
-            // --- 2. SECCIÓN: PLANTILLAS RECIENTES (Primeras 5, si existen >= 3) ---
+            
             if (recentTemplates.size >= 3) {
                 Spacer(modifier = Modifier.height(24.dp))
                 RecentTemplatesSection(
@@ -81,7 +81,7 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // --- 3. SECCIÓN: CARGAR IMAGEN (Botones Principales) ---
+            
             Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                 Text(
                     text = stringResource(R.string.c_mo_deseas_cargar_tu_imagen),
@@ -129,14 +129,14 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Botón Galería Guardada (Como en el screenshot pero Pro)
+                
 
 
 
             }
 
 
-            // --- 4. PAQUETES DE DIBUJO ---
+            
             Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                 Text(
                     text = stringResource(R.string.explorar_categor_as),
@@ -187,7 +187,7 @@ fun WelcomeBanner(activeColor: Color) {
                     )
                 )
         ) {
-            // Círculos decorativos
+            
             Canvas(modifier = Modifier.matchParentSize()) {
                 drawCircle(
                     color = Color.White.copy(alpha = 0.1f),

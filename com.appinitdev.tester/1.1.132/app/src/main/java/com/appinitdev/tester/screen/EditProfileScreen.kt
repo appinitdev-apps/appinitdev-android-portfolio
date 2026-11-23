@@ -8,7 +8,7 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel) {
     var contacto by remember(profile) { mutableStateOf(profile?.contacto ?: "") }
     var web by remember(profile) { mutableStateOf(profile?.web ?: "") }
 
-    // Lógica de validación
+    
     val isEmailValid = contacto.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(contacto).matches()
     val isFormValid = devName.isNotBlank() && isEmailValid
 
@@ -29,7 +29,7 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel) {
                 color = MaterialTheme.colorScheme.primary
             )
 
-            // Campo: Nombre
+            
             OutlinedTextField(
                 value = devName,
                 onValueChange = { devName = it },
@@ -42,7 +42,7 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel) {
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
             )
 
-            // Campo: Correo con Validación Real
+            
             OutlinedTextField(
                 value = contacto,
                 onValueChange = { contacto = it },
@@ -65,7 +65,7 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel) {
                 )
             )
 
-            // Campo: Biografía
+            
             OutlinedTextField(
                 value = bio,
                 onValueChange = { bio = it },
@@ -77,7 +77,7 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel) {
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
             )
 
-            // Campo: Web
+            
             OutlinedTextField(
                 value = web,
                 onValueChange = { web = it },
@@ -116,7 +116,7 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel) {
                         }
                     },
                     modifier = Modifier.fillMaxWidth().height(50.dp),
-                    enabled = isFormValid // Solo guarda si el correo es válido y hay nombre
+                    enabled = isFormValid 
                 ) {
                     Text(
                         text = stringResource(R.string.guardar_perfil),

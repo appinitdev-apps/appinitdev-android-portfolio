@@ -1,7 +1,7 @@
 
 fun newImageLoader(context: PlatformContext): ImageLoader {
-    // Always use applicationContext to avoid leaking Activity instances through
-    // the lazy diskCache / memoryCache initializer lambdas held by RealImageLoader.
+    
+    
     val appContext = context.applicationContext
     val memoryPercent = if (activityManager.isLowRamDevice) 0.25 else 0.75
     
@@ -11,13 +11,13 @@ fun newImageLoader(context: PlatformContext): ImageLoader {
         .components {
             add(SvgDecoder.Factory(true))
             add(AnimatedImageDecoder.Factory())
-            // ThumbnailDecoder must be before VideoFrameDecoder: for content:// video URIs,
-            // ThumbnailDecoder uses ContentResolver.loadThumbnail() which reads the pre-generated
-            // MediaStore thumbnail cache (fast). VideoFrameDecoder uses MediaMetadataRetriever
-            // which opens and decodes the full video file (slow). ThumbnailDecoder only fires for
-            // content:// URIs (ContentMetadata check), so file-based paths still reach VideoFrameDecoder.
+            
+            
+            
+            
+            
             add(ThumbnailDecoder.Factory())
-            add(VideoFrameDecoder.Factory()) // fallback for file:// video paths without content URI
+            add(VideoFrameDecoder.Factory()) 
             add(OkHttpNetworkFetcherFactory(unsafeOkHttpClient))
         }
         .memoryCache {

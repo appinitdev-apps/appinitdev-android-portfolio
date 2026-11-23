@@ -1,24 +1,24 @@
 
-/**
- * Full-screen Milkdrop visualizer fragment.
- *
- * Hosts a [com.appinitdev.musicpro.milkdrop.views.MilkdropSurfaceView] that renders
- * projectM 4.x presets in real time.  Audio data is delivered via the
- * [VisualizerProcessor][com.appinitdev.musicpro.engine.processors.VisualizerProcessor]
- * PCM-window tap managed by the surface view on attach/detach.
- *
- * A semi-transparent overlay at the top of the screen contains a [ViewPager2] that
- * lists every bundled preset.  Swiping left or right scrolls through presets and
- * immediately loads the newly selected one into projectM.  The overlay fades out
- * automatically after [OVERLAY_VISIBLE_MS] milliseconds of inactivity and reappears
- * whenever the screen is tapped.
- *
- * `GLSurfaceView.onResume` and `GLSurfaceView.onPause` are forwarded from the
- * fragment lifecycle so that the EGL rendering thread pauses correctly when the app
- * is backgrounded.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class Milkdrop : MediaFragment() {
 
     private lateinit var binding: FragmentMilkdropBinding
@@ -57,8 +57,8 @@ class Milkdrop : MediaFragment() {
         requireHiddenMiniPlayer()
         setPresetPagerBackground()
 
-        // Re-register the PCM tap in case the player service started after the
-        // surface view's onAttachedToWindow fired (which would have left the tap null).
+        
+        
         VisualizerManager.processor?.let { processor ->
             binding.milkdropSurface.connectProcessor(processor)
         }
@@ -66,7 +66,7 @@ class Milkdrop : MediaFragment() {
         setupPresetPager()
         observeViewModel()
 
-        // Show overlay on any tap on the surface view (GLSurfaceView does not consume touches).
+        
         val surfaceTouchListener = { v: View, event: MotionEvent ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> showOverlay()
@@ -76,12 +76,12 @@ class Milkdrop : MediaFragment() {
         }
         binding.milkdropSurface.setOnTouchListener(surfaceTouchListener)
 
-        // Catch any unhandled taps on the root so the overlay reappears regardless of
-        // which part of the screen the user touches.
+        
+        
         binding.root.setOnClickListener { showOverlay() }
 
-        // Toggle the automatic preset shuffle and reset the fade timer so the user
-        // can immediately see the new button state.
+        
+        
         binding.shufflePreset.setOnClickListener {
             viewModel.toggleShuffle()
             showOverlay()
@@ -115,14 +115,14 @@ class Milkdrop : MediaFragment() {
             MediaPlaybackManager.flipState()
         }
 
-        // Schedule the first auto-hide so the overlay does not linger on cold start.
+        
         scheduleOverlayFadeOut()
     }
 
-    /**
-     * Configures the [ViewPager2] adapter and registers the page-change callback that
-     * triggers a preset load whenever the user swipes to a new page.
-     */
+     
+
+
+
     private fun setupPresetPager() {
         pagerAdapter = AdapterMilkdropPager {
             childFragmentManager.showMilkdropPresets()
@@ -137,21 +137,21 @@ class Milkdrop : MediaFragment() {
         })
     }
 
-    /**
-     * Collects all ViewModel flows and routes updates to the UI.
-     *
-     * - [MilkdropViewModel.presets]          — populates the pager adapter and restores the
-     *   saved scroll position on first emission.
-     * - [MilkdropViewModel.currentIndex]     — scrolls the pager when shuffle picks a new preset.
-     * - [MilkdropViewModel.presetContent]    — pushes new preset text into projectM.
-     * - [MilkdropViewModel.isShuffleEnabled] — updates the shuffle button visual state.
-     */
+     
+
+
+
+
+
+
+
+
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.presets.collect { list ->
                     pagerAdapter?.submitList(list)
-                    // Restore the previously saved position once the list is ready.
+                    
                     if (list.isNotEmpty()) {
                         val index = viewModel.currentIndex.value.coerceIn(0, list.lastIndex)
                         binding.presetPager.setCurrentItem(index, false)
@@ -165,7 +165,7 @@ class Milkdrop : MediaFragment() {
                 viewModel.currentIndex.collect { index ->
                     val itemCount = pagerAdapter?.itemCount ?: 0
                     if (itemCount > 0 && index != binding.presetPager.currentItem) {
-                        // Smooth-scroll so the shuffle transition is visible to the user.
+                        
                         binding.presetPager.setCurrentItem(index, false)
                     }
                 }
@@ -175,7 +175,7 @@ class Milkdrop : MediaFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.presetContent.collect { content ->
-                    delay(250) // Small delay to ensure the GL thread is ready for new content.
+                    delay(250) 
                     content?.let {
                         loadCurrentPreset(it)
                     }
@@ -186,18 +186,18 @@ class Milkdrop : MediaFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isShuffleEnabled.collect { enabled ->
-                    // Full opacity when shuffle is on; dimmed when off.
+                    
                     binding.shufflePreset.alpha = if (enabled) 1.0f else 0.35f
                 }
             }
         }
     }
 
-    /**
-     * Makes the preset pager overlay fully visible and resets the auto-hide countdown.
-     *
-     * Safe to call from any event handler (touch, page change, etc.).
-     */
+     
+
+
+
+
     private fun showOverlay() {
         fadeHandler.removeCallbacks(fadeOutRunnable)
         binding.presetPagerContainer
@@ -208,22 +208,22 @@ class Milkdrop : MediaFragment() {
         scheduleOverlayFadeOut()
     }
 
-    /**
-     * Posts [fadeOutRunnable] to run after [OVERLAY_VISIBLE_MS] milliseconds.
-     *
-     * Any previously pending post is removed by [showOverlay] before this is called,
-     * so the timer always restarts from zero on each interaction.
-     */
+     
+
+
+
+
+
     private fun scheduleOverlayFadeOut() {
         fadeHandler.postDelayed(fadeOutRunnable, OVERLAY_VISIBLE_MS)
     }
 
-    /**
-     * Passes the preset text to the surface view, which marshals the call to the GL thread
-     * via [android.opengl.GLSurfaceView.queueEvent].
-     *
-     * @param content Full text content of the `.milk` preset file.
-     */
+     
+
+
+
+
+
     private fun loadCurrentPreset(content: String) {
         binding.milkdropSurface.loadPreset(content, smooth = true)
     }
@@ -265,7 +265,7 @@ class Milkdrop : MediaFragment() {
         binding.artist.setTextWithEffect(audio.getProperArtists(), forward, 50L)
         binding.seekbar.setMaxWithReset(audio.duration.toFloat())
 
-        // Always refresh the seek position (covers predictive-back resume and actual changes).
+        
         binding.seekbar.setProgress(MediaPlaybackManager.getSeekPosition().toFloat(), fromUser = false, animate = true)
     }
 
@@ -309,36 +309,36 @@ class Milkdrop : MediaFragment() {
         super.onDestroyView()
     }
 
-    /**
-     * Pauses GL rendering before the predictive back transition starts applying alpha to
-     * the fragment's root view.
-     *
-     * [android.opengl.GLSurfaceView] renders on its own compositor window layer and is
-     * excluded from the hardware compositing layer that Android creates when a view's alpha
-     * drops below 1.0. Calling [android.opengl.GLSurfaceView.onPause] here parks the GL
-     * thread cleanly so the surface goes to a defined paused state instead of going blank
-     * mid-frame. Because [MilkdropSurfaceView] sets
-     * [android.opengl.GLSurfaceView.preserveEGLContextOnPause] to {@code true}, the EGL
-     * context and all GL state survive the pause and rendering resumes instantly on cancel.
-     */
+     
+
+
+
+
+
+
+
+
+
+
+
     override fun onStartPredictiveBack() {
         super.onStartPredictiveBack()
         binding.milkdropSurface.onPause()
     }
 
-    /**
-     * Resumes GL rendering after the user abandons the predictive back gesture.
-     *
-     * Because [android.opengl.GLSurfaceView.preserveEGLContextOnPause] is {@code true},
-     * the EGL context is still valid after the pause issued in [onStartPredictiveBack], so
-     * [android.opengl.GLSurfaceView.onResume] brings rendering back without triggering a
-     * full bridge recreation. The processor connection is also re-established in case it
-     * was cleared while the GL thread was parked.
-     *
-     * [MilkdropViewModel.refreshCurrentPreset] is always called unconditionally so the
-     * active preset is guaranteed to be reloaded even if the EGL context was lost and
-     * recreated during the transition (e.g., due to hardware-layer compositing).
-     */
+     
+
+
+
+
+
+
+
+
+
+
+
+
     override fun onCancelPredictiveBack() {
         super.onCancelPredictiveBack()
         binding.milkdropSurface.onResume()
@@ -352,16 +352,16 @@ class Milkdrop : MediaFragment() {
     }
 
     companion object {
-        /** Back-stack tag used when adding this fragment to the back stack. */
+         
         const val TAG = "Milkdrop"
 
-        /** Duration of each fade-in and fade-out animation in milliseconds. */
+         
         private const val FADE_DURATION_MS = 500L
 
-        /** How long the overlay stays fully visible after the last interaction. */
+         
         private const val OVERLAY_VISIBLE_MS = 5_000L
 
-        /** Creates a new instance with no arguments. */
+         
         fun newInstance(): Milkdrop = Milkdrop()
     }
 }

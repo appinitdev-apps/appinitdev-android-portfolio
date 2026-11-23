@@ -14,9 +14,9 @@ fun GlossaryScreen(
 
     var showCreateDialog by remember { mutableStateOf(false) }
 
-    // Complete System Preset Glossary Items
+    
     val builtInItems = listOf(
-        // --- CÁLCULO Y ANÁLISIS ---
+        
         SymbolItem(
             0L,
             "dy/dx",
@@ -338,7 +338,7 @@ fun GlossaryScreen(
             "sup([0, 1)) = 1"
         ),
 
-        // --- ÁLGEBRA, MATRICES Y VECTORES ---
+        
         SymbolItem(
             0L,
             "Δ",
@@ -540,7 +540,7 @@ fun GlossaryScreen(
             "A = Aᴴ"
         ),
 
-        // --- TRIGONOMETRÍA Y FUNCIONES ---
+        
         SymbolItem(
             0L,
             "sin(x)",
@@ -654,7 +654,7 @@ fun GlossaryScreen(
             "sec(x) = 1 / cos x"
         ),
 
-        // --- NÚMEROS COMPLEJOS ---
+        
         SymbolItem(
             0L,
             "i",
@@ -696,7 +696,7 @@ fun GlossaryScreen(
             "z = r e^(iθ)"
         ),
 
-        // --- CONSTANTES CIENTÍFICAS ---
+        
         SymbolItem(
             0L,
             "π",
@@ -802,7 +802,7 @@ fun GlossaryScreen(
             "P = σ A T⁴"
         ),
 
-        // --- SÍMBOLOS Y LÓGICA ---
+        
         SymbolItem(
             0L,
             "∀",
@@ -957,7 +957,7 @@ fun GlossaryScreen(
         }
     }
 
-    // Dialog to Add Custom User Term
+    
     if (showCreateDialog) {
         var customSymbol by remember { mutableStateOf("") }
         var customName by remember { mutableStateOf("") }
@@ -1077,7 +1077,7 @@ fun GlossaryScreen(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Search Input
+            
             OutlinedTextField(
                 value = query,
                 onValueChange = { query = it },
@@ -1094,7 +1094,7 @@ fun GlossaryScreen(
                 }
             )
 
-            // Category Filter Chips
+            
             val allTabLabel = stringResource(id = R.string.tab_all)
             val constantsLabel = stringResource(id = R.string.glossary_constants)
             val symbolsLabel = stringResource(id = R.string.glossary_symbols)
@@ -1121,7 +1121,7 @@ fun GlossaryScreen(
                 }
             }
 
-            // Favorites Filter Bar
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -1141,7 +1141,7 @@ fun GlossaryScreen(
                 )
             }
 
-            // Glossary Terms List
+            
             LazyColumn(
                 contentPadding = PaddingValues(bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)

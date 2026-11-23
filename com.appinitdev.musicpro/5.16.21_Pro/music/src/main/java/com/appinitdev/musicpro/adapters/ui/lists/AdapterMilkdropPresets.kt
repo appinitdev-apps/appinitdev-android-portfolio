@@ -1,44 +1,44 @@
 
-/**
- * [RecyclerView.Adapter] that displays a flat sorted list of Milkdrop preset names.
- *
- * The currently active preset is highlighted with a visible check indicator.
- * Tapping any row invokes [onPresetClicked] and marks that row as selected.
- *
- * Call [submitList] to update the data set and [setSelectedPath] to move the selection
- * indicator without re-submitting the full list.
- *
- * @param onPresetClicked Callback invoked on the main thread with the tapped [MilkdropPreset].
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 class AdapterMilkdropPresets(
         private val onPresetClicked: (MilkdropPreset) -> Unit
 ) : RecyclerView.Adapter<AdapterMilkdropPresets.ViewHolder>() {
 
     private var presets: List<MilkdropPreset> = emptyList()
 
-    /** Asset path of the currently selected preset; drives the check indicator visibility. */
+     
     private var selectedPath: String = ""
 
-    /**
-     * Replaces the current data set and triggers a full redraw.
-     *
-     * @param list The new sorted preset list.
-     */
+     
+
+
+
+
     fun submitList(list: List<MilkdropPreset>) {
         presets = list
         notifyDataSetChanged()
     }
 
-    /**
-     * Moves the selection indicator from the previously selected row to the row whose
-     * [MilkdropPreset.path] matches [path].
-     *
-     * Only the two affected rows are re-bound, keeping the scroll position stable.
-     *
-     * @param path Asset path of the newly selected preset.
-     */
+     
+
+
+
+
+
+
+
     fun setSelectedPath(path: String) {
         val oldIndex = presets.indexOfFirst { it.path == selectedPath }
         selectedPath = path
@@ -63,8 +63,8 @@ class AdapterMilkdropPresets(
             private val binding: AdapterMilkdropPresetBinding
     ) : VerticalListViewHolder(binding.root) {
         fun bind(preset: MilkdropPreset) {
-            // Build "folder/name" where the "folder/" portion is grayed out
-            // so related presets visually cluster together when sorted by path.
+            
+            
             val relativePath = preset.path
                 .removePrefix("${PresetManager.PRESETS_ROOT}/")
                 .removeSuffix(".milk")

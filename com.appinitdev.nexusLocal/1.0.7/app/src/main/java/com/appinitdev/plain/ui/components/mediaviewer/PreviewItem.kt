@@ -9,11 +9,11 @@ data class PreviewItem(
     var intrinsicSize: IntSize = IntSize.Zero
     var rotation: Int = -1
 
-    /**
-     * Returns true if this item is a video.
-     * Falls back to checking [DMessageFile.fileName] or [DVideo] data when the
-     * path has no file extension (e.g. content-addressable hash paths).
-     */
+     
+
+
+
+
     fun isVideo(): Boolean {
         if (path.isVideoFast()) return true
         return when (val d = data) {
@@ -29,11 +29,11 @@ data class PreviewItem(
         }
     }
 
-    /**
-     * Returns true if this item is an image.
-     * Falls back to checking [DMessageFile.fileName] or [DImage] data when the
-     * path has no file extension.
-     */
+     
+
+
+
+
     fun isImage(): Boolean {
         if (path.isImageFast()) return true
         return when (val d = data) {

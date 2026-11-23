@@ -2,10 +2,10 @@
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OfflineStatusScreenCompose(
-    // viewModel: OfflineStatusViewModel // Temporarily disabled - depends on disabled services
+    
 ) {
-    // TODO: Re-enable ViewModel integration when OfflineQueueManager and SyncService are restored
-    val connectionStatus by remember { mutableStateOf(true) } // Online = true
+    
+    val connectionStatus by remember { mutableStateOf(true) } 
     val syncStatus by remember { mutableStateOf("Idle") }
     val lastSyncTime by remember { mutableStateOf("Never") }
     val queuedItemsCount by remember { mutableStateOf(0) }
@@ -18,7 +18,7 @@ fun OfflineStatusScreenCompose(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Header
+        
         Text(
             text = "Offline Status",
             style = MaterialTheme.typography.headlineSmall,
@@ -27,7 +27,7 @@ fun OfflineStatusScreenCompose(
         
         Spacer(modifier = Modifier.height(24.dp))
         
-        // Connection Status Card
+        
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
@@ -69,7 +69,7 @@ fun OfflineStatusScreenCompose(
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        // Sync Status Card
+        
         Card(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -109,13 +109,13 @@ fun OfflineStatusScreenCompose(
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        // Action Buttons
+        
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Button(
-                onClick = { /* TODO: Re-enable when ViewModel is restored */ },
+                onClick = {   },
                 modifier = Modifier.weight(1f),
                 enabled = !isSyncing && connectionStatus
             ) {
@@ -125,7 +125,7 @@ fun OfflineStatusScreenCompose(
             }
             
             OutlinedButton(
-                onClick = { /* TODO: Re-enable when ViewModel is restored */ },
+                onClick = {   },
                 modifier = Modifier.weight(1f)
             ) {
                 Icon(Icons.Default.Queue, contentDescription = null)
@@ -136,7 +136,7 @@ fun OfflineStatusScreenCompose(
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        // Sync Progress
+        
         if (isSyncing) {
             Card(
                 modifier = Modifier.fillMaxWidth()
@@ -168,7 +168,7 @@ fun OfflineStatusScreenCompose(
             }
         }
         
-        // Error Message
+        
         errorMessage?.let { message ->
             Card(
                 modifier = Modifier.fillMaxWidth(),

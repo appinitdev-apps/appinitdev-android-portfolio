@@ -1,8 +1,8 @@
 
 
-// ==========================================
-// 🔑 FUNCIÓN HELPER: ASOCIACIÓN DE DRAWABLES POR TEMA
-// ==========================================
+
+
+
 fun obtenerDrawableMiniatura(themeName: String): Int {
     return when (themeName) {
         "x_anatomy" -> R.drawable.x_anatomy
@@ -16,13 +16,13 @@ fun obtenerDrawableMiniatura(themeName: String): Int {
         "x_body"    -> R.drawable.x_body
         "x_food"    -> R.drawable.x_food
         "x_girl"    -> R.drawable.x_girl
-        else        -> R.drawable.x_art // Tu imagen por defecto si un tema no coincide
+        else        -> R.drawable.x_art 
     }
 }
 
-// ==========================================
-// 1. MOTOR DE DESCARGA (LÓGICA DE NEGOCIO)
-// ==========================================
+
+
+
 class PackDownloader(private val context: Context) {
     private val storage by lazy {
         try {
@@ -39,7 +39,7 @@ class PackDownloader(private val context: Context) {
             val finalFolder = File(context.filesDir, "packs_dibujo/$packName")
             
             try {
-                // 1. Ya NO limpiamos la carpeta temporal para permitir reanudación
+                
                 if (!tempFolder.exists()) { tempFolder.mkdirs() }
 
                 val storageRef = storage.reference.child(packName)
@@ -51,11 +51,11 @@ class PackDownloader(private val context: Context) {
                     return@withContext Result.failure(Exception(context.getString(R.string.la_carpeta_remota_est_vac_a)))
                 }
 
-                // 2. Descargar archivos a la carpeta temporal
+                
                 listResult.items.forEachIndexed { index, storageFile ->
                     val localFile = File(tempFolder, storageFile.name)
                     
-                    // NUEVO v4: Reanudación de descarga
+                    
                     if (!localFile.exists() || localFile.length() == 0L) {
                         storageFile.getFile(localFile).await()
                     }
@@ -64,7 +64,7 @@ class PackDownloader(private val context: Context) {
                     withContext(Dispatchers.Main) { onProgress(progress) }
                 }
 
-                // 3. ATOMIZAR: Si todo salió bien, renombrar temp a final
+                
                 if (finalFolder.exists()) { finalFolder.deleteRecursively() }
                 val success = tempFolder.renameTo(finalFolder)
                 
@@ -74,20 +74,20 @@ class PackDownloader(private val context: Context) {
                     Result.failure(Exception("Error al finalizar la descarga (Rename failed)"))
                 }
             } catch (e: Exception) {
-                tempFolder.deleteRecursively() // Limpiar rastro en caso de error
+                tempFolder.deleteRecursively() 
                 Result.failure(e)
             }
         }
 }
 
-// ==========================================
-// 2. ESTADOS DE LA UI Y VIEWMODEL
-// ==========================================
+
+
+
 
 class PackViewModel(context: Context) : ViewModel() {
     private val downloader = PackDownloader(context)
 
-    // Mapa de descargas activas: PackName -> Progreso (0-100)
+    
     private val _activeDownloads = MutableStateFlow<Map<String, Int>>(emptyMap())
     val activeDownloads: StateFlow<Map<String, Int>> = _activeDownloads
 
@@ -110,7 +110,7 @@ class PackViewModel(context: Context) : ViewModel() {
     }
 
     fun onPackClick(context: Context, packName: String) {
-        // Si ya se está descargando, no hacer nada
+        
         if (_activeDownloads.value.containsKey(packName)) return
 
         val localPackFolder = File(context.filesDir, "packs_dibujo/$packName")
@@ -125,7 +125,7 @@ class PackViewModel(context: Context) : ViewModel() {
 
     private fun startPackDownload(context: Context, packName: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            // Añadir a descargas activas
+            
             _activeDownloads.value += (packName to 0)
             
             val resultado = downloader.downloadPack(packName) { progress ->
@@ -133,7 +133,7 @@ class PackViewModel(context: Context) : ViewModel() {
             }
             
             resultado.onSuccess { folder ->
-                _activeDownloads.value -= packName // Quitar de descargas activas
+                _activeDownloads.value -= packName 
                 updateDownloadedPacksList(context)
                 showDownloadedModal.value = folder.absolutePath
             }.onFailure { error ->
@@ -152,9 +152,9 @@ class PackViewModel(context: Context) : ViewModel() {
     }
 }
 
-// ==========================================
-// 3. CAPA DE INTERFAZ DE USUARIO (MATERIAL 3)
-// ==========================================
+
+
+
 @Composable
 fun PackManagerScreen(
     viewModel: PackViewModel,
@@ -171,10 +171,10 @@ fun PackManagerScreen(
     val modalFolderPath by viewModel.showDownloadedModal.collectAsState()
     val downloadedPacks by viewModel.downloadedPacks.collectAsState()
 
-    // Mostrar snackbar o toast si hay error
+    
     LaunchedEffect(errorState) {
         errorState?.let {
-            // Aquí podrías mostrar un Toast o Snackbar
+            
             viewModel.clearError()
         }
     }
@@ -188,7 +188,7 @@ fun PackManagerScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            // SECCIÓN HORIZONTAL: PAQUETES YA DESCARGADOS CON MINIATURA DRAWABLE
+            
             if (yaDescargados.isNotEmpty()) {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
@@ -215,7 +215,7 @@ fun PackManagerScreen(
                 }
             }
 
-            // SECCIÓN VERTICAL: DISPONIBLES EN LA NUBE
+            
             Text(
                 text = if (noDescargados.isEmpty()) stringResource(R.string.todo_el_cat_logo_est_listo) else stringResource(
                     R.string.cat_logo_disponible_para_descargar
@@ -253,14 +253,14 @@ fun PackManagerScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        // DIÁLOGO MODAL INTERNO (VISTA INTERNA EN MOSAICO)
+        
         modalFolderPath?.let { path ->
             val carpeta = File(path)
             val imagenesLocales = carpeta.listFiles()?.toList() ?: emptyList()
 
             AlertDialog(
                 onDismissRequest = { viewModel.closeModal() },
-                // 🎨 Icono opcional superior (Muy característico en la guía de diseño de Material 3)
+                
                 properties = DialogProperties(
                     usePlatformDefaultWidth = false
                 ),
@@ -274,7 +274,7 @@ fun PackManagerScreen(
                 title = {
                     Text(
                         text = carpeta.name.replace("x_", "").replace("_", " ").uppercase(),
-                        style = MaterialTheme.typography.headlineSmall, // ✨ Tipografía oficial M3 para títulos de diálogos
+                        style = MaterialTheme.typography.headlineSmall, 
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
@@ -293,12 +293,12 @@ fun PackManagerScreen(
                             modifier = Modifier.fillMaxWidth()
                         )
 
-                        // 🔑 EL GRID OPTIMIZADO PARA M3 (Sin cortes raros abajo)
+                        
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(2),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp),
-                            // ✨ weight(1f, fill = false) limita el alto máximo del Grid al tamaño del diálogo de forma dinámica
+                            
                             modifier = Modifier.weight(1f, fill = false),
                             contentPadding = PaddingValues(vertical = 4.dp)
                         ) {
@@ -308,7 +308,7 @@ fun PackManagerScreen(
                                     contentDescription = null,
                                     modifier = Modifier
                                         .aspectRatio(1f)
-                                        .clip(RoundedCornerShape(12.dp)) // El redondeo en M3 es más pronunciado (Medium/Large shape)
+                                        .clip(RoundedCornerShape(12.dp)) 
                                         .clickable {
                                             onImageSelected(archivoImagen.toUri())
                                             viewModel.closeModal()
@@ -320,7 +320,7 @@ fun PackManagerScreen(
                     }
                 },
                 confirmButton = {
-                    // Un botón tonal o con más peso visual hace que se sienta nativo del sistema operativo
+                    
                     TextButton(
                         onClick = { viewModel.closeModal() },
                         colors = ButtonDefaults.textButtonColors(
@@ -334,16 +334,16 @@ fun PackManagerScreen(
                         )
                     }
                 },
-                // Opcional: Define formas personalizadas si tu app usa tokens específicos
-                shape = RoundedCornerShape(28.dp), // Redondeo estándar oficial de contenedores AlertDialog en M3
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh, // Color de fondo tonal Material 3
-                tonalElevation = 6.dp // Elección de elevación cromática automática de Material 3
+                
+                shape = RoundedCornerShape(28.dp), 
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh, 
+                tonalElevation = 6.dp 
             )
         }
     }
 }
 
-// COMPONENTE: TARJETA HORIZONTAL (M3 CARD CON RES/DRAWABLE LOCAL)
+
 @Composable
 fun PackHorizontalCard(themeName: String, onClick: () -> Unit) {
     val nombreEstetico = themeName.replace("x_", "").replace("_", " ").uppercase()
@@ -360,7 +360,7 @@ fun PackHorizontalCard(themeName: String, onClick: () -> Unit) {
         )
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Carga la miniatura directamente desde los drawables locales
+            
             AsyncImage(
                 model = drawableResId,
                 contentDescription = null,
@@ -405,7 +405,7 @@ fun PackHorizontalCard(themeName: String, onClick: () -> Unit) {
     }
 }
 
-// COMPONENTE: FILA VERTICAL M3 (LISTITEM CON RES/DRAWABLE LOCAL ASOCIADO)
+
 @Composable
 fun PackItemRowM3(themeName: String, progress: Int?, onClick: () -> Unit) {
     val nombreEstetico = themeName.replace("x_", "").replace("_", " ").uppercase()
@@ -429,7 +429,7 @@ fun PackItemRowM3(themeName: String, progress: Int?, onClick: () -> Unit) {
                     Text(if (isDownloading) stringResource(R.string.descargando) else stringResource(R.string.paquete_remoto_firebase_cloud))
                 },
                 leadingContent = {
-                    // Carga la miniatura directamente desde los drawables locales
+                    
                     AsyncImage(
                         model = drawableResId,
                         contentDescription = null,
@@ -450,7 +450,7 @@ fun PackItemRowM3(themeName: String, progress: Int?, onClick: () -> Unit) {
                 }
             )
 
-            // Barra de progreso lineal inferior durante la descarga activa
+            
             AnimatedVisibility(visible = isDownloading) {
                 if (progress != null) {
                     Column(modifier = Modifier

@@ -5,7 +5,7 @@
 fun ImagePreview(uri: Uri?, hideDialog: () -> Unit, send: (Uri?, String, Long) -> Unit) {
     var reply by remember { mutableStateOf("") }
     var croppedUri by remember { mutableStateOf<Uri?>(null) }
-    var ephemeralDuration by remember { mutableStateOf(0L) } // 0: Normal, -1: View Once, >0: Timer
+    var ephemeralDuration by remember { mutableStateOf(0L) } 
 
     val cropImage = rememberLauncherForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {

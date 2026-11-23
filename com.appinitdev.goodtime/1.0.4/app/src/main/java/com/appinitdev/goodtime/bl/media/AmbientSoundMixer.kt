@@ -89,22 +89,22 @@ object AmbientSoundMixer {
                     val rawWhiteL = (Math.random() * 2.0 - 1.0)
                     val rawWhiteR = (Math.random() * 2.0 - 1.0)
 
-                    // Rain: Low-pass filtered white noise
+                    
                     val rainSample = rawWhiteL * 0.25 * rainVol
 
-                    // Brown Noise: Integrated white noise
+                    
                     lastBrownL = (lastBrownL + (0.02 * rawWhiteL)) / 1.02
                     lastBrownR = (lastBrownR + (0.02 * rawWhiteR)) / 1.02
                     val brownSample = lastBrownL * 3.5 * brownVol
 
-                    // Pure White Noise
+                    
                     val whiteSample = rawWhiteL * 0.15 * whiteVol
 
-                    // Ocean Waves: Swell modulation cycle (0.08 Hz)
+                    
                     val swell = (sin(2.0 * Math.PI * 0.08 * t) + 1.0) * 0.5
                     val oceanSample = lastBrownL * 2.5 * swell * oceanVol
 
-                    // Cafe Hum: Dual frequency sine hum
+                    
                     val cafeSample = (sin(2.0 * Math.PI * 180.0 * t) + sin(2.0 * Math.PI * 340.0 * t)) * 0.08 * cafeVol
 
                     val mixedL = (rainSample + brownSample + whiteSample + oceanSample + cafeSample).coerceIn(-1.0, 1.0)

@@ -1,4 +1,4 @@
-// Reemplaza "com.appinitdev.tester" con el applicationId de tu build.gradle
+
 
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -16,7 +16,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     val userProfile = _userProfile.asStateFlow()
     private val _fixedAppsIcons = MutableStateFlow<Map<String, String>>(emptyMap())
     val fixedAppsIcons: StateFlow<Map<String, String>> = _fixedAppsIcons.asStateFlow()
-    // Estado para mostrar carga o errores en la UI
+    
     private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
     val uiState = _uiState.asStateFlow()
     private val _userApps = MutableStateFlow<List<AppModel>>(emptyList())
@@ -66,7 +66,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
-    // Agrega estas variables a tu AuthViewModel
+    
     private lateinit var billingClient: BillingClient
     private val _puntosCompra = MutableStateFlow(0)
 
@@ -164,33 +164,33 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         _appsNoInstaladas.value = noInstaladas
     }
 
-    // En AuthViewModel.kt
-// En AuthViewModel.kt
+    
+
     fun login(email: String, pass: String) = viewModelScope.launch {
         _uiState.value = AuthUiState.Loading
         val result = repo.login(email, pass)
 
         if (result.isSuccess) {
-//            if (repo.isEmailVerified()) {
+
                 val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
-                // INTENTA OBTENER EL PERFIL
+                
                 val profile = repo.getUserProfile(uid)
 
-                // ASIGNA EL VALOR AL STATEFLOW (Esto quita el cargando en la Home)
+                
                 _userProfile.value = profile
 
                 if (profile == null || !profile.perfilCompletado) {
-                    // Si no hay perfil, lo mandamos a crear uno
+                    
                     _uiState.value = AuthUiState.NeedsProfile
                 } else {
-                    // Si todo está bien, entramos al Home
+                    
                     _uiState.value = AuthUiState.Success
                 }
-//            } else {
-//                repo.logout() // Asegúrate de tener este método en el repo
-//                _uiState.value = AuthUiState.Error("Verifica tu cuenta para entrar.")
-//            }
+
+
+
+
 
             try {
                 registrarTokenFCM()
@@ -204,7 +204,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     fun register(email: String, pass: String) = viewModelScope.launch {
         _uiState.value = AuthUiState.Loading
         val result = repo.register(email, pass)
-        // Cambiamos Success por RegisterSuccess
+        
         _uiState.value =
             if (result.isSuccess) AuthUiState.RegisterSuccess else AuthUiState.Error(result.exceptionOrNull()?.message)
     }
@@ -230,8 +230,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 recalcularYActualizarReputacion(profile)
             }
             checkAndAwardAchievements()
-            // debugCheckAndHideProductionAppsAfter30Days()
-            // debugCheckHiddenAppsMoveToProduction()
+            
+            
         } catch (e: Exception) {
             Log.e("AuthViewModel", "Error al cargar perfil: ${e.message}")
         }
@@ -257,13 +257,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         val currentAchievements = profile.achievements.toMutableList()
         var changed = false
 
-        // 1. Pionero (Perfil completado)
+        
         if (profile.perfilCompletado && !currentAchievements.contains("tester_pioneer")) {
             currentAchievements.add("tester_pioneer")
             changed = true
         }
 
-        // 2. Racha (3+ días)
+        
         if (profile.streaks >= 3 && !currentAchievements.contains("streak_fire")) {
             currentAchievements.add("streak_fire")
             changed = true
@@ -272,22 +272,22 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         if (changed) {
             viewModelScope.launch {
                 repo.updateUserProfile(profile.uid, mapOf("achievements" to currentAchievements))
-                fetchUserProfile() // Recargar
+                fetchUserProfile() 
             }
         }
     }
 
-    // Dentro de la clase AuthViewModel
+    
     fun saveProfile(profile: UserProfile, onSuccess: () -> Unit) {
         viewModelScope.launch {
             _uiState.value = AuthUiState.Loading
             val result = repo.saveUserProfile(profile)
             if (result.isSuccess) {
-                _userProfile.value = profile // ACTUALIZA EL ESTADO LOCAL AQUÍ
+                _userProfile.value = profile 
                 _uiState.value = AuthUiState.Success
                 onSuccess()
             } else {
-                _uiState.value = AuthUiState.Error(null) // El error real vendrá del repo
+                _uiState.value = AuthUiState.Error(null) 
             }
         }
     }
@@ -321,40 +321,40 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-//    fun loadAndVerifyApps() = viewModelScope.launch {
-//        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return@launch
-//
-//
-//        val apps = repo.getUserApps(uid)
-//
-//        val updatedApps = apps.map { app ->
-//            // Si está en test, verificamos si ya saltó a producción
-//            if (app.status == "test") {
-//                val isNowInProd = checkIfAppInProduction(app.paquete)
-//                if (isNowInProd) {
-//                    val iconUrl = fetchAppIcon(app.paquete)
-//                    repo.updateAppStatus(app.id, "produccion", iconUrl)
-//                    return@map app.copy(status = "produccion", icono = iconUrl)
-//                }
-//            }
-//            app
-//        }
-//        _userApps.value = updatedApps
-//        val numero = (1..3).random()
-//        if (BuildConfig.DEBUG ) {
-//            val others = repo.getAppsAll()
-//            others.map { other ->
-//                val iconUrl = fetchAppIcon(other.paquete)
-//                Log.e("iconUrl", iconUrl.toString())
-//                // if (other.status == "test") {
-//                val isNowInProd = checkIfAppInProduction(other.paquete)
-//                if (isNowInProd) {
-//                    repo.updateAppStatus(other.id, "produccion", iconUrl)
-//                }
-//                //}
-//            }
-//        }
-//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private var userAppsJob: Job? = null
     fun loadAndVerifyApps() {
@@ -390,15 +390,15 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                                 }
                             }
                         }
-                        /* else if (app.status == "produccion" && com.appinitdev.tester.BuildConfig.DEBUG) {
-                            val diasEnProduccion = ((now - app.fechaCreacion) / (24 * 60 * 60 * 1000L)).toInt()
-                            if (diasEnProduccion >= 30) {
-                                launch {
-                                    repo.updateAppStatus(app.id, "oculta")
-                                    Log.d("DebugHide", "App '${app.nombre}' lleva $diasEnProduccion días en producción -> Ocultada (DEBUG)")
-                                }
-                            }
-                        } */
+                         
+
+
+
+
+
+
+
+
                     }
                 }
             } catch (e: Exception) {
@@ -604,126 +604,126 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    /*
-    /**
-     * Función para buscar y actualizar automáticamente los íconos desde Play Store para todas las apps.
-     * SOLO se ejecuta en modo DEBUG (com.appinitdev.tester.BuildConfig.DEBUG).
-     */
-    fun updateAllAppIconsFromPlayStoreDebug() {
-        if (!com.appinitdev.tester.BuildConfig.DEBUG) {
-            android.util.Log.d("DebugIcons", "Acción ignorada: No estamos en modo DEBUG.")
-            return
-        }
+     
 
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                android.util.Log.d("DebugIcons", "Iniciando actualización masiva de íconos desde Play Store...")
-                val apps = repo.getAllApps()
-                var count = 0
-                apps.forEach { app ->
-                    if (app.paquete.isNotBlank()) {
-                        val iconUrl = repo.fetchAppIcon(app.paquete)
-                        if (!iconUrl.isNullOrBlank() && iconUrl != app.icono) {
-                            repo.updateApp(app.id, mapOf("icono" to iconUrl))
-                            count++
-                            android.util.Log.d("DebugIcons", "Ícono actualizado para '${app.nombre}' (${app.paquete}): $iconUrl")
-                        }
-                    }
-                }
-                android.util.Log.d("DebugIcons", "Proceso completado. Se actualizaron $count íconos.")
-                loadAndVerifyApps()
-            } catch (e: Exception) {
-                android.util.Log.e("DebugIcons", "Error al actualizar íconos: ${e.message}")
-            }
-        }
-    }
 
-    /**
-     * Función de depuración (SOLO DEBUG): Si una app lleva 30 días o más en producción,
-     * cambia su estado a "oculta".
-     */
-    fun debugCheckAndHideProductionAppsAfter30Days() {
-        if (!com.appinitdev.tester.BuildConfig.DEBUG) {
-            Log.d("DebugHide", "Acción ignorada: No estamos en modo DEBUG.")
-            return
-        }
 
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                Log.d("DebugHide", "Iniciando verificación debug para ocultar apps en producción de >= 30 días...")
-                val apps = repo.getAllApps()
-                val ahora = System.currentTimeMillis()
-                val treintaDiasMs = 30L * 24 * 60 * 60 * 1000L
-                var ocultaCount = 0
 
-                apps.forEach { app ->
-                    if (app.status == "test") {
-                        val antiguedadMs = agora(ahora, app.fechaCreacion)
-                        if (antiguedadMs >= treintaDiasMs) {
-                            repo.updateApp(app.id, mapOf("status" to "oculta"))
-                            ocultaCount++
-                            Log.d("DebugHide", "App '${app.nombre}' (${app.id}) en producción lleva ${antiguedadMs / (24 * 60 * 60 * 1000L)} días -> Estado cambiado a 'oculta'")
-                        }
-                    }
-                }
-                Log.d("DebugHide", "Proceso completado. Se ocultaron $ocultaCount apps en producción.")
-            } catch (e: Exception) {
-                Log.e("DebugHide", "Error al verificar apps de 30 días: ${e.message}")
-            }
-        }
-    }
 
-    /**
-     * Función de depuración (SOLO DEBUG): Busca todas las aplicaciones con estado "oculta"
-     * y verifica si ya se encuentran publicadas en producción en Play Store.
-     * Si pasaron a producción, actualiza su estado a "produccion" y descarga su icono.
-     */
-    fun debugCheckHiddenAppsMoveToProduction() {
-        if (!com.appinitdev.tester.BuildConfig.DEBUG) {
-            Log.d("DebugRestore", "Acción ignorada: No estamos en modo DEBUG.")
-            return
-        }
 
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                Log.d("DebugRestore", "Iniciando verificación debug de apps ocultas que hayan pasado a producción...")
-                val apps = repo.getAllApps()
-                var restauradasCount = 0
 
-                apps.forEach { app ->
-                    if (app.status == "oculta" && app.paquete.isNotBlank()) {
-                        val isNowInProd = repo.checkIfAppInProduction(app.paquete)
-                        if (isNowInProd) {
-                            val iconUrl = repo.fetchAppIcon(app.paquete) ?: app.icono
-                            val updates = mutableMapOf<String, Any>(
-                                "status" to "produccion",
-                                "fechaCreacion" to System.currentTimeMillis(), // Se reinicia la fecha para que empiece el conteo de 30 días en producción desde AHORA
-                                "fechaActualizacion" to System.currentTimeMillis()
-                            )
-                            if (!iconUrl.isNullOrBlank()) {
-                                updates["icono"] = iconUrl
-                            }
-                            repo.updateApp(app.id, updates)
-                            restauradasCount++
-                            Log.d("DebugRestore", "App '${app.nombre}' (${app.paquete}) estaba 'oculta' y se detectó en Play Store -> Estado cambiado a 'produccion'")
-                        }
-                    }
-                }
-                Log.d("DebugRestore", "Proceso completado. Se restauraron a producción $restauradasCount apps ocultas.")
-            } catch (e: Exception) {
-                Log.e("DebugRestore", "Error al verificar apps ocultas: ${e.message}")
-            }
-        }
-    }
 
-    private fun agora(ahora: Long, fechaCreacion: Long): Long = ahora - fechaCreacion
-    */
 
-    /**
-     * Función de depuración (SOLO DEBUG): Se ejecuta como máximo 1 vez al día.
-     * Busca todas las aplicaciones con estado "test", comprueba si ya están publicadas
-     * en Google Play Store y, si es así, actualiza su estado a "produccion" y descarga su icono.
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     
+
+
+
+
     fun debugCheckTestAppsMovedToProductionToday(context: Context) {
         if (!com.appinitdev.tester.BuildConfig.DEBUG) return
 
@@ -789,7 +789,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
-    // Estados para la validación en tiempo real
+    
     var isCheckingPackage by mutableStateOf(false)
         private set
 
@@ -797,7 +797,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         private set
 
     fun verifyPackageRealtime(paquete: String) {
-        // Si el texto es muy corto o no tiene formato de paquete, no consultamos
+        
         if (paquete.length < 5 || !paquete.contains(".")) {
             packageExists = false
             return
@@ -805,23 +805,23 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
         viewModelScope.launch {
             isCheckingPackage = true
-            // Llamamos al repo
+            
             packageExists = repo.checkIfPackageExists(paquete)
             isCheckingPackage = false
         }
     }
 
-    // Función para limpiar los estados cuando se cierra el diálogo
+    
     fun clearPackageCheck() {
         packageExists = false
         isCheckingPackage = false
     }
 
     fun toggleAppStatus(app: AppModel) {
-        // Si ya está en producción, no permitimos el cambio manual
+        
         if (app.status == "produccion") return
 
-        // Alternamos entre test y oculta
+        
         val newStatus = if (app.status == "test") "oculta" else "test"
 
         viewModelScope.launch {
@@ -842,39 +842,39 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     fun prepareForEdit(paqueteOriginal: String) {
         packageExists = false
         isCheckingPackage = false
-        // Podrías guardar el paquete original para comparar
+        
     }
 
-//    fun requestJoinApp(app: AppModel, context: Context) {
-//        val user = FirebaseAuth.getInstance().currentUser ?: return
-//        val profile = _userProfile.value ?: return
-//
-//        val newTester = TesterData(
-//            idUser = user.uid,
-//            correoUser = profile.contacto ?: user.email ?: "",
-//            devName = profile.devName,
-//            validado = "Solicitud",
-//            fcmToken = profile.fcmToken
-//        )
-//        try {
-//
-//            val titulo = context.getString(R.string.nuevo_tester)
-//            val cuerpo =
-//                "${profile.devName} ${context.getString(R.string.solicito_permiso_para_testear)} ${app.nombre}"
-//
-//            sendNotification(
-//                app.nombre,
-//                titulo, cuerpo, app.fcmToken, viewModelScope
-//            )
-//        } catch (_: Exception) {
-//        }
-//        viewModelScope.launch {
-//            repo.applyAsTester(app.id, newTester).onSuccess {
-//               // loadAndVerifyApps()
-//                actualizarAppLocalmente(app.id, newTester)
-//            }
-//        }
-//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 suspend fun getUserFcmToken(userId: String): String? {
     if (userId.isBlank()) return null
     return try {
@@ -911,7 +911,7 @@ fun requestJoinApp(app: AppModel, context: Context) {
         fcmToken = profile.fcmToken
     )
 
-    // 🔥 1. ACTUALIZACIÓN OPTIMISTA (UI Instantánea)
+    
     actualizarAppLocalmente(app.id, newTester)
 
     viewModelScope.launch {
@@ -933,7 +933,7 @@ fun requestJoinApp(app: AppModel, context: Context) {
             Log.e("requestJoinApp", "Error enviando notificación: ${e.message}")
         }
 
-        // 2. Guardamos en Firebase en segundo plano
+        
         repo.applyAsTester(app.id, newTester).onFailure {
             loadCommunityApps()
         }
@@ -1018,7 +1018,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         "${app.nombre} " + context.getString(R.string.ha_rechazado_tu_solicitud)
     }
 
-    // Actualización optimista local
+    
     val currentTester = app.testers[testerId]
     if (currentTester != null) {
         actualizarAppLocalmente(app.id, currentTester.copy(validado = status))
@@ -1059,7 +1059,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         chatJob = viewModelScope.launch {
             _isUploadingMessages.value = true
 
-            // Iniciamos un temporizador de seguridad
+            
             val timeoutJob = launch {
                 delay(8000)
                 _isUploadingMessages.value = false
@@ -1085,29 +1085,29 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         _chatMessages.value = emptyList()
         _isUploadingMessages.value = false
     }
-//    fun listenToMessages(appId: String) {
-//        viewModelScope.launch {
-//            _isUploadingMessages.value = true
-//            try {
-//
-//                repo.getMessages(appId).collect {
-//                    _chatMessages.value = it
-//                    if (_isUploadingMessages.value) {
-//                        _isUploadingMessages.value = false
-//                    }
-//                }
-//
-//            } catch (e: Exception) {
-//
-//                Log.e("AuthViewModel", "Error cargando apps: ${e.message}")
-//
-//            } finally {
-//
-//                _isUploadingMessages.value = false // Ocultar cargando (siempre se ejecuta)
-//
-//            }
-//        }
-//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     fun sendMessage(app: AppModel, text: String) {
         val user = FirebaseAuth.getInstance().currentUser ?: return
@@ -1156,7 +1156,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
             try {
                 val uid = FirebaseAuth.getInstance().currentUser?.uid
-                // Timeout de seguridad en caso de estar offline o conexión lenta
+                
                 val timeoutJob = launch {
                     delay(3000)
                     _isUploadingCommunityApps.value = false
@@ -1168,7 +1168,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                     _categoriasApps.value = categorizadas
                     context?.let { verificarAppsInstaladas(it, categorizadas.aceptadas) }
 
-                    // Se quita el estado de carga al recibir los datos del servidor o si la caché ya contiene elementos
+                    
                     if (!isFromCache || apps.isNotEmpty()) {
                         timeoutJob.cancel()
                         _isUploadingCommunityApps.value = false
@@ -1184,7 +1184,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
 
 
     private fun actualizarAppLocalmente(appId: String, newTester: TesterData) {
-        // 🔥 Usamos .update para evitar choques de lectura/escritura en el Flow
+        
         _communityApps.update { listaActual ->
             listaActual.map { app ->
                 if (app.id == appId) {
@@ -1220,11 +1220,11 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         return repo.getUserProfileById(userId)
     }
 
-    // --- Dentro de class AuthViewModel : ViewModel() ---
+    
 
-    /**
-     * Obtiene el perfil completo de un usuario desde la colección "users"
-     */
+     
+
+
 
 
     fun rateTester(testerId: String, rating: Int) {
@@ -1239,7 +1239,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
     }
     fun daysBetween(start: Long, end: Long): Long {
         val diff = end - start
-        return diff / (24 * 60 * 60 * 1000) // Convierte milisegundos a días
+        return diff / (24 * 60 * 60 * 1000) 
     }
 
     suspend fun verificarAppsDiarias(context: Context) {
@@ -1249,14 +1249,14 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             val perfil = repo.getUserProfile(userId) ?: return@launch
             val maxAppsPosibles = DevAppsConfig.developerApps.size.toDouble()
 
-            // 1. Cálculo de Nivel
+            
             val scoreNivel = (perfil.nivel / maxAppsPosibles).coerceAtMost(1.0) * 5.0 * 0.30
 
-            // 2. Cálculo de Puntos
+            
             val scorePuntos = (Math.log10(perfil.puntos.toDouble() + 1.0) / Math.log10(501.0))
                 .coerceAtMost(1.0) * 5.0 * 0.25
 
-            // 3. Cálculo de Estrellas (Confianza Bayesiana)
+            
             val numVotos = perfil.calificaciones.size
             val confianza = (numVotos.toDouble() / (numVotos + 5)).coerceIn(0.0, 1.0)
             val scoreEstrellas = ((perfil.promedioEstrellas * confianza) + (3.0 * (1.0 - confianza))) * 0.45
@@ -1320,25 +1320,25 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         try {
             Log.d("Migracion", "Iniciando migración de apps...")
 
-            // 1. Obtenemos TODAS las apps de la colección
+            
             val appsSnapshot = db.collection("apps").get().await()
 
             for (appDoc in appsSnapshot) {
                 val appId = appDoc.id
                 val idPropietario = appDoc.getString("idPropietario")
 
-                // Verificamos si la app ya tiene el campo para no hacer trabajo doble
+                
                 val tieneNombre = appDoc.contains("nombreDesarrollador")
 
                 if (idPropietario != null && !tieneNombre) {
-                    // 2. Buscamos el perfil del dueño en la colección de usuarios
-                    // Nota: Asegúrate de que tu colección de usuarios se llame "users" o cámbialo aquí
+                    
+                    
                     val userSnapshot = db.collection("users").document(idPropietario).get().await()
 
-                    // Extraemos el nombre o ponemos uno por defecto si no existe
+                    
                     val devName = userSnapshot.getString("devName") ?: "Desconocido"
 
-                    // 3. Actualizamos la app con el nuevo campo
+                    
                     db.collection("apps").document(appId)
                         .update("nombreDesarrollador", devName)
                         .await()
@@ -1356,7 +1356,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
     fun migrarAppsExistentes() {
         val db = FirebaseFirestore.getInstance()
 
-        // 1. Obtenemos todas las apps que están en fase de test
+        
         db.collection("apps")
             .whereEqualTo("status", "test")
             .get()
@@ -1367,21 +1367,21 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                 for (document in snapshot.documents) {
                     val app = document.toObject(AppModel::class.java)
                     if (app != null) {
-                        // Extraemos todos los UIDs que ya están en el mapa de testers
+                        
                         val uidsEnTesters = app.testers.keys.toList()
 
                         if (uidsEnTesters.isNotEmpty()) {
                             val docRef = db.collection("apps").document(document.id)
 
-                            // Actualizamos el nuevo campo 'allParticipants' con todos los IDs
-                            // Usamos arrayUnion para no sobreescribir si ya hubiera alguno
+                            
+                            
                             batch.update(docRef, "allParticipants", uidsEnTesters)
                             contador++
                         }
                     }
                 }
 
-                // 2. Ejecutamos los cambios de forma atómica
+                
                 if (contador > 0) {
                     batch.commit()
                         .addOnSuccessListener {
@@ -1398,48 +1398,48 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                 Log.e("Migracion", "Error al obtener documentos: ${e.message}")
             }
     }
-    /*
-    fun debugRecalculateAllReputations() {
-        viewModelScope.launch {
-            Log.d("DEBUG_REPUTACION", "Iniciando recalculo global...")
+     
 
-            // 1. Obtenemos a TODOS los usuarios (Solo para debug)
-            val allUsers = repo.getAllUsersListRaw()
 
-            allUsers.forEach { perfil ->
-                val userId = perfil.uid
 
-                // --- TUS REGLAS DE CÁLCULO ---
-                val maxAppsPosibles = 13.0 // Según tu DevAppsConfig
 
-                // 1. Cálculo de Nivel
-                val scoreNivel = (perfil.nivel / maxAppsPosibles).coerceAtMost(1.0) * 5.0 * 0.30
 
-                // 2. Cálculo de Puntos
-                val scorePuntos = (Math.log10(perfil.puntos.toDouble() + 1.0) / Math.log10(501.0))
-                    .coerceAtMost(1.0) * 5.0 * 0.25
 
-                // 3. Cálculo de Estrellas (Bayesiano)
-                val numVotos = perfil.calificaciones.size
-                val confianza = (numVotos.toDouble() / (numVotos + 5)).coerceIn(0.0, 1.0)
-                val scoreEstrellas = ((perfil.promedioEstrellas * confianza) + (3.0 * (1.0 - confianza))) * 0.45
 
-                // RESULTADO FINAL
-                val nuevaReputacion = (scoreNivel + scorePuntos + scoreEstrellas + perfil.puntosExtra)
-                    .coerceIn(1.0, 5.0)
-                // -----------------------------
 
-                // 2. Actualizamos en Firebase (Usando la función atómica que ya tienes)
-                repo.updateAllUserAppsReputation(userId, nuevaReputacion, perfil.fcmToken)
 
-                Log.d("DEBUG_REPUTACION", "Usuario: ${perfil.devName} -> Nueva Rep: $nuevaReputacion")
-            }
 
-            Log.d("DEBUG_REPUTACION", "Recalculo finalizado con éxito.")
-        }
-    }
-    */
-    // En AuthRepository.kt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
     fun startOfToday(): Long {
         val cal = Calendar.getInstance()
@@ -1462,7 +1462,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
     }
 
 
-    // Añade esto dentro del init { ... } de tu AuthViewModel o llámalo manualmente
+    
     fun startObservingGlobalLinks() {
         viewModelScope.launch {
             try {
@@ -1498,9 +1498,9 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
     fun updateAppInfo(
         appId: String,
         nombre: String,
-        paquete: String,       // Nuevo parámetro
-        urlWeb: String,        // Nuevo parámetro
-        urlAndroid: String,    // Nuevo parámetro
+        paquete: String,       
+        urlWeb: String,        
+        urlAndroid: String,    
         instrucciones: String,
         notas: String,
         urlGoogleGroup: String,
@@ -1511,9 +1511,9 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                 appId,
                 mapOf(
                     "nombre" to nombre,
-                    "paquete" to paquete,       // Se agrega al mapa
-                    "urlWeb" to urlWeb,         // Se agrega al mapa
-                    "urlAndroid" to urlAndroid, // Se agrega al mapa
+                    "paquete" to paquete,       
+                    "urlWeb" to urlWeb,         
+                    "urlAndroid" to urlAndroid, 
                     "instrucciones" to instrucciones,
                     "urlGoogleGroup" to urlGoogleGroup,
                     "notas" to notas,
@@ -1521,20 +1521,20 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                 )
             ).onSuccess {
                 _uiState.value = AuthUiState.AppActionSuccess
-                loadAndVerifyApps() // Recarga la lista para ver los cambios
+                loadAndVerifyApps() 
             }.onFailure {
-                // Opcional: manejar error con un estado de UI
+                
             }
         }
     }
 
-    // En AuthViewModel.kt
+    
 
     fun checkAndSaveToken() {
         com.google.firebase.messaging.FirebaseMessaging.getInstance().token
             .addOnSuccessListener { token ->
                 viewModelScope.launch {
-                    // Solo actualizamos si tenemos un usuario logueado
+                    
                     if (isUserLoggedIn()) {
                         repo.updateFcmToken(token)
                         Log.d("FCM", "Token actualizado en perfil: $token")
@@ -1547,7 +1547,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
     fun actualizarNivelPorInstalacionesFijas(context: Context) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         viewModelScope.launch {
-            // Contamos basándonos en la lista de objetos DevAppItem
+            
             val conteo = DevAppsConfig.developerApps.count {
                 isAppInstalled(context, it.paquete)
             }
@@ -1578,8 +1578,8 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             try {
                 val db = FirebaseFirestore.getInstance()
 
-                // 1. Buscamos usuarios que tengan token de FCM
-                // Limitamos a un número mayor (ej. 50) para poder elegir 20 al azar localmente
+                
+                
                 val snapshot = db.collection("users")
                     .whereNotEqualTo("fcmToken", null)
                     .get()
@@ -1588,20 +1588,20 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                 val allUsers = snapshot.documents
                 if (allUsers.isEmpty()) return@launch
 
-                // 2. Seleccionamos hasta 20 usuarios de forma aleatoria
+                
                 val randomUsers = allUsers
 
                 val titulo =
-                    context.getString(R.string.bienvenido_a_testerapp) // O un string nuevo como "Nueva App disponible"
+                    context.getString(R.string.bienvenido_a_testerapp) 
                 val cuerpo =
                     "${context.getString(R.string.prueba_otras_apps_y_sube_las_tuyas)}"
 
-                // 3. Enviamos las notificaciones una por una
+                
                 randomUsers.forEach { userDoc ->
                     val token = userDoc.getString("fcmToken")
                     if (!token.isNullOrBlank()) {
                         try {
-                            // Usamos tu función existente sendNotification
+                            
                             sendNotification(
                                 "TesterApp",
                                 titulo,
@@ -1610,13 +1610,13 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                                 viewModelScope
                             )
                         } catch (e: Exception) {
-                            // Validación: Si no se puede enviar a un usuario específico, se ignora
+                            
                             Log.e("Notification", "Error enviando a ${userDoc.id}: ${e.message}")
                         }
                     }
                 }
             } catch (e: Exception) {
-                // Ignora errores generales del proceso
+                
                 Log.e("Notification", "Error general en proceso de notificación: ${e.message}")
             }
         }
@@ -1626,7 +1626,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         viewModelScope.launch {
             try {
                 val db = FirebaseFirestore.getInstance()
-                // Traemos solo usuarios que hayan completado su perfil
+                
                 val snapshot = db.collection("users")
                     .whereEqualTo("perfilCompletado", true)
                     .orderBy("reputacion", com.google.firebase.firestore.Query.Direction.DESCENDING)
@@ -1655,7 +1655,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         }
     }
 
-    // En AuthViewModel.kt
+    
     fun uploadProfilePicture(uri: android.net.Uri, onSuccess: (String) -> Unit) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val storageRef = com.google.firebase.storage.FirebaseStorage.getInstance().reference
@@ -1675,7 +1675,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
     }
 
-    // 1. EL TESTER SUBE LA EVIDENCIA
+    
     fun subirEvidenciaResena(
         appId: String,
         uri: android.net.Uri,
@@ -1691,7 +1691,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
 
         _uiState.value = AuthUiState.Loading
 
-        // Referencia: production_reviews/appId/userId.jpg
+        
         val storageRef = com.google.firebase.storage.FirebaseStorage.getInstance().reference
             .child("production_reviews/$appId/$userId.jpg")
 
@@ -1710,18 +1710,18 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                         fcmTokenApp = tokenApp
                     )
 
-                    // Actualizamos Firestore: app.resenasProduccion.userId = Objeto
+                    
                     FirebaseFirestore.getInstance().collection("apps").document(appId)
                         .update("resenasProduccion.$userId", nuevaResena)
                         .addOnSuccessListener {
                             _uiState.value = AuthUiState.Success
-                            loadProductionApps() // Recargar lista para actualizar UI
+                            loadProductionApps() 
                             _isUploading.value = false
                             _featuredApps.value = _featuredApps.value.map { app ->
                                 if (app.id == appId) {
-                                    // Convertimos el mapa actual a mutable y reemplazamos solo la reseña del usuario
+                                    
                                     val mapaActualizado = app.resenasProduccion.toMutableMap()
-                                    mapaActualizado[userId] = nuevaResena // Guardamos el objeto completo, no solo el estado
+                                    mapaActualizado[userId] = nuevaResena 
                                     app.copy(resenasProduccion = mapaActualizado)
                                 } else app
                             }
@@ -1798,35 +1798,35 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             }
         }
     }
-//    fun aprobarResenaProduccion(appId: String, testerId: String, resenaProduccion: ResenaProduccion) {
-//        val db = FirebaseFirestore.getInstance()
-//        val appRef = db.collection("apps").document(appId)
-//        val userRef = db.collection("users").document(testerId)
-//
-//        db.runTransaction { transaction ->
-//            // A. Cambiar estado a "aprobada" en la App
-//            transaction.update(appRef, "resenasProduccion.$testerId.estado", "aprobada")
-//
-//            // B. Dar +10 puntos al usuario (Tester)
-//            // Usamos increment para evitar condiciones de carrera
-//            transaction.update(userRef, "puntos", com.google.firebase.firestore.FieldValue.increment(10))
-//            if (resenaProduccion.fcmTokenTester.isNullOrEmpty()) {
-//                sendNotification(
-//                    app = resenaProduccion.appName?:"App",
-//                    title = "¡Reseña Aprobada!",
-//                    msg = "Has ganado 10 puntos en "+"$resenaProduccion.appName",
-//                    token = resenaProduccion.fcmTokenTester,
-//                    scope = viewModelScope
-//                )
-//            }
-//        }.addOnSuccessListener {
-//            Log.d("Reviews", "Reseña aprobada y 10 puntos entregados")
-//            // Recargamos si estamos viendo la pantalla de detalle
-//            loadAndVerifyApps()
-//        }.addOnFailureListener { e ->
-//            Log.e("Reviews", "Error en transacción", e)
-//        }
-//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1836,7 +1836,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         val ownerId = "TLaAvv2YGObm93iLGM8xqLZOETk2"
         val tokenFijo = ""
 
-        // Lista de tus aplicaciones (Nombre, Paquete)
+        
         val appsEstaticas = listOf(
             Pair("Color Palette", "com.appinitdev.color.free"),
             Pair("Canvas", "com.appinitdev.canvas.free"),
@@ -1849,16 +1849,16 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         )
 
         appsEstaticas.forEach { (nombre, paquete) ->
-            val appId = db.collection("apps").document().id // Genera ID único para Firestore
+            val appId = db.collection("apps").document().id 
 
             val appData = AppModel(
                 id = appId,
                 nombre = nombre,
                 paquete = paquete,
                 idPropietario = ownerId,
-                status = "produccion", // Para que aparezcan en la zona de recompensas
+                status = "produccion", 
                 fechaCreacion = System.currentTimeMillis(),
-                fcmToken = tokenFijo, // El token que me pasaste
+                fcmToken = tokenFijo, 
                 urlAndroid = "https://play.google.com/store/apps/details?id=$paquete",
                 urlWeb = "https://play.google.com/apps/testing/$paquete",
                 instrucciones = "Descarga la app, deja una reseña positiva de 5 estrellas y sube la captura aquí.",
@@ -1892,7 +1892,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         billingClient.queryProductDetailsAsync(params) { billingResult, productDetailsList ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && productDetailsList != null) {
 
-                // 1. Usamos métodos nativos de Java para máxima compatibilidad
+                
                 val productDetails = if (productDetailsList.productDetailsList.size > 0) {
                     productDetailsList.productDetailsList.get(0)
                 } else {
@@ -1910,7 +1910,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                         .setProductDetailsParamsList(productDetailsParamsList)
                         .build()
 
-                    // 2. Lanzamos la ventana de pago
+                    
                     billingClient.launchBillingFlow(activity, flowParams)
                 } else {
                     Log.e("Billing", "No se encontró el producto en la tienda: $productId")
@@ -1930,16 +1930,16 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                     }
                 }
             }
-            // Así se corrige el error:
+            
             .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
             .build()
 
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
-                // Conexión lista para procesar compras
+                
             }
             override fun onBillingServiceDisconnected() {
-                // Reintentar conexión si es necesario
+                
             }
         })
     }
@@ -1947,15 +1947,15 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
     private fun gestionarCompraConsumible(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
 
-            // 1. Parámetros para consumir la compra
+            
             val consumeParams = ConsumeParams.newBuilder()
                 .setPurchaseToken(purchase.purchaseToken)
                 .build()
 
-            // 2. Ejecutar el consumo en Google Play
+            
             billingClient.consumeAsync(consumeParams) { billingResult, _ ->
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    // 3. Solo si Google confirma el consumo, damos los puntos en Firebase
+                    
                     otorgarPuntosPorCompra(30, purchase.orderId ?: "compra_${System.currentTimeMillis()}")
                     _uiState.value = AuthUiState.PurchaseSuccess
                 }
@@ -1971,11 +1971,11 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
             val userRef = db.collection("users").document(uid)
 
             db.runTransaction { transaction ->
-                // Sumar puntos de forma segura
+                
                 val valorExtra = puntos * 0.25
                 transaction.update(userRef, "puntos", FieldValue.increment(puntos.toLong()))
                 transaction.update(userRef, "puntosExtra", FieldValue.increment(valorExtra))
-                // Registrar ID de orden para auditoría
+                
                 val registroRef = db.collection("compras").document(orderId)
                 transaction.set(registroRef, mapOf(
                     "userId" to uid,
@@ -1984,7 +1984,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                     "fecha" to System.currentTimeMillis()
                 ))
             }.addOnSuccessListener {
-                fetchUserProfile() // Actualizar UI
+                fetchUserProfile() 
             }
         }
     }
@@ -2004,7 +2004,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
     fun loadCommunityStats() {
         viewModelScope.launch {
             try {
-                // Ejecutamos en paralelo para mayor velocidad
+                
                 val appsJob = async { repo.getProductionAppsCount() }
                 val testersJob = async { repo.getTestersCount() }
 
@@ -2016,47 +2016,47 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         }
     }
 
-//    fun actualizarEstadoResena(appId: String, testerId: String, nuevoEstado: String) {
-//        viewModelScope.launch {
-//            // 1. Iniciamos el estado de carga
-//            _uiState.value = AuthUiState.Loading
-//
-//            try {
-//                val db = FirebaseFirestore.getInstance()
-//
-//                // Actualizamos en Firebase
-//                db.collection("apps").document(appId)
-//                    .update("resenasProduccion.$testerId.estado", nuevoEstado)
-//                    .await() // Esperamos a que termine la red
-//
-//                // 2. IMPORTANTE: Si tienes un listener activo (snapshot),
-//                // la UI se actualizará sola. Si no, deberías recargar la app aquí.
-//
-//                _uiState.value = AuthUiState.Success // O AuthUiState.Idle
-//            } catch (e: Exception) {
-//                Log.e("AuthViewModel", "Error: ${e.message}")
-//                _uiState.value = AuthUiState.Error(e.message ?: "Error desconocido")
-//            } finally {
-//                // 3. ESTO QUITA EL CÍRCULO DE CARGA PASE LO QUE PASE
-//                _uiState.value = AuthUiState.Idle
-//            }
-//        }
-//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     fun actualizarEstadoResena(appId: String, testerId: String, nuevoEstado: String) {
         viewModelScope.launch {
-           // _uiState.value = AuthUiState.Loading // Empieza carga
+           
             try {
                 val db = FirebaseFirestore.getInstance()
                 db.collection("apps").document(appId)
                     .update("resenasProduccion.$testerId.estado", nuevoEstado)
                     .await()
 
-                // 🔥 LA CLAVE: Actualizar la lista local manualmente para que Compose lo vea
+                
                 _userApps.value = _userApps.value.map { currentApp ->
                     if (currentApp.id == appId) {
                         val mapaEditado = currentApp.resenasProduccion.toMutableMap().apply {
-                            // Buscamos la reseña existente y solo le cambiamos el estado
+                            
                             this[testerId] = this[testerId]?.copy(estado = nuevoEstado)
                                 ?: ResenaProduccion(estado = nuevoEstado)
                         }
@@ -2075,11 +2075,11 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
                 }
 
                 _uiState.value = AuthUiState.Success
-                _uiState.value = AuthUiState.Idle // Detiene el cargando
+                _uiState.value = AuthUiState.Idle 
             } catch (e: Exception) {
                 _uiState.value = AuthUiState.Error(e.message ?: "Error")
             } finally {
-                _uiState.value = AuthUiState.Idle // Asegura que el circulo desaparezca
+                _uiState.value = AuthUiState.Idle 
             }
         }
     }
@@ -2097,7 +2097,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
         clearBugReports()
     }
 
-    // --- NUEVAS FUNCIONALIDADES ---
+    
 
     fun startObservingNotifications() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
@@ -2315,13 +2315,13 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
     fun applyReferralCode(code: String) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val profile = _userProfile.value ?: return
-        if (profile.referredBy != null) return // Solo se puede referir una vez
+        if (profile.referredBy != null) return 
 
         viewModelScope.launch {
             val allUsers = repo.getAllUsersListRaw()
             val referrer = allUsers.find { it.referralCode == code }
             if (referrer != null && referrer.uid != uid) {
-                // Dar puntos a ambos
+                
                 repo.incrementUserPoints(referrer.uid, 20)
                 repo.incrementUserPoints(uid, 10)
                 FirebaseFirestore.getInstance().collection("users").document(uid).update("referredBy", referrer.uid).await()
@@ -2343,7 +2343,7 @@ fun responseToTester(app: AppModel, testerId: String, accept: Boolean, context: 
     }
 }
 
-// Estados sellados para manejar la UI
+
 sealed class AuthUiState {
     object Idle : AuthUiState()
     object Loading : AuthUiState()

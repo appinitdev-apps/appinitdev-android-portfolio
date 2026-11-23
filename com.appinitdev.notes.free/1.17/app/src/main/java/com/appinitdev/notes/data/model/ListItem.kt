@@ -9,7 +9,7 @@ data class ListItem(
 ) : Cloneable {
 
     public override fun clone(): Any {
-        // Deep clone!
+        
         return ListItem(
             body,
             checked,

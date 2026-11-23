@@ -53,10 +53,10 @@ fun BackupRestorePage(
                         description = stringResource(Res.string.backup),
                         onClick = {
                             val fileName = "backup_" + Date().formatName() + ".zip"
-                            // ACTION_CREATE_DOCUMENT is broken on many Samsung Android 9 devices:
-                            // it returns RESULT_CANCELED with no URI even after the user picks a location.
-                            // On Android 9 and below, skip the file picker and write directly to
-                            // app-specific external storage instead.
+                            
+                            
+                            
+                            
                             if (isP()) {
                                 backupRestoreVM.backupToFile(context, fileName)
                             } else {

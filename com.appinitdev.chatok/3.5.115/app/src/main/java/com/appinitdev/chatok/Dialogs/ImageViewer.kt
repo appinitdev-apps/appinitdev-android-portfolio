@@ -99,7 +99,7 @@ fun ImageViewer(userData: ChatUserData, hideDialog:()->Unit, message: Message) {
                         )
                         Text(
                             text =if(message.time != null) {
-                                // Convertimos el Timestamp de Firebase a Date de Java antes de formatear
+                                
                                 formatter.format(message.time.toDate())
                             } else "",
                             color = Color.LightGray,

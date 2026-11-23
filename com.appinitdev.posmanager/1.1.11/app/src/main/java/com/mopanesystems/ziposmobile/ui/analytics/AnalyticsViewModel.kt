@@ -44,7 +44,7 @@ class AnalyticsViewModel @Inject constructor(
     }
 
     private fun loadAnalyticsData() {
-        // Calculamos fechas una sola vez
+        
         val endDate = LocalDateTime.now()
             .truncatedTo(ChronoUnit.DAYS)
             .plusDays(1)
@@ -84,10 +84,10 @@ class AnalyticsViewModel @Inject constructor(
             )
         )
 
-        // Marcamos loading al empezar
+        
         _isLoading.value = true
 
-        // --- Ventas diarias ---
+        
         viewModelScope.launch {
             try {
                 analyticsRepository.getDailySalesByDateRange(startDate, endDate)
@@ -96,7 +96,7 @@ class AnalyticsViewModel @Inject constructor(
                         updateSummaryStats(salesList)
                         Log.d("Analyticspro", "StartDate=$startDate EndDate=$endDate")
                         Log.e("salesData", salesList.toString())
-                        _isLoading.value = false // puedes ponerlo aquí o controlar loading aparte
+                        _isLoading.value = false 
                     }
             } catch (e: Exception) {
                 _errorMessage.value = "Error en ventas: ${e.message}"
@@ -104,7 +104,7 @@ class AnalyticsViewModel @Inject constructor(
             }
         }
 
-        // --- Top productos ---
+        
         viewModelScope.launch {
             try {
                 Log.e("datosMostrar", periods.toString())
@@ -121,8 +121,8 @@ class AnalyticsViewModel @Inject constructor(
                     .collect { productsList ->
                         val top10Products =  productsList
                             .sortedWith(
-                                compareByDescending<ProductPerformance>{ it.revenue }  // primero por revenue
-                                    .thenByDescending { it.quantitySold }            // luego por quantitySold
+                                compareByDescending<ProductPerformance>{ it.revenue }  
+                                    .thenByDescending { it.quantitySold }            
                             )
                             .take(10)
                         _topProducts.value = top10Products
@@ -133,7 +133,7 @@ class AnalyticsViewModel @Inject constructor(
             }
         }
 
-        // --- Analytics clientes ---
+        
         viewModelScope.launch {
             try {
                 analyticsRepository.getCustomerAnalyticsByPeriod(currentPeriod, startDate.toString(), endDate.toString())
@@ -150,8 +150,8 @@ class AnalyticsViewModel @Inject constructor(
     private fun updateSummaryStats(salesList: List<DailySales>) {
         val totalSalesAmount = salesList.sumOf { it.totalSales }
         val totalTransactions = salesList.sumOf { it.totalTransactions }
-        //val totalRefundsAmount = salesList.sumOf { it.refunds }
-       // val totalRefundsAmount2 = salesList.sumOf { it.totalItems }
+        
+       
         val totalRefundsAmount = salesList.sumOf { it.totalItems }
 
         _totalSales.value = totalSalesAmount
@@ -200,18 +200,18 @@ class AnalyticsViewModel @Inject constructor(
         val salesList = _dailySales.value ?: return null
         val today = LocalDate.now()
 
-        // Filtramos solo los registros del día de hoy
+        
         val todaySales = salesList.filter { it.date.toLocalDate() == today }
 
         if (todaySales.isEmpty()) return null
 
-        // Creamos un map por hora sumando las ventas de esa hora
+        
         val hourlySalesMap = todaySales.groupBy { it.date.hour }
             .mapValues { entry ->
                 entry.value.fold(BigDecimal.ZERO) { acc, dailySales -> acc + dailySales.totalSales }
             }
 
-        // Convertimos a Entries para el gráfico
+        
         val entries = hourlySalesMap.entries.sortedBy { it.key }.map { (hour, total) ->
             Entry(hour.toFloat(), total.toFloat())
         }
@@ -232,10 +232,10 @@ class AnalyticsViewModel @Inject constructor(
         val salesList = _dailySales.value ?: return null
         val today = LocalDate.now()
 
-        // Obtenemos el lunes de la semana actual
+        
         val monday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
 
-        // Filtramos solo los registros de esta semana (lunes a domingo)
+        
         val weekSales = salesList.filter {
             val saleDate = it.date.toLocalDate()
             !saleDate.isBefore(monday) && !saleDate.isAfter(monday.plusDays(6))
@@ -243,11 +243,11 @@ class AnalyticsViewModel @Inject constructor(
 
         if (weekSales.isEmpty()) return null
 
-        // Agrupamos por día y sumamos las ventas
+        
         val dailyTotals = weekSales.groupBy { it.date.toLocalDate() }
             .mapValues { entry -> entry.value.fold(BigDecimal.ZERO) { acc, sale -> acc + sale.totalSales } }
 
-        // Creamos un map completo de lunes a domingo para que no falten días
+        
         val entries = (0..6).map { dayOffset ->
             val date = monday.plusDays(dayOffset.toLong())
             val total = dailyTotals[date] ?: BigDecimal.ZERO
@@ -272,7 +272,7 @@ class AnalyticsViewModel @Inject constructor(
         val firstDayOfMonth = today.withDayOfMonth(1)
         val lastDayOfMonth = today.withDayOfMonth(today.lengthOfMonth())
 
-        // Filtramos solo los registros de este mes
+        
         val monthSales = salesList.filter {
             val saleDate = it.date.toLocalDate()
             !saleDate.isBefore(firstDayOfMonth) && !saleDate.isAfter(lastDayOfMonth)
@@ -280,11 +280,11 @@ class AnalyticsViewModel @Inject constructor(
 
         if (monthSales.isEmpty()) return null
 
-        // Agrupamos por día y sumamos las ventas
+        
         val dailyTotals = monthSales.groupBy { it.date.toLocalDate() }
             .mapValues { entry -> entry.value.fold(BigDecimal.ZERO) { acc, sale -> acc + sale.totalSales } }
 
-        // Creamos un map completo de todos los días del mes
+        
         val entries = (1..today.lengthOfMonth()).map { day ->
             val date = firstDayOfMonth.withDayOfMonth(day)
             val total = dailyTotals[date] ?: BigDecimal.ZERO
@@ -308,16 +308,16 @@ class AnalyticsViewModel @Inject constructor(
         val today = LocalDate.now()
         val currentYear = today.year
 
-        // Filtramos solo los registros del año actual
+        
         val yearSales = salesList.filter { it.date.year == currentYear }
 
         if (yearSales.isEmpty()) return null
 
-        // Agrupamos por mes (1 = enero, 12 = diciembre) y sumamos las ventas
+        
         val monthlyTotals = yearSales.groupBy { it.date.monthValue }
             .mapValues { entry -> entry.value.fold(BigDecimal.ZERO) { acc, sale -> acc + sale.totalSales } }
 
-        // Creamos un map completo de los 12 meses
+        
         val entries = (1..12).map { month ->
             val total = monthlyTotals[month] ?: BigDecimal.ZERO
             Entry(month.toFloat(), total.toFloat())

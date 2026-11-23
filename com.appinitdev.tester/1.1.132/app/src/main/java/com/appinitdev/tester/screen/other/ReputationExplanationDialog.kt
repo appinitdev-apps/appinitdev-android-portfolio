@@ -11,15 +11,15 @@ fun ReputationExplanationDialog(
     val maxAppsPosibles = DevAppsConfig.developerApps.size.toDouble()
     val puntosExtra = profile?.puntosExtra ?: 0.0
 
-    // 1. Nivel (30%)
+    
     val factorNivel = (nivelReal / maxAppsPosibles).coerceAtMost(1.0)
     val porcentajeNivelObtenido = (factorNivel * 30).toInt()
 
-    // 2. Puntos (25%)
+    
     val factorPuntos = (Math.log10(puntosReales.toDouble() + 1.0) / Math.log10(501.0)).coerceAtMost(1.0)
     val porcentajePuntosObtenido = (factorPuntos * 25).toInt()
 
-    // 3. Estrellas (45%)
+    
     val confianza: Double = (numVotos.toDouble() / (numVotos + 5)).coerceIn(0.0, 1.0)
     val estrellasAjustadas: Double = ((estrellasReales.toDouble() * confianza) + (3.0 * (1.0 - confianza)))
     val factorEstrellas = (estrellasAjustadas / 5.0).coerceIn(0.0, 1.0)
@@ -77,7 +77,7 @@ fun ReputationExplanationDialog(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // --- FACTORES CON SIGNIFICADO ---
+                
 
                 ReputationFactorCard(
                     icon = Icons.Default.WorkspacePremium,
@@ -169,7 +169,7 @@ fun ReputationFactorCard(
     description: String,
     color: Color
 ) {
-    // Cálculo de la barra relativo al tope de la categoría (30, 25 o 45)
+    
     val progresoRelativo = if (percentage > 0) userPercentage.toFloat() / percentage.toFloat() else 0f
 
     Column(modifier = Modifier

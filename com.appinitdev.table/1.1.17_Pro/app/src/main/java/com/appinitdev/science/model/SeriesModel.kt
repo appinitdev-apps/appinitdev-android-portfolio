@@ -1,12 +1,12 @@
 
 object SeriesModel {
-    /**
-     * Get list of electrochemical series with localized element names
-     * @param series ArrayList to populate with series data
-     * @param context Context needed to access assets and load localized element data (optional)
-     */
+     
+
+
+
+
     fun getList(series: ArrayList<Series>, context: Context? = null) {
-        // Define series data: elementKey, voltage, charge, symbol
+        
         val seriesData = listOf(
             arrayOf("lithium", -3.04, "+", "Li"),
             arrayOf("potassium", -2.931, "+", "K"),
@@ -28,7 +28,7 @@ object SeriesModel {
             arrayOf("gold", +1.52, "3+", "Au")
         )
         
-        // Load localized element names from JSON if context is provided
+        
         if (context != null) {
             for (data in seriesData) {
                 val elementKey = data[0] as String
@@ -43,7 +43,7 @@ object SeriesModel {
                 ))
             }
         } else {
-            // Fallback to English names if no context provided
+            
             for (data in seriesData) {
                 val elementKey = data[0] as String
                 series.add(Series(

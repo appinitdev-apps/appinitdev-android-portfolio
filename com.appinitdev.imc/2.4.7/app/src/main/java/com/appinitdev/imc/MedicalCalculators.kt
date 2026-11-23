@@ -1,5 +1,5 @@
 
-// 1. Tanner Target Height Data Models
+
 data class TannerPrediction(
     val childGender: Gender,
     val fatherHeightCm: Double,
@@ -10,7 +10,7 @@ data class TannerPrediction(
     val formattedTarget: String
 )
 
-// 2. US Navy Body Fat Data Models
+
 data class BodyFatResult(
     val bodyFatPercentage: Double,
     val fatMassKg: Double,
@@ -19,7 +19,7 @@ data class BodyFatResult(
     val statusColorHex: Long
 )
 
-// 3. IOM Pregnancy Weight Gain Data Models
+
 data class PregnancyWeightGainResult(
     val currentWeek: Int,
     val prePregnancyBmi: Double,
@@ -33,7 +33,7 @@ data class PregnancyWeightGainResult(
     val isGainOnTrack: Boolean
 )
 
-// 4. WHO Infant Head Circumference Data Models (0 - 24 Months)
+
 data class HeadCircumferenceResult(
     val ageMonths: Int,
     val headCm: Double,
@@ -44,7 +44,7 @@ data class HeadCircumferenceResult(
     val isNormal: Boolean
 )
 
-// 5. Waist-to-Height Ratio (ICE) Data Models
+
 data class WaistToHeightResult(
     val ratio: Double,
     val categoryText: String,
@@ -53,7 +53,7 @@ data class WaistToHeightResult(
     val isHealthy: Boolean
 )
 
-// 6. Macronutrient Goals Data Models
+
 data class MacronutrientResult(
     val tdeeCalories: Int,
     val targetCalories: Int,
@@ -65,7 +65,7 @@ data class MacronutrientResult(
 
 object MedicalCalculators {
 
-    // 1. Tanner Mid-Parental Target Height Calculation
+    
     fun calculateTannerTargetHeight(
         childGender: Gender,
         fatherHeightCm: Double,
@@ -97,7 +97,7 @@ object MedicalCalculators {
         )
     }
 
-    // 2. US Navy Body Fat Circumference Calculation
+    
     fun calculateUsNavyBodyFat(
         gender: Gender,
         heightCm: Double,
@@ -143,7 +143,7 @@ object MedicalCalculators {
         )
     }
 
-    // 3. IOM 2009 / WHO Pregnancy Weight Gain Range Calculation
+    
     fun calculatePregnancyWeightGain(
         prePregnancyWeightKg: Double,
         heightCm: Double,
@@ -196,7 +196,7 @@ object MedicalCalculators {
         )
     }
 
-    // 4. WHO Head Circumference Calculation (0 - 24 Months)
+    
     fun calculateHeadCircumference(
         gender: Gender,
         ageMonths: Int,
@@ -261,7 +261,7 @@ object MedicalCalculators {
         )
     }
 
-    // 5. Waist-to-Height Ratio (ICE) Calculation
+    
     fun calculateWaistToHeightRatio(
         waistCm: Double,
         heightCm: Double
@@ -285,11 +285,11 @@ object MedicalCalculators {
         )
     }
 
-    // 6. Macronutrient Goals Calculation
+    
     fun calculateMacronutrients(
         bmrCalories: Int,
-        activityLevelIndex: Int, // 0 = Sedentario (1.2), 1 = Moderado (1.55), 2 = Muy Activo (1.75)
-        goalIndex: Int // 0 = Perder Grasa (-20%), 1 = Mantener Peso, 2 = Ganar Músculo (+15%)
+        activityLevelIndex: Int, 
+        goalIndex: Int 
     ): MacronutrientResult {
         val activityFactor = when (activityLevelIndex) {
             0 -> 1.2
@@ -300,9 +300,9 @@ object MedicalCalculators {
         val tdee = (bmrCalories * activityFactor).roundToInt()
 
         val targetCal = when (goalIndex) {
-            0 -> (tdee * 0.80).roundToInt() // Deficit -20%
-            1 -> tdee                      // Maintenance
-            else -> (tdee * 1.15).roundToInt() // Surplus +15%
+            0 -> (tdee * 0.80).roundToInt() 
+            1 -> tdee                      
+            else -> (tdee * 1.15).roundToInt() 
         }
 
         val goalName = when (goalIndex) {
@@ -311,7 +311,7 @@ object MedicalCalculators {
             else -> "Superávit Calórico (Ganar Músculo)"
         }
 
-        // Standard Balance Macro Split: 30% Protein, 45% Carbs, 25% Fat
+        
         val proteinGrams = ((targetCal * 0.30) / 4.0).roundToInt()
         val carbsGrams = ((targetCal * 0.45) / 4.0).roundToInt()
         val fatGrams = ((targetCal * 0.25) / 9.0).roundToInt()
@@ -326,7 +326,7 @@ object MedicalCalculators {
         )
     }
 
-    // 7. Ideal Body Weight (IBW) Calculation
+    
     fun calculateIdealBodyWeight(
         gender: Gender,
         heightCm: Double,
@@ -378,7 +378,7 @@ object MedicalCalculators {
         )
     }
 
-    // 8. Waist-to-Hip Ratio (WHR / ÍCC) Calculation
+    
     fun calculateWaistToHipRatio(
         gender: Gender,
         waistCm: Double,
@@ -409,7 +409,7 @@ object MedicalCalculators {
         )
     }
 
-    // 9. Max Heart Rate & Training Zones (FCM - Tanaka)
+    
     fun calculateHeartRateZones(
         ageYears: Int
     ): HeartRateResult {
@@ -460,7 +460,7 @@ object MedicalCalculators {
         )
     }
 
-    // 10. Body Adiposity Index (IAC / BAI)
+    
     fun calculateBodyAdiposityIndex(
         gender: Gender,
         heightCm: Double,
@@ -494,7 +494,7 @@ object MedicalCalculators {
         )
     }
 
-    // 11. Lean Body Mass (LBM) - Boer & James
+    
     fun calculateLeanBodyMass(
         gender: Gender,
         heightCm: Double,
@@ -525,7 +525,7 @@ object MedicalCalculators {
         )
     }
 
-    // 12. Total Body Water (TBW) Calculation
+    
     fun calculateTotalBodyWater(
         gender: Gender,
         ageYears: Int,
@@ -564,7 +564,7 @@ object MedicalCalculators {
         )
     }
 
-    // 13. Rohrer Ponderal Index (Infant / Neonatal)
+    
     fun calculateRohrerPonderalIndex(
         weightKg: Double,
         heightCm: Double
@@ -586,7 +586,7 @@ object MedicalCalculators {
         )
     }
 
-    // 14. Infant Caloric & Milk Requirement (0 - 12 Months)
+    
     fun calculateInfantRequirement(
         ageMonths: Int,
         weightKg: Double
@@ -616,7 +616,7 @@ object MedicalCalculators {
         )
     }
 
-    // 15. Blood Pressure & Mean Arterial Pressure (PAM / MAP)
+    
     fun calculateMeanArterialPressure(
         systolicMmHg: Int,
         diastolicMmHg: Int
@@ -643,7 +643,7 @@ object MedicalCalculators {
         )
     }
 
-    // 16. Estimated VO2 Max (Non-Exercise Fitness Index)
+    
     fun calculateVo2MaxNonExercise(
         gender: Gender,
         ageYears: Int,
@@ -676,7 +676,7 @@ object MedicalCalculators {
     private data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
 }
 
-// Additional Data Models for New Calculators
+
 data class IdealBodyWeightResult(
     val heightCm: Double,
     val gender: Gender,

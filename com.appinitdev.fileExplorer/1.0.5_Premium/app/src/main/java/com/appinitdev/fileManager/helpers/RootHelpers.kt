@@ -179,7 +179,7 @@ class RootHelpers(val activity: Activity) {
         }
     }
 
-    // inspired by Amaze File Manager
+    
     private fun tryMountAsRW(path: String, callback: (mountPoint: String?) -> Unit) {
         val mountPoints = ArrayList<String>()
         val cmd = "mount"

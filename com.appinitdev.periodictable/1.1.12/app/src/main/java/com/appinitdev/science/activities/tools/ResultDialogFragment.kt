@@ -136,7 +136,7 @@ class ResultDialogFragment : DialogFragment() {
     private fun getLivesLost(difficulty: String): Int {
         return when (difficulty) {
             "hard" -> 2
-            else -> 1 // easy and medium
+            else -> 1 
         }
     }
 

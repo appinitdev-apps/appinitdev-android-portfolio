@@ -1,11 +1,11 @@
 
-/**
- * Panel fragment displaying all album artists found in the user's library, with
- * sort, fast-scroll, and layout-style support. It mirrors the [Artists] panel but
- * groups entries by the album_artist tag rather than the artist tag.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 class AlbumArtists : BasePanelFragment() {
 
     private lateinit var binding: FragmentAlbumArtistsBinding
@@ -33,7 +33,7 @@ class AlbumArtists : BasePanelFragment() {
 
         setupClickListeners()
 
-        // If we already have an adapter from before a config change, restore it immediately
+        
         adapterAlbumArtists?.let { binding.recyclerView.adapter = it }
 
         albumArtistsViewModel.albumArtists.collectListWhenStarted({ adapterAlbumArtists != null }) { albumArtists ->
@@ -94,17 +94,17 @@ class AlbumArtists : BasePanelFragment() {
 
         headerBinding.sortStyle.setCurrentSortStyle()
 
-        // The fast-scroll arrow only makes sense when sorting alphabetically by name
+        
         headerBinding.scroll.hideOnUnfavorableSort(
                 sorts = listOf(CommonPreferencesConstants.BY_NAME),
                 preference = AlbumArtistPreferences.getAlbumArtistSort()
         )
     }
 
-    /**
-     * Builds the fast-scroller section map so letters jump correctly when the list
-     * is sorted by name. Any other sort style returns an empty list (no scroll sections).
-     */
+     
+
+
+
     private fun provideScrollPositions(albumArtists: List<Artist>): List<SectionedFastScroller.Position> {
         when (AlbumArtistPreferences.getAlbumArtistSort()) {
             CommonPreferencesConstants.BY_NAME -> {

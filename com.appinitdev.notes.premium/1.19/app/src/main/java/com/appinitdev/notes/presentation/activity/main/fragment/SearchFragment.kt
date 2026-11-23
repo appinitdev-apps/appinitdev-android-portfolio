@@ -2,7 +2,7 @@
 class SearchFragment : NotallyFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // TODO: autofocus and show keyboard
+        
         val initialFolder =
             arguments?.let {
                 BundleCompat.getSerializable(it, EXTRA_INITIAL_FOLDER, Folder::class.java)

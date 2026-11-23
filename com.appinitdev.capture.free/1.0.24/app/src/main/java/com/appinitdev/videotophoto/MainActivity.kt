@@ -126,9 +126,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-// Memory-aware cache for real-time filmstrip frame extraction
+
 private val maxMemoryKb = (Runtime.getRuntime().maxMemory() / 1024).toInt()
-private val cacheSizeKb = (maxMemoryKb / 6).coerceAtLeast(1024 * 32) // Use 1/6th of available RAM
+private val cacheSizeKb = (maxMemoryKb / 6).coerceAtLeast(1024 * 32) 
 private val frameCache = object : LruCache<Long, Bitmap>(cacheSizeKb) {
     override fun sizeOf(key: Long, bitmap: Bitmap): Int {
         return bitmap.byteCount / 1024
@@ -164,7 +164,7 @@ fun AdBanner(modifier: Modifier = Modifier) {
     val isDebug = (context.applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0
 
     if (isDebug) {
-        // In DEBUG mode: Hide ads completely so they don't obstruct development or trigger AdMob policy checks
+        
         return
     }
 
@@ -209,11 +209,11 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
     var newlySavedCapture by rememberSaveable { mutableStateOf<CaptureEntity?>(null) }
     var isMuted by rememberSaveable { mutableStateOf(false) }
 
-    // Auto / Interval capture selection state
+    
     var autoCapturedFrames by remember { mutableStateOf<List<ScoredFrame>>(emptyList()) }
     var showAutoSelectionScreen by rememberSaveable { mutableStateOf(false) }
 
-    // ExoPlayer Setup
+    
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply { playWhenReady = false }
     }
@@ -253,7 +253,7 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
         }
     }
 
-    // Crop Image Contract
+    
     val cropImageLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
             result.uriContent?.let { uriCortada ->
@@ -281,7 +281,7 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
         }
     }
 
-    // Helper to select and load a video
+    
     val selectAndLoadVideo: (Uri) -> Unit = { uri ->
         try {
             context.contentResolver.takePersistableUriPermission(
@@ -318,7 +318,7 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
         }
     }
 
-    // Video Launcher using GetContent for native Video/Gallery pop-up
+    
     val videoPicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
             try {
@@ -331,7 +331,7 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
         }
     }
 
-    // Sync position timer & Cache eviction on video switch
+    
     LaunchedEffect(videoUri) {
         frameCache.evictAll()
         if (videoUri != null) {
@@ -539,7 +539,7 @@ fun VideoFrameCatcherApp(isPipMode: Boolean) {
     }
 }
 
-// --- VIDEO HUB SCREEN (MATCHING SCREEN 1 OF USER ATTACHMENTS) ---
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VideoHubScreen(
@@ -561,7 +561,7 @@ fun VideoHubScreen(
             .fillMaxSize()
             .background(Color(0xFF0A0F1D))
     ) {
-        // TOP APP BAR
+        
         Surface(
             color = Color(0xFF101728),
             tonalElevation = 4.dp
@@ -596,7 +596,7 @@ fun VideoHubScreen(
                 }
 
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    // Resolution Badge
+                    
                     Box(
                         modifier = Modifier
                             .background(Color(0xFF1E283F), RoundedCornerShape(8.dp))
@@ -610,7 +610,7 @@ fun VideoHubScreen(
                         )
                     }
 
-                    // Gallery Button
+                    
                     IconButton(
                         onClick = onOpenGallery,
                         modifier = Modifier
@@ -636,7 +636,7 @@ fun VideoHubScreen(
         ) {
             Spacer(Modifier.height(12.dp))
 
-            // VIDEO PLAYER PREVIEW WITH ZOOM & PAN
+            
             val hubZoomState = rememberZoomableState()
             Box(
                 modifier = Modifier
@@ -661,7 +661,7 @@ fun VideoHubScreen(
                     )
                 }
 
-                // Play / Pause Overlay
+                
                 var isPlaying by remember { mutableStateOf(exoPlayer.isPlaying) }
                 Box(
                     modifier = Modifier
@@ -684,7 +684,7 @@ fun VideoHubScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            // TIMELINE SEEKBAR
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -723,7 +723,7 @@ fun VideoHubScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            // FORMAT SELECTION CARD ("Formato de salida")
+            
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF141C2E)),
                 shape = RoundedCornerShape(16.dp),
@@ -781,7 +781,7 @@ fun VideoHubScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            // CAPTURE METHOD SECTION ("Elige el método de captura")
+            
             Text(
                 text = "Elige el método de captura",
                 color = Color.LightGray,
@@ -791,7 +791,7 @@ fun VideoHubScreen(
 
             Spacer(Modifier.height(10.dp))
 
-            // CARD 1: CAPTURA MANUAL
+            
             CaptureMethodCard(
                 title = "Captura manual",
                 subtitle = "Desplázate por el video y guarda exactamente los fotogramas que quieras",
@@ -801,7 +801,7 @@ fun VideoHubScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            // CARD 2: CAPTURA POR INTERVALO
+            
             CaptureMethodCard(
                 title = "Captura por intervalo",
                 subtitle = "Extrae automáticamente fotogramas en intervalos de tiempo establecidos",
@@ -811,7 +811,7 @@ fun VideoHubScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            // CARD 3: EXTRAER AUDIO DEL VIDEO
+            
             var isExtractingAudio by remember { mutableStateOf(false) }
             val scope = rememberCoroutineScope()
 
@@ -902,7 +902,7 @@ fun CaptureMethodCard(
     }
 }
 
-// --- MANUAL CAPTURE SCREEN (MATCHING SCREEN 2 OF USER ATTACHMENTS) ---
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManualCaptureScreen(
@@ -925,7 +925,7 @@ fun ManualCaptureScreen(
     val totalFrames = ((videoMeta.durationMs * 30) / 1000).coerceAtLeast(1)
     val currentFrameIndex = (((currentPosition * 30) / 1000) + 1).coerceIn(1, totalFrames)
 
-    // Calculate filmstrip step size and total items across the video
+    
     val stepMs = remember(videoMeta.durationMs) {
         when {
             videoMeta.durationMs <= 30_000L -> 100L
@@ -941,7 +941,7 @@ fun ManualCaptureScreen(
     val activeStripIndex = (currentPosition / stepMs).toInt().coerceIn(0, totalStripFrames - 1)
     val scope = rememberCoroutineScope()
 
-    // Reusable MediaMetadataRetriever instance to avoid overhead
+    
     val retriever = remember(videoUri) {
         MediaMetadataRetriever().apply {
             try { setDataSource(context, videoUri) } catch (e: Exception) { e.printStackTrace() }
@@ -954,19 +954,19 @@ fun ManualCaptureScreen(
         }
     }
 
-    // Full-resolution selected frame bitmap with Instant Thumbnail Fallback
+    
     var selectedFrameBitmap by remember {
         mutableStateOf<Bitmap?>(getNearestCachedFrame(currentPosition, stepMs, totalStripFrames))
     }
 
     LaunchedEffect(currentPosition) {
-        // 1. Instantly display cached thumbnail or nearest neighbor (0ms delay!)
+        
         val quickBmp = getNearestCachedFrame(currentPosition, stepMs, totalStripFrames)
         if (quickBmp != null) {
             selectedFrameBitmap = quickBmp
         }
 
-        // 2. Fetch full-resolution HD frame in background and upgrade seamlessly
+        
         withContext(Dispatchers.IO) {
             try {
                 val fullResFrame = retriever.getFrameAtTime(currentPosition * 1000L, MediaMetadataRetriever.OPTION_CLOSEST)
@@ -983,7 +983,7 @@ fun ManualCaptureScreen(
 
     val aiCache = remember { mutableStateMapOf<Long, AiFrameMeta>() }
 
-    // Fast full-video keyframe pre-warmer & AI analysis worker
+    
     LaunchedEffect(videoUri, totalStripFrames) {
         withContext(Dispatchers.IO) {
             val bgRetriever = MediaMetadataRetriever()
@@ -1054,10 +1054,10 @@ fun ManualCaptureScreen(
         }
     }
 
-    // LazyListState to auto-scroll filmstrip as position changes
+    
     val listState = rememberLazyListState()
 
-    // Background Pre-fetching for neighboring filmstrip frames
+    
     LaunchedEffect(activeStripIndex) {
         withContext(Dispatchers.IO) {
             val start = (activeStripIndex - 5).coerceAtLeast(0)
@@ -1084,7 +1084,7 @@ fun ManualCaptureScreen(
 
     val haptic = LocalHapticFeedback.current
 
-    // Auto-center the active selected frame in the filmstrip when position changes (from tap, arrows, slider)
+    
     LaunchedEffect(activeStripIndex) {
         try {
             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
@@ -1095,7 +1095,7 @@ fun ManualCaptureScreen(
         }
     }
 
-    // Continuously select the centered frame ONLY when user is dragging the filmstrip with finger
+    
     LaunchedEffect(isDragged) {
         if (isDragged) {
             snapshotFlow {
@@ -1118,7 +1118,7 @@ fun ManualCaptureScreen(
         }
     }
 
-    // Gesture tracking for horizontal swipe to seek frame-by-frame
+    
     var dragAccumulator by remember { mutableFloatStateOf(0f) }
     val swipeToSeekModifier = Modifier.pointerInput(Unit) {
         detectHorizontalDragGestures(
@@ -1144,7 +1144,7 @@ fun ManualCaptureScreen(
             .fillMaxSize()
             .background(Color(0xFF0A0F1D))
     ) {
-        // TOP APP BAR
+        
         Surface(color = Color(0xFF101728)) {
             Row(
                 modifier = Modifier
@@ -1189,7 +1189,7 @@ fun ManualCaptureScreen(
         ) {
             Spacer(Modifier.height(8.dp))
 
-            // MAIN VIDEO PREVIEW WITH ZOOM & PAN
+            
             val manualZoomState = rememberZoomableState()
             Box(
                 modifier = Modifier
@@ -1218,7 +1218,7 @@ fun ManualCaptureScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            // TIMELINE SEEKBAR & TIME
+            
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                 var isPlaying by remember { mutableStateOf(exoPlayer.isPlaying) }
                 IconButton(onClick = {
@@ -1258,7 +1258,7 @@ fun ManualCaptureScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            // FRAME COUNTER DISPLAY (e.g., Fotograma 498 de 962)
+            
             Text(
                 text = "Fotograma $currentFrameIndex de $totalFrames",
                 color = Color.LightGray,
@@ -1268,13 +1268,13 @@ fun ManualCaptureScreen(
 
             Spacer(Modifier.height(6.dp))
 
-            // FILMSTRIP CAROUSEL WITH < > ARROWS AND SWIPE TO SEEK
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Step Backward Arrow
+                
                 IconButton(
                     onClick = {
                         val target = ((activeStripIndex - 1) * stepMs).coerceAtLeast(0L)
@@ -1293,7 +1293,7 @@ fun ManualCaptureScreen(
 
                 Spacer(Modifier.width(4.dp))
 
-                // Continuous Filmstrip List
+                
                 LazyRow(
                     state = listState,
                     contentPadding = PaddingValues(horizontal = 110.dp),
@@ -1375,7 +1375,7 @@ fun ManualCaptureScreen(
 
                 Spacer(Modifier.width(4.dp))
 
-                // Step Forward Arrow
+                
                 IconButton(
                     onClick = {
                         val target = ((activeStripIndex + 1) * stepMs).coerceAtMost(videoMeta.durationMs)
@@ -1395,7 +1395,7 @@ fun ManualCaptureScreen(
 
             Spacer(Modifier.height(10.dp))
 
-            // LARGE PREVIEW OF SELECTED FRAME (WITH SWIPE TO SEEK AND AI BADGE)
+            
             Box(
                 modifier = Modifier
                     .width(140.dp)
@@ -1414,7 +1414,7 @@ fun ManualCaptureScreen(
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    // AI Badge Tag Overlay on top-left of preview card
+                    
                     val currentAi = aiCache[currentPosition] ?: run {
                         val nearestTs = (currentPosition / stepMs) * stepMs
                         aiCache[nearestTs]
@@ -1455,7 +1455,7 @@ fun ManualCaptureScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            // WATERMARK TOGGLE CHIP
+            
             FilterChip(
                 selected = withWatermark,
                 onClick = { withWatermark = !withWatermark },
@@ -1479,7 +1479,7 @@ fun ManualCaptureScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            // IA BEST FRAME & BURST CAPTURE SIDE BY SIDE
+            
             Row(
                 modifier = Modifier.fillMaxWidth(0.9f),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -1560,7 +1560,7 @@ fun ManualCaptureScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            // BOTTOM GUARDAR BUTTON
+            
             OutlinedButton(
                 onClick = {
                     selectedFrameBitmap?.let { bmp ->
@@ -1596,7 +1596,7 @@ fun ManualCaptureScreen(
     }
 }
 
-// --- INTERVAL CAPTURE SCREEN ---
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IntervalCaptureScreen(
@@ -1619,7 +1619,7 @@ fun IntervalCaptureScreen(
     var currentVideoPosition by rememberSaveable { mutableLongStateOf(0L) }
     val scope = rememberCoroutineScope()
 
-    // Filmstrip step size dynamically updates based on the interval slider frequency
+    
     val stepMs = intervalMs.coerceAtLeast(100L)
     val totalStripFrames = remember(videoMeta.durationMs, stepMs) {
         if (videoMeta.durationMs > 0 && stepMs > 0) {
@@ -1642,7 +1642,7 @@ fun IntervalCaptureScreen(
 
     val listState = rememberLazyListState()
 
-    // Background Pre-fetching for neighboring filmstrip frames
+    
     LaunchedEffect(activeStripIndex) {
         withContext(Dispatchers.IO) {
             val start = (activeStripIndex - 5).coerceAtLeast(0)
@@ -1668,7 +1668,7 @@ fun IntervalCaptureScreen(
     val isDraggedInterval by listState.interactionSource.collectIsDraggedAsState()
     val hapticInterval = LocalHapticFeedback.current
 
-    // Auto-center active frame in interval filmstrip when position changes (from tap, arrows, slider)
+    
     LaunchedEffect(activeStripIndex) {
         try {
             hapticInterval.performHapticFeedback(HapticFeedbackType.TextHandleMove)
@@ -1679,7 +1679,7 @@ fun IntervalCaptureScreen(
         }
     }
 
-    // Continuously select centered frame ONLY while user is dragging the filmstrip with finger
+    
     LaunchedEffect(isDraggedInterval) {
         if (isDraggedInterval) {
             snapshotFlow {
@@ -1703,7 +1703,7 @@ fun IntervalCaptureScreen(
         }
     }
 
-    // Gesture tracking for horizontal swipe to seek frame-by-frame
+    
     var dragAccumulator by remember { mutableFloatStateOf(0f) }
     val swipeToSeekModifier = Modifier.pointerInput(Unit) {
         detectHorizontalDragGestures(
@@ -1730,7 +1730,7 @@ fun IntervalCaptureScreen(
             .fillMaxSize()
             .background(Color(0xFF0A0F1D))
     ) {
-        // TOP APP BAR
+        
         Surface(color = Color(0xFF101728)) {
             Row(
                 modifier = Modifier
@@ -1774,7 +1774,7 @@ fun IntervalCaptureScreen(
         ) {
             Spacer(Modifier.height(8.dp))
 
-            // MAIN VIDEO PREVIEW WITH SWIPE TO SEEK
+            
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1814,7 +1814,7 @@ fun IntervalCaptureScreen(
 
             Spacer(Modifier.height(6.dp))
 
-            // INTERACTIVE FILMSTRIP CAROUSEL
+            
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1941,7 +1941,7 @@ fun IntervalCaptureScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            // RANGO DE EXTRACCIÓN CARD (START / END RANGE)
+            
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF141C2E)),
                 shape = RoundedCornerShape(14.dp),
@@ -1958,7 +1958,7 @@ fun IntervalCaptureScreen(
 
                     Spacer(Modifier.height(6.dp))
 
-                    // Buttons to set Start & End at current position
+                    
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -2000,7 +2000,7 @@ fun IntervalCaptureScreen(
 
                     Spacer(Modifier.height(6.dp))
 
-                    // Range Slider
+                    
                     if (videoMeta.durationMs > 0) {
                         val currentRange = (startTimeMs.toFloat() / videoMeta.durationMs.toFloat())..(endTimeMs.toFloat() / videoMeta.durationMs.toFloat())
                         RangeSlider(
@@ -2025,7 +2025,7 @@ fun IntervalCaptureScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            // INTERVAL CONTROL CARD ("Intervalo de captura")
+            
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF141C2E)),
                 shape = RoundedCornerShape(14.dp),
@@ -2073,7 +2073,7 @@ fun IntervalCaptureScreen(
 
             Spacer(Modifier.weight(1f))
 
-            // BOTTOM ACTION BUTTONS ("INICIAR EXTRACCIÓN" & "CLIP MP4")
+            
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -2162,7 +2162,7 @@ fun IntervalCaptureScreen(
     }
 }
 
-// --- GALLERY SCREEN ("FOTOS GUARDADAS" MATCHING SCREEN 4 OF USER ATTACHMENTS) ---
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -2322,7 +2322,7 @@ fun GalleryScreen(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         if (selectedVideoGroup == null) {
-                            // SHOW VIDEO ALBUM GROUPS (1 CARD PER VIDEO)
+                            
                             items(groupedCaptures.entries.toList()) { (videoName, groupList) ->
                                 val coverCapture = groupList.first()
 
@@ -2349,7 +2349,7 @@ fun GalleryScreen(
                                                 contentScale = ContentScale.Crop
                                             )
 
-                                            // Count badge showing total photos in this video group
+                                            
                                             Box(
                                                 modifier = Modifier
                                                     .align(Alignment.BottomEnd)
@@ -2397,7 +2397,7 @@ fun GalleryScreen(
                                 }
                             }
                         } else {
-                            // SHOW INDIVIDUAL PHOTOS BELONGING TO SELECTED VIDEO
+                            
                             val groupPhotos = groupedCaptures[selectedVideoGroup] ?: emptyList()
 
                             items(groupPhotos) { capture ->
@@ -2480,7 +2480,7 @@ fun GalleryScreen(
                 }
             }
 
-            // Bottom AdMob Banner
+            
             AdBanner()
         }
 
@@ -2759,7 +2759,7 @@ fun WelcomeHeroScreen(
     }
 }
 
-// --- FULLSCREEN IMAGE DETAIL VIEW ---
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FullScreenDetail(
@@ -3106,7 +3106,7 @@ fun MetadataRow(label: String, value: String) {
     }
 }
 
-// --- AUTO SELECTION INTERFACE ---
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AutoSelectionInterface(
@@ -3209,7 +3209,7 @@ fun AutoSelectionInterface(
                     .padding(paddingValues)
                     .background(Color(0xFF0A0F1D))
             ) {
-                // ACTION & FILTER BAR (Horizontally Scrollable)
+                
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -3435,7 +3435,7 @@ fun AutoSelectionInterface(
     }
 }
 
-// --- HELPER METADATA EXTRACTOR ---
+
 suspend fun extractVideoMetadata(context: Context, uri: Uri): VideoMetaData = withContext(Dispatchers.IO) {
     try {
         context.contentResolver.takePersistableUriPermission(
@@ -3516,7 +3516,7 @@ fun formatTimeMsShort(timeMs: Long): String {
     return String.format(Locale.US, "%02d:%02d", min, sec)
 }
 
-// --- BITMAP QUALITY & FILTERS ---
+
 fun isBitmapBlackOrEmpty(bitmap: Bitmap): Boolean {
     try {
         val w = bitmap.width

@@ -1,14 +1,14 @@
 
-/**
- * ViewModel for the [com.appinitdev.musicpro.ui.subpanels.MetadataSearch] panel.
- *
- * Queries the MusicBrainz recording search using the title and artist from the [audio]
- * being edited so the user immediately sees relevant results when the screen opens.
- * The search keyword is persisted across configuration changes via [SavedStateHandle]
- * so a screen rotation doesn't wipe out what the user typed.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
 @HiltViewModel(assistedFactory = MetadataSearchViewModel.Factory::class)
 class MetadataSearchViewModel @AssistedInject constructor(
         application: Application,
@@ -19,19 +19,19 @@ class MetadataSearchViewModel @AssistedInject constructor(
 
     private val _searchResults = MutableLiveData<List<MusicBrainzRecordingResult>>(emptyList())
 
-    /** The list of MusicBrainz recordings matching the latest search. */
+     
     val searchResults: LiveData<List<MusicBrainzRecordingResult>> get() = _searchResults
 
     private val _isLoading = MutableLiveData(false)
 
-    /** True while a network request is in flight. */
+     
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    /** The title field value, restored across configuration changes. */
+     
     val titleKeyword: String
         get() = savedStateHandle[KEY_TITLE] ?: (audio.title?.takeIf { it.isNotBlank() } ?: audio.name)
 
-    /** The artist field value, restored across configuration changes. */
+     
     val artistKeyword: String
         get() = savedStateHandle[KEY_ARTIST] ?: (audio.artist?.takeIf { it.isNotBlank() } ?: "")
 
@@ -43,19 +43,19 @@ class MetadataSearchViewModel @AssistedInject constructor(
         performSearch(titleKeyword, artistKeyword)
     }
 
-    /** Saves the title the user typed so it survives a screen rotation. */
+     
     fun setUserTitle(title: String) {
         savedStateHandle[KEY_TITLE] = title
     }
 
-    /** Saves the artist the user typed so it survives a screen rotation. */
+     
     fun setUserArtist(artist: String) {
         savedStateHandle[KEY_ARTIST] = artist
     }
 
-    /**
-     * Fires a new search using whatever is currently in the title and artist fields.
-     */
+     
+
+
     fun searchWithCurrentKeyword() {
         val title = titleKeyword.trim()
         if (title.isBlank()) {

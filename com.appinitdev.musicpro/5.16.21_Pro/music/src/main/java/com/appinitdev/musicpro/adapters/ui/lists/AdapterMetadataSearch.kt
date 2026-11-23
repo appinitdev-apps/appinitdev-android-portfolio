@@ -1,16 +1,16 @@
 
-/**
- * RecyclerView adapter for the MusicBrainz recording search results shown in
- * [com.appinitdev.musicpro.ui.subpanels.MetadataSearch].
- *
- * Each item shows the track title, credited artist, and the album name paired with
- * the track duration. Tapping an item triggers [onItemClick] so the search screen can
- * package the result and deliver it back to the metadata editor via the Fragment Result API.
- *
- * @param onItemClick called with the tapped [MusicBrainzRecordingResult] when the user picks a result.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
 class AdapterMetadataSearch(
         private val onItemClick: (MusicBrainzRecordingResult) -> Unit
 ) : RecyclerView.Adapter<AdapterMetadataSearch.MetadataViewHolder>() {
@@ -43,10 +43,10 @@ class AdapterMetadataSearch(
         setHasStableIds(true)
     }
 
-    /**
-     * Uses the MusicBrainz MBID as the stable id so the RecyclerView can animate
-     * list changes smoothly without re-drawing items that didn't change.
-     */
+     
+
+
+
     override fun getItemId(position: Int): Long = results[position].id.hashCode().toLong()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MetadataViewHolder {
@@ -62,9 +62,9 @@ class AdapterMetadataSearch(
 
     override fun getItemCount(): Int = results.size
 
-    /**
-     * Replaces the current list with [newResults], using [AsyncListDiffer] for smooth updates.
-     */
+     
+
+
     fun updateResults(newResults: List<MusicBrainzRecordingResult>) {
         differ.submitList(newResults.toList())
     }
@@ -75,16 +75,16 @@ class AdapterMetadataSearch(
         fun bind(recording: MusicBrainzRecordingResult) {
             binding.trackName.text = recording.title.orEmpty()
 
-            // Combine all credited artists into a single readable string.
+            
             binding.artistName.text = recording.artistCredit
                 ?.mapNotNull { it.name?.takeIf { n -> n.isNotBlank() } }
                 ?.joinToString(", ")
                 .orEmpty()
 
-            // Pick the first release as the most representative album for this recording.
+            
             val album = recording.releases?.firstOrNull()?.title?.takeIf { it.isNotBlank() }
 
-            // Convert milliseconds to a human-friendly "m:ss" string if available.
+            
             val duration = recording.length?.let { ms ->
                 DateUtils.formatElapsedTime(ms / 1000)
             }

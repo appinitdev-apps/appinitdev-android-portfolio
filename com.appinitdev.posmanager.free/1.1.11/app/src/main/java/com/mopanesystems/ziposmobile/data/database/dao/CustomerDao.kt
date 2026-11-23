@@ -55,7 +55,7 @@ interface CustomerDao {
     @Query("UPDATE customers SET riskScore = :riskScore WHERE id = :customerId")
     suspend fun updateRiskScore(customerId: String, riskScore: Int)
 
-    // Customer Transactions
+    
     @Query("SELECT * FROM customer_transactions WHERE customerId = :customerId ORDER BY createdAt DESC")
     fun getCustomerTransactions(customerId: String): Flow<List<CustomerTransaction>>
 

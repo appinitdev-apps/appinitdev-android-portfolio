@@ -36,7 +36,7 @@ class TransactionRepository @Inject constructor(
     suspend fun markTransactionCompleted(transactionId: String, completedAt: LocalDateTime) = 
         transactionDao.markTransactionCompleted(transactionId, completedAt)
     
-    // Transaction Items
+    
     fun getTransactionItems(transactionId: String): Flow<List<TransactionItem>> = transactionDao.getTransactionItems(transactionId)
     
     suspend fun insertTransactionItem(item: TransactionItem) = transactionDao.insertTransactionItem(item)
@@ -49,7 +49,7 @@ class TransactionRepository @Inject constructor(
     
     suspend fun deleteTransactionItems(transactionId: String) = transactionDao.deleteTransactionItems(transactionId)
     
-    // Payments
+    
     fun getPayments(transactionId: String): Flow<List<Payment>> = transactionDao.getPayments(transactionId)
     
     suspend fun insertPayment(payment: Payment) = transactionDao.insertPayment(payment)
@@ -58,7 +58,7 @@ class TransactionRepository @Inject constructor(
     
     suspend fun deletePayment(payment: Payment) = transactionDao.deletePayment(payment)
     
-    // Analytics
+    
     suspend fun getDailySalesTotal(date: LocalDateTime): BigDecimal? = transactionDao.getDailySalesTotal(date)
     
     suspend fun getDailyTransactionCount(date: LocalDateTime): Int = transactionDao.getDailyTransactionCount(date)
@@ -75,7 +75,7 @@ class TransactionRepository @Inject constructor(
     suspend fun getSalesByPaymentMethod(paymentMethod: PaymentMethod, startDate: LocalDateTime, endDate: LocalDateTime): BigDecimal? = 
         transactionDao.getSalesByPaymentMethod(paymentMethod, startDate, endDate)
 
-    // Offline / Sync Operations
+    
     fun getQueuedTransactions(): Flow<List<Transaction>> = transactionDao.getQueuedTransactions()
 
     fun getUnsyncedTransactions(): Flow<List<Transaction>> = transactionDao.getUnsyncedTransactions()

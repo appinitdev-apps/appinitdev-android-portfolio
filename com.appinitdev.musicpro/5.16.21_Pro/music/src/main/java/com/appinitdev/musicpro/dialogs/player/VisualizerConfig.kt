@@ -48,8 +48,8 @@ class VisualizerConfig : MediaBottomDialogFragment() {
 
         binding.openMilkdropVisualizer.setOnClickListener {
             (parentFragment as MediaFragment).openMilkdropPanel().also {
-                // May mess with the predictive back if the dialog is left alive in the back stack
-                // so we dismiss the dialog immediately after opening the settings.
+                
+                
                 dismiss()
             }
         }

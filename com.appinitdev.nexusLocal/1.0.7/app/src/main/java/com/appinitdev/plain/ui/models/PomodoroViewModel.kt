@@ -1,12 +1,12 @@
 
 class PomodoroViewModel : ViewModel() {
 
-    // Constants
+    
     companion object {
-        private const val DEFAULT_WORK_DURATION = 25 * 60 // 25 minutes in seconds
+        private const val DEFAULT_WORK_DURATION = 25 * 60 
     }
 
-    // State variables
+    
     var currentState = mutableStateOf(PomodoroState.WORK)
     var isRunning = mutableStateOf(false)
     var adjustJob = mutableStateOf<Job?>(null)

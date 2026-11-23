@@ -1,36 +1,36 @@
 
-/**
- * Handles a chat message just arrived from a remote peer: validate sender +
- * channel, persist, enqueue file downloads, trigger link-preview fetching,
- * broadcast the in-app + WebSocket events, and fire a system notification
- * when the chat is not currently active. Caller is responsible for the
- * transport-level decrypt/verify step.
- */
+ 
+
+
+
+
+
+
 object ChatMessageReceiver {
 
-    /**
-     * Replay protection: tracks every (fromPeerId, signature, timestamp) we have
-     * processed within [PeerChatParser.MAX_TIMESTAMP_DIFF_MS]. Without this, an
-     * attacker who captured a signed chat packet could replay it within the
-     * 5-minute timestamp window and create duplicate rows. The bounded set is
-     * pruned lazily; one entry per (signature, timestamp) is enough to dedupe.
-     */
+     
+
+
+
+
+
+
     private val seenSignatures: MutableSet<String> =
         Collections.synchronizedSet(HashSet())
 
-    /**
-     * @param fromPeerId sender's peer id (from the `c-id` header).
-     * @param fromChannelId sender's channel id (from the `c-cid` header),
-     *                      or empty for a 1:1 peer chat.
-     * @param signature Ed25519 signature base64 of the decrypted packet, used
-     *                  for in-memory replay dedupe. Pass empty string to skip.
-     * @param timestamp the signed packet's timestamp (ms), used together with
-     *                  signature to form the dedupe key. Pass 0 to skip.
-     * @throws IllegalStateException when the channel is unknown or left.
-     * @throws Exception when the sender is unknown.
-     * @throws ReplayedMessageException when [signature] + [timestamp] match a
-     *         packet we already processed (i.e. this is a replay).
-     */
+     
+
+
+
+
+
+
+
+
+
+
+
+
     suspend fun receive(
         fromPeerId: String,
         content: DMessageContent,

@@ -6,15 +6,15 @@ fun SalesTrendChart(lineData: LineData) {
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface.toArgb()
     val softBgColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.15f).toArgb()
 
-        // Envolvemos el LineChart en un Card con esquinas redondeadas
+        
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp)
-                .padding(8.dp),          // espacio exterior
-            shape = RoundedCornerShape(16.dp), // redondeado
+                .padding(8.dp),          
+            shape = RoundedCornerShape(16.dp), 
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)) // fondo suave Compose
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)) 
         ) {
             AndroidView(
                 modifier = Modifier
@@ -22,11 +22,11 @@ fun SalesTrendChart(lineData: LineData) {
                     .height(300.dp),
                 factory = { context ->
                     com.github.mikephil.charting.charts.LineChart(context).apply {
-                        // Fondo blanco de la vista completa
+                        
                         setBackgroundColor(softBgColor)
 
-                        // Fondo blanco del área del gráfico (dentro de los ejes)
-                        // setDrawGridBackground(true)
+                        
+                        
 
                         description.isEnabled = false
                         setTouchEnabled(true)

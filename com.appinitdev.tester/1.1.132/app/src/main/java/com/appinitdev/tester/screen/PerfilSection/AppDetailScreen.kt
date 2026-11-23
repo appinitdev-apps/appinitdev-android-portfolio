@@ -841,8 +841,8 @@ fun AppHeaderInfo(
                     }
                 }
 
-                //Spacer(Modifier.height(16.dp))
-                //com.appinitdev.tester.screen.ASOSimulator(appName = app.nombre, developer = app.nombreDesarrollador ?: "Unknown", iconUrl = app.icono)
+                
+                
             }
         }
     }

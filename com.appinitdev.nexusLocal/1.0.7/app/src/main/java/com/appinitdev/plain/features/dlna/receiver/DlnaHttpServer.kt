@@ -1,5 +1,5 @@
 
-/** Lightweight HTTP server that handles UPnP/DLNA AVTransport SOAP requests. */
+ 
 object DlnaHttpServer {
 
     suspend fun run(serverSocket: ServerSocket) = withContext(Dispatchers.IO) {

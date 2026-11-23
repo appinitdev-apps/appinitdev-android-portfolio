@@ -23,7 +23,7 @@ class QSTileService : TileService() {
 
         val serviceRef = WeakReference(this)
 
-        // Listen for HTTP server state changes and keep a cancellable reference
+        
         stateEventJob?.cancel()
         stateEventJob = receiveEventHandler<HttpServerStateChangedEvent> { event ->
             val tileState = when (event.state) {
@@ -38,11 +38,11 @@ class QSTileService : TileService() {
             }
         }
 
-        // Check current server state
+        
         stateCheckJob?.cancel()
         stateCheckJob = serviceScope.launch(Dispatchers.IO) {
             try {
-                // First check if webEnabled is true in TempData
+                
                 if (TempData.webEnabled.value) {
                     val serverUp = HttpServerManager.checkServerAsync()
                     if (serverUp) {
@@ -50,7 +50,7 @@ class QSTileService : TileService() {
                             serviceRef.get()?.setState(Tile.STATE_ACTIVE)
                         }
                     } else {
-                        // Service should be running but isn't responding
+                        
                         LogCat.d("Web service enabled but not responding, setting inactive state")
                         withContext(Dispatchers.Main.immediate) {
                             serviceRef.get()?.setState(Tile.STATE_INACTIVE)
@@ -73,17 +73,17 @@ class QSTileService : TileService() {
     override fun onStopListening() {
         super.onStopListening()
 
-        // Cancel event subscription to avoid leaking the service instance
+        
         stateEventJob?.cancel()
         stateEventJob = null
 
-        // Cancel any pending state check
+        
         stateCheckJob?.cancel()
         stateCheckJob = null
     }
 
     override fun onDestroy() {
-        // Ensure all references are released when the service is destroyed
+        
         stateEventJob?.cancel()
         stateEventJob = null
         stateCheckJob?.cancel()
@@ -96,11 +96,11 @@ class QSTileService : TileService() {
         super.onClick()
         when (qsTile.state) {
             Tile.STATE_INACTIVE -> {
-                // Start the service directly
+                
                 qsTile?.state = Tile.STATE_UNAVAILABLE
                 qsTile?.updateTile()
 
-                // Launch the app with unlockAndRun
+                
                 unlockAndRun {
                     val intent = Intent(MainApp.instance, Class.forName("com.ismartcoding.plain.ui.MainActivity"))
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -110,7 +110,7 @@ class QSTileService : TileService() {
             }
 
             Tile.STATE_ACTIVE -> {
-                // Stop service
+                
                 qsTile?.state = Tile.STATE_UNAVAILABLE
                 qsTile?.updateTile()
 

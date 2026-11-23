@@ -1,12 +1,12 @@
 
-/**
- * The first screen the user sees after installing the app.
- *
- * We ask for Notifications and Audio permissions.
- * Music is scanned automatically from the system's MediaStore.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
 class Setup : MediaFragment() {
 
     private lateinit var binding: FragmentSetupBinding
@@ -54,13 +54,13 @@ class Setup : MediaFragment() {
         updateStartButtonState()
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.bottomBarContainer) { bottomView, insets ->
-            // Detecta la altura del sistema de navegación (botones clásicos o barra de gestos)
+            
             val navigationBarsInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
 
-            // Obtenemos el padding original de 15dp configurado en tu XML
+            
             val originalPadding = resources.getDimensionPixelSize(R.dimen.padding_15)
 
-            // Re-aplicamos los paddings respetando los laterales/superior e inyectando la altura de la barra abajo
+            
             bottomView.setPadding(
                     bottomView.paddingLeft,
                     bottomView.paddingTop,
@@ -79,9 +79,9 @@ class Setup : MediaFragment() {
         updateStartButtonState()
     }
 
-    /**
-     * The app is ready to go when the user has granted notifications and read media audio.
-     */
+     
+
+
     private fun areRequiredPermissionsGranted(): Boolean {
         return isPostNotificationsPermissionGranted() && isReadMediaAudioPermissionGranted()
     }

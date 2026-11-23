@@ -1,11 +1,11 @@
 
-/**
- * Bottom-sheet sort dialog for the Album Artists panel. Lets the user pick a sort field
- * (name, number of albums, number of songs) and an order (normal or reversed).
- * Each change is saved immediately so closing the sheet applies it right away.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 class AlbumArtistsSort : ScopedBottomSheetFragment() {
 
     private lateinit var binding: DialogSortAlbumArtistsBinding
@@ -18,14 +18,14 @@ class AlbumArtistsSort : ScopedBottomSheetFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Restore the current sort field selection so the user sees what they already picked
+        
         when (AlbumArtistPreferences.getAlbumArtistSort()) {
             CommonPreferencesConstants.BY_NAME -> binding.name.isChecked = true
             CommonPreferencesConstants.BY_NUMBER_OF_ALBUMS -> binding.numberOfAlbums.isChecked = true
             CommonPreferencesConstants.BY_NUMBER_OF_SONGS -> binding.numberOfSongs.isChecked = true
         }
 
-        // Restore the current sort direction
+        
         binding.normal.isChecked = AlbumArtistPreferences.getSortingStyle() == CommonPreferencesConstants.ASCENDING
         binding.reversed.isChecked = AlbumArtistPreferences.getSortingStyle() == CommonPreferencesConstants.DESCENDING
 
@@ -55,9 +55,9 @@ class AlbumArtistsSort : ScopedBottomSheetFragment() {
             return fragment
         }
 
-        /**
-         * Shows the sort dialog, making sure we don't stack two of them on top of each other.
-         */
+         
+
+
         fun FragmentManager.showAlbumArtistsSort(): AlbumArtistsSort {
             val fragment = findFragmentByTag(TAG) as? AlbumArtistsSort ?: newInstance()
             if (fragment.isAdded.not()) {

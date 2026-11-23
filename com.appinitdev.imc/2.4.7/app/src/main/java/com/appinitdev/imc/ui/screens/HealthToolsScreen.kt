@@ -90,7 +90,7 @@ fun HealthToolsScreen(
     var activeMember by remember(allMembers) { mutableStateOf(familyManager.getActiveMember()) }
     var showProfileSwitchDialog by remember { mutableStateOf(false) }
 
-    var selectedToolKey by remember { mutableStateOf<String?>(null) } // null = Main Grid View
+    var selectedToolKey by remember { mutableStateOf<String?>(null) } 
 
     val allTools = listOf(
         HealthToolCategory("WATER", "💧 Agua e Hidratación", "Meta Diaria OMS", Icons.Default.LocalDrink, Color(0xFF0288D1)),
@@ -171,7 +171,7 @@ fun HealthToolsScreen(
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            // Active Profile Header Bar with Gender Badge
+            
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -230,7 +230,7 @@ fun HealthToolsScreen(
             }
 
             if (selectedToolKey == null) {
-                // Category Tiles Grid View Header
+                
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -304,7 +304,7 @@ fun HealthToolsScreen(
                     }
                 }
             } else {
-                // Interactive Selected Tool View (Pre-loaded with active profile's gender)
+                
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -338,7 +338,7 @@ fun HealthToolsScreen(
         }
     }
 
-    // Switch Profile Dialog
+    
     if (showProfileSwitchDialog) {
         AlertDialog(
             onDismissRequest = { showProfileSwitchDialog = false },
@@ -360,7 +360,7 @@ fun HealthToolsScreen(
                                 .clickable {
                                     familyManager.setActiveMemberId(member.id)
                                     activeMember = member
-                                    selectedToolKey = null // Reset tool view to refresh available tools
+                                    selectedToolKey = null 
                                     showProfileSwitchDialog = false
                                 }
                         ) {
@@ -407,7 +407,7 @@ fun HealthToolsScreen(
     }
 }
 
-// --- Reusable Explanation & Formula Cards ---
+
 @Composable
 fun ToolExplanationCard(
     whatItMeasures: String,
@@ -545,7 +545,7 @@ fun FormulaCard(
     }
 }
 
-// 1. Water Tracker Tool Linked to Active Profile
+
 @Composable
 fun ProfileWaterTrackerTool(activeMember: FamilyMember?) {
     val context = LocalContext.current
@@ -658,7 +658,7 @@ fun ProfileWaterTrackerTool(activeMember: FamilyMember?) {
     }
 }
 
-// 2. Advanced BMR Tool Pre-loaded with Active Profile's Gender
+
 @Composable
 fun AdvancedBmrTool(activeMember: FamilyMember?) {
     val context = LocalContext.current
@@ -740,7 +740,7 @@ fun AdvancedBmrTool(activeMember: FamilyMember?) {
     }
 }
 
-// 3. Physical Activity Tool
+
 @Composable
 fun PhysicalActivityTool(activeMember: FamilyMember?) {
     val context = LocalContext.current
@@ -821,7 +821,7 @@ fun PhysicalActivityTool(activeMember: FamilyMember?) {
     }
 }
 
-// 4. Waist-To-Height Ratio Linked to Active Profile
+
 @Composable
 fun ProfileWaistToHeightTool(activeMember: FamilyMember?) {
     val context = LocalContext.current
@@ -925,7 +925,7 @@ fun ProfileWaistToHeightTool(activeMember: FamilyMember?) {
     }
 }
 
-// 5. Macronutrients Tool
+
 @Composable
 fun MacronutrientsTool(activeMember: FamilyMember? = null) {
     val context = LocalContext.current
@@ -1016,7 +1016,7 @@ fun MacroBox(title: String, value: String, color: Color, modifier: Modifier = Mo
     }
 }
 
-// 6. Head Circumference Linked to Active Profile
+
 @Composable
 fun ProfileHeadCircumferenceTool(activeMember: FamilyMember?) {
     val context = LocalContext.current
@@ -1113,7 +1113,7 @@ fun ProfileHeadCircumferenceTool(activeMember: FamilyMember?) {
     }
 }
 
-// 7. Tanner Height Tool Pre-loaded with Active Profile's Gender
+
 @Composable
 fun TannerHeightTool(activeMember: FamilyMember?) {
     val childGender = activeMember?.gender ?: Gender.MALE
@@ -1178,7 +1178,7 @@ fun TannerHeightTool(activeMember: FamilyMember?) {
     }
 }
 
-// 8. Pregnancy Gain Tool (Only for Female Profiles)
+
 @Composable
 fun PregnancyGainTool(activeMember: FamilyMember?) {
     var preWeightInput by remember { mutableStateOf("58") }
@@ -1243,7 +1243,7 @@ fun PregnancyGainTool(activeMember: FamilyMember?) {
     }
 }
 
-// 9. Pediatric Reminders Tool
+
 @Composable
 fun PediatricRemindersTool(activeMember: FamilyMember?) {
     val context = LocalContext.current
@@ -1291,7 +1291,7 @@ fun PediatricRemindersTool(activeMember: FamilyMember?) {
     }
 }
 
-// 10. Backup & Restore Tool
+
 @Composable
 fun BackupRestoreTool() {
     val context = LocalContext.current
@@ -1335,7 +1335,7 @@ fun BackupRestoreTool() {
     }
 }
 
-// --- 1. Ideal Body Weight Tool (IBW) ---
+
 @Composable
 fun IdealBodyWeightTool(member: FamilyMember?) {
     val context = LocalContext.current
@@ -1437,7 +1437,7 @@ private fun IbwFormulaRow(formulaName: String, valueKg: Double) {
     }
 }
 
-// --- 2. Waist-to-Hip Ratio Tool (WHR) ---
+
 @Composable
 fun WaistToHipTool(member: FamilyMember?) {
     val context = LocalContext.current
@@ -1512,7 +1512,7 @@ fun WaistToHipTool(member: FamilyMember?) {
     }
 }
 
-// --- 3. Heart Rate Zones Tool (FCM) ---
+
 @Composable
 fun HeartRateZonesTool(member: FamilyMember?) {
     var ageInput by remember { mutableStateOf("30") }
@@ -1595,7 +1595,7 @@ fun HeartRateZonesTool(member: FamilyMember?) {
     }
 }
 
-// --- 4. Body Adiposity Tool (BAI/IAC) ---
+
 @Composable
 fun BodyAdiposityTool(member: FamilyMember?) {
     val gender = member?.gender ?: Gender.MALE
@@ -1662,7 +1662,7 @@ fun BodyAdiposityTool(member: FamilyMember?) {
     }
 }
 
-// --- 5. Lean Body Mass Tool (LBM) ---
+
 @Composable
 fun LeanBodyMassTool(member: FamilyMember?) {
     val gender = member?.gender ?: Gender.MALE
@@ -1753,7 +1753,7 @@ fun LeanBodyMassTool(member: FamilyMember?) {
     }
 }
 
-// --- 6. Total Body Water Tool (TBW) ---
+
 @Composable
 fun TotalBodyWaterTool(member: FamilyMember?) {
     val gender = member?.gender ?: Gender.MALE
@@ -1847,7 +1847,7 @@ fun TotalBodyWaterTool(member: FamilyMember?) {
     }
 }
 
-// --- 7. Rohrer Index Tool ---
+
 @Composable
 fun RohrerIndexTool(member: FamilyMember?) {
     var weightInput by remember { mutableStateOf("3.4") }
@@ -1900,7 +1900,7 @@ fun RohrerIndexTool(member: FamilyMember?) {
     }
 }
 
-// --- 8. Infant Caloric & Milk Requirement Tool ---
+
 @Composable
 fun InfantRequirementTool(member: FamilyMember?) {
     var ageMonthsInput by remember { mutableStateOf("4") }
@@ -1954,7 +1954,7 @@ fun InfantRequirementTool(member: FamilyMember?) {
     }
 }
 
-// --- 9. Blood Pressure & Mean Arterial Pressure Tool ---
+
 @Composable
 fun BloodPressureTool(activeMember: FamilyMember? = null) {
     val context = LocalContext.current
@@ -2015,7 +2015,7 @@ fun BloodPressureTool(activeMember: FamilyMember? = null) {
     }
 }
 
-// --- 10. Estimated VO2 Max Tool ---
+
 @Composable
 fun Vo2MaxTool(member: FamilyMember?) {
     val gender = member?.gender ?: Gender.MALE

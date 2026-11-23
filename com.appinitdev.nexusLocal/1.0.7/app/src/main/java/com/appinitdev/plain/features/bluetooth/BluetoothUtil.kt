@@ -218,7 +218,7 @@ object BluetoothUtil {
             }
         pendingOperation = operation
 
-        // Handle Connect separately from other operations that require device to be connected
+        
         if (operation is BTOperationConnect) {
             operation.run()
             return

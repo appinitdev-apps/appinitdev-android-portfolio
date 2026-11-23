@@ -1,14 +1,14 @@
 
-/**
- * Reusable horizontal list adapter for [Audio] items shown in the dashboard carousels.
- *
- * Renders each song with its album art, title, and artist name using the standard
- * carousel item layout. Used for the recently played, recently added, and favorites
- * sections of the dashboard.
- *
- * @param songs The initial list of songs to display.
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
 class AdapterDashboardSongs(
         private var songs: List<Audio>
 ) : RecyclerView.Adapter<AdapterDashboardSongs.Holder>() {
@@ -40,13 +40,13 @@ class AdapterDashboardSongs(
         }
     }
 
-    /**
-     * Replaces the current data set with [newSongs] and dispatches granular change notifications
-     * computed by [DiffUtil]. Items are identified by [Audio.id] so additions, removals, and
-     * moves are all animated individually without resetting the scroll position.
-     *
-     * @param newSongs The updated list of songs to display.
-     */
+     
+
+
+
+
+
+
     fun updateData(newSongs: List<Audio>) {
         val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun getOldListSize() = songs.size
@@ -60,13 +60,13 @@ class AdapterDashboardSongs(
         diff.dispatchUpdatesTo(this)
     }
 
-    /**
-     * Randomizes the visible content of [holder] by swapping its displayed song to a
-     * randomly chosen entry from the backing list. Intended for use with the
-     * TiledHome-style periodic shuffle animation in the recently played carousel.
-     *
-     * @param holder The [Holder] whose displayed song should be replaced.
-     */
+     
+
+
+
+
+
+
     fun randomize(holder: Holder) {
         if (songs.isEmpty()) return
         val randomSong = songs.random()
@@ -75,11 +75,11 @@ class AdapterDashboardSongs(
         holder.binding.artist.text = randomSong.getProperArtists()
     }
 
-    /**
-     * Sets the callbacks used to respond to song item clicks.
-     *
-     * @param callbacks The callback implementation to attach.
-     */
+     
+
+
+
+
     fun setCallbacks(callbacks: AdapterDashboardSongsCallbacks) {
         this.callbacks = callbacks
     }
@@ -88,25 +88,25 @@ class AdapterDashboardSongs(
             HorizontalListViewHolder(binding.root)
 
     companion object {
-        /**
-         * Callback interface for song item interactions in the dashboard carousels.
-         */
+         
+
+
         interface AdapterDashboardSongsCallbacks {
-            /**
-             * Called when the user taps a song card.
-             *
-             * @param songs    The full list backing the carousel, used to initialize the play queue.
-             * @param position The index of the tapped song within [songs].
-             */
+             
+
+
+
+
+
             fun onSongClicked(songs: MutableList<Audio>, position: Int)
 
-            /**
-             * Called when the user long-presses a song card.
-             *
-             * @param songs    The full list backing the carousel.
-             * @param position The index of the long-pressed song within [songs].
-             * @param imageView The album art [ImageView] used as a shared-element source for the menu.
-             */
+             
+
+
+
+
+
+
             fun onSongLongClicked(songs: MutableList<Audio>, position: Int, imageView: ImageView)
         }
     }

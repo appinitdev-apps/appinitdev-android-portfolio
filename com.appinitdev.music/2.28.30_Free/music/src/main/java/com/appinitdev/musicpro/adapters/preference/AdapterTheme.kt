@@ -3,13 +3,13 @@ class AdapterTheme : RecyclerView.Adapter<VerticalListViewHolder>() {
 
     private val list = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         arrayListOf(
-                -1, // Light
+                -1, 
                 ThemeConstants.LIGHT_THEME,
                 ThemeConstants.ALBUM_ART_LIGHT,
                 ThemeConstants.SOAPSTONE,
                 ThemeConstants.MATERIAL_YOU_LIGHT,
                 ThemeConstants.HIGH_CONTRAST_LIGHT,
-                -1, // Dark
+                -1, 
                 ThemeConstants.DARK_THEME,
                 ThemeConstants.ALBUM_ART_DARK,
                 ThemeConstants.MATERIAL_YOU_DARK,
@@ -17,25 +17,25 @@ class AdapterTheme : RecyclerView.Adapter<VerticalListViewHolder>() {
                 ThemeConstants.SLATE,
                 ThemeConstants.OIL,
                 ThemeConstants.HIGH_CONTRAST_DARK,
-                -1, // Auto
+                -1, 
                 ThemeConstants.FOLLOW_SYSTEM,
                 ThemeConstants.DAY_NIGHT,
         )
     } else {
         arrayListOf(
-                -1, // Light
+                -1, 
                 ThemeConstants.LIGHT_THEME,
                 ThemeConstants.ALBUM_ART_LIGHT,
                 ThemeConstants.SOAPSTONE,
                 ThemeConstants.HIGH_CONTRAST_LIGHT,
-                -1, // Dark
+                -1, 
                 ThemeConstants.DARK_THEME,
                 ThemeConstants.ALBUM_ART_DARK,
                 ThemeConstants.AMOLED,
                 ThemeConstants.SLATE,
                 ThemeConstants.OIL,
                 ThemeConstants.HIGH_CONTRAST_DARK,
-                -1, // Auto
+                -1, 
                 ThemeConstants.FOLLOW_SYSTEM,
                 ThemeConstants.DAY_NIGHT,
         )

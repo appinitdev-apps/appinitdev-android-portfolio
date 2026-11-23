@@ -14,7 +14,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "chatok_database"
                 )
-                .fallbackToDestructiveMigration() // Añade esto para evitar crashes al cambiar la versión
+                .fallbackToDestructiveMigration() 
                 .build()
                 INSTANCE = instance
                 instance

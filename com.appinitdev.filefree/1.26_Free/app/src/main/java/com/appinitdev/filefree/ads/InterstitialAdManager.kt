@@ -7,7 +7,7 @@ object InterstitialAdManager {
         val adRequest = AdRequest.Builder().build()
         InterstitialAd.load(
             context,
-            "ca-app-pub-8325653088416363/8469612417", // tu ID real
+            "ca-app-pub-8325653088416363/8469612417", 
             adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {
@@ -24,7 +24,7 @@ object InterstitialAdManager {
     fun showAd(activity: Activity) {
         showCounter++
         if (showCounter % 3 != 0) {
-            // No toca mostrar, pero asegúrate de tener uno cargado
+            
             if (interstitialAd == null) loadAd(activity)
             return
         }

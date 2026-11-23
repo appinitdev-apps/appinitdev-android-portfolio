@@ -15,14 +15,14 @@ fun SettingsMenu() {
                 text = { Text("Cuenta") },
                 onClick = {
                     expanded = false
-                    // acción, ej. navController.navigate("account")
+                    
                 }
             )
             DropdownMenuItem(
                 text = { Text("Cerrar sesión") },
                 onClick = {
                     expanded = false
-                    // acción logout
+                    
                 }
             )
         }

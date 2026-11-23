@@ -5,7 +5,7 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
     val currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid
     val context = androidx.compose.ui.platform.LocalContext.current
 
-    // Estado para controlar el diálogo de agregar
+    
     var showAddDialog by remember { mutableStateOf(false) }
 
     val activity = context as? android.app.Activity
@@ -34,9 +34,9 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
-                .clickable { navController.navigate("production_apps") }, // Navega a la nueva página
+                .clickable { navController.navigate("production_apps") }, 
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xFFE8F5E9) // Un verde suave para destacar
+                containerColor = Color(0xFFE8F5E9) 
             ),
             border = BorderStroke(1.dp, Color(0xFF4CAF50))
         ) {
@@ -83,9 +83,9 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                 .padding(bottom = 8.dp)
                 .clickable { navController.navigate("ranking_screen") },
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xFFE8EAF6) // Un azul/índigo muy suave
+                containerColor = Color(0xFFE8EAF6) 
             ),
-            border = BorderStroke(1.dp, Color(0xFF3F51B5)) // Borde azul índigo
+            border = BorderStroke(1.dp, Color(0xFF3F51B5)) 
         ) {
             Row(
                 modifier = Modifier.padding(16.dp),
@@ -94,10 +94,10 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                 Box(
                     modifier = Modifier
                         .size(40.dp)
-                        .background(Color(0xFF3F51B5), CircleShape), // Fondo del icono azul
+                        .background(Color(0xFF3F51B5), CircleShape), 
                     contentAlignment = Alignment.Center
                 ) {
-                    // Cambio de icono a Trofeo
+                    
                     Icon(
                         imageVector = Icons.Default.EmojiEvents,
                         contentDescription = null,
@@ -113,17 +113,17 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                         text = stringResource(R.string.ranking_de_testers) + "($numTesters)",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1A237E) // Texto azul oscuro
+                        color = Color(0xFF1A237E) 
                     )
                     Text(
                         text = stringResource(R.string.de_acuerdo_al_ranking_es_calculada_la_reputacion_de_cada_app),
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF303F9F) // Texto azul secundario
+                        color = Color(0xFF303F9F) 
                     )
                 }
 
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForward, // Versión moderna de ArrowForward
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward, 
                     contentDescription = null,
                     tint = Color(0xFF3F51B5)
                 )
@@ -139,9 +139,9 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                         viewModel.lanzarFlujoPago(it, "puntos_30_pack")
                     }
                 },
-            // Fondo ámbar muy suave para que no canse la vista
+            
             colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF8E1)),
-            // Borde dorado para dar sensación de calidad
+            
             border = BorderStroke(1.dp, Color(0xFFFFC107))
         ) {
             Row(
@@ -152,14 +152,14 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                     modifier = Modifier
                         .size(44.dp)
                         .background(
-                            // Gradiente sutil o color ámbar sólido oscuro
+                            
                             Color(0xFFFFA000),
                             CircleShape
                         ),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        // WorkspacePremium es ideal para representar reputación/estrellas
+                        
                         imageVector = Icons.Default.WorkspacePremium,
                         contentDescription = null,
                         tint = Color.White,
@@ -173,18 +173,18 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                     Text(
                         text = stringResource(R.string.paquete_de_30_puntos_0_25_rep_extra),
                         fontWeight = FontWeight.ExtraBold,
-                        color = Color(0xFF5D4037), // Un café muy oscuro para buen contraste
+                        color = Color(0xFF5D4037), 
                         fontSize = 16.sp
                     )
                     Text(
                         text = stringResource(R.string.consumible_compra_cuantas_veces_quieras_sube_tu_rep_y_aparrece_en_los_primeros_lugares),
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF795548), // Texto secundario suave
+                        color = Color(0xFF795548), 
                         lineHeight = 14.sp
                     )
                 }
 
-                // Precio destacado en una cápsula
+                
                 Surface(
                     color = Color(0xFFFFC107),
                     shape = RoundedCornerShape(12.dp)
@@ -220,7 +220,7 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
                 )
             }
 
-            // BOTÓN PARA ABRIR EL CRUD (CREAR)
+            
             FilledTonalIconButton(
                 onClick = { showAddDialog = true },
                 modifier = Modifier.size(44.dp),
@@ -388,7 +388,7 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
         }
     }
 
-    // DIÁLOGO DEL CRUD (FORMULARIO DE CREACIÓN)
+    
     if (showAddDialog) {
         AddLinkDialog(
             onDismiss = { showAddDialog = false },
@@ -404,7 +404,7 @@ fun CommunityLinksSection(viewModel: AuthViewModel, navController: NavController
 fun AddLinkDialog(onDismiss: () -> Unit, onConfirm: (String, String, String) -> Unit) {
     var titulo by remember { mutableStateOf("") }
     var url by remember { mutableStateOf("") }
-    var tag by remember { mutableStateOf("WhatsApp") } // Default
+    var tag by remember { mutableStateOf("WhatsApp") } 
     val tags = listOf("WhatsApp", "Telegram", "Reddit", "Discord", "Web")
     val isUrlValid = remember(url) {
         url.isNotBlank() && android.util.Patterns.WEB_URL.matcher(url).matches()

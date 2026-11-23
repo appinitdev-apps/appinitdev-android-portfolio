@@ -2,7 +2,7 @@
 class MediaFetcher(val context: Context) {
     var shouldStop = false
 
-    // on Android 11 we fetch all files at once from MediaStore and have it split by folder, use it if available
+    
     fun getFilesFrom(
         curPath: String, isPickImage: Boolean, isPickVideo: Boolean, getProperDateTaken: Boolean, getProperLastModified: Boolean,
         getProperFileSize: Boolean, favoritePaths: ArrayList<String>, getVideoDurations: Boolean,

@@ -8,7 +8,7 @@ fun AddAppBottomSheet(
 ) {
     val draft by viewModel.draftApp.collectAsState()
     
-    // Form States - Initialize with draft if not editing
+    
     var step by remember { mutableIntStateOf(if (appToEdit == null) draft.step else 1) }
     var nombre by remember { mutableStateOf(appToEdit?.nombre ?: draft.nombre) }
     var paquete by remember { mutableStateOf(appToEdit?.paquete ?: draft.paquete) }
@@ -27,7 +27,7 @@ fun AddAppBottomSheet(
 
     var showReputationAviso by remember { mutableStateOf(appToEdit == null) }
 
-    // Sync with ViewModel for draft persistence
+    
     LaunchedEffect(step, nombre, paquete, categoria, paisesAgregados, metodoTest, urlGoogleGroup, instrucciones, contactoDirecto, comunidadUrl, notas, cuentaPrueba, esDePago) {
         if (appToEdit == null) {
             viewModel.updateDraft {
@@ -140,7 +140,7 @@ fun AddAppBottomSheet(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // Header & Progress
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -174,7 +174,7 @@ fun AddAppBottomSheet(
                 color = MaterialTheme.colorScheme.secondary
             )
 
-            // Step Content
+            
             Box(modifier = Modifier.fillMaxWidth().animateContentSize()) {
                 when (step) {
                     1 -> StepNombre(
@@ -196,7 +196,7 @@ fun AddAppBottomSheet(
                 }
             }
 
-            // Navigation
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -284,7 +284,7 @@ fun StepNombre(
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        // Ícono / Imagen opcional de la App
+        
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
@@ -762,7 +762,7 @@ fun LinkItem(title: String, url: String) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
             ClickableText(
                 text = annotatedString,
-                onClick = { /* Abrir URL */ },
+                onClick = {   },
                 modifier = Modifier.weight(1f)
             )
             IconButton(onClick = { copyToClipboard(context, url) }) {

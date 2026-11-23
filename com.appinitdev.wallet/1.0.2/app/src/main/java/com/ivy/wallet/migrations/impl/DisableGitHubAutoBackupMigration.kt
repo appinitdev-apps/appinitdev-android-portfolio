@@ -7,7 +7,7 @@ class DisableGitHubAutoBackupMigration @Inject constructor(
         get() = "disable_github_auto_backups"
 
     override suspend fun migrate() {
-        // Cancel the GitHub worker
+        
         WorkManager.getInstance(context).cancelUniqueWork("GITHUB_AUTO_BACKUP_WORK")
 
         context.dataStore.edit {

@@ -1,11 +1,11 @@
 
-/**
- * Shows every audio track that has at least one saved bookmark as a simple flat list.
- * Tapping a row fires [Callbacks.onSongClicked] so the caller can open a dialog
- * with that song's full bookmark list.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 class AdapterBookmarks(
         private var items: List<AudioWithBookmarks>
 ) : RecyclerView.Adapter<VerticalListViewHolder>() {
@@ -37,26 +37,26 @@ class AdapterBookmarks(
         }
     }
 
-    /**
-     * Builds the combined play count + album string for the tertiary detail line.
-     * If the album name is absent the count text is shown on its own.
-     *
-     * @param item the [AudioWithStat] whose tertiary text is being built
-     */
+     
+
+
+
+
+
     private fun Context.buildTertiaryText(item: AudioWithBookmarks): String {
         val album = item.audio.getProperAlbum().takeIf { it.isNotEmpty() }
         val stat = resources.getQuantityString(R.plurals.number_of_bookmarks, item.bookmarks.size, item.bookmarks.size)
         return if (album != null) "$stat \u2022 $album" else stat
     }
 
-    /** Refreshes the list while keeping scroll position. */
+     
     fun updateItems(newItems: List<AudioWithBookmarks>) {
         items = newItems
         notifyDataSetChanged()
     }
 
     interface Callbacks {
-        /** Called when the user taps a song row — open the bookmarks dialog for that song. */
+         
         fun onSongClicked(item: AudioWithBookmarks)
     }
 }

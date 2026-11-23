@@ -9,11 +9,11 @@ fun CustomerSelectionDialog(
 ) {
     if (!showDialog) return
 
-    // Obtiene la lista de clientes desde el ViewModel (StateFlow)
+    
     val customers by viewModel.filteredCustomers.collectAsStateWithLifecycle()
     var searchQuery by remember { mutableStateOf("") }
 
-    // Filtra clientes por nombre, email o teléfono
+    
     val filteredCustomers = remember(searchQuery, customers) {
         customers.filter {
             it.fullName.contains(searchQuery, ignoreCase = true) ||
@@ -24,7 +24,7 @@ fun CustomerSelectionDialog(
 
     Dialog(
         onDismissRequest = onDismiss, properties = DialogProperties(
-            //usePlatformDefaultWidth = false,
+            
 
             decorFitsSystemWindows = false
         )
@@ -33,9 +33,9 @@ fun CustomerSelectionDialog(
             shape = MaterialTheme.shapes.medium,
             tonalElevation = 8.dp,
             modifier = Modifier
-                .fillMaxWidth()        // ancho completo (dentro del Box con padding)
-                .wrapContentHeight()   // que no se estire a toda la altura
-                .imePadding()       // ancho completo (dentro del Box con padding)
+                .fillMaxWidth()        
+                .wrapContentHeight()   
+                .imePadding()       
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
@@ -108,7 +108,7 @@ fun CustomerCardCompose(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                // Nombre y Email
+                
                 Text(
                     text = customer.fullName,
                     style = MaterialTheme.typography.titleMedium,
@@ -124,7 +124,7 @@ fun CustomerCardCompose(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Teléfono y Balance
+                
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
@@ -142,7 +142,7 @@ fun CustomerCardCompose(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Puntos de lealtad
+                
                 Text(
                     text = "⭐ " + stringResource(R.string.pointss) + " ${customer.loyaltyPoints}",
                     style = MaterialTheme.typography.bodySmall,
@@ -150,7 +150,7 @@ fun CustomerCardCompose(
                 )
             }
 
-            // Botones de acción
+            
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {

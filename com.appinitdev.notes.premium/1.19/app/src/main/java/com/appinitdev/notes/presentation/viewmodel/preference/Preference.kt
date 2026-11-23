@@ -1,9 +1,9 @@
 
-/**
- * Every Preference can be observed like a [NotNullLiveData].
- *
- * @param titleResId Optional string resource id, if preference can be set via the UI.
- */
+ 
+
+
+
+
 abstract class BasePreference<T>(
     private val sharedPreferences: SharedPreferences,
     protected val defaultValue: T,
@@ -255,7 +255,7 @@ class EncryptedPassphrasePreference(
 
         random.nextBytes(result)
 
-        // filter out zero byte values, as SQLCipher does not like them
+        
         while (result.contains(0)) {
             random.nextBytes(result)
         }

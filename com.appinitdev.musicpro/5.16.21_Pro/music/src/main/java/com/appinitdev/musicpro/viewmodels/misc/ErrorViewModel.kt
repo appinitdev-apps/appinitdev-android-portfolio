@@ -3,7 +3,7 @@ class ErrorViewModel(application: Application, private val error: String) : Andr
 
     private val message: Pattern = Pattern.compile("\\s[\\w\\s]+\\n", Pattern.MULTILINE)
 
-    private val tags = Pattern.compile("" /*Only for indentation */ +
+    private val tags = Pattern.compile(""   +
                                                "\\(\\w+\\.+\\S+\\)",
                                        Pattern.MULTILINE or Pattern.CASE_INSENSITIVE)
 

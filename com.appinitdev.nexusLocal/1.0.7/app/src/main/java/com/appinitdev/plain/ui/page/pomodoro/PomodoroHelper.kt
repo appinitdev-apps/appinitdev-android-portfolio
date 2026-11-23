@@ -15,7 +15,7 @@ object PomodoroHelper {
         val todayRecord = CoroutinesHelper.withIO { pomodoroDao.getByDate(today) }
         val completedPomodoros = todayRecord?.completedCount ?: 0
 
-        // Determine notification content based on current state
+        
         val (title, message) = when (state) {
             PomodoroState.WORK -> {
                 val newCount = completedPomodoros + 1
@@ -67,7 +67,7 @@ object PomodoroHelper {
     }
 
     suspend fun playCompletionSound(context: Context, settings: DPomodoroSettings) {
-        // First check if sound should be played at all
+        
         if (!settings.playSoundOnComplete) {
             return
         }
@@ -86,11 +86,11 @@ object PomodoroHelper {
                 }
             } catch (e: Exception) {
                 LogCat.e("Failed to play custom song, falling back to default sound: ${e.message}")
-                // Fall through to play default sound
+                
             }
         }
         
-        // Play default notification sound in IO thread
+        
         coIO {
             playNotificationSound()
         }
@@ -104,7 +104,7 @@ object PomodoroHelper {
             }
         } catch (e: Exception) {
             LogCat.e("Failed to play custom song: ${e.message}")
-            // Don't throw exception, let caller handle fallback
+            
         }
     }
 

@@ -93,7 +93,7 @@ fun GifPicker(onGifSelected: (String) -> Unit) {
 
         withContext(Dispatchers.IO) {
             try {
-                // USANDO API KEY PROPORCIONADA
+                
                 val apiKey = ""
                 val url = if (query.isEmpty()) {
                     "https://api.giphy.com/v1/gifs/trending?api_key=$apiKey&limit=20"
@@ -165,7 +165,7 @@ fun GifPicker(onGifSelected: (String) -> Unit) {
     }
 }
 
-// Modelos para Giphy
+
 data class GiphyResponse(val data: List<GiphyData>)
 data class GiphyData(val images: GiphyImages)
 data class GiphyImages(val fixed_height: GiphyImage)

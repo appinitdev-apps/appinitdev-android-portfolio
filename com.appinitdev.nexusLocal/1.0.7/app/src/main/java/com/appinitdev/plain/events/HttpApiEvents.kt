@@ -3,10 +3,10 @@ class HMessageCreatedEvent(val target: ChatTarget, val items: List<DChat>) : Cha
 
 class HMessageUpdatedEvent(val id: String) : ChannelEvent()
 
-// Download events
+
 class HDownloadTaskDoneEvent(val downloadTask: DownloadTask) : ChannelEvent()
 
-// Pomodoro events
+
 class HPomodoroStartEvent(val timeLeft: Int) : ChannelEvent()
 
 class HPomodoroPauseEvent : ChannelEvent()
@@ -22,12 +22,12 @@ class HOpenAccessibilitySettingsEvent : ChannelEvent()
 class HOpenWebSettingsEvent : ChannelEvent()
 
 class HRetryChatItemEvent(val item: DChat) : ChannelEvent()
-/**
- * Fired after the default SMS app is launched for an MMS send.
- * AppEvents will poll content://mms until the row appears, then
- * remove the pending entry from TempData, delete the attachment
- * files on device, and emit MMS_SENT to all web clients.
- */
+ 
+
+
+
+
+
 data class HStartMmsPollingEvent(
     val pendingId: String,
     val launchTimeSec: Long,

@@ -1,13 +1,13 @@
 
 
-// --- MOTOR DEL ALGORITMO A* ---
+
 
 class PuzzleNode(
     val state: List<Int>,
-    val g: Int,           // Movimientos realizados
-    val h: Int,           // Distancia de Manhattan (lo que falta)
+    val g: Int,           
+    val h: Int,           
     val parent: PuzzleNode?,
-    val movePieceId: Int  // Guardamos el ID de la pieza que se movió
+    val movePieceId: Int  
 ) : Comparable<PuzzleNode> {
     val f: Int get() = g + h
     override fun compareTo(other: PuzzleNode): Int = this.f.compareTo(other.f)
@@ -23,7 +23,7 @@ fun solvePuzzleAStar(pieces: List<Piece>, n: Int): List<Int> {
 
     openSet.add(PuzzleNode(initialState, 0, calculateManhattan(initialState, n), null, -1))
 
-    // Límite de seguridad para evitar bucles infinitos en tableros sin solución
+    
     var iterations = 0
     while (openSet.isNotEmpty() && iterations < 5000) {
         iterations++
@@ -42,7 +42,7 @@ fun solvePuzzleAStar(pieces: List<Piece>, n: Int): List<Int> {
         closedSet.add(current.state)
         val blankIndex = current.state.indexOf(blankId)
 
-        // Movimientos posibles (Arriba, Abajo, Izquierda, Derecha)
+        
         val row = blankIndex / n
         val col = blankIndex % n
         val neighbors = mutableListOf<Int>()
@@ -55,7 +55,7 @@ fun solvePuzzleAStar(pieces: List<Piece>, n: Int): List<Int> {
             val newState = current.state.toMutableList()
             val movedPieceId = newState[neighborIndex]
 
-            // Intercambio
+            
             newState[blankIndex] = movedPieceId
             newState[neighborIndex] = blankId
 
@@ -77,7 +77,7 @@ fun calculateLinearConflicts(state: List<Int>, n: Int): Int {
     var conflicts = 0
     val blankId = n * n - 1
 
-    // Row conflicts
+    
     for (row in 0 until n) {
         for (i in 0 until n) {
             val idx1 = row * n + i
@@ -96,7 +96,7 @@ fun calculateLinearConflicts(state: List<Int>, n: Int): Int {
         }
     }
 
-    // Column conflicts
+    
     for (col in 0 until n) {
         for (i in 0 until n) {
             val idx1 = i * n + col
@@ -123,7 +123,7 @@ fun calculateManhattan(state: List<Int>, n: Int): Int {
     val blankId = n * n - 1
     for (i in state.indices) {
         val id = state[i]
-        if (id != blankId) { // No contar el espacio en blanco
+        if (id != blankId) { 
             val targetX = id % n
             val targetY = id / n
             val currentX = i % n
@@ -135,15 +135,15 @@ fun calculateManhattan(state: List<Int>, n: Int): Int {
     return dist + (2 * linearConflicts)
 }
 
-/**
- * Pista Inteligente A*: Retorna el ID de la siguiente pieza óptima a mover
- */
+ 
+
+
 fun getSmartHintMove(pieces: List<Piece>, n: Int): Int? {
     val solution = solvePuzzleAStar(pieces, n)
     if (solution.isNotEmpty()) {
         return solution.first()
     }
-    // Fallback con IDA* si A* sobrepasa el límite de iteraciones
+    
     val idaSolution = solvePuzzleIDAStar(pieces, n)
     return idaSolution?.firstOrNull()
 }

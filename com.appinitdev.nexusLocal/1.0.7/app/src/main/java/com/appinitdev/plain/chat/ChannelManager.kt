@@ -1,13 +1,13 @@
 
-/**
- * Centralizes chat-channel mutations. Shared by ChannelViewModel and
- * ChatChannelGraphQL so both call sites exercise the same code path.
- *
- * All functions are `suspend` and do not switch threads — callers (ViewModel
- * coroutines or GraphQL resolvers) are responsible for dispatch. Lookups
- * and preconditions throw [Exception] with a specific message; let the
- * caller (UI / GraphQL) decide how to surface it.
- */
+ 
+
+
+
+
+
+
+
+
 object ChannelManager {
 
     suspend fun createChannel(name: String): DChatChannel {
@@ -24,7 +24,7 @@ object ChannelManager {
         return channel
     }
 
-    /** Throws if the channel is missing. */
+     
     suspend fun renameChannel(channelId: String, newName: String): DChatChannel {
         val channel = AppDatabase.instance.chatChannelDao().getById(channelId)
             ?: throw Exception("Channel not found")
@@ -51,7 +51,7 @@ object ChannelManager {
         sendEvent(ChannelUpdatedEvent())
     }
 
-    /** Owners must delete instead. */
+     
     suspend fun leaveChannel(channelId: String) {
         val channel = AppDatabase.instance.chatChannelDao().getById(channelId)
             ?: throw Exception("Channel not found")

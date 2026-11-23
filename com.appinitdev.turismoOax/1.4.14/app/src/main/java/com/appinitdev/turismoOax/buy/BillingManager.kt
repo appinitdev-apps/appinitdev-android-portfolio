@@ -6,7 +6,7 @@ class BillingManager(
 
     private val TAG = "BillingManager"
 
-    // Crea el BillingClient habilitando compras pendientes
+    
     private val billingClient: BillingClient = BillingClient.newBuilder(context)
         .setListener(this)
         .enablePendingPurchases(
@@ -25,7 +25,7 @@ class BillingManager(
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     Log.d(TAG, "Billing Client conectado con éxito")
-                    // Al conectar, revisamos si hay compras que no se confirmaron antes
+                    
                     queryPurchases()
                 } else {
                     Log.e(TAG, "Error en setup: ${billingResult.debugMessage}")
@@ -39,7 +39,7 @@ class BillingManager(
         })
     }
 
-    // Método para consultar detalles del producto
+    
     fun queryProductDetails(productId: String, onResult: (List<ProductDetails>) -> Unit) {
         val params = QueryProductDetailsParams.newBuilder()
             .setProductList(
@@ -61,7 +61,7 @@ class BillingManager(
         }
     }
 
-    // Lanza el flujo de compra
+    
     fun launchPurchaseFlow(activity: Activity, productDetails: ProductDetails) {
         val productDetailsParamsList = listOf(
             BillingFlowParams.ProductDetailsParams.newBuilder()
@@ -75,7 +75,7 @@ class BillingManager(
         billingClient.launchBillingFlow(activity, billingFlowParams)
     }
 
-    // 1. REVISIÓN DE COMPRAS (Evita reembolsos si la app se cerró)
+    
     fun queryPurchases() {
         if (!billingClient.isReady) return
 
@@ -90,13 +90,13 @@ class BillingManager(
         }
     }
 
-    // 2. PROCESO DE CONFIRMACIÓN (Acknowledge)
-    // ... importaciones existentes
+    
+    
 
     private fun processPurchase(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-            // En productos consumibles, NO se usa acknowledgePurchase.
-            // Se usa consumeAsync para permitir que se pueda volver a comprar.
+            
+            
 
             val consumeParams = ConsumeParams.newBuilder()
                 .setPurchaseToken(purchase.purchaseToken)
@@ -105,7 +105,7 @@ class BillingManager(
             billingClient.consumeAsync(consumeParams) { billingResult, purchaseToken ->
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     Log.d(TAG, "Producto consumido con éxito, ya puede volver a comprarse.")
-                    // Aquí notificas a tu app que entregue el beneficio (ej. sumar monedas)
+                    
                     onPurchaseCompleted(purchase)
                 } else {
                     Log.e(TAG, "Error consumiendo producto: ${billingResult.debugMessage}")
@@ -114,7 +114,7 @@ class BillingManager(
         }
     }
 
-    // Callback de Google Play cuando cambia el estado de una compra
+    
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: MutableList<Purchase>?) {
         when (billingResult.responseCode) {
             BillingClient.BillingResponseCode.OK -> {

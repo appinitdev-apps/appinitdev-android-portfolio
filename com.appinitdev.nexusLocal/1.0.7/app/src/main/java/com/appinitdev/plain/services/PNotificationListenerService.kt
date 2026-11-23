@@ -9,21 +9,21 @@ class PNotificationListenerService : NotificationListenerService() {
         if (notification.flags and Notification.FLAG_FOREGROUND_SERVICE != 0
             || notification.flags and Notification.FLAG_ONGOING_EVENT != 0
             || notification.flags and Notification.FLAG_LOCAL_ONLY != 0
-            || notification.flags and NotificationCompat.FLAG_GROUP_SUMMARY != 0 //The notification that groups other notifications
+            || notification.flags and NotificationCompat.FLAG_GROUP_SUMMARY != 0 
         ) {
-            //This is not a notification we want!
+            
             return false
         }
 
         val packageName = statusBarNotification.packageName
 
         if ("com.facebook.orca" == packageName && statusBarNotification.id == 10012 && notification.tickerText == null) {
-            //HACK: Hide weird Facebook empty "Messenger" notification that is actually not shown in the phone
+            
             return false
         }
 
         if (applicationContext.packageName == packageName && !BuildConfig.DEBUG) {
-            // Don't send our own notifications (allow in DEBUG for testing)
+            
             return false
         }
 
@@ -38,7 +38,7 @@ class PNotificationListenerService : NotificationListenerService() {
                 AndroidTempData.notifications.remove(old)
             }
             AndroidTempData.notifications.add(n)
-            // Store raw actions for reply support
+            
             val rawActions = statusBarNotification.notification.actions
             if (rawActions != null) {
                 AndroidTempData.notificationActions[n.id] = rawActions
@@ -138,7 +138,7 @@ class PNotificationListenerService : NotificationListenerService() {
                     }
                 } catch (ex: SecurityException) {
                     LogCat.e("SecurityException when canceling notifications: ${ex.message}")
-                    // Service might have lost permission, mark as disconnected
+                    
                     isConnected = false
                 } catch (ex: Exception) {
                     LogCat.e("Error canceling notifications: ${ex.message}")

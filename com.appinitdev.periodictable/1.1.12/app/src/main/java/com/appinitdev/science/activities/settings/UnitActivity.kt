@@ -14,32 +14,32 @@ class UnitActivity : BaseActivity()  {
         if (themePrefValue == 0) { setTheme(R.style.AppTheme) }
         if (themePrefValue == 1) { setTheme(R.style.AppThemeDark) }
 
-        setContentView(R.layout.activity_unit) //REMEMBER: Never move any function calls above this
+        setContentView(R.layout.activity_unit) 
         findViewById<FrameLayout>(R.id.view_unit).systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 
-        //Title Controller
-        /*findViewById<FrameLayout>(R.id.common_title_back_unit_color).visibility = View.INVISIBLE
-        findViewById<TextView>(R.id.unit_title).visibility = View.INVISIBLE
-        findViewById<FrameLayout>(R.id.common_title_back_unit).elevation = (resources.getDimension(R.dimen.zero_elevation))
-        findViewById<ScrollView>(R.id.unit_scroll).getViewTreeObserver()
-            .addOnScrollChangedListener(object : ViewTreeObserver.OnScrollChangedListener {
-                var y = 300f
-                override fun onScrollChanged() {
-                    if (findViewById<ScrollView>(R.id.unit_scroll).getScrollY() > 150) {
-                        findViewById<FrameLayout>(R.id.common_title_back_unit_color).visibility = View.VISIBLE
-                        findViewById<TextView>(R.id.unit_title).visibility = View.VISIBLE
-                        findViewById<TextView>(R.id.unit_title_downstate).visibility = View.INVISIBLE
-                        findViewById<FrameLayout>(R.id.common_title_back_unit).elevation = (resources.getDimension(R.dimen.one_elevation))
-                    } else {
-                        findViewById<FrameLayout>(R.id.common_title_back_unit_color).visibility = View.INVISIBLE
-                        findViewById<TextView>(R.id.unit_title).visibility = View.INVISIBLE
-                        findViewById<TextView>(R.id.unit_title_downstate).visibility = View.VISIBLE
-                        findViewById<FrameLayout>(R.id.common_title_back_unit).elevation = (resources.getDimension(R.dimen.zero_elevation))
-                    }
-                    y = findViewById<ScrollView>(R.id.unit_scroll).getScrollY().toFloat()
-                }
-            })
-        */tempUnits()
+        
+         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+tempUnits()
         findViewById<ImageButton>(R.id.back_btn_unit).setOnClickListener {
             this.onBackPressed()
         }

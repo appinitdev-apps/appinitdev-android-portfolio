@@ -1,5 +1,5 @@
 
-/** BottomSheet inside list-note for all common note actions. */
+ 
 class MoreNoteBottomSheet(
     callbacks: MoreActions,
     additionalActions: Collection<Action> = listOf(),

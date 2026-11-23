@@ -118,7 +118,7 @@ open class BTDevice(val device: BluetoothDevice, var rssi: Int = 0) {
                     when (newState) {
                         BluetoothProfile.STATE_DISCONNECTED -> {
                             LogCat.d("Disconnected from ${gatt.device.address}")
-                            disconnect() // make sure gatt is disposed when the connection is terminated accidentally.
+                            disconnect() 
                             BluetoothUtil.teardownConnection(this@BTDevice)
                         }
                         BluetoothProfile.STATE_CONNECTED -> {

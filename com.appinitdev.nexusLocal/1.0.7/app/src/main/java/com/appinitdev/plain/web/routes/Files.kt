@@ -107,7 +107,7 @@ fun Route.addFiles() {
                 val w = q["w"]?.toIntOrNull()
                 val h = q["h"]?.toIntOrNull()
                 val centerCrop = q["cc"]?.toBooleanStrictOrNull() != false
-                // get video/image thumbnail
+                
                 if (w != null && h != null) {
                     val bytes = withIO { ThumbnailGenerator.toThumbBytesAsync(MainApp.instance, file, w, h, centerCrop, mediaId, fileName) }
                     if (bytes != null) {
@@ -118,10 +118,10 @@ fun Route.addFiles() {
                 val header = ByteArray(12)
                 val headerSize = file.inputStream().use { it.read(header) }
                 val isHeif = headerSize >= 12 &&
-                        header[4] == 0x66.toByte() && // 'f'
-                        header[5] == 0x74.toByte() && // 't'
-                        header[6] == 0x79.toByte() && // 'y'
-                        header[7] == 0x70.toByte() && // 'p'
+                        header[4] == 0x66.toByte() && 
+                        header[5] == 0x74.toByte() && 
+                        header[6] == 0x79.toByte() && 
+                        header[7] == 0x70.toByte() && 
                         String(header.copyOfRange(8, 12)) in listOf("heic", "heix", "hevc", "hevx", "avif")
 
                 if (isHeif) {

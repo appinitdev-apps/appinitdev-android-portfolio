@@ -44,7 +44,7 @@ data class Customer(
         get() = balance < BigDecimal.ZERO
 
     fun canAffordCreditSale(amount: BigDecimal): Boolean {
-        if (!hasCreditLimit) return true // No explicit credit limit means unlimited or default
+        if (!hasCreditLimit) return true 
         return availableCredit >= amount
     }
 

@@ -12,7 +12,7 @@ object DirectPrintManager {
         val printManager = context.getSystemService(Context.PRINT_SERVICE) as PrintManager
         val jobName = "Informe_IMC_${memberName.replace(" ", "_")}"
 
-        // Generate temporary PDF file
+        
         PdfReportGenerator.generateAndSharePdf(
             context = context,
             memberName = memberName,

@@ -1,8 +1,8 @@
 
-/**
- * Sort algorithm that only sorts by [ListItem.order]. A children is always below it's parent and
- * above parents with a lower order.
- */
+ 
+
+
+
 class ListItemParentSortCallback(adapter: RecyclerView.Adapter<*>?) :
     SortedListAdapterCallback<ListItem>(adapter) {
 
@@ -52,12 +52,12 @@ class ListItemParentSortCallback(adapter: RecyclerView.Adapter<*>?) :
     private fun compareOrder(item1: ListItem, item2: ListItem): Int {
         val orderCmp = item1.order!!.compareTo(item2.order!!)
         if (orderCmp == 0 && item1.isChildOf(item2)) {
-            return -1 // happens when a parent with children is moved up, the children is
-            // moved first
+            return -1 
+            
         }
         if (orderCmp == 0 && item2.isChildOf(item1)) {
-            return 1 // happens when a parent with children is moved down, the children is
-            // moved first
+            return 1 
+            
         }
         return orderCmp
     }

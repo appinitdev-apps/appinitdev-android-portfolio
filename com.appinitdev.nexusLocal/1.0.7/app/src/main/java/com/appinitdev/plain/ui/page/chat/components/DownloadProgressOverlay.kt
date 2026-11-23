@@ -5,7 +5,7 @@ private fun DualProgressIndicator(
     size: Dp
 ) {
     val modifier = Modifier.size(size)
-    // Progress circle background (track)
+    
     CircularProgressIndicator(
         progress = { 1f },
         modifier = modifier,
@@ -13,7 +13,7 @@ private fun DualProgressIndicator(
         strokeWidth = 4.dp,
         trackColor = Color.Transparent
     )
-    // Actual progress
+    
     CircularProgressIndicator(
         progress = { progress.coerceIn(0f, 1f) },
         modifier = modifier,
@@ -81,7 +81,7 @@ fun DownloadProgressOverlay(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
-        // Show progress indicators for downloading and paused states
+        
         if (status in setOf(DownloadStatus.DOWNLOADING, DownloadStatus.PAUSED)) {
             DualProgressIndicator(
                 progress = downloadProgress,
@@ -96,7 +96,7 @@ fun DownloadProgressOverlay(
             )
         }
 
-        // Action button for all states
+        
         DownloadActionButton(
             status = status,
             onPause = onPause,

@@ -1,7 +1,7 @@
 
 class ElementInfoActivity : InfoExtension() {
 
-    // Lifecycle-aware callback references
+    
     private var backCallback: OnBackPressedCallback? = null
     private var onBackInvokedCb: android.window.OnBackInvokedCallback? = null
 
@@ -55,25 +55,25 @@ class ElementInfoActivity : InfoExtension() {
             val intent = Intent(this, UserActivity::class.java)
             startActivity(intent)
         }
-        //Check if PRO version and if make changes:
+        
         val proPref = ProVersion(this)
         var proPrefValue = proPref.getValue()
         if (proPrefValue==100) {
             proChanges()
         }
         else {
-            findViewById<LinearLayout>(R.id.more_properties).visibility = View.VISIBLE //Changed as implementing new PRO dialog
-            findViewById<LinearLayout>(R.id.hardness_properties).visibility = View.VISIBLE //Changed as implementing new PRO dialog
+            findViewById<LinearLayout>(R.id.more_properties).visibility = View.VISIBLE 
+            findViewById<LinearLayout>(R.id.hardness_properties).visibility = View.VISIBLE 
         }
 
-        // Register lifecycle-aware OnBackPressedCallback in DISABLED state.
-        // We'll enable it only when overlays (shell, emission detail) are visible.
+        
+        
         backCallback = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
-                // Try to close overlays first
+                
                 val consumed = handleBackPress()
                 if (!consumed) {
-                    // Nothing to close -> forward to system/back behaviour.
+                    
                     backCallback?.isEnabled = false
                     try {
                         if (isTaskRoot) {
@@ -82,43 +82,43 @@ class ElementInfoActivity : InfoExtension() {
                             finish()
                         }
                     } catch (e: Exception) {
-                        // Fallback to default
+                        
                         super@ElementInfoActivity.onBackPressed()
                     }
                 } else {
-                    // Keep interception enabled only while overlays remain
+                    
                     backCallback?.isEnabled = anyOverlayOpen()
                 }
             }
         }
         onBackPressedDispatcher.addCallback(this, backCallback!!)
 
-        // We will dynamically register the platform OnBackInvokedCallback when interception is enabled
-        // via setBackInterceptionEnabled(enabled) below.
+        
+        
     }
 
     private fun proChanges() {
-        //more properties
+        
         findViewById<FrameLayout>(R.id.pro_box).visibility = View.GONE
         findViewById<LinearLayout>(R.id.more_properties).visibility = View.VISIBLE
 
-        //hardness properties
+        
         findViewById<FrameLayout>(R.id.pro_hardness_box).visibility = View.GONE
         findViewById<LinearLayout>(R.id.hardness_properties).visibility = View.VISIBLE
 
-        //hazard properties
+        
         findViewById<FrameLayout>(R.id.pro_hazard_box).visibility = View.GONE
         findViewById<LinearLayout>(R.id.hazard_properties).visibility = View.VISIBLE
     }
 
     override fun onBackPressed() {
-        // Fallback for devices < API 33: handleBackPress() will close overlays; otherwise default behavior.
+        
         if (!handleBackPress()) {
             super.onBackPressed()
         }
     }
 
-    // Helper to determine whether any overlay is currently open and requires interception
+    
     private fun anyOverlayOpen(): Boolean {
         val shell = findViewById<CardView?>(R.id.shell)
         val shellBg = findViewById<RealtimeBlurView?>(R.id.shell_background)
@@ -131,7 +131,7 @@ class ElementInfoActivity : InfoExtension() {
                 (detailBg?.visibility == View.VISIBLE)
     }
 
-    // Centralized enabling/disabling of back interception; also registers/unregisters platform callback on newer OS.
+    
     private fun setBackInterceptionEnabled(enabled: Boolean) {
         backCallback?.isEnabled = enabled
 
@@ -139,7 +139,7 @@ class ElementInfoActivity : InfoExtension() {
             if (enabled) {
                 if (onBackInvokedCb == null) {
                     onBackInvokedCb = android.window.OnBackInvokedCallback {
-                        // Mirror OnBackPressedCallback behavior
+                        
                         val consumed = handleBackPress()
                         if (!anyOverlayOpen()) {
                             try {
@@ -147,11 +147,11 @@ class ElementInfoActivity : InfoExtension() {
                             } catch (_: Exception) { }
                             onBackInvokedCb = null
                             backCallback?.isEnabled = false
-                            // If nothing was consumed by handleBackPress, forward to system behavior
+                            
                             if (!consumed) {
                                 try {
                                     if (isTaskRoot) moveTaskToBack(true) else finish()
-                                } catch (_: Exception) { /* ignore */ }
+                                } catch (_: Exception) {   }
                             }
                         }
                     }
@@ -171,7 +171,7 @@ class ElementInfoActivity : InfoExtension() {
         }
     }
 
-    // Close overlays (shell or detail emission) if visible; return true if consumed.
+    
     private fun handleBackPress(): Boolean {
         val shell = findViewById<CardView>(R.id.shell)
         val shellBg = findViewById<RealtimeBlurView>(R.id.shell_background)
@@ -181,13 +181,13 @@ class ElementInfoActivity : InfoExtension() {
         return if (shellBg.visibility == View.VISIBLE || shell.visibility == View.VISIBLE) {
             Utils.fadeOutAnim(shell, 300)
             Utils.fadeOutAnim(shellBg, 300)
-            // update interception state immediately so the next system back/gesture is routed correctly
+            
             setBackInterceptionEnabled(anyOverlayOpen())
             true
         } else if (detail.visibility == View.VISIBLE || detailBg.visibility == View.VISIBLE) {
             Utils.fadeOutAnim(detail, 300)
             Utils.fadeOutAnim(detailBg, 300)
-            // update interception state immediately so the next system back/gesture is routed correctly
+            
             setBackInterceptionEnabled(anyOverlayOpen())
             true
         } else {
@@ -237,37 +237,37 @@ class ElementInfoActivity : InfoExtension() {
         findViewById<CardView>(R.id.electron_view).setOnClickListener {
             Utils.fadeInAnim(findViewById<CardView>(R.id.shell), 300)
             Utils.fadeInAnim(findViewById<RealtimeBlurView>(R.id.shell_background), 300)
-            // overlay shown -> enable interception
+            
             setBackInterceptionEnabled(true)
         }
         findViewById<FloatingActionButton>(R.id.close_shell_btn).setOnClickListener {
             Utils.fadeOutAnim(findViewById<CardView>(R.id.shell), 300)
             Utils.fadeOutAnim(findViewById<RealtimeBlurView>(R.id.shell_background), 300)
-            // update interception state immediately (do not defer)
+            
             setBackInterceptionEnabled(anyOverlayOpen())
         }
         findViewById<RealtimeBlurView>(R.id.shell_background).setOnClickListener {
             Utils.fadeOutAnim(findViewById<CardView>(R.id.shell), 300)
             Utils.fadeOutAnim(findViewById<RealtimeBlurView>(R.id.shell_background), 300)
-            // update interception state immediately (do not defer)
+            
             setBackInterceptionEnabled(anyOverlayOpen())
         }
         findViewById<ImageView>(R.id.sp_img).setOnClickListener {
             Utils.fadeInAnim(findViewById<CardView>(R.id.detail_emission), 300)
             Utils.fadeInAnim(findViewById<RealtimeBlurView>(R.id.detail_emission_background), 300)
-            // overlay shown -> enable interception
+            
             setBackInterceptionEnabled(true)
         }
         findViewById<FloatingActionButton>(R.id.close_emission_btn).setOnClickListener {
             Utils.fadeOutAnim(findViewById<CardView>(R.id.detail_emission), 300)
             Utils.fadeOutAnim(findViewById<RealtimeBlurView>(R.id.detail_emission_background), 300)
-            // update interception state immediately (do not defer)
+            
             setBackInterceptionEnabled(anyOverlayOpen())
         }
         findViewById<RealtimeBlurView>(R.id.detail_emission_background).setOnClickListener {
             Utils.fadeOutAnim(findViewById<CardView>(R.id.detail_emission), 300)
             Utils.fadeOutAnim(findViewById<RealtimeBlurView>(R.id.detail_emission_background), 300)
-            // update interception state immediately (do not defer)
+            
             setBackInterceptionEnabled(anyOverlayOpen())
         }
     }

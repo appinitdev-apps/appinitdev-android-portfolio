@@ -1,15 +1,15 @@
 
-/**
- * Fragment that displays the artist page, showing all related data such as
- * songs, albums, and genres associated with a given [Artist].
- *
- * This fragment observes [ArtistViewerViewModel] and updates the UI reactively
- * whenever new [PageData] is emitted. All common interaction callbacks are
- * handled by [com.appinitdev.musicpro.extensions.fragments.BasePageFragment]; only the artist-specific overflow menu is
- * implemented here.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
 
 @AndroidEntryPoint
 class ArtistPage : BasePageFragment() {
@@ -40,23 +40,23 @@ class ArtistPage : BasePageFragment() {
         return binding.root
     }
 
-    /**
-     * Sets up the RecyclerView and begins collecting [PageData] from [ArtistViewerViewModel].
-     */
+     
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         collectPageData { artistViewerViewModel.data }
     }
 
-    /**
-     * Called once the adapter is ready. We start observing [ArtistViewerViewModel.artistInfo]
-     * from here — not from [onViewCreated] — so we're guaranteed the adapter exists when
-     * the first (possibly instant, cached) value arrives.
-     *
-     * Since [artistInfo] is a [kotlinx.coroutines.flow.StateFlow], it replays its most recent
-     * value to every new collector, so a cache hit that resolved before this method was called
-     * will still be delivered correctly.
-     */
+     
+
+
+
+
+
+
+
+
     override fun onPageAdapterCreated() {
         viewLifecycleOwner.lifecycleScope.launch {
             artistViewerViewModel.artistInfo.collect { info ->
@@ -65,18 +65,18 @@ class ArtistPage : BasePageFragment() {
         }
     }
 
-    /**
-     * Delegates sort re-ordering to the [ArtistViewerViewModel] without a database round-trip.
-     */
+     
+
+
     override fun resortPageData() {
         artistViewerViewModel.resort()
     }
 
-    /**
-     * Displays the artist overflow menu with play, shuffle, and send actions.
-     *
-     * @param view The anchor [View] for the popup.
-     */
+     
+
+
+
+
     override fun onMenuClicked(view: View) {
         viewLifecycleOwner.lifecycleScope.launch {
             val currentData = artistViewerViewModel.data.value ?: return@launch
@@ -108,17 +108,17 @@ class ArtistPage : BasePageFragment() {
     companion object {
         const val TAG = "ArtistPage"
 
-        /**
-         * Creates a new instance of [ArtistPage] with the given [artist] bundled as arguments.
-         *
-         * @param artist The [Artist] whose data will be displayed in this fragment.
-         * @return A new [ArtistPage] instance ready to be committed via a fragment transaction.
-         */
+         
+
+
+
+
+
         fun newInstance(artist: Artist): ArtistPage {
             val args = Bundle()
-            // Strip the song paths before parceling — they can be huge for big libraries
-            // and will blow past the 1 MB Binder transaction limit in no time. The
-            // ViewModel fetches the songs fresh from the repository anyway.
+            
+            
+            
             args.putParcelable(BundleConstants.ARTIST, artist.copy(songPaths = emptyList()))
             val fragment = ArtistPage()
             fragment.arguments = args

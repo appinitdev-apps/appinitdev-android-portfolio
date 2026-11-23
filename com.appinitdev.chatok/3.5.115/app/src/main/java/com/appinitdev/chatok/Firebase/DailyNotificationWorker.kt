@@ -38,7 +38,7 @@ class DailyNotificationWorker(
         val manager =
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        // Canal obligatorio Android 8+
+        
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
@@ -63,7 +63,7 @@ class DailyNotificationWorker(
         )
 
         val notification = NotificationCompat.Builder(applicationContext, channelId)
-            .setSmallIcon(R.drawable.ic_notification) // Cambiado a ic_notification para consistencia
+            .setSmallIcon(R.drawable.ic_notification) 
             .setContentTitle(title)
             .setContentText(body)
             .setContentIntent(pendingIntent)

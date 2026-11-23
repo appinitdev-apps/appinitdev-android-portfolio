@@ -18,8 +18,8 @@ class Darken(private val factor: Float = 0.6f) : BitmapTransformation() {
         val paint = Paint()
 
         val colorMatrix = android.graphics.ColorMatrix().apply {
-            setScale(factor, factor, factor, 1f) // Darken
-            val saturationBoost = 1f // change it to add saturation
+            setScale(factor, factor, factor, 1f) 
+            val saturationBoost = 1f 
             val saturationMatrix = android.graphics.ColorMatrix()
             saturationMatrix.setSaturation(saturationBoost)
             postConcat(saturationMatrix)

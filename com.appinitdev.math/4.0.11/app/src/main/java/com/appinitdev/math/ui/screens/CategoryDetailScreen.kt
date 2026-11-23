@@ -38,7 +38,7 @@ fun CategoryDetailScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Category info header
+            
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -76,7 +76,7 @@ fun CategoryDetailScreen(
                 )
             }
 
-            // Topics list
+            
             items(topics) { topic ->
                 TopicCard(
                     topic = topic,

@@ -1,11 +1,11 @@
 
-/**
- * AlphaTileDrawable displays ARGB colors including transparency with tiles on a canvas.
- *
- * @param tileSize DP size of tiles.
- * @param tileOddColor Color of the odd tiles.
- * @param tileEvenColor Color of the even tiles.
- */
+ 
+
+
+
+
+
+
 public class AlphaTileDrawable constructor(
   tileSize: Float,
   tileOddColor: Color,

@@ -17,7 +17,7 @@ enum class Color {
         fun allColorStrings() = entries.map { it.toColorString() }.toList()
 
         fun random(): Color {
-            return entries.random() // elige un Color del enum
+            return entries.random() 
         }
 
         fun valueOfOrDefault(value: String) =

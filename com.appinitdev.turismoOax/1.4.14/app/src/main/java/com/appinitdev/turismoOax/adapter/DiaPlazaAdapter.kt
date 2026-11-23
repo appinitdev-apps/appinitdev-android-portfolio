@@ -25,9 +25,9 @@ class DiaPlazaAdapter(
             destacado.text = "🍲 ${item.platillosArtesanias}"
             descripcion.text = item.descripcion
 
-            // Calcular si HOY es el día de plaza
+            
             val cal = Calendar.getInstance()
-            // Calendar.DAY_OF_WEEK: Sunday=1, Monday=2, ..., Saturday=7
+            
             val currentDayOfWeek = when (cal.get(Calendar.DAY_OF_WEEK)) {
                 Calendar.MONDAY -> 1
                 Calendar.TUESDAY -> 2

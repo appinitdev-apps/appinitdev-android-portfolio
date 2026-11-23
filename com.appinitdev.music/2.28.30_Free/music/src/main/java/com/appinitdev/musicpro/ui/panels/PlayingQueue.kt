@@ -25,7 +25,7 @@ class PlayingQueue : BasePanelFragment() {
         binding.appHeader.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
         binding.recyclerView.attachSlideFastScroller()
 
-        /** Queue always shows as a single-column list; no grid switching. */
+         
         binding.recyclerView.setupGridLayoutManager(1)
 
         setupHeaderClicks()
@@ -46,7 +46,7 @@ class PlayingQueue : BasePanelFragment() {
     }
 
     private fun setupHeaderClicks() {
-        // Reserved for future header actions
+        
     }
 
     private fun updateQueueList(songs: List<Audio>) {
@@ -90,11 +90,11 @@ class PlayingQueue : BasePanelFragment() {
             )
         }
 
-        /**
-         * Scroll to the currently playing song only on the initial load. Subsequent queue
-         * changes (drag reorder, swipe-to-remove, song change) must NOT trigger a scroll
-         * to avoid a feedback loop that floods the RecyclerView with continuous scroll events.
-         */
+         
+
+
+
+
         if (requireArguments().getBoolean(FIRST_LAUNCH_KEY, true)) {
             if (!hasScrolledToInitialPosition && binding.recyclerView.layoutManager is GridLayoutManager) {
                 hasScrolledToInitialPosition = true

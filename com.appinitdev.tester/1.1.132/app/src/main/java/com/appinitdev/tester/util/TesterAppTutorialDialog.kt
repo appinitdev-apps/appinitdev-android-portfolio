@@ -1,31 +1,31 @@
 
-// 1. Estructura de datos para mantener el código UI limpio
+
 data class TutorialPage(
     val icon: ImageVector,
-    val titleRes: Int,       // Cambiado a Int para el ID del recurso
-    val descriptionRes: Int  // Cambiado a Int para el ID del recurso
+    val titleRes: Int,       
+    val descriptionRes: Int  
 )
 
 val tutorialPages = listOf(
-    // 1. Regla de los 20 Testers
+    
     TutorialPage(
         Icons.Default.VerifiedUser,
         R.string.regla_1_titulo,
         R.string.regla_1_desc
     ),
-    // 2. Configuración de Acceso
+    
     TutorialPage(
         Icons.Default.Group,
         R.string.regla_2_titulo,
         R.string.regla_2_desc
     ),
-    // 3. Feedback y Calidad
+    
     TutorialPage(
         Icons.Default.EmojiEvents,
         R.string.regla_3_titulo,
         R.string.regla_3_desc
     ),
-    // 4. Sincronización Diaria
+    
     TutorialPage(
         Icons.Default.TrendingUp,
         R.string.regla_4_titulo,
@@ -40,14 +40,14 @@ fun TesterAppTutorialDialog(
     val pagerState = rememberPagerState(pageCount = { tutorialPages.size })
     val coroutineScope = rememberCoroutineScope()
 
-    // 2. Usar Dialog en lugar de AlertDialog da más libertad de diseño
+    
     Dialog(
         onDismissRequest = onSkip,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Surface(
             modifier = Modifier
-                .fillMaxWidth(0.9f) // Ocupa el 90% del ancho de la pantalla
+                .fillMaxWidth(0.9f) 
                 .wrapContentHeight(),
             shape = RoundedCornerShape(28.dp),
             color = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -56,7 +56,7 @@ fun TesterAppTutorialDialog(
                 modifier = Modifier.padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Header: Título y botón de saltar
+                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -75,7 +75,7 @@ fun TesterAppTutorialDialog(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // 3. HorizontalPager para el carrusel
+                
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier.fillMaxWidth()
@@ -85,7 +85,7 @@ fun TesterAppTutorialDialog(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        // Icono destacado
+                        
                         Surface(
                             shape = CircleShape,
                             color = MaterialTheme.colorScheme.primaryContainer,
@@ -121,18 +121,18 @@ fun TesterAppTutorialDialog(
                             lineHeight = 24.sp
                         )
 
-                        // Añadimos un espaciador flexible en el pager para que todas las páginas midan lo mismo
+                        
                         Spacer(modifier = Modifier.height(24.dp))
                     }
                 }
 
-                // Footer: Indicadores de página y Botón de acción
+                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Puntos indicadores animados
+                    
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -157,7 +157,7 @@ fun TesterAppTutorialDialog(
                         }
                     }
 
-                    // Botón Siguiente / Empezar
+                    
                     Button(
                         onClick = {
                             if (pagerState.currentPage < tutorialPages.size - 1) {

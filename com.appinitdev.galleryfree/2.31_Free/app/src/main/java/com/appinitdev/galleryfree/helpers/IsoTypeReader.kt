@@ -1,5 +1,5 @@
 
-// file taken from the https://github.com/sannies/mp4parser project, used at determining if a video is a panoramic one
+
 object IsoTypeReader {
     fun readUInt32(bb: ByteBuffer): Long {
         var i = bb.int.toLong()

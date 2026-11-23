@@ -8,17 +8,17 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
     var showTutorial by rememberSaveable {
         mutableStateOf(!prefs.getBoolean("tutorial_visto", false))
     }
-    // Dentro de tu Composable principal
+    
     if (showTutorial) {
         TesterAppTutorialDialog(
             onDismiss = {
                 prefs.edit().putBoolean("tutorial_visto", true).apply()
-                // Guardar en SharedPreferences y cerrar
+                
                 showTutorial = false
             },
             onSkip = {
                 prefs.edit().putBoolean("tutorial_visto", true).apply()
-                // También guardamos que lo saltó para no molestar más
+                
                 showTutorial = false
             }
         )
@@ -37,7 +37,7 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                 .padding(20.dp)
                 .fillMaxWidth()
         ) {
-            // --- CABECERA: Avatar, Nombre y Tags ---
+            
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -219,7 +219,7 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                     Column{
                         Spacer(modifier = Modifier.height(24.dp))
 
-                        // --- SECCIÓN DE ESTRELLAS Y PUNTOS ---
+                        
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -263,7 +263,7 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                             }
                         }
                     }
-                    // --- BIOGRAFÍA ---
+                    
                     Spacer(modifier = Modifier.height(8.dp))
 
                 InfoSection(
@@ -279,7 +279,7 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
                 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                    // --- CONTACTO Y REDES ---
+                    
                     Text(
                         stringResource(R.string.contacto_y_enlaces),
                         style = MaterialTheme.typography.labelLarge,
@@ -323,23 +323,23 @@ fun UserProfileCard(profile: UserProfile, viewModel: AuthViewModel, onEditClick:
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        // Esto empuja todos los elementos hacia la derecha (el final)
+                        
                         horizontalArrangement = Arrangement.End,
-                        // Mantiene el icono y el texto alineados al centro verticalmente entre ellos
+                        
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             imageVector = Icons.Default.VerifiedUser,
                             contentDescription = null,
                             modifier = Modifier.size(14.dp),
-                            tint = MaterialTheme.colorScheme.primary // Opcional: para que combine con el texto
+                            tint = MaterialTheme.colorScheme.primary 
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             text = profile.uid.ifBlank { stringResource(R.string.no_disponible) }.take(25),
                             color = MaterialTheme.colorScheme.primary,
                             fontSize = 10.sp,
-                            fontWeight = FontWeight.Medium // Un poco de peso ayuda a que se vea más pro
+                            fontWeight = FontWeight.Medium 
                         )
                     }
                 }

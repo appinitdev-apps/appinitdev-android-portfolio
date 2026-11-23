@@ -52,7 +52,7 @@ class IntroductionPagerAdapter(private val activity: IntroductionActivity) :
         val title: TextView = view.findViewById(R.id.intro_pro_title)
         val description: TextView = view.findViewById(R.id.intro_pro_description)
 
-        // The pro options layout should include these IDs (same as used in ProActivity)
+        
         val proBuyBtn: TextView? = view.findViewById(R.id.pro_buy_btn)
         val proPlusBuyBtn: TextView? = view.findViewById(R.id.pro_plus_buy_btn)
         val proPriceView: TextView? = view.findViewById(R.id.pro_price)
@@ -88,7 +88,7 @@ class IntroductionPagerAdapter(private val activity: IntroductionActivity) :
                 holder.title.setText(page.titleRes)
                 holder.description.setText(page.descriptionRes)
 
-                // Populate price text and button states from the activity's billing state
+                
                 val proDetails: ProductDetails? = activity.getProductDetail("pro_version")
                 val proPlusDetails: ProductDetails? = activity.getProductDetail("pro_version_plus")
                 val proPlusUpgradeDetails: ProductDetails? = activity.getProductDetail("pro_version_plus_upgrade")
@@ -96,7 +96,7 @@ class IntroductionPagerAdapter(private val activity: IntroductionActivity) :
                 val ownsPro = activity.isOwnsProVersion()
                 val ownsProPlus = activity.isOwnsProPlusVersion()
 
-                // Update PRO button and price
+                
                 if (ownsPro && !ownsProPlus) {
                     holder.proBuyBtn?.isEnabled = false
                     holder.proBuyBtn?.text = activity.getString(R.string.current_version)
@@ -111,7 +111,7 @@ class IntroductionPagerAdapter(private val activity: IntroductionActivity) :
                     holder.proPriceView?.text = activity.getFormattedPrice(proDetails)
                 }
 
-                // Update PRO+ button and price
+                
                 if (ownsProPlus) {
                     holder.proPlusBuyBtn?.isEnabled = false
                     holder.proPlusBuyBtn?.text = activity.getString(R.string.current_version)
@@ -126,7 +126,7 @@ class IntroductionPagerAdapter(private val activity: IntroductionActivity) :
                     holder.proPlusPriceView?.text = activity.getFormattedPrice(proPlusDetails)
                 }
 
-                // Attach click listeners that call back into activity
+                
                 holder.proBuyBtn?.setOnClickListener {
                     if (!ownsPro && !ownsProPlus) {
                         proDetails?.let { activity.purchaseProduct(it) }

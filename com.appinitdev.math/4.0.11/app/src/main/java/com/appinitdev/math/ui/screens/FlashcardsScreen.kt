@@ -6,10 +6,10 @@ fun FlashcardsScreen(
     onBack: () -> Unit,
 ) {
     var selectedCatFilter by remember { mutableStateOf("ALL") }
-    var selectedLevelFilter by remember { mutableIntStateOf(0) } // 0: Todos, 1, 2, 3
+    var selectedLevelFilter by remember { mutableIntStateOf(0) } 
 
     val allCards = listOf(
-        // --- DERIVADAS ---
+        
         Flashcard(
             "DERIVATIVES",
             1,
@@ -116,7 +116,7 @@ fun FlashcardsScreen(
             stringResource(R.string.fc_exp_15)
         ),
 
-        // --- INTEGRALES ---
+        
         Flashcard(
             "INTEGRALS",
             1,
@@ -202,7 +202,7 @@ fun FlashcardsScreen(
             stringResource(R.string.fc_exp_27)
         ),
 
-        // --- ECUACIONES DIFERENCIALES ---
+        
         Flashcard(
             "DIFF_EQ",
             1,
@@ -260,7 +260,7 @@ fun FlashcardsScreen(
             stringResource(R.string.fc_exp_35)
         ),
 
-        // --- ECUACIONES ---
+        
         Flashcard(
             "EQUATIONS",
             1,
@@ -325,7 +325,7 @@ fun FlashcardsScreen(
             stringResource(R.string.fc_exp_44)
         ),
 
-        // --- FUNCIONES ---
+        
         Flashcard(
             "FUNCTIONS",
             1,
@@ -390,7 +390,7 @@ fun FlashcardsScreen(
             stringResource(R.string.fc_exp_53)
         ),
 
-        // --- LÍMITES ---
+        
         Flashcard(
             "LIMITS",
             1,
@@ -434,7 +434,7 @@ fun FlashcardsScreen(
             stringResource(R.string.fc_exp_59)
         ),
 
-        // --- POLYNOMIALS ---
+        
         Flashcard(
             "POLYNOMIALS",
             1,
@@ -478,7 +478,7 @@ fun FlashcardsScreen(
             stringResource(R.string.fc_exp_65)
         ),
 
-        // --- VECTORES Y MATRICES ---
+        
         Flashcard(
             "VECTORS_MATRICES",
             1,
@@ -529,7 +529,7 @@ fun FlashcardsScreen(
             stringResource(R.string.fc_exp_72)
         ),
 
-        // --- TRIGONOMETRÍA ---
+        
         Flashcard(
             "TRIGONOMETRY",
             1,
@@ -580,7 +580,7 @@ fun FlashcardsScreen(
             stringResource(R.string.fc_exp_79)
         ),
 
-        // --- NÚMEROS COMPLEJOS ---
+        
         Flashcard(
             "COMPLEX",
             1,
@@ -800,12 +800,12 @@ fun FlashcardsScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Category & Level Filter Chips
+            
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Category Filter Row
+                
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     items(cats) { (code, label) ->
                         FilterChip(
@@ -820,7 +820,7 @@ fun FlashcardsScreen(
                     }
                 }
 
-                // Level Filter Row
+                
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     items(levels) { (lvl, label) ->
                         FilterChip(
@@ -921,7 +921,7 @@ fun FlashcardsScreen(
                     }
                 }
 
-                // 3D Flip Card
+                
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -944,7 +944,7 @@ fun FlashcardsScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         if (rotation <= 90f) {
-                            // Front Side: Question
+                            
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center
@@ -965,7 +965,7 @@ fun FlashcardsScreen(
                                 )
                             }
                         } else {
-                            // Back Side: Answer / Formula
+                            
                             Column(
                                 modifier = Modifier.graphicsLayer { rotationY = 180f },
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -992,7 +992,7 @@ fun FlashcardsScreen(
                     }
                 }
 
-                // Leitner Spaced Repetition Rating Buttons
+                
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally

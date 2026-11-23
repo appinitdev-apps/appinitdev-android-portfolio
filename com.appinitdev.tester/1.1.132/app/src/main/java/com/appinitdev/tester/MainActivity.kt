@@ -1,7 +1,7 @@
 
 class MainActivity : ComponentActivity() {
 
-    // Inicializamos el ViewModel aquí para que viva durante todo el ciclo de la Activity
+    
     private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -9,33 +9,33 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         FirebaseApp.initializeApp(this)
 
-        // Configuración de Firestore para soporte Offline (Base de Datos Local)
+        
         try {
             val settings = FirebaseFirestoreSettings.Builder()
                 .setLocalCacheSettings(PersistentCacheSettings.newBuilder()
-                    .setSizeBytes(100 * 1024 * 1024) // 100 MB de caché local
+                    .setSizeBytes(100 * 1024 * 1024) 
                     .build())
                 .build()
             FirebaseFirestore.getInstance().firestoreSettings = settings
         } catch (e: Exception) {
-            // Ya inicializado o error
+            
         }
 
         try {
             solicitarPermisoNotificaciones(this)
             requestIgnoreBatteryOptimizations(this)
         } catch (e: Exception) {
-            // Manejar error si es necesario
+            
         } finally {
-            // 2. Invocar el nuevo sistema de WorkManager
+            
             try {
                 programarNotificacionDiaria(this)
             } catch (e: Exception) {
-                // Manejar error
+                
             }
 
-            // 3. (Opcional) Puedes eliminar o comentar la alarma vieja para evitar duplicados
-            // programarAlarmaDiaria(this)
+            
+            
         }
         MobileAds.initialize(this) {}
 
@@ -43,13 +43,13 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             TestersTheme {
-                // Usamos Scaffold para manejar correctamente los espacios (Edge-to-Edge)
+                
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // Llamamos a tu componente de navegación ya existente
+                    
                     AppNavigation(
                         viewModel = authViewModel,
-                        // El modificador aplica el padding del Scaffold para evitar que el UI
-                        // quede tapado por las barras del sistema.
+                        
+                        
                         modifier = Modifier.padding(innerPadding),
                         startAppId = appIdFromNotification
                     )

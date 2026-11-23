@@ -49,7 +49,7 @@ class AudioInformationViewModel @AssistedInject constructor(
                 add(data(R.string.compilation, audio.compilation ?: "–"))
                 add(data(R.string.date, audio.date ?: "–"))
 
-                // Dates
+                
                 add(data(R.string.date_added,
                          if (audio.dateAdded > 0) audio.dateAdded.toDate() else "–"))
                 add(data(R.string.date_modified,
@@ -57,7 +57,7 @@ class AudioInformationViewModel @AssistedInject constructor(
                 add(data(R.string.date_taken,
                          if (audio.dateTaken > 0) audio.dateTaken.toDate() else "–"))
 
-                // Metadata presence flags
+                
                 add(data(R.string.has_embedded_art,
                          getApplication<Application>().getString(
                                  if (hasEmbeddedArt) R.string.yes else R.string.no)))
@@ -65,10 +65,10 @@ class AudioInformationViewModel @AssistedInject constructor(
                          getApplication<Application>().getString(
                                  if (hasLrc) R.string.yes else R.string.no)))
 
-                // Audio ID
+                
                 add(data(R.string.audio_id, audio.id.toString()))
 
-                // Replay Gain
+                
                 val replayGainValues = """
                             ${"Track Gain:".padEnd(13)} ${audio.replayGainTrackGain ?: "–"} dB
                             ${"Track Peak:".padEnd(13)} ${audio.replayGainTrackPeak ?: "–"}
@@ -83,12 +83,12 @@ class AudioInformationViewModel @AssistedInject constructor(
         }
     }
 
-    /**
-     * Checks whether the audio file has embedded cover art by opening it through
-     * the content resolver. We use the Uri overload of setDataSource so it works
-     * correctly with both SAF content:// URIs and regular file paths — the plain
-     * String overload only works for file paths and silently fails on content URIs.
-     */
+     
+
+
+
+
+
     private fun checkEmbeddedArt(path: String?): Boolean {
         if (path == null) return false
         return try {

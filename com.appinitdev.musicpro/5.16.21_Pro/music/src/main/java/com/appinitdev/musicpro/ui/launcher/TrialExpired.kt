@@ -1,22 +1,22 @@
 
-/**
- * Full-screen fragment shown as the root destination whenever the free trial period
- * has elapsed. Unlike the former bottom-sheet dialog approach, this fragment replaces
- * the entire home panel so the user must consciously act before entering the app.
- *
- * Navigation behavior:
- *  - "I'll Purchase Later" (grace period still active): increments the grace launch
- *    counter and navigates to home without adding anything to the back stack.
- *  - "Close" (grace period exhausted): terminates the activity.
- *  - "Purchase Now": opens the [Purchase] screen, adding it to the back stack so the
- *    user can return here if they change their mind.
- *
- * This screen is intentionally not cancelable via the system back gesture when the
- * grace period is fully exhausted, because pressing back on the root fragment simply
- * exits the activity — the desired paywall behavior.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class TrialExpired : PanelFragment() {
 
     private lateinit var binding: FragmentTrialExpiredBinding
@@ -57,11 +57,11 @@ class TrialExpired : PanelFragment() {
     }
 
     companion object {
-        /**
-         * Creates a new instance of [TrialExpired].
-         *
-         * @return A ready-to-show [TrialExpired] fragment instance.
-         */
+         
+
+
+
+
         fun newInstance(): TrialExpired {
             val args = Bundle()
             val fragment = TrialExpired()
@@ -69,7 +69,7 @@ class TrialExpired : PanelFragment() {
             return fragment
         }
 
-        /** Back-stack tag used when navigating to this fragment. */
+         
         const val TAG = "TrialExpired"
     }
 }

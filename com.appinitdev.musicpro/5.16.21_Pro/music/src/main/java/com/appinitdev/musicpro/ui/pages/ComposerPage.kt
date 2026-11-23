@@ -1,15 +1,15 @@
 
-/**
- * Fragment that displays the composer page, showing all related data such as
- * songs, albums, and genres associated with a given composer (represented as an [Artist]).
- *
- * This fragment observes [ComposerViewerViewModel] and updates the UI reactively
- * whenever new [PageData] is emitted. All common interaction callbacks are handled
- * by [com.appinitdev.musicpro.extensions.fragments.BasePageFragment]; only the
- * composer-specific overflow menu is implemented here.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
 
 @AndroidEntryPoint
 class ComposerPage : BasePageFragment() {
@@ -40,18 +40,18 @@ class ComposerPage : BasePageFragment() {
         return binding.root
     }
 
-    /**
-     * Sets up the RecyclerView and begins collecting [PageData] from [ComposerViewerViewModel].
-     */
+     
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         collectPageData { composerViewerViewModel.data }
     }
 
-    /**
-     * Called once the adapter is ready. We start collecting the MusicBrainz profile
-     * from here so the adapter is guaranteed to exist when the first value arrives.
-     */
+     
+
+
+
     override fun onPageAdapterCreated() {
         viewLifecycleOwner.lifecycleScope.launch {
             composerViewerViewModel.artistInfo.collect { info ->
@@ -60,18 +60,18 @@ class ComposerPage : BasePageFragment() {
         }
     }
 
-    /**
-     * Delegates sort re-ordering to the [ComposerViewerViewModel] without a database round-trip.
-     */
+     
+
+
     override fun resortPageData() {
         composerViewerViewModel.resort()
     }
 
-    /**
-     * Displays the composer overflow menu with play, shuffle, and send actions.
-     *
-     * @param view The anchor [View] for the popup.
-     */
+     
+
+
+
+
     override fun onMenuClicked(view: View) {
         viewLifecycleOwner.lifecycleScope.launch {
             val currentData = composerViewerViewModel.data.value ?: return@launch
@@ -103,14 +103,14 @@ class ComposerPage : BasePageFragment() {
     companion object {
         const val TAG = "ComposerPage"
 
-        /**
-         * Creates a new instance of [ComposerPage] with the given [composer] bundled as arguments.
-         * Song paths are stripped before parceling to stay well under the Binder transaction limit —
-         * the ViewModel fetches them fresh from the repository anyway.
-         *
-         * @param composer The composer (as an [Artist]) whose data will be displayed.
-         * @return A new [ComposerPage] instance ready to be committed via a fragment transaction.
-         */
+         
+
+
+
+
+
+
+
         fun newInstance(composer: Artist): ComposerPage {
             val args = Bundle()
             args.putParcelable(BundleConstants.COMPOSER, composer.copy(songPaths = emptyList()))

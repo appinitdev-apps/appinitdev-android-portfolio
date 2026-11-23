@@ -1,17 +1,17 @@
 
-/**
- * ViewModel for the [com.appinitdev.musicpro.ui.subpanels.MetadataEditor] panel.
- *
- * Handles writing all edited tag fields to the audio file on disk via
- * [MetadataWriter], updating the Room database row via [AudioDatabase], and
- * notifying the MediaStore via [MediaScannerConnection] so that external apps
- * reflect the change immediately.
- *
- * Uses the assisted-inject pattern so that the [Audio] parcelable passed from
- * the fragment's arguments can be provided at creation time.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 @HiltViewModel(assistedFactory = MetadataEditorViewModel.Factory::class)
 class MetadataEditorViewModel @AssistedInject constructor(
         application: Application,
@@ -20,26 +20,26 @@ class MetadataEditorViewModel @AssistedInject constructor(
 
     private val _isSaving = MutableStateFlow(false)
 
-    /** Emits `true` while a save operation is in progress. */
+     
     val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
 
     private val _saveResult = MutableSharedFlow<SaveResult>(extraBufferCapacity = 1)
 
-    /** Emits a [SaveResult] exactly once after each save attempt. */
+     
     val saveResult: SharedFlow<SaveResult> = _saveResult.asSharedFlow()
 
-    /**
-     * Writes the supplied [fields] to the audio file on disk, updates the Room
-     * database, and requests a MediaStore rescan for the file. Results are
-     * delivered through [saveResult].
-     *
-     * @param fields      The edited tag data to write.
-     * @param updatedAudio A copy of the original [Audio] row with all mutable
-     *                    string fields already set to the new values so the
-     *                    database update reflects the editor's state.
-     * @param artworkFile  An optional image [File] to embed as the new cover art,
-     *                    or null to leave the existing artwork alone.
-     */
+     
+
+
+
+
+
+
+
+
+
+
+
     fun saveMetadata(fields: MetadataWriter.Fields, updatedAudio: Audio, artworkFile: java.io.File? = null) {
         if (_isSaving.value) return
         viewModelScope.launch(Dispatchers.IO) {
@@ -48,8 +48,8 @@ class MetadataEditorViewModel @AssistedInject constructor(
                 val path = updatedAudio.uri
                     ?: throw IllegalStateException("Audio path must not be null.")
 
-                // Attach the artwork file (if any) into the fields so MetadataWriter
-                // can handle both the tag write and the picture write in one go.
+                
+                
                 val fieldsWithArt = if (artworkFile != null) fields.copy(artworkFile = artworkFile) else fields
 
                 MetadataWriter.write(path.toUri(), fieldsWithArt, contentResolver)
@@ -70,8 +70,8 @@ class MetadataEditorViewModel @AssistedInject constructor(
 
                 _saveResult.emit(SaveResult.Success)
 
-                // If this audio is currently playing, update the MediaPlaybackManager's current
-                // track reference so the new metadata is reflected in the player's UI immediately.
+                
+                
                 MediaPlaybackManager.replaceAndNotifyCurrentAudio(updatedAudio)
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to save metadata: ${e.message}", e)
@@ -82,19 +82,19 @@ class MetadataEditorViewModel @AssistedInject constructor(
         }
     }
 
-    /** Represents the outcome of a metadata save operation. */
+     
     sealed class SaveResult {
-        /** Metadata was written and the database was updated successfully. */
+         
         data object Success : SaveResult()
 
-        /** An error occurred during writing or database update. */
+         
         data class Error(val message: String) : SaveResult()
     }
 
-    /** Assisted factory so [Audio] can be injected at fragment creation time. */
+     
     @AssistedFactory
     interface Factory {
-        /** Creates a [MetadataEditorViewModel] scoped to the given [audio]. */
+         
         fun create(audio: Audio): MetadataEditorViewModel
     }
 

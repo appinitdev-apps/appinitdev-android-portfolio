@@ -6,7 +6,7 @@ fun CategoryChip(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    // Reemplazado por FilterChip nativo de Material 3
+    
     FilterChip(
         selected = isSelected,
         onClick = onClick,
@@ -25,7 +25,7 @@ fun ImageGallery(images: List<Image>, onImageClick: (String) -> Unit) {
         columns = GridCells.Fixed(2),
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp), // Espaciado más moderno
+        verticalArrangement = Arrangement.spacedBy(12.dp), 
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(images) { image ->
@@ -34,8 +34,8 @@ fun ImageGallery(images: List<Image>, onImageClick: (String) -> Unit) {
                 contentDescription = image.tags,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f) // Cambiado a relación de aspecto cuadrada (más profesional que altura fija)
-                    .clip(RoundedCornerShape(12.dp)) // Esquinas redondeadas en las imágenes estilo M3
+                    .aspectRatio(1f) 
+                    .clip(RoundedCornerShape(12.dp)) 
                     .clickable { onImageClick(image.webformatURL) },
                 contentScale = ContentScale.Crop
             )
@@ -60,21 +60,21 @@ fun ShowGalleryDialog(
 
     Dialog(
         onDismissRequest = onDismissRequest,
-        properties = DialogProperties(usePlatformDefaultWidth = false) // Permite mejor control del tamaño en pantallas chicas/grandes
+        properties = DialogProperties(usePlatformDefaultWidth = false) 
     ) {
         Surface(
-            shape = MaterialTheme.shapes.extraLarge, // Estilo M3 para diálogos de pantalla casi completa
-            color = MaterialTheme.colorScheme.surface, // Usa el esquema de colores de la app, no blanco harcodeado
-            tonalElevation = 6.dp, // Elevación tonal característica de Material 3
+            shape = MaterialTheme.shapes.extraLarge, 
+            color = MaterialTheme.colorScheme.surface, 
+            tonalElevation = 6.dp, 
             modifier = Modifier
                 .fillMaxWidth(0.92f)
                 .fillMaxHeight(0.85f)
         ) {
             Column(modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp)) { // Más padding para respirar mejor
+                .padding(20.dp)) { 
 
-                // --- BUSCADOR MANUAL ---
+                
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
@@ -94,11 +94,11 @@ fun ShowGalleryDialog(
                     textStyle = MaterialTheme.typography.bodyLarge
                 )
 
-                // Selector de Categorías (M3 Chips)
+                
                 LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 12.dp), // Espaciado simétrico
+                        .padding(vertical = 12.dp), 
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(categories) { category ->
@@ -112,12 +112,12 @@ fun ShowGalleryDialog(
                     }
                 }
 
-                // Galería con Loading State
+                
                 Box(modifier = Modifier.weight(1f)) {
                     if (isLoading) {
                         CircularProgressIndicator(
                             modifier = Modifier.align(Alignment.Center),
-                            color = MaterialTheme.colorScheme.primary // Asegura el color del tema
+                            color = MaterialTheme.colorScheme.primary 
                         )
                     } else if (images.isEmpty()) {
                         Text(
@@ -131,14 +131,14 @@ fun ShowGalleryDialog(
                     }
                 }
 
-                // Fila de botones para navegar (Paginación)
+                
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp) // Espaciado nativo entre botones
+                    horizontalArrangement = Arrangement.spacedBy(12.dp) 
                 ) {
-                    OutlinedButton( // El botón de "atrás" suele ser secundario (Outlined)
+                    OutlinedButton( 
                         onClick = onPrevPage,
                         modifier = Modifier.weight(1f),
                         shape = MaterialTheme.shapes.large
@@ -149,7 +149,7 @@ fun ShowGalleryDialog(
                         )
                     }
 
-                    ElevatedButton( // El botón de "siguiente" suele ser la acción principal (Elevated / Filled)
+                    ElevatedButton( 
                         onClick = onNextPage,
                         modifier = Modifier.weight(1f),
                         shape = MaterialTheme.shapes.large

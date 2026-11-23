@@ -57,7 +57,7 @@ class FocusRoomManager {
             return true
         }
 
-        // Create virtual room instance for code if not hosting
+        
         _currentRoom.value = FocusRoom(
             roomCode = roomCode,
             roomName = "Focus Room #$roomCode",

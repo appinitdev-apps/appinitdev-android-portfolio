@@ -1,7 +1,7 @@
 
 object AchievementModel {
     fun getList(context: Context, achievements: ArrayList<Achievement>) {
-        //Mathematical:
+        
         val achievement1 = Achievement(1, "It's a start!", "Open information about elements 10 times", 0, 10)
         achievement1.loadProgress(context)
         achievements.add(achievement1)
@@ -34,7 +34,7 @@ object AchievementModel {
         achievement8.loadProgress(context)
         achievements.add(achievement8)
 
-        //Flashcards Achievements
+        
         val flashAchievement1 = Achievement(101001, "Perfect Game", "Get all questions correct in a game", 0, 1)
         flashAchievement1.loadProgress(context)
         achievements.add(flashAchievement1)

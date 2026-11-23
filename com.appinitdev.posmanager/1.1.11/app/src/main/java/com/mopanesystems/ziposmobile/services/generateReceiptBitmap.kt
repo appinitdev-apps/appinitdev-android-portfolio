@@ -6,7 +6,7 @@ fun generateReceiptBitmap(
     transactionItems: List<TransactionItem>,
     store: Store?,
     customer: Customer?,
-    width: Int = 384,  // ancho típico impresora 58mm
+    width: Int = 384,  
     padding: Int = 10
 ): Bitmap? {
     Log.e("generateReceiptBitmap", transactionItems.toString())
@@ -14,7 +14,7 @@ fun generateReceiptBitmap(
         val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         val lineHeight = 20f
-        val estimatedHeight = 400 + transactionItems.size * 30 + 200 // +200 para logo y QR
+        val estimatedHeight = 400 + transactionItems.size * 30 + 200 
         val bitmap = Bitmap.createBitmap(width, estimatedHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         canvas.drawColor(Color.WHITE)
@@ -25,7 +25,7 @@ fun generateReceiptBitmap(
 
         var y = padding.toFloat()
 
-        // ===== LOGO =====
+        
         try {
             val logoResId = R.drawable.logo
             val logoBitmap = decodeSampledBitmapFromResource(context.resources, logoResId, 100, 100)
@@ -36,7 +36,7 @@ fun generateReceiptBitmap(
             }
         } catch (e: Exception) { }
 
-        // ===== TIENDA =====
+        
         paint.textSize = 16f
         paint.isFakeBoldText = true
         val storeName = store?.name ?: "POSManager"
@@ -57,7 +57,7 @@ fun generateReceiptBitmap(
         canvas.drawText(storePhone, (width - paint.measureText(storePhone)) / 2f, y, paint)
         y += lineHeight + padding
 
-        // ===== TRANSACCIÓN =====
+        
         paint.isFakeBoldText = true
         canvas.drawText(context.getString(R.string.transaction)+" ${transaction.transactionNumber}", padding.toFloat(), y, paint)
         y += lineHeight
@@ -72,7 +72,7 @@ fun generateReceiptBitmap(
             canvas.drawText(context.getString(R.string.note)+" ${it.toString()}", padding.toFloat(), y, paint)
             y += lineHeight + padding
         }
-        // ===== CLIENTE =====
+        
         customer?.let {
             paint.isFakeBoldText = true
             canvas.drawText(context.getString(R.string.customer), padding.toFloat(), y, paint)
@@ -91,11 +91,11 @@ fun generateReceiptBitmap(
             y += padding
         }
 
-        // ===== ITEMS =====
-        // Cabeceras
+        
+        
         paint.isFakeBoldText = true
         val colItemX = padding.toFloat()
-        val colQtyX = colItemX + 150f // distancia después del nombre
+        val colQtyX = colItemX + 150f 
         val colPriceX = colQtyX + 40f
         val colTotalX = colPriceX + 80f
 
@@ -122,8 +122,8 @@ fun generateReceiptBitmap(
         }
         y += padding
 
-        // ===== TOTALES =====
-        // Preparar Paints
+        
+        
         val labelPaint = Paint(paint).apply {
             isFakeBoldText = false
             textSize = 12f
@@ -133,23 +133,23 @@ fun generateReceiptBitmap(
             textSize = 12f
         }
 
-// posiciones X
-        val labelX = padding.toFloat()
-        val amountX = width - padding.toFloat() // borde derecho
 
-// Subtotal
+        val labelX = padding.toFloat()
+        val amountX = width - padding.toFloat() 
+
+
         canvas.drawText(context.getString(R.string.subtotal), labelX, y, labelPaint)
         canvas.drawText(currencyFormatter.format(transaction.subtotal),
             amountX - amountPaint.measureText(currencyFormatter.format(transaction.subtotal)), y, amountPaint)
         y += lineHeight
 
-// Tax
+
         canvas.drawText(context.getString(R.string.tax), labelX, y, labelPaint)
         canvas.drawText(currencyFormatter.format(transaction.taxAmount),
             amountX - amountPaint.measureText(currencyFormatter.format(transaction.taxAmount)), y, amountPaint)
         y += lineHeight
 
-// Discount (si aplica)
+
         if (transaction.discountAmount > BigDecimal.ZERO) {
             canvas.drawText(context.getString(R.string.discount), labelX, y, labelPaint)
             val discountText = "-${currencyFormatter.format(transaction.discountAmount)}"
@@ -158,14 +158,14 @@ fun generateReceiptBitmap(
             y += lineHeight
         }
 
-// TOTAL (destacado)
+
         canvas.drawText(context.getString(R.string.total), labelX, y, amountPaint)
         val totalText = currencyFormatter.format(transaction.totalAmount)
         canvas.drawText(totalText,
             amountX - amountPaint.measureText(totalText), y, amountPaint)
         y += lineHeight
 
-// Paid y Change
+
         if (transaction.paidAmount > transaction.totalAmount) {
             canvas.drawText(context.getString(R.string.paid), labelX, y, labelPaint)
             val paidText = currencyFormatter.format(transaction.paidAmount)
@@ -182,7 +182,7 @@ fun generateReceiptBitmap(
         y += padding
 
 
-        // ===== QR =====
+        
         try {
             val qrData = "Transaction #: ${transaction.transactionNumber}\nTotal: ${currencyFormatter.format(transaction.totalAmount)}\nPayment method: ${transaction.paymentMethod}\nStore: ${storeName}\nDate: ${transaction.createdAt.format(dateFormatter)}\nMail: ${storeGmail}\nPhone: ${storePhone}"
             val qrWriter = com.google.zxing.qrcode.QRCodeWriter()
@@ -197,10 +197,10 @@ fun generateReceiptBitmap(
             y += 120 + padding
         } catch (e: Exception) { }
 
-        // ===== PIE DE PÁGINA =====
+        
         canvas.drawText(context.getString(R.string.thank_you_for_your_business), padding.toFloat(), y, paint)
         y += lineHeight
-        //canvas.drawText("Returns accepted within 30 days with receipt", padding.toFloat(), y, paint)
+        
 
         bitmap
     } catch (e: Exception) {

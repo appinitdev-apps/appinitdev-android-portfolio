@@ -37,7 +37,7 @@ class DecompressActivity : SimpleActivity() {
 
         onBackPressedDispatcher.addCallback(this) {
             if (currentPath.isEmpty()) {
-                // Desactivar callback y llamar al comportamiento por defecto
+                
                 isEnabled = false
                 onBackPressedDispatcher.onBackPressed()
             } else {
@@ -71,14 +71,14 @@ class DecompressActivity : SimpleActivity() {
         }
     }
 
-//    override fun onBackPressed() {
-//        if (currentPath.isEmpty()) {
-//            super.onBackPressed()
-//        } else {
-//            val newPath = if (currentPath.contains("/")) currentPath.getParentPath() else ""
-//            updateCurrentPath(newPath)
-//        }
-//    }
+
+
+
+
+
+
+
+
 
     private fun setupFilesList() {
         fillAllListItems(uri!!) {
@@ -234,7 +234,7 @@ class DecompressActivity : SimpleActivity() {
                 break
             }
 
-            // Show progress bar only after password dialog is dismissed.
+            
             runOnUiThread {
                 if (binding.progressIndicator.isGone()) {
                     binding.progressIndicator.show()

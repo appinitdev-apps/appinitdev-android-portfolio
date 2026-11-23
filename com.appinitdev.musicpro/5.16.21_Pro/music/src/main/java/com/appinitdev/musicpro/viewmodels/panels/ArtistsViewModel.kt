@@ -16,7 +16,7 @@ class ArtistsViewModel @Inject constructor(
         viewModelScope.launch {
             audioRepository.getAllArtistsWithAggregation()
                 .map { artistList -> artistList.sorted() }
-                .distinctUntilChanged()  // Prevent identical consecutive emissions
+                .distinctUntilChanged()  
                 .catch { exception ->
                     Log.e(TAG, "Error loading artists", exception)
                     emit(emptyList())

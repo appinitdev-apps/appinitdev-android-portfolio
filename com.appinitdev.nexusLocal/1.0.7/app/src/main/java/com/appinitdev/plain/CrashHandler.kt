@@ -45,9 +45,9 @@ object CrashHandler {
                 append(sw.toString())
             }
             File(context.filesDir, CRASH_FILE_NAME).writeText(report)
-            // Append to the permanent crash history so it ships with the
-            // user's app-log zip even if the pending report has been
-            // consumed by the crash dialog already.
+            
+            
+            
             File(context.filesDir, CRASH_LOG_NAME).appendText(report + "\n\n")
         } catch (_: Exception) {}
     }

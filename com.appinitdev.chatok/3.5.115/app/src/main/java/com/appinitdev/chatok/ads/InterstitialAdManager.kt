@@ -20,15 +20,15 @@ object InterstitialAdManager {
             ad.fullScreenContentCallback = object : FullScreenContentCallback() {
                 override fun onAdDismissedFullScreenContent() {
                     interstitialAd = null
-                    loadAd(activity) // Cargar otro anuncio después de cerrar
+                    loadAd(activity) 
                 }
 
                 override fun onAdFailedToShowFullScreenContent(error: com.google.android.gms.ads.AdError) {
                     interstitialAd = null
-                    loadAd(activity) // Cargar otro si falla
+                    loadAd(activity) 
                 }
             }
             ad.show(activity)
-        } ?: loadAd(activity) // Si no hay anuncio cargado, cargar uno nuevo
+        } ?: loadAd(activity) 
     }
 }

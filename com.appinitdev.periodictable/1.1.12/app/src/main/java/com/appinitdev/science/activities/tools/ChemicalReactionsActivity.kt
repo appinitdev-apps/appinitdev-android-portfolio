@@ -28,7 +28,7 @@ class ChemicalReactionsActivity : BaseActivity() {
             this.onBackPressed()
         }
 
-        //Title Controller
+        
         findViewById<FrameLayout>(R.id.common_title_back_rec_color).visibility = View.INVISIBLE
         findViewById<TextView>(R.id.reaction_title).visibility = View.INVISIBLE
         findViewById<FrameLayout>(R.id.common_title_back_rec).elevation = resources.getDimension(R.dimen.zero_elevation)
@@ -48,7 +48,7 @@ class ChemicalReactionsActivity : BaseActivity() {
                 }
             }
 
-        // Add value to most used
+        
         val mostUsedPreference = MostUsedToolPreference(this)
         val mostUsedPrefValue = mostUsedPreference.getValue()
         val targetLabel = "rec"
@@ -60,17 +60,17 @@ class ChemicalReactionsActivity : BaseActivity() {
             mostUsedPreference.setValue(mostUsedPrefValue.replace("$targetLabel=$value", "$targetLabel=$newValue"))
         }
 
-        // Setup input Controller & format
+        
         inputController()
 
-        // Initialize Included Elements Adapter
+        
         includedElementsAdapter = IncludedElementsAdapter()
         findViewById<RecyclerView>(R.id.inc_comp_list).apply {
             layoutManager = LinearLayoutManager(this@ChemicalReactionsActivity)
             adapter = includedElementsAdapter
         }
 
-        // Setup output TextView
+        
         setupOutputTextView()
     }
 
@@ -123,14 +123,14 @@ class ChemicalReactionsActivity : BaseActivity() {
     }
 
     private fun balanceReaction(reaction: String): String {
-        // Parse the reaction into reactants and products
+        
         val sides = reaction.split("->")
-        if (sides.size != 2) return reaction // Invalid reaction format
+        if (sides.size != 2) return reaction 
 
         val reactants = sides[0].trim().split("+").map { it.trim() }
         val products = sides[1].trim().split("+").map { it.trim() }
 
-        // Get a list of all unique elements in the reaction
+        
         val elements = mutableSetOf<String>()
         val elementRegex = Regex("([A-Z][a-z]*)")
 
@@ -148,7 +148,7 @@ class ChemicalReactionsActivity : BaseActivity() {
 
         val elementList = elements.toList()
 
-        // Create the matrix for the system of linear equations
+        
         val matrix = Array(elementList.size) { IntArray(reactants.size + products.size) }
 
         fun parseCompound(compound: String, side: Int) {
@@ -169,10 +169,10 @@ class ChemicalReactionsActivity : BaseActivity() {
             parseCompound(compound, reactants.size + index)
         }
 
-        // Solve the system of linear equations using Gaussian elimination
+        
         val coefficients = solveMatrix(matrix)
 
-        // Format the balanced equation
+        
         val balancedReactants = reactants.mapIndexed { index, compound ->
             "${coefficients[index]}$compound"
         }.joinToString(" + ")
@@ -188,7 +188,7 @@ class ChemicalReactionsActivity : BaseActivity() {
         val numEquations = matrix.size
         val numVariables = matrix[0].size
 
-        // Create an augmented matrix with an additional column for the constants
+        
         val augmentedMatrix = Array(numEquations) { DoubleArray(numVariables + 1) }
         for (i in 0 until numEquations) {
             for (j in 0 until numVariables) {
@@ -197,15 +197,15 @@ class ChemicalReactionsActivity : BaseActivity() {
             augmentedMatrix[i][numVariables] = 0.0
         }
 
-        // Perform Gaussian elimination
+        
         for (i in 0 until numEquations) {
-            // Make the diagonal element 1
+            
             val divisor = augmentedMatrix[i][i]
             for (j in 0..numVariables) {
                 augmentedMatrix[i][j] /= divisor
             }
 
-            // Eliminate the current variable from all other rows
+            
             for (k in 0 until numEquations) {
                 if (k != i) {
                     val factor = augmentedMatrix[k][i]
@@ -216,7 +216,7 @@ class ChemicalReactionsActivity : BaseActivity() {
             }
         }
 
-        // Extract the solution
+        
         val solution = IntArray(numVariables)
         for (i in 0 until numVariables) {
             solution[i] = augmentedMatrix[i][numVariables].toInt()

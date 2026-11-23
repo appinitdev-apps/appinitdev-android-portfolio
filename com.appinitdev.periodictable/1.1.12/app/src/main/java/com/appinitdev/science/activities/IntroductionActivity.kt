@@ -12,13 +12,13 @@ class IntroductionActivity : AppCompatActivity(), BillingManager.Listener {
     private lateinit var backButton: ImageButton
     private lateinit var introductionAdapter: IntroductionPagerAdapter
 
-    // Billing manager
+    
     private lateinit var billingManager: BillingManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Apply theme
+        
         val themePreference = ThemePreference(this)
         val themePrefValue = themePreference.getValue()
         if (themePrefValue == 100) {
@@ -38,7 +38,7 @@ class IntroductionActivity : AppCompatActivity(), BillingManager.Listener {
         skipButton = findViewById(R.id.intro_skip_button)
         backButton = findViewById(R.id.intro_back_button)
 
-        // Setup ViewPager + Adapter
+        
         introductionAdapter = IntroductionPagerAdapter(this)
         viewPager.adapter = introductionAdapter
         TabLayoutMediator(tabLayout, viewPager) { _, _ -> }.attach()
@@ -71,7 +71,7 @@ class IntroductionActivity : AppCompatActivity(), BillingManager.Listener {
             }
         })
 
-        // Initialize BillingManager
+        
         billingManager = BillingManager(this, lifecycleScope, this)
         billingManager.initialize()
     }
@@ -81,7 +81,7 @@ class IntroductionActivity : AppCompatActivity(), BillingManager.Listener {
         billingManager.endConnection()
     }
 
-    // Methods used by the adapter (delegate to billingManager)
+    
     fun getProductDetail(productId: String) = billingManager.getProductDetail(productId)
     fun isOwnsProVersion() = billingManager.isOwnsProVersion()
     fun isOwnsProPlusVersion() = billingManager.isOwnsProPlusVersion()
@@ -93,21 +93,21 @@ class IntroductionActivity : AppCompatActivity(), BillingManager.Listener {
         billingManager.launchPurchase(productDetails)
     }
 
-    // BillingManager.Listener callbacks
+    
     override fun onProductsUpdated() {
-        // refresh pro page to show prices
+        
         runOnUiThread { viewPager.adapter?.notifyItemChanged(PRO_PAGE_INDEX) }
     }
 
     override fun onPurchasesUpdated() {
-        // Check if user already has products and set preferences accordingly
+        
         checkAndSetPreferences()
-        // refresh pro page to reflect ownership flags
+        
         runOnUiThread { viewPager.adapter?.notifyItemChanged(PRO_PAGE_INDEX) }
     }
 
     override fun onPurchaseCompleted(productId: String) {
-        // Set preferences based on the purchase
+        
         val proPref = ProVersion(this)
         val proPlusPref = ProPlusVersion(this)
 
@@ -122,20 +122,20 @@ class IntroductionActivity : AppCompatActivity(), BillingManager.Listener {
             }
         }
 
-        // update UI and optionally set preferences
+        
         runOnUiThread {
             viewPager.adapter?.notifyItemChanged(PRO_PAGE_INDEX)
-            // optionally give short delay or toast here
+            
         }
 
     }
 
     override fun onError(message: String) {
-        // optional logging / user feedback
-        // e.g., Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        
+        
     }
 
-    // Function to set preferences based on account products
+    
     private fun checkAndSetPreferences() {
         val proPref = ProVersion(this)
         val proPlusPref = ProPlusVersion(this)

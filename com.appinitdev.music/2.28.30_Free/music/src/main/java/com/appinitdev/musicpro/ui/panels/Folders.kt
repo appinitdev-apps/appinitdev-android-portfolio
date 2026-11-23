@@ -1,9 +1,9 @@
 
-/**
- * Panel fragment displaying the user's music folders with sort and grid layout support.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
 @AndroidEntryPoint
 class Folders : BasePanelFragment() {
 

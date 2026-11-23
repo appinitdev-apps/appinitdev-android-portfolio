@@ -2,7 +2,7 @@
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReputationRankingScreen(viewModel: AuthViewModel, onBack: () -> Unit) {
-    // Ordenar por reputación descendente
+    
     var showReputationInfo by remember { mutableStateOf(false) }
     var selectedUserForInfo by remember { mutableStateOf<UserProfile?>(null) }
     val usuarios by viewModel.allUsers.collectAsState()
@@ -97,9 +97,9 @@ fun RankingUserItem(usuario: UserProfile, posicion: Int,onReputationClick: () ->
             .padding(vertical = 4.dp),
         colors = CardDefaults.cardColors(
             containerColor = when (posicion) {
-                1 -> Color(0xFFFFD700).copy(alpha = 0.1f) // Oro
-                2 -> Color(0xFFC0C0C0).copy(alpha = 0.1f) // Plata
-                3 -> Color(0xFFCD7F32).copy(alpha = 0.1f) // Bronce
+                1 -> Color(0xFFFFD700).copy(alpha = 0.1f) 
+                2 -> Color(0xFFC0C0C0).copy(alpha = 0.1f) 
+                3 -> Color(0xFFCD7F32).copy(alpha = 0.1f) 
                 else -> Color(0xFFE8EAF6).copy(alpha = 0.1f)
             }
         ),
@@ -109,7 +109,7 @@ fun RankingUserItem(usuario: UserProfile, posicion: Int,onReputationClick: () ->
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Posición o Medalla
+            
             Box(
                 modifier = Modifier.size(32.dp),
                 contentAlignment = Alignment.Center
@@ -144,9 +144,9 @@ fun RankingUserItem(usuario: UserProfile, posicion: Int,onReputationClick: () ->
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // --- FILA DE ESTADÍSTICAS MEJORADA ---
+                
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    // Nivel
+                    
                     Icon(
                         imageVector = Icons.Default.TrendingUp,
                         contentDescription = null,
@@ -161,7 +161,7 @@ fun RankingUserItem(usuario: UserProfile, posicion: Int,onReputationClick: () ->
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    // Puntos
+                    
                     Icon(
                         imageVector = Icons.Default.EmojiEvents,
                         contentDescription = null,
@@ -176,23 +176,23 @@ fun RankingUserItem(usuario: UserProfile, posicion: Int,onReputationClick: () ->
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    // Estrellas Visuales
+                    
                     Icon(
                         imageVector = Icons.Default.Star,
                         contentDescription = null,
                         modifier = Modifier.size(14.dp),
-                        tint = Color(0xFFFFB100) // Color Dorado
+                        tint = Color(0xFFFFB100) 
                     )
                     Text(
                         text = " ${String.format("%.1f", usuario.promedioEstrellas)}",
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFFB8860B) // Dorado más oscuro para el texto
+                        color = Color(0xFFB8860B) 
                     )
                 }
             }
 
-            // Reputación calculada dinámicamente
+            
             Surface(
                 color = MaterialTheme.colorScheme.primaryContainer,
                 shape = MaterialTheme.shapes.small,

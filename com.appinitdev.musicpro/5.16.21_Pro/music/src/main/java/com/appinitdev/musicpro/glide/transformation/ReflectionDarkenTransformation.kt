@@ -1,8 +1,8 @@
 
 class ReflectionDarkenTransformation(
-        private val darkenPercent: Float = 25f,      // 0–100, default 25%
-        private val darkenOverlayAlpha: Int = 64,    // Overlay alpha (0–255)
-        private val reflectionAlpha: Int = 128       // **WHOLE reflection alpha (0–255)**
+        private val darkenPercent: Float = 25f,      
+        private val darkenOverlayAlpha: Int = 64,    
+        private val reflectionAlpha: Int = 128       
 ) : BitmapTransformation() {
 
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {
@@ -24,7 +24,7 @@ class ReflectionDarkenTransformation(
         val output = Bitmap.createBitmap(width, reflectionHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(output)
 
-        // Create reflection bitmap
+        
         val matrix = Matrix().apply { preScale(1f, -1f) }
         val reflection = Bitmap.createBitmap(
                 toTransform,
@@ -36,19 +36,19 @@ class ReflectionDarkenTransformation(
                 false
         )
 
-        // Draw the reflection with adjustable overall alpha
+        
         val reflectionPaint = Paint()
         reflectionPaint.alpha = reflectionAlpha.coerceIn(0, 255)
         canvas.drawBitmap(reflection, 0f, 0f, reflectionPaint)
 
-        // Adjustable darken overlay
+        
         val darkenPaint = Paint()
         val darkness = (darkenPercent.coerceIn(0f, 100f) / 100f)
         val darkenAlpha = (darkenOverlayAlpha * darkness).toInt().coerceIn(0, 255)
         darkenPaint.color = Color.argb(darkenAlpha, 0, 0, 0)
         canvas.drawRect(0f, 0f, width.toFloat(), reflectionHeight.toFloat(), darkenPaint)
 
-        // Fade effect
+        
         val fadePaint = Paint()
         fadePaint.shader = LinearGradient(
                 0f, 0f, 0f, reflectionHeight.toFloat(),

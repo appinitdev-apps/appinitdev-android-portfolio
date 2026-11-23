@@ -18,13 +18,13 @@ class CoilImagesPlugin(val context: Context) : AbstractMarkwonPlugin() {
                     .build().newBuilder()
                     .target(target)
                     .build()
-                // @since 4.5.1 execute can return result _before_ disposable is created,
-                //  thus `execute` would finish before we put disposable in cache (and thus result is
-                //  not delivered)
+                
+                
+                
                 val disposable = context.imageLoader.enqueue(request)
-                // if flag was not set, then job is running (else - finished before we got here)
+                
                 if (!loaded.get()) {
-                    // mark flag
+                    
                     loaded.set(true)
                     cache[drawable] = disposable
                 }
@@ -40,11 +40,11 @@ class CoilImagesPlugin(val context: Context) : AbstractMarkwonPlugin() {
 
             private inner class AsyncDrawableTarget(val drawable: AsyncDrawable, val loaded: AtomicBoolean) : Target {
                 fun onSuccess(loadedDrawable: Drawable) {
-                    // @since 4.5.1 check finished flag (result can be delivered _before_ disposable is created)
+                    
                     if (cache.remove(drawable) != null
                         || !loaded.get()
                     ) {
-                        // mark
+                        
                         loaded.set(true)
                         if (drawable.isAttached) {
                             DrawableUtils.applyIntrinsicBoundsIfEmpty(loadedDrawable)

@@ -1,5 +1,5 @@
 
-// https://developer.android.com/topic/libraries/architecture/viewmodel/viewmodel-savedstate#savedstate-compose-state
+
 @OptIn(androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi::class)
 class MainViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     var httpServerError by savedStateHandle.saveable { mutableStateOf("") }

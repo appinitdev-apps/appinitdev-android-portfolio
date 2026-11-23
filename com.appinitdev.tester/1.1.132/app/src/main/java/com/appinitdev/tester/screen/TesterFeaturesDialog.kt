@@ -27,7 +27,7 @@ fun TesterFeaturesDialog(onDismiss: () -> Unit) {
     )
 
     Dialog(
-        onDismissRequest = { /* Bloqueado hasta click en botón */ },
+        onDismissRequest = {   },
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Card(

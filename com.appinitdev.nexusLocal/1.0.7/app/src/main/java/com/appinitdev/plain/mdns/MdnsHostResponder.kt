@@ -1,22 +1,22 @@
 
-/**
- * Lightweight mDNS responder — single receive socket, standards-aware reply.
- *
- * RECEIVE: One MulticastSocket bound to 0.0.0.0:5353 (IPv4 wildcard; see bind
- * comment for why explicit) joins 224.0.0.251 on every valid LAN interface.
- * A single socket avoids the Linux SO_REUSEPORT limitation.
- *
- * SEND: Replies are sent via the same MulticastSocket so the source port is always
- * 5353. RFC 6762 §6.7 requires this — resolvers on macOS/Windows/iOS silently
- * discard mDNS responses whose source port ≠ 5353. QU/legacy-unicast queries are
- * answered directly; ordinary multicast queries are answered to 224.0.0.251:5353.
- * candidateInterfaces() is re-fetched per packet to select the correct local IP
- * for the A record.
- *
- * Restart lifecycle: MdnsReregistrar (ConnectivityManager) + MdnsHotspotWatcher
- * (WIFI_AP_STATE_CHANGED) recreate the socket whenever the active interface set
- * changes, keeping receive memberships current.
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 object MdnsHostResponder {
     private const val MDNS_GROUP = "224.0.0.251"
     private const val MDNS_PORT = 5353
@@ -51,11 +51,11 @@ object MdnsHostResponder {
                 MulticastSocket(null).apply {
                     reuseAddress = true
                     soTimeout = 1000
-                    // Explicitly bind to the IPv4 wildcard.
-                    // InetSocketAddress(port) resolves to the system-preferred wildcard, which on
-                    // Samsung Android 13+ (preferIPv6Addresses=true) becomes [::]:5353 — an IPv6
-                    // socket. Joining an IPv4 multicast group on an IPv6 socket silently fails,
-                    // leaving this socket unable to receive any mDNS queries.
+                    
+                    
+                    
+                    
+                    
                     bind(InetSocketAddress(InetAddress.getByName("0.0.0.0"), MDNS_PORT))
                     var joinCount = 0
                     for ((iface, ip) in candidates) {
@@ -63,8 +63,8 @@ object MdnsHostResponder {
                             .onSuccess { joinCount++; LogCat.d("mDNS joined ${iface.name} (${ip.hostAddress})") }
                             .onFailure { LogCat.e("mDNS joinGroup ${iface.name}: ${it.message}") }
                     }
-                    // Fallback: some kernels reject IP_ADD_MEMBERSHIP with an explicit
-                    // interface index (EINVAL). Use the default-interface form as last resort.
+                    
+                    
                     if (joinCount == 0) {
                         runCatching { joinGroup(multicastGroup) }
                             .onSuccess { joinCount++; LogCat.d("mDNS joined multicast group (default interface)") }
@@ -108,8 +108,8 @@ object MdnsHostResponder {
             val packet = DatagramPacket(buf, buf.size)
             try {
                 s.receive(packet)
-                // extractInet4Address handles both plain Inet4Address and IPv4-mapped IPv6
-                // addresses (::ffff:x.x.x.x) that a dual-stack socket may report.
+                
+                
                 val senderIp = extractInet4Address(packet.address) ?: continue
                 val fresh = candidateInterfaces()
                 if (fresh.isEmpty()) continue
@@ -125,9 +125,9 @@ object MdnsHostResponder {
                 val dest = "${destAddress.hostAddress}:$destPort"
                 val queryInfo = formatQuestions(response.matchedQuestions)
 
-                // Reply via the receive socket so source port = 5353 (RFC 6762 §6.7).
-                // A throwaway socket bound to :0 uses a random source port which many
-                // mDNS resolvers (macOS, Windows, Android) silently reject.
+                
+                
+                
                 runCatching {
                     if (!useUnicast) s.networkInterface = responseIface
                     s.send(DatagramPacket(response.bytes, response.bytes.size, destAddress, destPort))
@@ -137,22 +137,22 @@ object MdnsHostResponder {
                     )
                 }.onFailure { LogCat.e("mDNS send to ${senderIp.hostAddress}: ${it.message}") }
             } catch (_: SocketTimeoutException) {
-                // expected — keeps thread responsive to socket close
+                
             } catch (_: Exception) {
                 if (s.isClosed) break
             }
         }
     }
 
-    /**
-     * Returns the IPv4 address from [addr], unwrapping IPv4-mapped IPv6 addresses
-     * (::ffff:x.x.x.x) that a dual-stack socket reports for IPv4 senders.
-     */
+     
+
+
+
     internal fun extractInet4Address(addr: InetAddress): Inet4Address? {
         if (addr is Inet4Address) return addr
         if (addr is Inet6Address) {
             val b = addr.address
-            // IPv4-mapped format: 10 zero bytes + 0xFF 0xFF + 4 IPv4 bytes
+            
             if (b.size == 16 && b[0] == 0.toByte() && b[10] == 0xFF.toByte() && b[11] == 0xFF.toByte() &&
                 b.take(10).all { it == 0.toByte() }
             ) {

@@ -197,7 +197,7 @@ fun UnitConverterScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Category Filter Chips
+            
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -211,7 +211,7 @@ fun UnitConverterScreen(
                 }
             }
 
-            // Input Value & From Unit Card
+            
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
@@ -266,7 +266,7 @@ fun UnitConverterScreen(
                 }
             }
 
-            // Arrow Indicator
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
@@ -284,7 +284,7 @@ fun UnitConverterScreen(
                 }
             }
 
-            // Output Converted Result & To Unit
+            
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),

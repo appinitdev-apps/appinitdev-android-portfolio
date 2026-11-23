@@ -1,5 +1,5 @@
 
-// Crea un objeto de configuración o ponlo en tus constantes
+
 @Keep
 data class DevAppItem(
     val nombre: String,

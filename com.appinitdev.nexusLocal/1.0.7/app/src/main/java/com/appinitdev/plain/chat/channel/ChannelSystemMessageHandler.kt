@@ -1,10 +1,10 @@
 
-/**
- * Handles incoming channel system messages received via [PeerGraphQL].
- *
- * Each handler updates the local DB and fires UI events as needed.
- * Methods run on the caller's thread (the Ktor request thread); DB calls are lightweight.
- */
+ 
+
+
+
+
+
 object ChannelSystemMessageHandler {
 
     fun handle(fromId: String, type: String, payload: String) {
@@ -23,12 +23,12 @@ object ChannelSystemMessageHandler {
         }
     }
 
-    // ── Individual handlers ────────────────────────────────────────
+    
 
-    /**
-     * Insert a `status = "channel"` peer record for a member we don't already
-     * know. Returns true when a new row was inserted.
-     */
+     
+
+
+
     private fun ensureChannelPeer(
         id: String,
         name: String,
@@ -63,29 +63,29 @@ object ChannelSystemMessageHandler {
         val isReinvite = existingChannel != null &&
             (existingChannel.status == DChatChannel.STATUS_LEFT || existingChannel.status == DChatChannel.STATUS_KICKED)
 
-        // Sanity check: the signed `fromId` (Ed25519 verified upstream) must equal the
-        // owner the inviter is claiming in the payload. Otherwise an attacker who
-        // forwarded us an invite payload could try to seed us with a channel whose
-        // owner is a peer they control.
+        
+        
+        
+        
         if (msg.owner != fromId) {
             LogCat.e("Invite from $fromId but payload claims owner=${msg.owner} — rejected")
             return
         }
 
-        // Avoid duplicate processing for channels that are already active
+        
         if (existingChannel != null && !isReinvite) {
             LogCat.d("Channel ${msg.channelId} already exists locally, ignoring invite")
             return
         }
 
-        // Verify the sender is a known paired peer
+        
         val peer = peerDao.getById(fromId) ?: run {
             LogCat.e("Invite from unknown peer $fromId — ignored")
             return
         }
 
-        // Create peer records for channel members we don't already know.
-        // These are created with status="channel" and key="" (no shared encryption key).
+        
+        
         for (memberInfo in msg.memberPeers) {
             ensureChannelPeer(
                 id = memberInfo.id,
@@ -98,7 +98,7 @@ object ChannelSystemMessageHandler {
         }
 
         if (isReinvite) {
-            // Re-invite after leaving or being kicked: update metadata and restore joined status
+            
             val channel = existingChannel
             channel.name = msg.channelName
             channel.key = msg.key
@@ -109,7 +109,7 @@ object ChannelSystemMessageHandler {
             dao.update(channel)
             LogCat.d("Re-invite for channel ${msg.channelId} (was ${existingChannel.status}), restored to joined")
         } else {
-            // Store channel locally with members carrying only id + status
+            
             val channel = DChatChannel()
             channel.id = msg.channelId
             channel.name = msg.channelName
@@ -120,12 +120,12 @@ object ChannelSystemMessageHandler {
             dao.insert(channel)
         }
 
-        // Refresh key cache so we can decrypt channel messages
+        
         runBlocking(Dispatchers.IO) {
             ChatCacheManager.loadKeyCacheAsync()
         }
 
-        // Notify UI to show the invite dialog
+        
         val peerName = peer.name.ifEmpty { fromId }
         sendEvent(
             ChannelInviteReceivedEvent(
@@ -153,8 +153,8 @@ object ChannelSystemMessageHandler {
             return
         }
 
-        // Ensure we have a peer record for the accepting member.
-        // If the peer doesn't exist, create a channel peer using the info from the accept message.
+        
+        
         val existingPeer = peerDao.getById(fromId)
         if (existingPeer == null) {
             ensureChannelPeer(
@@ -165,7 +165,7 @@ object ChannelSystemMessageHandler {
                 logTag = "accepting member",
             )
         } else if (existingPeer.publicKey.isEmpty() && msg.publicKey.isNotEmpty()) {
-            // Update public key if we didn't have it
+            
             existingPeer.publicKey = msg.publicKey
             if (msg.name.isNotEmpty() && existingPeer.name.isEmpty()) {
                 existingPeer.name = msg.name
@@ -173,10 +173,10 @@ object ChannelSystemMessageHandler {
             peerDao.update(existingPeer)
         }
 
-        // Only accept invites from peers that were already on the pending list.
-        // Any peer not previously invited is rejected — otherwise anyone who knew the
-        // channel id could self-add and start receiving future broadcast updates
-        // (which include the channelKey via ChannelSystemMessageSender.broadcastUpdate).
+        
+        
+        
+        
         val member = channel.findMember(fromId)
         if (member == null) {
             LogCat.e("InviteAccept from $fromId for channel ${msg.channelId} but peer is not in members list — rejected")
@@ -187,7 +187,7 @@ object ChannelSystemMessageHandler {
             return
         }
 
-        // Move from pending → joined
+        
         channel.members = channel.members.map {
             if (it.id == fromId) it.copy(status = ChannelMember.STATUS_JOINED) else it
         }
@@ -196,7 +196,7 @@ object ChannelSystemMessageHandler {
         channel.updatedAt = TimeHelper.now()
         dao.update(channel)
 
-        // Broadcast updated membership to all
+        
         runBlocking(Dispatchers.IO) {
             ChannelSystemMessageSender.broadcastUpdate(channel)
             ChatCacheManager.loadKeyCacheAsync()
@@ -212,7 +212,7 @@ object ChannelSystemMessageHandler {
 
         if (channel.owner != "me") return
 
-        // Remove the declining peer from members
+        
         if (channel.hasMember(fromId)) {
             channel.members = channel.members.filter { it.id != fromId }
             channel.version++
@@ -234,19 +234,19 @@ object ChannelSystemMessageHandler {
             return
         }
 
-        // Only the channel owner may broadcast updates
+        
         if (channel.owner != fromId) {
             LogCat.e("ChannelUpdate from non-owner $fromId (owner=${channel.owner}) — rejected")
             return
         }
 
-        // Only accept updates with a higher version (optimistic concurrency)
+        
         if (msg.version <= channel.version) {
             LogCat.d("Ignoring stale ChannelUpdate (local=${channel.version}, remote=${msg.version})")
             return
         }
 
-        // Create peer records for any new members we don't already know
+        
         for (memberInfo in msg.memberPeers) {
             ensureChannelPeer(
                 id = memberInfo.id,
@@ -265,7 +265,7 @@ object ChannelSystemMessageHandler {
         channel.updatedAt = TimeHelper.now()
         dao.update(channel)
 
-        // Refresh cached keys
+        
         runBlocking(Dispatchers.IO) {
             ChatCacheManager.loadKeyCacheAsync()
         }
@@ -278,15 +278,15 @@ object ChannelSystemMessageHandler {
         val dao = AppDatabase.instance.chatChannelDao()
         val channel = dao.getById(msg.channelId) ?: return
 
-        // Only the channel owner may kick members
+        
         if (channel.owner != fromId) {
             LogCat.e("ChannelKick from non-owner $fromId (owner=${channel.owner}) — rejected")
             return
         }
 
-        // Update channel status to kicked; keep channel and chat history intact
+        
         channel.status = DChatChannel.STATUS_KICKED
-        // Remove self from the members list so we no longer appear in the members grid
+        
         channel.members = channel.members.filter { it.id != TempData.clientId }
         dao.update(channel)
 
@@ -307,13 +307,13 @@ object ChannelSystemMessageHandler {
             return
         }
 
-        // Remove the leaving peer from members
+        
         channel.members = channel.members.filter { it.id != fromId }
         channel.version++
         channel.updatedAt = TimeHelper.now()
         dao.update(channel)
 
-        // Broadcast updated membership to remaining members
+        
         runBlocking(Dispatchers.IO) {
             ChannelSystemMessageSender.broadcastUpdate(channel)
         }

@@ -71,7 +71,7 @@ data class StoreSettings(
     val loyaltyPointsPerDollar: Double = 1.0,
     val lowStockThreshold: Int = 10,
     val enableOfflineMode: Boolean = true,
-    val syncInterval: Int = 300 // seconds
+    val syncInterval: Int = 300 
 )
 
 enum class UserRole {

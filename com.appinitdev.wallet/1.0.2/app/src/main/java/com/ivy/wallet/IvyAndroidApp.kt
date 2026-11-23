@@ -1,7 +1,7 @@
 
-/**
- * Created by iliyan on 24.02.18.
- */
+ 
+
+
 @HiltAndroidApp
 class IvyAndroidApp : Application(), Configuration.Provider {
     @Inject

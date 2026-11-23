@@ -1,5 +1,5 @@
 
-/** Format: `#RRGGBB` or `#AARRGGBB` or [BaseNote.COLOR_DEFAULT] */
+ 
 typealias ColorString = String
 
 @Entity(indices = [Index(value = ["id", "folder", "pinned", "timestamp", "labels"])])

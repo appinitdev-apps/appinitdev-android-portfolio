@@ -14,7 +14,7 @@ class RootViewModel @Inject constructor(
     companion object {
         const val EXTRA_ADD_TRANSACTION_TYPE = "add_transaction_type_extra"
 
-        const val USER_INACTIVITY_TIME_LIMIT = 60 // Time in seconds
+        const val USER_INACTIVITY_TIME_LIMIT = 60 
     }
 
     private var appLockEnabled = false
@@ -42,7 +42,7 @@ class RootViewModel @Inject constructor(
 
             ioThread {
                 appLockEnabled = sharedPrefs.getBoolean(SharedPrefs.APP_LOCK_ENABLED, false)
-                // initial app locked state
+                
                 _appLocked.value = appLockEnabled
 
                 if (isOnboardingCompleted()) {
@@ -117,13 +117,13 @@ class RootViewModel @Inject constructor(
         return sharedPrefs.getBoolean(SharedPrefs.ONBOARDING_COMPLETED, false)
     }
 
-    // App Lock & UserInactivity --------------------------------------------------------------------
+    
     fun isAppLockEnabled(): Boolean {
         return appLockEnabled
     }
 
     fun isAppLocked(): Boolean {
-        // by default we assume that the app is locked
+        
         return appLocked.value ?: true
     }
 

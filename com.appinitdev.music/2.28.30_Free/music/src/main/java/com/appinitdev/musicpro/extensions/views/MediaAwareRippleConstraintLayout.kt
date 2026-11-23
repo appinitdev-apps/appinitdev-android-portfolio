@@ -1,17 +1,17 @@
 
-/**
- * A [DynamicRippleConstraintLayout] that automatically tracks the currently playing
- * song and any active selection state, drawing visual indicators directly on the canvas
- * so no extra child views are needed.
- *
- * All drawing and state logic lives in [MediaAwareDelegate], which is shared with
- * [MediaAwareRippleLinearLayout]. This class is just the ConstraintLayout-flavored
- * shell that hooks the View lifecycle into the delegate.
- *
- * See [MediaAwareDelegate] for a full explanation of list mode vs. grid mode behavior.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 class MediaAwareRippleConstraintLayout @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null
 ) : DynamicRippleConstraintLayout(context, attrs), MediaStateListener {

@@ -6,7 +6,7 @@ class AnalyticsPreference(context: Context) {
     private val preference = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
 
     fun getValue(): Boolean {
-        return preference.getBoolean(PREFERENCE_VALUE, true) // Default to enabled
+        return preference.getBoolean(PREFERENCE_VALUE, true) 
     }
 
     fun setValue(enabled: Boolean) {

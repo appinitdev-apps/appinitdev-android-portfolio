@@ -18,7 +18,7 @@ fun CategoryDropdown(
             readOnly = true,
             label = { Text(stringResource(R.string.categor_ap)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            // Usa el tipo correcto para OutlinedTextField
+            
             modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
         )
 

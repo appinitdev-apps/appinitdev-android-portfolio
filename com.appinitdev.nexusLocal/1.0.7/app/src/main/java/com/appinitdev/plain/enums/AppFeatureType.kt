@@ -10,16 +10,16 @@ enum class AppFeatureType {
     CHAT,
     AUDIO,
     VIDEOS,
-//    CALLS,
+
     CONTACTS,
-//    SMS,
+
     SOUND_METER,
     POMODORO_TIMER,
     NOTIFICATIONS,
-//    CHECK_UPDATES,
+
     MIRROR_AUDIO,
     MEDIA_TRASH,
-//    DONATION,
+
     DLNA_RECEIVER;
 
     fun has(): Boolean {
@@ -32,12 +32,12 @@ enum class AppFeatureType {
                 isQPlus()
             }
             MEDIA_TRASH -> {
-                isRPlus() // Android 11+
+                isRPlus() 
             }
 
-//            CHECK_UPDATES -> {
-//                BuildConfig.CHANNEL == AppChannelType.GITHUB.name
-//            }
+
+
+
 
             else -> true
         }

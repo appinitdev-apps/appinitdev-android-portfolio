@@ -46,7 +46,7 @@ class RootActivity : AppCompatActivity(), RootScreen {
 
             val appLocked by viewModel.appLocked.collectAsState()
             when (appLocked) {
-                null -> { // display nothing
+                null -> { 
                 }
                 true -> {
                     IvyUI(
@@ -194,8 +194,8 @@ class RootActivity : AppCompatActivity(), RootScreen {
                     type = "application/csv"
                     putExtra(Intent.EXTRA_TITLE, fileName)
 
-                    // Optionally, specify a URI for the directory that should be opened in
-                    // the system file picker before your app creates the document.
+                    
+                    
                     putExtra(
                         DocumentsContract.EXTRA_INITIAL_URI,
                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
@@ -367,14 +367,14 @@ class RootActivity : AppCompatActivity(), RootScreen {
         val request = manager.requestReviewFlow()
         request.addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                // We got the ReviewInfo object
+                
                 val reviewInfo = task.result
                 reviewInfo.let { review ->
                     val flow = manager.launchReviewFlow(this, review!!)
                     flow.addOnCompleteListener {
-                        // The flow has finished. The API does not indicate whether the user
-                        // reviewed or not, or even whether the review dialog was shown. Thus, no
-                        // matter the result, we continue our app flow.
+                        
+                        
+                        
                         if (dismissReviewCard) {
                             customerJourneyLogic.dismissCard(CustomerJourneyCardsProvider.rateUsCard())
                         }

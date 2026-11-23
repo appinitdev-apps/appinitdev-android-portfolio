@@ -8,20 +8,20 @@ class DatabaseHelper(context: Context) :
         private const val DATABASE_NAME = "turismo_oax.db"
         private const val DATABASE_VERSION = 2
 
-        // Tabla Notificaciones
+        
         private const val TABLE_NOTIFICACIONES = "notificaciones"
         private const val COLUMN_ID = "id"
         private const val COLUMN_ASUNTO = "asunto"
         private const val COLUMN_NAME = "name"
         private const val COLUMN_FECHA = "fecha"
 
-        // Tabla Favoritos
+        
         private const val TABLE_FAVORITOS = "favoritos"
 
-        // Tabla Cache Tours
+        
         private const val TABLE_CACHE_TOURS = "cache_tours"
 
-        // Columnas compartidas de Tours
+        
         private const val COL_TOUR_ID = "tour_id"
         private const val COL_NOMBRE = "nombre"
         private const val COL_IMAGEN_PRINCIPAL = "imagenPrincipal"
@@ -129,7 +129,7 @@ class DatabaseHelper(context: Context) :
         return sdf.format(Date())
     }
 
-    // --- FAVORITOS ---
+    
 
     fun toggleFavorito(tour: Tour): Boolean {
         return if (isFavorito(tour.id)) {
@@ -174,7 +174,7 @@ class DatabaseHelper(context: Context) :
         return getToursFromTable(TABLE_FAVORITOS)
     }
 
-    // --- CACHÉ DE TOURS (OFFLINE) ---
+    
 
     fun saveCacheTours(tours: List<Tour>) {
         val db = this.writableDatabase

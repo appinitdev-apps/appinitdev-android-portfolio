@@ -91,7 +91,7 @@ class MainActivity : ComponentActivity() {
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier.fillMaxSize()
                             )
-                            // Capa de atenuación degradada (Scrim) para garantizar alto contraste y legibilidad
+                            
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()

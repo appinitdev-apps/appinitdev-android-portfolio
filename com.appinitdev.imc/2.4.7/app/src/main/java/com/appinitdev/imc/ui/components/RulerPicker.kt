@@ -50,7 +50,7 @@ fun InteractiveRulerPicker(
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Header Row: Title & Unit Badge
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -78,7 +78,7 @@ fun InteractiveRulerPicker(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Main Display: Large Number + Quick Increments
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -150,7 +150,7 @@ fun InteractiveRulerPicker(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Canvas Ruler
+            
             val surfaceVariantColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.35f)
             val onSurfaceColor = MaterialTheme.colorScheme.onSurface
             val containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f)
@@ -213,7 +213,7 @@ fun InteractiveRulerPicker(
                         }
                     }
 
-                    // Indicador Central Fijo (Aguja con Gradiente)
+                    
                     val indicatorWidth = 4.dp.toPx()
                     drawLine(
                         brush = Brush.verticalGradient(
@@ -230,7 +230,7 @@ fun InteractiveRulerPicker(
                     )
                 }
 
-                // Edge Fade Gradient Overlay for smooth 3D viewport effect
+                
                 Box(
                     modifier = Modifier
                         .fillMaxSize()

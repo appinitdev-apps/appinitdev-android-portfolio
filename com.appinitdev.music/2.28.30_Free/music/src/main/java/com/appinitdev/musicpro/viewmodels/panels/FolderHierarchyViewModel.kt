@@ -1,9 +1,9 @@
 
-/**
- * ViewModel for a single level of the folder hierarchy.
- *
- * @param folderPath The path to display. Null means show top-level folders.
- */
+ 
+
+
+
+
 @HiltViewModel(assistedFactory = FolderHierarchyViewModel.Factory::class)
 class FolderHierarchyViewModel @AssistedInject constructor(
         application: Application,

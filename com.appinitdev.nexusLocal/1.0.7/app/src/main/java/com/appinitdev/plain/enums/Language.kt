@@ -25,9 +25,9 @@ object Language {
         context: Context,
         locale: Locale,
     ) {
-        // Compose Multiplatform Resources (used after KMP migration) resolves strings
-        // via the JVM/process default locale, not via Resources.configuration. We must
-        // update both so XML resources AND CMR strings follow the user's choice.
+        
+        
+        
         Locale.setDefault(locale)
         val localeList = LocaleList(locale)
         LocaleList.setDefault(localeList)

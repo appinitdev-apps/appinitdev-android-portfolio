@@ -93,9 +93,9 @@ class PeerGraphQL(val schema: Schema) {
                         }
                         val clientId = call.request.header("c-id") ?: ""
                         val channelId = call.request.header("c-cid") ?: ""
-                        // Determine the decryption key:
-                        // 1. If c-cid is present, always use the channel key (supports non-paired members).
-                        // 2. Otherwise, use the peer's shared key (paired peer-to-peer chat).
+                        
+                        
+                        
                         val token = if (channelId.isNotEmpty()) {
                             ChatCacheManager.channelKeyCache[channelId]
                         } else {

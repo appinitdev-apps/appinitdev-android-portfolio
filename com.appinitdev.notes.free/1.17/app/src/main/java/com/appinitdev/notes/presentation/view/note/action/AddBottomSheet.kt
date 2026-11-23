@@ -1,5 +1,5 @@
 
-/** BottomSheet inside note for adding files, recording audio. */
+ 
 class AddBottomSheet(callbacks: AddActions, @ColorInt color: Int?) :
     ActionBottomSheet(createActions(callbacks), color) {
 

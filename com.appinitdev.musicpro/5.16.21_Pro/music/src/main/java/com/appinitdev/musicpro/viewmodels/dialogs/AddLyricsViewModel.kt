@@ -1,7 +1,7 @@
 
-/**
- * Regex that matches a standard LRC timestamp: [mm:ss.xx] or [mm:ss.xxx]
- */
+ 
+
+
 private val LRC_TIMESTAMP_REGEX = Regex("""\[\d{1,2}:\d{2}\.\d{2,3}]""")
 
 @HiltViewModel(assistedFactory = AddLyricsViewModel.Factory::class)
@@ -11,27 +11,27 @@ class AddLyricsViewModel @AssistedInject constructor(
         private val lrcRepository: LrcRepository
 ) : AndroidViewModel(application) {
 
-    /**
-     * Emits the saved file path on success, or null on failure.
-     * Uses SharedFlow so the dialog can react only once (not re-emit on rotation).
-     */
+     
+
+
+
     private val _saveResult = MutableSharedFlow<SaveResult>(extraBufferCapacity = 1)
     val saveResult: SharedFlow<SaveResult> = _saveResult.asSharedFlow()
 
     private val _isSaving = MutableStateFlow(false)
     val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
 
-    /**
-     * Determine whether the pasted text contains LRC timestamps.
-     */
+     
+
+
     fun hasTimestamps(text: String): Boolean {
         return LRC_TIMESTAMP_REGEX.containsMatchIn(text)
     }
 
-    /**
-     * Save the pasted lyrics as either an .lrc sidecar (when timestamps are present)
-     * or a .txt sidecar (plain lyrics), then emit a [SaveResult].
-     */
+     
+
+
+
     fun saveLyrics(text: String) {
         if (text.isBlank()) {
             viewModelScope.launch {
@@ -49,11 +49,11 @@ class AddLyricsViewModel @AssistedInject constructor(
                 }
 
                 val result = if (hasTimestamps(text)) {
-                    // Save as .lrc sidecar
+                    
                     Log.d(TAG, "Timestamps detected, saving as .lrc")
                     lrcRepository.saveLrcToFile(text, audioPath)
                 } else {
-                    // Save as .txt sidecar
+                    
                     Log.d(TAG, "No timestamps detected, saving as .txt")
                     lrcRepository.saveTxtToFile(text, audioPath)
                 }

@@ -38,9 +38,9 @@ internal fun getRotateBitmap(bitmap: Bitmap, degree: Float): Bitmap {
     return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, false)
 }
 
-/**
- * 解码渲染区域
- */
+ 
+
+
 internal fun decodeRegionBitmap(
     decoder: BitmapRegionDecoder,
     rotation: Int,

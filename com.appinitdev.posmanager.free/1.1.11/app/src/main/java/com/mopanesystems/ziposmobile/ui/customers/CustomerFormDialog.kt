@@ -55,7 +55,7 @@ fun CustomerFormDialog(
                         style = MaterialTheme.typography.headlineSmall
                     )
 
-                    // Campos de texto generales
+                    
                     data class FieldConfig(val label: String, val value: String, val isNumeric: Boolean = false, val onChange: (String) -> Unit)
                     listOf(
                         FieldConfig(stringResource(R.string.nombre), firstName) { firstName = it },
@@ -81,7 +81,7 @@ fun CustomerFormDialog(
                         )
                     }
 
-                    // Campo para Credit Limit
+                    
                     OutlinedTextField(
                         value = creditLimit,
                         onValueChange = {
@@ -93,7 +93,7 @@ fun CustomerFormDialog(
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    // Botones
+                    
                     Row(
                         horizontalArrangement = Arrangement.End,
                         modifier = Modifier.fillMaxWidth()
@@ -147,7 +147,7 @@ fun createNewCustomerOrUpdate(
             zipCode = zipCode,
             country = country,
             notes = notes,
-            creditLimit = creditLimit.toBigDecimalOrNull() ?: BigDecimal(1000), // ✅ si no escribe nada, 1000
+            creditLimit = creditLimit.toBigDecimalOrNull() ?: BigDecimal(1000), 
             createdAt = LocalDateTime.now(),
             updatedAt = LocalDateTime.now(),
             isActive = true

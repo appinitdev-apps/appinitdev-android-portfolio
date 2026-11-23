@@ -33,10 +33,10 @@ class AlbumPage : BasePageFragment() {
         collectPageData { albumViewerViewModel.data }
     }
 
-    /**
-     * Called once the adapter is ready. We start collecting the MusicBrainz release profile
-     * from here so the adapter is guaranteed to exist when the first value arrives.
-     */
+     
+
+
+
     override fun onPageAdapterCreated() {
         viewLifecycleOwner.lifecycleScope.launch {
             albumViewerViewModel.albumInfo.collect { info ->
@@ -82,9 +82,9 @@ class AlbumPage : BasePageFragment() {
 
         fun newInstance(album: Album): AlbumPage {
             val args = Bundle()
-            // Strip the song paths before parceling — they can be huge for big libraries
-            // and will blow past the 1 MB Binder transaction limit in no time. The
-            // ViewModel fetches the songs fresh from the repository anyway.
+            
+            
+            
             args.putParcelable(BundleConstants.ALBUM, album.copy(songPaths = emptyList()))
             val fragment = AlbumPage()
             fragment.arguments = args

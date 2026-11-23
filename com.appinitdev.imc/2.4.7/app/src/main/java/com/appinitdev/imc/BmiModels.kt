@@ -4,17 +4,17 @@ enum class Gender {
 }
 
 enum class UnitSystem {
-    METRIC, // kg, cm
-    IMPERIAL // lbs, inches
+    METRIC, 
+    IMPERIAL 
 }
 
 enum class BmiCategoryType(val labelResId: Int, val color: Color) {
-    UNDERWEIGHT(R.string.riesgo_de_desnutrici_n, Color(0xFF0288D1)), // Blue
-    NORMAL(R.string.normal1, Color(0xFF10B981)),                      // Emerald Green
-    OVERWEIGHT(R.string.sobrepeso1, Color(0xFFF59E0B)),                  // Amber Yellow
-    OBESITY_1(R.string.obesidad1, Color(0xFFF97316)),                   // Orange
-    OBESITY_2(R.string.obesidad_ii1, Color(0xFFEF4444)),                // Coral Red
-    OBESITY_3(R.string.obesidad_iii1, Color(0xFF8B5CF6))                 // Violet Purple
+    UNDERWEIGHT(R.string.riesgo_de_desnutrici_n, Color(0xFF0288D1)), 
+    NORMAL(R.string.normal1, Color(0xFF10B981)),                      
+    OVERWEIGHT(R.string.sobrepeso1, Color(0xFFF59E0B)),                  
+    OBESITY_1(R.string.obesidad1, Color(0xFFF97316)),                   
+    OBESITY_2(R.string.obesidad_ii1, Color(0xFFEF4444)),                
+    OBESITY_3(R.string.obesidad_iii1, Color(0xFF8B5CF6))                 
 }
 
 data class AgeCategory(
@@ -40,7 +40,7 @@ data class BmiResult(
     val pesoKg: Double,
     val estaturaCm: Double,
     val categoryId: Int,
-    val bmiType: Int, // 1 to 6
+    val bmiType: Int, 
     val bmiValue: Double,
     val expectedWeightKg: Double,
     val minHealthyWeightKg: Double = 0.0,

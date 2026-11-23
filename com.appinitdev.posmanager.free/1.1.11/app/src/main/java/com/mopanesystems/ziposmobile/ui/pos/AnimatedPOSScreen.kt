@@ -16,7 +16,7 @@ fun AnimatedPOSScreenCompose(
     val selectedCustomer by viewModel.selectedCustomer.collectAsStateWithLifecycle()
     val isProcessing by viewModel.isProcessing.collectAsStateWithLifecycle()
     
-    // Animation states
+    
     var showCart by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (showCart) 1f else 0.8f,
@@ -35,7 +35,7 @@ fun AnimatedPOSScreenCompose(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Animated Header
+        
         AnimatedVisibility(
             visible = true,
             enter = slideInVertically() + fadeIn(),
@@ -52,7 +52,7 @@ fun AnimatedPOSScreenCompose(
                     fontWeight = FontWeight.Bold
                 )
                 
-                // Animated Scan Button
+                
                 val scanButtonScale by animateFloatAsState(
                     targetValue = if (isProcessing) 0.9f else 1f,
                     animationSpec = tween(200)
@@ -73,7 +73,7 @@ fun AnimatedPOSScreenCompose(
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        // Animated Customer Info
+        
         AnimatedVisibility(
             visible = selectedCustomer != null,
             enter = slideInHorizontally() + fadeIn(),
@@ -100,7 +100,7 @@ fun AnimatedPOSScreenCompose(
                         text = selectedCustomer?.fullName ?: "No Customer Selected",
                         style = MaterialTheme.typography.bodyLarge
                     )
-                    Button(onClick = { /* Add Customer */ }) {
+                    Button(onClick = {   }) {
                         Text("Add Customer")
                     }
                 }
@@ -109,7 +109,7 @@ fun AnimatedPOSScreenCompose(
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        // Animated Cart Section
+        
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -130,7 +130,7 @@ fun AnimatedPOSScreenCompose(
                         fontWeight = FontWeight.Bold
                     )
                     
-                    // Animated item count badge
+                    
                     AnimatedVisibility(
                         visible = itemCount > 0,
                         enter = scaleIn() + fadeIn(),
@@ -188,7 +188,7 @@ fun AnimatedPOSScreenCompose(
                                 CartItemRowCompose(
                                     item = item,
                                     onQuantityChange = { newQuantity ->
-                                        // Update quantity in ViewModel
+                                        
                                     },
                                     onRemove = {
                                         viewModel.removeProductFromCart(item.id)
@@ -203,7 +203,7 @@ fun AnimatedPOSScreenCompose(
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        // Animated Summary and Actions
+        
         AnimatedVisibility(
             visible = cartItems.isNotEmpty(),
             enter = slideInVertically() + fadeIn(),
@@ -215,7 +215,7 @@ fun AnimatedPOSScreenCompose(
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    // Animated Summary
+                    
                     AnimatedContent(
                         targetState = totalAmount,
                         transitionSpec = {
@@ -275,7 +275,7 @@ fun AnimatedPOSScreenCompose(
                     
                     Spacer(modifier = Modifier.height(16.dp))
                     
-                    // Animated Payment Buttons
+                    
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -313,7 +313,7 @@ fun AnimatedPOSScreenCompose(
                         Text("Clear Cart")
                     }
                     
-                    // Animated Progress Indicator
+                    
                     AnimatedVisibility(
                         visible = isProcessing,
                         enter = fadeIn(),

@@ -70,8 +70,8 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
 
-            // Apply padding to the main content views
-            // Top margin for the Toolbar to avoid being under the status bar
+            
+            
             binding.Toolbar.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
                 requestLayout()
@@ -82,13 +82,13 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                 requestLayout()
             }
 
-            // Apply padding to the navigationview top header
+            
             binding.NavigationView.getHeaderView(0).apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
                 requestLayout()
             }
 
-            // TakeNote FAB is at the very bottom
+            
             binding.TakeNote.apply {
                 val marginLayoutParams = layoutParams as ViewGroup.MarginLayoutParams
                 marginLayoutParams.bottomMargin = 16.dp + systemBarsInsets.bottom + imeInsets.bottom
@@ -96,13 +96,13 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                 requestLayout()
             }
 
-            // The ActionMode toolbar's position will naturally be below the Toolbar,
-            // so its top offset is handled by the Toolbar's adjustment.
+            
+            
 
-            // The main content (NavHostFragment) needs bottom padding to avoid
-            // being obscured by the system navigation bar and the keyboard.
-            // If NavHostFragment contains a ScrollView/RecyclerView, you might apply
-            // this padding to that scrollable view instead for better behavior.
+            
+            
+            
+            
             navHostFragment.apply {
                 setPadding(
                     paddingLeft,
@@ -589,7 +589,7 @@ class MainActivity : LockedActivity<ActivityMainBinding>() {
                                 .getBaseNoteDao()
                                 .getAllColors()
                         }
-                    // Show color as selected only if all selected notes have the same color
+                    
                     val currentColor =
                         model.actionMode.selectedNotes.values
                             .map { it.color }

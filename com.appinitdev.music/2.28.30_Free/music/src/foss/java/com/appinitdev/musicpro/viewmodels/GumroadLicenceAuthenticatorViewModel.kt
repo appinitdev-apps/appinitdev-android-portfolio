@@ -12,18 +12,18 @@ class GumroadLicenceAuthenticatorViewModel(application: Application) : WrappedVi
         return message
     }
 
-    /**
-     * Authenticates the license key using the Gumroad API
-     * @param licence The license key to be verified
-     * @return True if the license is valid, false otherwise
-     *
-     * @see <a href="https://gumroad.com/api#license-verification">Gumroad API Documentation</a>
-     * This is the cURL
-     * curl https://api.gumroad.com/v2/licenses/verify \
-     * -d "product_permalink=your_product_permalink" \
-     * -d "license_key=your_license_key" \
-     * -u "your_api_token:"
-     */
+     
+
+
+
+
+
+
+
+
+
+
+
     fun verifyLicence(licence: String) {
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
@@ -77,12 +77,12 @@ class GumroadLicenceAuthenticatorViewModel(application: Application) : WrappedVi
         val refunded = jsonObject.getJSONObject("purchase").getBoolean("refunded")
         val disputed = jsonObject.getJSONObject("purchase").getBoolean("disputed")
         val chargebacked = jsonObject.getJSONObject("purchase").getBoolean("chargebacked")
-        // Returns date in format: 2021-01-05T19:38:56Z
+        
         val createdAt = jsonObject.getJSONObject("purchase").getString("created_at")
         val variant = jsonObject.getJSONObject("purchase").getString("variants")
 
         if (success && !refunded && !disputed && !chargebacked) {
-            if (createdAt.isNotEmpty()) { // TODO : Set limit after release here
+            if (createdAt.isNotEmpty()) { 
                 TrialPreferences.setIsEarlyAccessUser(true)
             }
 

@@ -69,23 +69,23 @@ class ViewImageActivity : LockedActivity<ActivityViewImageBinding>() {
     }
 
     private fun configureEdgeToEdgeInsets() {
-        // 1. Enable edge-to-edge display for the activity window.
+        
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        // 2. Apply window insets to specific views to prevent content from being obscured.
-        // Use binding to access your views.
-        // Set an OnApplyWindowInsetsListener on the root layout.
+        
+        
+        
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
 
-            // Adjust the top margin of the Toolbar to account for the status bar.
+            
             binding.Toolbar.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
-                requestLayout() // Request a layout pass to apply the new margin
+                requestLayout() 
             }
-            // Apply padding to the RecyclerView to account for the navigation bar and keyboard.
-            // Preserve existing padding.
+            
+            
             binding.MainListView.apply {
                 setPadding(
                     paddingLeft,
@@ -164,9 +164,9 @@ class ViewImageActivity : LockedActivity<ActivityViewImageBinding>() {
                         type = image.mimeType
                         putExtra(Intent.EXTRA_STREAM, uri)
 
-                        // Necessary for sharesheet to show a preview of the image
-                        // Check ->
-                        // https://commonsware.com/blog/2021/01/07/action_send-share-sheet-clipdata.html
+                        
+                        
+                        
                         clipData = ClipData.newRawUri(null, uri)
                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     }

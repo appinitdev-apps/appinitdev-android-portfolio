@@ -24,7 +24,7 @@ class CastViewModel : ViewModel() {
             DlnaTransportController.stopAVTransportAsync(device)
             CastPlayer.isPlaying.value = false
             
-            // 清理投屏状态
+            
             if (CastPlayer.sid.isNotEmpty()) {
                 DlnaTransportController.unsubscribeEvent(device, CastPlayer.sid)
                 CastPlayer.sid = ""
@@ -33,7 +33,7 @@ class CastViewModel : ViewModel() {
             CastPlayer.progress.value = 0f
             CastPlayer.duration.value = 0f
             
-            // 取消位置更新作业
+            
             positionUpdateJob?.cancel()
             positionUpdateJob = null
         }

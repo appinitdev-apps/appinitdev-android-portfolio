@@ -31,7 +31,7 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
             contentScale = ContentScale.Crop
         )
         
-        // Dark Overlay
+        
         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)))
 
         Column(
@@ -68,7 +68,7 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp)
             ) {
-                // Section 1: Customization
+                
                 Text(
                     text = stringResource(R.string.apariencia),
                     style = MaterialTheme.typography.labelLarge,
@@ -80,7 +80,7 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
                     title = stringResource(R.string.tienda_monedas),
                     description = stringResource(R.string.tienda_monedas_desc),
                     onClick = { navController.navigate("store") },
-                    painter = painterResource(R.drawable.correct) // Need a coin icon ideally
+                    painter = painterResource(R.drawable.correct) 
                 )
                 
                 SettingOption(
@@ -92,7 +92,7 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Section 2: Account & Security
+                
                 Text(
                     text = stringResource(R.string.cuenta_seguridad),
                     style = MaterialTheme.typography.labelLarge,
@@ -116,7 +116,7 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Section 3: Privacy
+                
                 Text(
                     text = stringResource(R.string.privacidad),
                     style = MaterialTheme.typography.labelLarge,
@@ -159,7 +159,7 @@ fun Settings(navController: NavController, state: AppState, viewModel: ChatViewM
                         autoTranslate = it
                         privacyPrefs.edit().putBoolean("auto_translate", it).apply()
                     },
-                    painter = painterResource(id = R.drawable.correct) // Replace with translation icon if available
+                    painter = painterResource(id = R.drawable.correct) 
                 )
 
                 SettingSwitch(

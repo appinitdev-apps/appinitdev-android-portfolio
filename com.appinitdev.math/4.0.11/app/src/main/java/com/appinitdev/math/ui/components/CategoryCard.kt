@@ -50,7 +50,7 @@ fun CategoryCard(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // High-impact Topic XML Vector Icon Container
+            
             Box(
                 modifier = Modifier
                     .size(54.dp)

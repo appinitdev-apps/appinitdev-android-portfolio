@@ -1,17 +1,17 @@
 
-/**
- * Bottom-sheet sort dialog for the PlaylistSongs panel and the PlaylistPage.
- *
- * Displays sort-by chips (As Added, Title, Artist, Album, Duration, Date Added) and
- * direction chips (Normal / Reversed). The selection is persisted directly into the
- * [Playlist] DB row via [PlaylistRepository.updateSortPreference], which causes Room to
- * re-emit the updated playlist and automatically triggers a re-sort in the ViewModel.
- *
- * "As Added" keeps songs in the order they were inserted into the playlist, which for M3U
- * playlists corresponds to the top-to-bottom order in the file.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 @AndroidEntryPoint
 class PlaylistSongsSort : ScopedBottomSheetFragment() {
 
@@ -85,12 +85,12 @@ class PlaylistSongsSort : ScopedBottomSheetFragment() {
             }
         }
 
-        /**
-         * Shows the playlist-songs sort bottom-sheet for the given [playlist].
-         *
-         * @param playlist The playlist whose sort preference will be modified.
-         * @return The shown [PlaylistSongsSort] instance.
-         */
+         
+
+
+
+
+
         fun FragmentManager.showPlaylistSongsSort(playlist: Playlist): PlaylistSongsSort {
             val dialog = newInstance(playlist)
             dialog.show(this, TAG)

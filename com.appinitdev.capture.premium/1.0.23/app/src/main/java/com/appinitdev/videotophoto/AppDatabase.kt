@@ -2,7 +2,7 @@
 @Entity(tableName = "captures")
 data class CaptureEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val imagePath: String, // Guardaremos la ruta absoluta del archivo
+    val imagePath: String, 
     val videoName: String,
     val timestamp: Long = System.currentTimeMillis()
 )

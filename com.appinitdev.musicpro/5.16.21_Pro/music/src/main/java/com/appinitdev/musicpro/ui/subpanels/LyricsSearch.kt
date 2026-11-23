@@ -1,17 +1,17 @@
 
-/**
- * Panel that allows the user to search for and download LRC lyrics from LrcLib.
- *
- * When opened, the panel automatically searches for lyrics matching the currently playing song.
- * The search keyword is pre-populated with the song title and is preserved across configuration
- * changes and process death. The user may edit the keyword and press the search button (or the
- * IME search action) to run a custom query.
- *
- * Tapping a result in the list downloads its synced lyrics and saves them as a `.lrc` sidecar
- * file next to the audio file, then navigates back to the calling screen.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 @AndroidEntryPoint
 class LyricsSearch : MediaFragment() {
 
@@ -20,20 +20,20 @@ class LyricsSearch : MediaFragment() {
 
     private var adapterLrcSearch: AdapterLrcSearch? = null
 
-    /**
-     * When this fragment is opened from [MetadataEditor], this holds the audio whose
-     * lyrics we are searching for. When null, the screen operates in its normal mode
-     * and saves the picked result as a sidecar `.lrc` file.
-     */
+     
+
+
+
+
     private val editorAudio: Audio? by lazy {
         arguments?.parcelable<Audio>(BundleConstants.AUDIO)
     }
 
-    /**
-     * Guards against the [android.text.TextWatcher] treating programmatic text updates as user edits.
-     * Set to `true` before calling [android.widget.EditText.setText] programmatically
-     * and reset to `false` immediately after.
-     */
+     
+
+
+
+
     private var isProgrammaticTextSet = false
 
     private val viewModel: LyricsSearchViewModel by viewModels()
@@ -56,8 +56,8 @@ class LyricsSearch : MediaFragment() {
         setupSearchButton()
         observeViewModel()
 
-        // If we were opened from the metadata editor, pre-populate the search with
-        // the audio's title and kick off a fresh search right away.
+        
+        
         editorAudio?.let { audio ->
             val keyword = audio.title?.takeIf { it.isNotBlank() } ?: audio.name
             isProgrammaticTextSet = true
@@ -75,7 +75,7 @@ class LyricsSearch : MediaFragment() {
     }
 
     private fun setupSearchBox() {
-        // Populate the search box with the current keyword without triggering the user-modified flag.
+        
         isProgrammaticTextSet = true
         headerBinding.editText.setText(viewModel.keyword)
         headerBinding.editText.setSelection(headerBinding.editText.text?.length ?: 0)
@@ -91,7 +91,7 @@ class LyricsSearch : MediaFragment() {
             }
         })
 
-        // Allow triggering a search via the IME "Search" action key on the keyboard.
+        
         headerBinding.editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 viewModel.searchWithCurrentKeyword()
@@ -114,7 +114,7 @@ class LyricsSearch : MediaFragment() {
             if (isLoading) {
                 headerBinding.count.text = getString(R.string.loading)
             } else {
-                // If loading just finished and there are no results, show "No lyrics found".
+                
                 if (viewModel.searchResults.value.isNullOrEmpty()) {
                     headerBinding.count.text = getString(R.string.no_lyrics_found)
                 }
@@ -140,8 +140,8 @@ class LyricsSearch : MediaFragment() {
 
         viewModel.lrcSaved.observe(viewLifecycleOwner) { saved ->
             if (saved) {
-                // Notify the Lyrics panel that new lyrics were saved so it can reload without
-                // requiring the user to close and reopen the screen.
+                
+                
                 parentFragmentManager.setFragmentResult(REQUEST_KEY_LYRICS_SAVED, Bundle())
                 goBack()
             }
@@ -158,8 +158,8 @@ class LyricsSearch : MediaFragment() {
         if (adapterLrcSearch == null) {
             adapterLrcSearch = AdapterLrcSearch { lrcResponse ->
                 if (editorAudio != null) {
-                    // When opened from the editor, deliver the lyrics back via the
-                    // Fragment Result API so the editor can paste them into the field.
+                    
+                    
                     parentFragmentManager.setFragmentResult(
                             REQUEST_KEY_LYRICS_FOR_EDITOR,
                             Bundle().apply {
@@ -177,21 +177,21 @@ class LyricsSearch : MediaFragment() {
     }
 
     companion object {
-        /**
-         * Creates a new [LyricsSearch] instance in its normal mode — results are saved
-         * as a sidecar `.lrc` file next to the currently playing audio.
-         */
+         
+
+
+
         fun newInstance(): LyricsSearch {
             return LyricsSearch().apply { arguments = Bundle() }
         }
 
-        /**
-         * Creates a [LyricsSearch] instance in editor mode. The search is pre-populated
-         * with [audio]'s title, and picking a result fires [REQUEST_KEY_LYRICS_FOR_EDITOR]
-         * back to [MetadataEditor] instead of saving a sidecar file.
-         *
-         * @param audio The track whose lyrics the user is looking up in the editor.
-         */
+         
+
+
+
+
+
+
         fun newInstanceForEditor(audio: Audio): LyricsSearch {
             return LyricsSearch().apply {
                 arguments = Bundle().apply {
@@ -202,19 +202,19 @@ class LyricsSearch : MediaFragment() {
 
         const val TAG = "LyricsSearch"
 
-        /** Fragment Result API key used when the screen is opened from [MetadataEditor]. */
+         
         const val REQUEST_KEY_LYRICS_FOR_EDITOR = "lyrics_search_for_editor"
 
-        /** Bundle key carrying the plain (unsynced) lyrics string. */
+         
         const val KEY_PLAIN_LYRICS = "plain_lyrics"
 
-        /** Bundle key carrying the synced LRC lyrics string. */
+         
         const val KEY_SYNCED_LYRICS = "synced_lyrics"
 
-        /**
-         * Fragment Result API key broadcast by [LyricsSearch] when a lyrics file is
-         * successfully saved. [com.appinitdev.musicpro.ui.panels.Lyrics] listens for this key and reloads its lyrics data.
-         */
+         
+
+
+
         const val REQUEST_KEY_LYRICS_SAVED = "lyrics_search_lyrics_saved"
     }
 }

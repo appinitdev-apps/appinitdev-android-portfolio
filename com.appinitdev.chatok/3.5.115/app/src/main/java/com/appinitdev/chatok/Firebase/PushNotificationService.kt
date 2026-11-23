@@ -5,7 +5,7 @@ class PushNotificationService: FirebaseMessagingService() {
         super.onNewToken(token)
         Log.d("FCM", "Token actualizado: $token")
         
-        // Actualizar token en Firestore si el usuario está logueado
+        
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
             FirebaseFirestore.getInstance()
@@ -75,7 +75,7 @@ class PushNotificationService: FirebaseMessagingService() {
 
         val pendingIntent = PendingIntent.getActivity(
             this,
-            System.currentTimeMillis().toInt(), // ID único para evitar colisiones
+            System.currentTimeMillis().toInt(), 
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )

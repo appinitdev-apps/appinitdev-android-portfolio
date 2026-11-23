@@ -1,14 +1,14 @@
 
-/**
- * Unit tests for [FilePathValidator] verifying that batch delete cannot be used
- * to accidentally or maliciously wipe critical paths on the Android filesystem.
- */
+ 
+
+
+
 class FilePathValidatorTest {
 
     @get:Rule
     val tmp = TemporaryFolder()
 
-    // ── Blank / non-absolute ──────────────────────────────────────────────────
+    
 
     @Test fun `blank path is rejected`() {
         assertFalse(FilePathValidator.isSafeToDelete(""))
@@ -19,7 +19,7 @@ class FilePathValidatorTest {
         assertFalse(FilePathValidator.isSafeToDelete("relative/path/file.txt"))
     }
 
-    // ── Root / single-component paths ─────────────────────────────────────────
+    
 
     @Test fun `filesystem root is rejected`() {
         assertFalse(FilePathValidator.isSafeToDelete("/"))
@@ -31,7 +31,7 @@ class FilePathValidatorTest {
         assertFalse(FilePathValidator.isSafeToDelete("/data"))
     }
 
-    // ── Forbidden system prefixes ─────────────────────────────────────────────
+    
 
     @Test fun `system directory is rejected`() {
         assertFalse(FilePathValidator.isSafeToDelete("/system"))
@@ -69,20 +69,20 @@ class FilePathValidatorTest {
         assertFalse(FilePathValidator.isSafeToDelete("/vendor/lib/libtest.so"))
     }
 
-    // ── Path traversal ────────────────────────────────────────────────────────
+    
 
     @Test fun `path traversal into system is rejected`() {
-        // On a real filesystem these canonicalize to /system/... or stay put;
-        // either way the validator must reject them.
+        
+        
         assertFalse(FilePathValidator.isSafeToDelete("/sdcard/../system/bin"))
         assertFalse(FilePathValidator.isSafeToDelete("/sdcard/../../system"))
     }
 
-    // ── allowedRoots enforcement ──────────────────────────────────────────────
+    
 
     @Test fun `path outside allowed roots is rejected`() {
         val allowedRoots = listOf("/sdcard", "/storage/emulated/0")
-        // /tmp is not under any allowed root
+        
         val outsidePath = "/tmp/somefile.txt"
         assertFalse(FilePathValidator.isSafeToDelete(outsidePath, allowedRoots))
     }
@@ -99,7 +99,7 @@ class FilePathValidatorTest {
         assertFalse(FilePathValidator.isSafeToDelete(escape, listOf(root)))
     }
 
-    // ── Valid paths (no allowed-roots restriction) ────────────────────────────
+    
 
     @Test fun `valid two-component path under tmp is accepted`() {
         val dir = tmp.newFolder("mydir").absolutePath
@@ -113,7 +113,7 @@ class FilePathValidatorTest {
         assertTrue(FilePathValidator.isSafeToDelete(file))
     }
 
-    // ── requireAllSafe ────────────────────────────────────────────────────────
+    
 
     @Test fun `requireAllSafe throws on any bad path`() {
         val good = tmp.newFile("ok.txt").absolutePath
@@ -128,7 +128,7 @@ class FilePathValidatorTest {
     @Test fun `requireAllSafe passes when all paths are safe`() {
         val f1 = tmp.newFile("a.txt").absolutePath
         val f2 = tmp.newFile("b.txt").absolutePath
-        // Should not throw
+        
         FilePathValidator.requireAllSafe(listOf(f1, f2))
     }
 
@@ -137,6 +137,6 @@ class FilePathValidatorTest {
         try {
             FilePathValidator.requireAllSafe(listOf(good, ""))
             fail("Expected IllegalArgumentException")
-        } catch (_: IllegalArgumentException) { /* expected */ }
+        } catch (_: IllegalArgumentException) {   }
     }
 }

@@ -11,9 +11,9 @@ class ExperimentalActivity : BaseActivity() {
         if (themePrefValue == 1) {
             setTheme(R.style.AppThemeDark)
         }
-        setContentView(R.layout.activity_experimental_settings_page) //Don't move down (Needs to be before we call our functions)
+        setContentView(R.layout.activity_experimental_settings_page) 
 
-        //onClickListeners() //Disabled as a result of conflicts between ACTION_DOWN and ScrollView
+        
         findViewById<ConstraintLayout>(R.id.viewe).systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
         findViewById<FloatingActionButton>(R.id.back_btn_exp).setOnClickListener {
             this.onBackPressed()

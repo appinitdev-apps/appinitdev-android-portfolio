@@ -79,8 +79,8 @@ private fun FileListItemThumbnail(
     val isMedia = file.path.isImageFast() || file.path.isVideoFast()
     val isZipEntry = ZipBrowserHelper.isZipPath(file.path)
 
-    // For zip entries that are images/videos, extract to cache asynchronously so
-    // we can show a real thumbnail instead of a generic icon.
+    
+    
     var zipCachedPath by remember(file.path) { mutableStateOf<String?>(null) }
     if (isMedia && isZipEntry) {
         LaunchedEffect(file.path) {
@@ -91,14 +91,14 @@ private fun FileListItemThumbnail(
     Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
         when {
             isMedia && !isZipEntry -> {
-                // Regular file — use TransformImageView for the zoom-into-preview animation.
+                
                 TransformImageView(modifier = Modifier.size(40.dp).clip(RoundedCornerShape(4.dp)),
                     path = file.path, fileName = file.name, key = file.path,
                     itemState = itemState, previewerState = previewerState, widthPx = context.dp2px(48))
             }
             isMedia && zipCachedPath != null -> {
-                // Zip entry extracted — use TransformImageView so itemState is registered
-                // and openTransform() can animate from the thumbnail position.
+                
+                
                 TransformImageView(modifier = Modifier.size(40.dp).clip(RoundedCornerShape(4.dp)),
                     path = zipCachedPath!!, fileName = file.name, key = file.path,
                     itemState = itemState, previewerState = previewerState, widthPx = context.dp2px(48))

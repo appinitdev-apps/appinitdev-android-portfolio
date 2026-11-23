@@ -1,4 +1,4 @@
-/* #AppInitDev -> Photo Utility Hub */
+ 
 
 
 @HiltAndroidApp

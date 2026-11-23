@@ -8,7 +8,7 @@ fun DarkThemePreference.setDarkMode(theme: DarkTheme) {
 }
 
 suspend fun DarkThemePreference.putAsync(value: DarkTheme) {
-    putAsync(value.value)   // calls the base member putAsync(Int)
+    putAsync(value.value)   
     setDarkMode(value)
 }
 
@@ -26,14 +26,14 @@ private fun parseLocale(value: String): Locale? {
     return if (s.size > 1) Locale(s[0], s[1]) else Locale(value)
 }
 
-// Context is needed for Language.setLocale; Locale? ≠ String so extension is unambiguous.
+
 suspend fun LanguagePreference.putAsync(locale: Locale?) {
     var value = ""
     if (locale != null) {
         value = locale.language
         if (locale.country.isNotEmpty()) value += "-${locale.country}"
     }
-    putAsync(value)   // calls the base member putAsync(String)
+    putAsync(value)   
     Language.setLocale(MainApp.instance, locale ?: LocaleList.getDefault().get(0))
 }
 
@@ -44,7 +44,7 @@ suspend fun AudioPlayModePreference.getValueAsync(): MediaPlayMode =
 suspend fun ApiPermissionsPreference.putAsync(permission: Permission, enable: Boolean) {
     val permissions = getAsync().toMutableSet()
     if (enable) permissions.add(permission.name) else permissions.remove(permission.name)
-    putAsync(permissions)   // calls base member putAsync(Set<String>)
+    putAsync(permissions)   
 }
 
 suspend fun AdbTokenPreference.ensureValueAsync(preferences: Preferences) {
@@ -60,7 +60,7 @@ suspend fun AdbTokenPreference.resetAsync() {
     putAsync(TempData.adbToken)
 }
 
-// ── UrlTokenPreference ───────────────────────────────────────────────────────
+
 
 suspend fun UrlTokenPreference.ensureValueAsync(preferences: Preferences) {
     val rotateOnRestart = RotateUrlTokenOnRestartPreference.get(preferences)
@@ -86,7 +86,7 @@ suspend fun UrlTokenPreference.resetAsync() {
     putAsync(keyStr)
 }
 
-// ── ClientIdPreference ───────────────────────────────────────────────────────
+
 
 suspend fun ClientIdPreference.ensureValueAsync(preferences: Preferences) {
     TempData.clientId = get(preferences)
@@ -96,7 +96,7 @@ suspend fun ClientIdPreference.ensureValueAsync(preferences: Preferences) {
     }
 }
 
-// ── KeyStorePasswordPreference ───────────────────────────────────────────────
+
 
 suspend fun KeyStorePasswordPreference.ensureValueAsync(preferences: Preferences) {
     var password = get(preferences)

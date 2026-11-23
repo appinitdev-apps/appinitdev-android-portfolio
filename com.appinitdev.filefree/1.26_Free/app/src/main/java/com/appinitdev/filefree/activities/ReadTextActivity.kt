@@ -73,7 +73,7 @@ class ReadTextActivity : SimpleActivity() {
                         if (it) {
                             saveText(true)
                         } else {
-                            // en vez de super.onBackPressed() usamos finish()
+                            
                             finish()
                         }
                     }
@@ -109,24 +109,24 @@ class ReadTextActivity : SimpleActivity() {
         }
     }
 
-   /* override fun onBackPressed() {
-        val hasUnsavedChanges = originalText != binding.readTextView.text.toString()
-        when {
-            isSearchActive -> closeSearch()
-            hasUnsavedChanges && System.currentTimeMillis() - lastSavePromptTS > SAVE_DISCARD_PROMPT_INTERVAL -> {
-                lastSavePromptTS = System.currentTimeMillis()
-                ConfirmationAdvancedDialog(this, "", R.string.save_before_closing, R.string.save, R.string.discard) {
-                    if (it) {
-                        saveText(true)
-                    } else {
-                        super.onBackPressed()
-                    }
-                }
-            }
+    
 
-            else -> super.onBackPressed()
-        }
-    }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private fun setupOptionsMenu() {
         binding.readTextToolbar.setOnMenuItemClickListener { menuItem ->

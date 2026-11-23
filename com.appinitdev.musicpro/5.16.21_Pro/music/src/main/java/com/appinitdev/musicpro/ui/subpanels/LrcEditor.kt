@@ -1,29 +1,29 @@
 
-/**
- * Full-screen panel that lets the user create and edit LRC lyric files for a specific
- * audio track using a local [androidx.media3.exoplayer.ExoPlayer] instance.
- *
- * When this fragment is visible the global [com.appinitdev.musicpro.engine.managers.MediaPlaybackManager]
- * service is paused, and all playback controls (rewind, play/pause, forward) operate only
- * on the local player so that the user can listen while stamping timestamps. The global
- * service remains paused when the user navigates back, as the user may want to continue
- * with manual control rather than an automatic resume.
- *
- * The editor shows a scrollable list of lyric entries. Each entry has:
- *  - A clock icon button to stamp the current seek position as that line's timestamp.
- *  - An editable timestamp field in `MM:SS.mmm` format.
- *  - An editable lyric text field.
- *  - A delete button.
- *
- * Additional controls in the bottom toolbar:
- *  - **Paste** — reads the clipboard, splits by newlines, and appends one entry per line
- *    with an empty (0 ms) timestamp.
- *  - **Rewind / Forward** — seek the local player by [SEEK_JUMP_MS].
- *  - **Play/Pause** — toggle local playback.
- *  - **Save** — write the edited entries back to the `.lrc` sidecar file.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @AndroidEntryPoint
 class LrcEditor : MediaFragment() {
 
@@ -169,16 +169,16 @@ class LrcEditor : MediaFragment() {
         viewModel.getSaved().observe(viewLifecycleOwner) { saved ->
             if (saved == true) {
                 Toast.makeText(requireContext(), R.string.lyrics_saved, Toast.LENGTH_SHORT).show()
-                // Signal the Lyrics panel to reload if it is in the back stack.
+                
                 parentFragmentManager.setFragmentResult(REQUEST_KEY_LRC_SAVED, Bundle())
                 goBack()
             }
         }
     }
 
-    // The global service controls are intentionally suppressed below because this editor
-    // manages its own local player. Overriding these no-ops prevents the base class from
-    // reacting to global playback state changes while the editor is active.
+    
+    
+    
 
     override fun onAudio(audio: Audio) = Unit
 
@@ -201,21 +201,21 @@ class LrcEditor : MediaFragment() {
     companion object {
         const val TAG = "LrcEditor"
 
-        /**
-         * Fragment Result API key emitted when the user saves the LRC file.
-         * Observers (e.g., [com.appinitdev.musicpro.ui.panels.Lyrics]) can listen to this key and reload their lyrics view.
-         */
+         
+
+
+
         const val REQUEST_KEY_LRC_SAVED = "lrc_editor_lrc_saved"
 
-        /** Milliseconds to seek on a single tap of the rewind or forward button. */
+         
         private const val SEEK_JUMP_MS = 2000L
 
-        /**
-         * Creates a new [LrcEditor] for the given [audio] track.
-         *
-         * @param audio The track whose LRC file will be created or edited.
-         * @return a configured [LrcEditor] instance.
-         */
+         
+
+
+
+
+
         fun newInstance(audio: Audio): LrcEditor {
             return LrcEditor().also { fragment ->
                 fragment.arguments = Bundle().apply {

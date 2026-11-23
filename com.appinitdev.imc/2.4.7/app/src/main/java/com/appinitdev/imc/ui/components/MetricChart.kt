@@ -8,7 +8,7 @@ fun GenericMetricChart(
 ) {
     var selectedIndex by remember(measurements) { mutableStateOf<Int?>(null) }
 
-    // Pulsing Infinite Animation for Latest Data Point
+    
     val infiniteTransition = rememberInfiniteTransition(label = "PulseTransitionMetric")
     val pulseScale by infiniteTransition.animateFloat(
         initialValue = 1f,
@@ -114,7 +114,7 @@ fun GenericMetricChart(
                     color = lineColor,
                 )
 
-                // Interactive Selected Point Tooltip Box
+                
                 val activeIndex = selectedIndex
                 if (activeIndex != null && (activeIndex in measurements.indices)) {
                     val selRecord = measurements[activeIndex]
@@ -178,7 +178,7 @@ fun GenericMetricChart(
                             points.add(Offset(x, y))
                         }
 
-                        // Grid lines
+                        
                         for (g in 0..3) {
                             val gy = height * (g / 3f)
                             drawLine(
@@ -189,7 +189,7 @@ fun GenericMetricChart(
                             )
                         }
 
-                        // Gradient Area Path
+                        
                         val areaPath = Path().apply {
                             if (points.isNotEmpty()) {
                                 moveTo(points.first().x, height)
@@ -212,7 +212,7 @@ fun GenericMetricChart(
                             ),
                         )
 
-                        // Line
+                        
                         val linePath = Path().apply {
                             if (points.isNotEmpty()) {
                                 moveTo(points.first().x, points.first().y)
@@ -228,7 +228,7 @@ fun GenericMetricChart(
                             style = Stroke(width = 3.8.dp.toPx(), cap = StrokeCap.Round),
                         )
 
-                        // Live Pulse Effect on the Last Point
+                        
                         if (points.isNotEmpty()) {
                             val lastPoint = points.last()
                             drawCircle(
@@ -238,7 +238,7 @@ fun GenericMetricChart(
                             )
                         }
 
-                        // Dots & Labels
+                        
                         for (i in points.indices) {
                             val p = points[i]
                             val isSelected = (i == activeIndex)
@@ -277,7 +277,7 @@ fun GenericMetricChart(
                         }
                     }
 
-                    // Dates X-Axis Row
+                    
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()

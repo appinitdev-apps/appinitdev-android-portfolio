@@ -1,9 +1,9 @@
 
-/**
- * Adapter for browsing folder hierarchy.
- * Shows folders first (full-width), then songs below.
- * Both folder rows and song rows respect the current grid type setting.
- */
+ 
+
+
+
+
 class AdapterFolderHierarchy(contents: FolderHierarchyContents) : RecyclerView.Adapter<VerticalListViewHolder>() {
 
     private var callbacks: GeneralAdapterCallbacks? = null
@@ -109,7 +109,7 @@ class AdapterFolderHierarchy(contents: FolderHierarchyContents) : RecyclerView.A
         this.callbacks = listener
     }
 
-    // --------------------------------------------------------------------------------------------- //
+    
 
     inner class FolderListHolder(val binding: AdapterFolderHierarchyFolderBinding) :
             VerticalListViewHolder(binding.root) {
@@ -120,7 +120,7 @@ class AdapterFolderHierarchy(contents: FolderHierarchyContents) : RecyclerView.A
                     folder.songCount,
                     folder.songCount
             )
-            // binding.cover.loadArtCoverWithPayload(folder)
+            
             binding.container.setOnClickListener {
                 callbacks?.onFolderClicked(folder, it)
             }
@@ -136,7 +136,7 @@ class AdapterFolderHierarchy(contents: FolderHierarchyContents) : RecyclerView.A
                     folder.songCount,
                     folder.songCount
             )
-            // binding.albumArt.loadArtCoverWithPayload(folder)
+            
             binding.container.setOnClickListener {
                 callbacks?.onFolderClicked(folder, it)
             }
@@ -196,7 +196,7 @@ class AdapterFolderHierarchy(contents: FolderHierarchyContents) : RecyclerView.A
         private const val VIEW_TYPE_SONG_GRID = 3
         private const val PAYLOAD_PLAYBACK_STATE = "payload_playing_state"
 
-        /** Convenience alias used by the Fragment's SpanSizeLookup to identify folder items. */
+         
         val FOLDER_VIEW_TYPES = setOf(VIEW_TYPE_FOLDER_LIST, VIEW_TYPE_FOLDER_GRID)
     }
 }

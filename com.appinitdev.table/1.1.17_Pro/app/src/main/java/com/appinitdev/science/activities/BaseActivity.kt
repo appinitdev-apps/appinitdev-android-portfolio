@@ -6,7 +6,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnApplyWindowInsetsListe
 
     private var systemUiConfigured = false
 
-    // --- Locale wrapping for runtime language switching ---
+    
     override fun attachBaseContext(newBase: Context) {
         val prefs = newBase.getSharedPreferences("settings", Context.MODE_PRIVATE)
         val lang = prefs.getString("app_language", null)
@@ -17,24 +17,24 @@ abstract class BaseActivity : AppCompatActivity(), View.OnApplyWindowInsetsListe
             return
         }
 
-        // Si el usuario sí eligió un idioma, construimos el Locale y envolvemos el contexto
+        
         val locale = if (country.isNullOrBlank()) Locale(lang) else Locale(lang, country)
         val context = LocaleUtil.wrap(newBase, locale)
 
         super.attachBaseContext(context)
-//        val locale = if (lang.isNullOrBlank()) null
-//        else if (country.isNullOrBlank()) Locale(lang)
-//        else Locale(lang, country)
-//        val context = LocaleUtil.wrap(newBase, locale)
-//        super.attachBaseContext(context)
+
+
+
+
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // initialize Firebase
+        
 
 
-        // Initialize Firebase Analytics
+        
         AnalyticsHelper.initialize(this)
 
 
@@ -44,7 +44,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnApplyWindowInsetsListe
         super.onResume()
         checkAchievements()
         
-        // Log screen view for analytics
+        
         val screenName = this.javaClass.simpleName.replace("Activity", "")
         AnalyticsHelper.logScreenView(this, screenName, this.javaClass.simpleName)
     }
@@ -89,7 +89,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnApplyWindowInsetsListe
         val maxLives = LivesManager.getMaxLives(this)
         val livesDisplay = if (maxLives == Int.MAX_VALUE) "∞" else lives.toString()
 
-        // Try both possible IDs (XML may differ between screens)
+        
         val livesCountView = findViewById<TextView?>(R.id.tv_lives_count)
         livesCountView?.text = livesDisplay
 

@@ -1,8 +1,8 @@
 
-/**
- * Needs to be in android.print package to access the package private methods of
- * [PrintDocumentAdapter]
- */
+ 
+
+
+
 fun Context.printPdf(file: DocumentFile, content: String, pdfPrintListener: PdfPrintListener) {
     val webView = WebView(this)
     webView.loadDataWithBaseURL(null, content, "text/html", "utf-8", null)

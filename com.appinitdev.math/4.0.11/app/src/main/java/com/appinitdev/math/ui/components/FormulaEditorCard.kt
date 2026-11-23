@@ -62,7 +62,7 @@ fun FormulaEditorCard(
                 )
             }
 
-            // 1-Tap Formula Toolbar
+            
             Text(
                 text = stringResource(id = R.string.insert_symbol_hint),
                 style = MaterialTheme.typography.labelSmall,

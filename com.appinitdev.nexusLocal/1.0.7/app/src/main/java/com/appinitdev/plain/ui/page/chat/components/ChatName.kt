@@ -28,7 +28,7 @@ fun ChatName(
             style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Normal, color = MaterialTheme.colorScheme.secondaryTextColor),
         )
 
-        // Show status indicator based on message status (skip for local chat)
+        
         if (!isLocal) {
             when {
                 m.status == "pending" -> {
@@ -40,7 +40,7 @@ fun ChatName(
                     )
                 }
 
-                // Message with delivery data.
+                
                 m.fromId == "me" && m.statusData != null && m.statusData.total > 0 -> {
                     val statusData = m.statusData
                     val isAllFailed = statusData.allFailed
@@ -80,7 +80,7 @@ fun ChatName(
                     }
                 }
 
-                // Peer / no-leader failure — show legacy retry button
+                
                 m.fromId == "me" && m.status == "failed" -> {
                     if (onRetry != null) {
                         HorizontalSpace(4.dp)

@@ -151,7 +151,7 @@ class PackingChecklistActivity : AppCompatActivity() {
             binding.llChecklistContainer.addView(cardView)
         }
 
-        // Card para artículos personalizados agregados por el usuario
+        
         val customCardView = MaterialCardView(this).apply {
             radius = 16f * resources.displayMetrics.density
             cardElevation = 2f * resources.displayMetrics.density

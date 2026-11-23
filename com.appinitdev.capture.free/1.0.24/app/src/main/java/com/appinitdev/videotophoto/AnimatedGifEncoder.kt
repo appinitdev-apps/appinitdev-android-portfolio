@@ -1,13 +1,13 @@
 
-/**
- * Pure Kotlin lightweight Animated GIF Encoder.
- * Encodes a list of Bitmaps into an animated GIF output stream.
- */
+ 
+
+
+
 class AnimatedGifEncoder {
     private var width = 0
     private var height = 0
-    private var delay = 200 // Default 200ms per frame
-    private var repeat = 0  // 0 = loop indefinitely
+    private var delay = 200 
+    private var repeat = 0  
     private var out: OutputStream? = null
 
     fun setDelay(ms: Int) {
@@ -23,7 +23,7 @@ class AnimatedGifEncoder {
     fun start(os: OutputStream): Boolean {
         out = os
         return try {
-            writeString("GIF89a") // Header
+            writeString("GIF89a") 
             true
         } catch (e: Exception) {
             false
@@ -57,7 +57,7 @@ class AnimatedGifEncoder {
     fun finish(): Boolean {
         if (out == null) return false
         return try {
-            out?.write(0x3B) // GIF trailer
+            out?.write(0x3B) 
             out?.flush()
             out = null
             true
@@ -80,13 +80,13 @@ class AnimatedGifEncoder {
     private fun writeLSD() {
         writeShort(width)
         writeShort(height)
-        out?.write(0xF7) // Global color table flag (256 colors)
-        out?.write(0)    // Background color index
-        out?.write(0)    // Pixel aspect ratio
+        out?.write(0xF7) 
+        out?.write(0)    
+        out?.write(0)    
     }
 
     private fun writePalette() {
-        // Simple 6x6x6 color cube + 40 grays = 256 colors
+        
         for (r in 0..5) {
             for (g in 0..5) {
                 for (b in 0..5) {
@@ -105,40 +105,40 @@ class AnimatedGifEncoder {
     }
 
     private fun writeNetscapeExt() {
-        out?.write(0x21) // Extension introducer
-        out?.write(0xFF) // Application extension label
-        out?.write(11)   // Block size
+        out?.write(0x21) 
+        out?.write(0xFF) 
+        out?.write(11)   
         writeString("NETSCAPE2.0")
-        out?.write(3)    // Sub-block size
-        out?.write(1)    // Loop sub-block ID
+        out?.write(3)    
+        out?.write(1)    
         writeShort(repeat)
-        out?.write(0)    // Block terminator
+        out?.write(0)    
     }
 
     private fun writeGraphicCtrlExt() {
-        out?.write(0x21) // Extension introducer
-        out?.write(0xF9) // Graphic control label
-        out?.write(4)    // Block size
-        out?.write(0x04) // Disposal method: restore to BG
-        writeShort(delay / 10) // Delay time in 1/100ths of a second
-        out?.write(0)    // Transparent color index
-        out?.write(0)    // Block terminator
+        out?.write(0x21) 
+        out?.write(0xF9) 
+        out?.write(4)    
+        out?.write(0x04) 
+        writeShort(delay / 10) 
+        out?.write(0)    
+        out?.write(0)    
     }
 
     private fun writeImageDesc() {
-        out?.write(0x2C) // Image separator
-        writeShort(0)    // Image left
-        writeShort(0)    // Image top
+        out?.write(0x2C) 
+        writeShort(0)    
+        writeShort(0)    
         writeShort(width)
         writeShort(height)
-        out?.write(0)    // Local color table flag = 0
+        out?.write(0)    
     }
 
     private fun writeFrameData(bitmap: Bitmap) {
         val pixels = IntArray(width * height)
         bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
 
-        out?.write(8) // LZW minimum code size
+        out?.write(8) 
         val uncompressed = ByteArray(width * height)
 
         for (i in pixels.indices) {
@@ -150,18 +150,18 @@ class AnimatedGifEncoder {
             uncompressed[i] = idx.toByte()
         }
 
-        // LZW Simple Uncompressed-style block streaming for valid GIF decoder compatibility
+        
         var position = 0
         val total = uncompressed.size
         while (position < total) {
             val blockSize = (total - position).coerceAtMost(254)
             out?.write(blockSize + 1)
-            out?.write(0x80) // Clear code
+            out?.write(0x80) 
             out?.write(uncompressed, position, blockSize)
             position += blockSize
         }
         out?.write(1)
-        out?.write(0x81) // End of information code
-        out?.write(0)    // Block terminator
+        out?.write(0x81) 
+        out?.write(0)    
     }
 }

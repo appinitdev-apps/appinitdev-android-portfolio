@@ -1,6 +1,6 @@
 
 class AndroidNotificationService(private val context: Context) : NotificationService {
-    // Helper to schedule ANC notifications
+    
     override fun scheduleANCNotifications(visits: List<PregnancyEngine.ANCVisit>) {
         ANCNotificationManager.scheduleANCNotifications(context, visits)
         
@@ -22,7 +22,7 @@ class AndroidNotificationService(private val context: Context) : NotificationSer
         }
 
         if (nextVisit != null) {
-            // Resolve the KMP StringResource to a real string for the notification
+            
             val purposeText = ResourceUtils.getString(nextVisit.purpose)
             
             NotificationScheduler.scheduleNotification(

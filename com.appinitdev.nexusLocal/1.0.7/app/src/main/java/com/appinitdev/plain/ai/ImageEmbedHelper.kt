@@ -4,10 +4,10 @@ object ImageEmbedHelper {
     private var inputBuffers: List<TensorBuffer>? = null
     private var outputBuffers: List<TensorBuffer>? = null
 
-    // MobileCLIP-S2 uses identity normalization: mean=(0,0,0) std=(1,1,1)
-    // Just scale pixels to [0, 1] — no further normalization needed.
+    
+    
 
-    // Reusable buffers to avoid per-image allocation
+    
     private var pixelsBuf: IntArray? = null
     private var chwBuf: FloatArray? = null
 
@@ -17,7 +17,7 @@ object ImageEmbedHelper {
         model = m
         inputBuffers = m.createInputBuffers()
         outputBuffers = m.createOutputBuffers()
-        // Pre-allocate reusable buffers
+        
         pixelsBuf = IntArray(inputSize * inputSize)
         chwBuf = FloatArray(3 * inputSize * inputSize)
     }
@@ -27,12 +27,12 @@ object ImageEmbedHelper {
         return embedBitmap(bitmap)
     }
 
-    /** Load and preprocess a bitmap for inference (I/O heavy, safe to call from preloader). */
+     
     fun loadBitmap(imagePath: String, inputSize: Int = 256): Bitmap? {
         return loadAndResize(imagePath, inputSize)
     }
 
-    /** Run model inference on a pre-loaded bitmap. Caller must not reuse bitmap after this. */
+     
     fun embedBitmap(bitmap: Bitmap, inputSize: Int = 256): FloatArray? {
         val inBufs = inputBuffers ?: return null
         val outBufs = outputBuffers ?: return null

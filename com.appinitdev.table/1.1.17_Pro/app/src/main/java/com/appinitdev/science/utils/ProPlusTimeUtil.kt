@@ -1,9 +1,9 @@
 
 object ProPlusTimeUtil {
-    /**
-     * Check if the current date is before January 1, 2026
-     * @return true if current date is before Jan 1, 2026, false otherwise
-     */
+     
+
+
+
     fun isBeforeJanuary2026(): Boolean {
         val currentDate = Calendar.getInstance()
         val targetDate = Calendar.getInstance().apply {

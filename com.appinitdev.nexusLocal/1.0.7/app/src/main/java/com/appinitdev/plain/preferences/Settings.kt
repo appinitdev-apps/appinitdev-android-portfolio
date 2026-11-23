@@ -11,7 +11,7 @@ val LocalLocale = compositionLocalOf<Locale?> { null }
 val LocalWeb = compositionLocalOf { WebPreference.default }
 val LocalUpdateInfo = compositionLocalOf { DUpdateInfo() }
 
-// Convenience accessors for individual update fields
+
 val LocalNewVersion = compositionLocalOf { "" }
 val LocalSkipVersion = compositionLocalOf { "" }
 val LocalNewVersionPublishDate = compositionLocalOf { "" }

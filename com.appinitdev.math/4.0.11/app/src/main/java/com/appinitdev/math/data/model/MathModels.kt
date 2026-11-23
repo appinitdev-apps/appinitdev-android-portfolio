@@ -9,20 +9,20 @@ enum class MathDomain(val displayName: String) {
 }
 
 data class MathCategory(
-    val id: String,                 // e.g. "trigonometry", "derivatives"
-    val title: String,              // e.g. "Trigonometría"
-    val description: String,        // Brief description in Spanish
-    val domain: MathDomain,         // Math domain
+    val id: String,                 
+    val title: String,              
+    val description: String,        
+    val domain: MathDomain,         
     val iconName: String = "function",
     val topicCount: Int = 0
 )
 
 data class MathTopic(
-    val id: String,                 // e.g. "trigonometry/law-of-sines"
-    val categoryId: String,         // e.g. "trigonometry"
-    val fileName: String,           // e.g. "law-of-sines.md"
-    val title: String,              // e.g. "Ley de los Senos"
-    val filePath: String,           // relative path in assets, e.g. "Data/trigonometry/law-of-sines.md"
+    val id: String,                 
+    val categoryId: String,         
+    val fileName: String,           
+    val title: String,              
+    val filePath: String,           
     val summarySnippet: String = "",
     val hasExamples: Boolean = false,
     val exampleCount: Int = 0,
@@ -37,8 +37,8 @@ data class SearchResultMatch(
 )
 
 data class Flashcard(
-    val category: String, // "DERIVATIVES", "INTEGRALS", "DIFF_EQ", "EQUATIONS", "FUNCTIONS", "LIMITS", "POLYNOMIALS", "VECTORS_MATRICES", "TRIGONOMETRY", "COMPLEX"
-    val level: Int,       // 1: Básico, 2: Intermedio, 3: Avanzado
+    val category: String, 
+    val level: Int,       
     val question: String,
     val formulaLatex: String,
     val explanation: String,
@@ -50,7 +50,7 @@ data class SymbolItem(
     val id: Long = 0L,
     val symbol: String,
     val name: String,
-    val category: String, // "CALCULUS", "ALGEBRA", "TRIGONOMETRY", "CONSTANTS", "SYMBOLS"
+    val category: String, 
     val description: String,
     val example: String,
     val isFavorite: Boolean = false,

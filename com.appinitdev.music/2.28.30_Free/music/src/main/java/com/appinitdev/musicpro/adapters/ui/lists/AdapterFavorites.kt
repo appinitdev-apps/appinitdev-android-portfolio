@@ -1,11 +1,11 @@
 
-/**
- * Recycler adapter for the Favorites panel. Identical in structure to [AdapterSongs]
- * but reads [FavoritesPreferences.getGridSize] for its initial layout mode, keeping
- * the Favorites grid/list setting fully independent from the Songs panel.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 class AdapterFavorites(initial: List<Audio>) : FastScrollAdapter<VerticalListViewHolder>() {
 
     private var generalAdapterCallbacks: GeneralAdapterCallbacks? = null
@@ -48,7 +48,7 @@ class AdapterFavorites(initial: List<Audio>) : FastScrollAdapter<VerticalListVie
 
     private val songs: List<Audio> get() = differ.currentList
 
-    /** Current layout mode; update this when the preference changes to trigger a view-type refresh. */
+     
     var layoutMode: CommonPreferencesConstants.LayoutMode = FavoritesPreferences.getGridSize()
 
     init {
@@ -93,12 +93,12 @@ class AdapterFavorites(initial: List<Audio>) : FastScrollAdapter<VerticalListVie
         }
     }
 
-    /** Registers the callback that handles click and long-click events on song items. */
+     
     fun setGeneralAdapterCallbacks(callbacks: GeneralAdapterCallbacks) {
         this.generalAdapterCallbacks = callbacks
     }
 
-    /** Submits an updated list, triggering diff calculation on a background thread. */
+     
     fun updateSongs(newSongs: List<Audio>) {
         differ.submitList(newSongs.toList())
     }
@@ -160,13 +160,13 @@ class AdapterFavorites(initial: List<Audio>) : FastScrollAdapter<VerticalListVie
     }
 
     companion object {
-        /** View type constant for a single-column list row. */
+         
         const val VIEW_TYPE_LIST = CommonPreferencesConstants.GRID_TYPE_LIST
 
-        /** View type constant for a multi-column grid cell. */
+         
         const val VIEW_TYPE_GRID = CommonPreferencesConstants.GRID_TYPE_GRID
 
-        /** View type constant for a label-only row (no cover art). */
+         
         const val VIEW_TYPE_LABEL = CommonPreferencesConstants.GRID_TYPE_LABEL
     }
 }

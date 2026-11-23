@@ -2,7 +2,7 @@
 data class DNearbyDevice(
     val id: String,
     val name: String,
-    val ips: List<String> = emptyList(), // All advertised IPs
+    val ips: List<String> = emptyList(), 
     val port: Int,
     val deviceType: DeviceType,
     val version: String,

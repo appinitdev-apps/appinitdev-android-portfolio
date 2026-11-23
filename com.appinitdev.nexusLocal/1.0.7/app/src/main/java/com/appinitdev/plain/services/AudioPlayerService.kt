@@ -76,12 +76,12 @@ class AudioPlayerService : MediaLibraryService() {
             }
 
             override fun getAvailableCommands(): Player.Commands {
-                // make sure play next is always visible in notification center
+                
                 return MediaSession.ConnectionResult.DEFAULT_PLAYER_COMMANDS
             }
 
             override fun isCommandAvailable(command: Int): Boolean {
-                // make sure play next is always visible in notification center
+                
                 return true
             }
 

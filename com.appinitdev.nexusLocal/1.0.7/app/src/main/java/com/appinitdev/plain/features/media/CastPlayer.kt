@@ -9,10 +9,10 @@ object CastPlayer {
     val currentUri: StateFlow<String> = _currentUri.asStateFlow()
     val isPlaying = MutableStateFlow(false)
 
-    // 播放进度相关状态
-    val progress = MutableStateFlow(0f) // 当前播放位置（秒）
-    val duration = MutableStateFlow(0f) // 总时长（秒）
-    val supportsCallback = MutableStateFlow(false) // 是否支持回调
+    
+    val progress = MutableStateFlow(0f) 
+    val duration = MutableStateFlow(0f) 
+    val supportsCallback = MutableStateFlow(false) 
 
     var sid: String = ""
 
@@ -58,9 +58,9 @@ object CastPlayer {
         }
     }
 
-    /**
-     * 解析 UPnP 时间格式 (HH:MM:SS 或 HH:MM:SS.mmm) 到秒数
-     */
+     
+
+
     fun parseTimeToSeconds(timeString: String): Float {
         if (timeString.isEmpty() || timeString == "NOT_IMPLEMENTED") return 0f
         
@@ -69,7 +69,7 @@ object CastPlayer {
             if (parts.size >= 3) {
                 val hours = parts[0].toFloat()
                 val minutes = parts[1].toFloat()
-                val seconds = parts[2].split(".")[0].toFloat() // 忽略毫秒部分
+                val seconds = parts[2].split(".")[0].toFloat() 
                 hours * 3600 + minutes * 60 + seconds
             } else {
                 0f
@@ -79,9 +79,9 @@ object CastPlayer {
         }
     }
 
-    /**
-     * 更新播放位置信息
-     */
+     
+
+
     fun updatePositionInfo(relTime: String, trackDuration: String) {
         progress.value = parseTimeToSeconds(relTime)
         duration.value = parseTimeToSeconds(trackDuration)

@@ -79,7 +79,7 @@ class EvernoteImporter : ExternalImporter {
             format.timeZone = TimeZone.getTimeZone("UTC")
             return try {
                 val date: Date = format.parse(timestamp) ?: Date()
-                date.time // Return milliseconds since epoch
+                date.time 
             } catch (e: Exception) {
                 System.currentTimeMillis()
             }
@@ -108,11 +108,11 @@ fun EvernoteNote.mapToBaseNote(): BaseNote {
     return BaseNote(
         0L,
         type = if (tasks.isEmpty()) Type.NOTE else Type.LIST,
-        folder = Folder.NOTES, // There is no archive in Evernote, also deleted notes are not
-        // exported
-        color = BaseNote.COLOR_DEFAULT, // TODO: possible in Evernote?
+        folder = Folder.NOTES, 
+        
+        color = BaseNote.COLOR_DEFAULT, 
         title = title,
-        pinned = false, // not exported from Evernote
+        pinned = false, 
         timestamp = parseTimestamp(created),
         modifiedTimestamp = parseTimestamp(updated),
         labels = tag.map { it.name },
@@ -149,7 +149,7 @@ fun Collection<EvernoteTask>.mapToListItem(): List<ListItem> {
             ListItem(
                 body = evernoteTask.title,
                 checked = evernoteTask.taskStatus == TaskStatus.COMPLETED,
-                isChild = false, // You cant indent tasks in Evernote
+                isChild = false, 
                 order = index,
                 children = mutableListOf(),
             )

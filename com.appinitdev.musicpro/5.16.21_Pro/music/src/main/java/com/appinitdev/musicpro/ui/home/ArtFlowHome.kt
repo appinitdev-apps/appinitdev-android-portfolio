@@ -1,11 +1,11 @@
 
-/**
- * Home fragment that presents curated song collections (Favorites, Recently Played, Most Played,
- * and Recently Added) as full-bleed image sliders. The sidebar provides quick access to the three
- * main browsing screens and a popup menu exposing every secondary panel available in the app.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 class ArtFlowHome : MediaFragment() {
 
     private lateinit var binding: FragmentHomeArtflowBinding
@@ -200,17 +200,17 @@ class ArtFlowHome : MediaFragment() {
         }
     }
 
-    /**
-     * Assembles the ordered list of [ArtFlowData] sections that will be passed to
-     * [AdapterArtFlowHome]. Sections whose list is empty are omitted so the adapter
-     * never shows an empty row.
-     *
-     * @param favorites      Latest favorites snapshot from [HomeViewModel.favorites].
-     * @param recentlyPlayed Latest recently-played snapshot from [HomeViewModel.recentlyPlayed].
-     * @param mostPlayed     Latest most-played snapshot from [HomeViewModel.mostPlayed].
-     * @param recentlyAdded  Latest recently-added snapshot from [HomeViewModel.recentlyAdded].
-     * @return Ordered list of non-empty [ArtFlowData] sections.
-     */
+     
+
+
+
+
+
+
+
+
+
+
     private fun buildSections(
             favorites: List<Audio>,
             recentlyPlayed: List<Audio>,
@@ -232,11 +232,11 @@ class ArtFlowHome : MediaFragment() {
     }
 
     companion object {
-        /**
-         * Creates a new instance of [ArtFlowHome].
-         *
-         * @return A freshly instantiated [ArtFlowHome] fragment.
-         */
+         
+
+
+
+
         fun newInstance(): ArtFlowHome {
             val args = Bundle()
             val fragment = ArtFlowHome()

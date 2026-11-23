@@ -84,8 +84,8 @@ data class UserEntity(
     val verified: Boolean = false,
     val isVerifiedBadge: Boolean = false,
     val lastSeen: Long? = null,
-    val isOnline: Boolean = false, // Actual connection state
-    val showOnlineSetting: Boolean = true, // Privacy preference (Default TRUE)
+    val isOnline: Boolean = false, 
+    val showOnlineSetting: Boolean = true, 
     val isAdmin: Boolean = false,
     val balance: Int = 0,
     val isVip: Boolean = false,
@@ -113,7 +113,7 @@ data class NotificationEntity(
     val from: String,
     val message: String,
     val time: Long,
-    val userId: String // current user who received it
+    val userId: String 
 )
 
 fun Story.toEntity(): StoryEntity {

@@ -91,5 +91,5 @@ fun MdEditorBottomAppBar(
             )
         }
     }
-    } // Column
+    } 
 }

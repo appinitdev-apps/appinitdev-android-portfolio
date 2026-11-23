@@ -119,7 +119,7 @@ abstract class EditActivity(private val type: Type) :
             } catch (e: Exception) {
                 log(TAG, msg = "Saving note on Crash failed", throwable = e)
             } finally {
-                // Let the system handle the crash
+                
                 DEFAULT_EXCEPTION_HANDLER?.uncaughtException(thread, throwable)
             }
         }
@@ -130,37 +130,37 @@ abstract class EditActivity(private val type: Type) :
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.mainContentLayout) { view, insets ->
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime()) // For keyboard
+            val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime()) 
 
-            // Apply top padding to your main content to push it below the status bar
-            // and bottom padding to push it above the navigation bar / keyboard / BottomAppBar
+            
+            
             view.setPadding(
                 systemBarsInsets.left,
                 systemBarsInsets.top,
                 systemBarsInsets.right,
-                // Combine navigation bar inset with keyboard inset for bottom padding
-                // and ensure there's enough space for the BottomAppBar
+                
+                
                 systemBarsInsets.bottom + imeInsets.bottom,
             )
 
-            // Let the BottomAppBar consume its own insets
-            // CoordinatorLayout usually handles this well with its children having specific
-            // behaviors.
-            // If the BottomAppBar isn't adapting, you might need a custom Behavior or ensure its
-            // height is consistent.
-            // A common approach is to set the bottom margin of your main content
-            // to the height of the BottomAppBar + the nav bar inset.
+            
+            
+            
+            
+            
+            
+            
             val navBarBottom = systemBarsInsets.bottom
 
-            // Option A: Set padding on the ScrollView inside main_content_layout
-            // This is often more effective for scrollable content.
+            
+            
             binding.ScrollView.apply {
                 setPadding(
                     paddingLeft,
                     paddingTop,
                     paddingRight,
                     binding.BottomAppBarLayout.height +
-                        navBarBottom, // Space for BottomAppBar + nav bar
+                        navBarBottom, 
                 )
             }
             insets
@@ -324,7 +324,7 @@ abstract class EditActivity(private val type: Type) :
     protected open fun setupToolbars() {
         binding.Toolbar.setNavigationOnClickListener { finish() }
         binding.Toolbar.menu.apply {
-            clear() // TODO: needed?
+            clear() 
             add(R.string.search, R.drawable.search, MenuItem.SHOW_AS_ACTION_ALWAYS) {
                 startSearch()
             }
@@ -365,11 +365,11 @@ abstract class EditActivity(private val type: Type) :
         }
     }
 
-    /**
-     * Visibly highlights found search results in the UI.
-     *
-     * @return amount of search results found
-     */
+     
+
+
+
+
     abstract fun highlightSearchResults(search: String): Int
 
     abstract fun selectSearchResult(resultPos: Int)

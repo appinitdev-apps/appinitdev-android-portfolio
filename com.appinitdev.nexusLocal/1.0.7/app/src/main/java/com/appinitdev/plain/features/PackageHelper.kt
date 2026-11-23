@@ -108,7 +108,7 @@ object PackageHelper {
 
     fun getCerts(packageInfo: PackageInfo): List<DCertificate> {
         val packageName = packageInfo.packageName
-        // why packageName could be null?
+        
         if (packageName.isNullOrBlank()) {
             return emptyList()
         }

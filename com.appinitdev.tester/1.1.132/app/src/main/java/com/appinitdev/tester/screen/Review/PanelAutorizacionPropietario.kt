@@ -1,5 +1,5 @@
 
-// PanelAutorizacionPropietario.kt
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -10,9 +10,9 @@ fun PanelAutorizacionPropietario(
     onBack: () -> Unit,
 ) {
     val userApps by viewModel.userApps.collectAsState()
-    //val app = remember(userApps, appId) { userApps.find { it.id == appId } }
+    
 
-    // Estado para filtrar: 0 = Pendientes, 1 = Aprobadas
+    
     var selectedFilter by remember { mutableIntStateOf(0) }
     val app by remember(userApps, appId) {
         derivedStateOf { userApps.find { it.id == appId } }
@@ -23,7 +23,7 @@ fun PanelAutorizacionPropietario(
             val estadoBuscado = when(selectedFilter) {
                 0 -> "pendiente"
                 1 -> "aprobada"
-                else -> "rechazada" // Nuevo estado
+                else -> "rechazada" 
             }
             app?.resenasProduccion?.filter { it.value.estado == estadoBuscado }?.toList() ?: emptyList()
         }
@@ -58,16 +58,16 @@ fun PanelAutorizacionPropietario(
             return@Scaffold
         }
 
-        // Filtramos las reseñas según el Tab seleccionado
-//        val resenasFiltradas = remember(app, selectedFilter) {
-//            val estadoBuscado = if (selectedFilter == 0) "pendiente" else "aprobada"
-//            app.resenasProduccion.filter { it.value.estado == estadoBuscado }.toList()
-//        }
+        
+
+
+
+
 
         Column(modifier = Modifier
             .padding(padding)
             .fillMaxSize()) {
-            // --- SELECTOR DE TABS (Pendientes vs Aprobadas) ---
+            
             TabRow(selectedTabIndex = selectedFilter) {
                 Tab(selected = selectedFilter == 0, onClick = { selectedFilter = 0 }) {
                     val count = app!!.resenasProduccion.values.count { it.estado == "pendiente" }
@@ -103,16 +103,16 @@ fun PanelAutorizacionPropietario(
                         ResenaItemCard(
                             resena = resena,
                             testerId = testerId,
-                            estadoActual = selectedFilter, // 0=Pendiente, 1=Aprobada, 2=Rechazada
+                            estadoActual = selectedFilter, 
                             onAprobar = {
                                 viewModel.aprobarResenaProduccion(app!!.id, testerId, resena)
                             },
                             onRechazar = {
-                                // Cambia el estado a "rechazada" en Firebase
+                                
                                 viewModel.actualizarEstadoResena(app!!.id, testerId, "rechazada")
                             },
                             onReevaluar = {
-                                // Devuelve el estado a "pendiente" para que aparezca en la primera pestaña
+                                
                                 viewModel.actualizarEstadoResena(app!!.id, testerId, "pendiente")
                             }
                         )
@@ -126,21 +126,21 @@ fun PanelAutorizacionPropietario(
 @Composable
 fun ResenaItemCard(
     resena: ResenaProduccion,
-    testerId: String, // Necesario para identificar a quién pertenece la reseña
-    estadoActual: Int, // 0: Pendiente, 1: Aprobada, 2: Rechazada
+    testerId: String, 
+    estadoActual: Int, 
     onAprobar: () -> Unit,
     onRechazar: () -> Unit,
-    onReevaluar: () -> Unit // Nueva acción para mover de Rechazado -> Pendiente
+    onReevaluar: () -> Unit 
 ) {
     val context = LocalContext.current
     var showFullImage by remember { mutableStateOf(false) }
     var procesando by remember { mutableStateOf(false) }
 
-    // Definimos colores de fondo según el estado para dar feedback visual rápido
+    
     val backgroundColor = when (estadoActual) {
-        0 -> Color(0xFFF1F8E9) // Verde muy claro (Pendiente)
-        1 -> Color(0xFFE8EAF6) // Azul muy claro (Aprobada)
-        else -> Color(0xFFFFEBEE) // Rojo muy claro (Rechazada)
+        0 -> Color(0xFFF1F8E9) 
+        1 -> Color(0xFFE8EAF6) 
+        else -> Color(0xFFFFEBEE) 
     }
 
     Card(
@@ -150,7 +150,7 @@ fun ResenaItemCard(
     ) {
         Column(Modifier.padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                // --- MINIATURA DE EVIDENCIA ---
+                
                 AsyncImage(
                     model = resena.evidenciaUrl,
                     contentDescription = "Evidencia",
@@ -164,7 +164,7 @@ fun ResenaItemCard(
 
                 Spacer(Modifier.width(12.dp))
 
-                // --- INFORMACIÓN DEL TESTER ---
+                
                 Column(Modifier.weight(1f)) {
                     Text(
                         resena.userName ?: "Tester",
@@ -180,15 +180,15 @@ fun ResenaItemCard(
                     )
                 }
 
-                // --- ACCIONES SEGÚN EL ESTADO ---
+                
                 Box(contentAlignment = Alignment.Center) {
-//                    if (procesando) {
-//                        CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
-//                    } else {
+
+
+
                         when (estadoActual) {
-                            0 -> { // ESTADO: PENDIENTE
+                            0 -> { 
                                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    // Botón Rechazar (Icono)
+                                    
                                     IconButton(
                                         onClick = {
                                             procesando = true
@@ -198,7 +198,7 @@ fun ResenaItemCard(
                                     ) {
                                         Icon(Icons.Default.Close, contentDescription = stringResource(R.string.rechazar), tint = Color.Red)
                                     }
-                                    // Botón Aprobar
+                                    
                                     Button(
                                         onClick = {
                                             procesando = true
@@ -211,7 +211,7 @@ fun ResenaItemCard(
                                     }
                                 }
                             }
-                            1 -> { // ESTADO: APROBADA
+                            1 -> { 
                                 Icon(
                                     Icons.Default.CheckCircle,
                                     contentDescription = stringResource(R.string.aprobadas),
@@ -219,8 +219,8 @@ fun ResenaItemCard(
                                     modifier = Modifier.size(32.dp)
                                 )
                             }
-                            2 -> { // ESTADO: RECHAZADA
-                                // Botón para volver a poner en pendientes (Reevaluar)
+                            2 -> { 
+                                
                                 OutlinedButton(
                                     onClick = {
                                         procesando = true
@@ -235,13 +235,13 @@ fun ResenaItemCard(
                                 }
                             }
                         }
-                   // }
+                   
                 }
             }
         }
     }
 
-    // --- MODAL DE IMAGEN COMPLETA ---
+    
     if (showFullImage) {
         Dialog(onDismissRequest = { showFullImage = false }) {
             Card(

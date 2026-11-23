@@ -5,10 +5,10 @@ fun StatsHistoryScreen(
     stats: List<PuzzleStatEntity>,
     onDismiss: () -> Unit,
 ) {
-    var selectedTab by remember { mutableStateOf(0) } // 0: Evolución, 1: Histograma
+    var selectedTab by remember { mutableStateOf(0) } 
     val statsByLevel = stats.groupBy { it.n }.toSortedMap()
 
-    // Resumen Global KPI
+    
     val totalGames = stats.size
     val bestTime = stats.minOfOrNull { it.time } ?: 0
     val avgTime = if (totalGames > 0) stats.map { it.time }.average().toInt() else 0
@@ -28,7 +28,7 @@ fun StatsHistoryScreen(
         },
         text = {
             Column(modifier = Modifier.fillMaxSize()) {
-                // KPIs de resumen
+                
                 if (totalGames > 0) {
                     Card(
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)),
@@ -50,7 +50,7 @@ fun StatsHistoryScreen(
                         }
                     }
 
-                    // Tabs para cambiar vista
+                    
                     TabRow(
                         selectedTabIndex = selectedTab,
                         containerColor = Color.Transparent,
@@ -69,7 +69,7 @@ fun StatsHistoryScreen(
                     }
                 }
 
-                // El LazyColumn hace que todo el contenido interno sea scroleable
+                
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -91,7 +91,7 @@ fun StatsHistoryScreen(
                         }
 
                         if (selectedTab == 0) {
-                            // 1. Gráfica de mejora de línea
+                            
                             if (levelStats.size >= 2) {
                                 item {
                                     Card(
@@ -117,7 +117,7 @@ fun StatsHistoryScreen(
                                 }
                             }
                         } else {
-                            // 2. Histograma de distribución
+                            
                             item {
                                 Card(
                                     colors = CardDefaults.cardColors(
@@ -144,7 +144,7 @@ fun StatsHistoryScreen(
                             }
                         }
 
-                        // Lista detallada de ese nivel
+                        
                         items(levelStats.sortedByDescending { it.date }) { stat ->
                             HorizontalStatRow(stat)
                         }
@@ -168,7 +168,7 @@ fun HistogramChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier)
     val colorBar = MaterialTheme.colorScheme.primary
     val colorText = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f).toArgb()
 
-    // Bins de tiempo: <30s, 30-60s, 60-120s, >120s
+    
     val bin1 = stats.count { it.time < 30 }
     val bin2 = stats.count { it.time in 30..59 }
     val bin3 = stats.count { it.time in 60..119 }
@@ -192,7 +192,7 @@ fun HistogramChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier)
             val barHeight = (count.toFloat() / maxCount.toFloat()) * (size.height * 0.7f)
             val top = size.height - barHeight
 
-            // Dibujar barra con esquinas redondeadas
+            
             val cornerRadius = 8.dp.toPx()
             drawRoundRect(
                 color = colorBar,
@@ -201,7 +201,7 @@ fun HistogramChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier)
                 cornerRadius = androidx.compose.ui.geometry.CornerRadius(cornerRadius, cornerRadius)
             )
 
-            // Cantidad encima
+            
             if (count > 0) {
                 drawContext.canvas.nativeCanvas.drawText(
                     "$count",
@@ -211,7 +211,7 @@ fun HistogramChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier)
                 )
             }
 
-            // Etiqueta abajo
+            
             drawContext.canvas.nativeCanvas.drawText(
                 labels[index],
                 left + (barWidth / 2f),
@@ -232,15 +232,15 @@ fun SimpleLineChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier
     Canvas(modifier = modifier.padding(horizontal = 30.dp, vertical = 30.dp)) {
         if (stats.isEmpty()) return@Canvas
 
-        // 1. Configuraciones iniciales y evitar división por cero
+        
         val isSinglePoint = stats.size == 1
         val maxTime = stats.maxOf { it.time }.toFloat()
         val minTime = stats.minOf { it.time }.toFloat()
 
-        // Si todos los tiempos son iguales, el rango es 1 para evitar división por cero
+        
         val range = (maxTime - minTime).coerceAtLeast(1f)
 
-        // Si hay un solo punto, lo ponemos al centro, si no, calculamos espacio
+        
         val spacing = if (isSinglePoint) 0f else size.width / (stats.size - 1)
 
         val textPaint = android.graphics.Paint().apply {
@@ -250,17 +250,17 @@ fun SimpleLineChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier
             typeface = android.graphics.Typeface.DEFAULT_BOLD
         }
 
-        // 2. Cálculo de puntos
+        
         val points = stats.mapIndexed { index, stat ->
             val x = if (isSinglePoint) size.width / 2 else index * spacing
-            // Calculamos Y: El tiempo mínimo (mejor) estará más ARRIBA en el Canvas
-            // Si quieres que el tiempo más alto esté arriba, quita el "size.height -"
+            
+            
             val y = if (isSinglePoint) size.height / 2
             else size.height - ((stat.time - minTime) / range * size.height)
             Offset(x, y)
         }
 
-        // 3. Dibujar Guías de Fondo (Ejes)
+        
         drawLine(
             color = Color.Gray.copy(alpha = 0.3f),
             start = Offset(0f, size.height),
@@ -268,7 +268,7 @@ fun SimpleLineChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier
             strokeWidth = 1.dp.toPx()
         )
 
-        // 4. Dibujar la Línea (solo si hay más de un punto)
+        
         if (!isSinglePoint) {
             val path = Path().apply {
                 points.forEachIndexed { i, pt ->
@@ -282,23 +282,23 @@ fun SimpleLineChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier
             )
         }
 
-        // 5. Dibujar Puntos y Etiquetas
+        
         points.forEachIndexed { index, pt ->
-            // Sombra suave para el punto
+            
             drawCircle(
                 color = colorDot.copy(alpha = 0.2f),
                 radius = 7.dp.toPx(),
                 center = pt
             )
 
-            // Punto principal
+            
             drawCircle(
                 color = colorDot,
                 radius = 4.dp.toPx(),
                 center = pt
             )
 
-            // Etiqueta de Tiempo (Segundos) encima del punto
+            
             drawContext.canvas.nativeCanvas.drawText(
                 "${stats[index].time}s",
                 pt.x,
@@ -306,7 +306,7 @@ fun SimpleLineChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier
                 textPaint
             )
 
-            // Etiqueta de Fecha debajo (solo en extremos o si hay pocos puntos)
+            
             if (isSinglePoint || index == 0 || index == stats.size - 1) {
                 val dateLabel = java.text.SimpleDateFormat("dd/MM", java.util.Locale.getDefault())
                     .format(java.util.Date(stats[index].date))
@@ -317,7 +317,7 @@ fun SimpleLineChart(stats: List<PuzzleStatEntity>, modifier: Modifier = Modifier
                     size.height + 40f,
                     textPaint.apply {
                         textSize = 22f
-                        //fontWeight = Paint.FontMetrics().top // Estilo más ligero
+                        
                     }
                 )
             }

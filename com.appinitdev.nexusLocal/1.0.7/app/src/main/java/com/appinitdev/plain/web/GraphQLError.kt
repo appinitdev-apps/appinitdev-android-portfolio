@@ -20,7 +20,7 @@ fun GraphQLError.serialize(): String =
                     put(
                         "path",
                         buildJsonArray {
-                            // TODO: Build this path. https://spec.graphql.org/June2018/#example-90475
+                            
                         },
                     )
                 }

@@ -1,20 +1,20 @@
-/**
- *     Goodtime Productivity
- *     Copyright (C) 2025 Adrian Cotfas
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class GoogleBilling(
     context: Context,
@@ -46,11 +46,11 @@ class GoogleBilling(
 
     val isPro = settingsRepository.settings.map { it.isPro }.distinctUntilChanged()
 
-    /**
-     * Use the Google Play Billing Library to make a purchase.
-     *
-     * @param activity [Activity] instance.
-     */
+     
+
+
+
+
     fun buy(activity: Activity) {
         log.i { "buy: attempt to upgrade to PRO" }
         productDetails.value?.let {
@@ -71,11 +71,11 @@ class GoogleBilling(
         }
 
         coroutineScope.launch {
-            /**
-             * [isPro] - whether the user has the pro version as stored in persistence
-             * [hasPro] - whether the billing client states that the user has the pro version
-             * [acknowledged] - whether the purchase has been acknowledged
-             */
+             
+
+
+
+
             data class ProState(
                 val isPro: Boolean,
                 val hasPro: Boolean?,
@@ -311,8 +311,8 @@ class GoogleBilling(
                 }
 
                 BillingResponseCode.ITEM_NOT_OWNED -> {
-                    // This is possibly related to a stale Play cache.
-                    // Querying purchases again.
+                    
+                    
                     log.i("Acknowledgement failed with ITEM_NOT_OWNED")
                     billingClient.queryPurchasesAsync(
                         QueryPurchasesParams
@@ -396,7 +396,7 @@ class GoogleBilling(
             retryAttempt++
         } while (retryAttempt < maxTries)
 
-        return block() // last attempt
+        return block() 
     }
 
     private fun billingFlowParamsBuilder(productDetails: ProductDetails) =
@@ -409,16 +409,16 @@ class GoogleBilling(
             ),
         )
 
-    /**
-     * Persist the pro status.
-     */
+     
+
+
     private suspend fun setPro(value: Boolean) {
         settingsRepository.setPro(value)
     }
 
-    /**
-     * Reset the state of the app when a refund is made.
-     */
+     
+
+
     private suspend fun resetPreferencesOnRefund() {
         resetTimerStyle()
         with(settingsRepository) {

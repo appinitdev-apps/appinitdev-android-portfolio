@@ -1,9 +1,9 @@
 
-/**
- * Panel fragment displaying the user's artists with sort, grid layout, and search support.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
 class Artists : BasePanelFragment() {
 
     private lateinit var binding: FragmentArtistsBinding

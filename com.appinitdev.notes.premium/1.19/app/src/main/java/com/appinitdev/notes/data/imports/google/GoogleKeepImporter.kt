@@ -107,14 +107,14 @@ class GoogleKeepImporter : ExternalImporter {
                 ListItem(
                     body = item.text,
                     checked = item.isChecked,
-                    isChild = false, // Google Keep doesn't have explicit child/indentation info
+                    isChild = false, 
                     order = index,
                     children = mutableListOf(),
                 )
             }
 
         return BaseNote(
-            id = 0L, // Auto-generated
+            id = 0L, 
             type = if (googleKeepNote.listContent.isNotEmpty()) Type.LIST else Type.NOTE,
             folder =
                 when {
@@ -122,7 +122,7 @@ class GoogleKeepImporter : ExternalImporter {
                     googleKeepNote.isArchived -> Folder.ARCHIVED
                     else -> Folder.NOTES
                 },
-            color = BaseNote.COLOR_DEFAULT, // Ignoring color mapping
+            color = BaseNote.COLOR_DEFAULT, 
             title = googleKeepNote.title,
             pinned = googleKeepNote.isPinned,
             timestamp = googleKeepNote.createdTimestampUsec / 1000,

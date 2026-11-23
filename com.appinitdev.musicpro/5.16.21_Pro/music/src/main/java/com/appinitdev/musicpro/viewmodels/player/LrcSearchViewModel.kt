@@ -22,16 +22,16 @@ class LrcSearchViewModel @Inject constructor(
 
     private var currentAudio: Audio? = null
 
-    /**
-     * Initialize with the current audio being played.
-     */
+     
+
+
     fun setAudio(audio: Audio) {
         currentAudio = audio
     }
 
-    /**
-     * Search for lyrics based on the provided track name and artist name.
-     */
+     
+
+
     fun searchLyrics(trackName: String, artistName: String) {
         if (trackName.isBlank()) {
             _error.value = "Track name cannot be empty"
@@ -60,10 +60,10 @@ class LrcSearchViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Select and download a specific LRC from the search results.
-     * This will parse the LRC content and save it to the storage.
-     */
+     
+
+
+
     fun selectAndDownloadLrc(lrcResponse: LrcLibResponse) {
         val audio = currentAudio
         if (audio == null) {
@@ -82,12 +82,12 @@ class LrcSearchViewModel @Inject constructor(
             _error.value = null
 
             try {
-                // Parse the LRC content
+                
                 val lrcData = withContext(Dispatchers.Default) {
                     LrcParser().parse(syncedLyrics)
                 }
 
-                // Save to file as sidecar
+                
                 val saveResult = lrcRepository.saveLrcToFile(
                         syncedLyrics,
                         audio.uri
@@ -109,9 +109,9 @@ class LrcSearchViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Load existing LRC from file if available.
-     */
+     
+
+
     fun loadExistingLrc() {
         val audio = currentAudio
         if (audio == null) {
@@ -135,7 +135,7 @@ class LrcSearchViewModel @Inject constructor(
                         _error.value = "Failed to parse existing lyrics: ${e.message}"
                     }
                 } else {
-                    // No existing LRC file found, trigger search with audio metadata
+                    
                     searchLyrics(audio.title ?: audio.name, audio.artist ?: "")
                 }
             }.onFailure { exception ->
@@ -146,25 +146,25 @@ class LrcSearchViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Check if an LRC file already exists for the current audio.
-     */
+     
+
+
     fun lrcExists(): Boolean {
         val audio = currentAudio ?: return false
         return lrcRepository.lrcFileExists(audio.uri)
     }
 
-    /**
-     * Clear the search results.
-     */
+     
+
+
     fun clearSearchResults() {
         _searchResults.value = emptyList()
         _error.value = null
     }
 
-    /**
-     * Reset the error message.
-     */
+     
+
+
     fun clearError() {
         _error.value = null
     }

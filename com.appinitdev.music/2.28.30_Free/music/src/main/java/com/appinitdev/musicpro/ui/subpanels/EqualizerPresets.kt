@@ -1,18 +1,18 @@
 
-/**
- * A full-screen panel that lists all saved equalizer presets — both the ones bundled
- * with the app and any the user has created themselves.
- *
- * This is modeled after [LyricsSearch] so it fits naturally into the existing panel
- * navigation stack: tapping the Presets button in the EQ screen pushes this fragment
- * onto the back stack, and pressing back pops it off. No bottom-sheets, no dialogs
- * floating over dialogs — just clean, predictable navigation.
- *
- * Tapping a preset applies it immediately and returns to the EQ screen so the user
- * can see the sliders snap to the preset curve in real time.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
 class EqualizerPresets : MediaFragment() {
 
     private lateinit var binding: FragmentEqualizerPresetsBinding
@@ -35,8 +35,8 @@ class EqualizerPresets : MediaFragment() {
         super.onViewCreated(view, savedInstanceState)
         requireHiddenMiniPlayer()
 
-        // Plug the header into the AppHeader so it behaves like every other panel header —
-        // it scrolls away as the user scrolls down the preset list.
+        
+        
         binding.appHeader.setContentView(headerBinding.root)
         binding.appHeader.attachTo(binding.recyclerView, AppHeader.ScrollMode.HIDE_ON_SCROLL)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -50,10 +50,10 @@ class EqualizerPresets : MediaFragment() {
         super.onDestroyView()
     }
 
-    /**
-     * Wires up the adapter and hands it the two interaction callbacks.
-     * The adapter is created once and recycled across list updates.
-     */
+     
+
+
+
     private fun setupAdapter() {
         adapter = AdapterEqualizerPresets(
                 onPresetClicked = ::applyPreset,
@@ -62,10 +62,10 @@ class EqualizerPresets : MediaFragment() {
         binding.recyclerView.adapter = adapter
     }
 
-    /**
-     * Starts collecting the live preset list from the database and feeds each update
-     * straight into the adapter. Room handles the heavy lifting — we just watch.
-     */
+     
+
+
+
     private fun observePresets() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -76,18 +76,18 @@ class EqualizerPresets : MediaFragment() {
         }
     }
 
-    /**
-     * Applies [preset] to the live audio engine, persists all band gains and the preamp
-     * to [com.appinitdev.musicpro.preferences.EqualizerPreferences], and then navigates back to the EQ screen so the user
-     * can immediately see the sliders jump to the preset positions. One tap, done.
-     *
-     * @param preset The preset to apply.
-     */
+     
+
+
+
+
+
+
     private fun applyPreset(preset: EqualizerPreset) {
         val gains = preset.getBandGains()
 
-        // Write all gains to SharedPreferences first, then push them to the audio engine.
-        // Doing it in this order means the values are safe even if the app is killed mid-update.
+        
+        
         EqualizerPreferences.setAllBandGains(gains)
         for (i in gains.indices) {
             EqualizerManager.setBandGain(i, gains[i], persist = false)
@@ -97,14 +97,14 @@ class EqualizerPresets : MediaFragment() {
         goBack()
     }
 
-    /**
-     * Shows a [SharedScrollViewPopup] anchored to [anchorView] with context actions for
-     * the given [preset]. "Apply" is always present; "Delete" is only offered for
-     * presets that the user created (not the built-in factory ones).
-     *
-     * @param preset     The preset the user long-pressed.
-     * @param anchorView The view that was long-pressed — used as the popup anchor.
-     */
+     
+
+
+
+
+
+
+
     private fun showPresetOptions(preset: EqualizerPreset, anchorView: View) {
         SharedScrollViewPopup(
                 container = requireContainerView(),
@@ -124,13 +124,13 @@ class EqualizerPresets : MediaFragment() {
         ).show()
     }
 
-    /**
-     * Shows a [withSureDialog] confirmation before permanently deleting [preset].
-     * The dialog lives in the parent panel rather than a nested bottom-sheet, which
-     * keeps the interaction hierarchy clean and simple.
-     *
-     * @param preset The user-created preset to delete.
-     */
+     
+
+
+
+
+
+
     private fun confirmAndDelete(preset: EqualizerPreset) {
         withSureDialog { confirmed ->
             if (confirmed) {
@@ -143,10 +143,10 @@ class EqualizerPresets : MediaFragment() {
 
         const val TAG = "EqualizerPresets"
 
-        /**
-         * Creates a fresh instance of [EqualizerPresets] ready to be pushed onto the
-         * fragment back stack via [openFragment].
-         */
+         
+
+
+
         fun newInstance(): EqualizerPresets {
             return EqualizerPresets().apply {
                 arguments = Bundle()

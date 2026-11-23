@@ -1,11 +1,11 @@
 
-/**
- * Tests for MdnsIfaceSelector utilities (candidateInterfaces helpers, subnet arithmetic).
- * Kept separate from MdnsHostResponderTest to respect the 150-line file limit.
- */
+ 
+
+
+
 class MdnsIfaceSelectorTest {
 
-    // ── DatagramSocket loopback delivery (sanity: kernel UDP works) ───────────
+    
 
     @Test fun `DatagramSocket delivers bytes to loopback`() {
         val loopback = ip4("127.0.0.1")
@@ -46,12 +46,12 @@ class MdnsIfaceSelectorTest {
         )
     }
 
-    // ── isMobileDataInterface ─────────────────────────────────────────────────
+    
 
     @Test fun `dummy0 is not mobile data`() = assertTrue(!isMobileDataInterface("dummy0"))
     @Test fun `v4-wlan0 is not mobile data`() = assertTrue(!isMobileDataInterface("v4-wlan0"))
 
-    // ── helpers ───────────────────────────────────────────────────────────────
+    
 
     private fun ip4(addr: String) = InetAddress.getByName(addr) as Inet4Address
 

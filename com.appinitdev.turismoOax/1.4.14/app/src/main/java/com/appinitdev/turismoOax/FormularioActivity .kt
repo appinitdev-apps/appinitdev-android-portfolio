@@ -37,7 +37,7 @@ class FormularioActivity : AppCompatActivity() {
         (binding.actvMotivo as? AutoCompleteTextView)?.apply {
             setAdapter(adapter)
             setOnItemClickListener { _, _, position, _ ->
-                // Validar selección
+                
                 if (position == -1) {
                     binding.actvMotivo.error =
                         context.getString(com.appinitdev.turismoOax.R.string.seleccione_un_motivo)
@@ -59,14 +59,14 @@ class FormularioActivity : AppCompatActivity() {
     private fun validarFormulario(): Boolean {
         var valido = true
 
-        // Validar nombre
+        
         if (binding.etNombre.text.toString().trim().length < 3) {
             binding.etNombre.error =
                 getString(com.appinitdev.turismoOax.R.string.m_nimo_3_caracteres)
             valido = false
         }
 
-        // Validar teléfono
+        
         val telefono = binding.etTelefono.text.toString().trim()
         if (telefono.isEmpty()) {
             binding.etTelefono.error = getString(com.appinitdev.turismoOax.R.string.campo_requerido)
@@ -76,7 +76,7 @@ class FormularioActivity : AppCompatActivity() {
             valido = false
         }
 
-        // Validar teléfono
+        
         val telefonoLada = binding.etTelefonoLada.text.toString().trim()
         if (telefonoLada.isEmpty()) {
             binding.etTelefonoLada.error = getString(com.appinitdev.turismoOax.R.string.campo_requerido)
@@ -86,20 +86,20 @@ class FormularioActivity : AppCompatActivity() {
             valido = false
         }
 
-        // Validar email si existe
+        
         val email = binding.etEmail.text.toString().trim()
         if (email.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.etEmail.error = getString(com.appinitdev.turismoOax.R.string.formato_inv_lido)
             valido = false
         }
 
-        // Validar motivo
+        
         if (binding.actvMotivo.text.toString().trim().isEmpty()) {
             binding.actvMotivo.error = getString(com.appinitdev.turismoOax.R.string.seleccione_un_motivo)
             valido = false
         }
 
-        // Validar descripción
+        
         if (binding.etDescripcion.text.toString().trim().length < 10) {
             binding.etDescripcion.error =
                 getString(com.appinitdev.turismoOax.R.string.m_nimo_10_caracteres)

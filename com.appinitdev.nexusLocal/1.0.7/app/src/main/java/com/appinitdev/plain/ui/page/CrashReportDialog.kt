@@ -47,7 +47,7 @@ fun CrashReportDialog(crashReport: String, onDismiss: () -> Unit) {
                     }
                 }
 
-                // Write crash report to a temp file so it can be attached to the email
+                
                 val crashFile = File(context.cacheDir, "crash_report.txt")
                 try {
                     crashFile.writeText(bodyText)

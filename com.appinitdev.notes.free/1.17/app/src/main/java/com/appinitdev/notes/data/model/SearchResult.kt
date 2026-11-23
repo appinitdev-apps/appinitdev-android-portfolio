@@ -19,9 +19,9 @@ class SearchResult(
         job =
             scope.launch {
                 liveData = baseNoteDao.getBaseNotesByKeyword(keyword, folder, label)
-                //                    if (keyword.isNotEmpty())
-                // baseNoteDao.getBaseNotesByKeyword(keyword, folder, label)
-                //                    else baseNoteDao.getFrom(folder)
+                
+                
+                
                 liveData?.observeForever(observer)
             }
     }

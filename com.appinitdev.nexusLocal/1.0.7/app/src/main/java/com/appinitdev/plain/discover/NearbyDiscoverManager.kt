@@ -37,14 +37,14 @@ object NearbyDiscoverManager {
     fun scheduleRestart(reason: String) {
         restartJob?.cancel()
         restartJob = coIO {
-            delay(1_500) // debounce rapid network churn
+            delay(1_500) 
             LogCat.d("Network change ($reason) — restarting multicast listener")
             NearbyNetwork.stopReceiver()
             NearbyNetwork.startReceiver(::onDatagram)
         }
     }
 
-    // ---- Message routing -------------------------------------------------------
+    
 
     private fun onDatagram(message: String, senderIP: String) {
         if (NetworkHelper.getDeviceIP4s().contains(senderIP)) return
@@ -74,7 +74,7 @@ object NearbyDiscoverManager {
         }
     }
 
-    // ---- Discovery logic -------------------------------------------------------
+    
 
     private fun broadcastDiscover(request: DDiscoverRequest) {
         val message = "${NearbyMessageType.DISCOVER.toPrefix()}${JsonHelper.jsonEncode(request)}"

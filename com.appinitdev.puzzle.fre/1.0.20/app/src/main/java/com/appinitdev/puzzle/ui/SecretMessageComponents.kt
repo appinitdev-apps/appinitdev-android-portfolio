@@ -188,7 +188,7 @@ fun SecretMessageInputDialog(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                // Previsualización en Tiempo Real
+                
                 val themeStyle = getThemeStyle(selectedTheme)
                 Card(
                     colors = CardDefaults.cardColors(containerColor = themeStyle.containerColor),
@@ -220,7 +220,7 @@ fun SecretMessageInputDialog(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                // Selectores de Personalización
+                
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = "Emoji:",

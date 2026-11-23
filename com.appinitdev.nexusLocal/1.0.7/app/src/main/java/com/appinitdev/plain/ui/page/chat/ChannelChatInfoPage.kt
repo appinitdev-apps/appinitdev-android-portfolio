@@ -32,11 +32,11 @@ fun ChannelChatInfoPage(
         }
     } ?: ""
 
-    // Resolve owner's peer id ('me' sentinel maps to this device's clientId).
+    
     val ownerPeerId: String? = liveChannel?.let { c ->
         if (c.owner == "me" || c.owner == TempData.clientId) TempData.clientId else c.owner
     }
-    // Members shown in the list: owner pinned to the top, the rest sorted A-Z by display name.
+    
     val displayMembers: List<DPeer> = buildList {
         val ownerPeer = ownerPeerId?.let { id -> joinedMemberPeers.find { it.id == id } }
         if (ownerPeer != null) {
@@ -50,7 +50,7 @@ fun ChannelChatInfoPage(
             addAll(joinedMemberPeers.sortedBy { it.name.ifBlank { it.getBestIp() } })
         }
     }
-    // Paired peers that are not yet members of this channel (and not the owner). A-Z.
+    
     val addablePeers: List<DPeer> = if (ownedByMe) {
         val presentIds = (liveChannel?.members?.map { it.id } ?: emptyList()).toMutableSet().apply {
             ownerPeerId?.let { add(it) }

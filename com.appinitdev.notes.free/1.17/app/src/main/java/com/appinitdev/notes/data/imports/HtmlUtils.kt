@@ -1,8 +1,8 @@
 
-/**
- * Tries to parse the plain body text from the text as well as parse all text formatting into
- * [SpanRepresentation]s
- */
+ 
+
+
+
 fun parseBodyAndSpansFromHtml(
     html: String,
     rootTag: String = "body",
@@ -29,15 +29,15 @@ fun parseBodyAndSpansFromHtml(
     return Pair(bodyText.trimEnd().toString(), spans)
 }
 
-/**
- * Adds plain text to [bodyText] and adds [SpanRepresentation]s:
- * - `<b>` or `font-weight`>`400` -> [SpanRepresentation.bold]
- * - `<i>` or `font-style:italic` -> [SpanRepresentation.italic]
- * - `<s>` -> [SpanRepresentation.strikethrough]
- * - `<a>` or text starting with `http` -> [SpanRepresentation.link]
- * - `<span>` with `font-family` includes `monospace` or `Source Code Pro` ->
- *   [SpanRepresentation.monospace]
- */
+ 
+
+
+
+
+
+
+
+
 private fun processElement(
     element: Element,
     bodyText: StringBuilder,
@@ -49,7 +49,7 @@ private fun processElement(
     for (child in element.childNodes()) {
         when (child) {
             is TextNode -> {
-                // If the child is a text node, append its text and update the offset
+                
                 val text = child.text()
                 if (text != " ") {
                     bodyText.appendWithUrlCheck(text, spans)
@@ -92,7 +92,7 @@ private fun processElement(
                     }
 
                     "div" -> {
-                        // div always means new-line, except for first
+                        
                         if (bodyText.isNotEmpty()) {
                             bodyText.append("\n")
                         }
@@ -195,7 +195,7 @@ private fun Element.isBold(): Boolean {
     val style = attr("style")
     return if (style.contains("font-weight")) {
         val fontWeight: String = style.split("font-weight:")[1].split(";")[0].trim()
-        return fontWeight.toInt() > 400 // Google Keep normal text has fontWeight 400
+        return fontWeight.toInt() > 400 
     } else false
 }
 

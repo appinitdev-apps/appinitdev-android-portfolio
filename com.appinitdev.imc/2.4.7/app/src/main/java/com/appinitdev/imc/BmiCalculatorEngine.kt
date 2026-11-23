@@ -295,7 +295,7 @@ object BmiCalculatorEngine {
         val maxHealthy: Double
         val expectedWeight: Double
 
-        if (categoryId == 6) { // Older Adults 65+ (OPS / Lipschitz / OMS Geriatric Criteria)
+        if (categoryId == 6) { 
             if (bmiValue < 22.0) {
                 statusText = context.getString(R.string.riesgo_de_desnutrici_n)
                 tIMC = 1
@@ -319,7 +319,7 @@ object BmiCalculatorEngine {
             minHealthy = 22.0 * (heightM.pow(2))
             maxHealthy = 26.9 * (heightM.pow(2))
             expectedWeight = ((22.0 + 26.9) / 2.0) * (heightM.pow(2))
-        } else { // Standard Adults 20-64
+        } else { 
             if (bmiValue < 18.5) {
                 statusText = context.getString(R.string.riesgo_de_desnutrici_n)
                 tIMC = 1
@@ -371,8 +371,8 @@ object BmiCalculatorEngine {
         bmr: Int
     ): HealthRecommendation {
         return when (categoryId) {
-            1 -> { // 0 - 11 months
-                if (subIndex <= 5) { // 0 to 5 months
+            1 -> { 
+                if (subIndex <= 5) { 
                     HealthRecommendation(
                         hydrationTitle = "Lactancia e Hidratación",
                         hydrationValue = "Lactancia Materna Exclusiva",
@@ -381,7 +381,7 @@ object BmiCalculatorEngine {
                         energyValue = "~400 - 600 kcal / día",
                         energyNote = "Suministrado exclusivamente por leche materna o fórmula infantil de inicio."
                     )
-                } else { // 6 to 11 months
+                } else { 
                     HealthRecommendation(
                         hydrationTitle = "Agua y Alimentación",
                         hydrationValue = "~100 - 250 ml de agua / día",
@@ -392,7 +392,7 @@ object BmiCalculatorEngine {
                     )
                 }
             }
-            2 -> { // 1 - 5 years
+            2 -> { 
                 HealthRecommendation(
                     hydrationTitle = "Líquidos Recomendados",
                     hydrationValue = "~1.1 - 1.3 Litros / día",
@@ -402,7 +402,7 @@ object BmiCalculatorEngine {
                     energyNote = "Adaptado al desarrollo psicomotor y ritmo de crecimiento infantil."
                 )
             }
-            3 -> { // 5 - 9 years
+            3 -> { 
                 HealthRecommendation(
                     hydrationTitle = "Agua Recomendada",
                     hydrationValue = "~1.5 - 1.7 Litros / día",
@@ -412,7 +412,7 @@ object BmiCalculatorEngine {
                     energyNote = "Aporte necesario para la actividad física y rendimiento escolar."
                 )
             }
-            4 -> { // 10 - 19 years
+            4 -> { 
                 val waterLiters = (weightKg * 0.035).coerceIn(1.8, 2.8)
                 HealthRecommendation(
                     hydrationTitle = "Agua Recomendada",
@@ -423,7 +423,7 @@ object BmiCalculatorEngine {
                     energyNote = "Calorías en reposo calculadas para el desarrollo puberal."
                 )
             }
-            5 -> { // Adults 20 - 64 years
+            5 -> { 
                 val waterLiters = (weightKg * 0.035).coerceIn(2.0, 3.2)
                 HealthRecommendation(
                     hydrationTitle = "Agua Recomendada",
@@ -434,7 +434,7 @@ object BmiCalculatorEngine {
                     energyNote = "Gasto energético en reposo mediante la ecuación de Mifflin-St Jeor."
                 )
             }
-            else -> { // Older Adults 65+ years (OPS / Lipschitz)
+            else -> { 
                 HealthRecommendation(
                     hydrationTitle = "Agua Recomendada (Adulto Mayor)",
                     hydrationValue = "~1.8 - 2.2 Litros / día",

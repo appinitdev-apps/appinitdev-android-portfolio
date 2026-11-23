@@ -219,11 +219,11 @@ class MainActivity : AppCompatActivity() {
 
     fun openNew() {
         try {
-            // 1. Verificamos si la app ya está visible para el usuario
-            // Nota: Si no tienes "AppHelper.foregrounded()", puedes usar "instance.get() != null"
-            // o verificar si la activity está en un estado válido del ciclo de vida.
+            
+            
+            
             if (foregrounded()) {
-                // Si ya está al frente, simplemente la reordenamos de forma nativa
+                
                 val intent = Intent(this, MainActivity::class.java).apply {
                     addFlags(
                         Intent.FLAG_ACTIVITY_NEW_TASK or
@@ -233,30 +233,30 @@ class MainActivity : AppCompatActivity() {
                 }
                 startActivity(intent)
             } else {
-                // 2. Si está en SEGUNDO PLANO, enviamos una notificación interactiva
+                
                 val context = this
-                val channelId = "app_foreground_channel" // Asegúrate de tener este canal creado en tu app
+                val channelId = "app_foreground_channel" 
 
                 val intent = Intent(context, MainActivity::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    // Opcional: puedes pasar un extra si quieres que al abrir desde la notificación haga algo extra
+                    
                     putExtra("opened_from_notification", true)
                 }
 
                 val pendingIntent = android.app.PendingIntent.getActivity(
                     context,
-                    1002, // ID único para este PendingIntent
+                    1002, 
                     intent,
                     android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
                 )
 
                 val notificationManager = context.getSystemService(android.content.Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
 
-                // Creamos la notificación
+                
                 val notification = androidx.core.app.NotificationCompat.Builder(context, channelId)
-                    .setContentTitle(LocaleHelper.getString(Res.string.app_name)) // Puedes cambiarlo por recursos de Strings si tienes
+                    .setContentTitle(LocaleHelper.getString(Res.string.app_name)) 
                     .setContentText(LocaleHelper.getString(Res.string.permission_required))
-                    .setSmallIcon(android.R.drawable.ic_dialog_info) // Cambia por tu icono real (ej. R.drawable.ic_logo)
+                    .setSmallIcon(android.R.drawable.ic_dialog_info) 
                     .setAutoCancel(true)
                     .setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)
                     .setContentIntent(pendingIntent)

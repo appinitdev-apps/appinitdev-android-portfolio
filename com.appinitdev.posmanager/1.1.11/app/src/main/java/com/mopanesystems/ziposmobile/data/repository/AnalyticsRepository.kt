@@ -10,7 +10,7 @@ class AnalyticsRepository @Inject constructor(
     fun getAllSales(): Flow<List<DailySales>> = dailySalesDao.getAllSales()
 
 
-    // Daily Sales
+    
     fun getAllDailySales(): Flow<List<DailySales>> = dailySalesDao.getAllDailySales()
     
     fun getDailySalesByStore(storeId: String): Flow<List<DailySales>> = dailySalesDao.getDailySalesByStore(storeId)
@@ -26,7 +26,7 @@ class AnalyticsRepository @Inject constructor(
     
     suspend fun deleteDailySales(dailySales: DailySales) = dailySalesDao.deleteDailySales(dailySales)
     
-    // Product Performance
+    
     fun getAllProductPerformance(): Flow<List<ProductPerformance>> = productPerformanceDao.getAllProductPerformance()
     
     fun getProductPerformanceByStore(storeId: String): Flow<List<ProductPerformance>> = productPerformanceDao.getProductPerformanceByStore(storeId)
@@ -44,7 +44,7 @@ class AnalyticsRepository @Inject constructor(
     
     suspend fun deleteProductPerformance(performance: ProductPerformance) = productPerformanceDao.deleteProductPerformance(performance)
     
-    // Customer Analytics
+    
     fun getAllCustomerAnalytics(): Flow<List<CustomerAnalytics>> = customerAnalyticsDao.getAllCustomerAnalytics()
     
     fun getCustomerAnalyticsByStore(storeId: String): Flow<List<CustomerAnalytics>> = customerAnalyticsDao.getCustomerAnalyticsByStore(storeId)
@@ -65,7 +65,7 @@ class AnalyticsRepository @Inject constructor(
     
     suspend fun deleteCustomerAnalytics(analytics: CustomerAnalytics) = customerAnalyticsDao.deleteCustomerAnalytics(analytics)
     
-    // Refund Analytics
+    
     fun getAllRefundAnalytics(): Flow<List<RefundAnalytics>> = refundAnalyticsDao.getAllRefundAnalytics()
     
     fun getRefundAnalyticsByStore(storeId: String): Flow<List<RefundAnalytics>> = refundAnalyticsDao.getRefundAnalyticsByStore(storeId)
@@ -79,7 +79,7 @@ class AnalyticsRepository @Inject constructor(
     
     suspend fun deleteRefundAnalytics(analytics: RefundAnalytics) = refundAnalyticsDao.deleteRefundAnalytics(analytics)
     
-    // Sync Logs
+    
     fun getAllSyncLogs(): Flow<List<SyncLog>> = syncLogDao.getAllSyncLogs()
     
     fun getSyncLogsByStore(storeId: String): Flow<List<SyncLog>> = syncLogDao.getSyncLogsByStore(storeId)

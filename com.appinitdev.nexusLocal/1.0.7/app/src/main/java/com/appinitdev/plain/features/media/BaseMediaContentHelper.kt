@@ -112,7 +112,7 @@ abstract class BaseMediaContentHelper {
                 val path = cursor.getStringValue(MediaStore.MediaColumns.DATA, cache)
                 paths.add(path)
                 try {
-                    // File.delete can throw a security exception
+                    
                     val f = File(path)
                     if (f.deleteRecursively()) {
                         context.contentResolver.delete(
@@ -154,7 +154,7 @@ abstract class BaseMediaContentHelper {
         ids: Set<String>,
     ) {
         val contentValues = ContentValues().apply {
-//            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Trash")
+
             put(MediaStore.MediaColumns.IS_TRASHED, 1)
         }
         ids.forEach { id ->
@@ -172,7 +172,7 @@ abstract class BaseMediaContentHelper {
         ids: Set<String>,
     ) {
         val contentValues = ContentValues().apply {
-//            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Trash")
+
             put(MediaStore.MediaColumns.IS_TRASHED, 0)
         }
         ids.forEach { id ->
@@ -187,7 +187,7 @@ abstract class BaseMediaContentHelper {
     fun getBucketsAsync(context: Context): List<DMediaBucket> {
         val bucketMap = mutableMapOf<String, DMediaBucket>()
 
-        // Columns to retrieve from the MediaStore query
+        
         val projection =
             arrayOf(
                 MediaStore.MediaColumns.BUCKET_ID,
@@ -196,7 +196,7 @@ abstract class BaseMediaContentHelper {
                 MediaStore.MediaColumns.DATA,
             )
 
-        // Querying the MediaStore for images
+        
         context.contentResolver.query(
             uriExternal,
             projection,

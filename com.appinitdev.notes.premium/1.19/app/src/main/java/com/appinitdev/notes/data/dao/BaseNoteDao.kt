@@ -113,39 +113,39 @@ interface BaseNoteDao {
     @Query("UPDATE BaseNote SET reminders = :reminders WHERE id = :id")
     suspend fun updateReminders(id: Long, reminders: List<Reminder>)
 
-    /**
-     * Both id and position can be invalid.
-     *
-     * Example of id being invalid - User adds a widget, then goes to Settings and clears app data.
-     * Now the widget refers to a list which doesn't exist.
-     *
-     * Example of position being invalid - User adds a widget, goes to Settings, clears app data and
-     * then imports a backup. Even if the backup contains the same list and it is inserted with the
-     * same id, it may not be of the safe size.
-     *
-     * In this case, an exception will be thrown. It is the caller's responsibility to handle it.
-     */
+     
+
+
+
+
+
+
+
+
+
+
+
     suspend fun updateChecked(id: Long, position: Int, checked: Boolean) {
         val items = requireNotNull(get(id)).items
         items[position].checked = checked
         updateItems(id, items)
     }
 
-    /** see [updateChecked] */
+     
     suspend fun updateChecked(id: Long, positions: List<Int>, checked: Boolean) {
         val items = requireNotNull(get(id)).items
         positions.forEach { position -> items[position].checked = checked }
         updateItems(id, items)
     }
 
-    /**
-     * Since we store the labels as a JSON Array, it is not possible to perform operations on it.
-     * Thus, we use the 'Like' query which can return false positives sometimes.
-     *
-     * For example, a request for all base notes having the label 'Important' will also return base
-     * notes with the label 'Unimportant'. To prevent this, we use the extension function `map`
-     * directly on the LiveData to filter the results accordingly.
-     */
+     
+
+
+
+
+
+
+
     fun getBaseNotesByLabel(label: String): LiveData<List<BaseNote>> {
         val result = getBaseNotesByLabel(label, setOf(Folder.NOTES, Folder.ARCHIVED))
         return result.map { list -> list.filter { baseNote -> baseNote.labels.contains(label) } }

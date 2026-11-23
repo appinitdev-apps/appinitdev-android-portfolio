@@ -1,5 +1,5 @@
 
-// shared preferences
+
 const val DIRECTORY_SORT_ORDER = "directory_sort_order"
 const val GROUP_FOLDER_PREFIX = "group_folder_"
 const val VIEW_TYPE_PREFIX = "view_type_folder_"
@@ -35,7 +35,7 @@ const val MEDIA_COLUMN_CNT = "media_column_cnt"
 const val MEDIA_LANDSCAPE_COLUMN_CNT = "media_landscape_column_cnt"
 const val MEDIA_HORIZONTAL_COLUMN_CNT = "media_horizontal_column_cnt"
 const val MEDIA_LANDSCAPE_HORIZONTAL_COLUMN_CNT = "media_landscape_horizontal_column_cnt"
-const val SHOW_ALL = "show_all"                           // display images and videos from all folders together
+const val SHOW_ALL = "show_all"                           
 const val HIDE_FOLDER_TOOLTIP_SHOWN = "hide_folder_tooltip_shown"
 const val EXCLUDED_FOLDERS = "excluded_folders"
 const val INCLUDED_FOLDERS = "included_folders"
@@ -101,7 +101,7 @@ const val SEARCH_ALL_FILES_BY_DEFAULT = "search_all_files_by_default"
 const val LAST_EXPORTED_FAVORITES_FOLDER = "last_exported_favorites_folder"
 const val SHOW_PERMISSION_RATIONALE = "show_permission_rationale"
 
-// slideshow
+
 const val SLIDESHOW_INTERVAL = "slideshow_interval"
 const val SLIDESHOW_INCLUDE_VIDEOS = "slideshow_include_videos"
 const val SLIDESHOW_INCLUDE_GIFS = "slideshow_include_gifs"
@@ -114,7 +114,7 @@ const val SLIDESHOW_SLIDE_DURATION = 500L
 const val SLIDESHOW_FADE_DURATION = 1500L
 const val SLIDESHOW_START_ON_ENTER = "slideshow_start_on_enter"
 
-// slideshow animations
+
 const val SLIDESHOW_ANIMATION_NONE = 0
 const val SLIDESHOW_ANIMATION_SLIDE = 1
 const val SLIDESHOW_ANIMATION_FADE = 2
@@ -156,17 +156,17 @@ const val SHOULD_INIT_FRAGMENT = "should_init_fragment"
 const val PORTRAIT_PATH = "portrait_path"
 const val SKIP_AUTHENTICATION = "skip_authentication"
 
-// rotations
+
 const val ROTATE_BY_SYSTEM_SETTING = 0
 const val ROTATE_BY_DEVICE_ROTATION = 1
 const val ROTATE_BY_ASPECT_RATIO = 2
 
-// file loading priority
+
 const val PRIORITY_SPEED = 0
 const val PRIORITY_COMPROMISE = 1
 const val PRIORITY_VALIDITY = 2
 
-// extended details values
+
 const val EXT_NAME = 1
 const val EXT_PATH = 2
 const val EXT_SIZE = 4
@@ -180,7 +180,7 @@ const val EXT_ARTIST = 512
 const val EXT_ALBUM = 1024
 const val EXT_GPS = 2048
 
-// media types
+
 const val TYPE_IMAGES = 1
 const val TYPE_VIDEOS = 2
 const val TYPE_GIFS = 4
@@ -205,7 +205,7 @@ const val GROUP_BY_DATE_TAKEN_MONTHLY = 128
 const val GROUP_DESCENDING = 1024
 const val GROUP_SHOW_FILE_COUNT = 2048
 
-// bottom actions
+
 const val BOTTOM_ACTION_TOGGLE_FAVORITE = 1
 const val BOTTOM_ACTION_EDIT = 2
 const val BOTTOM_ACTION_SHARE = 4
@@ -224,14 +224,14 @@ const val BOTTOM_ACTION_RESIZE = 16384
 
 const val DEFAULT_BOTTOM_ACTIONS = BOTTOM_ACTION_TOGGLE_FAVORITE or BOTTOM_ACTION_EDIT or BOTTOM_ACTION_SHARE or BOTTOM_ACTION_DELETE
 
-// aspect ratios used at the editor for cropping
+
 const val ASPECT_RATIO_FREE = 0
 const val ASPECT_RATIO_ONE_ONE = 1
 const val ASPECT_RATIO_FOUR_THREE = 2
 const val ASPECT_RATIO_SIXTEEN_NINE = 3
 const val ASPECT_RATIO_OTHER = 4
 
-// constants related to image quality
+
 const val LOW_TILE_DPI = 160
 const val NORMAL_TILE_DPI = 220
 const val WEIRD_TILE_DPI = 240
@@ -248,7 +248,7 @@ const val FOLDER_MEDIA_CNT_NONE = 3
 const val FOLDER_STYLE_SQUARE = 1
 const val FOLDER_STYLE_ROUNDED_CORNERS = 2
 
-// animations
+
 const val THUMBNAIL_FADE_DURATION_MS = 150
 
 fun getPermissionToRequest() = if (isTiramisuPlus()) PERMISSION_READ_MEDIA_IMAGES else PERMISSION_WRITE_STORAGE

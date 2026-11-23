@@ -11,7 +11,7 @@ class AppVerificationWorker(
         try {
             val context = applicationContext
             
-            // Mostrar notificación de progreso (Foreground)
+            
             try {
                 setForeground(createForegroundInfo(context.getString(R.string.verificando_apps_y_progreso)))
             } catch (e: Exception) {
@@ -24,7 +24,7 @@ class AppVerificationWorker(
                 return@withContext androidx.work.ListenableWorker.Result.success()
             }
             
-            // 1. Recalcular Reputación
+            
             val perfil = repo.getUserProfile(userId)
             if (perfil != null) {
                 val maxAppsPosibles = DevAppsConfig.developerApps.size.toDouble()
@@ -39,7 +39,7 @@ class AppVerificationWorker(
                 repo.updateAllUserAppsReputation(userId, nuevaReputacion, perfil.fcmToken)
             }
 
-            // 2. Verificar Apps en Test
+            
             val apps = repo.getAppsWhereIMTesterValidated()
             if (apps.isEmpty()) {
                 saveTodayCheck(context)

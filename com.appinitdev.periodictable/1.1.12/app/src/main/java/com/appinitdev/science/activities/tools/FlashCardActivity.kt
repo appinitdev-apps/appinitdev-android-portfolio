@@ -6,78 +6,78 @@ class FlashCardActivity : BaseActivity() {
     private var resultDialog: ResultDialogFragment? = null
     private var lastLevel: Int = -1
 
-    // Back gesture handling
+    
     private var backCallback: OnBackPressedCallback? = null
     private var onBackInvokedCb: android.window.OnBackInvokedCallback? = null
 
-    // Keep reference to lives info popup so we can dismiss it on back
+    
     private var livesPopupWindow: PopupWindow? = null
     private var livesPopupView: View? = null
 
-    // Polling for dynamic lives updates while activity is visible
+    
     private val uiHandler = Handler(Looper.getMainLooper())
     private var cachedLives: Int = -1
     private var livesPolling = false
-    private val LIVES_POLL_INTERVAL_MS = 1000L // poll every second
+    private val LIVES_POLL_INTERVAL_MS = 1000L 
 
-    //Sync & Sign-in
+    
     private var tvEnableSyncLogin: TextView? = null
     private var tvSyncStatus: TextView? = null
     private var lastResultsHandledAt: Long = 0L
     private val RESULTS_DEBOUNCE_MS = 2000L
 
     private val oneTapLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-        // Handle the one-tap result
+        
         if (result.resultCode == RESULT_OK && result.data != null) {
             try {
 
             } catch (t: Throwable) {
-                // Silent fallback - if you want, you can fallback to legacy GoogleSignInClient here
+                
             }
         }
     }
 
     private val livesPollRunnable = object : Runnable {
         override fun run() {
-            // Attempt to apply any pending refills first
+            
             val refilled = LivesManager.refillLivesIfNeeded(this@FlashCardActivity)
-            // Get current lives after refill attempt
+            
             val currentLives = LivesManager.getLives(this@FlashCardActivity)
             val livesChanged = currentLives != cachedLives
 
-            // Always update the countdown/info text so timer ticks down every second,
-            // but only update count/boxes when the numeric value changed.
+            
+            
             if (livesChanged || refilled) {
                 cachedLives = currentLives
                 updateLivesCount()
                 updateCategoryBoxes()
             }
-            // updateinfo (countdown text) every poll so user sees timer tick
+            
             updateLivesInfo()
 
-            // Update popup contents in-place if popup visible
+            
             if (livesPopupWindow?.isShowing == true && livesPopupView != null) {
                 updateLivesPopupView(livesPopupView!!)
             }
 
-            // Schedule next poll if still enabled
+            
             if (livesPolling) {
                 uiHandler.postDelayed(this, LIVES_POLL_INTERVAL_MS)
             }
         }
     }
 
-    // Data model for creating boxes dynamically
+    
     private data class CategorySpec(val key: String, val labelRes: Int, val isPro: Boolean = false)
     private data class LevelBoxSpec(val range: IntRange, val categories: List<CategorySpec>)
 
-    // Keep runtime references to created category rows so we can control enabled state & random-launch
-    private val createdCategoryRows = mutableListOf<Pair<View, String>>() // view -> categoryKey
+    
+    private val createdCategoryRows = mutableListOf<Pair<View, String>>() 
 
-    // Reward levels for 5% XP bonus (automatically applied when level is reached)
+    
     private val REWARD_LEVELS = listOf(10, 15, 20)
 
-    // Define the boxes and categories (keeps same logical contents as previous XML)
+    
     private val levelBoxesSpec = listOf(
         LevelBoxSpec(0..4, listOf(
             CategorySpec("element_symbols", R.string.element_symbols),
@@ -128,7 +128,7 @@ class FlashCardActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // theme handling (preserve existing behavior)
+        
         val themePreference = com.appinitdev.science.preferences.ThemePreference(this)
         val themePrefValue = themePreference.getValue()
         if (themePrefValue == 100) {
@@ -144,81 +144,81 @@ class FlashCardActivity : BaseActivity() {
         findViewById<FrameLayout>(R.id.view_flash).systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 
-        // --- Sign-in & sync UI wiring ---
-        // locate sync/login views (layout may or may not include them)
+        
+        
         tvSyncStatus = findViewById<TextView?>(R.id.sync_status)
 
-        // Initialize One Tap client and request for modern sliding account selector
+        
 
 
-        // Wire the enable_sync_login to start One Tap sign-in, with a silent fallback to legacy if desired.
+        
         tvEnableSyncLogin?.setOnClickListener {
-            // Try One Tap if initialized
+            
             var started = false
             try {
 
             } catch (t: Throwable) {
-                // ignore and fallback
+                
                 t.printStackTrace()
             }
 
             if (!started) {
-                // Legacy fallback (keeps behavior consistent): launch GoogleSignInClient
+                
 
             }
         }
 
-        //Set pro upgrade button listener
+        
         findViewById<TextView>(R.id.get_pro_plus_btn).setOnClickListener {
             startActivity(Intent(this, ProActivity::class.java))
         }
 
-        // Ensure UI reflects current sign-in state immediately
+        
 
-        // sync_status visibility: only visible for Pro/Pro+ users
+        
         val isProOrProPlus = (ProVersion(this).getValue() == 100) || (ProPlusVersion(this).getValue() == 100)
         if (isProOrProPlus) {
             tvSyncStatus?.visibility = View.VISIBLE
-            tvSyncStatus?.text = "" // initialize empty
+            tvSyncStatus?.text = "" 
         } else {
             tvSyncStatus?.visibility = View.GONE
         }
 
-        // --- Rest of UI wiring (preserve existing initialization) ---
-//        findViewById<FrameLayout>(R.id.common_title_back_fla_color).visibility = View.INVISIBLE
-//        findViewById<TextView>(R.id.flashcard_title).visibility = View.INVISIBLE
-//        findViewById<FrameLayout>(R.id.common_title_back_fla).elevation = (resources.getDimension(R.dimen.zero_elevation))
+        
 
-//        val scrollView = findViewById<NestedScrollView>(R.id.flashcard_scroll)
-//        scrollView?.viewTreeObserver?.addOnScrollChangedListener(object : ViewTreeObserver.OnScrollChangedListener {
-//            private var isTitleVisible = false
-//            override fun onScrollChanged() {
-//                val scrollY = scrollView.scrollY
-//                val threshold = 150
-//                val titleColorBackground = findViewById<FrameLayout>(R.id.common_title_back_fla_color)
-//                val titleText = findViewById<TextView>(R.id.flashcard_title)
-//                val titleDownstateText = findViewById<TextView>(R.id.flashcard_title_downstate)
-//                val titleBackground = findViewById<FrameLayout>(R.id.common_title_back_fla)
-//
-//                if (scrollY > threshold) {
-//                    if (!isTitleVisible) {
-//                        TitleBarAnimator.animateVisibility(titleColorBackground, true, visibleAlpha = 0.11f)
-//                        TitleBarAnimator.animateVisibility(titleText, true)
-//                        TitleBarAnimator.animateVisibility(titleDownstateText, false)
-//                        titleBackground.elevation = resources.getDimension(R.dimen.one_elevation)
-//                        isTitleVisible = true
-//                    }
-//                } else {
-//                    if (isTitleVisible) {
-//                        TitleBarAnimator.animateVisibility(titleColorBackground, false)
-//                        TitleBarAnimator.animateVisibility(titleText, false)
-//                        TitleBarAnimator.animateVisibility(titleDownstateText, true)
-//                        titleBackground.elevation = resources.getDimension(R.dimen.zero_elevation)
-//                        isTitleVisible = false
-//                    }
-//                }
-//            }
-//        })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         findViewById<ImageButton>(R.id.back_btn_fla).setOnClickListener {
             onBackPressed()
@@ -230,7 +230,7 @@ class FlashCardActivity : BaseActivity() {
             startActivity(intent)
         }
 
-        // adding streak badge and setting up UI
+        
         try {
             val toolsLayout = findViewById<LinearLayout>(R.id.tools_layout)
             val livesTextView = findViewById<TextView>(R.id.tv_lives_count)
@@ -255,10 +255,10 @@ class FlashCardActivity : BaseActivity() {
             val insertIndex = if (toolsLayout.indexOfChild(livesTextView) >= 0) toolsLayout.indexOfChild(livesTextView) else toolsLayout.childCount
             toolsLayout.addView(streakView, insertIndex)
         } catch (_: Exception) {
-            // ignore
+            
         }
 
-        // update most-used preference, lives/info, toggles, boxes, etc.
+        
         val mostUsedPreference = MostUsedToolPreference(this)
         val mostUsedPrefValue = mostUsedPreference.getValue()
         val targetLabel = "fla"
@@ -278,16 +278,16 @@ class FlashCardActivity : BaseActivity() {
             launchRandomUnlockedGame()
         }
 
-        // PRO UI handling
+        
         setProFabVisibilityGoneIfProValue100()
 
-        // Lives popup
+        
         val livesCountView = findViewById<TextView>(R.id.tv_lives_count)
         livesCountView.setOnClickListener {
             showLivesInfoPopup(livesCountView)
         }
 
-        // back handling registration preserved
+        
         backCallback = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
                 val consumed = handleBackPress()
@@ -305,17 +305,17 @@ class FlashCardActivity : BaseActivity() {
             }
         }, true)
 
-        // Final UI init: reflect sign-in state (hide login prompt if already signed in) and start other measurements
+        
     }
 
-    // Build level boxes dynamically from levelBoxesSpec and add to the boxes_container
+    
     private fun buildLevelBoxes() {
         val container = findViewById<LinearLayout>(R.id.boxes_container)
         container.removeAllViews()
         createdCategoryRows.clear()
 
         val inflater = LayoutInflater.from(this)
-        // detect pro status once so we can indicate disabled state for level 10 if needed
+        
         val isProUser = checkProPlusStatus()
         for (boxSpec in levelBoxesSpec) {
             val boxView = inflater.inflate(R.layout.level_box, container, false)
@@ -327,7 +327,7 @@ class FlashCardActivity : BaseActivity() {
             titleView.text = getString(R.string.level_range_format, boxSpec.range.first)
             boxView.tag = boxSpec.range
 
-            // Inflate category rows
+            
             for (cat in boxSpec.categories) {
                 val row = inflater.inflate(R.layout.category_button_row, categoriesContainer, false)
                 val label = row.findViewById<TextView>(R.id.category_label)
@@ -337,18 +337,18 @@ class FlashCardActivity : BaseActivity() {
                 label.setText(cat.labelRes)
                 proBadge.visibility = if (cat.isPro) View.VISIBLE else View.GONE
 
-                // store category key on row for later lookup and onClick
+                
                 row.tag = cat
 
-                // click behaviour:
+                
                 row.setOnClickListener {
                     val isPro = checkProPlusStatus()
                     if (cat.isPro && !isPro) {
-                        // send to ProActivity
+                        
                         startActivity(Intent(this, ProActivity::class.java))
                         return@setOnClickListener
                     }
-                    // if the row is disabled, do nothing
+                    
                     if (!row.isEnabled) return@setOnClickListener
 
                     val intent = Intent(this, LearningGamesActivity::class.java)
@@ -361,23 +361,23 @@ class FlashCardActivity : BaseActivity() {
                 createdCategoryRows.add(row to cat.key)
             }
 
-            // Setup rewards if this box contains reward levels (10, 15, 20)
-            // Show all rewards, but level 10 will be displayed disabled for non-PRO+ users
+            
+            
             val rewardLevelsInBox = REWARD_LEVELS.filter { it in boxSpec.range }
             rewardsButtons.removeAllViews()
             if (rewardLevelsInBox.isNotEmpty()) {
-                // show rewards container; each reward is shown as a non-clickable button-like view (styled)
+                
                 rewardsContainer.visibility = View.VISIBLE
-                // Make label for rewards more explicit: "PRO+ Rewards" is prefixed on each reward label
+                
                 for (rl in rewardLevelsInBox) {
-                    // Inflate the stylised reward_button layout
+                    
                     val rewardView = inflater.inflate(R.layout.reward_button, rewardsButtons, false)
                     rewardView.tag = rl
 
                     val text = rewardView.findViewById<TextView>(R.id.reward_button_text)
                     val checkIcon = rewardView.findViewById<ImageView>(R.id.reward_check_icon)
 
-                    // Show the label with PRO+ hint — display "PRO+ Rewards" as requested
+                    
                     text.text = getString(R.string.pro_plus_rewards, getString(R.string.reward_5pct_title))
                     val claimed = isRewardClaimed(rl)
 
@@ -390,13 +390,13 @@ class FlashCardActivity : BaseActivity() {
                         rewardView.alpha = 0.6f
                     }
 
-                    // rewards are visual only here (auto-applied) so don't allow click
+                    
                     rewardView.isClickable = false
-                    rewardView.isFocusable = true // accessible
+                    rewardView.isFocusable = true 
 
-                    // If this is level 10 and user isn't PRO+, present as disabled (visible but inactive)
+                    
                     if (rl == 10 && !isProUser) {
-                        // visually indicate disabled; actual enabling/claiming is guarded elsewhere
+                        
                         rewardView.isEnabled = false
                         rewardView.alpha = 0.35f
                     } else {
@@ -409,16 +409,16 @@ class FlashCardActivity : BaseActivity() {
                 rewardsContainer.visibility = View.GONE
             }
 
-            // rewardsContainer left hidden by default; other code can populate it via:
-            // boxView.findViewById<LinearLayout>(R.id.level_rewards_buttons).addView(...)
+            
+            
             container.addView(boxView)
         }
 
-        // Finally run an initial update pass
+        
         updateCategoryBoxes()
     }
 
-    // Reward persistence helpers (claimed flags remain here)
+    
     private fun isRewardClaimed(level: Int): Boolean {
         val prefs = getSharedPreferences("rewards_prefs", MODE_PRIVATE)
         return prefs.getBoolean("claimed_reward_$level", false)
@@ -429,28 +429,28 @@ class FlashCardActivity : BaseActivity() {
         prefs.edit().putBoolean("claimed_reward_$level", true).apply()
     }
 
-    /**
-     * Apply reward automatically when user reaches the required level.
-     * This will persist the +5% multiplier (via XpManager) and mark the reward claimed.
-     * This method is idempotent (it checks if reward already claimed).
-     */
+     
+
+
+
+
     private fun applyRewardIfNeeded(level: Int) {
         if (level == 10 && !checkProPlusStatus()) return
 
         if (isRewardClaimed(level)) return
-        // only apply when user has actually reached the level
+        
         val userLevel = XpManager.getLevel(XpManager.getXp(this))
         if (userLevel < level) return
 
-        // persist multiplier in XpManager so future game completions get +5%
+        
         XpManager.addXpBonusMultiplier(this, 0.05f)
         setRewardClaimed(level)
         Toast.makeText(this, "5% XP bonus unlocked at level $level!", Toast.LENGTH_SHORT).show()
-        // refresh UI
+        
         updateXpAndLevelStats()
     }
 
-    //For updating when user purchases PRO Version in ProActivity
+    
     private fun setProFabVisibilityGoneIfProValue100() {
         val proPreference = ProVersion(this)
         val valueP = proPreference.getValue()
@@ -472,12 +472,12 @@ class FlashCardActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Ensure stored lives are applied on resume immediately
+        
         LivesManager.refillLivesIfNeeded(this)
 
 
 
-        // initialize cached value and update UI once
+        
         cachedLives = LivesManager.getLives(this)
         updateLivesCount()
         updateLivesInfo()
@@ -499,7 +499,7 @@ class FlashCardActivity : BaseActivity() {
         }
         showLevelUpPopupIfNeeded()
 
-        // Start live polls so UI updates dynamically
+        
         startLivesPolling()
     }
 
@@ -521,7 +521,7 @@ class FlashCardActivity : BaseActivity() {
 
     override fun onPause() {
         super.onPause()
-        // stop polling while activity is not in foreground
+        
         stopLivesPolling()
     }
 
@@ -593,7 +593,7 @@ class FlashCardActivity : BaseActivity() {
         val lives = LivesManager.getLives(this)
         val isEnabled = lives > 0
 
-        // For each box (child of boxes_container)
+        
         val container = findViewById<LinearLayout>(R.id.boxes_container)
         for (i in 0 until container.childCount) {
             val box = container.getChildAt(i)
@@ -610,7 +610,7 @@ class FlashCardActivity : BaseActivity() {
             box.alpha = if (boxIsUnlocked) 1f else 0.5f
             title.setLockDrawable(boxIsUnlocked)
 
-            // set enable/alpha for each category row in this box
+            
             for (j in 0 until categoriesContainer.childCount) {
                 val child = categoriesContainer.getChildAt(j)
                 val cat = child.tag as? CategorySpec
@@ -621,13 +621,13 @@ class FlashCardActivity : BaseActivity() {
                 }
             }
 
-            // update reward views for this box: auto-apply when level reached and show checkmark
+            
             if (rewardsButtons != null && rewardsButtons.childCount > 0) {
                 for (k in 0 until rewardsButtons.childCount) {
                     val child = rewardsButtons.getChildAt(k)
                     val rl = child.tag as? Int ?: continue
 
-                    // If user has reached the reward level and it isn't applied yet, apply it
+                    
                     if (!isRewardClaimed(rl) && userLevel >= rl) {
                         applyRewardIfNeeded(rl)
                     }
@@ -635,7 +635,7 @@ class FlashCardActivity : BaseActivity() {
                     val claimed = isRewardClaimed(rl)
                     val checkIcon = child.findViewById<ImageView?>(R.id.reward_check_icon)
                     val textView = child.findViewById<TextView?>(R.id.reward_button_text)
-                    // ensure text is set
+                    
                     textView?.text = getString(R.string.reward_5pct_title)
                     if (claimed) {
                         checkIcon?.setImageResource(R.drawable.ic_check)
@@ -666,7 +666,7 @@ class FlashCardActivity : BaseActivity() {
             val hours = TimeUnit.MILLISECONDS.toHours(millis)
             val minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60
             val seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % 60
-            // show hours only if > 0
+            
             if (hours > 0) {
                 infoText.text = getString(R.string.out_of_lives_hours, hours, minutes, seconds)
             } else {
@@ -687,7 +687,7 @@ class FlashCardActivity : BaseActivity() {
         val completed = getCompletedQuizzes()
 
         findViewById<TextView>(R.id.completed_quizzes_stat).text = completed.toString()
-        // show multiplier (optional, for visibility) by reading stored multiplier
+        
         val multiplier = XpManager.getXpBonusMultiplier(this)
         val multiplierPct = ((multiplier - 1.0f) * 100).toInt()
         findViewById<TextView>(R.id.total_xp_stat).text = getString(R.string.total_xp_stat, xp)
@@ -702,7 +702,7 @@ class FlashCardActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        // Try to handle overlays first; if not consumed, allow system/back behaviour
+        
         if (!handleBackPress()) {
             super.onBackPressed()
         }
@@ -714,10 +714,10 @@ class FlashCardActivity : BaseActivity() {
         totalQuestions: Int,
         difficulty: String = "easy"
     ) {
-        // debounce duplicate invocations (e.g. when both onResume and onNewIntent are triggered)
+        
         val now = System.currentTimeMillis()
         if (now - lastResultsHandledAt < RESULTS_DEBOUNCE_MS) {
-            // Already processed a recent results intent — ignore this duplicate.
+            
             return
         }
         lastResultsHandledAt = now
@@ -727,15 +727,15 @@ class FlashCardActivity : BaseActivity() {
         resultDialog?.show(supportFragmentManager, "GameResultsPopup")
         updateXpAndLevelStats()
 
-        // increment completed quizzes counter if this represents a finished game
+        
         if (gameFinished) {
             incrementCompletedQuizzes()
         }
 
-        // Attempt to sync progress to cloud for signed-in Pro/Pro+ users
+        
 
 
-        // result dialog shown -> intercept back gestures while it's visible
+        
         setBackInterceptionEnabled(true)
     }
 
@@ -750,7 +750,7 @@ class FlashCardActivity : BaseActivity() {
         prefs.edit().putInt("completed_quizzes", current + 1).apply()
     }
 
-    // Helper extension function for animating visibility
+    
     fun View.animateVisibility(
         setVisible: Boolean,
         duration: Long = 200,
@@ -778,7 +778,7 @@ class FlashCardActivity : BaseActivity() {
     private fun getAllUnlockedCategoryButtons(): List<Pair<View, String>> {
         val isPro = checkProPlusStatus()
         return createdCategoryRows.filter { (view, key) ->
-            // consider view enabled and not a pro-category if user isn't pro
+            
             val catSpec = view.tag as? CategorySpec
             if (catSpec == null) false
             else view.isEnabled && (!catSpec.isPro || isPro)
@@ -818,16 +818,16 @@ class FlashCardActivity : BaseActivity() {
         val inflater = LayoutInflater.from(this)
         val popupView = inflater.inflate(R.layout.popup_lives_info, null)
 
-        // Ensure we apply any pending refills before showing UI
+        
         LivesManager.refillLivesIfNeeded(this)
 
-        // Save popupView reference so we can update it while visible
+        
         livesPopupView = popupView
 
-        // Initialize popup contents
+        
         updateLivesPopupView(popupView)
 
-        // Close any existing popup first
+        
         livesPopupWindow?.dismiss()
 
         val popupWindow = PopupWindow(
@@ -843,17 +843,17 @@ class FlashCardActivity : BaseActivity() {
         anchor.getLocationOnScreen(location)
         popupWindow.showAtLocation(anchor, Gravity.NO_GRAVITY, location[0], location[1] + anchor.height)
 
-        // When popup is showing we should intercept back gestures so the popup can be closed first.
+        
         setBackInterceptionEnabled(true)
 
         popupWindow.setOnDismissListener {
-            // update interception state when popup dismissed
+            
             setBackInterceptionEnabled(anyOverlayOpen())
             livesPopupWindow = null
             livesPopupView = null
         }
 
-        // Auto-dismiss after 3s
+        
         Handler(Looper.getMainLooper()).postDelayed({
             if (popupWindow.isShowing) popupWindow.dismiss()
         }, 3000)
@@ -875,14 +875,14 @@ class FlashCardActivity : BaseActivity() {
         }
     }
 
-    // Helper: returns true if any overlay that should intercept back is visible
+    
     private fun anyOverlayOpen(): Boolean {
         val dialogVisible = resultDialog?.isVisible == true
         val popupVisible = livesPopupWindow?.isShowing == true
         return dialogVisible || popupVisible
     }
 
-    // Centralized enabling/disabling of back interception; also registers/unregisters platform callback on newer OS.
+    
     private fun setBackInterceptionEnabled(enabled: Boolean) {
         backCallback?.isEnabled = enabled
 
@@ -890,9 +890,9 @@ class FlashCardActivity : BaseActivity() {
             if (enabled) {
                 if (onBackInvokedCb == null) {
                     onBackInvokedCb = android.window.OnBackInvokedCallback {
-                        // Mirror the OnBackPressedCallback behavior
+                        
                         handleBackPress()
-                        // keep registered only if overlays remain
+                        
                         if (!anyOverlayOpen()) {
                             try {
                                 onBackInvokedDispatcher.unregisterOnBackInvokedCallback(onBackInvokedCb!!)
@@ -917,20 +917,20 @@ class FlashCardActivity : BaseActivity() {
         }
     }
 
-    // Close overlays (result dialog or lives popup) if visible; return true when consumed
+    
     private fun handleBackPress(): Boolean {
-        // If result dialog visible, dismiss it
+        
         if (resultDialog?.isVisible == true) {
             resultDialog?.dismiss()
-            // update interception state after dismissal
+            
             setBackInterceptionEnabled(anyOverlayOpen())
             return true
         }
 
-        // If lives popup visible, dismiss it
+        
         if (livesPopupWindow?.isShowing == true) {
             livesPopupWindow?.dismiss()
-            // setBackInterceptionEnabled will be called by popup's dismiss listener, but do it here too
+            
             setBackInterceptionEnabled(anyOverlayOpen())
             return true
         }
@@ -940,7 +940,7 @@ class FlashCardActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        // Ensure cleanup of back interception hooks
+        
         backCallback?.remove()
         backCallback = null
         if (onBackInvokedCb != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -949,15 +949,15 @@ class FlashCardActivity : BaseActivity() {
             } catch (_: Exception) { }
             onBackInvokedCb = null
         }
-        // Dismiss popup if still present
+        
         livesPopupWindow?.dismiss()
         livesPopupWindow = null
 
-        // stop polling
+        
         stopLivesPolling()
     }
 
-    // Helper extension to set lock icon on title text
+    
     private fun TextView.setLockDrawable(unlocked: Boolean) {
         val drawable = if (unlocked) R.drawable.ic_lock_open else R.drawable.ic_lock
         setCompoundDrawablesWithIntrinsicBounds(drawable, 0, 0, 0)

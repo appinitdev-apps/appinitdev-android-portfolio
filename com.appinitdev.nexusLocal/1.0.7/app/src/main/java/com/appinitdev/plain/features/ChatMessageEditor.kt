@@ -1,17 +1,17 @@
 
-/**
- * Edits a text chat message and reconciles its link previews:
- * diffs URLs, cleans up images for removed URLs, fetches previews for added
- * URLs, persists via [ChatDbHelper], then emits one `MESSAGE_UPDATED` event.
- */
+ 
+
+
+
+
 object ChatMessageEditor {
 
-    /**
-     * Returns the same [item] reference (mutated in place) so callers can
-     * immediately update their UI lists. Returns true if a change was
-     * persisted (and a `MESSAGE_UPDATED` event emitted), false if the text
-     * and resolved previews are identical to the existing content.
-     */
+     
+
+
+
+
+
     suspend fun updateTextAsync(
         context: Context,
         item: DChat,

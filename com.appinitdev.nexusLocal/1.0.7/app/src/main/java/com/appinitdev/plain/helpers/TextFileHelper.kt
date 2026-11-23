@@ -1,6 +1,6 @@
 
 object TextFileHelper {
-    private const val BUFFER_SIZE = 8192 // 8 KB (adjust as needed)
+    private const val BUFFER_SIZE = 8192 
     private val LINE_SEPARATOR_REGEX = "\r\n|\r|\n".toRegex()
 
     fun countLinesInFile(path: String): Int {
@@ -11,7 +11,7 @@ object TextFileHelper {
                 var prevChar = -1
                 while (reader.read().also { nextChar = it } != -1) {
                     if (nextChar == '\n'.code || nextChar == '\r'.code) {
-                        // Check for both newline and carriage return
+                        
                         if (prevChar != '\r'.code) {
                             lineCount++
                         }
@@ -47,7 +47,7 @@ object TextFileHelper {
                         linesRemaining--
                     }
 
-                    // If all desired lines have been found, exit the loop
+                    
                     if (linesRemaining <= 0) {
                         break
                     }

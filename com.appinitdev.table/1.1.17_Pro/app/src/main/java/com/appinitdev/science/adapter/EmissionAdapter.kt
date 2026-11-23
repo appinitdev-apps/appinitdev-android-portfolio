@@ -30,7 +30,7 @@ class EmissionAdapter(var list: ArrayList<Element>, var clickListener: EmissionA
                     Picasso.get().load(fURL).into(emissionImg)
                 }
                 catch(e: ConnectException) {
-                    //
+                    
                 }
             }
             catch (e: IOException) { }
@@ -39,7 +39,7 @@ class EmissionAdapter(var list: ArrayList<Element>, var clickListener: EmissionA
             nameEmi.text = item.short
             textEmi.text = item.element.capitalize()
 
-            //Remove all elements with number > 98 which don't contain emission data
+            
             if (item.number > 98) {
                 cardView.visibility = View.GONE
             }

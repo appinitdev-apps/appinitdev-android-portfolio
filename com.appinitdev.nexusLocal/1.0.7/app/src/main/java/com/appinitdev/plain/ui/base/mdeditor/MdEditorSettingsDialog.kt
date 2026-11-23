@@ -51,18 +51,18 @@ fun MdEditorSettingsDialog(
                         }
                     }
                 }
-//                PDialogListItem(
-//                    title = stringResource(Res.string.syntax_highlight),
-//                ) {
-//                    PSwitch(
-//                        activated = viewModel.syntaxHighLight,
-//                    ) {
-//                        viewModel.syntaxHighLight = it
-//                        scope.launch(Dispatchers.IO) {
-//                            EditorSyntaxHighlightPreference.putAsync(it)
-//                        }
-//                    }
-//                }
+
+
+
+
+
+
+
+
+
+
+
+
             }
         })
 }

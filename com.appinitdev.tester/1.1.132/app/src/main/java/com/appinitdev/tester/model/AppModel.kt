@@ -6,8 +6,8 @@ data class AppModel(
     val urlWeb: String = "",
     val urlAndroid: String = "",
     val urlGoogleGroup: String = "",
-    val paquete: String = "", // ID único (ej: com.ejemplo.app)
-    val status: String = "test", // "test", "produccion", "oculta"
+    val paquete: String = "", 
+    val status: String = "test", 
     val idPropietario: String = "",
     val nombreDesarrollador: String? = "",
     val icono: String? = null,
@@ -18,39 +18,39 @@ data class AppModel(
     val fechaActualizacion: Long = System.currentTimeMillis(),
     val instrucciones: String = "",
     val notas: String = "",
-    val descripcion: String = "", // Opcional: De qué trata la app
+    val descripcion: String = "", 
     val fcmToken:String="",
     val reputacion: Double = 0.0,
-    val categoria: String = "Productividad", // Nueva: Educación, Juegos, Herramientas, etc.
+    val categoria: String = "Productividad", 
     val resenasProduccion: Map<String, ResenaProduccion> = emptyMap(),
-    // Nuevas funcionalidades
+    
     val isBoosted: Boolean = false,
     val boostExpires: Long = 0L,
     val bugReports: List<BugReport> = emptyList(),
     val surveys: List<Survey> = emptyList(),
     val checklist: List<ChecklistItem> = emptyList(),
-    // Nuevas funcionalidades 2.0
+    
     val contactoDirecto: String = "",
     val comunidadUrl: String = "",
     val cuentaPrueba: String = "",
     val esDePago: Boolean = false,
     val paisesAgregados: Boolean = false,
-    val metodoTest: String = "google_group" // "google_group" o "email"
+    val metodoTest: String = "google_group" 
 ){
     fun calcularReputacion(propietario: UserProfile?): Double {
         if (propietario == null) return 0.0
 
-        // 1. Nivel (Ya viene en escala 1-5)
+        
         val scoreNivel = propietario.nivel
 
-        // 2. Puntos (Normalizamos 0-200 a escala 1-5)
-        // (puntos / 200) * 5. Limitamos a un máximo de 5.
+        
+        
         val scorePuntos = (propietario.puntos.toDouble() / 200.0 * 5.0).coerceAtMost(5.0)
 
-        // 3. Estrellas (Ya viene en escala 1-5)
+        
         val scoreEstrellas = propietario.promedioEstrellas.toDouble()
 
-        // Aplicamos pesos: (Nivel * 0.4) + (Puntos * 0.3) + (Estrellas * 0.3)
+        
         val resultado = (scoreNivel * 0.4) + (scorePuntos * 0.3) + (scoreEstrellas * 0.3) + propietario.puntosExtra
         return resultado.coerceAtMost(5.0)
     }
@@ -63,7 +63,7 @@ data class TesterData(
     val correoUser: String = "",
     val devName: String = "",
     val fcmToken:String="",
-    val validado: String = "Solicitud",  //Solicitud/Aceptado, Rechazado
+    val validado: String = "Solicitud",  
     val ultimaRevision: Long = 0L,
     val completado: Boolean = false
 )
@@ -76,8 +76,8 @@ data class ResenaProduccion(
     val appName: String? = "",
     val fcmTokenTester:String?="",
     val fcmTokenApp:String?="",
-    val evidenciaUrl: String = "", // URL de la imagen en Storage
-    val estado: String = "pendiente", // "pendiente", "aprobada", "rechazada"
+    val evidenciaUrl: String = "", 
+    val estado: String = "pendiente", 
     val fecha: Long = System.currentTimeMillis()
 )
 
@@ -88,7 +88,7 @@ data class CategoriasApps(
     val pendientes: List<AppModel> = emptyList(),
     val rechazadas: List<AppModel> = emptyList(),
 ){
-    // Esta propiedad se calcula automáticamente
+    
     val total: Int get() = explorar.size + aceptadas.size + pendientes.size + rechazadas.size
 }
 

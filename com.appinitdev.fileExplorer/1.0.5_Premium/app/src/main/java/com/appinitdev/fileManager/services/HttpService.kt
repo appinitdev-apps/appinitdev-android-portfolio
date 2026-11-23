@@ -62,7 +62,7 @@ class HttpService : Service() {
         java.util.zip.ZipOutputStream(zipFile.outputStream().buffered()).use { zos ->
             sourceFolder.walkTopDown().forEach { file ->
                 if (file.isFile) {
-                    // Calcula la ruta relativa para conservar la estructura interna de carpetas
+                    
                     val relativePath = file.relativeTo(sourceFolder).path
                     val entry = java.util.zip.ZipEntry(relativePath)
                     zos.putNextEntry(entry)
@@ -80,55 +80,55 @@ class HttpService : Service() {
                 val uriDecodificada = URLDecoder.decode(session.uri, "UTF-8")
                 val targetFile = File(rootDir, uriDecodificada).canonicalFile
 
-                // Control de seguridad básico
+                
                 if (!targetFile.path.startsWith(rootDir.canonicalPath)) {
                     return newFixedLengthResponse(Response.Status.FORBIDDEN, MIME_PLAINTEXT, "Acceso Denegado")
                 }
 
-                // ================= GESTIÓN DE SUBIDA DE ARCHIVOS (POST) =================
+                
                 if (session.method == Method.POST) {
                     val files = HashMap<String, String>()
 
-                    // NanoHTTPD parsea el body del multipart y guarda el archivo temporalmente en el caché de Android
+                    
                     session.parseBody(files)
 
-                    // "archivoSubido" es el name que le dimos al input en el HTML de abajo
+                    
                     val tempPath = files["archivoSubido"]
                     val nombreOriginal = session.parms["archivoSubido"]
 
                     if (tempPath != null && nombreOriginal != null) {
                         val ficheroTemporal = File(tempPath)
-                        // Definimos el destino final (la carpeta en la que está navegando el usuario de la PC)
+                        
                         val ficheroDestino = File(targetFile, nombreOriginal)
 
-                        // Copiamos el archivo del caché temporal a la ruta real de almacenamiento
+                        
                         ficheroTemporal.copyTo(ficheroDestino, overwrite = true)
 
-                        // Redireccionamos de vuelta a la misma ruta (GET) para refrescar la página y ver el archivo cargado
+                        
                         val responseJson = newFixedLengthResponse(Response.Status.REDIRECT, MIME_HTML, "")
                         responseJson.addHeader("Location", session.uri)
                         return responseJson
                     }
                 }
 
-                // ================= GESTIÓN DE VISTA Y DESCARGAS (GET) =================
+                
                 if (!targetFile.exists()) {
                     return newFixedLengthResponse(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "No encontrado")
                 }
 
                 if (targetFile.isDirectory) {
-                    // SI EL USUARIO SOLICITÓ DESCARGAR LA CARPETA (detecta el parámetro ?download=true)
+                    
                     if (session.parms["download"] == "true") {
                         try {
-                            // Creamos un archivo ZIP temporal en la caché de la app
+                            
                             val tempZip = File(cacheDir, "${targetFile.name}.zip")
                             zipFolder(targetFile, tempZip)
 
-                            // Creamos un FileInputStream especial que elimina el archivo temporal automáticamente al terminar la descarga
+                            
                             val fileInputStream = object : java.io.FileInputStream(tempZip) {
                                 override fun close() {
                                     super.close()
-                                    tempZip.delete() // Limpieza automática de espacio
+                                    tempZip.delete() 
                                 }
                             }
 
@@ -170,10 +170,10 @@ class HttpService : Service() {
             var currentPath = "/"
             val breadcrumbsBuilder = StringBuilder()
 
-            // Enlace inicial a la raíz (Home)
+            
             breadcrumbsBuilder.append("<a href=\"/\" class=\"text-teal-400 hover:text-teal-300 hover:underline transition-colors\">/</a>")
 
-            // Generar un enlace para cada carpeta en la ruta actual
+            
             for (segment in pathSegments) {
                 currentPath += "$segment/"
                 breadcrumbsBuilder.append("<a href=\"$currentPath\" class=\"text-teal-400 hover:text-teal-300 hover:underline transition-colors\">$segment/</a>")
@@ -195,7 +195,7 @@ class HttpService : Service() {
                     icono = "📁"
                     colorTexto = "text-yellow-400 font-semibold"
                     detalles = if (cantidadElementos == 1) "1 elemento" else "$cantidadElementos elementos"
-                    // Al hacer clic al icono de descarga en una carpeta, añade el parámetro del paso 2
+                    
                     downloadLink = "$linkPath?download=true"
                 } else {
                     val sizeKb = file.length() / 1024
@@ -320,103 +320,103 @@ class HttpService : Service() {
         </html>
     """.trimIndent()
         }
-      /*  private fun generarPaginaWeb(folder: File, relativePath: String): String {
-            val normalPath = if (relativePath.endsWith("/")) relativePath else "$relativePath/"
+       
 
-            val botonRegresar = if (relativePath != "/" && relativePath.isNotEmpty()) {
-                val parentWebPath = File(relativePath).parent ?: "/"
-                "<a href=\"$parentWebPath\" class=\"inline-flex items-center text-sm font-medium text-teal-400 hover:underline mb-4\">🔙 </a>"
-            } else ""
-            val pathSegments = normalPath.split("/").filter { it.isNotEmpty() }
-            var currentPath = "/"
-            val breadcrumbsBuilder = StringBuilder()
 
-            // Enlace inicial a la raíz (Home)
-            breadcrumbsBuilder.append("<a href=\"/\" class=\"text-teal-400 hover:text-teal-300 hover:underline transition-colors\">/</a>")
 
-            // Generar un enlace para cada carpeta en la ruta actual
-            for (segment in pathSegments) {
-                currentPath += "$segment/"
-                breadcrumbsBuilder.append("<a href=\"$currentPath\" class=\"text-teal-400 hover:text-teal-300 hover:underline transition-colors\">$segment/</a>")
-            }
-            val breadcrumbsHtml = breadcrumbsBuilder.toString()
-            val itemsBuilder = StringBuilder()
-            val filesList = folder.listFiles()?.sortedWith(compareBy({ !it.isDirectory }, { it.name.lowercase() }))
 
-            filesList?.forEach { file ->
-                val linkPath = if (normalPath == "/") "/${file.name}" else "$normalPath${file.name}"
-                val (icono, colorTexto, detalles) = if (file.isDirectory) {
-                    Triple("📁", "text-yellow-400 font-semibold", "Carpeta de archivos")
-                } else {
-                    val sizeKb = file.length() / 1024
-                    val sizeStr = if (sizeKb > 1024) "${sizeKb / 1024} MB" else "$sizeKb KB"
-                    Triple("📄", "text-gray-300", sizeStr)
-                }
 
-                itemsBuilder.append("""
-                    <div class="flex items-center justify-between p-4 hover:bg-gray-700/40 transition-colors border-b border-gray-700/50">
-                        <div class="flex items-center gap-3 overflow-hidden mr-4">
-                            <span class="text-xl">$icono</span>
-                            <a href="$linkPath" class="$colorTexto hover:text-teal-400 hover:underline truncate text-sm sm:text-base">${file.name}</a>
-                        </div>
-                        <span class="text-xs text-gray-400 whitespace-nowrap">$detalles</span>
-                    </div>
-                """.trimIndent())
-            }
 
-            if (filesList.isNullOrEmpty()) {
-                itemsBuilder.append("<div class='p-8 text-center text-gray-500 text-sm'>Esta carpeta está vacía</div>")
-            }
 
-            return """
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <script src="https://cdn.tailwindcss.com"></script>
-                    <title>${getString(R.string.app_name)}</title>
-                </head>
-                <body class="bg-gray-900 text-gray-100 antialiased min-h-screen">
-                    <div class="max-w-4xl mx-auto px-4 py-8">
-                        <header class="flex items-center justify-between border-b border-gray-800 pb-4 mb-6">
-                            <h1 class="text-xl sm:text-2xl font-bold text-teal-400 flex items-center gap-2">
-                                ${getString(R.string.app_name)}
-                            </h1>
-                            <span class="bg-teal-500/10 text-teal-400 px-3 py-1 rounded-full text-xs font-bold tracking-wide">ONLINE</span>
-                        </header>
-                        
-                      
-                        
-                        <div class="bg-gray-800/40 border border-gray-800 p-3 rounded-lg mb-4 shadow-sm overflow-x-auto">
-                            <p class="text-xs sm:text-sm font-mono whitespace-nowrap flex items-center gap-1">
-                                $breadcrumbsHtml
-                            </p>
-                        </div>
-                        
-                        <form action="" method="POST" enctype="multipart/form-data" class="bg-gray-800 border border-gray-700 p-3 rounded-xl mb-6 shadow-md flex items-center justify-between gap-4">
-                            <div class="flex items-center gap-3 flex-1 min-w-0">
-                                <span class="text-lg sm:text-xl text-teal-400 flex-shrink-0" title="Subir archivo">📤</span>
-                                <input type="file" name="archivoSubido" required class="text-xs sm:text-sm text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-teal-500/10 file:text-teal-400 hover:file:bg-teal-500/20 cursor-pointer w-full truncate">
-                            </div>
-                            <button type="submit" title="Cargar Archivo" class="bg-teal-500 hover:bg-teal-600 text-gray-900 p-2.5 rounded-xl transition-all shadow-lg shadow-teal-500/20 active:scale-95 flex items-center justify-center flex-shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-                                </svg>
-                            </button>
-                        </form>
-                          $botonRegresar
-                        <div class="bg-gray-800 rounded-xl border border-gray-700 shadow-2xl overflow-hidden">
-                            <div class="flex flex-col">
-                                $itemsBuilder
-                            </div>
-                        </div>
-                    </div>
-                </body>
-                </html>
-            """.trimIndent()
-        }
-    */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     override fun onDestroy() {

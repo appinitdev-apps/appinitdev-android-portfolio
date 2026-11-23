@@ -66,32 +66,32 @@ class RecordAudioActivity : LockedActivity<ActivityRecordAudioBinding>() {
     }
 
     private fun configureEdgeToEdgeInsets() {
-        // 1. Enable edge-to-edge display for the activity window.
+        
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        // 3. Apply window insets to specific views to prevent content from being obscured.
+        
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
 
             binding.Toolbar.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
-                requestLayout() // Request a layout pass to apply the new margin
+                requestLayout() 
             }
-            // Original bottom margin for ButtonBar from XML
+            
             val originalButtonBarBottomMargin = 32.dp
 
-            // Adjust the bottom margin of the ButtonBar to account for the navigation bar and
-            // keyboard.
+            
+            
             binding.ButtonBar.apply {
                 (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin =
                     originalButtonBarBottomMargin + systemBarsInsets.bottom + imeInsets.bottom
-                requestLayout() // Request a layout pass to apply the new margin
+                requestLayout() 
             }
-            // The Chronometer's height will automatically adjust due to layout_above and
-            // layout_below,
-            // as its boundary elements (Toolbar and ButtonBar) are now correctly inset-aware.
-            // No explicit padding for Chronometer needed unless it contains scrollable content.
+            
+            
+            
+            
 
             insets
         }

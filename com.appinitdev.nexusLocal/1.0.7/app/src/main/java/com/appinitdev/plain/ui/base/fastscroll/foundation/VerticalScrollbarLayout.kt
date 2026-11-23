@@ -28,7 +28,7 @@ internal fun VerticalScrollbarLayout(
 
     Layout(
         content = {
-            // Track: full-height gray strip shown when dragging
+            
             Box(
                 modifier = Modifier
                     .alpha(trackAlpha)
@@ -40,7 +40,7 @@ internal fun VerticalScrollbarLayout(
                     ),
             )
 
-            // Thumb: small primary-color pill
+            
             Box(
                 modifier = Modifier
                     .alpha(state.hideAlpha.value)
@@ -53,13 +53,13 @@ internal fun VerticalScrollbarLayout(
                     .run { if (state.activeDraggableModifier.value) then(draggableModifier) else this },
             )
 
-            // Indicator: optional, shown beside the thumb
+            
             when (indicator) {
                 null -> Box(Modifier)
                 else -> Box(Modifier.alpha(state.hideAlpha.value)) { indicator() }
             }
 
-            // Invisible touch area covering full height
+            
             Box(
                 modifier = Modifier
                     .fillMaxHeight()

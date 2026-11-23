@@ -44,7 +44,7 @@ class DetalleTourActivity : AppCompatActivity() {
             }
         }
 
-        // Información básica
+        
         binding.tvTourName.text = tour.getNombreActual()
         binding.tvDescription.text = tour.getDescripcionActual()
         binding.tvPriceCollective.text = "Colectivo: ${tour.costoColectivo}"
@@ -64,7 +64,7 @@ class DetalleTourActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Favorito
+        
         updateFavIcon(dbHelper.isFavorito(tour.id))
         binding.btnFavDetalle.setOnClickListener {
             val isFavNow = dbHelper.toggleFavorito(tour)
@@ -73,19 +73,19 @@ class DetalleTourActivity : AppCompatActivity() {
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
         }
 
-        // Lista de lugares
+        
         val places = tour.getLugaresActuales()
         binding.rvPlaces.layoutManager = LinearLayoutManager(this)
         binding.rvPlaces.adapter = PlacesAdapter(places)
 
-        // Botón cotizar
+        
         binding.btnReservar.setOnClickListener {
             val intent = Intent(this, CotizacionActivity::class.java)
             intent.putExtra("tour", tour.nombre)
             startActivity(intent)
         }
 
-        // Contacto WhatsApp
+        
         binding.btnWhatsApp.setOnClickListener {
             val phoneNumber = "529511234567"
             val message = "Hola, me interesa solicitar más información sobre el tour: ${tour.nombre}"
@@ -99,7 +99,7 @@ class DetalleTourActivity : AppCompatActivity() {
             }
         }
 
-        // Compartir Tour
+        
         binding.btnCompartir.setOnClickListener {
             val shareText = "¡Mira este increíble tour en Oaxaca!\n\n*${tour.nombre}*\n${tour.descripcion}\n\nColectivo: ${tour.costoColectivo} | Privado: ${tour.costoPrivado}\n\n¡Descubre Oaxaca con nosotros!"
             val intent = Intent(Intent.ACTION_SEND).apply {
@@ -110,7 +110,7 @@ class DetalleTourActivity : AppCompatActivity() {
             startActivity(Intent.createChooser(intent, getString(R.string.btn_compartir)))
         }
 
-        // Agendar en Calendario
+        
         binding.btnCalendario.setOnClickListener {
             val intent = Intent(Intent.ACTION_INSERT).apply {
                 data = CalendarContract.Events.CONTENT_URI
@@ -125,7 +125,7 @@ class DetalleTourActivity : AppCompatActivity() {
             }
         }
 
-        // Mapa Interactivo Gratuito
+        
         binding.btnMapa.setOnClickListener {
             val lugarQuery = "Oaxaca " + (tour.lugares?.firstOrNull() ?: tour.nombre)
             val mapUri = Uri.parse("geo:0,0?q=${Uri.encode(lugarQuery)}")

@@ -145,8 +145,8 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
 
                     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
                         binding.EnterBody.isActionModeOn = true
-                        // Try block is there because this will crash on MiUI as Xiaomi has a broken
-                        // ActionMode implementation
+                        
+                        
                         try {
                             menu?.apply {
                                 add(
@@ -222,9 +222,9 @@ class EditNoteActivity : EditActivity(Type.NOTE), AddNoteActions {
 
                         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
                             binding.EnterBody.isActionModeOn = true
-                            // Try block is there because this will crash on MiUI as Xiaomi has a
-                            // broken
-                            // ActionMode implementation
+                            
+                            
+                            
                             try {
                                 menu?.apply {
                                     add(

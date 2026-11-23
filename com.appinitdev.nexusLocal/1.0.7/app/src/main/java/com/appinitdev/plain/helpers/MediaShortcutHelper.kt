@@ -19,8 +19,8 @@ object MediaShortcutHelper {
             .setIntent(launchIntent)
             .build()
 
-        // Provide a PendingIntent callback so launchers (e.g. MIUI) that require it
-        // can confirm the pin request. The broadcast is received but no extra action needed.
+        
+        
         val callbackIntent = Intent(context, MainActivity::class.java).apply {
             action = "${context.packageName}.action.SHORTCUT_PINNED"
             `package` = context.packageName
@@ -34,8 +34,8 @@ object MediaShortcutHelper {
         )
 
         ShortcutManagerCompat.requestPinShortcut(context, shortcut, successCallback.intentSender)
-        // Show a toast so the user knows something happened, especially on launchers
-        // that don't display a visible confirmation dialog (e.g. some MIUI versions).
+        
+        
         DialogHelper.showMessage(Res.string.shortcut_added_to_home)
     }
 }

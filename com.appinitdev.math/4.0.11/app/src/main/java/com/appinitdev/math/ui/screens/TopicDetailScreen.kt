@@ -18,7 +18,7 @@ fun TopicDetailScreen(
     }
     var showNotesSheet by remember { mutableStateOf(false) }
 
-    // Dynamic Tab List: Omit 'EXAMPLES' tab if current topic has no examples
+    
     val availableTabs = remember(currentTopic) {
         val list = mutableListOf(DetailTab.ALL, DetailTab.THEORY)
         if (currentTopic.hasExamples) {
@@ -29,7 +29,7 @@ fun TopicDetailScreen(
         list
     }
 
-    // Modal Dialog / Sheet for Personal Notes & Custom Formula Editor
+    
     if (showNotesSheet) {
         AlertDialog(
             onDismissRequest = { showNotesSheet = false },

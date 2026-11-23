@@ -7,7 +7,7 @@ class ComposeTextPrintAdapter(
 ) : PrintDocumentAdapter() {
 
     companion object {
-        // A4 size in PDF points
+        
         private const val PAGE_WIDTH = 595
         private const val PAGE_HEIGHT = 842
 
@@ -88,7 +88,7 @@ class ComposeTextPrintAdapter(
 
             val canvas = page.canvas
 
-            // ===== Header =====
+            
 
             val headerPaint = android.graphics.Paint().apply {
                 textSize = 11f
@@ -130,7 +130,7 @@ class ComposeTextPrintAdapter(
                 endLine = endLine
             )
 
-            // ===== Footer =====
+            
 
             canvas.drawText(
                 "Page ${pageIndex + 1}",

@@ -13,7 +13,7 @@ data class Directory(
     @ColumnInfo(name = "media_types") var types: Int,
     @ColumnInfo(name = "sort_value") var sortValue: String,
 
-    // used with "Group direct subfolders" enabled
+    
     @Ignore var subfoldersCount: Int = 0,
     @Ignore var subfoldersMediaCount: Int = 0,
     @Ignore var containsMediaFilesDirectly: Boolean = true

@@ -1,7 +1,7 @@
 
-/**
- * A non-exhaustive list of all Exif attributes *excluding* dimension related attributes.
- */
+ 
+
+
 val AllNonDimensionExifAttributes = listOf(
     ExifInterface.TAG_IMAGE_DESCRIPTION,
     ExifInterface.TAG_MAKE,

@@ -1,20 +1,20 @@
 
-/**
- * Listens for Android Wi-Fi AP (hotspot) state changes and invokes [onStateChanged].
- *
- * ConnectivityManager.NetworkCallback does not fire on the host device when hotspot
- * is toggled (the tethered network belongs to the clients, not the host). This watcher
- * fills the gap so MdnsReregistrar can restart the responder on the correct interfaces
- * whenever the hotspot interface (ap0 / wlan1) appears or disappears.
- *
- * The action and state constants are `@hide` in the public SDK; raw values are used
- * directly to avoid compilation errors on all target SDK versions.
- */
+ 
+
+
+
+
+
+
+
+
+
+
 internal class MdnsHotspotWatcher(
     private val context: Context,
     private val onStateChanged: () -> Unit,
 ) {
-    // android.net.wifi.WifiManager constants (all @hide; raw values are stable since API 1)
+    
     private val apStateChangedAction = "android.net.wifi.WIFI_AP_STATE_CHANGED"
     private val extraApState = "wifi_state"
     private val apStateEnabled = 13

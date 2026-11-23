@@ -1,14 +1,14 @@
 
-/**
- * Fragment that displays the playlist page, showing all constituent songs alongside
- * aggregated albums, artists, and genres derived from those songs.
- *
- * Observes [PlaylistViewerViewModel] and updates the UI reactively whenever the
- * playlist's song membership changes. All common interaction callbacks are handled
- * by [com.appinitdev.musicpro.extensions.fragments.BasePageFragment]; only the playlist-specific overflow menu is implemented here.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
 
 @AndroidEntryPoint
 class PlaylistPage : BasePageFragment() {
@@ -39,9 +39,9 @@ class PlaylistPage : BasePageFragment() {
         return binding.root
     }
 
-    /**
-     * Sets up the RecyclerView and begins collecting [PageData] from [PlaylistViewerViewModel].
-     */
+     
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         collectPageData { playlistViewerViewModel.data }
@@ -53,26 +53,26 @@ class PlaylistPage : BasePageFragment() {
         }
     }
 
-    /**
-     * Delegates sort re-ordering to the [PlaylistViewerViewModel] without a database round-trip.
-     */
+     
+
+
     override fun resortPageData() {
         playlistViewerViewModel.resort()
     }
 
-    /**
-     * Opens [PlaylistSongsSort] instead of the generic page sort dialog so that the
-     * sort preference is saved per-playlist in the database rather than globally.
-     */
+     
+
+
+
     override fun onSortDialogRequested(view: View) {
         childFragmentManager.showPlaylistSongsSort(playlistViewerViewModel.currentPlaylist.value)
     }
 
-    /**
-     * Displays the playlist overflow menu with play, shuffle, and send actions.
-     *
-     * @param view The anchor [View] for the popup.
-     */
+     
+
+
+
+
     override fun onMenuClicked(view: View) {
         viewLifecycleOwner.lifecycleScope.launch {
             val currentData = playlistViewerViewModel.data.value ?: return@launch
@@ -104,12 +104,12 @@ class PlaylistPage : BasePageFragment() {
     companion object {
         const val TAG = "PlaylistPage"
 
-        /**
-         * Creates a new instance of [PlaylistPage] with the given [playlist] bundled as arguments.
-         *
-         * @param playlist The [Playlist] whose data will be displayed in this fragment.
-         * @return A new [PlaylistPage] instance ready to be committed via a fragment transaction.
-         */
+         
+
+
+
+
+
         fun newInstance(playlist: Playlist): PlaylistPage {
             val args = Bundle()
             args.putParcelable(BundleConstants.PLAYLIST, playlist)

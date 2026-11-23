@@ -1,15 +1,15 @@
 
-/**
- * Purchase screen for the Play Store flavor of Felicity.
- *
- * This screen connects to the Google Play Billing service to show the user the real
- * price of the app (pulled live from the Play Store, so no outdated numbers), lets
- * them complete the purchase, and marks the app as fully unlocked when they do.
- *
- * The giant button at the bottom is impossible to miss — we're proud of it.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
 @AndroidEntryPoint
 class Purchase : PreferenceFragment() {
 
@@ -17,10 +17,10 @@ class Purchase : PreferenceFragment() {
     private val binding get() = _binding!!
     private lateinit var headerBinding: HeaderPreferencesGenericBinding
 
-    /**
-     * The ViewModel handles all the heavy billing work so this fragment can stay
-     * clean and focused on just showing things on screen.
-     */
+     
+
+
+
     private val purchaseViewModel: PurchaseViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -42,10 +42,10 @@ class Purchase : PreferenceFragment() {
         setupRestoreButton()
     }
 
-    /**
-     * Fills in the trial status text at the top of the screen.
-     * If the user already purchased, we swap it out for a celebratory message instead.
-     */
+     
+
+
+
     private fun refreshTrialStatus() {
         binding.trialStatus.text = when {
             TrialPreferences.isFullVersion() -> getString(R.string.already_purchased)
@@ -54,11 +54,11 @@ class Purchase : PreferenceFragment() {
         }
     }
 
-    /**
-     * Watches the billing state from the ViewModel and updates the UI to match.
-     * Each state gets its own button label and enabled/disabled state so the user
-     * always knows what's happening — no mysterious spinning wheels.
-     */
+     
+
+
+
+
     private fun observeBillingState() {
         purchaseViewModel.billingState.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -71,14 +71,14 @@ class Purchase : PreferenceFragment() {
 
                 is PurchaseViewModel.BillingState.Ready -> {
                     if (state.offerPrice != null) {
-                        // There is an active deal — show the struck-through original price
-                        // alongside the shiny discounted offer price.
+                        
+                        
                         showPriceRow(basePrice = state.basePrice, offerPrice = state.offerPrice)
-                        // The button itself shows the offer price so there is no confusion
-                        // about what the user will actually be charged.
+                        
+                        
                         binding.buyButton.text = state.offerPrice
                     } else {
-                        // No offer today — just show the normal price on the button.
+                        
                         hidePriceRow()
                         binding.buyButton.text = state.basePrice.ifEmpty { getString(R.string.purchase_now) }
                     }
@@ -118,11 +118,11 @@ class Purchase : PreferenceFragment() {
             }
         }
 
-        /**
-         * When a manual restore attempt finds nothing, we show a friendly warning.
-         * The message explains the "wrong account" scenario so the user knows exactly
-         * what to do instead of staring blankly at the screen wondering what went wrong.
-         */
+         
+
+
+
+
         purchaseViewModel.restoreFailed.observe(viewLifecycleOwner) { failed ->
             if (failed == true) {
                 showRestoreFailedWarning()
@@ -130,34 +130,34 @@ class Purchase : PreferenceFragment() {
         }
     }
 
-    /**
-     * Shows the price row with the original price crossed out and the offer price highlighted.
-     * The strikethrough + grey combo makes it crystal clear that you're getting a deal.
-     *
-     * @param basePrice The regular price to display with a strikethrough.
-     * @param offerPrice The discounted price shown in the accent-colored badge.
-     */
+     
+
+
+
+
+
+
     private fun showPriceRow(basePrice: String, offerPrice: String) {
         binding.originalPrice.text = basePrice
-        // Apply a strikethrough so it looks properly "crossed out" — classic sale style.
+        
         binding.originalPrice.paintFlags =
             binding.originalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         binding.offerPriceBadge.text = offerPrice
         binding.priceRow.visibility = View.VISIBLE
     }
 
-    /**
-     * Hides the entire price row — called when there is no active offer and
-     * we just want to show a plain price on the button without any extra fuss.
-     */
+     
+
+
+
     private fun hidePriceRow() {
         binding.priceRow.visibility = View.GONE
     }
 
-    /**
-     * Wires up the big buy button. Tapping it asks the ViewModel to open the
-     * Google Play purchase sheet — the ViewModel takes it from there.
-     */
+     
+
+
+
     private fun setupBuyButton() {
         binding.buyButton.setOnClickListener {
             activity?.let { act ->
@@ -166,14 +166,14 @@ class Purchase : PreferenceFragment() {
         }
     }
 
-    /**
-     * Wires up the quieter "Restore Purchase" link below the main button.
-     * This is for users who already paid but the app forgot — reinstalls,
-     * new phones, or just the app having a bad memory day.
-     *
-     * The button dims itself while the restore is in progress so the user
-     * knows something is happening and doesn't tap it seventeen times.
-     */
+     
+
+
+
+
+
+
+
     private fun setupRestoreButton() {
         binding.restoreButton.setOnClickListener {
             binding.restoreButton.isEnabled = false
@@ -181,8 +181,8 @@ class Purchase : PreferenceFragment() {
             purchaseViewModel.restorePurchase()
         }
 
-        // Re-enable the button whenever the billing state settles, so the user
-        // can try again if needed — no stuck buttons allowed.
+        
+        
         purchaseViewModel.billingState.observe(viewLifecycleOwner) {
             if (it !is PurchaseViewModel.BillingState.AlreadyPurchased) {
                 binding.restoreButton.isEnabled = true
@@ -191,13 +191,13 @@ class Purchase : PreferenceFragment() {
         }
     }
 
-    /**
-     * Shows an alert dialog when a restore attempt comes back empty-handed.
-     *
-     * We explicitly mention the "wrong account" scenario because that's by far
-     * the most common reason someone's purchase doesn't show up — and without
-     * that hint, they'd probably email support immediately (fair enough, honestly).
-     */
+     
+
+
+
+
+
+
     private fun showRestoreFailedWarning() {
         context?.let { ctx ->
             AlertDialog.Builder(ctx)
@@ -217,11 +217,11 @@ class Purchase : PreferenceFragment() {
     }
 
     companion object {
-        /**
-         * Creates and returns a new instance of [Purchase].
-         *
-         * @return A new [Purchase] fragment instance with empty arguments.
-         */
+         
+
+
+
+
         fun newInstance(): Purchase {
             val args = Bundle()
             val fragment = Purchase()

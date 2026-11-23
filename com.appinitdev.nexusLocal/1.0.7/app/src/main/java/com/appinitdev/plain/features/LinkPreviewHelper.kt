@@ -1,7 +1,7 @@
 
 object LinkPreviewHelper {
-    private const val MAX_RESPONSE_SIZE = 10 * 1024 * 1024 // 10MB
-    private const val MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
+    private const val MAX_RESPONSE_SIZE = 10 * 1024 * 1024 
+    private const val MAX_IMAGE_SIZE = 5 * 1024 * 1024 
     private const val TIMEOUT_MILLIS = 10000L
 
     private val URL_PATTERN = Pattern.compile(

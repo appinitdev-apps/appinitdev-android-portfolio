@@ -1,11 +1,11 @@
 
-/**
- * Bottom-sheet sort dialog for the Playlists panel.
- * Mirrors the pattern used by [com.appinitdev.musicpro.dialogs.songs.SongsSort] but
- * persists its selection via [PlaylistPreferences].
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
 class PlaylistsSort : ScopedBottomSheetFragment() {
 
     private lateinit var binding: DialogSortPlaylistsBinding
@@ -55,9 +55,9 @@ class PlaylistsSort : ScopedBottomSheetFragment() {
             }
         }
 
-        /**
-         * Shows the playlists sort bottom-sheet dialog.
-         */
+         
+
+
         fun FragmentManager.showPlaylistsSort(): PlaylistsSort {
             val dialog = newInstance()
             dialog.show(this, TAG)

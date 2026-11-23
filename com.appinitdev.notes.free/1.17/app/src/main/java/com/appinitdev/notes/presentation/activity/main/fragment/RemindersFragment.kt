@@ -47,7 +47,7 @@ class RemindersFragment : Fragment(), NoteReminderListener {
                 else -> allReminders
             }
         reminderAdapter?.submitList(list)
-        //binding?.ImageView?.isVisible = list.isEmpty()
+        
     }
 
     override fun openReminder(reminder: NoteReminder) {

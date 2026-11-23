@@ -1,5 +1,5 @@
 
-// based on https://developer.android.com/reference/android/app/job/JobInfo.Builder.html#addTriggerContentUri(android.app.job.JobInfo.TriggerContentUri)
+
 class NewPhotoFetcher : JobService() {
     companion object {
         const val PHOTO_VIDEO_CONTENT_JOB = 1

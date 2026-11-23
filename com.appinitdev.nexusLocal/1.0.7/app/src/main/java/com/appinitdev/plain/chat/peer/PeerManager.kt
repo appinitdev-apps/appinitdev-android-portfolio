@@ -18,11 +18,11 @@ object PeerManager {
         return true
     }
 
-    /**
-     * Mark an existing peer as unpaired. Caller is responsible for re-loading
-     * any view-model state that mirrors the peer list. Returns true when the
-     * peer existed and was updated.
-     */
+     
+
+
+
+
     suspend fun markUnpaired(peerId: String): Boolean {
         val peerDao = AppDatabase.instance.peerDao()
         val peer = peerDao.getById(peerId) ?: run {
@@ -37,11 +37,11 @@ object PeerManager {
         return true
     }
 
-    /**
-     * Apply discovery metadata (IP, port, name, device type) to an already-paired
-     * peer. Returns the freshly-persisted peer when at least one field changed;
-     * null when the peer is missing, not paired, or unchanged.
-     */
+     
+
+
+
+
     suspend fun applyDeviceDiscovered(
         deviceId: String,
         ips: List<String>,
@@ -66,10 +66,10 @@ object PeerManager {
         return peer
     }
 
-    /**
-     * Upsert a freshly-paired peer with the negotiated key + signature public
-     * key. Preserves `createdAt` when the peer already exists.
-     */
+     
+
+
+
     suspend fun upsertPaired(
         deviceId: String,
         deviceName: String,

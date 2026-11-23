@@ -11,7 +11,7 @@ object ZipBrowserHelper {
     fun joinPath(zipFilePath: String, internalPath: String): String =
         "$zipFilePath$ZIP_SEPARATOR$internalPath"
 
-    /** Returns the display name for the breadcrumb/title of a zip virtual path. */
+     
     fun getDisplayName(zipVirtualPath: String): String {
         val internalPath = getInternalPath(zipVirtualPath)
         val trimmed = internalPath.trimEnd('/')
@@ -22,21 +22,21 @@ object ZipBrowserHelper {
         }
     }
 
-    /**
-     * Lists the direct children of [zipVirtualPath] (a virtual path inside a zip archive).
-     * Directories are synthesized from paths of contained entries even when no explicit
-     * directory entry exists in the zip.
-     */
+     
+
+
+
+
     fun listEntries(zipVirtualPath: String, sortBy: FileSortBy): List<DFile> {
         val zipFilePath = getZipFilePath(zipVirtualPath)
         val internalDir = getInternalPath(zipVirtualPath)
-        // Normalize prefix: must end with "/" (or be empty for root)
+        
         val prefix = when {
             internalDir.isEmpty() -> ""
             internalDir.endsWith("/") -> internalDir
             else -> "$internalDir/"
         }
-        // Use LinkedHashMap to preserve first-seen order, then sort at the end
+        
         val entries = linkedMapOf<String, DFile>()
         try {
             ZipInputStream(File(zipFilePath).inputStream().buffered()).use { zis ->
@@ -49,7 +49,7 @@ object ZipBrowserHelper {
                             val slashIndex = relative.indexOf('/')
                             when {
                                 slashIndex == -1 -> {
-                                    // Direct file in this directory
+                                    
                                     if (!entries.containsKey(relative)) {
                                         entries[relative] = DFile(
                                             name = relative,
@@ -64,7 +64,7 @@ object ZipBrowserHelper {
                                     }
                                 }
                                 slashIndex == relative.length - 1 -> {
-                                    // Explicit directory entry (e.g. "docs/")
+                                    
                                     val dirName = relative.dropLast(1)
                                     if (dirName.isNotEmpty() && !entries.containsKey(dirName)) {
                                         entries[dirName] = DFile(
@@ -80,7 +80,7 @@ object ZipBrowserHelper {
                                     }
                                 }
                                 else -> {
-                                    // File inside a subdirectory — synthesize the directory entry
+                                    
                                     val dirName = relative.substring(0, slashIndex)
                                     if (!entries.containsKey(dirName)) {
                                         entries[dirName] = DFile(
@@ -108,12 +108,12 @@ object ZipBrowserHelper {
         return entries.values.toList().sorted(sortBy)
     }
 
-    /**
-     * Extracts a single zip entry to a file in [context.cacheDir] and returns it.
-     * The result is cached by a key derived from the zip file path and internal entry path,
-     * so repeated calls for the same entry skip re-extraction.
-     * Returns null when the entry is not found or an I/O error occurs.
-     */
+     
+
+
+
+
+
     fun extractEntryToCache(context: android.content.Context, zipVirtualPath: String): File? {
         val zipFilePath = getZipFilePath(zipVirtualPath)
         val internalPath = getInternalPath(zipVirtualPath).trimEnd('/')

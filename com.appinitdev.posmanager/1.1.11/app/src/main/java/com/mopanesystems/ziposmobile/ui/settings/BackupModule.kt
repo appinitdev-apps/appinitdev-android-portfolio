@@ -6,7 +6,7 @@ object BackupModule {
     @Provides
     @Singleton
     fun provideDatabaseBackupHelper(
-        posDatabase: POSDatabase // Hilt inyecta el Singleton de Room
+        posDatabase: POSDatabase 
     ): DatabaseBackupHelper {
         return DatabaseBackupHelper(posDatabase)
     }

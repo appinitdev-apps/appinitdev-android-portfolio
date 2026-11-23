@@ -156,9 +156,9 @@ class ListItemVH(
                         keyCode == KeyEvent.KEYCODE_DEL &&
                         item.body.isEmpty()
                 ) {
-                    // TODO: when there are multiple checked items above it does not jump to the
-                    // last
-                    // unchecked item but always re-adds a new item
+                    
+                    
+                    
                     listManager.delete(
                         absoluteAdapterPosition,
                         inCheckedList = inCheckedList,

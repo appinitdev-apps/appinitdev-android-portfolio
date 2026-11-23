@@ -1,22 +1,22 @@
 
-/**
- * Recycler adapter for the Playlists panel.
- *
- * Supports all three [CommonPreferencesConstants.LayoutMode] variants (List, Grid, Label)
- * by reusing the shared [AdapterStyleListBinding], [AdapterStyleGridBinding], and
- * [AdapterStyleLabelsBinding] layouts. The three text fields are mapped as follows:
- * - title          ← playlist name
- * - secondaryDetail ← formatted song count (e.g., "5 Songs")
- * - tertiaryDetail  ← playlist description (empty when none is set)
- *
- * The count is derived directly from [PlaylistWithSongs.songs], which Room keeps
- * reactive via the junction table, so it updates automatically when songs are
- * added or removed.
- *
- * @param initial The initial list of playlists with their associated songs.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class AdapterPlaylists(initial: List<PlaylistWithSongs>) : FastScrollAdapter<VerticalListViewHolder>() {
 
     private var onPlaylistClicked: ((Playlist) -> Unit)? = null
@@ -58,10 +58,10 @@ class AdapterPlaylists(initial: List<PlaylistWithSongs>) : FastScrollAdapter<Ver
 
     private val items: List<PlaylistWithSongs> get() = differ.currentList
 
-    /**
-     * Current layout mode. Update this when the grid-size preference changes and call
-     * [notifyItemRangeChanged] alongside updating the layout manager span count.
-     */
+     
+
+
+
     var layoutMode: CommonPreferencesConstants.LayoutMode = PlaylistPreferences.getGridSize()
 
     init {
@@ -111,34 +111,34 @@ class AdapterPlaylists(initial: List<PlaylistWithSongs>) : FastScrollAdapter<Ver
         }
     }
 
-    /**
-     * Submits an updated playlist list to the differ. The comparison runs on a background thread.
-     *
-     * @param list The new list of playlists with song counts.
-     */
+     
+
+
+
+
     fun updatePlaylists(list: List<PlaylistWithSongs>) {
         differ.submitList(list)
     }
 
-    /** Registers a callback fired when the user taps a playlist row. */
+     
     fun setOnPlaylistClicked(block: (Playlist) -> Unit) {
         onPlaylistClicked = block
     }
 
-    /** Registers a callback fired when the user long-presses a playlist row. */
+     
     fun setOnPlaylistLongClicked(block: (PlaylistWithSongs, ImageView?) -> Unit) {
         onPlaylistLongClicked = block
     }
 
-    /** List-style view holder backed by [AdapterStyleListBinding]. */
+     
     inner class ListHolder(val binding: AdapterStyleListBinding) : VerticalListViewHolder(binding.root) {
 
-        /**
-         * Binds a [PlaylistWithSongs] item to the list-style row.
-         *
-         * @param item        The playlist data to display.
-         * @param isLightBind When true, skips expensive operations such as image loading.
-         */
+         
+
+
+
+
+
         fun bind(item: PlaylistWithSongs, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(item.playlist.name)
             binding.title.addPlaylistTypeIcon(item.playlist)
@@ -156,15 +156,15 @@ class AdapterPlaylists(initial: List<PlaylistWithSongs>) : FastScrollAdapter<Ver
         }
     }
 
-    /** Grid-style view holder backed by [AdapterStyleGridBinding]. */
+     
     inner class GridHolder(val binding: AdapterStyleGridBinding) : VerticalListViewHolder(binding.root) {
 
-        /**
-         * Binds a [PlaylistWithSongs] item to the grid-style tile.
-         *
-         * @param item        The playlist data to display.
-         * @param isLightBind When true, skips expensive operations such as image loading.
-         */
+         
+
+
+
+
+
         fun bind(item: PlaylistWithSongs, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(item.playlist.name)
             binding.title.addPlaylistTypeIcon(item.playlist)
@@ -182,15 +182,15 @@ class AdapterPlaylists(initial: List<PlaylistWithSongs>) : FastScrollAdapter<Ver
         }
     }
 
-    /** Label-style view holder backed by [AdapterStyleLabelsBinding]. */
+     
     inner class LabelHolder(val binding: AdapterStyleLabelsBinding) : VerticalListViewHolder(binding.root) {
 
-        /**
-         * Binds a [PlaylistWithSongs] item to the label-style row.
-         *
-         * @param item        The playlist data to display.
-         * @param isLightBind When true, skips expensive operations such as image loading.
-         */
+         
+
+
+
+
+
         fun bind(item: PlaylistWithSongs, isLightBind: Boolean) {
             binding.title.setTextOrUnknown(item.playlist.name)
             binding.title.addPlaylistTypeIcon(item.playlist)

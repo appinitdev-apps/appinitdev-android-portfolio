@@ -43,7 +43,7 @@ class TimerService :
                 return START_NOT_STICKY
             }
 
-            // actions triggered from the notification itself
+            
             Action.Toggle.name -> timerManager.toggle()
             Action.AddOneMinute.name -> timerManager.addOneMinute()
             Action.Skip.name -> timerManager.next(finishActionType = FinishActionType.MANUAL_SKIP)
@@ -60,7 +60,7 @@ class TimerService :
             Reset,
             Finished,
 
-            // actions triggered from the notification itself
+            
             Toggle,
             AddOneMinute,
             Skip,

@@ -1,7 +1,7 @@
 
 object GalleryStorageManager {
 
-    // Función auxiliar para calcular el Hash SHA-256 de un archivo
+    
     private fun getFileHash(file: File): String {
         val digest = MessageDigest.getInstance("SHA-256")
         file.inputStream().use { input ->
@@ -14,12 +14,12 @@ object GalleryStorageManager {
         return digest.digest().joinToString("") { "%02x".format(it) }
     }
 
-    // Guarda una imagen en el almacenamiento interno de la App y la registra en Room
+    
     suspend fun saveImageToInternalStorage(context: Context, uri: Uri): Boolean = withContext(Dispatchers.IO) {
         try {
             val database = GalleryDatabase.getDatabase(context)
             
-            // 1. Guardar en un archivo temporal para calcular el hash del contenido
+            
             val tempFile = File(context.cacheDir, "temp_${System.currentTimeMillis()}")
             context.contentResolver.openInputStream(uri).use { inputStream ->
                 FileOutputStream(tempFile).use { outputStream ->
@@ -29,19 +29,19 @@ object GalleryStorageManager {
 
             if (!tempFile.exists() || tempFile.length() == 0L) return@withContext false
 
-            // 2. Calcular Hash para el nombre del archivo (evita duplicados reales)
+            
             val hash = getFileHash(tempFile)
             val fileName = "img_$hash.jpg"
             val internalFile = File(context.filesDir, fileName)
 
-            // 3. Si no existe el archivo definitivo, lo movemos desde el temporal
+            
             if (!internalFile.exists()) {
                 tempFile.renameTo(internalFile)
             } else {
-                tempFile.delete() // Si ya existe, borramos el temporal
+                tempFile.delete() 
             }
 
-            // 4. Registrar en Room (el OnConflictStrategy.REPLACE actualizará la fecha si ya existe la ruta)
+            
             database.galleryDao().insertImage(GalleryImage(localPath = internalFile.absolutePath))
             
             return@withContext true
@@ -51,12 +51,12 @@ object GalleryStorageManager {
         }
     }
 
-    // Descarga desde URL de red, la guarda internamente en la App y la registra en Room
+    
     suspend fun saveUrlToInternalStorage(context: Context, urlString: String): Boolean = withContext(Dispatchers.IO) {
         try {
             val database = GalleryDatabase.getDatabase(context)
             
-            // 1. Descargar a un archivo temporal
+            
             val tempFile = File(context.cacheDir, "temp_url_${System.currentTimeMillis()}")
             val url = URL(urlString)
             val connection = url.openConnection() as HttpURLConnection
@@ -71,19 +71,19 @@ object GalleryStorageManager {
 
             if (!tempFile.exists() || tempFile.length() == 0L) return@withContext false
 
-            // 2. Calcular Hash
+            
             val hash = getFileHash(tempFile)
             val fileName = "img_$hash.jpg"
             val internalFile = File(context.filesDir, fileName)
 
-            // 3. Mover si no existe
+            
             if (!internalFile.exists()) {
                 tempFile.renameTo(internalFile)
             } else {
                 tempFile.delete()
             }
 
-            // 4. Registrar en Room (actualiza fecha de guardado)
+            
             database.galleryDao().insertImage(GalleryImage(localPath = internalFile.absolutePath))
             
             return@withContext true
@@ -93,7 +93,7 @@ object GalleryStorageManager {
         }
     }
 
-    // Exporta/Descarga una imagen interna hacia la Galería Pública del Teléfono (Pictures)
+    
     suspend fun downloadToPublicGallery(context: Context, localPath: String): Boolean = withContext(Dispatchers.IO) {
         try {
             val sourceFile = File(localPath)
@@ -116,7 +116,7 @@ object GalleryStorageManager {
         }
     }
 
-    // --- NUEVO: Guardar foto capturada (Cámara + Dibujo) ---
+    
     suspend fun saveCapturedWork(
         context: Context, 
         bitmap: android.graphics.Bitmap, 
@@ -133,7 +133,7 @@ object GalleryStorageManager {
                 bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 90, out)
             }
 
-            // Registrar en Room
+            
             database.galleryDao().insertCapturedWork(
                 CapturedWork(
                     workPath = internalFile.absolutePath,
@@ -149,7 +149,7 @@ object GalleryStorageManager {
         }
     }
 
-    // --- NUEVO: Compartir imagen ---
+    
     fun shareImage(context: Context, localPath: String) {
         try {
             val file = File(localPath)

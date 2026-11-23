@@ -1,9 +1,9 @@
 
 object HealthConnectManager {
 
-    /**
-     * Prepares an intent to insert/record a completed focus session as a Mindfulness activity.
-     */
+     
+
+
     fun createMindfulnessIntent(session: Session): Intent {
         val startMs = session.timestamp
         val endMs = startMs + (session.duration * 60 * 1000)

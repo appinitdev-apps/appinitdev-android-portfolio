@@ -1,9 +1,9 @@
 
 object UrlHelper {
-    private val mediaPathMap = mutableMapOf<String, String>() // format: <short_path>:<raw_path>
+    private val mediaPathMap = mutableMapOf<String, String>() 
 
     fun getMediaHttpUrl(path: String): String {
-        // cast screen only only supports http in local network and some TV OS only supports simple file name with extension
+        
         val id = System.currentTimeMillis().toString()
         mediaPathMap[id] = path
         val extension = path.getFilenameExtension()
@@ -21,10 +21,10 @@ object UrlHelper {
     }
 
     fun getHealthCheckUrl(): String {
-        // Use 127.0.0.1 instead of localhost to skip DNS resolution — on some
-        // Android ROMs localhost lookup blocks or fails, which races with the
-        // health check and produces a false "Connection refused" right after
-        // Ktor's `start(wait = false)` returns (port not yet bound).
+        
+        
+        
+        
         return "http://127.0.0.1:${TempData.httpPort.value}/health"
     }
 

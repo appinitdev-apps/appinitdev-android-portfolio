@@ -1,10 +1,10 @@
 
-/**
- * Low-level UDP transport for nearby device discovery and pairing.
- *
- * Consolidates multicast sending/receiving (with WiFi multicast lock)
- * and unicast sending into a single object.
- */
+ 
+
+
+
+
+
 object NearbyNetwork {
     const val PORT = 52352
     private const val MULTICAST_ADDRESS = "224.0.0.100"
@@ -15,15 +15,15 @@ object NearbyNetwork {
     private var receiverJob: Job? = null
     private var multicastLock: WifiManager.MulticastLock? = null
 
-    // ---- Sending ---------------------------------------------------------------
+    
 
-    /** Send [message] to the local-subnet multicast group (fire-and-forget). */
+     
     fun sendMulticast(message: String) {
         coIO {
             var socket: MulticastSocket? = null
             try {
                 socket = MulticastSocket()
-                socket.timeToLive = 1 // limit to local subnet
+                socket.timeToLive = 1 
                 val address = InetAddress.getByName(MULTICAST_ADDRESS)
                 val bytes = message.toByteArray()
                 socket.send(DatagramPacket(bytes, bytes.size, address, PORT))
@@ -35,7 +35,7 @@ object NearbyNetwork {
         }
     }
 
-    /** Send [message] to a specific [targetIP] via unicast (fire-and-forget). */
+     
     fun sendUnicast(message: String, targetIP: String) {
         coIO {
             var socket: DatagramSocket? = null
@@ -52,25 +52,25 @@ object NearbyNetwork {
         }
     }
 
-    // ---- Receiving -------------------------------------------------------------
+    
 
-    /**
-     * Start the multicast receiver loop.
-     *
-     * Acquires a [WifiManager.MulticastLock] so Android forwards multicast traffic
-     * to this app, then continuously listens on [PORT]. Automatically restarts on
-     * transient socket errors.
-     *
-     * @param onMessage called for every incoming datagram with (message, senderIP).
-     */
+     
+
+
+
+
+
+
+
+
     fun startReceiver(onMessage: (message: String, senderIP: String) -> Unit) {
         if (receiverJob?.isActive == true) {
             return
         }
 
-        // Acquire a single MulticastLock for the lifetime of the receiver.
-        // Creating a new lock on every restart iteration eventually trips
-        // Android's per-UID lock cap ("Exceeded maximum number of wifi locks").
+        
+        
+        
         if (multicastLock == null) {
             runCatching {
                 val wifiManager = MainApp.instance.applicationContext
@@ -97,7 +97,7 @@ object NearbyNetwork {
         LogCat.d("Multicast receiver started")
     }
 
-    /** Stop the multicast receiver loop. */
+     
     fun stopReceiver() {
         receiverJob?.cancel()
         receiverJob = null
@@ -108,14 +108,14 @@ object NearbyNetwork {
         LogCat.d("Multicast receiver stopped")
     }
 
-    // ---- Internal --------------------------------------------------------------
+    
 
-    /**
-     * One iteration of the receive loop: open socket → listen until
-     * error or cancellation → close socket. The MulticastLock is owned by
-     * [startReceiver]/[stopReceiver] and is shared across iterations, so we do
-     * NOT create a new lock here (Android caps WifiLocks per UID).
-     */
+     
+
+
+
+
+
     private suspend fun receiveLoop(
         onMessage: (message: String, senderIP: String) -> Unit,
     ) {
@@ -139,7 +139,7 @@ object NearbyNetwork {
                     val senderIP = packet.address.hostAddress ?: ""
                     onMessage(message, senderIP)
                 } catch (_: SocketTimeoutException) {
-                    // expected — keep listening
+                    
                 }
             }
         } finally {

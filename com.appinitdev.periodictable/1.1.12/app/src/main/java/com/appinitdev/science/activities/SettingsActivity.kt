@@ -6,10 +6,10 @@ class SettingsActivity : BaseActivity() {
             if (englishName == nativeName) englishName else "$englishName ($nativeName)"
     }
 
-    // Lifecycle-aware OnBackPressedCallback (starts DISABLED)
+    
     private var backCallback: OnBackPressedCallback? = null
 
-    // Optional OnBackInvokedCallback for newer platforms (registered only when interception is needed)
+    
     private var onBackInvokedCb: android.window.OnBackInvokedCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,43 +63,43 @@ class SettingsActivity : BaseActivity() {
 
         findViewById<ConstraintLayout>(R.id.view).systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 
-        // Title Controller with animated visibility
-        /*findViewById<FrameLayout>(R.id.common_title_settings_color).visibility = View.VISIBLE
-        findViewById<TextView>(R.id.element_title).visibility = View.INVISIBLE
-        findViewById<FrameLayout>(R.id.common_title_back_set).elevation = (resources.getDimension(R.dimen.zero_elevation))
-        findViewById<ScrollView>(R.id.scroll_settings).viewTreeObserver
-            .addOnScrollChangedListener(object : ViewTreeObserver.OnScrollChangedListener {
-                private var isTitleVisible = false // Track animation state
+        
+         
 
-                override fun onScrollChanged() {
-                    val scrollY = findViewById<ScrollView>(R.id.scroll_settings).scrollY
-                    val threshold = 158
 
-                    val titleColorBackground = findViewById<FrameLayout>(R.id.common_title_settings_color)
-                    val titleText = findViewById<TextView>(R.id.element_title)
-                    val titleDownstateText = findViewById<TextView>(R.id.element_title_downstate)
-                    val titleBackground = findViewById<FrameLayout>(R.id.common_title_back_set)
 
-                    if (scrollY > threshold) {
-                        if (!isTitleVisible) {
-                            TitleBarAnimator.animateVisibility(titleColorBackground, true, visibleAlpha = 0.11f)
-                            TitleBarAnimator.animateVisibility(titleText, true)
-                            TitleBarAnimator.animateVisibility(titleDownstateText, false)
-                            titleBackground.elevation = resources.getDimension(R.dimen.zero_elevation)
-                            isTitleVisible = true
-                        }
-                    } else {
-                        if (isTitleVisible) {
-                            TitleBarAnimator.animateVisibility(titleColorBackground, true, visibleAlpha = 0.11f)
-                            TitleBarAnimator.animateVisibility(titleText, false)
-                            TitleBarAnimator.animateVisibility(titleDownstateText, true)
-                            titleBackground.elevation = resources.getDimension(R.dimen.zero_elevation)
-                            isTitleVisible = false
-                        }
-                    }
-                }
-            })
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         findViewById<ImageButton>(R.id.back_btn_set).setOnClickListener {
             this.onBackPressed()
@@ -111,20 +111,20 @@ class SettingsActivity : BaseActivity() {
         }
 
 
-        // Register a lifecycle-aware OnBackPressedCallback in DISABLED state.
-        // We'll enable interception only when overlays (theme panel) are visible.
+        
+        
         backCallback = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
-                // First try to close overlays if any
+                
                 val consumed = handleBackPress()
                 if (consumed) {
-                    // keep interception only while overlays remain open
+                    
                     backCallback?.isEnabled = anyOverlayOpen()
                     return
                 }
 
-                // Nothing to close -> forward to system immediately (avoid swallowing one back press)
-                // Disable interception and perform system back behavior.
+                
+                
                 backCallback?.isEnabled = false
                 try {
                     if (isTaskRoot) {
@@ -139,20 +139,20 @@ class SettingsActivity : BaseActivity() {
         }
         onBackPressedDispatcher.addCallback(this, backCallback!!)
 
-        // --- Language selection setup ---
+        
         findViewById<RelativeLayout>(R.id.language_setting).setOnClickListener {
             showLanguageSelectionDialog()
         }
         updateLanguageContentText()
     }
 
-    // helper to detect overlays currently visible
+    
     private fun anyOverlayOpen(): Boolean {
         val themePanel = findViewById<FrameLayout?>(R.id.theme_panel)
         return themePanel?.visibility == View.VISIBLE
     }
 
-    // Toggle interception: enable/disable OnBackPressedCallback and register/unregister OnBackInvokedCallback on newer OS
+    
     private fun setBackInterceptionEnabled(enabled: Boolean) {
         backCallback?.isEnabled = enabled
 
@@ -160,14 +160,14 @@ class SettingsActivity : BaseActivity() {
             if (enabled) {
                 if (onBackInvokedCb == null) {
                     onBackInvokedCb = android.window.OnBackInvokedCallback {
-                        // Mirror handleOnBackPressed behaviour for platform back invocation
+                        
                         handleBackPress()
-                        // keep registered only if overlays remain
+                        
                         if (!anyOverlayOpen()) {
-                            // unregister ourselves to allow system preview for subsequent gestures
+                            
                             onBackInvokedDispatcher.unregisterOnBackInvokedCallback(onBackInvokedCb!!)
                             onBackInvokedCb = null
-                            // ensure dispatcher-level OnBackPressedCallback also disabled
+                            
                             backCallback?.isEnabled = false
                         }
                     }
@@ -181,7 +181,7 @@ class SettingsActivity : BaseActivity() {
                     try {
                         onBackInvokedDispatcher.unregisterOnBackInvokedCallback(onBackInvokedCb!!)
                     } catch (_: Exception) {
-                        // ignore if already unregistered
+                        
                     }
                     onBackInvokedCb = null
                 }
@@ -189,7 +189,7 @@ class SettingsActivity : BaseActivity() {
         }
     }
 
-    // --- Language selection logic ---
+    
 
     private fun getSupportedLanguages(): List<LanguageOption> = listOf(
         LanguageOption("English", Locale("en").getDisplayLanguage(Locale("en")), Locale("en")),
@@ -245,15 +245,15 @@ class SettingsActivity : BaseActivity() {
             if (checkedItem != -1) checkedItem += 1 else checkedItem = 0
         }
 
-        // Use custom ArrayAdapter for the list items
+        
         val adapter = ArrayAdapter<String>(this, R.layout.dialog_language_item, R.id.lang_name, languageNames)
 
-        // Build AlertDialog
+        
         val dialog = AlertDialog.Builder(this)
             .setTitle(getString(R.string.language_title))
             .setSingleChoiceItems(adapter, checkedItem) { dialogInterface, which ->
                 when (which) {
-                    0 -> setLanguagePreference(null) // System default
+                    0 -> setLanguagePreference(null) 
                     else -> setLanguagePreference(languages[which - 1].locale)
                 }
                 updateLanguageContentText()
@@ -265,7 +265,7 @@ class SettingsActivity : BaseActivity() {
             .setNegativeButton(android.R.string.cancel, null)
             .create()
 
-        // Set rounded background for the entire dialog window
+        
         dialog.window?.setBackgroundDrawableResource(R.drawable.dialog_popup_bg)
 
         dialog.show()
@@ -304,7 +304,7 @@ class SettingsActivity : BaseActivity() {
                 .putString("app_country", locale.country ?: "")
                 .apply()
         }
-        // Clear the language cache when preference changes
+        
         com.appinitdev.science.utils.ElementDataLoader.clearCache()
     }
 
@@ -326,21 +326,21 @@ class SettingsActivity : BaseActivity() {
         findViewById<LinearLayout>(R.id.advanced_box).setPadding(left, 0, right, 0)
     }
 
-    // Handle back logic: closes theme panel if visible and returns true to indicate consumed.
+    
     private fun handleBackPress(): Boolean {
         val themePanel = findViewById<FrameLayout>(R.id.theme_panel)
 
         return if (themePanel.visibility == View.VISIBLE) {
-            Utils.fadeOutAnim(themePanel, 300) // Close panel
-            // Immediately stop intercepting so next back goes to system (prevents needing an extra press)
+            Utils.fadeOutAnim(themePanel, 300) 
+            
             setBackInterceptionEnabled(false)
-            true // Consume back press
+            true 
         } else {
-            false // Allow system to handle it (shows preview animation)
+            false 
         }
     }
 
-    // Override for Android < 13 - fallback
+    
     override fun onBackPressed() {
         if (!handleBackPress()) {
             super.onBackPressed()
@@ -378,7 +378,7 @@ class SettingsActivity : BaseActivity() {
             analyticsPreferences.setValue(isChecked)
             AnalyticsHelper.updateAnalyticsCollection(this)
             
-            // Log analytics toggle event
+            
             if (isChecked) {
                 AnalyticsHelper.logEvent(this, "analytics_enabled", null)
             }
@@ -450,13 +450,13 @@ class SettingsActivity : BaseActivity() {
             when (currentNightMode) {
                 Configuration.UI_MODE_NIGHT_NO -> {
                     setTheme(R.style.AppTheme)
-                } // Night mode is not active, we're using the light theme
+                } 
                 Configuration.UI_MODE_NIGHT_YES -> {
                     setTheme(R.style.AppThemeDark)
-                } // Night mode is active, we're using dark theme
+                } 
             }
             Utils.fadeOutAnim(themePanel, 300)
-            // Immediately disable interception so next back goes to system
+            
             setBackInterceptionEnabled(false)
 
             val delayChange = Handler()
@@ -505,12 +505,12 @@ class SettingsActivity : BaseActivity() {
         }
         findViewById<RelativeLayout>(R.id.themes_settings).setOnClickListener {
             Utils.fadeInAnim(themePanel, 300)
-            // theme opened -> enable interception (back should close theme panel)
+            
             setBackInterceptionEnabled(true)
         }
         findViewById<TextView>(R.id.theme_background).setOnClickListener {
             Utils.fadeOutAnim(themePanel, 300)
-            // closed -> disable interception immediately
+            
             setBackInterceptionEnabled(false)
         }
         findViewById<TextView>(R.id.cancel_btn).setOnClickListener {

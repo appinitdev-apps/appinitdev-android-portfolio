@@ -31,34 +31,34 @@ object ChatDbHelper {
         AppDatabase.instance.chatDao().updateStatusAndData(item.id, item.status, item.statusData)
     }
 
-    /**
-     * Persist both [status] and per-member [statusData] for a channel message.
-     * Computes the status string from [statusData] when [statusData] is provided:
-     * - "sent"    → all members delivered
-     * - "partial" → some delivered, some failed
-     * - "failed"  → all failed (or null statusData = no leader)
-     */
+     
+
+
+
+
+
+
     suspend fun updateChannelChatItemStatus(item: DChat, statusData: DMessageStatusData?) {
         item.status = statusData?.aggregateStatus() ?: ChatMessageStatus.FAILED
         item.statusData = if (statusData != null && statusData.total > 0) jsonEncode(statusData) else ""
         AppDatabase.instance.chatDao().updateStatusAndData(item.id, item.status, item.statusData)
     }
 
-    /**
-     * Persist new [content] for an existing chat item. The in-memory [item]
-     * is also mutated so callers can re-emit events / update UI without
-     * re-fetching. Caller owns any "message updated" WebSocket broadcast.
-     */
+     
+
+
+
+
     suspend fun updateChatItemContent(item: DChat, content: DMessageContent) {
         item.content = content
         AppDatabase.instance.chatDao().updateData(ChatItemDataUpdate(id = item.id, content = content))
     }
 
-    /**
-     * Replace the file list of a FILES/IMAGES message — the two content
-     * types whose [com.appinitdev.nexusLocal.db.DMessageFile.uri] may transition
-     * from `fsid:` (remote) to `fid:` (local) after download.
-     */
+     
+
+
+
+
     suspend fun updateChatItemFilesContent(item: DChat, files: List<com.appinitdev.nexusLocal.db.DMessageFile>) {
         val content = when (item.content.type) {
             DMessageType.IMAGES.value -> DMessageContent(DMessageType.IMAGES.value, DMessageImages(files))
@@ -77,14 +77,14 @@ object ChatDbHelper {
         AppDatabase.instance.chatDao().delete(id)
     }
 
-    /**
-     * Resolve a search-style query into the set of chat item ids it matches.
-     * Supports:
-     * - `ids:1,2,3` — exact id list
-     * - `channel:xxx` — every item in the given channel
-     * - `peer:xxx` / `peer:local` — every item in the given peer conversation
-     * Returns an empty set when the query is unrecognized.
-     */
+     
+
+
+
+
+
+
+
     suspend fun getIdsAsync(query: String): Set<String> {
         if (query.isEmpty()) return emptySet()
         val fields = SearchHelper.parse(query)

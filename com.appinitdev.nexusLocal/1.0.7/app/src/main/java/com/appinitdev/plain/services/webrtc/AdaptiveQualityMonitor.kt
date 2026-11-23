@@ -36,7 +36,7 @@ internal class AdaptiveQualityMonitor(
             val oldResolution = adaptiveResolution
             val oldFps = targetFps
 
-            // Aggressive ABR — react to packet loss first
+            
             if (packetLossPercent > 2.0) {
                 if (targetFps > 10) {
                     targetFps = max(10, (targetFps * 0.7).toInt())
@@ -47,7 +47,7 @@ internal class AdaptiveQualityMonitor(
                 }
             }
 
-            // RTT-based degradation
+            
             if (rttMs > 150) {
                 if (targetFps > 15) {
                     targetFps = 15
@@ -56,7 +56,7 @@ internal class AdaptiveQualityMonitor(
                 if (rttMs > 300 && adaptiveResolution > 720) adaptiveResolution = 720
             }
 
-            // Bandwidth-based degradation
+            
             if (availableBitrateKbps in 1 until 2000) {
                 if (adaptiveResolution > 720) adaptiveResolution = 720
                 if (targetFps > 15) {
@@ -65,7 +65,7 @@ internal class AdaptiveQualityMonitor(
                 }
             }
 
-            // Upgrade when network is healthy
+            
             val isHealthy = availableBitrateKbps > 4000 && packetLossPercent < 1.0 && rttMs < 50
             if (isHealthy) {
                 if (adaptiveResolution < 1080) adaptiveResolution = 1080

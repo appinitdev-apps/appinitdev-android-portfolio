@@ -1,20 +1,20 @@
 
-/**
- * Foreground service that hosts a local WiFi HTTP music server.
- *
- * Lifecycle:
- *
- * - Start via [start] — creates and starts [MusicHttpServer], then posts a persistent
- *   notification showing the reachable `http://ip:port` address.
- * - Stop via [stop] — sends a stop action which shuts down the HTTP server and removes
- *   the notification.
- *
- * The running state is exposed as a process-wide [StateFlow] through the companion object
- * so that any UI component (e.g. [com.appinitdev.musicpro.ui.home.Dashboard]) can observe it
- * without binding to the service.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @AndroidEntryPoint
 class ServerModeService : Service() {
 
@@ -120,12 +120,12 @@ class ServerModeService : Service() {
         getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
     }
 
-    /**
-     * Iterates over all network interfaces and returns the first non-loopback IPv4 address
-     * found on a WiFi or Ethernet interface.
-     *
-     * @return A dotted-decimal IP string, or `null` if none is found.
-     */
+     
+
+
+
+
+
     private fun resolveLocalIpAddress(): String? {
         return try {
             NetworkInterface.getNetworkInterfaces()
@@ -148,28 +148,28 @@ class ServerModeService : Service() {
 
         private val _isRunning = MutableStateFlow(false)
 
-        /**
-         * Observable server running state.
-         * Emits `true` while the HTTP server is accepting connections, `false` otherwise.
-         */
+         
+
+
+
         val isRunning: StateFlow<Boolean> = _isRunning.asStateFlow()
 
-        /**
-         * Starts the server foreground service.
-         * Safe to call if the service is already running — the server will not restart.
-         *
-         * @param context Application or activity context.
-         */
+         
+
+
+
+
+
         fun start(context: Context) {
             val intent = Intent(context, ServerModeService::class.java)
             context.startForegroundService(intent)
         }
 
-        /**
-         * Stops the server foreground service and shuts down the HTTP server.
-         *
-         * @param context Application or activity context.
-         */
+         
+
+
+
+
         fun stop(context: Context) {
             val intent = Intent(context, ServerModeService::class.java).apply {
                 action = ACTION_STOP

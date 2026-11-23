@@ -1,12 +1,12 @@
 
-/**
- * Bottom-sheet dialog that lets the user toggle which result categories
- * (Songs, Albums, Artists, Genres) are included in the Search panel output.
- * Preference changes are persisted immediately and picked up by [SearchViewModel]
- * through the shared-preference change listener.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
 class SearchFilter : ScopedBottomSheetFragment() {
 
     private lateinit var binding: DialogSearchFilterBinding
@@ -54,9 +54,9 @@ class SearchFilter : ScopedBottomSheetFragment() {
             return SearchFilter().apply { arguments = Bundle() }
         }
 
-        /**
-         * Creates and displays a new [SearchFilter] dialog using [childFragmentManager].
-         */
+         
+
+
         fun FragmentManager.showSearchFilter(): SearchFilter {
             val dialog = newInstance()
             dialog.show(this, TAG)

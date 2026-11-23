@@ -31,7 +31,7 @@ fun InventoryScreenCompose(
             .fillMaxSize()
             .padding(12.dp)
     ) {
-        // Header
+        
 
         Surface(
             modifier = Modifier.fillMaxWidth(),
@@ -115,7 +115,7 @@ fun InventoryScreenCompose(
             }
         }
 
-        //
+        
 
         Spacer(modifier = Modifier.height(16.dp))
         Text(
@@ -140,87 +140,87 @@ fun InventoryScreenCompose(
             }
         }
 
-        // Action Buttons
-        /* Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Button(
-                onClick = { /* Stock Adjustment */ },
-                modifier = Modifier.weight(1f)
-            ) {
-                Icon(Icons.Default.Edit, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Stock Adjustment")
-            }
-            
-            Button(
-                onClick = { /* Purchase Order */ },
-                modifier = Modifier.weight(1f)
-            ) {
-                Icon(Icons.Default.ShoppingCart, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Purchase Order")
-            }
-        }
         
-        Spacer(modifier = Modifier.height(16.dp))*/
+         
 
-        // Stock Alerts
-        /*   Text(
-            text = "Stock Alerts",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
-        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         
-        Spacer(modifier = Modifier.height(8.dp))
+         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(stockAlerts) { alert ->
-                StockAlertCardCompose(
-                    alert = alert,
-                    onAcknowledge = { viewModel.acknowledgeAlert(alert) }
-                )
-            }
-        }
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        // Recent Adjustments
-        Text(
-            text = "Recent Adjustments",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
-        )
-        
-        Spacer(modifier = Modifier.height(8.dp))
-        
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(recentAdjustments) { adjustment ->
-                AdjustmentCardCompose(adjustment = adjustment)
-            }
-        }
-        */
-        // Error message
         errorMessage?.let { message ->
             LaunchedEffect(message) {
-                // Show error message
+                
             }
 
     }
         
-        /*if (isLoading) {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }*/
+         
+
+
+
+
+
+
+
 
         if (showProductDialogUpdate && productToEdit != null) {
             ProductFormDialog(
@@ -228,11 +228,11 @@ fun InventoryScreenCompose(
                 onDismiss = { showProductDialogUpdate = false },
                 onSave = { product ->
                     viewModel.updateProduct(product)
-                    // Aquí guardas el producto, por ejemplo en un ViewModel o lista
+                    
                     Log.d("Products", "Producto actualizado: $product")
                     showProductDialogUpdate = false
                 },
-                initialProduct = productToEdit, // null porque es creación
+                initialProduct = productToEdit, 
                 categories = categories
             )
         }
@@ -286,7 +286,7 @@ fun StockAlertCard(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = alert.productId, // TODO: Fetch product name from Product entity
+                    text = alert.productId, 
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -329,7 +329,7 @@ fun AdjustmentCard(adjustment: InventoryAdjustment) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = adjustment.productId, // TODO: Fetch product name from Product entity
+                    text = adjustment.productId, 
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -347,7 +347,7 @@ fun AdjustmentCard(adjustment: InventoryAdjustment) {
     }
 }
 
-// StockAlert data class is defined in data.model package
+
 
 @Composable
 fun StockAlertCardCompose(
@@ -368,7 +368,7 @@ fun StockAlertCardCompose(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = alert.productId, // TODO: Fetch product name from Product entity
+                    text = alert.productId, 
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -419,7 +419,7 @@ fun ModernProductCard(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Product avatar/icon
+            
             Surface(
                 modifier = Modifier.size(64.dp),
                 shape = MaterialTheme.shapes.large,
@@ -435,7 +435,7 @@ fun ModernProductCard(
                 }
             }
 
-            // Product information
+            
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -464,7 +464,7 @@ fun ModernProductCard(
                         fontWeight = FontWeight.Bold
                     )
 
-                    // Stock indicator
+                    
                     Surface(
                         shape = MaterialTheme.shapes.small,
                         color = if (product.stockQuantity < product.minStockLevel) {
@@ -495,18 +495,18 @@ fun ModernProductCard(
                 }
             }
 
-            // Modern action buttons with proper scaling
+            
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.End
             ) {
-                // Primary action - Add to cart
+                
 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    // Edit button
+                    
                     FilledTonalButton(
 
                         onClick = onEdit,
@@ -532,4 +532,4 @@ fun ModernProductCard(
 
 }
 
-// InventoryAdjustment data class is defined in data.model package
+

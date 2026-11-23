@@ -1,64 +1,64 @@
 
-/**
- * Base fragment shared by all page panels:
- * [com.appinitdev.musicpro.ui.pages.AlbumPage], [com.appinitdev.musicpro.ui.pages.ArtistPage],
- * [com.appinitdev.musicpro.ui.pages.GenrePage], [com.appinitdev.musicpro.ui.pages.FolderPage],
- * [com.appinitdev.musicpro.ui.pages.YearPage], and [com.appinitdev.musicpro.ui.pages.PlaylistPage].
- *
- * Centralizes the [com.appinitdev.musicpro.adapters.ui.page.PageAdapter] lifecycle,
- * [com.appinitdev.musicpro.decorations.itemdecorations.PageSpacingItemDecoration] setup,
- * and the common [com.appinitdev.musicpro.callbacks.GeneralAdapterCallbacks] (song playback,
- * long-click menu, play/shuffle buttons, and cross-page navigation to artist/album/genre pages).
- *
- * Subclasses are responsible for:
- * - Inflating and exposing their binding's [androidx.recyclerview.widget.RecyclerView] via [pageRecyclerView].
- * - Supplying the correct [com.appinitdev.musicpro.adapters.ui.page.PageAdapter.PageType] via [pageType].
- * - Calling [collectPageData] in [onViewCreated] with their ViewModel's [kotlinx.coroutines.flow.StateFlow].
- * - Implementing [onMenuClicked] to display the page-specific overflow popup.
- * - Implementing [resortPageData] to trigger a re-sort on the page's ViewModel.
- *
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 abstract class BasePageFragment : MediaFragment() {
 
-    /** The [com.appinitdev.musicpro.adapters.ui.page.PageAdapter] backing the page's RecyclerView. Cleared automatically in [onDestroyView]. */
+     
     protected var pageAdapter: PageAdapter? = null
 
-    /**
-     * The [androidx.recyclerview.widget.RecyclerView] rendered by this page. Typically, sourced
-     * directly from the fragment's view binding after inflation.
-     */
+     
+
+
+
     protected abstract val pageRecyclerView: RecyclerView
 
-    /**
-     * Identifies the specific page type and supplies the model needed to build the
-     * [PageAdapter] header and sections.
-     */
+     
+
+
+
     protected abstract val pageType: PageAdapter.PageType
 
-    /**
-     * Called when the user taps the overflow menu button in the page header.
-     * Each subclass shows its own popup with the appropriate action items.
-     *
-     * @param view The anchor [android.view.View] for the popup.
-     */
+     
+
+
+
+
+
     protected abstract fun onMenuClicked(view: View)
 
-    /**
-     * Called exactly once, right after [pageAdapter] is first created and attached to the
-     * RecyclerView. Subclasses can override this to push additional data into the adapter
-     * that wasn't available when the adapter was constructed — for example, a remotely
-     * fetched artist info block that may have arrived before the adapter existed.
-     *
-     * The default implementation does nothing.
-     */
+     
+
+
+
+
+
+
+
     protected open fun onPageAdapterCreated() = Unit
 
-    /**
-     * Called when a page sort preference changes. Each subclass delegates to its
-     * ViewModel's [resort][com.appinitdev.musicpro.viewmodels.viewer.AlbumViewerViewModel.resort]
-     * method so that the song list is re-ordered without an additional database trip.
-     */
+     
+
+
+
+
     protected abstract fun resortPageData()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,14 +79,14 @@ abstract class BasePageFragment : MediaFragment() {
         }
     }
 
-    /**
-     * Collects [com.appinitdev.musicpro.repository.models.PageData] emissions from [dataFlow] on
-     * the [androidx.lifecycle.Lifecycle.State.CREATED] lifecycle and forwards each non-null
-     * value to [onPageData]. Call this once from [onViewCreated], passing your ViewModel's
-     * data [kotlinx.coroutines.flow.StateFlow].
-     *
-     * @param dataFlow A lambda returning the [kotlinx.coroutines.flow.StateFlow] to observe.
-     */
+     
+
+
+
+
+
+
+
     protected fun collectPageData(dataFlow: () -> StateFlow<PageData?>) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -97,13 +97,13 @@ abstract class BasePageFragment : MediaFragment() {
         }
     }
 
-    /**
-     * Applies [com.appinitdev.musicpro.decorations.itemdecorations.PageSpacingItemDecoration]
-     * (only once, guarded by class-type check), creates or updates the [PageAdapter], and
-     * starts the shared-element transition. Invoked for every new [PageData] emission.
-     *
-     * @param data The latest [PageData] with songs, albums, artists, and genres.
-     */
+     
+
+
+
+
+
+
     private fun onPageData(data: PageData) {
         val horPad = resources.getDimensionPixelSize(R.dimen.padding_10)
         pageRecyclerView.addItemDecorationSafely(
@@ -124,20 +124,20 @@ abstract class BasePageFragment : MediaFragment() {
         requireView().startTransitionOnPreDraw()
     }
 
-    /**
-     * Called when the user taps the sort button. Defaults to opening [PageSortDialog]
-     * with the current page's type key. Subclasses like PlaylistPage can override this
-     * to show a per-playlist sort dialog that persists the preference to the database
-     * instead of using the shared global sort preference.
-     */
+     
+
+
+
+
+
     protected open fun onSortDialogRequested(view: View) {
         childFragmentManager.showPageSortDialog(resolvePageTypeKey())
     }
 
-    /**
-     * Returns the [PageSort] page-type string constant that matches the current [pageType].
-     * Used when opening the [com.appinitdev.musicpro.dialogs.pages.PageSortDialog].
-     */
+     
+
+
+
     private fun resolvePageTypeKey(): String {
         return when (pageType) {
             is PageAdapter.PageType.AlbumPage -> PageSort.PAGE_TYPE_ALBUM
@@ -150,12 +150,12 @@ abstract class BasePageFragment : MediaFragment() {
         }
     }
 
-    /**
-     * Registers all shared [com.appinitdev.musicpro.callbacks.GeneralAdapterCallbacks] on the
-     * [PageAdapter]. Navigation callbacks (artist, album, genre) and playback callbacks
-     * (song click, play, shuffle) are identical across all page types. The menu callback
-     * delegates to [onMenuClicked]; the sort callback opens [com.appinitdev.musicpro.dialogs.pages.PageSortDialog].
-     */
+     
+
+
+
+
+
     private fun setupAdapterCallbacks() {
         pageAdapter?.setArtistAdapterListener(object : GeneralAdapterCallbacks {
             override fun onSongClicked(songs: MutableList<Audio>, position: Int, view: View) {

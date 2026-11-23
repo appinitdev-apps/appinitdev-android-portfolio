@@ -1,8 +1,8 @@
 
-/**
- * WorkManager worker that performs the auto backup operation.
- * It retrieves the backup path from settings and calls BackupManager to perform the backup.
- */
+ 
+
+
+
 class AutoBackupWorker(
     private val context: Context,
     private val backupManager: BackupManager,
@@ -28,7 +28,7 @@ class AutoBackupWorker(
             val backupDirUri = backupPath.toUri()
             val backupDir = DocumentFile.fromTreeUri(context, backupDirUri)
             if (backupDir == null || !backupDir.isDirectory) {
-                // the directory was probably deleted
+                
                 return Result.failure()
             }
 

@@ -1,5 +1,5 @@
 
-// Delegado para crear DataStore
+
 val Context.dataStore by preferencesDataStore(name = "settings")
 
 object BackgroundPrefs {
@@ -8,7 +8,7 @@ object BackgroundPrefs {
     suspend fun saveImage(context: Context, uri: Uri) {
         val dir = context.filesDir
 
-        // 🔴 Elimina todas las imágenes anteriores que empiecen con "background_"
+        
         dir.listFiles()?.forEach { file ->
             if (file.name.startsWith("background_") && file.isFile) {
                 file.delete()
@@ -24,7 +24,7 @@ object BackgroundPrefs {
     }
     suspend fun deleteImage(context: Context) {
 
-        // 🟢 Limpiar la preferencia
+        
         context.dataStore.edit { prefsEdit ->
             prefsEdit.remove(KEY_BACKGROUND)
             prefsEdit.remove(KEY_COLOR)
@@ -39,11 +39,11 @@ object BackgroundPrefs {
 
     suspend fun setColor(context: Context, color: Color) {
         val hex = try {
-            // Convertir a #AARRGGBB seguro
+            
             String.format("#%08X", color.toArgb())
         } catch (e: Exception) {
             Log.e("setColor", e.toString())
-            "#FF888888" // valor por defecto seguro
+            "#FF888888" 
         }
 
         context.dataStore.edit { prefs ->

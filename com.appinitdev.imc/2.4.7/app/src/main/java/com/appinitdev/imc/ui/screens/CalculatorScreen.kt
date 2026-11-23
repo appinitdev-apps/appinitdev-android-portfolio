@@ -35,7 +35,7 @@ fun CalculatorScreen(
         } else null
     }
 
-    // Initial Defaults by Category or Last Record
+    
     val defaultHeight = when (category.id) {
         1 -> 65.0
         2 -> 95.0
@@ -87,7 +87,7 @@ fun CalculatorScreen(
                     }
                 },
                 actions = {
-                    // Unit System Toggle Pill (kg/cm <-> lbs/in)
+                    
                     Surface(
                         shape = RoundedCornerShape(20.dp),
                         color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.2f),
@@ -128,7 +128,7 @@ fun CalculatorScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Unified Header Profile Card (Category Avatar + Age Dropdown + Gender)
+                
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
@@ -167,7 +167,7 @@ fun CalculatorScreen(
                             }
                         }
 
-                        // Sub-option Age Dropdown Selector if available
+                        
                         if (!subOptions.isNullOrEmpty()) {
                             Box(modifier = Modifier.fillMaxWidth()) {
                                 Surface(
@@ -215,7 +215,7 @@ fun CalculatorScreen(
                             }
                         }
 
-                        // Gender Selector Pills
+                        
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -266,7 +266,7 @@ fun CalculatorScreen(
                     }
                 }
 
-                // Interactive Ruler Picker for Height
+                
                 InteractiveRulerPicker(
                     title = stringResource(id = R.string.estatura),
                     value = if (unitSystem == UnitSystem.METRIC) heightCm else BmiCalculatorEngine.cmToInches(heightCm),
@@ -279,7 +279,7 @@ fun CalculatorScreen(
                     accentColor = MaterialTheme.colorScheme.primary
                 )
 
-                // Interactive Ruler Picker for Weight
+                
                 InteractiveRulerPicker(
                     title = stringResource(id = R.string.peso),
                     value = if (unitSystem == UnitSystem.METRIC) weightKg else BmiCalculatorEngine.kgToLbs(weightKg),
@@ -292,7 +292,7 @@ fun CalculatorScreen(
                     accentColor = Color(0xFF00CEC9)
                 )
 
-                // Calculate Action Button
+                
                 Button(
                     onClick = {
                         val result = BmiCalculatorEngine.calculate(

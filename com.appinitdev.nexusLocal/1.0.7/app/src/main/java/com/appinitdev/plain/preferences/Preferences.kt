@@ -1,5 +1,5 @@
 
-// ── Sort-by preferences (FileSortBy depends on android.provider.MediaStore) ──
+
 
 abstract class BaseSortByPreference(
     val prefix: String,
@@ -25,7 +25,7 @@ object DocSortByPreference : BaseSortByPreference("doc")
 object FileSortByPreference : BaseSortByPreference("file", FileSortBy.NAME_ASC)
 object PackageSortByPreference : BaseSortByPreference("pkg", FileSortBy.NAME_ASC)
 
-// ── AudioPlaylistPreference (DPlaylistAudio depends on Parcelable) ────────────
+
 
 object AudioPlaylistPreference : BasePreference<String>() {
     override val default = ""
@@ -57,7 +57,7 @@ object AudioPlaylistPreference : BasePreference<String>() {
     }
 }
 
-// ── HomeFeaturesPreference (AppFeatureType is Android-specific) ───────────────
+
 
 object HomeFeaturesPreference : BasePreference<String>() {
     private const val SEPARATOR = "|"
@@ -73,7 +73,7 @@ object HomeFeaturesPreference : BasePreference<String>() {
     fun formatList(list: List<String>): String = list.joinToString(SEPARATOR)
 }
 
-// ── HomeSectionCollapsedPreference ────────────────────────────────────────────
+
 
 object HomeSectionCollapsedPreference : BasePreference<String>() {
     override val default = ""

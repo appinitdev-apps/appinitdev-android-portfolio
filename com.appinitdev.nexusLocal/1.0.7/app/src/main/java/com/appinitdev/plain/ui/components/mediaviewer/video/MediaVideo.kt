@@ -119,7 +119,7 @@ fun MediaVideo(
                 TempData.videoPlayProgressMap[mediaId] = pos
                 coIO { progressDao.upsert(DVideoPlayProgress(mediaId, pos, TimeHelper.now())) }
             }
-            focusManager.abandonFocus() // unregisters listener before player.release() — safe, no callbacks after this
+            focusManager.abandonFocus() 
             player.stop()
             player.release()
             mediaSession?.release()

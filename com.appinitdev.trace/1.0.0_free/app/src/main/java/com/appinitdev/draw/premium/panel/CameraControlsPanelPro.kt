@@ -54,7 +54,7 @@ fun CameraControlsPanelPro(
     var showAnimeDialog by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableStateOf(initialTab) }
 
-    // Parámetros internos para el slider de boceto
+    
     var sketchLineSize by remember { mutableFloatStateOf(1.0f) }
     var sketchThreshold by remember { mutableFloatStateOf(0.70f) }
 
@@ -63,7 +63,7 @@ fun CameraControlsPanelPro(
     val activeColor = Color(0xFFFF4081)
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // --- Capa Detectora de Toques fuera del panel ---
+        
         if (selectedTab != -1) {
             Box(
                 modifier = Modifier
@@ -86,7 +86,7 @@ fun CameraControlsPanelPro(
                 .padding(vertical = 24.dp, horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // --- 1. Zona de Contenido Expandible (Izquierda de los iconos) ---
+            
             AnimatedVisibility(
                 visible = selectedTab != -1,
                 enter = expandHorizontally(expandFrom = Alignment.End),
@@ -137,7 +137,7 @@ fun CameraControlsPanelPro(
 
                         Box(modifier = Modifier.wrapContentHeight()) {
                             when (selectedTab) {
-                                0 -> { // OPACIDAD
+                                0 -> { 
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         modifier = Modifier
@@ -174,7 +174,7 @@ fun CameraControlsPanelPro(
                                     }
                                 }
 
-                                1 -> { // IMAGEN / GALERIA
+                                1 -> { 
                                     Column(
                                         modifier = Modifier.verticalScroll(rememberScrollState()),
                                         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -195,7 +195,7 @@ fun CameraControlsPanelPro(
 
                                         HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
 
-                                        // Herramientas de Transformación
+                                        
                                         Row(
                                             modifier = Modifier.fillMaxWidth(),
                                             horizontalArrangement = Arrangement.SpaceEvenly
@@ -218,7 +218,7 @@ fun CameraControlsPanelPro(
 
                                         HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
 
-                                        // --- SECCIÓN MAYA (GRID) ---
+                                        
                                         Text(
                                             text = stringResource(R.string.malla_de_referencia),
                                             fontSize = 13.sp,
@@ -277,7 +277,7 @@ fun CameraControlsPanelPro(
                                     }
                                 }
 
-                                2 -> { // CAMARA Y LINTERNA
+                                2 -> { 
                                     Column(
                                         modifier = Modifier.verticalScroll(rememberScrollState()),
                                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -287,12 +287,12 @@ fun CameraControlsPanelPro(
                                             verticalArrangement = Arrangement.spacedBy(20.dp),
                                             horizontalAlignment = Alignment.CenterHorizontally
                                         ) {
-                                            // Fila 1
+                                            
                                             Row(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 horizontalArrangement = Arrangement.SpaceEvenly
                                             ) {
-                                                // Sección Cámara
+                                                
                                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                                     IconButton(
                                                         onClick = onToggleCamera,
@@ -325,7 +325,7 @@ fun CameraControlsPanelPro(
                                                     )
                                                 }
 
-                                                // Sección Flash
+                                                
                                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                                     FilledTonalIconButton(
                                                         onClick = onToggleFlash,
@@ -351,12 +351,12 @@ fun CameraControlsPanelPro(
                                                 }
                                             }
 
-                                            // Fila 2
+                                            
                                             Row(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 horizontalArrangement = Arrangement.SpaceEvenly
                                             ) {
-                                                // Sección Capturar
+                                                
                                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                                     FilledTonalIconButton(
                                                         onClick = onCapture,
@@ -372,7 +372,7 @@ fun CameraControlsPanelPro(
                                                     Text(stringResource(R.string.capturar), fontSize = 11.sp)
                                                 }
 
-                                                // Sección Cambiar Modo
+                                                
                                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                                     FilledTonalIconButton(
                                                         onClick = onChangeMode,
@@ -388,7 +388,7 @@ fun CameraControlsPanelPro(
                                                     Text(stringResource(R.string.modo), fontSize = 11.sp)
                                                 }
 
-                                                // Sección Time-Lapse
+                                                
                                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                                     FilledTonalIconButton(
                                                         onClick = onToggleTimeLapse,
@@ -405,12 +405,12 @@ fun CameraControlsPanelPro(
                                                 }
                                             }
 
-                                            // Fila 3 - Herramientas Avanzadas
+                                            
                                             Row(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 horizontalArrangement = Arrangement.SpaceEvenly
                                             ) {
-                                                // Sección PiP
+                                                
                                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                                     FilledTonalIconButton(
                                                         onClick = onTogglePip,
@@ -426,7 +426,7 @@ fun CameraControlsPanelPro(
                                                     Text(stringResource(R.string.pip), fontSize = 11.sp)
                                                 }
 
-                                                // Sección World Lock (AR)
+                                                
                                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                                     FilledTonalIconButton(
                                                         onClick = onToggleWorldLock,
@@ -442,7 +442,7 @@ fun CameraControlsPanelPro(
                                                     Text(stringResource(R.string.ar_lock), fontSize = 11.sp)
                                                 }
 
-                                                // Sección Puntos de Referencia (Punto 4: Toggleable & Visually Active)
+                                                
                                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                                     Box(contentAlignment = Alignment.TopEnd) {
                                                         FilledTonalIconButton(
@@ -503,7 +503,7 @@ fun CameraControlsPanelPro(
                                                 }
                                             }
                                             
-                                            // Fila 4 - Paleta
+                                            
                                             Row(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 horizontalArrangement = Arrangement.Center
@@ -524,12 +524,12 @@ fun CameraControlsPanelPro(
                                     }
                                 }
 
-                                4 -> { // FILTROS - Diseño Mejorado (Punto 1, 2, 3)
+                                4 -> { 
                                     Column(
                                         modifier = Modifier.verticalScroll(rememberScrollState()),
                                         verticalArrangement = Arrangement.spacedBy(10.dp)
                                     ) {
-                                        // Botón Restaurar si hay filtro activo
+                                        
                                         if (currentFilter != "NONE") {
                                             Button(
                                                 onClick = {
@@ -548,7 +548,7 @@ fun CameraControlsPanelPro(
                                             }
                                         }
 
-                                        // 1. BOCETO
+                                        
                                         FilterModernCard(
                                             title = stringResource(R.string.boceto),
                                             subtitle = "Convierte a boceto lineal",
@@ -613,7 +613,7 @@ fun CameraControlsPanelPro(
                                             }
                                         }
 
-                                        // 2. QUITAR FONDO
+                                        
                                         if (currentFilter != "SKETCH") {
                                             FilterModernCard(
                                                 title = stringResource(R.string.quitar_fondo),
@@ -627,7 +627,7 @@ fun CameraControlsPanelPro(
                                             )
                                         }
 
-                                        // 3. COLOR PENCIL (Configurable: Azul, Rojo, Verde - Punto 2)
+                                        
                                         FilterModernCard(
                                             title = stringResource(R.string.pencil_color),
                                             subtitle = "Trazo en Azul, Rojo o Verde",
@@ -682,7 +682,7 @@ fun CameraControlsPanelPro(
                                             }
                                         }
 
-                                        // 4. POSTERIZACION (Ajustable - Punto 3)
+                                        
                                         FilterModernCard(
                                             title = stringResource(R.string.posterizacion),
                                             subtitle = "Reduce gama de colores",
@@ -744,7 +744,7 @@ fun CameraControlsPanelPro(
                                             }
                                         }
 
-                                        // 5. GAMMA (Ajustable - Punto 3)
+                                        
                                         FilterModernCard(
                                             title = stringResource(R.string.ajuste_de_gamma),
                                             subtitle = "Modifica curva de brillo",
@@ -806,7 +806,7 @@ fun CameraControlsPanelPro(
                                             }
                                         }
 
-                                        // 6. SHARPEN (Ajustable - Punto 3)
+                                        
                                         FilterModernCard(
                                             title = stringResource(R.string.sharpen),
                                             subtitle = "Resalta nitidez y bordes",
@@ -868,7 +868,7 @@ fun CameraControlsPanelPro(
                                             }
                                         }
 
-                                        // 7. ESCALA DE GRISES (Ajustable)
+                                        
                                         FilterModernCard(
                                             title = stringResource(R.string.escala_de_grises),
                                             subtitle = "Efecto blanco y negro ajustable",
@@ -951,7 +951,7 @@ fun CameraControlsPanelPro(
                 }
             }
 
-            // --- 2. Barra Vertical de Iconos (Navegación Fija) ---
+            
             Surface(
                 modifier = Modifier
                     .width(64.dp)

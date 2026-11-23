@@ -14,7 +14,7 @@ data class Medium(
     @ColumnInfo(name = "deleted_ts") var deletedTS: Long,
     @ColumnInfo(name = "media_store_id") var mediaStoreId: Long,
 
-    @Ignore var gridPosition: Int = 0   // used at grid view decoration at Grouping enabled
+    @Ignore var gridPosition: Int = 0   
 ) : Serializable, ThumbnailItem() {
 
     constructor() : this(null, "", "", "", 0L, 0L, 0L, 0, 0, false, 0L, 0L, 0)
@@ -39,7 +39,7 @@ data class Medium(
 
     fun isApng() = name.isApng()
 
-    fun isAvif() = name.endsWith(".avif", true) // switch to commons extension.
+    fun isAvif() = name.endsWith(".avif", true) 
 
     fun isHidden() = name.startsWith('.')
 

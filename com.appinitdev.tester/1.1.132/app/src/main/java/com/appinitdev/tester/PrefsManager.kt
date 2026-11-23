@@ -10,7 +10,7 @@ public class PrefsManager(private val context: Context) {
         prefs[SHOW_FEATURES_KEY] ?: true
     }
 
-    // ESTA ES LA FUNCIÓN QUE DEBE EXISTIR:
+    
     suspend fun markFeaturesAsRead() {
         context.dataStore.edit { prefs ->
             prefs[SHOW_FEATURES_KEY] = false

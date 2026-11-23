@@ -27,7 +27,7 @@ class ProductViewModel @Inject constructor(
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
 
-    private val _selectedMode = MutableStateFlow(1) // valor inicial
+    private val _selectedMode = MutableStateFlow(1) 
     val selectedMode: StateFlow<Int> = _selectedMode.asStateFlow()
 
 
@@ -40,66 +40,66 @@ class ProductViewModel @Inject constructor(
             }
         }
 
-//
-//       val product1 = createNewProduct(
-//            name = "Coca Cola 500ml",
-//            sku = "CC500",
-//            price = BigDecimal("15.50"),
-//            categoryId = "Beverages",
-//            barcode = "5012345678900",
-//            description = "Refresco de cola",
-//            stockQuantity = 50,
-//            minStockLevel = 5
-//        )
-//
-//        val product2 = createNewProduct(
-//            name = "Pan Baguette",
-//            sku = "PB100",
-//            price = BigDecimal("12.00"),
-//            categoryId = "Bakery",
-//            barcode = "2345678901234",
-//            description = "Pan francés artesanal",
-//            stockQuantity = 30,
-//            minStockLevel = 10
-//        )
-//
-//        val product3 = createNewProduct(
-//            name = "Leche Entera 1L",
-//            sku = "LE1L",
-//            price = BigDecimal("22.75"),
-//            categoryId = "Dairy",
-//            barcode = "3456789012345",
-//            description = "Leche fresca entera",
-//            stockQuantity = 40,
-//            minStockLevel = 8
-//        )
-//
-//        val product4 = createNewProduct(
-//            name = "Huevos de Gallina x12",
-//            sku = "H12",
-//            price = BigDecimal("35.00"),
-//            categoryId = "Eggs",
-//            barcode = "4567890123456",
-//            description = "Caja de 12 huevos frescos",
-//            stockQuantity = 60,
-//            minStockLevel = 12
-//        )
-//
-//        val product5 = createNewProduct(
-//            name = "Cereal Corn Flakes 500g",
-//            sku = "CF500",
-//            price = BigDecimal("48.90"),
-//            categoryId = "Cereals",
-//            barcode = "5678901234567",
-//            description = "Cereal de maíz clásico",
-//            stockQuantity = 25,
-//            minStockLevel = 5
-//        )
-//        addProduct(product1)
-//        addProduct(product2)
-//        addProduct(product3)
-//        addProduct(product4)
-//        addProduct(product5)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     }
@@ -225,7 +225,7 @@ class ProductViewModel @Inject constructor(
             try {
                 val product = productRepository.getProductByBarcode(barcode)
                 if (product != null) {
-                    // Handle found product (e.g., add to cart in POS)
+                    
                     _errorMessage.value = "Product found: ${product.name}"
                 } else {
                     _errorMessage.value = "Product not found for barcode: $barcode"
@@ -286,7 +286,7 @@ class ProductViewModel @Inject constructor(
         _errorMessage.value = null
     }
 
-    // Helper function to create a new product
+    
     fun createNewProduct(
         name: String,
         sku: String,

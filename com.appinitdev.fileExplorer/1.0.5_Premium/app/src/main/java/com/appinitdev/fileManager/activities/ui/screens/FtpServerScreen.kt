@@ -4,14 +4,14 @@
 fun FtpServerScreen(onBack: () -> Unit) {
     val context = LocalContext.current
 
-    // Estados Reactivos de la UI vinculados al Backend
+    
     var isServerRunning by remember { mutableStateOf(FtpService.isRunning) }
     var ipAddress by remember { mutableStateOf(FtpService.obtenerIpLocal(context)) }
     var currentUsername by remember { mutableStateOf(FtpService.usuarioActual) }
     var currentPassword by remember { mutableStateOf(FtpService.contrasenaActual) }
     var currentPort by remember { mutableStateOf(FtpService.puertoActual) }
 
-    // Estado de Permisos
+    
     var hasStoragePermission by remember {
         mutableStateOf(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -46,7 +46,7 @@ fun FtpServerScreen(onBack: () -> Unit) {
         }
     }
 
-    // Solución de Colores M3: Uso de .tertiary en lugar del inexistente .warning
+    
     val statusColor by animateColorAsState(
         targetValue = when {
             !hasStoragePermission || !hasNotificationPermission -> MaterialTheme.colorScheme.tertiary
@@ -64,18 +64,18 @@ fun FtpServerScreen(onBack: () -> Unit) {
     )
 
 
-    // Animación de respiración (escala) para el icono central cuando está conectado
+    
     val infiniteTransition = rememberInfiniteTransition(label = "IconAnimation")
     val iconScale by infiniteTransition.animateFloat(
         initialValue = 1f,
-        targetValue = if (isServerRunning) 1.2f else 1f, // Agranda un 20% si está activo
+        targetValue = if (isServerRunning) 1.2f else 1f, 
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 1200, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "IconScale"
     )
-    // Opcional: Animación de parpadeo (alfa) para que brille
+    
     val iconAlpha by infiniteTransition.animateFloat(
         initialValue = 0.6f,
         targetValue = if (isServerRunning) 1f else 1f,
@@ -112,7 +112,7 @@ fun FtpServerScreen(onBack: () -> Unit) {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
 
-            // ================= VISUALIZADOR CENTRAL (ICONOS COMPILABLES) =================
+            
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(1f),
@@ -135,13 +135,13 @@ fun FtpServerScreen(onBack: () -> Unit) {
                         Icon(
                             imageVector = when {
                                 !hasStoragePermission || !hasNotificationPermission -> Icons.Default.NewReleases
-                                isServerRunning -> Icons.Default.Security // Icono 100% garantizado en M3 core
+                                isServerRunning -> Icons.Default.Security 
                                 else -> Icons.Default.Lock
                             },
                             contentDescription = null,
                             tint = statusColor,
                             modifier = Modifier.size(56.dp).graphicsLayer {
-                                // Aplicamos la animación solo si el servidor está corriendo
+                                
                                 if (isServerRunning) {
                                     scaleX = iconScale
                                     scaleY = iconScale
@@ -175,7 +175,7 @@ fun FtpServerScreen(onBack: () -> Unit) {
                 )
             }
 
-            // ================= TARJETA DE CREDENCIALES (SOLO DEPENDE DE IS_RUNNING) =================
+            
             if (isServerRunning) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -237,7 +237,7 @@ fun FtpServerScreen(onBack: () -> Unit) {
                 Spacer(modifier = Modifier.height(28.dp))
             }
 
-            // ================= BOTÓN DE ACCIÓN CON ASIGNACIÓN INMEDIATA DE ESTADOS =================
+            
             Button(
                 onClick = {
                     if (!hasNotificationPermission && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -254,13 +254,13 @@ fun FtpServerScreen(onBack: () -> Unit) {
 
                     val intent = Intent(context, FtpService::class.java)
                     if (!isServerRunning) {
-                        // 1. Forzamos la creación inmediata de datos en memoria síncrona
+                        
                         FtpService.prepararCredenciales()
 
-                        // 2. Encendemos el servicio backend
+                        
                         context.startForegroundService(intent)
 
-                        // 3. Notificamos a la interfaz de Compose los nuevos datos de inmediato
+                        
                         isServerRunning = true
                         currentUsername = FtpService.usuarioActual
                         currentPassword = FtpService.contrasenaActual

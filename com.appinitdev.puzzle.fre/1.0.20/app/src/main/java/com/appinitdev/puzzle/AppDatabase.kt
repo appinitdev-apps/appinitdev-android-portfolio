@@ -25,7 +25,7 @@ data class PuzzleStatEntity(
     val puzzleId: Int,
     val n: Int,
     val moves: Int,
-    val time: Int, // Segundos
+    val time: Int, 
     val date: Long = System.currentTimeMillis()
 )
 
@@ -55,7 +55,7 @@ interface PuzzleDao {
     @Query("DELETE FROM puzzles WHERE id IN (:ids)")
     suspend fun deleteMultiple(ids: List<Int>)
 
-    // Estadísticas
+    
     @Insert
     suspend fun insertStat(stat: PuzzleStatEntity)
 
@@ -65,7 +65,7 @@ interface PuzzleDao {
     @Query("SELECT * FROM puzzle_stats WHERE puzzleId = :puzzleId ORDER BY date DESC")
     fun getStatsForPuzzle(puzzleId: Int): Flow<List<PuzzleStatEntity>>
 
-    // Progreso
+    
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdateProgress(progress: PuzzleProgressEntity)
 

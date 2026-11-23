@@ -1,10 +1,10 @@
 
-/**
- * HsvBitmapDrawable draws hsv color gradient with hue and saturation on a canvas.
- *
- * @param resources [Resources] to initialize [BitmapDrawable].
- * @param bitmap [Bitmap] to draw on the canvas.
- */
+ 
+
+
+
+
+
 internal class HsvBitmapDrawable constructor(
   resources: Resources,
   bitmap: Bitmap,

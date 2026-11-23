@@ -15,9 +15,9 @@ fun CommunityAppsSection(
     val coroutineScope = rememberCoroutineScope()
 
     var showFilterSheet by remember { mutableStateOf(false) }
-    var sortBy by remember { mutableStateOf("priority") } // "priority", "recent", "reputation", "name"
-    var filterByInstalled by remember { mutableStateOf("all") } // "all", "installed", "not_installed"
-    var quickFilter by remember { mutableStateOf("all") } // "all", "google_group", "paid", "near_20"
+    var sortBy by remember { mutableStateOf("priority") } 
+    var filterByInstalled by remember { mutableStateOf("all") } 
+    var quickFilter by remember { mutableStateOf("all") } 
 
     LaunchedEffect(Unit) {
         viewModel.loadCommunityApps(context)
@@ -153,7 +153,7 @@ fun CommunityAppsSection(
         modifier = Modifier.fillMaxSize()
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // --- CARRUSEL DESTACADOS ---
+            
         if (featuredApps.isNotEmpty() && tabs.getOrNull(pagerState.currentPage)?.first == 0 && searchQuery.isEmpty()) {
             Text(
                 stringResource(R.string.apps_destacadas),
@@ -165,7 +165,7 @@ fun CommunityAppsSection(
             FeaturedCarousel(featuredApps, navController)
         }
 
-        // --- BUSCADOR ---
+        
         Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             OutlinedTextField(
                 value = searchQuery,
@@ -195,7 +195,7 @@ fun CommunityAppsSection(
             }
         }
 
-        // --- FILTROS RÁPIDOS (CHIPS) ---
+        
         Row(
             modifier = Modifier
                 .fillMaxWidth()

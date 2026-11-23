@@ -1,16 +1,16 @@
 
-/**
- * Generic adapter that renders a heterogeneous list of [Preference] items using a distinct
- * view type per [PreferenceType].
- *
- * When [keyword] is non-blank every bound title and summary text view is passed through
- * [searchHighlighter] so matching substrings are highlighted in the current accent color.
- *
- * @param preferences the ordered list of preference items to display.
- * @param keyword     optional search keyword used to highlight matching text; pass an empty
- *                    string (the default) to disable highlighting.
- * @author Hamza417
- */
+ 
+
+
+
+
+
+
+
+
+
+
+
 class GenericPreferencesAdapter(
         private val preferences: List<Preference>,
         private val keyword: String = ""
@@ -101,7 +101,7 @@ class GenericPreferencesAdapter(
 
                 holder.binding.container.setOnClickListener {
                     preference.onPreferenceAction?.invoke(it) {
-                        /* no-op */
+                         
                     }
                 }
 
@@ -141,7 +141,7 @@ class GenericPreferencesAdapter(
                     override fun onProgressChanged(seekbar: FelicitySeekbar, progress: Float, fromUser: Boolean) {
                         if (fromUser) {
                             preference.onPreferenceAction?.invoke(seekbar) {
-                                /* no-op */
+                                 
                             }
                         }
                     }
@@ -160,7 +160,7 @@ class GenericPreferencesAdapter(
 
                 holder.binding.container.setOnClickListener {
                     preference.onPreferenceAction?.invoke(it) {
-                        /* no-op */
+                         
                     }
                 }
 
@@ -178,7 +178,7 @@ class GenericPreferencesAdapter(
 
                 holder.binding.switchToggle.setOnCheckedChangeListener { switch, isChecked ->
                     preference.onPreferenceAction?.invoke(switch) {
-                        /* no-op */
+                         
                     }
                 }
 
@@ -206,7 +206,7 @@ class GenericPreferencesAdapter(
                 holder.binding.buttonGroup.setSelectedIndex(state.selectedIndex, animate = false, notifyListener = false)
 
                 holder.binding.buttonGroup.setOnButtonSelectedListener {
-                    preference.onPreferenceAction?.invoke(holder.binding.buttonGroup) { /* no-op */ }
+                    preference.onPreferenceAction?.invoke(holder.binding.buttonGroup) {   }
                 }
 
                 holder.binding.title.highlight()
@@ -222,7 +222,7 @@ class GenericPreferencesAdapter(
 
                 holder.binding.container.setOnClickListener {
                     preference.onPreferenceAction?.invoke(it) {
-                        /* no-op */
+                         
                     }
                 }
 
@@ -239,7 +239,7 @@ class GenericPreferencesAdapter(
 
                 holder.binding.container.setOnClickListener {
                     preference.onPreferenceAction?.invoke(it) {
-                        /* no-op */
+                         
                     }
                 }
 
@@ -253,7 +253,7 @@ class GenericPreferencesAdapter(
 
                 holder.binding.container.setOnClickListener {
                     preference.onPreferenceAction?.invoke(it) {
-                        /* no-op */
+                         
                     }
                 }
 
@@ -338,10 +338,10 @@ class GenericPreferencesAdapter(
         }
     }
 
-    /**
-     * Applies [searchHighlighter] to this [TextView] using the current [keyword].
-     * Does nothing when [keyword] is blank so the adapter is safe to use without a query.
-     */
+     
+
+
+
     private fun TextView.highlight() {
         if (keyword.isNotBlank()) {
             searchHighlighter(this, keyword)

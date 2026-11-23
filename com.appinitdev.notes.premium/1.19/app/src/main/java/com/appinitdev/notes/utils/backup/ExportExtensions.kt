@@ -321,7 +321,7 @@ fun ContextWrapper.copyDatabase(): Pair<NotallyDatabase, File> {
     val databaseFile = NotallyDatabase.getCurrentDatabaseFile(this)
     val dbFile = File(cacheDir, NotallyDatabase.DATABASE_NAME)
 
-    // Simplemente copiamos la base de datos, sin descifrado
+    
     databaseFile.copyTo(dbFile, overwrite = true)
 
     return Pair(database, dbFile)
@@ -386,7 +386,7 @@ fun WorkManager.scheduleAutoBackup(context: ContextWrapper, periodInDays: Long) 
     try {
         enqueueUniquePeriodicWork(AUTO_BACKUP_WORK_NAME, ExistingPeriodicWorkPolicy.UPDATE, request)
     } catch (e: IllegalStateException) {
-        // only happens in Unit-Tests
+        
         context.log(TAG, "Scheduling auto backup failed", throwable = e)
     }
 }

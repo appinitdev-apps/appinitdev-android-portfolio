@@ -456,9 +456,9 @@ fun PreferenceSeekbarBinding.setupAutoSaveIdleTime(
         }
         addOnChangeListener { _, value, _ ->
             if (value == -1f) {
-                setAlpha(0.6f) // Reduce opacity to make it look disabled
+                setAlpha(0.6f) 
             } else {
-                setAlpha(1f) // Restore normal appearance
+                setAlpha(1f) 
             }
         }
     }

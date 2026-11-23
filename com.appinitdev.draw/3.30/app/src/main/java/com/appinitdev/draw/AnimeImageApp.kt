@@ -8,16 +8,16 @@ fun AnimeImageApp(onImageSelected: (String) -> Unit) {
     val page = remember { mutableStateOf(1) }
     var showDialog by remember { mutableStateOf(false) }
 
-    /*LaunchedEffect(Unit) {
-        coroutineScope.launch {
-            val response = RetrofitInstance.api.searchImages(
-                apiKey = "",
-                query = "anime",
-                page = 5
-            )
-            images.value = response.hits
-        }
-    }*/
+     
+
+
+
+
+
+
+
+
+
     fun loadImages(pageNumber: Int) {
 
         coroutineScope.launch {
@@ -42,19 +42,19 @@ fun AnimeImageApp(onImageSelected: (String) -> Unit) {
 
     Box(
         modifier = Modifier
-            .background(Color(0x4B000000)) // Fondo con color ligeramente transparente
-            .size(50.dp) // Tamaño del botón (ajústalo a tu necesidad)
+            .background(Color(0x4B000000)) 
+            .size(50.dp) 
     ) {
         IconButton(onClick = { showDialog = true }) {
             Icon(
-                imageVector = Icons.Filled.Search, // El ícono de lupa de material design
+                imageVector = Icons.Filled.Search, 
                 contentDescription = "Buscar",
-                tint = Color.White // Color del ícono
+                tint = Color.White 
             )
         }
     }
 
-    // Muestra la galería de imágenes en forma de lista
+    
 
     if (showDialog) {
         ShowGalleryDialog(
@@ -63,13 +63,13 @@ fun AnimeImageApp(onImageSelected: (String) -> Unit) {
             onNextPage = {
                 page.value += 1
                 if (page.value <= 15)
-                    loadImages(page.value)  // Cargar la siguiente página
+                    loadImages(page.value)  
                 else page.value = 1
             },
             onPrevPage = {
-                if (page.value > 1) {  // Evitar que la página sea menor que 1
+                if (page.value > 1) {  
                     page.value -= 1
-                    loadImages(page.value)  // Cargar la página anterior
+                    loadImages(page.value)  
                 }else {
                     page.value =16
                     loadImages(page.value)
@@ -77,7 +77,7 @@ fun AnimeImageApp(onImageSelected: (String) -> Unit) {
                 }
             },
             onImageClick = { url ->
-                // Aquí puedes manejar la URL de la imagen clicada, como mostrarla o hacer otra cosa
+                
                 Log.e("koll", url)
                 onImageSelected(url)
                 showDialog = false
