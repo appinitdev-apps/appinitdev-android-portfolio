@@ -1,0 +1,198 @@
+
+class VolumeKnob : ScopedBottomSheetFragment() {
+
+    private var audioManager: AudioManager? = null
+    private lateinit var binding: DialogVolumeKnobBinding
+
+    /**
+     * Holds the latest target volume index (0..maxVolume). A value of -1 is the
+     * sentinel used before the first rotation event so the collector skips it.
+     *
+     * Using [MutableStateFlow] instead of launching a coroutine per [FelicityKnobListener.onRotate]
+     * call prevents flooding the system with redundant [AudioManager.setStreamVolume] requests:
+     * the collector only processes the latest distinct value, and the main-thread update is a
+     * simple field assignment with no allocation or scheduling overhead.
+     */
+    private val volumeFlow = MutableStateFlow(-1)
+
+    private var volumeListener: VolumeListener? = null
+
+    /** Cached stream maximum so it is not queried inside every rotation callback. */
+    private val maxVolume: Int by lazy {
+        audioManager?.getStreamMaxVolume(AudioManager.STREAM_MUSIC) ?: 15
+    }
+
+    private val volumeObserver by lazy {
+        object : ContentObserver(Handler(Looper.getMainLooper())) {
+            override fun onChange(selfChange: Boolean, uri: Uri?) {
+                super.onChange(selfChange, uri)
+                setVolumeKnobPosition()
+            }
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = DialogVolumeKnobBinding.inflate(inflater, container, false)
+
+        requireActivity().volumeControlStream = AudioManager.STREAM_MUSIC
+        audioManager = requireActivity().getSystemService(Context.AUDIO_SERVICE) as AudioManager?
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Single background collector — only the latest distinct index reaches the audio manager.
+        // Launched on Dispatchers.IO because setStreamVolume is a synchronous binder (IPC) call
+        // that must not block the main thread. Note: flowOn() only shifts upstream operators;
+        // the collect block itself runs on whichever dispatcher the coroutine was launched on.
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            volumeFlow
+                .filter { it >= 0 }
+                .distinctUntilChanged()
+                .collect { index ->
+                    audioManager?.setStreamVolume(AudioManager.STREAM_MUSIC, index, 0)
+                }
+        }
+
+        // Volume Knob
+        setVolumeKnobPosition()
+        binding.volumeKnob.setTickTexts("0", "100")
+        binding.volumeKnob.setListener(object : FelicityKnobListener {
+            override fun onIncrement(value: Float) {
+                Log.d(TAG, "Increment: $value")
+            }
+
+            override fun onRotate(value: Float) {
+                // Map the 0..100 knob value to a stream index and emit — the collector deduplicates
+                // and serializes the actual AudioManager calls on a background thread.
+                volumeFlow.value = ((value / 100.0f) * maxVolume).roundToInt()
+            }
+
+            override fun onUserInteractionStart(value: Float) {
+                requireContext().contentResolver.unregisterContentObserver(volumeObserver)
+            }
+
+            override fun onUserInteractionEnd(value: Float) {
+                postDelayed(delayMillis = 1000) {
+                    requireContext().contentResolver.registerContentObserver(
+                            Settings.System.CONTENT_URI, true, volumeObserver)
+                }
+            }
+        })
+
+        binding.equalizer.setOnClickListener {
+            volumeListener?.onEqualizerClicked().also {
+                dismiss()
+            }
+        }
+
+        // Hardware volume keys
+        dialog?.setOnKeyListener { _, keyCode, event ->
+            when (keyCode) {
+                KeyEvent.KEYCODE_VOLUME_UP -> {
+                    if (event.action == KeyEvent.ACTION_DOWN) {
+                        raiseByFivePercent()
+                    }
+
+                    true
+                }
+                KeyEvent.KEYCODE_VOLUME_DOWN -> {
+                    if (event.action == KeyEvent.ACTION_DOWN) {
+                        lowerByFivePercent()
+                    }
+
+                    true
+                }
+
+                else -> false
+            }
+        }
+    }
+
+    private fun withUnregisteredVolumeObserver(action: () -> Unit) {
+        requireContext().contentResolver.unregisterContentObserver(volumeObserver)
+        try {
+            action()
+        } finally {
+            postDelayed(delayMillis = 1000) {
+                requireContext().contentResolver.registerContentObserver(
+                        Settings.System.CONTENT_URI, true, volumeObserver)
+            }
+        }
+    }
+
+    private fun raiseByFivePercent() {
+        withUnregisteredVolumeObserver {
+            val currentVolume = audioManager?.getStreamVolume(AudioManager.STREAM_MUSIC)?.toFloat() ?: 0f
+            val maxVolume = audioManager?.getStreamMaxVolume(AudioManager.STREAM_MUSIC)?.toFloat() ?: 1f
+            val newVolume = (currentVolume + 0.05f * maxVolume).coerceAtMost(maxVolume)
+            audioManager?.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume.roundToInt(), 0)
+            setVolumeKnobPosition()
+        }
+    }
+
+    private fun lowerByFivePercent() {
+        withUnregisteredVolumeObserver {
+            val currentVolume = audioManager?.getStreamVolume(AudioManager.STREAM_MUSIC)?.toFloat() ?: 0f
+            val maxVolume = audioManager?.getStreamMaxVolume(AudioManager.STREAM_MUSIC)?.toFloat() ?: 1f
+            val newVolume = (currentVolume - 0.05f * maxVolume).coerceAtLeast(0f)
+            audioManager?.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume.roundToInt(), 0)
+            setVolumeKnobPosition()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requireContext().contentResolver.registerContentObserver(
+                Settings.System.CONTENT_URI, true, volumeObserver)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requireContext().contentResolver.unregisterContentObserver(volumeObserver)
+    }
+
+    private fun setVolumeKnobPosition() {
+        val current = audioManager?.getStreamVolume(AudioManager.STREAM_MUSIC)?.toFloat() ?: 0f
+        val max = audioManager?.getStreamMaxVolume(AudioManager.STREAM_MUSIC)?.toFloat() ?: 1f
+        binding.volumeKnob.setKnobPosition((current / max) * 100f)
+    }
+
+    override fun onDestroy() {
+        handler.removeCallbacksAndMessages(null)
+        super.onDestroy()
+    }
+
+    fun setVolumeListener(listener: VolumeListener) {
+        this.volumeListener = listener
+    }
+
+    companion object {
+
+        fun newInstance(): VolumeKnob {
+            val fragment = VolumeKnob()
+            fragment.arguments = Bundle()
+            return fragment
+        }
+
+        fun AppCompatActivity.showVolumeKnob(): VolumeKnob {
+            if (!supportFragmentManager.isVolumeKnobShowing()) {
+                val dialog = newInstance()
+                dialog.show(supportFragmentManager, TAG)
+                return dialog
+            }
+            return supportFragmentManager.findFragmentByTag(TAG) as VolumeKnob
+        }
+
+        private fun FragmentManager.isVolumeKnobShowing(): Boolean = findFragmentByTag(TAG) != null
+
+        interface VolumeListener {
+
+            fun onEqualizerClicked()
+        }
+
+        const val TAG = "VolumeKnob"
+    }
+}

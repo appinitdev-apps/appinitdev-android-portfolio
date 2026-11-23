@@ -1,0 +1,53 @@
+
+class GenreSort : ScopedBottomSheetFragment() {
+
+    private lateinit var binding: DialogSortGenresBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = DialogSortGenresBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        when (GenresPreferences.getSortStyle()) {
+            CommonPreferencesConstants.BY_NAME -> binding.name.isChecked = true
+        }
+
+        binding.normal.isChecked = GenresPreferences.getSortOrder() == CommonPreferencesConstants.ASCENDING
+        binding.reversed.isChecked = GenresPreferences.getSortOrder() == CommonPreferencesConstants.DESCENDING
+
+        binding.sortByChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
+            when (checkedIds.firstOrNull()) {
+                binding.name.id -> GenresPreferences.setSortStyle(CommonPreferencesConstants.BY_NAME)
+            }
+        }
+
+        binding.sortingStyleChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
+            when (checkedIds.firstOrNull()) {
+                binding.normal.id -> GenresPreferences.setSortOrder(CommonPreferencesConstants.ASCENDING)
+                binding.reversed.id -> GenresPreferences.setSortOrder(CommonPreferencesConstants.DESCENDING)
+            }
+        }
+    }
+
+    companion object {
+        const val TAG = "GenresSort"
+
+        fun newInstance(): GenreSort {
+            val args = Bundle()
+            val fragment = GenreSort()
+            fragment.arguments = args
+            return fragment
+        }
+
+        fun FragmentManager.showGenresSortDialog(): GenreSort {
+            val fragment = findFragmentByTag(TAG) as? GenreSort ?: newInstance()
+            if (!fragment.isAdded) {
+                fragment.show(this, TAG)
+            }
+            return fragment
+        }
+    }
+}

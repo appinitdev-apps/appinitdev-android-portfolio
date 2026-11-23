@@ -1,0 +1,11 @@
+
+val CyberCyan = Color(0xFF00E5FF)
+val NeonPurple = Color(0xFF7C4DFF)
+val BrightAmber = Color(0xFFFF9100)
+val DarkObsidian = Color(0xFF10121A)
+val SurfaceDark = Color(0xFF181B26)
+val CardDark = Color(0xFF1E2230)
+val TextPrimary = Color(0xFFFFFFFF)
+val TextSecondary = Color(0xFFB0B3C6)
+val FavoritePink = Color(0xFFFF4081)
+val SmileYellow = Color(0xFFFFD600)

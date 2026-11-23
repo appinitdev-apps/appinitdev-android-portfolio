@@ -1,0 +1,99 @@
+
+object AudioMediaStoreHelper : BaseMediaContentHelper() {
+    override val uriExternal: Uri = if (isQPlus()) MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL) else MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+    override val mediaType: MediaType = MediaType.AUDIO
+
+    override fun getProjection(): Array<String> {
+        val projection = mutableListOf(
+            MediaStore.Audio.Media._ID,
+            MediaStore.Audio.Media.TITLE,
+            MediaStore.Audio.Media.ARTIST,
+            MediaStore.Audio.Media.SIZE,
+            MediaStore.Audio.Media.DURATION,
+            MediaStore.Audio.Media.DATE_ADDED,
+            MediaStore.Audio.Media.DATE_MODIFIED,
+            MediaStore.Audio.Media.DATA,
+            MediaStore.Audio.Media.ALBUM_ID,
+        )
+
+        if (isQPlus()) {
+            projection.add(MediaStore.Audio.Media.BUCKET_ID)
+            projection.add(MediaStore.Audio.Media.IS_FAVORITE)
+        }
+
+        return projection.toTypedArray()
+    }
+
+    override fun buildBaseWhere(filterFields: List<FilterField>): ContentWhere {
+        val where = ContentWhere()
+        where.addGt(MediaStore.Audio.Media.DURATION, "0")
+        filterFields.forEach {
+            when (it.name) {
+                "text" -> {
+                    where.addLikes(
+                        arrayListOf(MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST),
+                        arrayListOf(it.value, it.value),
+                    )
+                }
+
+                "name" -> {
+                    where.addEqual(MediaStore.Audio.Media.TITLE, it.value)
+                }
+
+                "bucket_id" -> {
+                    where.addEqual(MediaStore.Audio.Media.BUCKET_ID, it.value)
+                }
+
+                "artist" -> {
+                    where.addEqual(MediaStore.Audio.Media.ARTIST, it.value)
+                }
+
+                "trash" -> {
+                    where.trash = it.value.toBooleanStrictOrNull()
+                }
+
+                "excluded_dir" -> {
+                    where.addNotStartsWith(MediaStore.Audio.Media.DATA, it.value)
+                }
+            }
+        }
+        return where
+    }
+
+    suspend fun searchAsync(
+        context: Context,
+        query: String,
+        limit: Int,
+        offset: Int,
+        sortBy: FileSortBy,
+    ): List<DAudio> {
+        return getPagingCursorAsync(context, query, limit, offset, sortBy.toSortBy())?.map { cursor, cache ->
+            val id = cursor.getStringValue(MediaStore.Audio.Media._ID, cache)
+            val title = cursor.getStringValue(MediaStore.Audio.Media.TITLE, cache)
+            val artist = cursor.getStringValue(MediaStore.Audio.Media.ARTIST, cache).replace(MediaStore.UNKNOWN_STRING, "")
+            val size = cursor.getLongValue(MediaStore.Audio.Media.SIZE, cache)
+            val duration = cursor.getLongValue(MediaStore.Audio.Media.DURATION, cache) / 1000
+            val createdAt = cursor.getTimeSecondsValue(MediaStore.Audio.Media.DATE_ADDED, cache)
+            val updatedAt = cursor.getTimeSecondsValue(MediaStore.Audio.Media.DATE_MODIFIED, cache)
+            val path = cursor.getStringValue(MediaStore.Audio.Media.DATA, cache)
+            val bucketId = if (isQPlus()) {
+                cursor.getStringValue(MediaStore.Audio.Media.BUCKET_ID, cache)
+            } else ""
+            val albumId = cursor.getStringValue(MediaStore.Audio.Media.ALBUM_ID, cache)
+            val isFavorite = if (isQPlus()) cursor.getIntValue(MediaStore.Audio.Media.IS_FAVORITE, cache) == 1 else false
+            DAudio(id, title, artist, path, duration, size, bucketId, albumId, createdAt, updatedAt, isFavorite)
+        } ?: emptyList()
+    }
+
+    suspend fun getTagRelationStubsAsync(
+        context: Context,
+        query: String,
+    ): List<TagRelationStub> {
+        return getSearchCursorAsync(context, query)?.map { cursor, cache ->
+            val id = cursor.getStringValue(MediaStore.Audio.Media._ID, cache)
+            val title = cursor.getStringValue(MediaStore.Audio.Media.TITLE, cache)
+            val size = cursor.getLongValue(MediaStore.Audio.Media.SIZE, cache)
+            TagRelationStub(id, title, size)
+        } ?: emptyList()
+    }
+}

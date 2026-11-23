@@ -1,0 +1,116 @@
+
+@HiltViewModel(assistedFactory = AudioInformationViewModel.Factory::class)
+class AudioInformationViewModel @AssistedInject constructor(
+        application: Application,
+        @Assisted private val audio: Audio,
+        private val lrcRepository: LrcRepository
+) : AndroidViewModel(application) {
+
+    private val _info = MutableStateFlow<List<Data>>(emptyList())
+    val info: StateFlow<List<Data>> = _info.asStateFlow()
+
+    init {
+        loadInfo()
+    }
+
+    private fun loadInfo() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val hasEmbeddedArt = checkEmbeddedArt(audio.uri)
+            val hasLrc = lrcRepository.lrcFileExists(audio.uri)
+
+            val list = buildList {
+                add(data(R.string.title, audio.title ?: audio.name ?: "–", fullSpan = true))
+                add(data(R.string.path, audio.path ?: "–", fullSpan = true))
+
+                if (BuildConfig.DEBUG) {
+                    add(data(R.string.uri, audio.uri ?: "–", fullSpan = true))
+                }
+
+                add(data(R.string.album, audio.album ?: "–", fullSpan = true))
+
+                add(data(R.string.artist, audio.artist ?: "–"))
+                add(data(R.string.album_artist, audio.albumArtist ?: "–"))
+                add(data(R.string.duration, audio.duration.toDynamicTimeString()))
+                add(data(R.string.size, Formatter.formatShortFileSize(getApplication(), audio.size)))
+                add(data(R.string.bitrate, audio.getProperBitrate()))
+                add(data(R.string.sample_rate, "${audio.sampleRate} Hz"))
+                add(data(R.string.bit_depth, if (audio.bitPerSample > 0) "${audio.bitPerSample}-bit" else "–"))
+                add(data(R.string.mime_type, audio.mimeType ?: "–"))
+                add(data(R.string.format, audio.uri.getAudioFormat() ?: "–"))
+                add(data(R.string.genre, audio.genre ?: "–"))
+                add(data(R.string.year, audio.year ?: "–"))
+                add(data(R.string.track, if (audio.track > 0) audio.track.toString() else "–"))
+                add(data(R.string.track_number, audio.trackNumber ?: "–"))
+                add(data(R.string.num_tracks, audio.numTracks ?: "–"))
+                add(data(R.string.disc, audio.discNumber ?: "–"))
+                add(data(R.string.composer, audio.composer ?: "–"))
+                add(data(R.string.author, audio.author ?: "–"))
+                add(data(R.string.writer, audio.writer ?: "–"))
+                add(data(R.string.compilation, audio.compilation ?: "–"))
+                add(data(R.string.date, audio.date ?: "–"))
+
+                // Dates
+                add(data(R.string.date_added,
+                         if (audio.dateAdded > 0) audio.dateAdded.toDate() else "–"))
+                add(data(R.string.date_modified,
+                         if (audio.dateModified > 0) audio.dateModified.toDate() else "–"))
+                add(data(R.string.date_taken,
+                         if (audio.dateTaken > 0) audio.dateTaken.toDate() else "–"))
+
+                // Metadata presence flags
+                add(data(R.string.has_embedded_art,
+                         getApplication<Application>().getString(
+                                 if (hasEmbeddedArt) R.string.yes else R.string.no)))
+                add(data(R.string.has_lrc_sidecar,
+                         getApplication<Application>().getString(
+                                 if (hasLrc) R.string.yes else R.string.no)))
+
+                // Audio ID
+                add(data(R.string.audio_id, audio.id.toString()))
+
+                // Replay Gain
+                val replayGainValues = """
+                            ${"Track Gain:".padEnd(13)} ${audio.replayGainTrackGain ?: "–"} dB
+                            ${"Track Peak:".padEnd(13)} ${audio.replayGainTrackPeak ?: "–"}
+                            ${"Album Gain:".padEnd(13)} ${audio.replayGainAlbumGain ?: "–"} dB
+                            ${"Album Peak:".padEnd(13)} ${audio.replayGainAlbumPeak ?: "–"}
+                        """.trimIndent()
+
+                add(data(R.string.replay_gain, replayGainValues, fullSpan = true))
+            }
+
+            _info.emit(list)
+        }
+    }
+
+    /**
+     * Checks whether the audio file has embedded cover art by opening it through
+     * the content resolver. We use the Uri overload of setDataSource so it works
+     * correctly with both SAF content:// URIs and regular file paths — the plain
+     * String overload only works for file paths and silently fails on content URIs.
+     */
+    private fun checkEmbeddedArt(path: String?): Boolean {
+        if (path == null) return false
+        return try {
+            val retriever = MediaMetadataRetriever()
+            retriever.setDataSource(getApplication(), path.toUri())
+            val art = retriever.embeddedPicture
+            retriever.release()
+            art != null
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    private fun data(type: Int, value: String, fullSpan: Boolean = false) =
+        Data(type = type, value = value, isFullSpan = fullSpan)
+
+    @AssistedFactory
+    interface Factory {
+        fun create(audio: Audio): AudioInformationViewModel
+    }
+
+    companion object {
+        private const val TAG = "AudioInformationViewModel"
+    }
+}

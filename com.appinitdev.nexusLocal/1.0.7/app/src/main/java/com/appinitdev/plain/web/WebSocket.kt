@@ -1,0 +1,147 @@
+
+fun Route.addWebSocket() {
+    webSocket("/status") {
+        val peerId = call.request.queryParameters["cid"] ?: ""
+        if (peerId.isEmpty()) {
+            close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, "`cid` is missing"))
+            return@webSocket
+        }
+        var authenticated = false
+        try {
+            for (frame in incoming) {
+                if (frame !is Frame.Binary) continue
+                if (authenticated) continue
+
+                val token = ChatCacheManager.peerKeyCache[peerId]
+                val publicKey = ChatCacheManager.peerPublicKeyCache[peerId]
+                if (token == null || publicKey == null) {
+                    close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, "unknown_peer"))
+                    return@webSocket
+                }
+                val decryptResult = PeerChatParser.decrypt(token, peerId, publicKey, frame.readBytes())
+                if (decryptResult.content == null) {
+                    close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, "invalid_request"))
+                    return@webSocket
+                }
+                authenticated = true
+                PeerStatusManager.setOnline(peerId, true)
+                send("ok")
+            }
+        } catch (ex: Exception) {
+            LogCat.e("status ws: $ex")
+        } finally {
+            if (authenticated) {
+                PeerStatusManager.disconnected(peerId)
+            }
+        }
+    }
+
+    webSocket("/") {
+        val q = call.request.queryParameters
+        val clientId = q["cid"] ?: ""
+        if (clientId.isEmpty()) {
+            LogCat.e("ws: `cid` is missing")
+            close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, "`cid` is missing"))
+            return@webSocket
+        }
+
+        val session = WebSocketSession(System.currentTimeMillis(), clientId, this)
+        try {
+            for (frame in incoming) {
+                when (frame) {
+                    is Frame.Binary -> {
+                        if (q["auth"] == "1") {
+                            val clientIp = HttpServerManager.getClientIpForLogin(
+                                clientId,
+                                call.request.origin.remoteAddress
+                            )
+                            val rateLimitKey = clientIp.ifEmpty { "cid:$clientId" }
+                            if (!HttpServerManager.tryAcquireLoginAttempt(rateLimitKey)) {
+                                LogCat.e("ws: too_many_login_attempts, key=$rateLimitKey")
+                                close(
+                                    CloseReason(
+                                        CloseReason.Codes.TRY_AGAIN_LATER,
+                                        "too_many_login_attempts"
+                                    )
+                                )
+                                return@webSocket
+                            }
+
+                            var r: AuthRequest? = null
+                            val hash = CryptoHelper.sha512(
+                                PasswordPreference.getAsync().toByteArray()
+                            )
+                            val token = HttpServerManager.hashToToken(hash)
+                            val decryptedBytes =
+                                CryptoHelper.chaCha20Decrypt(token, frame.readBytes())
+                            if (decryptedBytes != null) {
+                                r = jsonDecode<AuthRequest>(decryptedBytes.decodeToString())
+                            }
+                            if (r?.password == hash) {
+                                val event = ConfirmToAcceptLoginEvent(this, clientId, r)
+                                if (AuthTwoFactorPreference.getAsync()) {
+                                    send(
+                                        CryptoHelper.chaCha20Encrypt(
+                                            token,
+                                            JsonHelper.jsonEncode(AuthResponse(TempData.clientId, AuthStatus.PENDING))
+                                        )
+                                    )
+                                    sendEvent(event)
+                                } else {
+                                    coIO {
+                                        HttpServerManager.respondTokenAsync(event, clientIp)
+                                    }
+                                }
+                            } else {
+                                LogCat.e("ws: invalid_password")
+                                close(
+                                    CloseReason(
+                                        CloseReason.Codes.TRY_AGAIN_LATER,
+                                        "invalid_password"
+                                    )
+                                )
+                            }
+                        } else {
+                            val token = HttpServerManager.tokenCache[clientId]
+                            if (token != null) {
+                                val decryptedBytes =
+                                    CryptoHelper.chaCha20Decrypt(token, frame.readBytes())
+                                if (decryptedBytes != null) {
+                                    LogCat.d("ws: add session ${session.id}, ts: ${decryptedBytes.decodeToString()}")
+                                    HttpServerManager.wsSessions.add(session)
+                                    HttpServerManager.wsSessionCount.value =
+                                        HttpServerManager.wsSessions.distinctBy { it.clientId }.size
+                                } else {
+                                    LogCat.d("ws: invalid_request")
+                                    close(
+                                        CloseReason(
+                                            CloseReason.Codes.TRY_AGAIN_LATER,
+                                            "invalid_request"
+                                        )
+                                    )
+                                }
+                            } else {
+                                LogCat.d("ws: invalid_request")
+                                close(
+                                    CloseReason(
+                                        CloseReason.Codes.TRY_AGAIN_LATER,
+                                        "invalid_request"
+                                    )
+                                )
+                            }
+                        }
+                    }
+
+                    else -> {}
+                }
+            }
+        } catch (ex: Exception) {
+            LogCat.e("ws: $ex")
+        } finally {
+            LogCat.d("ws: remove session ${session.id}")
+            HttpServerManager.wsSessions.removeIf { it.id == session.id }
+            HttpServerManager.wsSessionCount.value =
+                HttpServerManager.wsSessions.distinctBy { it.clientId }.size
+        }
+    }
+}

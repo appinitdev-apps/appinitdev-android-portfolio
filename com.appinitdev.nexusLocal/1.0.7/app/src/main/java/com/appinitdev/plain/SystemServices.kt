@@ -1,0 +1,81 @@
+
+val contentResolver: ContentResolver by lazy { MainApp.instance.contentResolver }
+
+val packageManager: PackageManager by lazy { MainApp.instance.packageManager }
+
+val clipboardManager: ClipboardManager by lazy {
+    MainApp.instance.getSystemServiceCompat(ClipboardManager::class.java)
+}
+
+val inputMethodManager: InputMethodManager by lazy {
+    MainApp.instance.getSystemServiceCompat(InputMethodManager::class.java)
+}
+
+val notificationManager: NotificationManagerCompat by lazy {
+    NotificationManagerCompat.from(MainApp.instance)
+}
+
+val powerManager: PowerManager by lazy {
+    MainApp.instance.getSystemServiceCompat(PowerManager::class.java)
+}
+
+val storageManager: StorageManager by lazy {
+    MainApp.instance.getSystemServiceCompat(StorageManager::class.java)
+}
+
+val wifiManager: WifiManager by lazy {
+    MainApp.instance.getSystemServiceCompat(WifiManager::class.java)
+}
+
+val connectivityManager: ConnectivityManager by lazy {
+    MainApp.instance.getSystemServiceCompat(ConnectivityManager::class.java)
+}
+
+val mediaProjectionManager: MediaProjectionManager by lazy {
+    MainApp.instance.getSystemServiceCompat(MediaProjectionManager::class.java)
+}
+
+val storageStatsManager: StorageStatsManager by lazy {
+    MainApp.instance.getSystemServiceCompat(StorageStatsManager::class.java)
+}
+
+val activityManager: ActivityManager by lazy {
+    MainApp.instance.getSystemServiceCompat(ActivityManager::class.java)
+}
+
+val batteryManager: BatteryManager by lazy {
+    MainApp.instance.getSystemServiceCompat(android.os.BatteryManager::class.java)
+}
+
+val subscriptionManager: SubscriptionManager by lazy {
+    MainApp.instance.getSystemServiceCompat(SubscriptionManager::class.java)
+}
+
+val telephonyManager: TelephonyManager by lazy {
+    MainApp.instance.getSystemServiceCompat(TelephonyManager::class.java)
+}
+
+val alarmManager: AlarmManager by lazy {
+    MainApp.instance.getSystemServiceCompat(AlarmManager::class.java)
+}
+
+val audioManager: android.media.AudioManager by lazy {
+    MainApp.instance.getSystemServiceCompat(android.media.AudioManager::class.java)
+}
+
+val uiModeManager: UiModeManager by lazy {
+    MainApp.instance.getSystemServiceCompat(UiModeManager::class.java)
+}
+
+val smsManager: SmsManager by lazy {
+    if (isSPlus()) {
+        MainApp.instance.getSystemService(SmsManager::class.java) ?: SmsManager.getDefault()
+    } else {
+        SmsManager.getDefault()
+    }
+}
+
+
+
+
+

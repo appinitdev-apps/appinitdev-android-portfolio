@@ -1,0 +1,92 @@
+
+@Composable
+fun HomeChatWidget(
+    navController: NavHostController,
+    peerVM: PeerViewModel,
+    channelVM: ChannelViewModel,
+    showOnlineStatus: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val collapsed = remember {
+        context.dataStore.dataFlow.map { HomeSectionCollapsedPreference.get(it, AppFeatureType.CHAT) }
+    }.collectAsStateValue(initial = false)
+    val channels = channelVM.channels.collectAsStateValue()
+
+    val localChat = peerVM.getLatestChat("local")
+    val onlineText = stringResource(Res.string.online)
+    val channelsText = stringResource(Res.string.channels)
+    val localRow = ChatRow(
+        sortAt = localChat?.createdAt ?: Instant.DISTANT_PAST,
+        title = stringResource(Res.string.local_chat),
+        desc = stringResource(Res.string.local_chat_desc),
+        icon = Res.drawable.bot,
+        online = null,
+        createdAt = localChat?.createdAt ?: Instant.DISTANT_PAST,
+        latestChat = localChat,
+        route = Routing.Chat("peer:local"),
+    )
+    val peerRows = peerVM.pairedPeers
+        .map { peer ->
+            val latestChat = peerVM.getLatestChat(peer.id)
+            val online = peerVM.getPeerOnlineStatus(peer.id) == true
+            ChatRow(
+                sortAt = latestChat?.createdAt ?: Instant.DISTANT_PAST,
+                title = peer.name,
+                desc = if (online) onlineText else peer.getBestIp(),
+                icon = DeviceType.fromValue(peer.deviceType).getIcon(),
+                online = if (showOnlineStatus) online else null,
+                createdAt = peer.createdAt,
+                latestChat = latestChat,
+                route = Routing.Chat("peer:${peer.id}"),
+            )
+        }
+    val channelRows = channels
+        .filter { it.status == DChatChannel.STATUS_JOINED }
+        .map { channel ->
+            val latestChat = peerVM.getLatestChat(channel.id)
+            ChatRow(
+                sortAt = latestChat?.createdAt ?: channel.updatedAt,
+                title = channel.name,
+                desc = channelsText,
+                icon = Res.drawable.hash,
+                online = null,
+                createdAt = channel.createdAt,
+                latestChat = latestChat,
+                route = Routing.Chat("channel:${channel.id}"),
+            )
+        }
+    val rowComparator = compareByDescending<ChatRow> { it.sortAt }
+        .thenByDescending { it.online == true }
+        .thenByDescending { it.createdAt }
+    val rows = (listOf(localRow) + (peerRows + channelRows).sortedWith(rowComparator).take(4))
+        .sortedWith(rowComparator)
+
+    Surface(
+        modifier = modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(PlainTheme.CARD_RADIUS),
+        color = MaterialTheme.colorScheme.cardBackgroundNormal,
+    ) {
+        Column {
+            HomeSectionClickableHeader(
+                title = stringResource(Res.string.chat),
+                onClick = { navController.navigate(Routing.ChatList) },
+                trailingContent = { HomeSectionCollapseButton(collapsed = collapsed, featureType = AppFeatureType.CHAT) },
+            )
+
+            if (!collapsed) {
+                rows.forEachIndexed { index, row ->
+                    PeerListItem(
+                        title = row.title,
+                        desc = row.desc,
+                        icon = row.icon,
+                        online = row.online,
+                        latestChat = row.latestChat,
+                        onClick = { navController.navigate(row.route) },
+                    )
+                }
+            }
+        }
+    }
+}

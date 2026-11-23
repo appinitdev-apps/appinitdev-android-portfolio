@@ -1,0 +1,2 @@
+
+data class DFeaturePermission(val permissions: Set<Permission>, val permission: Permission)

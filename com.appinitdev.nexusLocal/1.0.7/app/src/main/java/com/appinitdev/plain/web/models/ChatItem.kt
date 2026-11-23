@@ -1,0 +1,67 @@
+
+@Serializable
+data class ChatItem(
+    val id: ID,
+    val fromId: String,
+    val toId: String,
+    val channelId: String,
+    val content: String,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    @Transient private val _content: DMessageContent? = null,
+    @Contextual var data: ChatItemContent? = null,
+    val status: String = "",
+    val statusData: String = "",
+) {
+    fun getContentData(): ChatItemContent? {
+        return when (_content?.value) {
+            is DMessageImages -> {
+                ChatItemContent.MessageImages((_content.value as DMessageImages).items.map {
+                    val json = JSONObject()
+                    json.put("path", it.uri)
+                    json.put("name", it.fileName)
+                    FileHelper.getFileId(json.toString())
+                })
+            }
+
+            is DMessageFiles -> {
+                ChatItemContent.MessageFiles((_content.value as DMessageFiles).items.map {
+                    val json = JSONObject()
+                    json.put("path", it.uri)
+                    json.put("name", it.fileName)
+                    FileHelper.getFileId(json.toString())
+                })
+            }
+
+            is DMessageText -> {
+                val messageText = _content.value as DMessageText
+                val imageIds = messageText.linkPreviews
+                    .map { val p = it.imageLocalPath; if (p.isNullOrEmpty()) "" else FileHelper.getFileId(p) }
+                ChatItemContent.MessageText(imageIds)
+            }
+
+            else -> {
+                null
+            }
+        }
+    }
+}
+
+@Serializable
+@Polymorphic
+sealed class ChatItemContent {
+    @Serializable
+    data class MessageImages(val ids: List<String>) : ChatItemContent()
+
+    @Serializable
+    data class MessageFiles(val ids: List<String>) : ChatItemContent()
+
+    @Serializable
+    data class MessageText(val ids: List<String>) : ChatItemContent()
+}
+
+fun DChat.toModel(): ChatItem {
+    return ChatItem(ID(id), fromId, toId, channelId, content.toJSONString(), createdAt, updatedAt, content, status = status, statusData = statusData).apply {
+        data = getContentData()
+    }
+}
